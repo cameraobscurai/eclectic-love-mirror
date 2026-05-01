@@ -124,6 +124,98 @@ export type Database = {
         }
         Relationships: []
       }
+      scrape_jobs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          finished_at: string | null
+          firecrawl_job_id: string | null
+          id: string
+          pages_completed: number
+          pages_total: number | null
+          source_url: string
+          started_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          finished_at?: string | null
+          firecrawl_job_id?: string | null
+          id?: string
+          pages_completed?: number
+          pages_total?: number | null
+          source_url: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          finished_at?: string | null
+          firecrawl_job_id?: string | null
+          id?: string
+          pages_completed?: number
+          pages_total?: number | null
+          source_url?: string
+          started_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      scraped_pages: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_urls: string[]
+          job_id: string
+          links: string[]
+          markdown: string | null
+          raw_response: Json | null
+          status_code: number | null
+          title: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          job_id: string
+          links?: string[]
+          markdown?: string | null
+          raw_response?: Json | null
+          status_code?: number | null
+          title?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          job_id?: string
+          links?: string[]
+          markdown?: string | null
+          raw_response?: Json | null
+          status_code?: number | null
+          title?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_pages_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
