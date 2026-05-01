@@ -48,7 +48,9 @@ export function Navigation() {
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
     else document.body.style.removeProperty("overflow");
-    return () => document.body.style.removeProperty("overflow");
+    return () => {
+      document.body.style.removeProperty("overflow");
+    };
   }, [isOpen]);
 
   useEffect(() => {
