@@ -467,38 +467,45 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
-      className="min-h-screen bg-white text-charcoal pb-32"
+      className={
+        showOverview
+          ? "h-[100dvh] flex flex-col bg-white text-charcoal overflow-hidden"
+          : "min-h-screen bg-white text-charcoal pb-32"
+      }
     >
       {/* ============================================================
           HERO — centered wordmark, scroll-compressed.
-          No "living inventory" paragraph. Pure type, breathing room.
+          Hidden on the overview screen so the category gallery owns the
+          fold. The sticky header below still carries the wordmark.
           ============================================================ */}
-      <section
-        className="px-6 lg:px-12"
-        style={{
-          paddingTop: "clamp(80px, 9vw, 140px)",
-          paddingBottom: "clamp(40px, 4vw, 64px)",
-        }}
-      >
-        <motion.div
-          style={
-            reduced
-              ? undefined
-              : { scale: heroScale, opacity: heroOpacity, y: heroY }
-          }
-          className="text-center will-change-transform"
+      {!showOverview && (
+        <section
+          className="px-6 lg:px-12"
+          style={{
+            paddingTop: "clamp(80px, 9vw, 140px)",
+            paddingBottom: "clamp(40px, 4vw, 64px)",
+          }}
         >
-          <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
-            HIVE SIGNATURE COLLECTION
-          </p>
-          <h1
-            className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
-            style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+          <motion.div
+            style={
+              reduced
+                ? undefined
+                : { scale: heroScale, opacity: heroOpacity, y: heroY }
+            }
+            className="text-center will-change-transform"
           >
-            The Collection
-          </h1>
-        </motion.div>
-      </section>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
+              HIVE SIGNATURE COLLECTION
+            </p>
+            <h1
+              className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
+              style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+            >
+              The Collection
+            </h1>
+          </motion.div>
+        </section>
+      )}
 
       {/* ============================================================
           STICKY HEADER — single source of truth while scrolling.
@@ -646,31 +653,36 @@ function CollectionPage() {
 
       {/* ============================================================
           BODY — hairline cage. Two render modes:
-            (a) Overview: full-width category gallery (no rails).
+            (a) Overview: viewport-fit category gallery (single fold,
+                no scroll). Sits inside the cage's hairline frame.
             (b) Category/search: 3-column cage [filter | grid | progress].
           ============================================================ */}
-      <section className="px-6 lg:px-12 pt-10">
-        <div
-          className="mx-auto"
-          style={{
-            maxWidth: "var(--archive-canvas-max)",
-            borderTop: "1px solid var(--archive-rule)",
-            borderBottom: "1px solid var(--archive-rule)",
-          }}
-        >
-          {showOverview ? (
-            <div
-              style={{
-                paddingTop: "2.25rem",
-                paddingBottom: "2.5rem",
-              }}
-            >
-              <CategoryGalleryOverview
-                groups={overviewGroups}
-                onSelectCategory={(id) => selectGroup(id)}
-              />
-            </div>
-          ) : (
+      {showOverview ? (
+        <section className="flex-1 min-h-0 px-3 sm:px-6 lg:px-12 py-3 sm:py-4">
+          <div
+            className="mx-auto h-full"
+            style={{
+              maxWidth: "var(--archive-canvas-max)",
+              borderTop: "1px solid var(--archive-rule)",
+              borderBottom: "1px solid var(--archive-rule)",
+            }}
+          >
+            <CategoryGalleryOverview
+              groups={overviewGroups}
+              onSelectCategory={(id) => selectGroup(id)}
+            />
+          </div>
+        </section>
+      ) : (
+        <section className="px-6 lg:px-12 pt-10">
+          <div
+            className="mx-auto"
+            style={{
+              maxWidth: "var(--archive-canvas-max)",
+              borderTop: "1px solid var(--archive-rule)",
+              borderBottom: "1px solid var(--archive-rule)",
+            }}
+          >
             <div className="grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)_var(--archive-progress-width)]">
               {/* ===== LEFT COLUMN: filter rail ===== */}
               <aside
@@ -794,9 +806,9 @@ function CollectionPage() {
                 </div>
               </aside>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Mobile filter bottom-sheet — rendered OUTSIDE <main> so inert on
           <main> never accidentally inerts the sheet itself. */}
