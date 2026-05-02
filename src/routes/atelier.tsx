@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { MediaAperture } from "@/components/media-aperture";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -107,7 +108,7 @@ function AtelierPage() {
           </div>
         </div>
 
-        {TEAM.length > 0 && (
+        {TEAM.length > 0 ? (
           <ul className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
             {TEAM.map((member) => (
               <li key={member.name}>
@@ -128,6 +129,13 @@ function AtelierPage() {
               </li>
             ))}
           </ul>
+        ) : (
+          // Empty-state: portrait apertures, no fake names, no fake roles.
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <MediaAperture key={i} ratio="4/5" />
+            ))}
+          </div>
         )}
       </Section>
 
@@ -150,7 +158,7 @@ function AtelierPage() {
           </div>
         </div>
 
-        {SPACE_IMAGES.length > 0 && (
+        {SPACE_IMAGES.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
             {SPACE_IMAGES.slice(0, 3).map((img, i) => (
               <div
@@ -166,7 +174,24 @@ function AtelierPage() {
               </div>
             ))}
           </div>
+        ) : (
+          // Three creative-space apertures: studio · workbench · warehouse.
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <MediaAperture ratio="4/5" />
+            <MediaAperture ratio="4/5" />
+            <MediaAperture ratio="4/5" />
+          </div>
         )}
+
+        {/* Fabrication + materials media row — always rendered as designed
+            apertures until detail photography is loaded. Aspect mix matches
+            how real fabrication detail crops will sit on the page. */}
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+        </div>
       </Section>
 
       {/* 4. SCOPE + FABRICATION CAPABILITIES */}
