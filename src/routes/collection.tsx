@@ -450,9 +450,7 @@ function CollectionPage() {
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 
   const gridGapClasses =
-    density === "dense"
-      ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
-      : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
+    density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
 
   // ---------- First product per active group (powers CategoryHero specimen) ----------
   // Same data the rail thumbnail uses — no new field, no curation table.
