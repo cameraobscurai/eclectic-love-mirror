@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface QuickViewModalProps {
