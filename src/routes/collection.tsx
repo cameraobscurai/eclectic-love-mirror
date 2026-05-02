@@ -192,7 +192,7 @@ function CollectionPage() {
       </section>
 
       {/* Sticky filter header */}
-      <div className="sticky top-0 z-30 bg-cream/95 backdrop-blur-sm border-y border-charcoal/10">
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
           <div className="max-w-7xl mx-auto flex gap-1 overflow-x-auto py-3 no-scrollbar">
             <CategoryPill
@@ -386,7 +386,7 @@ function ProductCard({
     <li>
       <button
         onClick={onOpen}
-        className="group block w-full text-left bg-white border border-charcoal/8 hover:border-charcoal/20 transition-colors"
+        className="group block w-full text-left bg-white border border-transparent hover:border-charcoal/15 transition-colors"
       >
         <div className="relative aspect-square overflow-hidden bg-white">
           {product.primaryImage ? (
@@ -455,8 +455,8 @@ function QuickView({
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6"
     >
       <div className="absolute inset-0 bg-charcoal/70 backdrop-blur-sm" onClick={onClose} aria-hidden />
-      <div className="relative w-full md:max-w-5xl bg-cream text-charcoal shadow-xl max-h-[92vh] md:max-h-[85vh] overflow-auto">
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-cream/95 backdrop-blur border-b border-charcoal/10">
+      <div className="relative w-full md:max-w-5xl bg-white text-charcoal shadow-xl max-h-[92vh] md:max-h-[85vh] overflow-auto">
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur border-b border-charcoal/10">
           <p className="text-[10px] uppercase tracking-[0.25em] text-charcoal/55">
             {product.displayCategory}
           </p>
@@ -548,7 +548,7 @@ function QuickView({
                 className={cn(
                   "px-5 py-3 text-xs uppercase tracking-[0.22em] transition-colors border",
                   inInquiry
-                    ? "bg-cream text-charcoal border-charcoal"
+                    ? "bg-white text-charcoal border-charcoal"
                     : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
                 )}
               >
@@ -591,7 +591,7 @@ function InquiryTray() {
         </button>
         <Link
           to={href as never}
-          className="bg-cream text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-cream/85 transition-colors"
+          className="bg-white text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-white/85 transition-colors"
         >
           Review inquiry
         </Link>
