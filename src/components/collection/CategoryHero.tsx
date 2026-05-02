@@ -72,36 +72,29 @@ export function CategoryHero({ group, firstProduct }: CategoryHeroProps) {
           {label}
         </h2>
         <p
-          className="text-charcoal/55"
           style={{
             fontFamily: "var(--font-sans)",
-            fontSize: "12px",
-            lineHeight: 1.65,
+            fontSize: "13px",
+            lineHeight: 1.7,
             marginTop: "12px",
-            maxWidth: "320px",
+            maxWidth: "360px",
+            color: "rgba(26, 26, 26, 0.60)",
           }}
         >
           {description}
         </p>
-        <p
-          className="uppercase text-charcoal/45"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.25em",
-            marginTop: "16px",
-          }}
-        >
-          {count} {count === 1 ? "Piece" : "Pieces"}
-        </p>
       </div>
 
-      {/* Specimen plate — explicit dimensions, white tile against cream field. */}
+      {/* Specimen plate — soft shadow, no border, against the white field. */}
       <div
         className="hidden sm:flex shrink-0 items-center justify-center bg-white"
         style={{
           width: "200px",
           height: "150px",
-          border: "1px solid var(--archive-rule)",
+          borderRadius: "8px",
+          boxShadow:
+            "0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+          overflow: "hidden",
         }}
       >
         {showImage && (
