@@ -79,7 +79,6 @@ export function CollectionFilterRail({
           count={totalCount}
           active={!activeGroup}
           onClick={() => onSelect("")}
-          reduced={reduced}
           isSheet={isSheet}
         />
 
@@ -94,7 +93,6 @@ export function CollectionFilterRail({
               active={activeGroup === id}
               disabled={count === 0}
               onClick={() => onSelect(id)}
-              reduced={reduced}
               isSheet={isSheet}
             />
           );
@@ -116,7 +114,6 @@ export function CollectionFilterRail({
               active={activeGroup === id}
               disabled={count === 0}
               onClick={() => onSelect(id)}
-              reduced={reduced}
               isSheet={isSheet}
               muted
             />
@@ -132,7 +129,6 @@ interface FilterRowProps {
   count: number;
   active: boolean;
   onClick: () => void;
-  reduced: boolean | null;
   isSheet: boolean;
   muted?: boolean;
   disabled?: boolean;
