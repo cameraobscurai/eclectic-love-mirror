@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
-import { amangiriHome } from "@/content/amangiri";
+// Home is intentionally empty of imagery — the four apertures below define
+// the layout contract. Real Amangiri (or other) photography drops in once the
+// composition is approved. See `HomeAperture` below for the dark-variant
+// frame language (mirrors `MediaAperture` used on Atelier and Gallery).
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,70 +81,32 @@ function HomePage() {
           maxHeight: "100dvh",
         }}
       >
-        <div
-          className="absolute inset-0 will-change-transform"
-          style={{
-            transform: `translateY(${parallaxY}px) scale(1.08)`,
-            transformOrigin: "center top",
-          }}
-        >
-          {/*
-            Editorial asymmetric grid (Layout A):
-              - left column (40%) = tall texture anchor
-              - right column (60%) split:
-                  * top 60% = wide environment hero
-                  * bottom 40% = two object-detail vignettes
-            Hairline gaps in charcoal so the page reads as composed frames.
-            Single image on mobile keeps the front door clean and fast.
-          */}
+        {/*
+          Editorial asymmetric grid (Layout A) — empty frames only.
+            - left column (40%) = tall texture anchor
+            - right column (60%) split:
+                * top 60% = wide environment hero
+                * bottom 40% = two object-detail vignettes
+          Hairline gaps in charcoal so the page reads as four mounted apertures
+          behind the wordmark + CTA bar. No imagery until the composition is
+          approved. Mobile collapses to a single full-bleed aperture.
+        */}
+        <div className="absolute inset-0">
           <div className="absolute inset-0 hidden md:grid grid-cols-[40fr_60fr] gap-[2px] bg-charcoal">
-            <img
-              src={amangiriHome.leftTall.src}
-              alt={amangiriHome.leftTall.alt}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: amangiriHome.leftTall.position }}
-              loading="eager"
-              decoding="async"
-            />
+            <HomeAperture label="LEFT · TEXTURE" />
             <div className="grid grid-rows-[60fr_40fr] gap-[2px] bg-charcoal">
-              <img
-                src={amangiriHome.topHero.src}
-                alt={amangiriHome.topHero.alt}
-                className="w-full h-full object-cover"
-                style={{ objectPosition: amangiriHome.topHero.position }}
-                loading="eager"
-                decoding="async"
-              />
+              <HomeAperture label="TOP · ENVIRONMENT" />
               <div className="grid grid-cols-2 gap-[2px] bg-charcoal">
-                <img
-                  src={amangiriHome.detailOne.src}
-                  alt={amangiriHome.detailOne.alt}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: amangiriHome.detailOne.position }}
-                  loading="eager"
-                  decoding="async"
-                />
-                <img
-                  src={amangiriHome.detailTwo.src}
-                  alt={amangiriHome.detailTwo.alt}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: amangiriHome.detailTwo.position }}
-                  loading="eager"
-                  decoding="async"
-                />
+                <HomeAperture label="DETAIL · ONE" />
+                <HomeAperture label="DETAIL · TWO" />
               </div>
             </div>
           </div>
 
-          {/* Mobile fallback — the hero environment fills the screen. */}
-          <img
-            src={amangiriHome.topHero.src}
-            alt={amangiriHome.topHero.alt}
-            className="md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "center 45%" }}
-            loading="eager"
-            decoding="async"
-          />
+          {/* Mobile — single aperture so the front door stays calm. */}
+          <div className="md:hidden absolute inset-0">
+            <HomeAperture label="HERO" />
+          </div>
         </div>
 
         <div className="absolute inset-0 bg-charcoal/[0.02]" />
