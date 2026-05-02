@@ -131,31 +131,53 @@ function HomePage() {
         }}
       >
         {/*
-          Backdrop — the entire editorial composition (triptych glass plates,
-          sketch + swatch moodboard, etched ECLECTIC HIVE wordmark on the
-          center plate) is baked into a single image. We render it full-bleed
-          and let the rest of the page (CTA bar) sit on top.
+          Backdrop — the entire editorial composition is baked into a single
+          image. Three render paths share this section, in priority order:
 
-          A live <h1> remains in the DOM as sr-only so SEO and assistive tech
-          still pick up the brand name even though the visible mark lives
-          inside the artwork.
+          1. WebGL whisper-displacement (HeroDisplacement) — best path. Full
+             pixel control via fragment shader, ~6px max warp around cursor,
+             dead-still at rest. Fades in only after the texture is on the
+             GPU AND the first frame has painted (no flash).
+          2. Framer translate parallax (Phase 1) — fallback when WebGL2 is
+             missing but the user has a fine pointer + motion is OK.
+          3. Static image — universal baseline (touch / reduced-motion).
+
+          The static <img> is always rendered for SSR + as the safety net,
+          and gets cross-faded out once the WebGL layer reports ready.
         */}
         <motion.img
           src={homeHero}
           alt=""
           aria-hidden="true"
           className={cn(
-            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-700",
             "object-[50%_25%] md:object-[50%_38%]",
-            loaded ? "opacity-100" : "opacity-0"
+            loaded && !webglReady ? "opacity-100" : "",
+            !loaded ? "opacity-0" : "",
+            webglReady ? "opacity-0" : ""
           )}
           draggable={false}
           style={
-            parallaxOn
+            useFramerParallax
               ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
               : undefined
           }
         />
+
+        {useDisplacement && (
+          <div
+            className={cn(
+              "absolute inset-0 transition-opacity duration-700",
+              webglReady ? "opacity-100" : "opacity-0"
+            )}
+          >
+            <HeroDisplacement
+              src={homeHero}
+              className="absolute inset-0 w-full h-full"
+              onReady={() => setWebglReady(true)}
+            />
+          </div>
+        )}
 
         {/* Wordmark — sits inside the empty horizontal glass band baked into
             the artwork. Uses clamp() so it scales fluidly to fit the band on
