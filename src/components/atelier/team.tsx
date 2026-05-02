@@ -48,7 +48,7 @@ export const TEAM: TeamMember[] = [
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist" },
   { name: "Sarah Lilly-Ray", role: "Warehouse Operations" },
   { name: "Regina Mennig", role: "Accounting & Business Manager" },
-  { name: "Judgy Morales", role: "Human Resources" },
+  { name: "Judy Morales", role: "Human Resources" },
 ];
 
 export function AtelierTeam() {
