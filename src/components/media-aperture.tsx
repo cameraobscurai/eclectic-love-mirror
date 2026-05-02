@@ -26,6 +26,12 @@ interface MediaApertureProps {
   alt?: string;
   /** Optional caption rendered below the frame. */
   caption?: string;
+  /**
+   * Optional ALL-CAPS category label rendered below the frame.
+   * Use only for real categories (e.g. STUDIO, WORKBENCH, WAREHOUSE),
+   * never for fake image captions.
+   */
+  label?: string;
   className?: string;
   /** Lazy-load the inner image. Defaults to true. */
   lazy?: boolean;
@@ -36,6 +42,7 @@ export function MediaAperture({
   src,
   alt,
   caption,
+  label,
   className,
   lazy = true,
 }: MediaApertureProps) {
