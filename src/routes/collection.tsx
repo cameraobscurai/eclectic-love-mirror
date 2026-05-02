@@ -467,38 +467,45 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
-      className="min-h-screen bg-white text-charcoal pb-32"
+      className={
+        showOverview
+          ? "h-[100dvh] flex flex-col bg-white text-charcoal overflow-hidden"
+          : "min-h-screen bg-white text-charcoal pb-32"
+      }
     >
       {/* ============================================================
           HERO — centered wordmark, scroll-compressed.
-          No "living inventory" paragraph. Pure type, breathing room.
+          Hidden on the overview screen so the category gallery owns the
+          fold. The sticky header below still carries the wordmark.
           ============================================================ */}
-      <section
-        className="px-6 lg:px-12"
-        style={{
-          paddingTop: "clamp(80px, 9vw, 140px)",
-          paddingBottom: "clamp(40px, 4vw, 64px)",
-        }}
-      >
-        <motion.div
-          style={
-            reduced
-              ? undefined
-              : { scale: heroScale, opacity: heroOpacity, y: heroY }
-          }
-          className="text-center will-change-transform"
+      {!showOverview && (
+        <section
+          className="px-6 lg:px-12"
+          style={{
+            paddingTop: "clamp(80px, 9vw, 140px)",
+            paddingBottom: "clamp(40px, 4vw, 64px)",
+          }}
         >
-          <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
-            HIVE SIGNATURE COLLECTION
-          </p>
-          <h1
-            className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
-            style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+          <motion.div
+            style={
+              reduced
+                ? undefined
+                : { scale: heroScale, opacity: heroOpacity, y: heroY }
+            }
+            className="text-center will-change-transform"
           >
-            The Collection
-          </h1>
-        </motion.div>
-      </section>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
+              HIVE SIGNATURE COLLECTION
+            </p>
+            <h1
+              className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
+              style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+            >
+              The Collection
+            </h1>
+          </motion.div>
+        </section>
+      )}
 
       {/* ============================================================
           STICKY HEADER — single source of truth while scrolling.
