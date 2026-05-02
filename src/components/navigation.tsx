@@ -72,6 +72,8 @@ export function Navigation() {
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
           scrolled
             ? "bg-charcoal/95 backdrop-blur-sm"
+            : isWhitePage
+            ? "bg-white/90 backdrop-blur-sm"
             : isLightPage
             ? "bg-cream/80 backdrop-blur-sm"
             : "bg-transparent",
