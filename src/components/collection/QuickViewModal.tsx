@@ -154,7 +154,7 @@ export function QuickViewModal({
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
         <div
-          className="border-t border-charcoal/12 bg-white/75 backdrop-blur-xl"
+          className="border-t border-charcoal/12 bg-cream/85 backdrop-blur-xl"
           style={{ WebkitBackdropFilter: "blur(20px)" }}
         >
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
