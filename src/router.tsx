@@ -59,7 +59,11 @@ export const getRouter = () => {
     routeTree,
     context: {},
     scrollRestoration: true,
-    defaultPreloadStaleTime: 0,
+    // Preload chunks + loader data on link hover/touchstart so route swaps
+    // are instant. Stale time of 30s prevents wasteful re-fetching of the
+    // catalog on every navigation.
+    defaultPreload: "intent",
+    defaultPreloadStaleTime: 30_000,
     defaultErrorComponent: DefaultErrorComponent,
   });
 
