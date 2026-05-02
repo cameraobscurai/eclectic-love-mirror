@@ -187,7 +187,7 @@ export function QuickViewModal({
             </div>
 
             {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:pl-2 md:border-l md:border-charcoal/12 md:pl-10">
+            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {product.dimensions && (
                 <SpecCol label="Dimensions" value={product.dimensions} />
               )}
@@ -199,11 +199,8 @@ export function QuickViewModal({
               )}
             </div>
 
-            {/* spacer for grid */}
-            <div className="hidden md:block order-3" />
-
             {/* CTA */}
-            <div className="order-1 md:order-4 flex justify-end">
+            <div className="order-1 md:order-3 flex justify-end">
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
