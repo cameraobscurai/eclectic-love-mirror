@@ -452,16 +452,18 @@ function CollectionPage() {
     setStickyMarkActive(v > 180);
   });
 
-  // Sticky wordmark text: "THE COLLECTION" → adds active section + count
-  // when the user has filtered or scroll-spy has locked onto a section.
+  // Sticky wordmark text: section + count when filtered or scroll-spied.
+  // The global nav already labels the page as "HIVE SIGNATURE COLLECTION";
+  // we don't repeat it here. On overview we hide the wordmark and let the
+  // result-meta on the left carry the count.
   const stickyMarkLabel = (() => {
     const section = activeGroup
       ? BROWSE_GROUP_LABELS[activeGroup]
       : spyActiveGroup
         ? BROWSE_GROUP_LABELS[spyActiveGroup]
         : null;
-    if (!section) return "THE COLLECTION";
-    return `THE COLLECTION · ${section.toUpperCase()} · ${visibleProducts.length}`;
+    if (!section) return "";
+    return `${section.toUpperCase()} · ${visibleProducts.length}`;
   })();
 
   return (
