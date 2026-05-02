@@ -23,21 +23,24 @@ export function InquiryTray() {
           role="region"
           aria-label="Inquiry"
         >
-          <div className="flex items-center gap-4 px-5 py-3">
-            <span className="text-xs uppercase tracking-[0.22em]">
-              Inquiry · {count} {count === 1 ? "piece" : "pieces"}
+          <div className="flex items-center gap-5 px-5 py-3">
+            <span className="text-[11px] uppercase tracking-[0.22em]">
+              SELECTED PIECES
+              <span className="ml-2 text-cream/60 tabular-nums">
+                {String(count).padStart(2, "0")}
+              </span>
             </span>
             <button
               onClick={clear}
               className="text-[10px] uppercase tracking-[0.22em] text-cream/60 hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-colors"
             >
-              Clear All
+              CLEAR
             </button>
             <Link
               to={href as never}
-              className="bg-white text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
+              className="bg-white text-charcoal px-4 py-2 text-[11px] uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
             >
-              Inquiry
+              REVIEW INQUIRY
             </Link>
           </div>
         </motion.div>
