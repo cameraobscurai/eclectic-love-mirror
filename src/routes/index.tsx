@@ -97,7 +97,7 @@ function HomePage() {
   const useFramerParallax = parallaxOn && !useDisplacement;
 
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (!parallaxOn) return;
+    if (!useFramerParallax) return;
     const el = sectionRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -108,7 +108,7 @@ function HomePage() {
   };
 
   const handlePointerLeave = () => {
-    if (!parallaxOn) return;
+    if (!useFramerParallax) return;
     mx.set(0);
     my.set(0);
   };
