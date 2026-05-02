@@ -417,7 +417,8 @@ export function QuickViewModal({
           </div>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
