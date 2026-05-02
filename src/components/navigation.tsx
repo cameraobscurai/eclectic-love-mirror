@@ -9,6 +9,11 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+// Pages with a light hero where the nav must invert to charcoal text.
+// Collection is intentionally pure white (auction-house archive), but it
+// still needs charcoal nav text — handled by the LIGHT_BG_PAGES flag below.
+// The actual nav background is set per-page so cream-hero pages get cream
+// and the white archive page gets white (no seam against the white grid).
 const LIGHT_BG_PAGES = [
   "/atelier",
   "/collection",
@@ -17,6 +22,8 @@ const LIGHT_BG_PAGES = [
   "/privacy",
   "/process",
 ];
+
+const WHITE_BG_PAGES = ["/collection"];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
