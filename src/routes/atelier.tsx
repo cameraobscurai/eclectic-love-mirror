@@ -320,10 +320,16 @@ function ApproachStep({
 }) {
   return (
     <div>
-      <p className="font-display text-2xl text-charcoal/45 tabular-nums">
+      <MediaAperture ratio="3/4" />
+      <p
+        className="mt-6 pt-4 font-display text-2xl text-charcoal/45 tabular-nums border-t"
+        style={{ borderColor: "var(--archive-rule)" }}
+      >
         {number}
       </p>
-      <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">{label}</h3>
+      <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+        {label}
+      </h3>
       <p className="mt-4 text-[15px] leading-relaxed text-charcoal/70">
         {body}
       </p>
