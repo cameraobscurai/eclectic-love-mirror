@@ -84,7 +84,7 @@ export function Navigation() {
             scrolled ? "py-4 lg:py-5" : "py-6 lg:py-8"
           )}
         >
-          <Link to="/" className="relative" aria-label="ECLECTIC HIVE — home">
+          <Link to="/" preload="intent" className="relative" aria-label="ECLECTIC HIVE — home">
             <span
               className={cn(
                 "font-brand text-[0.8rem] lg:text-[0.9rem] tracking-[0.18em] uppercase transition-colors duration-300",
@@ -108,6 +108,7 @@ export function Navigation() {
                 <Link
                   key={link.href}
                   to={link.href}
+                  preload="intent"
                   className={cn(
                     "relative group text-xs tracking-[0.2em] uppercase font-light transition-colors duration-300",
                     dark
@@ -178,7 +179,7 @@ export function Navigation() {
       >
         <div className="flex flex-col h-full pt-24 px-6 pb-12">
           <nav className="flex-1 flex flex-col justify-center">
-            <Link to="/" className="py-4 min-h-[44px] flex items-center">
+            <Link to="/" preload="intent" className="py-4 min-h-[44px] flex items-center">
               <span className="text-cream font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light hover:text-sand transition-colors">
                 Home
               </span>
@@ -187,6 +188,7 @@ export function Navigation() {
               <Link
                 key={link.href}
                 to={link.href}
+                preload="intent"
                 className="py-4 min-h-[44px] flex items-center"
               >
                 <span
