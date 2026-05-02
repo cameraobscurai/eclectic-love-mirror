@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 // Home is intentionally empty of imagery — the four apertures below define
-// the layout contract. Real Amangiri (or other) photography drops in once the
-// composition is approved. See `HomeAperture` below for the dark-variant
-// frame language (mirrors `MediaAperture` used on Atelier and Gallery).
+// the layout contract. Real photography drops in once the composition is
+// approved. See `HomeAperture` below for the dark-variant frame language
+// (mirrors `MediaAperture` used on Atelier and Gallery).
 
 
 export const Route = createFileRoute("/")({
@@ -37,8 +37,6 @@ const DESTINATIONS = [
 function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [parallaxY, setParallaxY] = useState(0);
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
