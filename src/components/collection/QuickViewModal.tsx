@@ -67,16 +67,20 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Title gets ~85% of the stage width so it can extend behind the centered image.
-  // The image overlaps the middle of the title (Calista reference behavior).
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.85 - 16 : 0;
+  // Title sits behind the image at top-left. Width capped at 78% of the stage
+  // so it never reaches under the measurement zone. Visual ceiling is also
+  // capped by character count — short names ("Lyon Stool") shouldn't explode
+  // to display-billboard size, long names ("Hadley Velvet Arm Chair") get
+  // the full 92px.
+  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.78 - 16 : 0;
+  const titleMaxPx = product.title.trim().length < 14 ? 72 : 92;
   const fittedSize = useFitToLines({
     text: product.title,
     maxWidth: titleMaxWidth,
     family: "Cormorant",
     weight: 400,
     minPx: 28,
-    maxPx: 112,
+    maxPx: titleMaxPx,
     targetLines: 2,
   });
 
@@ -187,67 +191,67 @@ export function QuickViewModal({
             {product.title}
           </h2>
 
-          {/* Image — refined specimen, not billboard. Capped on both axes so
-              low-res sources never get blown up. Bottom-anchored, centered,
-              overlapping the lower half of the title. Same envelope across
-              sofas, lamps, chairs, accessories — silhouette varies, frame doesn't. */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-center justify-center md:items-end md:justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
-            <AnimatePresence mode="wait">
-              {img ? (
-                <motion.img
-                  key={img.url}
-                  src={img.url}
-                  alt={img.altText ?? product.title}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="w-auto max-w-[78%] md:max-w-[52%] max-h-[62%] md:max-h-[62%] object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
-                />
-              ) : (
-                <div className="grid place-items-center text-charcoal/30">
-                  No image
-                </div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* MEASUREMENT ZONE — the formal frame the furniture sits inside.
+              Same envelope across every piece (sofa, lamp, chair, accessory).
+              The image fills the zone via object-contain. The scale rules,
+              when toggled on, attach to the zone's own edges — width rule
+              flush to the bottom edge, height rule flush to the right edge —
+              so they wrap the actual furniture region, not the empty stage. */}
+          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
+            <div
+              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%] flex items-end justify-center"
+            >
+              <AnimatePresence mode="wait">
+                {img ? (
+                  <motion.img
+                    key={img.url}
+                    src={img.url}
+                    alt={img.altText ?? product.title}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reduced ? 0 : 0.25 }}
+                    className="w-auto h-auto max-w-full max-h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                  />
+                ) : (
+                  <div className="grid place-items-center text-charcoal/30">
+                    No image
+                  </div>
+                )}
+              </AnimatePresence>
 
-          {/* Scale annotation — width along the bottom + height up the right
-              side, mirroring an architectural elevation drawing. Both fade
-              in together. Each axis renders independently if the other isn't
-              parseable. */}
-          <AnimatePresence>
-            {showScale && hasScale && (
-              <>
-                {dims.width !== null && (
+              {/* Scale rules — bound to the zone's edges, not the stage.
+                  Width rule sits just below the zone; height rule just to
+                  its right. They render independently if only one axis is
+                  parseable. */}
+              <AnimatePresence>
+                {showScale && hasScale && dims.width !== null && (
                   <motion.div
                     key="scale-width"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.18 }}
-                    className="absolute inset-x-0 bottom-3 md:bottom-6 z-20 px-6 md:px-16 pointer-events-none"
+                    className="absolute left-0 right-0 -bottom-7 pointer-events-none"
                   >
-                    <div className="mx-auto w-[78%] md:w-[52%]">
-                      <ScaleRuleWidth inches={dims.width} />
-                    </div>
+                    <ScaleRuleWidth inches={dims.width} />
                   </motion.div>
                 )}
-                {dims.height !== null && (
+                {showScale && hasScale && dims.height !== null && (
                   <motion.div
                     key="scale-height"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.22 }}
-                    className="absolute right-6 md:right-12 top-[12%] bottom-[12%] z-20 pointer-events-none flex items-center"
+                    className="absolute top-0 bottom-0 -right-6 pointer-events-none"
                   >
                     <ScaleRuleHeight inches={dims.height} />
                   </motion.div>
                 )}
-              </>
-            )}
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
 
 
@@ -323,7 +327,12 @@ export function QuickViewModal({
                   type="button"
                   onClick={() => setShowScale((s) => !s)}
                   aria-pressed={showScale}
-                  className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55 hover:text-charcoal underline underline-offset-[6px] decoration-charcoal/25 hover:decoration-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+                  className={cn(
+                    "self-end h-7 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                    showScale
+                      ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
+                      : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
+                  )}
                 >
                   {showScale ? "Hide Scale" : "Show Scale"}
                 </button>
