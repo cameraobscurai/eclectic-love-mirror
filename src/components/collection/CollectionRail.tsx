@@ -127,7 +127,6 @@ export function CollectionRail({
 
 interface CategoryRowProps {
   label: string;
-  count: number;
   thumbSrc: string | null;
   isActive: boolean;
   isSpyHighlighted: boolean;
@@ -137,7 +136,6 @@ interface CategoryRowProps {
 
 function CategoryRow({
   label,
-  count,
   thumbSrc,
   isActive,
   isSpyHighlighted,
