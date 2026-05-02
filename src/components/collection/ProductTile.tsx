@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 
 interface ProductTileProps {
   product: CollectionProduct;
