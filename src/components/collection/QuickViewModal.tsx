@@ -71,13 +71,13 @@ export function QuickViewModal({
         aria-hidden
       />
 
-      {/* Cream stage */}
+      {/* White stage — exhibition surface */}
       <motion.div
         initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full md:max-w-[1280px] md:max-h-[90vh] bg-cream text-charcoal shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full md:max-w-[1280px] md:max-h-[90vh] bg-white text-charcoal shadow-2xl flex flex-col overflow-hidden"
       >
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
@@ -116,30 +116,20 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — name behind, image in front */}
+        {/* STAGE — name as backdrop typography (bottom-left), image in front */}
         <div className="relative flex-1 min-h-[58vh] md:min-h-0 px-6 md:px-10 pt-2 pb-4 overflow-hidden">
-          {/* Optional tagline, top-right */}
-          {tagline && (
-            <div className="hidden md:block absolute top-4 right-10 max-w-[260px] text-right z-10">
-              <span aria-hidden className="block ml-auto h-px w-10 bg-charcoal/40 mb-3" />
-              <p className="text-[13px] leading-relaxed text-charcoal/75">
-                {tagline}
-              </p>
-            </div>
-          )}
-
-          {/* Display-type product name — sits behind the image */}
+          {/* Display-type product name — anchored bottom-left, image sits on top */}
           <h2
-            className="absolute inset-x-6 md:inset-x-10 top-6 md:top-10 font-display leading-[0.92] tracking-[-0.01em] text-charcoal pointer-events-none select-none"
+            className="absolute left-6 right-6 md:left-10 md:right-10 bottom-4 md:bottom-6 font-display leading-[0.9] tracking-[-0.01em] text-charcoal/90 pointer-events-none select-none line-clamp-2"
             style={{
-              fontSize: "clamp(3.5rem, 11vw, 11rem)",
+              fontSize: "clamp(2.5rem, 7vw, 8rem)",
             }}
           >
             {product.title}
           </h2>
 
-          {/* Image — floats over the type */}
-          <div className="relative w-full h-full grid place-items-end md:place-items-center pt-24 md:pt-10">
+          {/* Image — floats above the type baseline */}
+          <div className="relative w-full h-full grid place-items-center pt-6 md:pt-8">
             <AnimatePresence mode="wait">
               {img ? (
                 <motion.img
@@ -150,7 +140,7 @@ export function QuickViewModal({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="relative z-[1] max-h-[58vh] md:max-h-[62vh] w-auto max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
+                  className="relative z-[2] max-h-[55vh] md:max-h-[60vh] w-auto max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
                 />
               ) : (
                 <div className="grid place-items-center h-64 text-charcoal/30">
