@@ -67,6 +67,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
   return (
     <>
       <a
@@ -77,7 +79,12 @@ function RootComponent() {
       </a>
       <Navigation />
       <Outlet />
-      <Footer />
+      {/* Desktop homepage = single viewport (no scroll). Mobile still gets
+          the footer at the bottom of the scroll. Every other route gets it
+          at every breakpoint. */}
+      <div className={isHome ? "lg:hidden" : undefined}>
+        <Footer />
+      </div>
     </>
   );
 }
