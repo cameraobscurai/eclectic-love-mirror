@@ -583,6 +583,7 @@ function CollectionPage() {
               counts={groupCounts}
               totalCount={allCount}
               activeGroup={activeGroup}
+              spyActiveGroup={spyActiveGroup}
               onSelect={selectGroup}
               onClear={resetAll}
               hasActiveFilters={hasActiveFilters}
