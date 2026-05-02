@@ -1,0 +1,46 @@
+url,category_slug,product_slug,title,issue_type,issue_reason,recommended_action,final_confidence
+https://www.eclectichive.com/cocktail-bar/broadway-32in,cocktail-bar,broadway-32in,Event Design & Decor,source_404,source page returned 404 | still missing: product_title_original;product_title_normalized;description;dimensions;stocked_quantity;image_urls;primary_image_url,exclude — source page removed,0.5499999999999999
+https://www.eclectichive.com/pillows-throws1/grey-goat-hide-pillow,pillows-throws1,grey-goat-hide-pillow,Grey Goat Hide Pillow,parse_warning,still missing: description,manual review,1
+https://www.eclectichive.com/pillows-throws1/Pillow1,pillows-throws1,Pillow1,Pillow 1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow10,pillows-throws1,Pillow10,Moss Pillow,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow11,pillows-throws1,Pillow11,Pillow 11,parse_warning,still missing: dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow11-1,pillows-throws1,Pillow11-1,Pillow 11-1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,1
+https://www.eclectichive.com/pillows-throws1/Pillow13,pillows-throws1,Pillow13,Pillow 13,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.7
+https://www.eclectichive.com/pillows-throws1/Pillow13-1,pillows-throws1,Pillow13-1,Pillow 13-1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow15,pillows-throws1,Pillow15,Pillow 15,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow16,pillows-throws1,Pillow16,Pillow 16,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow17,pillows-throws1,Pillow17,Pillow 17,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow18,pillows-throws1,Pillow18,Pillow 18,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow19,pillows-throws1,Pillow19,Pillow 19,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow2,pillows-throws1,Pillow2,Pillow 2,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow2-1,pillows-throws1,Pillow2-1,Pillow 2-1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow20,pillows-throws1,Pillow20,Pillow 20,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow21,pillows-throws1,Pillow21,Pillow 21,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow22,pillows-throws1,Pillow22,Pillow 22,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow23,pillows-throws1,Pillow23,Pillow 23,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow25,pillows-throws1,Pillow25,Pillow 25,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow27,pillows-throws1,Pillow27,Pillow 27,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow28,pillows-throws1,Pillow28,Pillow 28,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow29,pillows-throws1,Pillow29,Pillow 29,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow3,pillows-throws1,Pillow3,Pillow 3,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.7
+https://www.eclectichive.com/pillows-throws1/Pillow3-1,pillows-throws1,Pillow3-1,Pillow 3-1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow30,pillows-throws1,Pillow30,Pillow 30,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow4-1,pillows-throws1,Pillow4-1,Pillow 4-1,parse_warning,still missing: dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow5-1,pillows-throws1,Pillow5-1,Pillow 5-1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow6-1,pillows-throws1,Pillow6-1,Pillow 6-1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow7,pillows-throws1,Pillow7,Pillow 7,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow7-1,pillows-throws1,Pillow7-1,Pillow 7-1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Pillow8-1,pillows-throws1,Pillow8-1,Pillow 8-1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Pillow9-1,pillows-throws1,Pillow9-1,Pillow 9-1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Throw1,pillows-throws1,Throw1,Throw 1,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw1-1,pillows-throws1,Throw1-1,Throw Charcoal,parse_warning,still missing: dimensions;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw10,pillows-throws1,Throw10,Throw 10,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw2,pillows-throws1,Throw2,Throw 2,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw2-1,pillows-throws1,Throw2-1,Throw 2-1,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Throw3,pillows-throws1,Throw3,Throw 3,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Throw4,pillows-throws1,Throw4,Throw 4,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw5,pillows-throws1,Throw5,Throw 5,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.8
+https://www.eclectichive.com/pillows-throws1/Throw6,pillows-throws1,Throw6,Throw 6,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,1
+https://www.eclectichive.com/pillows-throws1/Throw7,pillows-throws1,Throw7,Throw 7,parse_warning,still missing: dimensions;description;stocked_quantity,manual review,0.9
+https://www.eclectichive.com/pillows-throws1/Throw8,pillows-throws1,Throw8,Throw 8,parse_warning,still missing: dimensions;stocked_quantity;description,manual review,1
+https://www.eclectichive.com/pillows-throws1/Throw9,pillows-throws1,Throw9,Throw 9,parse_warning,still missing: description;dimensions;stocked_quantity,manual review,0.9
