@@ -53,7 +53,14 @@ export function CategoryGalleryOverview({
       "
     >
       {groups.map((group, idx) => {
-        const hero = group.products.find((p) => p.primaryImage)?.primaryImage;
+        // Prefer the curated editorial cover; fall back to the first product
+        // image in the bucket so the gallery is never blank during rollout.
+        const cover = CATEGORY_COVERS[group.id];
+        const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
+        const heroSrc = cover ?? (fallbackHero ? withCdnWidth(fallbackHero.url, 700) : null);
+        const heroAlt = cover
+          ? BROWSE_GROUP_LABELS[group.id]
+          : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
         const label = BROWSE_GROUP_LABELS[group.id];
         // Stagger capped — never more than ~360ms even with 18 cards.
         const delay = reduced ? 0 : Math.min(idx * 0.03, 0.36);
@@ -77,10 +84,10 @@ export function CategoryGalleryOverview({
               aria-label={`${label} — ${group.products.length} pieces`}
             >
               {/* Hero image fills the entire cell */}
-              {hero ? (
+              {heroSrc ? (
                 <img
-                  src={withCdnWidth(hero.url, 700)}
-                  alt={hero.altText ?? label}
+                  src={heroSrc}
+                  alt={heroAlt}
                   loading={idx < 6 ? "eager" : "lazy"}
                   decoding="async"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
