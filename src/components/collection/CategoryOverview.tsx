@@ -41,9 +41,6 @@ export function CategoryOverview({
                 <h2 className="font-display text-2xl md:text-3xl tracking-tight">
                   {facet.display}
                 </h2>
-                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-charcoal/50">
-                  {facet.count} {facet.count === 1 ? "piece" : "pieces"}
-                </p>
               </div>
               <button
                 onClick={() => onSelectCategory(facet.slug)}
