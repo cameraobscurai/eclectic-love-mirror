@@ -197,7 +197,6 @@ export function QuickViewModal({
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
         <div className="border-t border-charcoal/15 bg-cream">
-        >
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs */}
             <div className="flex gap-2 order-2 md:order-1">
