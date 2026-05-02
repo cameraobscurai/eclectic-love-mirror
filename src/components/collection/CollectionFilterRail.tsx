@@ -41,12 +41,15 @@ export function CollectionFilterRail({
   counts,
   totalCount,
   activeGroup,
+  spyActiveGroup,
   onSelect,
   onClear,
   hasActiveFilters,
   variant = "rail",
 }: CollectionFilterRailProps) {
   const isSheet = variant === "sheet";
+  // Spy highlights only when the user hasn't pinned a group manually.
+  const spyHighlightId = !activeGroup ? spyActiveGroup ?? null : null;
 
   // Single unified list rendered in BROWSE_GROUP_ORDER. Tier metadata still
   // drives a quieter weight for safety-net categories so the owner's curation
