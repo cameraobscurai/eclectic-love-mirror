@@ -181,10 +181,17 @@ function extractImages(markdown: string, metadata: Record<string, any> | null | 
     })
   }
 
-  // Dedupe by filename stem (Squarespace serves the same image at multiple ?format= sizes)
+  // Dedupe: same image at different ?format= sizes shares the same CDN path stem.
+  // Use the URL pathname (origin + path, no query) as the dedupe key — NOT just the
+  // filename, because many distinct product photos share the filename 'image-asset.jpeg'
+  // and only differ in their CDN content ID earlier in the path.
   const deduped = dedupeKeepOrder(out, (img) => {
-    const fn = img.inferred_filename || img.image_url
-    return fn.replace(/\?.*$/, '').toLowerCase()
+    try {
+      const u = new URL(img.image_url)
+      return (u.origin + u.pathname).toLowerCase()
+    } catch {
+      return img.image_url.toLowerCase()
+    }
   })
 
   // Mark first image as hero
