@@ -100,6 +100,9 @@ function HomePage() {
       style={{ overscrollBehavior: "none" }}
     >
       <section
+        ref={sectionRef}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
         className="relative flex flex-col overflow-hidden"
         style={{
           height: "100dvh",
@@ -117,7 +120,7 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        <img
+        <motion.img
           src={homeHero}
           alt=""
           aria-hidden="true"
@@ -127,19 +130,29 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           draggable={false}
+          style={
+            parallaxOn
+              ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
+              : undefined
+          }
         />
 
         {/* Wordmark — sits inside the empty horizontal glass band baked into
             the artwork. Uses clamp() so it scales fluidly to fit the band on
             every viewport, from 320px phones to ultra-wide desktops. */}
-        <div
+        <motion.div
           aria-hidden="true"
           className={cn(
             "absolute inset-x-0 z-10 flex justify-center pointer-events-none transition-opacity duration-1000",
             "top-[52%]",
             loaded ? "opacity-100" : "opacity-0"
           )}
-          style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
+          style={{
+            transitionDelay: loaded ? "300ms" : "0ms",
+            ...(parallaxOn
+              ? { x: wmX, y: wmY, willChange: "transform" }
+              : {}),
+          }}
         >
           <div
             className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
@@ -153,7 +166,7 @@ function HomePage() {
           >
             Eclectic&nbsp;Hive
           </div>
-        </div>
+        </motion.div>
 
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
             against the moodboard texture without dimming the wordmark plate. */}
