@@ -76,6 +76,30 @@
   --tracking-label: 0.15em;
   --tracking-wide: 0.2em;
   --tracking-ultra: 0.3em;
+
+  /* ---------- Archive (Collection) tokens ----------
+   * One source of truth for the auction-house archive page so the filter
+   * rail, sticky utility row, and product tiles stay visually coherent.
+   * Change a token here and the whole archive page follows. */
+  --nav-h: 4rem;                          /* resting global nav height */
+  --archive-utility-h: 64px;              /* sticky utility row min-height */
+  --archive-rail-width: 17.5rem;          /* desktop left filter rail */
+  --archive-grid-gap-x: clamp(48px, 5vw, 72px);
+
+  --archive-text:        var(--charcoal);
+  --archive-text-quiet:  color-mix(in oklab, var(--charcoal) 55%, transparent);
+  --archive-text-muted:  color-mix(in oklab, var(--charcoal) 35%, transparent);
+  --archive-rule:        color-mix(in oklab, black 8%, transparent);
+  --archive-rule-strong: color-mix(in oklab, black 14%, transparent);
+
+  --archive-tile-media-h:   clamp(150px, 13vw, 210px);
+  --archive-tile-caption-w: 190px;
+
+  --label-size-micro:     11px;
+  --label-tracking-micro: 0.22em;
+
+  /* Skeleton minimum-show clock — prevents flash on cached/fast loads. */
+  --archive-skel-min-show: 120ms;
 }
 
 .dark {
