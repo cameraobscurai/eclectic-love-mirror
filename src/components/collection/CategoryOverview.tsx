@@ -60,7 +60,7 @@ export function CategoryOverview({
                     onClick={() => onOpenProduct(p.id)}
                     className="group block w-full text-left"
                   >
-                    <div className="aspect-square bg-[#f5f2ed] overflow-hidden">
+                    <div className="aspect-square bg-white overflow-hidden">
                       {p.primaryImage ? (
                         <img
                           src={p.primaryImage.url}
