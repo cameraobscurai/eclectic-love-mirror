@@ -274,6 +274,29 @@ function CollectionPage() {
 
   const allCount = searchFiltered.length;
 
+  // ---------- Category overview screen ----------
+  // The default Collection landing is the category gallery, NOT the 876-tile
+  // grid. The product grid only mounts when the user picks a category or
+  // types a search query. This is the answer to "All Inventory was never a
+  // useful destination" — we removed it.
+  const showOverview = !activeGroup && !q.trim();
+
+  const overviewGroups = useMemo(() => {
+    // Bucket the full public-ready catalog by browse group, in display order.
+    // Empty groups are excluded so every card is real and clickable.
+    const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
+    for (const id of BROWSE_GROUP_ORDER) buckets.set(id, []);
+    for (const p of products) {
+      const id = getProductBrowseGroup(p);
+      if (!id) continue;
+      buckets.get(id)!.push(p);
+    }
+    return BROWSE_GROUP_ORDER.flatMap((id) => {
+      const list = buckets.get(id)!;
+      return list.length > 0 ? [{ id, products: list }] : [];
+    });
+  }, [products]);
+
   // ---------- Load More ----------
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
