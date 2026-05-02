@@ -37,7 +37,7 @@ export function CategoryGalleryOverview({
           off the white field via soft shadow + radius. The rail on the left
           owns the "Browse by Category" framing — no internal header needed. */}
       <ul
-        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 gap-4"
+        className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-4"
         style={{ background: "#ffffff" }}
       >
         {groups.map((group, idx) => {
@@ -56,7 +56,7 @@ export function CategoryGalleryOverview({
           return (
             <motion.li
               key={group.id}
-              className="relative min-h-[260px] min-w-0 bg-white md:min-h-[280px] xl:min-h-[300px]"
+              className="relative aspect-[4/5] min-w-0 bg-white"
               style={{
                 position: "relative",
                 overflow: "hidden",
@@ -89,7 +89,7 @@ export function CategoryGalleryOverview({
                       alt={heroAlt}
                       loading={idx < 6 ? "eager" : "lazy"}
                       decoding="async"
-                      className="absolute inset-0 h-full w-full object-contain p-4 transition-opacity duration-300 group-hover:opacity-90 sm:p-6"
+                      className="absolute inset-0 h-full w-full object-contain p-5 transition-opacity duration-300 group-hover:opacity-90 sm:p-6"
                     />
                   ) : (
                     <div className="absolute inset-0" />
