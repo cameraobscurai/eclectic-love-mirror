@@ -69,7 +69,7 @@ function HomePage() {
           aria-hidden="true"
           className={cn(
             "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-            "object-[50%_35%] md:object-center",
+            "object-[50%_25%] md:object-[50%_38%]",
             loaded ? "opacity-100" : "opacity-0"
           )}
           draggable={false}
