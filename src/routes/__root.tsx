@@ -110,20 +110,23 @@ function RootComponent() {
         Skip to main content
       </a>
       <Navigation />
-      <AnimatePresence mode="wait" initial={false}>
+      {/* Page transition — opacity-only crossfade. We deliberately avoid
+          blur filters, y-translate, and mode="wait" here:
+          • Blur forces full-layer rasterization of the entire route tree,
+            which is catastrophic on /collection (876 product tiles with
+            their own layout animations) and visibly janks transitions.
+          • mode="wait" holds the new route until the old one fully exits,
+            causing a footer jump and a visible "stuck" frame between routes.
+          • y-translate fights scroll restoration on long pages.
+          A short opacity fade reads as editorial polish without taxing the
+          compositor or interfering with child animations. */}
+      <AnimatePresence initial={false}>
         <motion.div
           key={pathname}
-          initial={reduced ? false : { opacity: 0, y: 10, filter: "blur(4px)" }}
-          animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={reduced ? { opacity: 1 } : { opacity: 0, y: -8, filter: "blur(3px)" }}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : {
-                  duration: 0.42,
-                  ease: [0.22, 1, 0.36, 1],
-                }
-          }
+          initial={reduced ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={reduced ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
         >
           <Outlet />
         </motion.div>
