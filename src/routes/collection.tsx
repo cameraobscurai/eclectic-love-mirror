@@ -418,7 +418,17 @@ function CollectionPage() {
             </div>
           ) : (
             <LayoutGroup id="collection-grid">
-              <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4">
+              {/* motion.ul with `layout` — container participates in reflow
+                  so column-count changes (e.g. resize) animate too. */}
+              <motion.ul
+                layout
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4"
+                transition={
+                  reduced
+                    ? { duration: 0 }
+                    : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
+                }
+              >
                 <AnimatePresence mode="popLayout" initial={false}>
                   {visibleProducts.map((p: CollectionProduct, i: number) => (
                     <ProductTile
@@ -430,7 +440,7 @@ function CollectionPage() {
                     />
                   ))}
                 </AnimatePresence>
-              </ul>
+              </motion.ul>
             </LayoutGroup>
           )}
         </div>
