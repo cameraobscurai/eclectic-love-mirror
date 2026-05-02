@@ -4,6 +4,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -15,7 +16,7 @@ interface ProductTileProps {
 
 const EAGER_RENDER_COUNT = 12; // first 12: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
-const HIGH_FETCH_COUNT = 6; // first 6: fetchpriority="high"
+const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
 
 export function ProductTile({
   product,
