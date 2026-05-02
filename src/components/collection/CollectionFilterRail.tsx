@@ -16,6 +16,10 @@ interface CollectionFilterRailProps {
   /** Total count for the "All Inventory" anchor under current commit. */
   totalCount: number;
   activeGroup: BrowseGroupId | "";
+  /** Group currently dominant in the viewport per scroll-spy. Drives a quiet
+   *  highlight on the corresponding row when no manual filter is active. The
+   *  spy never changes the URL or filter state — it only orients the eye. */
+  spyActiveGroup?: BrowseGroupId | null;
   onSelect: (id: BrowseGroupId | "") => void;
   onClear: () => void;
   hasActiveFilters: boolean;
