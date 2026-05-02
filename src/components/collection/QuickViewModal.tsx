@@ -288,7 +288,7 @@ export function QuickViewModal({
             </div>
 
             {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
+            <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {product.dimensions && (
                 <SpecCol label="Dimensions" value={product.dimensions} />
               )}
@@ -297,6 +297,16 @@ export function QuickViewModal({
               )}
               {product.isCustomOrder && !product.stockedQuantity && (
                 <SpecCol label="Availability" value="Custom order" />
+              )}
+              {widthInches !== null && (
+                <button
+                  type="button"
+                  onClick={() => setShowScale((s) => !s)}
+                  aria-pressed={showScale}
+                  className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55 hover:text-charcoal underline underline-offset-[6px] decoration-charcoal/25 hover:decoration-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+                >
+                  {showScale ? "Hide Scale" : "Show Scale"}
+                </button>
               )}
             </div>
 
