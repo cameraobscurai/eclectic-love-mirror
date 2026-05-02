@@ -217,6 +217,12 @@
   animation: scroll-down 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+@keyframes collection-fadein {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+
 @keyframes tile-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }

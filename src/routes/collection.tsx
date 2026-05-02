@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { LayoutGroup, AnimatePresence, motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
   getCollectionCatalog,
@@ -19,11 +19,10 @@ import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
-import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
-import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
+import { CollectionRail } from "@/components/collection/CollectionRail";
+import { CategoryHero } from "@/components/collection/CategoryHero";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { useScrollIdle } from "@/hooks/useScrollIdle";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -281,18 +280,8 @@ function CollectionPage() {
   );
 
   // ---------- Filter rail data: stable order + responsive counts ----------
-  // Order is fixed once from the FULL public-ready catalog. It does not move
-  // while the user types or filters.
-  const orderedGroupIds = useMemo<BrowseGroupId[]>(() => {
-    const seen = new Set<BrowseGroupId>();
-    for (const p of products) {
-      const id = getProductBrowseGroup(p);
-      if (id) seen.add(id);
-    }
-    return BROWSE_GROUP_ORDER.filter((id) => seen.has(id));
-  }, [products]);
-
-  // Counts respond to the committed search-filtered set.
+  // Counts respond to the committed search-filtered set. Powers the rail's
+  // per-row count badge.
   const groupCounts = useMemo(() => {
     const counts = new Map<BrowseGroupId, number>();
     for (const p of searchFiltered) {
@@ -302,8 +291,6 @@ function CollectionPage() {
     }
     return counts;
   }, [searchFiltered]);
-
-  const allCount = searchFiltered.length;
 
   // ---------- Category overview screen ----------
   // The default Collection landing is the category gallery, NOT the 876-tile
@@ -346,7 +333,7 @@ function CollectionPage() {
   // Watch on visibleBatch.length re-scans bounds when the grid mutates
   // (filter / sort / Load More). Mutation observer inside the hook covers
   // the in-between cases (tiles entering via near-viewport gating).
-  const { activeId: spyActiveId, progressById, scrollToSection } =
+  const { activeId: spyActiveId } =
     useScrollSpy({ watch: visibleBatch.length });
   const spyActiveGroup = (spyActiveId as BrowseGroupId | null) ?? null;
 
@@ -468,102 +455,124 @@ function CollectionPage() {
       ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
       : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
 
-  // ---------- Scroll-driven hero compression ----------
-  // The big "The Collection" wordmark lives above the cage. As the user
-  // scrolls the first ~280px, it scales down + fades, while the wordmark in
-  // the sticky bar fades IN. They cross-fade — feels like one continuous
-  // header that compresses, not two separate things.
-  const { scrollY } = useScroll();
-  const heroScale = useTransform(scrollY, [0, 280], [1, 0.62]);
-  const heroOpacity = useTransform(scrollY, [0, 200, 280], [1, 0.4, 0]);
-  const heroY = useTransform(scrollY, [0, 280], [0, -40]);
-  const stickyMarkOpacity = useTransform(scrollY, [120, 240], [0, 1]);
-  const [stickyMarkActive, setStickyMarkActive] = useState(false);
-  useMotionValueEvent(scrollY, "change", (v) => {
-    setStickyMarkActive(v > 180);
-  });
-  // Per spec: nothing animates while the user is scrolling. Gate scroll-driven
-  // transforms so they only apply once the scroll thread has gone idle.
-  const scrollIdle = useScrollIdle(150);
-  const heroAnimated = scrollIdle && !reduced;
+  // ---------- First product per active group (powers CategoryHero specimen) ----------
+  // Same data the rail thumbnail uses — no new field, no curation table.
+  const heroFirstProduct = useMemo<CollectionProduct | null>(() => {
+    if (!activeGroup) return null;
+    for (const p of products) {
+      if (p.primaryImage && getProductBrowseGroup(p) === activeGroup) {
+        return p;
+      }
+    }
+    return null;
+  }, [products, activeGroup]);
 
-  // Sticky wordmark text: section + count when filtered or scroll-spied.
-  // The global nav already labels the page as "HIVE SIGNATURE COLLECTION";
-  // we don't repeat it here. On overview we hide the wordmark and let the
-  // result-meta on the left carry the count.
-  const stickyMarkLabel = (() => {
-    const section = activeGroup
-      ? BROWSE_GROUP_LABELS[activeGroup]
-      : spyActiveGroup
-        ? BROWSE_GROUP_LABELS[spyActiveGroup]
-        : null;
-    if (!section) return "";
-    return `${section.toUpperCase()} · ${visibleProducts.length}`;
-  })();
+  // ---------- Heading height tracking (for sticky stack offset) ----------
+  // The static "THE COLLECTION" block sits above the sticky utility bar.
+  // The rail and the utility bar both stick beneath it, so we publish the
+  // heading's measured height as a CSS var (`--collection-heading-h`) via a
+  // ResizeObserver. One observer, one property, no recalculation loop.
+  const headingRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = headingRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const apply = () => {
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty(
+        "--collection-heading-h",
+        `${h}px`,
+      );
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty("--collection-heading-h");
+    };
+  }, []);
+
 
   return (
     <main
       data-collection-main
-      className={
-        showOverview
-          ? "min-h-screen bg-white text-charcoal flex flex-col"
-          : "min-h-screen bg-white text-charcoal pb-32"
-      }
+      className="min-h-screen text-charcoal pb-32"
+      style={{ background: "var(--cream)" }}
     >
       {/* ============================================================
-          HERO — centered wordmark, scroll-compressed.
-          Hidden on the overview screen so the category gallery owns the
-          fold. The sticky header below still carries the wordmark.
-          ============================================================ */}
-      {!showOverview && (
-        <section
-          className="px-6 lg:px-12"
-          style={{
-            paddingTop: "clamp(80px, 9vw, 140px)",
-            paddingBottom: "clamp(40px, 4vw, 64px)",
-          }}
-        >
-          <motion.div
-            style={
-              heroAnimated
-                ? {
-                    scale: heroScale,
-                    opacity: heroOpacity,
-                    y: heroY,
-                    transformOrigin: "left center",
-                  }
-                : undefined
-            }
-            className="text-left will-change-transform"
-          >
-            <h1
-              className="font-display uppercase leading-[0.92] text-charcoal"
-              style={{
-                fontSize: "clamp(3rem, 9vw, 7.5rem)",
-                letterSpacing: "-0.005em",
-              }}
-            >
-              THE COLLECTION
-            </h1>
-          </motion.div>
-        </section>
-      )}
-
-      {/* ============================================================
-          STICKY HEADER — single source of truth while scrolling.
-          Three columns: [controls left] · [centered wordmark] · [controls right]
-          The wordmark fades in as the hero compresses out.
+          STATIC DISPLAY HEADING — "THE COLLECTION"
+          No scroll animation, no parallax, no compression. When a
+          category is active, render the category label as a clickable
+          breadcrumb beneath the wordmark.
           ============================================================ */}
       <div
-        className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm"
+        ref={headingRef}
+        className="px-6 lg:px-12"
         style={{
+          paddingTop: "clamp(48px, 5vw, 80px)",
+          paddingBottom: "clamp(20px, 2vw, 32px)",
+          background: "var(--cream)",
+        }}
+      >
+        <div
+          className="mx-auto"
+          style={{ maxWidth: "var(--archive-canvas-max)" }}
+        >
+          <h1
+            className="font-display uppercase leading-[0.92] text-charcoal"
+            style={{
+              fontSize: "clamp(60px, 8vw, 120px)",
+              fontWeight: 400,
+              letterSpacing: "-0.005em",
+            }}
+          >
+            The Collection
+          </h1>
+          {activeGroup && (
+            <button
+              type="button"
+              onClick={() => selectGroup("")}
+              className="mt-1 inline-flex items-baseline gap-2 text-charcoal/55 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              aria-label="Back to all categories"
+            >
+              <span
+                className="font-display"
+                style={{
+                  fontSize: "clamp(20px, 2vw, 32px)",
+                  fontWeight: 400,
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                {BROWSE_GROUP_LABELS[activeGroup]}
+              </span>
+              <span
+                aria-hidden
+                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/35"
+              >
+                · All Categories
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ============================================================
+          STICKY UTILITY BAR — sits beneath the static heading.
+          Sticks to the bottom of the global nav (`top: var(--nav-h)`).
+          Contains: result meta · search · sort · density toggle.
+          ============================================================ */}
+      <div
+        className="sticky z-20 backdrop-blur-sm"
+        style={{
+          top: "var(--nav-h)",
+          background: "color-mix(in oklab, var(--cream) 92%, transparent)",
           borderTop: "1px solid var(--archive-rule)",
           borderBottom: "1px solid var(--archive-rule)",
         }}
       >
         <div className="px-6 lg:px-12">
           <div
-            className="mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2"
+            className="mx-auto flex items-center justify-between gap-4 py-2"
             style={{
               maxWidth: "var(--archive-canvas-max)",
               minHeight: "var(--archive-utility-h)",
@@ -588,31 +597,14 @@ function CollectionPage() {
                 )}
               </button>
 
-              <motion.p
+              <p
                 key={`${activeGroup}-${q}-${sort}`}
-                initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
-                animate={{ opacity: stickyMarkActive ? 0 : 1 }}
-                transition={{ duration: reduced ? 0 : 0.25 }}
                 className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
                 aria-live="polite"
               >
                 {resultMeta}
-              </motion.p>
+              </p>
             </div>
-
-            {/* CENTER: scroll-revealed wordmark */}
-            <motion.div
-              style={reduced ? undefined : { opacity: stickyMarkOpacity }}
-              className="flex items-center justify-center pointer-events-none"
-              aria-hidden={!stickyMarkActive}
-            >
-              <span
-                className="text-[13px] sm:text-[14px] tracking-[0.28em] text-charcoal whitespace-nowrap"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {stickyMarkLabel}
-              </span>
-            </motion.div>
 
             {/* RIGHT: search · sort · density */}
             <div className="flex items-center justify-end gap-3 min-w-0">
@@ -623,10 +615,11 @@ function CollectionPage() {
                 id="collection-search"
                 type="text"
                 inputMode="search"
-                placeholder="Search"
+                placeholder="Search pieces"
                 value={qLocal}
                 onChange={(e) => setQLocal(e.target.value)}
-                className="h-10 w-28 sm:w-44 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+                className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+                style={{ width: "clamp(160px, 14vw, 280px)" }}
               />
 
               <label
@@ -694,164 +687,141 @@ function CollectionPage() {
       </div>
 
       {/* ============================================================
-          BODY — hairline cage. Two render modes:
-            (a) Overview: viewport-fit category gallery (single fold,
-                no scroll). Sits inside the cage's hairline frame.
-            (b) Category/search: 3-column cage [filter | grid | progress].
+          BODY — permanent two-column layout.
+          Left: CollectionRail (always visible on lg+).
+          Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      {showOverview ? (
-        <section className="flex-1 min-h-0 px-3 sm:px-6 lg:px-12 pb-3 sm:pb-4">
-          <div
-            className="mx-auto h-full overflow-hidden border-x bg-white"
-            style={{
-              maxWidth: "var(--archive-canvas-max)",
-              borderColor: "var(--archive-rule)",
-              borderTop: "1px solid var(--archive-rule)",
-              borderBottom: "1px solid var(--archive-rule)",
-            }}
-          >
-            <CategoryGalleryOverview
-              groups={overviewGroups}
-              onSelectCategory={(id) => selectGroup(id)}
-            />
-          </div>
-        </section>
-      ) : (
-        <section className="px-6 lg:px-12 pt-10">
-          <div
-            className="mx-auto"
-            style={{
-              maxWidth: "var(--archive-canvas-max)",
-              borderTop: "1px solid var(--archive-rule)",
-              borderBottom: "1px solid var(--archive-rule)",
-            }}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)_var(--archive-progress-width)]">
-              {/* ===== LEFT COLUMN: filter rail ===== */}
-              <aside
-                className="hidden lg:block"
-                style={{
-                  paddingRight: "var(--archive-grid-gap-x)",
-                  paddingTop: "1.75rem",
-                  paddingBottom: "2rem",
-                }}
-              >
-                <CollectionFilterRail
-                  orderedGroupIds={orderedGroupIds}
-                  counts={groupCounts}
-                  totalCount={allCount}
-                  activeGroup={activeGroup}
-                  spyActiveGroup={spyActiveGroup}
-                  onSelect={selectGroup}
-                  onClear={resetAll}
-                  hasActiveFilters={hasActiveFilters}
-                />
-              </aside>
+      <section className="px-6 lg:px-12 pt-6">
+        <div
+          className="mx-auto"
+          style={{
+            maxWidth: "var(--archive-canvas-max)",
+            borderTop: "1px solid var(--archive-rule)",
+          }}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]">
+            {/* ===== LEFT: permanent rail ===== */}
+            <aside
+              className="hidden lg:block"
+              style={{
+                borderRight: "1px solid var(--archive-rule)",
+                background: "var(--cream)",
+              }}
+            >
+              <CollectionRail
+                products={products}
+                counts={groupCounts}
+                activeGroup={activeGroup}
+                spyActiveGroup={spyActiveGroup}
+                onSelect={selectGroup}
+              />
+            </aside>
 
-              {/* ===== CENTER COLUMN: grid ===== */}
-              <div
-                className="min-w-0 lg:border-l"
-                style={{
-                  borderColor: "var(--archive-rule)",
-                  paddingLeft: "var(--archive-grid-gap-x)",
-                  paddingRight: "var(--archive-grid-gap-x)",
-                  paddingTop: "1.75rem",
-                  paddingBottom: "2rem",
-                }}
-              >
-                <div
-                  ref={resultsTopRef}
-                  id="results-top"
-                  aria-hidden
-                  style={{
-                    scrollMarginTop:
-                      "calc(var(--nav-h) + var(--archive-utility-h))",
-                  }}
-                />
-
-                {visibleProducts.length === 0 ? (
-                  <div className="py-32">
-                    <p className="text-[15px] leading-relaxed text-charcoal/70">
-                      No pieces match the current filters.
-                    </p>
-                    <button
-                      onClick={resetAll}
-                      className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <LayoutGroup id="collection-grid">
-                      <motion.ul
-                        layout
-                        className={`grid ${gridCols} ${gridGapClasses}`}
-                        transition={
-                          reduced
-                            ? { duration: 0 }
-                            : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
-                        }
-                      >
-                        <AnimatePresence mode="popLayout">
-                          {visibleBatch.map((p, i) => (
-                            <ProductTile
-                              key={p.id}
-                              product={p}
-                              index={i}
-                              onOpen={() => setQuickViewId(p.id)}
-                              onImageFailed={markFailed}
-                            />
-                          ))}
-                        </AnimatePresence>
-                      </motion.ul>
-                    </LayoutGroup>
-
-                    {hasMore && (
-                      <div className="mt-12 flex justify-center">
-                        <button
-                          onClick={() =>
-                            setVisibleCount((c) =>
-                              Math.min(c + BATCH_INCREMENT, visibleProducts.length),
-                            )
-                          }
-                          className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
-                        >
-                          Load more ({visibleProducts.length - visibleBatch.length} remaining)
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-              {/* ===== RIGHT COLUMN: progress rail (sticky, in-grid) ===== */}
-              <aside
-                className="hidden lg:block lg:border-l"
-                style={{
-                  borderColor: "var(--archive-rule)",
-                  paddingTop: "1.75rem",
-                  paddingBottom: "2rem",
-                }}
-              >
-                <div
-                  style={{
-                    position: "sticky",
-                    top: "calc(var(--nav-h) + var(--archive-utility-h) + 1.75rem)",
-                  }}
-                >
-                  <CollectionIndexStrip
-                    groups={orderedGroupIds}
-                    progressById={progressById}
-                    spyActiveGroup={spyActiveGroup}
-                    onJump={(id) => scrollToSection(id)}
+            {/* ===== RIGHT: main pane ===== */}
+            <div
+              className="min-w-0"
+              key={activeGroup || (q.trim() ? "search" : "overview")}
+              style={{
+                animation: reduced ? undefined : "collection-fadein 150ms ease-out",
+                background: "var(--cream)",
+              }}
+            >
+              {showOverview ? (
+                <div className="bg-white">
+                  <CategoryGalleryOverview
+                    groups={overviewGroups}
+                    onSelectCategory={(id) => selectGroup(id)}
                   />
                 </div>
-              </aside>
+              ) : (
+                <>
+                  {activeGroup && (
+                    <CategoryHero
+                      group={activeGroup}
+                      firstProduct={heroFirstProduct}
+                      count={visibleProducts.length}
+                    />
+                  )}
+
+                  <div
+                    style={{
+                      paddingLeft: "var(--archive-grid-gap-x)",
+                      paddingRight: "var(--archive-grid-gap-x)",
+                      paddingTop: "1.75rem",
+                      paddingBottom: "2rem",
+                    }}
+                  >
+                    <div
+                      ref={resultsTopRef}
+                      id="results-top"
+                      aria-hidden
+                      style={{
+                        scrollMarginTop:
+                          "calc(var(--nav-h) + var(--archive-utility-h))",
+                      }}
+                    />
+
+                    {visibleProducts.length === 0 ? (
+                      <div className="py-32">
+                        <p className="text-[15px] leading-relaxed text-charcoal/70">
+                          No pieces match the current filters.
+                        </p>
+                        <button
+                          onClick={resetAll}
+                          className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                        >
+                          Clear All
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <LayoutGroup id="collection-grid">
+                          <motion.ul
+                            layout
+                            className={`grid ${gridCols} ${gridGapClasses}`}
+                            transition={
+                              reduced
+                                ? { duration: 0 }
+                                : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
+                            }
+                          >
+                            <AnimatePresence mode="popLayout">
+                              {visibleBatch.map((p, i) => (
+                                <ProductTile
+                                  key={p.id}
+                                  product={p}
+                                  index={i}
+                                  onOpen={() => setQuickViewId(p.id)}
+                                  onImageFailed={markFailed}
+                                />
+                              ))}
+                            </AnimatePresence>
+                          </motion.ul>
+                        </LayoutGroup>
+
+                        {hasMore && (
+                          <div className="mt-12 flex justify-center">
+                            <button
+                              onClick={() =>
+                                setVisibleCount((c) =>
+                                  Math.min(c + BATCH_INCREMENT, visibleProducts.length),
+                                )
+                              }
+                              className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
+                            >
+                              Load more ({visibleProducts.length - visibleBatch.length} remaining)
+                            </button>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Mobile filter bottom-sheet — rendered OUTSIDE <main> so inert on
           <main> never accidentally inerts the sheet itself. */}
@@ -914,28 +884,20 @@ function CollectionPage() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-5">
-                <CollectionFilterRail
-                  orderedGroupIds={orderedGroupIds}
+              <div className="flex-1 overflow-y-auto px-2 py-3">
+                <CollectionRail
+                  products={products}
                   counts={groupCounts}
-                  totalCount={allCount}
                   activeGroup={activeGroup}
-                  onSelect={(groupId) => {
+                  onSelect={(groupId: BrowseGroupId | "") => {
                     // On mobile the sheet covers the entire viewport, so
                     // selecting a category with the sheet still open feels
                     // like nothing happened — the user can't see the grid
                     // reflow underneath. Dismiss the sheet immediately on
-                    // select so the result of the tap is visible. The
-                    // "Show N pieces" CTA below remains for users who want
-                    // to scan multiple categories before committing.
+                    // select so the result of the tap is visible.
                     selectGroup(groupId);
                     setSheetOpen(false);
                   }}
-                  onClear={() => {
-                    resetAll();
-                    setSheetOpen(false);
-                  }}
-                  hasActiveFilters={hasActiveFilters}
                   variant="sheet"
                 />
               </div>

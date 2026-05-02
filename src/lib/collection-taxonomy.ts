@@ -176,6 +176,50 @@ export const BROWSE_GROUP_TIER: Record<BrowseGroupId, BrowseTier> = {
   accents: "safety-net",
 };
 
+/**
+ * One-sentence editorial descriptions per browse group.
+ * Used by CategoryHero to set the register of each section — quiet,
+ * specific, sentence-case, no marketing voice.
+ */
+export const BROWSE_GROUP_DESCRIPTIONS: Record<BrowseGroupId, string> = {
+  sofas:
+    "Curated seating in a range of silhouettes, textures, and eras — chosen for comfort and timeless presence.",
+  chairs:
+    "Lounge, accent, and dining chairs assembled for character and quiet authority across a room.",
+  "benches-ottomans":
+    "Low pieces that anchor a setting — upholstered benches, leather ottomans, and sculptural footstools.",
+  "coffee-tables":
+    "Centerpieces in stone, wood, and metal, scaled for both intimate sofas and larger conversation arrangements.",
+  "side-tables":
+    "Companion tables for seating — a register of materials, heights, and silhouettes worth pulling close.",
+  "cocktail-tables":
+    "A focused set of cocktail and drinks tables, sized for movement around a room without losing presence.",
+  dining:
+    "Tables built for long conversations — wood, marble, and bespoke surfaces in seating-for-eight scale and beyond.",
+  bar:
+    "Bar carts, back bars, and serving stations — pieces that make the act of pouring a drink part of the room.",
+  storage:
+    "Cabinets, credenzas, and consoles chosen for material and proportion, not just capacity.",
+  lighting:
+    "Floor, table, and pendant lighting selected for the quality of the light itself, not the fixture alone.",
+  rugs:
+    "Vintage and contemporary rugs in a range of weaves, palettes, and scales for grounding any setting.",
+  pillows:
+    "A library of textiles — vintage, custom, and hand-loomed — to layer texture and color across seating.",
+  throws:
+    "Hand-loomed and vintage textiles meant to be picked up, draped, and lived with.",
+  tableware:
+    "Plates, glassware, and flatware composed for the editorial table — quiet finishes, considered weight.",
+  serveware:
+    "Platters, pitchers, and serving vessels chosen as objects in their own right, not just utility.",
+  styling:
+    "Books, vessels, and small sculptural objects to finish a tablescape, mantel, or shelf.",
+  accents:
+    "Singular pieces — mirrors, screens, sculptural objects — that change the temperature of a room on contact.",
+  "large-decor":
+    "Architectural objects in scale — sculpture, vessels, and statement pieces meant to hold a room.",
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Rule engine
 // ─────────────────────────────────────────────────────────────────────────────
