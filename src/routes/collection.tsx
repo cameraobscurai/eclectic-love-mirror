@@ -369,7 +369,7 @@ function CollectionPage() {
         <div className="px-6 lg:px-12">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 py-3">
             <AnimatePresence mode="wait">
-              {!isOverviewMode && subcategoryFacets.length > 0 ? (
+              {!isOverviewMode && subcategoryOptions.length > 0 ? (
                 <motion.div
                   key={`sub-${category}`}
                   initial={
@@ -382,39 +382,28 @@ function CollectionPage() {
                 >
                   <LayoutGroup id={`collection-sub-pills-${category}`}>
                     <div className="flex gap-1 overflow-x-auto no-scrollbar snap-x">
-                      <CategoryPill
-                        label="All"
-                        active={!sub}
-                        variant="sub"
-                        layoutGroupId={`collection-pill-active-sub-${category}`}
-                        onClick={() =>
-                          navigate({
-                            search: (prev: CollectionSearch) => ({
-                              ...prev,
-                              sub: "",
-                            }),
-                            replace: true,
-                          })
-                        }
-                      />
-                      {subcategoryFacets.map((s) => (
-                        <CategoryPill
-                          key={s.label}
-                          label={`${s.label} (${s.count})`}
-                          active={sub === s.label}
-                          variant="sub"
-                          layoutGroupId={`collection-pill-active-sub-${category}`}
-                          onClick={() =>
-                            navigate({
-                              search: (prev: CollectionSearch) => ({
-                                ...prev,
-                                sub: s.label,
-                              }),
-                              replace: true,
-                            })
-                          }
-                        />
-                      ))}
+                      {subcategoryOptions.map((s) => {
+                        const isAll = s.id === "all";
+                        const active = isAll ? !sub || sub === "all" : sub === s.id;
+                        return (
+                          <CategoryPill
+                            key={s.id}
+                            label={isAll ? "All" : `${s.label} (${s.count})`}
+                            active={active}
+                            variant="sub"
+                            layoutGroupId={`collection-pill-active-sub-${category}`}
+                            onClick={() =>
+                              navigate({
+                                search: (prev: CollectionSearch) => ({
+                                  ...prev,
+                                  sub: isAll ? "" : s.id,
+                                }),
+                                replace: true,
+                              })
+                            }
+                          />
+                        );
+                      })}
                     </div>
                   </LayoutGroup>
                 </motion.div>
