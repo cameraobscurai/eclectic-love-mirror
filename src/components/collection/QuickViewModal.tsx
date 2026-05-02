@@ -61,7 +61,7 @@ export function QuickViewModal({
     family: "Cormorant",
     weight: 400,
     minPx: 28,
-    maxPx: 128,
+    maxPx: 112,
     targetLines: 2,
   });
 
