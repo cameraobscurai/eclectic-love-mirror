@@ -132,6 +132,47 @@ function GalleryPage() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// PendingProjectsLayout
+//
+// Renders the editorial selected-projects rhythm with empty media apertures
+// while real project assets are being prepared. Two numbered "project slots"
+// prove the layout: hero aperture + 5 detail apertures each. No fake names,
+// no fake links, no stock images. Single quiet line of copy.
+// ---------------------------------------------------------------------------
+function PendingProjectsLayout() {
+  return (
+    <div className="mt-12">
+      <p className="font-display italic text-xl md:text-2xl text-charcoal/55 max-w-xl">
+        Selected projects are being prepared.
+      </p>
+
+      <div className="mt-16 space-y-24">
+        {["01", "02"].map((n) => (
+          <div key={n}>
+            <div className="flex items-baseline gap-6 mb-8">
+              <span className="font-display text-2xl text-charcoal/35 tabular-nums">
+                {n}
+              </span>
+              <div className="flex-1 border-t border-charcoal/10" />
+            </div>
+
+            {/* Hero aperture */}
+            <MediaAperture ratio="3/2" />
+
+            {/* Detail strip — 5 small apertures, mirrors real project rhythm */}
+            <div className="mt-3 grid grid-cols-3 sm:grid-cols-5 gap-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <MediaAperture key={i} ratio="1/1" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ProjectEntry({ project }: { project: GalleryProject }) {
   const body = (
     <>
