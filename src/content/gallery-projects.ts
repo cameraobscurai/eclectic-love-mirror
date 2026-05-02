@@ -38,4 +38,21 @@ export interface GalleryProject {
   note?: string;
 }
 
-export const galleryProjects: GalleryProject[] = [];
+import { amangiriGalleryImages, amangiriHome } from "./amangiri";
+
+export const galleryProjects: GalleryProject[] = [
+  {
+    number: "01",
+    name: "Amangiri",
+    location: "Canyon Point, UT",
+    year: "2024",
+    category: "Meetings + Incentive Travel",
+    heroImage: {
+      src: amangiriHome.topHero.src,
+      alt: amangiriHome.topHero.alt,
+    },
+    detailImages: amangiriGalleryImages,
+    note: "An incentive program staged inside the Amangiri landscape — long-table dinners against the sandstone, lounge moments at canyon's edge, and quiet pedestal vignettes between courses.",
+  },
+];
+
