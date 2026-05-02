@@ -186,13 +186,13 @@ export function QuickViewModal({
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
-                  "px-5 py-3 text-xs uppercase tracking-[0.22em] transition-all border active:scale-[0.97]",
+                  "px-5 py-3 text-[11px] uppercase tracking-[0.22em] transition-all border active:scale-[0.97]",
                   inInquiry
                     ? "bg-white text-charcoal border-charcoal"
                     : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
                 )}
               >
-                {inInquiry ? "Added to inquiry" : "Add to Inquiry"}
+                {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
             </div>
           </div>
