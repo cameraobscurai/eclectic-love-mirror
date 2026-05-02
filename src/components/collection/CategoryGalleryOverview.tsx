@@ -103,16 +103,19 @@ export function CategoryGalleryOverview({
                 className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none bg-gradient-to-t from-charcoal/75 via-charcoal/15 to-transparent"
               />
 
-              <div className="absolute inset-x-0 bottom-0 px-3 py-3 lg:px-4 lg:py-4 flex items-baseline justify-between gap-2 text-white">
-                <h3
-                  className="font-display leading-none tracking-tight uppercase truncate"
-                  style={{
-                    fontSize: "clamp(0.85rem, 1.2vw, 1.25rem)",
-                    letterSpacing: "0.06em",
-                  }}
-                >
-                  {label}
-                </h3>
+              <div className="absolute inset-x-0 bottom-0 px-3 py-3 lg:px-4 lg:py-4 flex items-baseline gap-2 text-white">
+                <div className="min-w-0 flex-1">
+                  <FitText
+                    as="h3"
+                    text={label}
+                    fontTemplate={'500 ${size}px "Cormorant Garamond", "Times New Roman", serif'}
+                    minSize={10}
+                    maxSize={22}
+                    letterSpacing={0.06 * 16}
+                    className="font-display uppercase"
+                    style={{ letterSpacing: "0.06em" }}
+                  />
+                </div>
                 <span
                   className="text-[10px] uppercase tracking-[0.18em] tabular-nums text-white/70 flex-shrink-0"
                 >
