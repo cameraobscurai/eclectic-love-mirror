@@ -380,15 +380,15 @@ function CollectionPage() {
         <div className="px-6 lg:px-12 border-t border-charcoal/10">
           <div className="max-w-7xl mx-auto flex items-center justify-between py-2.5">
             <motion.p
-              key={filtered.length}
+              key={visibleProducts.length}
               initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: reduced ? 0 : 0.25 }}
               className="text-xs uppercase tracking-[0.2em] text-charcoal/60"
             >
               {q.trim()
-                ? `${filtered.length} ${filtered.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
-                : `${filtered.length} ${filtered.length === 1 ? "piece" : "pieces"}`}
+                ? `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
+                : `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`}
             </motion.p>
             {hasActiveFilters && (
               <button
