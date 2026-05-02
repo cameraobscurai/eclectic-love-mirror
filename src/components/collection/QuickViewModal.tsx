@@ -318,7 +318,7 @@ export function QuickViewModal({
               {product.isCustomOrder && !product.stockedQuantity && (
                 <SpecCol label="Availability" value="Custom order" />
               )}
-              {widthInches !== null && (
+              {hasScale && (
                 <button
                   type="button"
                   onClick={() => setShowScale((s) => !s)}
