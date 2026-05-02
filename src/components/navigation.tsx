@@ -36,6 +36,7 @@ export function Navigation() {
   const lastScrollY = useRef(0);
 
   const isLightPage = LIGHT_BG_PAGES.includes(pathname);
+  const isWhitePage = WHITE_BG_PAGES.includes(pathname);
 
   useEffect(() => {
     const onScroll = () => {
