@@ -498,6 +498,7 @@ function CollectionPage() {
                     sort: e.target.value as SortKey,
                   }),
                   replace: true,
+                  resetScroll: false,
                 })
               }
               className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
