@@ -6,6 +6,7 @@ import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
+import { withCdnWidth } from "@/lib/image-url";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
