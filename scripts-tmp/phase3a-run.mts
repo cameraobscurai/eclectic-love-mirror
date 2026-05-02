@@ -13,7 +13,7 @@ const sb = createClient(SUPABASE_URL, SR, { auth: { persistSession: false } })
 const fc = new Firecrawl({ apiKey: FC_KEY })
 
 const CONCURRENCY = 6
-const PHASE = 'phase3a'
+const PHASE = 'phase3a_markdown'
 
 async function main() {
   // 1. Fetch manifest
