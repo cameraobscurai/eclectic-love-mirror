@@ -37,10 +37,6 @@ export function ProductTile({
   });
 
   const [loaded, setLoaded] = useState(false);
-  // Capped per-index stagger — never delays a card more than 420ms regardless
-  // of how many products precede it. With AnimatePresence mode="popLayout"
-  // this only fires for newly-entering cards; reflowing cards skip it.
-  const stagger = reduced ? 0 : Math.min(index * 0.045, 0.42);
   const showInternals = near; // gates image, hover label, fetch
 
   // Spy section id — drives the right-rail segmented progress and left-rail
@@ -56,19 +52,12 @@ export function ProductTile({
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
       layout
-      layoutId={`tile-${product.id}`}
-      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={reduced ? { opacity: 0 } : { opacity: 0, y: -2 }}
+      // No layoutId. Cross-route shared-element transitions aren't used here,
+      // and registering ~900 projection nodes on mount is the single biggest
+      // cost in the grid.
       transition={{
-        // Enter / exit — short, no blur ramp. Cards must be visible at first
-        // paint even when AnimatePresence skips the initial animation
-        // (initial={false} on the parent), so the resting state is fully
-        // opaque with no filter.
-        duration: reduced ? 0 : 0.32,
-        delay: stagger,
-        ease: [0.22, 1, 0.36, 1],
-        // Layout (position) reflow — restrained spring family
+        // Layout (position) reflow only — no enter/exit cascade. Reflow IS
+        // the visual event when filters change.
         layout: reduced ? { duration: 0 } : layoutSpring,
       }}
     >
