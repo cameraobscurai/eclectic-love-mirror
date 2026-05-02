@@ -52,14 +52,6 @@ export function QuickViewModal({
 
   const img = product.images[imgIdx] ?? product.primaryImage;
 
-  // Short tagline: prefer description's first sentence (≤120 chars), else null.
-  const tagline = (() => {
-    if (!product.description) return null;
-    const first = product.description.split(/(?<=[.!?])\s+/)[0]?.trim();
-    if (!first) return null;
-    return first.length > 140 ? first.slice(0, 137) + "…" : first;
-  })();
-
   return (
     <div
       role="dialog"
