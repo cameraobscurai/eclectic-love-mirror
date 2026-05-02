@@ -9,10 +9,6 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { FitText } from "@/components/ui/FitText";
 
 interface CategoryGalleryOverviewProps {
-  /**
-   * Browse-group buckets in display order. Empty groups MUST be omitted by
-   * the caller — every entry is rendered as a real, populated card.
-   */
   groups: Array<{
     id: BrowseGroupId;
     products: CollectionProduct[];
@@ -20,23 +16,6 @@ interface CategoryGalleryOverviewProps {
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
-/**
- * Single-fold category landing for /collection.
- *
- * The whole gallery sits inside the viewport — no scrolling required to see
- * the full taxonomy. CSS Grid does the heavy lifting:
- *   - The wrapper is sized by the route to the available viewport height.
- *   - The <ul> uses `grid-template-rows: repeat(N, minmax(0,1fr))` so all
- *     rows divide the available height equally.
- *   - Each card is a single image cell with a thin label strip at the
- *     bottom — no aspect-ratio lock fighting the row height.
- *
- * Layouts (for 18 categories):
- *   - mobile (<sm):  2 cols × 9 rows  — scrolls vertically (intentional;
- *                    one fold on a phone can't show 18 hero images legibly)
- *   - sm/md:         3 cols × 6 rows
- *   - lg+:           6 cols × 3 rows  — landscape, fully in fold
- */
 export function CategoryGalleryOverview({
   groups,
   onSelectCategory,
@@ -44,88 +23,109 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <ul
-      className="
-        grid h-full w-full
-        grid-cols-2 grid-rows-9
-        sm:grid-cols-3 sm:grid-rows-6
-        lg:grid-cols-6 lg:grid-rows-3
-        gap-px bg-[color:var(--archive-rule)]
-      "
-    >
-      {groups.map((group, idx) => {
-        // Prefer the curated editorial cover; fall back to the first product
-        // image in the bucket so the gallery is never blank during rollout.
-        const cover = CATEGORY_COVERS[group.id];
-        const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
-        const heroSrc = cover ?? (fallbackHero ? withCdnWidth(fallbackHero.url, 700) : null);
-        const heroAlt = cover
-          ? BROWSE_GROUP_LABELS[group.id]
-          : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
-        const label = BROWSE_GROUP_LABELS[group.id];
-        // Stagger capped — never more than ~360ms even with 18 cards.
-        const delay = reduced ? 0 : Math.min(idx * 0.03, 0.36);
-
-        return (
-          <motion.li
-            key={group.id}
-            className="relative min-h-0 min-w-0 bg-white"
-            initial={reduced ? { opacity: 1 } : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{
-              duration: reduced ? 0 : 0.5,
-              delay,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => onSelectCategory(group.id)}
-              className="group relative block h-full w-full overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-inset"
-              aria-label={`${label} — ${group.products.length} pieces`}
+    <div className="flex h-full min-h-0 flex-col bg-white">
+      <div className="border-b border-[color:var(--archive-rule)] px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="min-w-0">
+            <p
+              className="text-[10px] uppercase"
+              style={{
+                letterSpacing: "var(--label-tracking-micro)",
+                color: "var(--archive-text-muted)",
+              }}
             >
-              {/* Hero image fills the entire cell */}
-              {heroSrc ? (
-                <img
-                  src={heroSrc}
-                  alt={heroAlt}
-                  loading={idx < 6 ? "eager" : "lazy"}
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-cream" />
-              )}
+              Hive Signature Collection
+            </p>
+            <h1
+              className="mt-2 text-charcoal"
+              style={{ fontSize: "clamp(2rem, 5vw, 4.25rem)", lineHeight: 0.95 }}
+            >
+              Browse by category
+            </h1>
+          </div>
 
-              {/* Bottom gradient + label strip — readable on any image. */}
-              <div
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none bg-gradient-to-t from-charcoal/75 via-charcoal/15 to-transparent"
-              />
+          <p className="max-w-[30rem] text-[13px] leading-relaxed text-charcoal/55 lg:text-right">
+            A quieter front door into the archive — choose a family, then drop into the full inventory.
+          </p>
+        </div>
+      </div>
 
-              <div className="absolute inset-x-0 bottom-0 px-3 py-3 lg:px-4 lg:py-4 flex items-baseline gap-2 text-white">
-                <div className="min-w-0 flex-1">
-                  <FitText
-                    as="h3"
-                    text={label}
-                    fontTemplate={'500 ${size}px "Cormorant Garamond", "Times New Roman", serif'}
-                    minSize={10}
-                    maxSize={22}
-                    letterSpacingEm={0.06}
-                    className="font-display uppercase"
-                    style={{ letterSpacing: "0.06em" }}
+      <ul
+        className="grid h-full min-h-0 w-full grid-cols-2 auto-rows-fr gap-px bg-[color:var(--archive-rule)] md:grid-cols-3 xl:grid-cols-6"
+      >
+        {groups.map((group, idx) => {
+          const cover = CATEGORY_COVERS[group.id];
+          const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
+          const heroSrc = cover ?? (fallbackHero ? withCdnWidth(fallbackHero.url, 900) : null);
+          const heroAlt = cover
+            ? BROWSE_GROUP_LABELS[group.id]
+            : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
+          const label = BROWSE_GROUP_LABELS[group.id];
+          const delay = reduced ? 0 : Math.min(idx * 0.025, 0.24);
+
+          return (
+            <motion.li
+              key={group.id}
+              className="relative min-h-[200px] min-w-0 bg-white md:min-h-[230px] xl:min-h-0"
+              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: reduced ? 0 : 0.45,
+                delay,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => onSelectCategory(group.id)}
+                className="group relative block h-full w-full overflow-hidden bg-[color:var(--cream)] text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
+                aria-label={`${label} — ${group.products.length} pieces`}
+              >
+                {heroSrc ? (
+                  <img
+                    src={heroSrc}
+                    alt={heroAlt}
+                    loading={idx < 6 ? "eager" : "lazy"}
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.03]"
                   />
+                ) : (
+                  <div className="absolute inset-0 bg-cream" />
+                )}
+
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/18 to-transparent opacity-95 transition-opacity duration-300 group-hover:opacity-100"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-px bg-white/40 transition-opacity duration-300 group-hover:opacity-80"
+                />
+
+                <div className="absolute inset-x-0 bottom-0 px-3 py-3 sm:px-4 sm:py-4">
+                  <div className="flex items-end gap-2 text-cream">
+                    <div className="min-w-0 flex-1">
+                      <FitText
+                        as="h2"
+                        text={label}
+                        fontTemplate={'500 ${size}px "Saol Display", "Cormorant Garamond", "Times New Roman", serif'}
+                        minSize={11}
+                        maxSize={23}
+                        letterSpacingEm={0.05}
+                        className="font-display uppercase leading-none"
+                        style={{ letterSpacing: "0.05em" }}
+                      />
+                    </div>
+                    <span className="mb-0.5 shrink-0 text-[10px] uppercase tracking-[0.22em] text-cream/72">
+                      {group.products.length}
+                    </span>
+                  </div>
                 </div>
-                <span
-                  className="text-[10px] uppercase tracking-[0.18em] tabular-nums text-white/70 flex-shrink-0"
-                >
-                  {group.products.length}
-                </span>
-              </div>
-            </button>
-          </motion.li>
-        );
-      })}
-    </ul>
+              </button>
+            </motion.li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
