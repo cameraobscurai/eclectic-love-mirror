@@ -124,6 +124,96 @@ export type Database = {
         }
         Relationships: []
       }
+      phase3_category_summary: {
+        Row: {
+          category_slug: string
+          classification: Database["public"]["Enums"]["phase3_classification"]
+          created_at: string
+          human_review_required: boolean
+          id: string
+          include_in_phase3a: boolean
+          notes: string | null
+          product_count: number
+          reason: string
+        }
+        Insert: {
+          category_slug: string
+          classification: Database["public"]["Enums"]["phase3_classification"]
+          created_at?: string
+          human_review_required: boolean
+          id?: string
+          include_in_phase3a: boolean
+          notes?: string | null
+          product_count: number
+          reason: string
+        }
+        Update: {
+          category_slug?: string
+          classification?: Database["public"]["Enums"]["phase3_classification"]
+          created_at?: string
+          human_review_required?: boolean
+          id?: string
+          include_in_phase3a?: boolean
+          notes?: string | null
+          product_count?: number
+          reason?: string
+        }
+        Relationships: []
+      }
+      phase3_scrape_manifest: {
+        Row: {
+          category_slug: string | null
+          classification: Database["public"]["Enums"]["phase3_classification"]
+          classification_reason: string
+          created_at: string
+          has_base_category_pair: boolean
+          id: string
+          is_1_suffixed_category: boolean
+          is_custom_order_co: boolean
+          is_ut_prefixed: boolean
+          overlaps_with_base_category: boolean
+          product_count_group: number | null
+          product_slug: string | null
+          recommended_phase: string
+          scrape_priority: number
+          url: string
+        }
+        Insert: {
+          category_slug?: string | null
+          classification: Database["public"]["Enums"]["phase3_classification"]
+          classification_reason: string
+          created_at?: string
+          has_base_category_pair?: boolean
+          id?: string
+          is_1_suffixed_category?: boolean
+          is_custom_order_co?: boolean
+          is_ut_prefixed?: boolean
+          overlaps_with_base_category?: boolean
+          product_count_group?: number | null
+          product_slug?: string | null
+          recommended_phase: string
+          scrape_priority?: number
+          url: string
+        }
+        Update: {
+          category_slug?: string | null
+          classification?: Database["public"]["Enums"]["phase3_classification"]
+          classification_reason?: string
+          created_at?: string
+          has_base_category_pair?: boolean
+          id?: string
+          is_1_suffixed_category?: boolean
+          is_custom_order_co?: boolean
+          is_ut_prefixed?: boolean
+          overlaps_with_base_category?: boolean
+          product_count_group?: number | null
+          product_slug?: string | null
+          recommended_phase?: string
+          scrape_priority?: number
+          url?: string
+        }
+        Relationships: []
+      }
       reconciliation_matches: {
         Row: {
           applied_at: string | null
@@ -502,6 +592,13 @@ export type Database = {
       app_role: "admin" | "user"
       item_status: "available" | "reserved" | "sold" | "draft"
       match_decision: "pending" | "approved" | "rejected" | "needs_review"
+      phase3_classification:
+        | "scrape_phase3a_main_inventory"
+        | "hold_parallel_category_review"
+        | "hold_subbrand_review"
+        | "exclude_test"
+        | "exclude_vanity_or_marketing"
+        | "unknown_needs_review"
       scrape_phase: "map" | "category_scrape" | "product_scrape" | "reconcile"
       scrape_run_status:
         | "pending"
@@ -645,6 +742,14 @@ export const Constants = {
       app_role: ["admin", "user"],
       item_status: ["available", "reserved", "sold", "draft"],
       match_decision: ["pending", "approved", "rejected", "needs_review"],
+      phase3_classification: [
+        "scrape_phase3a_main_inventory",
+        "hold_parallel_category_review",
+        "hold_subbrand_review",
+        "exclude_test",
+        "exclude_vanity_or_marketing",
+        "unknown_needs_review",
+      ],
       scrape_phase: ["map", "category_scrape", "product_scrape", "reconcile"],
       scrape_run_status: [
         "pending",
