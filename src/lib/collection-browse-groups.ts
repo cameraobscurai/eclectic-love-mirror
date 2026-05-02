@@ -139,7 +139,7 @@ interface BrowseRule {
 // Order matters: first match wins. Owner rules come first so any owner
 // keyword hit beats a safety-net category fallback.
 const BROWSE_RULES: BrowseRule[] = [
-  // ===== OWNER TIER (keyword-gated) =====
+  // ===== OWNER TIER (mostly keyword-gated, with intentional category fallbacks) =====
   {
     id: "sofas",
     categories: ["lounge", "sofas-loveseats1"],
@@ -169,6 +169,8 @@ const BROWSE_RULES: BrowseRule[] = [
       "console",
       "entry table",
       "sofa table",
+      "column",
+      "tea table",
     ],
     requireKeyword: true,
   },
@@ -180,27 +182,42 @@ const BROWSE_RULES: BrowseRule[] = [
   },
   {
     id: "pillows",
-    categories: ["pillows-throws1"],
+    // textiles slug holds the bulk of pillows on the original site, so accept
+    // both. Genuine throws fall through to the Throws safety-net rule below.
+    categories: ["pillows-throws1", "textiles"],
     keywords: ["pillow", "lumbar"],
     requireKeyword: true,
   },
   {
     id: "bar",
     categories: ["bars1", "cocktail-bar"],
-    keywords: ["bar", "back bar", "backbar", "bar shelving", "shelving"],
+    keywords: [
+      "bar",
+      "back bar",
+      "backbar",
+      "bar shelving",
+      "shelving",
+      "shelf",
+      "counter",
+      "counter stool",
+    ],
     requireKeyword: true,
   },
   {
     id: "cocktail-tables",
     categories: ["cocktail-bar", "lounge-tables", "tables1"],
-    keywords: ["cocktail table", "community table"],
+    keywords: ["cocktail table", "community table", "cocktail column"],
     requireKeyword: true,
   },
   {
     id: "storage",
-    categories: ["storage1"],
-    keywords: [],
-    requireKeyword: false, // storage1 slug is mono — accept all
+    // storage1 is mono. Cabinets/cabinet-like pieces in cocktail-bar also
+    // belong here once Bar/Cocktail-tables have had first dibs.
+    categories: ["storage1", "cocktail-bar"],
+    keywords: ["cabinet", "credenza", "trunk", "chest", "armoire"],
+    requireKeyword: false, // storage1 still accepts all; keywords filter cocktail-bar
+    // Allow when slug is storage1 OR (slug is cocktail-bar AND keyword matches)
+    // — handled by getProductBrowseGroup with the conditional below.
   },
   {
     id: "tableware",
@@ -218,6 +235,13 @@ const BROWSE_RULES: BrowseRule[] = [
       "linen",
       "cup",
       "mug",
+      "stoneware",
+      "cellar",
+      "s&p",
+      "salt",
+      "pepper",
+      "cocktail set",
+      "paddle",
     ],
     requireKeyword: true,
   },
@@ -233,6 +257,11 @@ const BROWSE_RULES: BrowseRule[] = [
       "pitcher",
       "stand",
       "carafe",
+      "beverage tub",
+      "beverage dispenser",
+      "dispenser",
+      "tub",
+      "basket",
     ],
     requireKeyword: true,
   },
@@ -246,15 +275,28 @@ const BROWSE_RULES: BrowseRule[] = [
   // ===== SAFETY-NET TIER (category-only fallback) =====
   {
     id: "benches-ottomans",
-    categories: ["benches-ottomans1"],
-    keywords: [],
-    requireKeyword: false,
+    // Catches benches-ottomans1 (mono) AND any lounge-slug bench/ottoman/daybed
+    // that didn't match Sofas/Chairs above.
+    categories: ["benches-ottomans1", "lounge"],
+    keywords: ["bench", "ottoman", "daybed", "pouf", "footstool", "banquette"],
+    requireKeyword: false, // benches-ottomans1 accepts all; keywords filter lounge
   },
   {
     id: "dining",
-    categories: ["dining"],
-    keywords: [],
-    requireKeyword: false,
+    // Includes original `dining` slug AND tables1 highboys/pub/feasting tables
+    // which the original site nests under dining-style tables.
+    categories: ["dining", "tables1"],
+    keywords: [
+      "highboy",
+      "pub table",
+      "feasting",
+      "biergarten",
+      "bistro",
+      "dining table",
+      "farm table",
+      "dining chair",
+    ],
+    requireKeyword: false, // dining accepts all; keywords filter tables1
   },
   {
     id: "lighting",
@@ -278,8 +320,10 @@ const BROWSE_RULES: BrowseRule[] = [
   {
     id: "accents",
     // accents1 catches everything else — vases, antlers, chalkboards, props,
-    // suitcases, bottles, faux plants, mirrors, etc.
-    categories: ["accents1"],
+    // suitcases, bottles, faux plants, mirrors, etc. Also picks up the few
+    // unbranded "Akoya / Alumina / Lapis"-style tableware records that lack
+    // a parseable noun in the title.
+    categories: ["accents1", "tableware", "sofas-loveseats1"],
     keywords: [],
     requireKeyword: false,
   },
