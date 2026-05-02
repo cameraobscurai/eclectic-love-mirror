@@ -1,83 +1,81 @@
-## Problem
+## What's actually happening in row 2
 
-In QuickView today, the scale annotations float in **stage coordinates**, not in **furniture coordinates**:
+Two unrelated problems compounding into one ugly experience:
 
-- Width rule: pinned to the bottom of the stage at a fixed `52%` width
-- Height rule: pinned to the right side of the stage at a fixed top/bottom inset
-- Image: lives in its own absolutely-positioned container, also sized to ~52% of stage
+### 1. Every tile is downloading a 2500-pixel-wide image
 
-The rules and the image are sized identically by coincidence, but they're **two unrelated layout systems**. There's no formal "this is the furniture's zone" — so the rules read as floating chrome, not as architecture wrapping the object.
+The catalog JSON points every product image at the Squarespace CDN with `?format=2500w` baked in. Example:
 
-Plus the title's fit-to-lines logic produces inconsistent results across pieces — short names get blown up to 112px, long names break awkwardly.
-
-## Goal
-
-Define a single **measurement zone** — the rectangle the image lives inside — and attach the scale rules to its edges. Same envelope for every piece (per your direction), but the rules now formally wrap that envelope. Then tighten title sizing so it reads consistently.
-
-## Build
-
-### 1. Introduce a measurement zone in QuickViewModal
-
-Replace the two independent absolutely-positioned containers (image div + width-rule div + height-rule div) with one **zone wrapper** that owns all three:
-
-```text
-┌─ stage ────────────────────────────────────────┐
-│  TITLE (top-left, behind)                       │
-│                                                 │
-│        ┌─ measurement zone ─────────┐           │
-│        │                            │           │
-│        │       [image]              │  height   │
-│        │                            │   rule    │
-│        │                            │           │
-│        └────────────────────────────┘           │
-│                  width rule                     │
-└────────────────────────────────────────────────┘
+```
+.../Adagio+Disco+Ball.png?format=2500w
 ```
 
-Concretely, in the stage:
+A grid tile renders at ~200–260 CSS px. We're shipping ~50× more pixels than the tile can show — for **all 60 tiles in the first batch**. That's why the page feels slow: bandwidth is saturated downloading huge originals, and the network queue chokes on tiles past row 1.
 
-- One absolutely-positioned `.zone` element, sized to the existing image envelope (`max-w-[52%] max-h-[62%]`), bottom-anchored, centered
-- Inside the zone: the image (fills it via `object-contain`)
-- When `showScale` is on:
-  - Width rule rendered as a sibling of the image, positioned `absolute -bottom-6 left-0 right-0`, width = 100% of zone
-  - Height rule rendered as a sibling, positioned `absolute -right-6 top-0 bottom-0`, height = 100% of zone
+### 2. The blur-up placeholder makes row 2 look broken
 
-Both rules now physically attach to the image's actual frame. As the image's bounding box is the zone, the rules wrap the furniture region — not the stage.
+`ProductTile` has two visual paths:
 
-### 2. Simplify ScaleRule
+- Tiles **0–5** (row 1 on a 6-col grid) — `skipBlur=true`. Image paints crisp from first byte.
+- Tiles **6+** — start at `filter: blur(14px); opacity: 0.55` and only clear once `onLoad` fires.
 
-Drop the `pctOf` ceiling math (`CEILING_W`, `CEILING_H`) — the zone now controls size. The rule components become pure span-the-parent renderers:
+So while row 1's huge images stream in (priority=high), row 2's huge images are still downloading — and the user stares at a wall of heavy gray-blurred rectangles. That's the "blurred row" in your screenshot. It's not a bug per se, it's the placeholder waiting for slow images.
 
-- `ScaleRuleWidth` → full-width hairline + serifed end caps + label, fills its parent
-- `ScaleRuleHeight` → full-height hairline + serifed end caps + rotated label, fills its parent
+## Fix
 
-Keep the same visual register (charcoal/55, 0.4 stroke, 10px Saol-style label, 0.28em tracking).
+### A. Serve right-sized images
 
-### 3. Tighten title fit-to-lines
+Add a small helper that rewrites Squarespace `?format=NNNw` to a tile-appropriate width based on the tile's role:
 
-Current logic targets 2 lines, range 28–112px, max-width = 85% of stage. Issues:
+| Use | Width param |
+|---|---|
+| Grid tile (comfortable + dense) | `?format=750w` |
+| QuickView main stage | `?format=1500w` |
+| QuickView thumbnails | `?format=300w` |
+| Inquiry tray thumb | `?format=300w` |
 
-- Short titles ("Lyon Stool") explode to 112px and look comical
-- Long titles ("Hadley Velvet Arm Chair") wrap unpredictably
+Helper: `src/lib/image-url.ts` exports `withCdnWidth(url, width)`. It only touches Squarespace CDN URLs (regex on `images.squarespace-cdn.com` + `format=\d+w`); anything else passes through untouched. Safe for future Supabase storage URLs — they just bypass the transform.
 
-Changes:
+Update call sites:
+- `ProductTile.tsx` — wrap `product.primaryImage.url` with `withCdnWidth(url, 750)`. Also add a real `srcSet`/`sizes` so retina + dense layouts pull a larger variant when needed (`750w` + `1100w`).
+- `QuickViewModal.tsx` — wrap stage image at `1500w`, thumbnails at `300w`.
+- `InquiryTray.tsx` — wrap thumbs at `300w` if it renders any.
 
-- Lower max from 112px → 92px (cap the visual ceiling)
-- Cap by character count too: if `title.length < 14`, max = 72px; otherwise 92px
-- Keep target = 2 lines, but allow 1 line for short titles (don't force a wrap)
-- Tighten max-width from 85% → 78% of stage so the title never reaches under the image
+This alone should drop initial grid weight by ~10×.
 
-### 4. Show Scale label refinement
+### B. Kill the heavy blur, keep a quiet placeholder
 
-Move the toggle from "underline link in the spec row" to a small button beside Dimensions with a hairline frame, so it reads as a tool tied to the dimension, not a footer affordance. Same uppercase tracking, same typography. (Matches your screenshot's framed "SHOW SCALE" pill — keep that idea, just visually quieter.)
+The 14px blur + 0.55 opacity reads as "broken" the moment more than 6 tiles are in flight. Replace it with a quiet cream-tinted block that simply fades out on load. Same skeleton role, no scary blur of a low-res ghost (we never had a low-res ghost — it's just blurring nothing).
+
+In `ProductTile.tsx`:
+
+- Drop the `filter: blur(14px)` branch entirely. Image renders with `opacity: 0` initially, transitions to `opacity: 1` over 240ms on `onLoad`.
+- Skeleton overlay stays as a flat `bg-cream` block, fades out on the same 240ms.
+- `skipBlur` boolean becomes obsolete — remove it. Priority tiles and lazy tiles use the exact same fade. Consistent across all rows.
+
+Result: row 2 looks like clean cream rectangles for the brief moment it takes images to arrive, then fades to crisp images. No scary blur wall.
+
+### C. Raise the priority window slightly
+
+`HIGH_FETCH_COUNT = 6` matches a 6-col grid but on the 1303px viewport you're using, the user sees tiles 0–5 in row 1 and 6–11 in row 2 above the fold. Bump `HIGH_FETCH_COUNT = 12` so both visible rows get `fetchpriority="high"`. `EAGER_LOAD_COUNT` stays at 12.
+
+This is safe now because each "high" image is ~50× smaller after fix A.
 
 ## Files
 
-- `src/components/collection/ScaleRule.tsx` — drop ceiling math, rules now span parent
-- `src/components/collection/QuickViewModal.tsx` — introduce zone wrapper, attach rules to zone, tighten title fit, refine toggle placement
+- `src/lib/image-url.ts` — new (~20 lines)
+- `src/components/collection/ProductTile.tsx` — use `withCdnWidth`, drop blur-up, simplify load state, raise priority window
+- `src/components/collection/QuickViewModal.tsx` — use `withCdnWidth` for stage + thumbs
+- `src/components/collection/InquiryTray.tsx` — use `withCdnWidth` for thumbs (if applicable)
 
 ## Out of scope
 
-- True relative scaling (32" stool visibly smaller than 84" sofa) — explicitly rejected; zone stays constant
-- ProductTile changes — this is QuickView-only
-- Any data / inventory work
+- Migrating images out of Squarespace CDN onto Supabase storage. That's an inventory/data task; not what's slowing the page today.
+- Changing the grid density or column counts.
+- Skeleton shimmer animation. Stays a quiet flat fade — the "Aesence editorial restraint" register.
+
+## What you'll see after
+
+- First paint of the grid arrives in roughly a tenth of the bytes.
+- Row 2 doesn't go through the heavy blurred-rectangle phase — it just appears as clean cream slots that fade to images within 1–2 seconds on a normal connection.
+- No visual difference between the priority and lazy tiles in their loading state.

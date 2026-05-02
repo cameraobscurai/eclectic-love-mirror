@@ -6,6 +6,7 @@ import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
+import { withCdnWidth } from "@/lib/image-url";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
@@ -249,7 +250,7 @@ export function QuickViewModal({
                 {img ? (
                   <motion.img
                     key={img.url}
-                    src={img.url}
+                    src={withCdnWidth(img.url, 1500)}
                     alt={img.altText ?? product.title}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -346,7 +347,7 @@ export function QuickViewModal({
                           )}
                         >
                           <img
-                            src={im.url}
+                            src={withCdnWidth(im.url, 300)}
                             alt=""
                             className="absolute inset-0 w-full h-full object-contain p-1"
                           />
