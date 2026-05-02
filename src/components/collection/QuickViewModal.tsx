@@ -168,7 +168,7 @@ export function QuickViewModal({
                     aria-label={`View image ${i + 1}`}
                     aria-current={i === imgIdx}
                     className={cn(
-                      "relative h-12 w-16 flex-shrink-0 bg-white border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                      "relative h-12 w-16 flex-shrink-0 bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
                       i === imgIdx
                         ? "border-charcoal"
                         : "border-charcoal/15 hover:border-charcoal/45",
