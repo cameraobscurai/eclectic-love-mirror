@@ -73,14 +73,14 @@ export function ProductTile({
       {showInternals ? (
         <button
           onClick={onOpen}
-          className="group block w-full text-left bg-white border border-transparent hover:border-charcoal/15 active:scale-[0.98] transition-[border-color,transform] duration-150"
+          className="group block w-full text-left bg-white active:scale-[0.98] transition-transform duration-150"
         >
-          {/* Square card surface — same dimensions as deferred shell, no shift */}
+          {/* Square object surface — pure white, no card panel, no border */}
           <div className="relative aspect-square overflow-hidden bg-white">
-            {/* Skeleton plate beneath the image — fades out on load */}
+            {/* Quiet skeleton — fades out on load. No cream plate. */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-[linear-gradient(110deg,#f7f5f2_8%,#efece7_18%,#f7f5f2_33%)] bg-[length:200%_100%] animate-[tile-shimmer_2.4s_linear_infinite] transition-opacity duration-500"
+              className="absolute inset-0 bg-white transition-opacity duration-500"
               style={{ opacity: loaded || !product.primaryImage ? 0 : 1 }}
             />
 
@@ -99,36 +99,26 @@ export function ProductTile({
                 }}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                className="absolute inset-0 w-full h-full object-contain p-4 will-change-[filter,opacity,transform] group-hover:scale-[1.03]"
+                className="absolute inset-0 w-full h-full object-contain p-4 will-change-[filter,opacity,transform] transition-transform duration-500 group-hover:scale-[1.04]"
                 style={{
                   filter: loaded || reduced ? "blur(0px)" : "blur(14px)",
                   opacity: loaded || reduced ? 1 : 0.55,
-                  transform: loaded || reduced ? "scale(1)" : "scale(1.015)",
                   transition:
-                    "filter 600ms ease-out, opacity 600ms ease-out, transform 600ms ease-out",
+                    "filter 600ms ease-out, opacity 600ms ease-out, transform 500ms ease-out",
                 }}
               />
             ) : null}
-
-            {/* Hover label — only mounts when card is near viewport */}
-            <div className="absolute inset-x-0 bottom-0 bg-charcoal/85 text-cream px-3 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-              <p className="text-xs leading-snug line-clamp-2">{product.title}</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-cream/70">
-                Quick View
-              </p>
-            </div>
           </div>
+          {/* Title under image — no chips, no drawer, no overlay */}
+          <p className="mt-2 text-[13px] leading-snug text-charcoal/75 line-clamp-2 group-hover:text-charcoal transition-colors">
+            {product.title}
+          </p>
         </button>
       ) : (
-        // Deferred shell — same square dimensions, no image request, no
-        // hover overlay, no expensive internals. Pure layout placeholder.
-        <div
-          aria-hidden
-          className="block w-full bg-white border border-transparent"
-        >
-          <div className="relative aspect-square overflow-hidden bg-white">
-            <div className="absolute inset-0 bg-[linear-gradient(110deg,#f7f5f2_8%,#efece7_18%,#f7f5f2_33%)] bg-[length:200%_100%] animate-[tile-shimmer_2.4s_linear_infinite]" />
-          </div>
+        // Deferred shell — pure white, no shimmer plate
+        <div aria-hidden className="block w-full bg-white">
+          <div className="relative aspect-square bg-white" />
+          <div className="mt-2 h-[34px]" />
         </div>
       )}
     </motion.li>
