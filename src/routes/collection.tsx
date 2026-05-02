@@ -710,7 +710,6 @@ function CollectionPage() {
             >
               <CollectionRail
                 products={products}
-                counts={groupCounts}
                 activeGroup={activeGroup}
                 spyActiveGroup={spyActiveGroup}
                 onSelect={selectGroup}
