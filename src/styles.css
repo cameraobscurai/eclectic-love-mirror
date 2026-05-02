@@ -2,8 +2,31 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* Saol Display alternative: Cormorant Garamond is a close stand-in.
- * Replace with real Saol .otf files in src/assets/fonts/ when available. */
+/* Saol Display — owner-supplied OTFs served from /public/fonts.
+ * Same-origin, cache-friendly, no auth required. Cormorant kept as a
+ * network-loaded backup in case Saol fails to load. */
+@font-face {
+  font-family: "Saol Display";
+  src: url("/fonts/SaolDisplay-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saol Display";
+  src: url("/fonts/SaolDisplay-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Saol Display";
+  src: url("/fonts/SaolDisplay-LightItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap");
 
 @custom-variant dark (&:is(.dark *));
