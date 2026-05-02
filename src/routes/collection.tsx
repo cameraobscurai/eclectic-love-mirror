@@ -159,6 +159,25 @@ function CollectionPage() {
     return list;
   }, [subcategoryFiltered, sort, q]);
 
+  // Failed-image filter: per-session set of product ids whose primary image
+  // 404'd in-browser. They get hidden from the visible grid so we never show
+  // a broken-image icon. Data-layer count stays at 876.
+  const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
+  const markFailed = (id: string) =>
+    setFailedIds((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  const visibleProducts = useMemo(
+    () =>
+      failedIds.size === 0
+        ? filtered
+        : filtered.filter((p: CollectionProduct) => !failedIds.has(p.id)),
+    [filtered, failedIds],
+  );
+
   // Subcategory facets — derived from category-filtered list (Local Love pattern)
   const subcategoryFacets = useMemo(() => {
     if (!category) return [] as { label: string; count: number }[];
