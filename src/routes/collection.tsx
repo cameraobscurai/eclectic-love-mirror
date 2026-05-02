@@ -535,7 +535,10 @@ function CollectionPage() {
 
       {/* Body — left filter rail + grid */}
       <section className="px-6 lg:px-12 pt-10">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[14rem_1fr] xl:grid-cols-[16rem_1fr] gap-10 lg:gap-12">
+        <div
+          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[17.5rem_minmax(0,1fr)]"
+          style={{ columnGap: "clamp(48px, 5vw, 72px)", rowGap: "2.5rem" }}
+        >
           {/* Desktop filter rail */}
           <aside className="hidden lg:block">
             <CollectionFilterRail
