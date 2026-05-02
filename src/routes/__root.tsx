@@ -6,7 +6,6 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 
@@ -53,18 +52,6 @@ export const Route = createRootRoute({
       { property: "og:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
       { name: "twitter:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
       {
-        name: "description",
-        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
-      },
-      {
-        property: "og:description",
-        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
-      },
-      {
-        name: "twitter:description",
-        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
-      },
-      {
         property: "og:image",
         content:
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png",
@@ -99,7 +86,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
-  const reduced = useReducedMotion();
 
   return (
     <>
@@ -110,27 +96,11 @@ function RootComponent() {
         Skip to main content
       </a>
       <Navigation />
-      {/* Page transition — opacity-only crossfade. We deliberately avoid
-          blur filters, y-translate, and mode="wait" here:
-          • Blur forces full-layer rasterization of the entire route tree,
-            which is catastrophic on /collection (876 product tiles with
-            their own layout animations) and visibly janks transitions.
-          • mode="wait" holds the new route until the old one fully exits,
-            causing a footer jump and a visible "stuck" frame between routes.
-          • y-translate fights scroll restoration on long pages.
-          A short opacity fade reads as editorial polish without taxing the
-          compositor or interfering with child animations. */}
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={pathname}
-          initial={reduced ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={reduced ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
-        >
-          <Outlet />
-        </motion.div>
-      </AnimatePresence>
+      {/* No route-level transition. Per spec: navigation is instant —
+          chunks and data preload on intent/viewport so the swap is silent.
+          AnimatePresence around <Outlet /> forces full subtree remount and
+          is catastrophic on /collection (~900 tiles). */}
+      <Outlet />
       <div className={isHome ? "lg:hidden" : undefined}>
         <Footer />
       </div>
