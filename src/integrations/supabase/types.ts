@@ -340,6 +340,13 @@ export type Database = {
             referencedRelation: "scraped_products_canonical"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_final_canonical"
+            referencedColumns: ["id"]
+          },
         ]
       }
       scrape_errors: {
@@ -545,7 +552,92 @@ export type Database = {
             referencedRelation: "scraped_products_canonical"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_final_canonical"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      scraped_product_llm_repairs: {
+        Row: {
+          alt_texts: string[] | null
+          category_slug: string | null
+          confidence: number | null
+          created_at: string
+          description: string | null
+          dimensions: string | null
+          error_message: string | null
+          id: string
+          image_urls: string[] | null
+          inferred_filenames: string[] | null
+          model: string | null
+          primary_image_url: string | null
+          product_slug: string | null
+          product_title_normalized: string | null
+          product_title_original: string | null
+          raw_response: Json | null
+          repair_notes: string | null
+          repaired_fields: string[] | null
+          run_id: string | null
+          source_url: string
+          status: string
+          still_missing_fields: string[] | null
+          stocked_quantity: string | null
+        }
+        Insert: {
+          alt_texts?: string[] | null
+          category_slug?: string | null
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          dimensions?: string | null
+          error_message?: string | null
+          id?: string
+          image_urls?: string[] | null
+          inferred_filenames?: string[] | null
+          model?: string | null
+          primary_image_url?: string | null
+          product_slug?: string | null
+          product_title_normalized?: string | null
+          product_title_original?: string | null
+          raw_response?: Json | null
+          repair_notes?: string | null
+          repaired_fields?: string[] | null
+          run_id?: string | null
+          source_url: string
+          status?: string
+          still_missing_fields?: string[] | null
+          stocked_quantity?: string | null
+        }
+        Update: {
+          alt_texts?: string[] | null
+          category_slug?: string | null
+          confidence?: number | null
+          created_at?: string
+          description?: string | null
+          dimensions?: string | null
+          error_message?: string | null
+          id?: string
+          image_urls?: string[] | null
+          inferred_filenames?: string[] | null
+          model?: string | null
+          primary_image_url?: string | null
+          product_slug?: string | null
+          product_title_normalized?: string | null
+          product_title_original?: string | null
+          raw_response?: Json | null
+          repair_notes?: string | null
+          repaired_fields?: string[] | null
+          run_id?: string | null
+          source_url?: string
+          status?: string
+          still_missing_fields?: string[] | null
+          stocked_quantity?: string | null
+        }
+        Relationships: []
       }
       scraped_product_pages_markdown: {
         Row: {
@@ -641,6 +733,13 @@ export type Database = {
             columns: ["scraped_product_id"]
             isOneToOne: false
             referencedRelation: "scraped_products_canonical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_final_canonical"
             referencedColumns: ["id"]
           },
         ]
@@ -932,7 +1031,57 @@ export type Database = {
             referencedRelation: "scraped_products_canonical"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_final_canonical"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      scraped_product_images_final_canonical: {
+        Row: {
+          alt_text: string | null
+          id: string | null
+          image_source: string | null
+          image_url: string | null
+          inferred_filename: string | null
+          is_hero: boolean | null
+          position: number | null
+          scraped_product_id: string | null
+          source_page_url: string | null
+        }
+        Relationships: []
+      }
+      scraped_product_llm_repairs_latest: {
+        Row: {
+          alt_texts: string[] | null
+          category_slug: string | null
+          confidence: number | null
+          created_at: string | null
+          description: string | null
+          dimensions: string | null
+          error_message: string | null
+          id: string | null
+          image_urls: string[] | null
+          inferred_filenames: string[] | null
+          model: string | null
+          primary_image_url: string | null
+          product_slug: string | null
+          product_title_normalized: string | null
+          product_title_original: string | null
+          raw_response: Json | null
+          repair_notes: string | null
+          repaired_fields: string[] | null
+          rn: number | null
+          run_id: string | null
+          source_url: string | null
+          status: string | null
+          still_missing_fields: string[] | null
+          stocked_quantity: string | null
+        }
+        Relationships: []
       }
       scraped_products_canonical: {
         Row: {
@@ -974,6 +1123,52 @@ export type Database = {
           url: string | null
           variant_selector_present: boolean | null
           warnings: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_products_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_products_final_canonical: {
+        Row: {
+          add_to_cart_present: boolean | null
+          breadcrumb: string[] | null
+          category_slug: string | null
+          color_notes: string | null
+          description: string | null
+          dimensions: string | null
+          extraction_method: string | null
+          final_confidence: number | null
+          generic_notes: string | null
+          hero_image_url: string | null
+          id: string | null
+          is_custom_order_co: boolean | null
+          markdown_confidence: number | null
+          markdown_missing_fields: string[] | null
+          material_notes: string | null
+          needs_llm_reextract: boolean | null
+          next_product_url: string | null
+          previous_product_url: string | null
+          product_slug: string | null
+          product_title_normalized: string | null
+          product_title_original: string | null
+          quantity_selector_present: boolean | null
+          related_product_urls: string[] | null
+          repair_confidence: number | null
+          repaired_by_llm: boolean | null
+          repaired_fields: string[] | null
+          run_id: string | null
+          scraped_at: string | null
+          size_notes: string | null
+          still_missing_fields: string[] | null
+          stocked_quantity: string | null
+          url: string | null
+          variant_selector_present: boolean | null
         }
         Relationships: [
           {
