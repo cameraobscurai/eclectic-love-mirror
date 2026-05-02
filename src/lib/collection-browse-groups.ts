@@ -356,12 +356,21 @@ export function getProductBrowseGroup(
     ) {
       continue;
     }
+    const keywordHit =
+      rule.keywords.length === 0
+        ? false
+        : rule.keywords.some((kw) => title.includes(kw));
+
     if (rule.requireKeyword) {
-      if (rule.keywords.some((kw) => title.includes(kw))) return rule.id;
+      if (keywordHit) return rule.id;
       continue;
     }
-    // Safety-net or mono-slug: category match is sufficient.
-    return rule.id;
+    // requireKeyword === false: mono slug passes on category alone, others
+    // need the keyword. If monoCategories is omitted, treat all `categories`
+    // as mono (legacy behavior).
+    const monoSlugs = rule.monoCategories ?? rule.categories;
+    if (monoSlugs.includes(product.categorySlug)) return rule.id;
+    if (keywordHit) return rule.id;
   }
   return null;
 }
