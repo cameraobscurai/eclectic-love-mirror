@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { LayoutGroup, AnimatePresence, motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
   getCollectionCatalog,
@@ -19,11 +19,10 @@ import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
-import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
-import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
+import { CollectionRail } from "@/components/collection/CollectionRail";
+import { CategoryHero } from "@/components/collection/CategoryHero";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { useScrollIdle } from "@/hooks/useScrollIdle";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
