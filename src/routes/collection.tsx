@@ -482,6 +482,10 @@ function CollectionPage() {
   useMotionValueEvent(scrollY, "change", (v) => {
     setStickyMarkActive(v > 180);
   });
+  // Per spec: nothing animates while the user is scrolling. Gate scroll-driven
+  // transforms so they only apply once the scroll thread has gone idle.
+  const scrollIdle = useScrollIdle(150);
+  const heroAnimated = scrollIdle && !reduced;
 
   // Sticky wordmark text: section + count when filtered or scroll-spied.
   // The global nav already labels the page as "HIVE SIGNATURE COLLECTION";
@@ -521,14 +525,14 @@ function CollectionPage() {
         >
           <motion.div
             style={
-              reduced
-                ? undefined
-                : {
+              heroAnimated
+                ? {
                     scale: heroScale,
                     opacity: heroOpacity,
                     y: heroY,
                     transformOrigin: "left center",
                   }
+                : undefined
             }
             className="text-left will-change-transform"
           >
