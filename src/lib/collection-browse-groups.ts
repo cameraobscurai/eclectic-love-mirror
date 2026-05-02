@@ -226,9 +226,8 @@ const BROWSE_RULES: BrowseRule[] = [
     // belong here once Bar/Cocktail-tables have had first dibs.
     categories: ["storage1", "cocktail-bar"],
     keywords: ["cabinet", "credenza", "trunk", "chest", "armoire"],
-    requireKeyword: false, // storage1 still accepts all; keywords filter cocktail-bar
-    // Allow when slug is storage1 OR (slug is cocktail-bar AND keyword matches)
-    // — handled by getProductBrowseGroup with the conditional below.
+    requireKeyword: false,
+    monoCategories: ["storage1"], // cocktail-bar requires keyword
   },
   {
     id: "tableware",
