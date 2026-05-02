@@ -287,43 +287,64 @@ function CollectionPage() {
 
       {/* Sticky filter header */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Primary category row with shared layoutId underline */}
+        {/* Primary category row with shared layoutId underline + fade edges */}
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
           <LayoutGroup id="collection-primary-pills">
-            <div className="max-w-7xl mx-auto flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x">
-              <CategoryPill
-                label={`All (${total})`}
-                active={!category}
-                layoutGroupId="collection-pill-active-primary"
-                onClick={() =>
-                  navigate({
-                    search: (prev: CollectionSearch) => ({
-                      ...prev,
-                      category: "",
-                      sub: "",
-                    }),
-                    replace: true,
-                  })
-                }
+            <div className="max-w-7xl mx-auto relative">
+              {/* edge fades */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
               />
-              {facets.map((f: CategoryFacet) => (
-                <CategoryPill
-                  key={f.slug}
-                  label={`${f.display} (${f.count})`}
-                  active={category === f.slug}
-                  layoutGroupId="collection-pill-active-primary"
-                  onClick={() =>
-                    navigate({
-                      search: (prev: CollectionSearch) => ({
-                        ...prev,
-                        category: f.slug,
-                        sub: "",
-                      }),
-                      replace: true,
-                    })
-                  }
-                />
-              ))}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
+              />
+              <div
+                ref={railRef}
+                className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
+              >
+                <div data-pill-slug="all" className="snap-start">
+                  <CategoryPill
+                    label={`All (${total})`}
+                    active={!category}
+                    layoutGroupId="collection-pill-active-primary"
+                    onClick={() =>
+                      navigate({
+                        search: (prev: CollectionSearch) => ({
+                          ...prev,
+                          category: "",
+                          sub: "",
+                        }),
+                        replace: true,
+                      })
+                    }
+                  />
+                </div>
+                {facets.map((f: CategoryFacet) => (
+                  <div
+                    key={f.slug}
+                    data-pill-slug={f.slug}
+                    className="snap-start"
+                  >
+                    <CategoryPill
+                      label={`${f.display} (${f.count})`}
+                      active={category === f.slug}
+                      layoutGroupId="collection-pill-active-primary"
+                      onClick={() =>
+                        navigate({
+                          search: (prev: CollectionSearch) => ({
+                            ...prev,
+                            category: f.slug,
+                            sub: "",
+                          }),
+                          replace: true,
+                        })
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </LayoutGroup>
         </div>
