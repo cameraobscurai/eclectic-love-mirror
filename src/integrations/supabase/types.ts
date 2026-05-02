@@ -124,6 +124,62 @@ export type Database = {
         }
         Relationships: []
       }
+      llm_reextract_candidates: {
+        Row: {
+          ambiguity_flags: string[] | null
+          category_slug: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          missing_fields: string[] | null
+          parse_confidence: number | null
+          product_slug: string | null
+          reason: string
+          run_id: string | null
+          status: string
+          url: string
+        }
+        Insert: {
+          ambiguity_flags?: string[] | null
+          category_slug?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          missing_fields?: string[] | null
+          parse_confidence?: number | null
+          product_slug?: string | null
+          reason: string
+          run_id?: string | null
+          status?: string
+          url: string
+        }
+        Update: {
+          ambiguity_flags?: string[] | null
+          category_slug?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          missing_fields?: string[] | null
+          parse_confidence?: number | null
+          product_slug?: string | null
+          reason?: string
+          run_id?: string | null
+          status?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_reextract_candidates_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       phase3_category_summary: {
         Row: {
           category_slug: string
@@ -477,6 +533,56 @@ export type Database = {
           },
         ]
       }
+      scraped_product_pages_markdown: {
+        Row: {
+          category_slug: string | null
+          credits_used: number | null
+          http_status: number | null
+          id: string
+          links: string[] | null
+          markdown: string | null
+          metadata: Json | null
+          product_slug: string | null
+          run_id: string
+          scraped_at: string
+          url: string
+        }
+        Insert: {
+          category_slug?: string | null
+          credits_used?: number | null
+          http_status?: number | null
+          id?: string
+          links?: string[] | null
+          markdown?: string | null
+          metadata?: Json | null
+          product_slug?: string | null
+          run_id: string
+          scraped_at?: string
+          url: string
+        }
+        Update: {
+          category_slug?: string | null
+          credits_used?: number | null
+          http_status?: number | null
+          id?: string
+          links?: string[] | null
+          markdown?: string | null
+          metadata?: Json | null
+          product_slug?: string | null
+          run_id?: string
+          scraped_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_product_pages_markdown_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scraped_product_variants: {
         Row: {
           created_at: string
@@ -521,6 +627,7 @@ export type Database = {
       scraped_products: {
         Row: {
           add_to_cart_present: boolean | null
+          ambiguity_flags: string[] | null
           breadcrumb: string[] | null
           category_slug: string | null
           color_notes: string | null
@@ -534,7 +641,9 @@ export type Database = {
           is_custom_order_co: boolean | null
           material_notes: string | null
           missing_fields: string[] | null
+          needs_llm_reextract: boolean | null
           next_product_url: string | null
+          parse_confidence: number | null
           parse_errors: string[] | null
           phase: string | null
           previous_product_url: string | null
@@ -542,6 +651,7 @@ export type Database = {
           product_title_original: string | null
           quantity_selector_present: boolean | null
           raw: Json | null
+          reextract_reason: string | null
           related_product_urls: string[] | null
           run_id: string
           scraped_at: string
@@ -556,6 +666,7 @@ export type Database = {
         }
         Insert: {
           add_to_cart_present?: boolean | null
+          ambiguity_flags?: string[] | null
           breadcrumb?: string[] | null
           category_slug?: string | null
           color_notes?: string | null
@@ -569,7 +680,9 @@ export type Database = {
           is_custom_order_co?: boolean | null
           material_notes?: string | null
           missing_fields?: string[] | null
+          needs_llm_reextract?: boolean | null
           next_product_url?: string | null
+          parse_confidence?: number | null
           parse_errors?: string[] | null
           phase?: string | null
           previous_product_url?: string | null
@@ -577,6 +690,7 @@ export type Database = {
           product_title_original?: string | null
           quantity_selector_present?: boolean | null
           raw?: Json | null
+          reextract_reason?: string | null
           related_product_urls?: string[] | null
           run_id: string
           scraped_at?: string
@@ -591,6 +705,7 @@ export type Database = {
         }
         Update: {
           add_to_cart_present?: boolean | null
+          ambiguity_flags?: string[] | null
           breadcrumb?: string[] | null
           category_slug?: string | null
           color_notes?: string | null
@@ -604,7 +719,9 @@ export type Database = {
           is_custom_order_co?: boolean | null
           material_notes?: string | null
           missing_fields?: string[] | null
+          needs_llm_reextract?: boolean | null
           next_product_url?: string | null
+          parse_confidence?: number | null
           parse_errors?: string[] | null
           phase?: string | null
           previous_product_url?: string | null
@@ -612,6 +729,7 @@ export type Database = {
           product_title_original?: string | null
           quantity_selector_present?: boolean | null
           raw?: Json | null
+          reextract_reason?: string | null
           related_product_urls?: string[] | null
           run_id?: string
           scraped_at?: string
