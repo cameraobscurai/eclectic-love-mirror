@@ -72,9 +72,9 @@ function AtelierPage() {
       >
         <div className="max-w-[1400px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            Atelier by The Hive
+            ATELIER BY THE HIVE
           </p>
-          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] tracking-tight">
+          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
             Imagined.
             <br />
             Refined.
@@ -233,17 +233,17 @@ function AtelierPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
           <ApproachStep
             number="01"
-            label="Imagined"
+            label="IMAGINED"
             body="A cinematic concept rooted in the client's story — proposed as a Style Guide before a single object is sourced."
           />
           <ApproachStep
             number="02"
-            label="Refined"
+            label="REFINED"
             body="Material exploration, scale studies, and revisions. The proposal tightens until every detail earns its place."
           />
           <ApproachStep
             number="03"
-            label="Crafted"
+            label="CRAFTED"
             body="Fabrication, finishing, and on-site install. The Atelier stays with the project from first sketch to final strike."
           />
         </div>
@@ -257,7 +257,7 @@ function AtelierPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              Begin
+              BEGIN
             </p>
             <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] tracking-tight max-w-2xl">
               Bring a project to the Atelier.
@@ -266,7 +266,7 @@ function AtelierPage() {
               to="/contact"
               className="mt-8 inline-block text-xs uppercase tracking-[0.22em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              Start a conversation
+              START A CONVERSATION
             </Link>
           </div>
         </div>
@@ -313,7 +313,7 @@ function ApproachStep({
       <p className="font-display text-2xl text-charcoal/45 tabular-nums">
         {number}
       </p>
-      <h3 className="mt-3 font-display text-3xl tracking-tight">{label}</h3>
+      <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">{label}</h3>
       <p className="mt-4 text-[15px] leading-relaxed text-charcoal/70">
         {body}
       </p>

@@ -40,9 +40,9 @@ function ContactPage() {
     <main className="min-h-screen bg-cream text-charcoal pt-32 pb-32">
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">
-          Contact
+          CONTACT
         </p>
-        <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95]">
+        <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
           Let's begin.
         </h1>
         <p className="mt-10 text-lg leading-relaxed text-charcoal/70">
@@ -50,16 +50,16 @@ function ContactPage() {
         </p>
         <div className="mt-12 space-y-4 text-charcoal/80">
           <p>
-            <span className="block text-xs uppercase tracking-[0.2em] text-charcoal/40">
-              Email
+            <span className="block text-xs uppercase tracking-[0.22em] text-charcoal/40">
+              EMAIL
             </span>
             <a className="editorial-link" href="mailto:hello@eclectichive.com">
               hello@eclectichive.com
             </a>
           </p>
           <p>
-            <span className="block text-xs uppercase tracking-[0.2em] text-charcoal/40">
-              Studio
+            <span className="block text-xs uppercase tracking-[0.22em] text-charcoal/40">
+              STUDIO
             </span>
             Denver, Colorado
           </p>
@@ -72,7 +72,7 @@ function ContactPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              Frequently asked
+              FREQUENTLY ASKED
             </p>
             <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] tracking-tight">
               Working with the studio.

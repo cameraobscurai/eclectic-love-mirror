@@ -70,9 +70,9 @@ function GalleryPage() {
       >
         <div className="max-w-[1400px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            The Gallery
+            THE GALLERY
           </p>
-          <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1] tracking-tight">
+          <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1] uppercase tracking-[0.04em]">
             Selected Projects
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
@@ -90,7 +90,7 @@ function GalleryPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              Selected Projects
+              SELECTED PROJECTS
             </p>
 
             {hasProjects ? (
@@ -114,7 +114,7 @@ function GalleryPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              Begin
+              BEGIN
             </p>
             <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] tracking-tight max-w-2xl">
               Start a conversation about your project.
@@ -123,7 +123,7 @@ function GalleryPage() {
               to="/contact"
               className="mt-8 inline-block text-xs uppercase tracking-[0.22em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              Contact the studio
+              CONTACT THE STUDIO
             </Link>
           </div>
         </div>

@@ -3,10 +3,10 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/atelier", label: "Atelier by The Hive" },
-  { href: "/collection", label: "Hive Signature Collection" },
-  { href: "/gallery", label: "The Gallery" },
-  { href: "/contact", label: "Contact" },
+  { href: "/atelier", label: "ATELIER BY THE HIVE" },
+  { href: "/collection", label: "HIVE SIGNATURE COLLECTION" },
+  { href: "/gallery", label: "THE GALLERY" },
+  { href: "/contact", label: "CONTACT" },
 ] as const;
 
 // Pages with a light hero where the nav must invert to charcoal text.
@@ -180,7 +180,7 @@ export function Navigation() {
         <div className="flex flex-col h-full pt-24 px-6 pb-12">
           <nav className="flex-1 flex flex-col justify-center">
             <Link to="/" className="py-4 min-h-[44px] flex items-center">
-              <span className="text-cream font-display text-[7vw] sm:text-4xl md:text-5xl tracking-tight font-light italic hover:text-sand transition-colors">
+              <span className="text-cream font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light hover:text-sand transition-colors">
                 Home
               </span>
             </Link>
@@ -192,7 +192,7 @@ export function Navigation() {
               >
                 <span
                   className={cn(
-                    "font-display text-[7vw] sm:text-4xl md:text-5xl tracking-tight font-light italic transition-colors",
+                    "font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light transition-colors",
                     pathname === link.href
                       ? "text-cream"
                       : "text-cream/70 hover:text-cream"
