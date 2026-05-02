@@ -16,6 +16,10 @@ import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CategoryOverview } from "@/components/collection/CategoryOverview";
 import { InventoryIndexRail } from "@/components/collection/InventoryIndexRail";
+import {
+  getSubcategoryOptions,
+  getProductSubcategory,
+} from "@/lib/collection-subcategories";
 
 const INITIAL_BATCH = 48;
 const BATCH_INCREMENT = 48;
@@ -128,10 +132,10 @@ function CollectionPage() {
     return searchFiltered.filter((p) => p.categorySlug === category);
   }, [searchFiltered, category]);
 
-  // 3. Subcategory-filtered
+  // 3. Subcategory-filtered (derived UI taxonomy — title-keyword based)
   const subcategoryFiltered = useMemo(() => {
-    if (!sub) return categoryFiltered;
-    return categoryFiltered.filter((p) => p.subcategory === sub);
+    if (!sub || sub === "all") return categoryFiltered;
+    return categoryFiltered.filter((p) => getProductSubcategory(p) === sub);
   }, [categoryFiltered, sub]);
 
   // 4. Sorted (final list)
@@ -195,18 +199,26 @@ function CollectionPage() {
     [filtered, failedIds],
   );
 
-  // Subcategory facets — derived from category-filtered list (Local Love pattern)
-  const subcategoryFacets = useMemo(() => {
-    if (!category) return [] as { label: string; count: number }[];
-    const m = new Map<string, number>();
-    for (const p of categoryFiltered) {
-      if (!p.subcategory) continue;
-      m.set(p.subcategory, (m.get(p.subcategory) ?? 0) + 1);
+  // Subcategory options — derived UI taxonomy from the category-filtered list.
+  // Returns [] when the selected category has no meaningful derived groups,
+  // which the UI uses to hide the sub row entirely. Includes a leading "All".
+  const subcategoryOptions = useMemo(() => {
+    if (!category) return [];
+    return getSubcategoryOptions(category, categoryFiltered);
+  }, [category, categoryFiltered]);
+
+  // Self-heal: if the active sub no longer exists after category/search change,
+  // silently reset to "all" (empty in URL).
+  useEffect(() => {
+    if (!sub || sub === "all") return;
+    const stillValid = subcategoryOptions.some((o) => o.id === sub);
+    if (!stillValid) {
+      navigate({
+        search: (prev: CollectionSearch) => ({ ...prev, sub: "" }),
+        replace: true,
+      });
     }
-    return [...m.entries()]
-      .map(([label, count]) => ({ label, count }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [categoryFiltered, category]);
+  }, [sub, subcategoryOptions, navigate]);
 
   // Group public-ready products by category for overview mode preview bands.
   // Sorted by `scrapedOrder` (newest first) so overview shows fresh hero pieces.
@@ -357,7 +369,7 @@ function CollectionPage() {
         <div className="px-6 lg:px-12">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 py-3">
             <AnimatePresence mode="wait">
-              {!isOverviewMode && subcategoryFacets.length > 0 ? (
+              {!isOverviewMode && subcategoryOptions.length > 0 ? (
                 <motion.div
                   key={`sub-${category}`}
                   initial={
@@ -370,39 +382,28 @@ function CollectionPage() {
                 >
                   <LayoutGroup id={`collection-sub-pills-${category}`}>
                     <div className="flex gap-1 overflow-x-auto no-scrollbar snap-x">
-                      <CategoryPill
-                        label="All"
-                        active={!sub}
-                        variant="sub"
-                        layoutGroupId={`collection-pill-active-sub-${category}`}
-                        onClick={() =>
-                          navigate({
-                            search: (prev: CollectionSearch) => ({
-                              ...prev,
-                              sub: "",
-                            }),
-                            replace: true,
-                          })
-                        }
-                      />
-                      {subcategoryFacets.map((s) => (
-                        <CategoryPill
-                          key={s.label}
-                          label={`${s.label} (${s.count})`}
-                          active={sub === s.label}
-                          variant="sub"
-                          layoutGroupId={`collection-pill-active-sub-${category}`}
-                          onClick={() =>
-                            navigate({
-                              search: (prev: CollectionSearch) => ({
-                                ...prev,
-                                sub: s.label,
-                              }),
-                              replace: true,
-                            })
-                          }
-                        />
-                      ))}
+                      {subcategoryOptions.map((s) => {
+                        const isAll = s.id === "all";
+                        const active = isAll ? !sub || sub === "all" : sub === s.id;
+                        return (
+                          <CategoryPill
+                            key={s.id}
+                            label={isAll ? "All" : `${s.label} (${s.count})`}
+                            active={active}
+                            variant="sub"
+                            layoutGroupId={`collection-pill-active-sub-${category}`}
+                            onClick={() =>
+                              navigate({
+                                search: (prev: CollectionSearch) => ({
+                                  ...prev,
+                                  sub: isAll ? "" : s.id,
+                                }),
+                                replace: true,
+                              })
+                            }
+                          />
+                        );
+                      })}
                     </div>
                   </LayoutGroup>
                 </motion.div>
