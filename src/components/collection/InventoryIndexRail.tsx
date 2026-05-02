@@ -13,6 +13,16 @@ interface InventoryIndexRailProps {
 }
 
 /**
+ * Display-only label overrides for the rail. The catalog has two facets that
+ * both display as "Cocktail & Bar" (`cocktail-bar` and `bars1`). We keep the
+ * data immutable and disambiguate the label here so the rail never shows two
+ * identical entries.
+ */
+const RAIL_LABEL_OVERRIDES: Record<string, string> = {
+  bars1: "Bars",
+};
+
+/**
  * Sticky right-side editorial table of contents for the collection page.
  *
  * - Desktop only (parent gates with `hidden lg:block`).
