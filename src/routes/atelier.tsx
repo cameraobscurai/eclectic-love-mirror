@@ -63,7 +63,8 @@ export const Route = createFileRoute("/atelier")({
 function AtelierPage() {
   return (
     <main className="min-h-screen bg-cream text-charcoal pb-32">
-      {/* 1. HERO */}
+      {/* 1. HERO — type + spatial aperture. The aperture is a future hero
+          image slot (studio / hands / materials), not decoration. */}
       <section
         className="px-6 lg:px-12"
         style={{
@@ -71,22 +72,27 @@ function AtelierPage() {
           paddingBottom: "clamp(48px, 5vw, 80px)",
         }}
       >
-        <div className="max-w-[1400px] mx-auto">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            ATELIER BY THE HIVE
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
-            Imagined.
-            <br />
-            Refined.
-            <br />
-            Crafted.
-          </h1>
-          <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            A working studio for design, fabrication, and production. Every
-            object on a guest's table — every chair, lamp, drape, and bar — is
-            chosen, made, or finished here before it leaves the warehouse.
-          </p>
+        <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end">
+          <div className="md:col-span-7">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+              ATELIER BY THE HIVE
+            </p>
+            <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
+              Imagined.
+              <br />
+              Refined.
+              <br />
+              Crafted.
+            </h1>
+            <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
+              A working studio for design, fabrication, and production. Every
+              object on a guest's table — every chair, lamp, drape, and bar — is
+              chosen, made, or finished here before it leaves the warehouse.
+            </p>
+          </div>
+          <div className="md:col-span-5">
+            <MediaAperture ratio="4/5" />
+          </div>
         </div>
       </section>
 
