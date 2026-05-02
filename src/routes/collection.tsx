@@ -578,7 +578,7 @@ function CollectionPage() {
                 <LayoutGroup id="collection-grid">
                   <motion.ul
                     layout
-                    className={`grid ${gridCols} gap-3 lg:gap-4`}
+                    className={`grid ${gridCols} ${gridGapClasses}`}
                     transition={
                       reduced
                         ? { duration: 0 }
