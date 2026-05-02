@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
-import heroImage from "@/assets/hero-desert.jpg";
+import { amangiriHome } from "@/content/amangiri";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -80,15 +80,66 @@ function HomePage() {
         <div
           className="absolute inset-0 will-change-transform"
           style={{
-            transform: `translateY(${parallaxY}px) scale(1.15)`,
+            transform: `translateY(${parallaxY}px) scale(1.08)`,
             transformOrigin: "center top",
           }}
         >
+          {/*
+            Editorial asymmetric grid (Layout A):
+              - left column (40%) = tall texture anchor
+              - right column (60%) split:
+                  * top 60% = wide environment hero
+                  * bottom 40% = two object-detail vignettes
+            Hairline gaps in charcoal so the page reads as composed frames.
+            Single image on mobile keeps the front door clean and fast.
+          */}
+          <div className="absolute inset-0 hidden md:grid grid-cols-[40fr_60fr] gap-[2px] bg-charcoal">
+            <img
+              src={amangiriHome.leftTall.src}
+              alt={amangiriHome.leftTall.alt}
+              className="w-full h-full object-cover"
+              style={{ objectPosition: amangiriHome.leftTall.position }}
+              loading="eager"
+              decoding="async"
+            />
+            <div className="grid grid-rows-[60fr_40fr] gap-[2px] bg-charcoal">
+              <img
+                src={amangiriHome.topHero.src}
+                alt={amangiriHome.topHero.alt}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: amangiriHome.topHero.position }}
+                loading="eager"
+                decoding="async"
+              />
+              <div className="grid grid-cols-2 gap-[2px] bg-charcoal">
+                <img
+                  src={amangiriHome.detailOne.src}
+                  alt={amangiriHome.detailOne.alt}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: amangiriHome.detailOne.position }}
+                  loading="eager"
+                  decoding="async"
+                />
+                <img
+                  src={amangiriHome.detailTwo.src}
+                  alt={amangiriHome.detailTwo.alt}
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: amangiriHome.detailTwo.position }}
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile fallback — the hero environment fills the screen. */}
           <img
-            src={heroImage}
-            alt="Desert tablescape with woven chairs against sandstone cliffs"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "center 38%" }}
+            src={amangiriHome.topHero.src}
+            alt={amangiriHome.topHero.alt}
+            className="md:hidden absolute inset-0 w-full h-full object-cover"
+            style={{ objectPosition: "center 45%" }}
+            loading="eager"
+            decoding="async"
           />
         </div>
 
