@@ -34,8 +34,15 @@ export function ProductTile({
   });
 
   const [loaded, setLoaded] = useState(false);
-  const stagger = reduced ? 0 : Math.min(index * 0.035, 0.4);
+  // Capped per-index stagger — never delays a card more than 420ms regardless
+  // of how many products precede it. With AnimatePresence mode="popLayout"
+  // this only fires for newly-entering cards; reflowing cards skip it.
+  const stagger = reduced ? 0 : Math.min(index * 0.045, 0.42);
   const showInternals = near; // gates image, hover label, fetch
+
+  // Restrained spring — same family used by the grid container so cards and
+  // container reflow as one system. No bounce, no playful elasticity.
+  const layoutSpring = { type: "spring" as const, stiffness: 260, damping: 32, mass: 0.8 };
 
   return (
     <motion.li
@@ -45,15 +52,22 @@ export function ProductTile({
       initial={
         reduced
           ? { opacity: 1 }
-          : { opacity: 0, scale: 0.97, filter: "blur(6px)" }
+          : { opacity: 0, scale: 0.965, y: 10, filter: "blur(8px)" }
       }
-      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+      exit={
+        reduced
+          ? { opacity: 0 }
+          : { opacity: 0, scale: 0.965, y: -4, filter: "blur(8px)" }
+      }
       transition={{
-        duration: reduced ? 0 : 0.4,
+        // Enter / exit visual properties — short ease-out so the blur
+        // resolves crisply rather than spring-wobbling.
+        duration: reduced ? 0 : 0.45,
         delay: stagger,
         ease: [0.22, 1, 0.36, 1],
-        layout: { duration: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] },
+        // Layout (position) reflow — restrained spring family
+        layout: reduced ? { duration: 0 } : layoutSpring,
       }}
     >
       {showInternals ? (
