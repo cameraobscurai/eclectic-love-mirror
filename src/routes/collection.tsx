@@ -159,6 +159,25 @@ function CollectionPage() {
     return list;
   }, [subcategoryFiltered, sort, q]);
 
+  // Failed-image filter: per-session set of product ids whose primary image
+  // 404'd in-browser. They get hidden from the visible grid so we never show
+  // a broken-image icon. Data-layer count stays at 876.
+  const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
+  const markFailed = (id: string) =>
+    setFailedIds((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  const visibleProducts = useMemo(
+    () =>
+      failedIds.size === 0
+        ? filtered
+        : filtered.filter((p: CollectionProduct) => !failedIds.has(p.id)),
+    [filtered, failedIds],
+  );
+
   // Subcategory facets — derived from category-filtered list (Local Love pattern)
   const subcategoryFacets = useMemo(() => {
     if (!category) return [] as { label: string; count: number }[];
@@ -182,12 +201,12 @@ function CollectionPage() {
   };
   const quickViewIndex = useMemo(() => {
     if (!view) return -1;
-    return filtered.findIndex(
+    return visibleProducts.findIndex(
       (p: CollectionProduct) => p.id === view || p.slug === view,
     );
-  }, [filtered, view]);
+  }, [visibleProducts, view]);
   const quickViewProduct: CollectionProduct | null =
-    quickViewIndex >= 0 ? filtered[quickViewIndex] : null;
+    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
   // Body scroll lock when Quick View open
   useEffect(() => {
@@ -361,15 +380,15 @@ function CollectionPage() {
         <div className="px-6 lg:px-12 border-t border-charcoal/10">
           <div className="max-w-7xl mx-auto flex items-center justify-between py-2.5">
             <motion.p
-              key={filtered.length}
+              key={visibleProducts.length}
               initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: reduced ? 0 : 0.25 }}
               className="text-xs uppercase tracking-[0.2em] text-charcoal/60"
             >
               {q.trim()
-                ? `${filtered.length} ${filtered.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
-                : `${filtered.length} ${filtered.length === 1 ? "piece" : "pieces"}`}
+                ? `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
+                : `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`}
             </motion.p>
             {hasActiveFilters && (
               <button
@@ -386,7 +405,7 @@ function CollectionPage() {
       {/* Grid */}
       <section className="px-6 lg:px-12 pt-8">
         <div className="max-w-7xl mx-auto">
-          {filtered.length === 0 ? (
+          {visibleProducts.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-display text-3xl">No pieces found</p>
               <p className="mt-3 text-charcoal/60">Try adjusting your filters.</p>
@@ -401,12 +420,13 @@ function CollectionPage() {
             <LayoutGroup id="collection-grid">
               <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4">
                 <AnimatePresence mode="popLayout" initial={false}>
-                  {filtered.map((p: CollectionProduct, i: number) => (
+                  {visibleProducts.map((p: CollectionProduct, i: number) => (
                     <ProductTile
                       key={p.id}
                       product={p}
                       index={i}
                       onOpen={() => setQuickViewId(p.id)}
+                      onImageFailed={markFailed}
                     />
                   ))}
                 </AnimatePresence>
@@ -422,9 +442,9 @@ function CollectionPage() {
             key={quickViewProduct.id}
             product={quickViewProduct}
             hasPrev={quickViewIndex > 0}
-            hasNext={quickViewIndex < filtered.length - 1}
-            onPrev={() => setQuickViewId(filtered[quickViewIndex - 1]?.id ?? null)}
-            onNext={() => setQuickViewId(filtered[quickViewIndex + 1]?.id ?? null)}
+            hasNext={quickViewIndex < visibleProducts.length - 1}
+            onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
+            onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
             onClose={() => setQuickViewId(null)}
           />
         )}

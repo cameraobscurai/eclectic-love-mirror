@@ -168,5 +168,10 @@
   animation: scroll-down 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+@keyframes tile-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

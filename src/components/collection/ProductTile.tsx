@@ -6,22 +6,31 @@ interface ProductTileProps {
   product: CollectionProduct;
   index: number;
   onOpen: () => void;
+  /** Mark image as failed so the parent can hide this product for the session. */
+  onImageFailed?: (productId: string) => void;
 }
 
-const PRIORITY_COUNT = 18; // first 3 rows on desktop
-const HIGH_FETCH_COUNT = 6; // first row
+const EAGER_COUNT = 12; // first 12: loading="eager"
+const HIGH_FETCH_COUNT = 6; // first 6: fetchpriority="high"
+const LIGHT_RENDER_COUNT = 18; // first 18: render <img> immediately, rest IO-gated
 
-export function ProductTile({ product, index, onOpen }: ProductTileProps) {
+export function ProductTile({
+  product,
+  index,
+  onOpen,
+  onImageFailed,
+}: ProductTileProps) {
   const reduced = useReducedMotion();
-  const isPriority = index < PRIORITY_COUNT;
+  const isEager = index < EAGER_COUNT;
+  const renderImmediately = index < LIGHT_RENDER_COUNT;
 
-  // IO-gated render of the heavy <img>. Empty placeholder until in view.
-  const [inView, setInView] = useState(isPriority);
+  // IO-gated render of the heavy <img>. Skeleton holds layout until in view.
+  const [inView, setInView] = useState(renderImmediately);
   const [loaded, setLoaded] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
-    if (isPriority) return;
+    if (renderImmediately) return;
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -35,7 +44,7 @@ export function ProductTile({ product, index, onOpen }: ProductTileProps) {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [isPriority]);
+  }, [renderImmediately]);
 
   const stagger = reduced ? 0 : Math.min(index * 0.035, 0.4);
 
@@ -49,11 +58,7 @@ export function ProductTile({ product, index, onOpen }: ProductTileProps) {
           ? { opacity: 1 }
           : { opacity: 0, scale: 0.97, filter: "blur(6px)" }
       }
-      animate={
-        inView
-          ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-          : { opacity: 0 }
-      }
+      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
       exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
       transition={{
         duration: reduced ? 0 : 0.4,
@@ -64,34 +69,48 @@ export function ProductTile({ product, index, onOpen }: ProductTileProps) {
     >
       <button
         onClick={onOpen}
-        className="group block w-full text-left bg-white border border-transparent hover:border-charcoal/15 active:scale-[0.98] transition-all duration-150"
+        className="group block w-full text-left bg-white border border-transparent hover:border-charcoal/15 active:scale-[0.98] transition-[border-color,transform] duration-150"
       >
+        {/* Square card surface — same dimensions as skeleton, no layout shift */}
         <div className="relative aspect-square overflow-hidden bg-white">
+          {/* Skeleton plate — always present beneath the image so the box never
+              collapses while loading. Fades out the moment the image resolves. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-[linear-gradient(110deg,#f7f5f2_8%,#efece7_18%,#f7f5f2_33%)] bg-[length:200%_100%] animate-[tile-shimmer_2.4s_linear_infinite] transition-opacity duration-500"
+            style={{ opacity: loaded || !product.primaryImage ? 0 : 1 }}
+          />
+
           {product.primaryImage && inView ? (
             <img
               src={product.primaryImage.url}
               alt={product.primaryImage.altText ?? product.title}
-              loading={isPriority ? "eager" : "lazy"}
+              loading={isEager ? "eager" : "lazy"}
               decoding="async"
+              // fetchpriority is not in the official React DOM types yet; set
+              // via attribute so it ships to HTML without TS friction.
               ref={(el) => {
-                if (el)
-                  el.setAttribute(
-                    "fetchpriority",
-                    index < HIGH_FETCH_COUNT ? "high" : "low",
-                  );
+                if (!el) return;
+                el.setAttribute(
+                  "fetchpriority",
+                  index < HIGH_FETCH_COUNT ? "high" : "auto",
+                );
               }}
               onLoad={() => setLoaded(true)}
-              className="absolute inset-0 w-full h-full object-contain p-4 transition-all duration-500 ease-out group-hover:scale-[1.04]"
+              onError={() => onImageFailed?.(product.id)}
+              className="absolute inset-0 w-full h-full object-contain p-4 will-change-[filter,opacity,transform] group-hover:scale-[1.03]"
               style={{
-                filter: loaded || reduced ? "blur(0px)" : "blur(10px)",
-                opacity: loaded || reduced ? 1 : 0.6,
+                // Blur-up reveal — exact spec
+                filter: loaded || reduced ? "blur(0px)" : "blur(14px)",
+                opacity: loaded || reduced ? 1 : 0.55,
+                transform: loaded || reduced ? "scale(1)" : "scale(1.015)",
+                transition:
+                  "filter 600ms ease-out, opacity 600ms ease-out, transform 600ms ease-out",
               }}
             />
-          ) : !product.primaryImage ? (
-            <div className="absolute inset-0 grid place-items-center text-charcoal/30 text-xs">
-              No image
-            </div>
           ) : null}
+
+          {/* Hover label */}
           <div className="absolute inset-x-0 bottom-0 bg-charcoal/85 text-cream px-3 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <p className="text-xs leading-snug line-clamp-2">{product.title}</p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-cream/70">
