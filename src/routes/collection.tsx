@@ -490,18 +490,23 @@ function CollectionPage() {
             style={
               reduced
                 ? undefined
-                : { scale: heroScale, opacity: heroOpacity, y: heroY }
+                : {
+                    scale: heroScale,
+                    opacity: heroOpacity,
+                    y: heroY,
+                    transformOrigin: "left center",
+                  }
             }
-            className="text-center will-change-transform"
+            className="text-left will-change-transform"
           >
-            <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
-              HIVE SIGNATURE COLLECTION
-            </p>
             <h1
-              className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
-              style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+              className="font-display uppercase leading-[0.92] text-charcoal"
+              style={{
+                fontSize: "clamp(3rem, 9vw, 7.5rem)",
+                letterSpacing: "-0.005em",
+              }}
             >
-              The Collection
+              THE COLLECTION
             </h1>
           </motion.div>
         </section>
