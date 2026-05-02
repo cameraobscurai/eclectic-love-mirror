@@ -215,7 +215,7 @@ export function QuickViewModal({
             Mobile: clean stack, title above image, no overlap. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-cream flex flex-col md:block"
+          className="relative min-h-0 overflow-hidden bg-white flex flex-col md:block"
         >
           {/* Mobile-only title (block flow, no overlap) */}
           <h2
@@ -317,7 +317,7 @@ export function QuickViewModal({
 
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
-        <div className="border-t border-charcoal/15 bg-cream">
+        <div className="border-t border-charcoal/15 bg-white">
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs — all visible, horizontal scroll with soft fade edge,
                 quiet counter in the typographic register. */}
