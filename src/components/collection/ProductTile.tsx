@@ -122,10 +122,11 @@ export function ProductTile({
                 }}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                // absolute + inset padding gives uniform breathing room on
-                // every side; object-contain + object-bottom plants every
-                // silhouette on a shared baseline at the bottom of the frame.
-                className="absolute inset-0 h-full w-full object-contain object-bottom p-5 md:p-6 lg:p-7 will-change-opacity"
+                // No padding — the source assets already carry their own
+                // transparent margin, so any wrapper padding shrinks the
+                // subject to a tiny thumbnail. object-contain fills the
+                // cell; object-center keeps the silhouette balanced.
+                className="absolute inset-0 h-full w-full object-contain object-center will-change-opacity"
                 style={{
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
