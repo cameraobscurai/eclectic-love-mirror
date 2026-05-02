@@ -201,29 +201,54 @@ export function QuickViewModal({
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
         <div className="border-t border-charcoal/15 bg-cream">
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
-            {/* Thumbs */}
-            <div className="flex gap-2 order-2 md:order-1">
+            {/* Thumbs — all visible, horizontal scroll with soft fade edge,
+                quiet counter in the typographic register. */}
+            <div className="order-2 md:order-1 flex items-center gap-4 min-w-0">
               {product.images.length > 1 ? (
-                product.images.slice(0, 5).map((im, i) => (
-                  <button
-                    key={im.url}
-                    onClick={() => setImgIdx(i)}
-                    aria-label={`View image ${i + 1}`}
-                    aria-current={i === imgIdx}
-                    className={cn(
-                      "relative h-12 w-16 flex-shrink-0 bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                      i === imgIdx
-                        ? "border-charcoal"
-                        : "border-charcoal/15 hover:border-charcoal/45",
-                    )}
+                <>
+                  <div
+                    className="relative min-w-0"
+                    style={{
+                      maskImage:
+                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                      WebkitMaskImage:
+                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                    }}
                   >
-                    <img
-                      src={im.url}
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-contain p-1"
-                    />
-                  </button>
-                ))
+                    <div
+                      className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                    >
+                      {product.images.map((im, i) => (
+                        <button
+                          key={im.url}
+                          onClick={() => setImgIdx(i)}
+                          aria-label={`View image ${i + 1} of ${product.images.length}`}
+                          aria-current={i === imgIdx}
+                          className={cn(
+                            "relative h-12 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                            i === imgIdx
+                              ? "border-charcoal"
+                              : "border-charcoal/15 hover:border-charcoal/45",
+                          )}
+                        >
+                          <img
+                            src={im.url}
+                            alt=""
+                            className="absolute inset-0 w-full h-full object-contain p-1"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <span
+                    aria-hidden
+                    className="hidden sm:inline-block flex-shrink-0 text-[10px] uppercase tracking-[0.28em] text-charcoal/55 tabular-nums"
+                  >
+                    {String(imgIdx + 1).padStart(2, "0")}
+                    <span className="mx-1.5 text-charcoal/30">/</span>
+                    {String(product.images.length).padStart(2, "0")}
+                  </span>
+                </>
               ) : (
                 <div className="h-12 w-16" aria-hidden />
               )}
