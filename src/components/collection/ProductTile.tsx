@@ -78,18 +78,25 @@ export function ProductTile({
           aria-label={`Open ${product.title}`}
           className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
         >
-          {/* Invisible media frame — fixed responsive height keeps every
-              object optically aligned to the same baseline regardless of
-              intrinsic image ratio. No card, no border, no plate. */}
+          {/* Invisible media frame — height locked to a token so layout
+              never shifts regardless of image dimensions or load timing. */}
           <div
             className="relative w-full flex items-center justify-center bg-white overflow-hidden"
-            style={{ height: "clamp(150px, 13vw, 210px)" }}
+            style={{ height: "var(--archive-tile-media-h)" }}
           >
-            {/* Quiet skeleton — fades out on load. No cream plate. */}
+            {/* Quiet skeleton overlay.
+                - Priority tiles (skipBlur=true) start fully transparent so
+                  cached/crisp first paints never flash an overlay.
+                - Non-priority tiles start opaque and fade out fast (220ms)
+                  the moment the image reports loaded — it's covering load,
+                  not animating it. */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-white transition-opacity duration-500"
-              style={{ opacity: loaded || !product.primaryImage || skipBlur ? 0 : 1 }}
+              className="absolute inset-0 bg-white"
+              style={{
+                opacity: skipBlur || loaded || !product.primaryImage ? 0 : 1,
+                transition: "opacity 220ms ease-out",
+              }}
             />
 
             {product.primaryImage ? (
@@ -110,19 +117,32 @@ export function ProductTile({
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
                 className="max-w-full max-h-full w-auto h-auto object-contain will-change-[filter,opacity,transform] group-hover:scale-[1.04]"
-                style={{
-                  filter: loaded || reduced || skipBlur ? "blur(0px)" : "blur(14px)",
-                  opacity: loaded || reduced || skipBlur ? 1 : 0.55,
-                  transition:
-                    "filter 600ms ease-out, opacity 600ms ease-out, transform 500ms ease-out",
-                }}
+                style={
+                  skipBlur || reduced
+                    ? {
+                        // Priority + reduced-motion paths: no blur ramp at
+                        // all. The image renders crisp at first paint.
+                        filter: "none",
+                        opacity: 1,
+                        transition: "transform 500ms ease-out",
+                      }
+                    : {
+                        filter: loaded ? "blur(0px)" : "blur(14px)",
+                        opacity: loaded ? 1 : 0.55,
+                        transition:
+                          "filter 600ms ease-out, opacity 600ms ease-out, transform 500ms ease-out",
+                      }
+                }
               />
             ) : null}
           </div>
           {/* Title under image — quiet archive caption */}
           <p
-            className="mt-3 text-[13px] leading-[1.35] text-charcoal/70 line-clamp-2 group-hover:text-charcoal transition-colors"
-            style={{ maxWidth: "190px" }}
+            className="mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors"
+            style={{
+              maxWidth: "var(--archive-tile-caption-w)",
+              color: "var(--archive-text-quiet)",
+            }}
           >
             {product.title}
           </p>
@@ -132,7 +152,7 @@ export function ProductTile({
         <div aria-hidden className="block w-full bg-white">
           <div
             className="w-full bg-white"
-            style={{ height: "clamp(150px, 13vw, 210px)" }}
+            style={{ height: "var(--archive-tile-media-h)" }}
           />
           <div className="mt-3 h-[34px]" />
         </div>

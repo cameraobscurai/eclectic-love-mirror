@@ -423,9 +423,15 @@ function CollectionPage() {
       </section>
 
       {/* Sticky control bar — single row, 64px min height, baseline-aligned */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-black/[0.08]">
+      <div
+        className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y"
+        style={{ borderColor: "var(--archive-rule)" }}
+      >
         <div className="px-6 lg:px-12">
-          <div className="max-w-[1600px] mx-auto flex items-center gap-3 min-h-[64px] py-2">
+          <div
+            className="max-w-[1600px] mx-auto flex items-center gap-3 py-2"
+            style={{ minHeight: "var(--archive-utility-h)" }}
+          >
             {/* Mobile: filters trigger */}
             <button
               ref={filtersTriggerRef}
@@ -536,8 +542,8 @@ function CollectionPage() {
       {/* Body — left filter rail + grid */}
       <section className="px-6 lg:px-12 pt-10">
         <div
-          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[17.5rem_minmax(0,1fr)]"
-          style={{ columnGap: "clamp(48px, 5vw, 72px)", rowGap: "2.5rem" }}
+          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)]"
+          style={{ columnGap: "var(--archive-grid-gap-x)", rowGap: "2.5rem" }}
         >
           {/* Desktop filter rail */}
           <aside className="hidden lg:block">
@@ -559,7 +565,9 @@ function CollectionPage() {
               ref={resultsTopRef}
               id="results-top"
               aria-hidden
-              className="scroll-mt-32"
+              style={{
+                scrollMarginTop: "calc(var(--nav-h) + var(--archive-utility-h))",
+              }}
             />
 
             {visibleProducts.length === 0 ? (

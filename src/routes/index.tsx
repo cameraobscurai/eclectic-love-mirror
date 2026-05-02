@@ -60,8 +60,23 @@ function HomePage() {
   }, []);
 
   return (
-    <main id="main-content" className="bg-charcoal">
-      <section className="relative h-[100svh] flex flex-col overflow-hidden">
+    <main
+      id="main-content"
+      className="bg-charcoal lg:overflow-hidden"
+      style={{
+        // Desktop: clamp the front door to one viewport, no scroll possible.
+        // Mobile keeps natural height so it can scroll if the device is short.
+        overscrollBehavior: "none",
+      }}
+    >
+      <section
+        className="relative flex flex-col overflow-hidden"
+        style={{
+          height: "100dvh",
+          minHeight: "100dvh",
+          maxHeight: "100dvh",
+        }}
+      >
         <div
           className="absolute inset-0 will-change-transform"
           style={{
