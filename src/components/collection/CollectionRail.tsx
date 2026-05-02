@@ -34,7 +34,6 @@ interface CollectionRailProps {
  */
 export function CollectionRail({
   products,
-  counts,
   activeGroup,
   spyActiveGroup,
   onSelect,
