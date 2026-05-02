@@ -386,33 +386,72 @@ export type Database = {
       }
       scraped_urls: {
         Row: {
+          canonical_category_candidate: string | null
+          category_slug_candidate: string | null
+          classification_confidence: number | null
           classification_reason: string | null
+          co_flag: boolean | null
           depth: number | null
           discovered_at: string
+          first_segment: string | null
           id: string
+          is_category_index: boolean | null
+          is_likely_legacy: boolean | null
+          is_product_detail_candidate: boolean | null
+          is_subbrand: boolean | null
           kind: Database["public"]["Enums"]["scraped_url_kind"]
+          page_type: string | null
           path: string
+          path_depth: number | null
+          product_slug_candidate: string | null
           run_id: string
+          second_segment: string | null
           url: string
         }
         Insert: {
+          canonical_category_candidate?: string | null
+          category_slug_candidate?: string | null
+          classification_confidence?: number | null
           classification_reason?: string | null
+          co_flag?: boolean | null
           depth?: number | null
           discovered_at?: string
+          first_segment?: string | null
           id?: string
+          is_category_index?: boolean | null
+          is_likely_legacy?: boolean | null
+          is_product_detail_candidate?: boolean | null
+          is_subbrand?: boolean | null
           kind?: Database["public"]["Enums"]["scraped_url_kind"]
+          page_type?: string | null
           path: string
+          path_depth?: number | null
+          product_slug_candidate?: string | null
           run_id: string
+          second_segment?: string | null
           url: string
         }
         Update: {
+          canonical_category_candidate?: string | null
+          category_slug_candidate?: string | null
+          classification_confidence?: number | null
           classification_reason?: string | null
+          co_flag?: boolean | null
           depth?: number | null
           discovered_at?: string
+          first_segment?: string | null
           id?: string
+          is_category_index?: boolean | null
+          is_likely_legacy?: boolean | null
+          is_product_detail_candidate?: boolean | null
+          is_subbrand?: boolean | null
           kind?: Database["public"]["Enums"]["scraped_url_kind"]
+          page_type?: string | null
           path?: string
+          path_depth?: number | null
+          product_slug_candidate?: string | null
           run_id?: string
+          second_segment?: string | null
           url?: string
         }
         Relationships: [
