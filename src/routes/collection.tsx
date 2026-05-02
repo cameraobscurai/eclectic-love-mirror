@@ -74,13 +74,11 @@ function CollectionPage() {
   // Overview mode: category=all (i.e. no category) AND no active search query.
   const isOverviewMode = !category && !q.trim();
 
-  // Scroll the active primary pill into view on the MOBILE rail only — keeps
-  // every category reachable on narrow screens. On desktop, categories are
-  // rendered as a wrapping nav with no horizontal scroll, so this is a no-op.
+  // Scroll the active primary pill into view in the top rail (works on all
+  // sizes now — desktop top bar is also a compact horizontal scroll, with the
+  // right Inventory Index Rail providing always-visible orientation).
   const railRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(min-width: 768px)").matches) return; // desktop: skip
     const rail = railRef.current;
     if (!rail) return;
     const slug = category || "overview";
