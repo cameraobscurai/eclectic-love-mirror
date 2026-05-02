@@ -84,13 +84,12 @@ export function ProductTile({
             className="relative w-full flex items-center justify-center bg-white overflow-hidden"
             style={{ height: "var(--archive-tile-media-h)" }}
           >
-            {/* Quiet skeleton overlay — flat cream block that fades out the
-                moment the image reports loaded. Same behavior across every
-                tile (no special blur path for priority tiles), so rows look
-                consistent while the grid streams in. */}
+            {/* Quiet skeleton overlay — pure white so empty tiles read as
+                negative space (matches the page background) rather than as
+                placeholder blocks. Fades out the moment the image loads. */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-cream"
+              className="absolute inset-0 bg-white"
               style={{
                 opacity: loaded || !product.primaryImage ? 0 : 1,
                 transition: "opacity 240ms ease-out",
