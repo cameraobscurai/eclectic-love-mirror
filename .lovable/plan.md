@@ -1,42 +1,84 @@
-## Goal
+This is a navigation and page-structure correction, not a redesign. The motion system, ProductTile internals, Quick View, Load More, image behavior, failed-image hiding, URL state, and 876-count contract all stay exactly as they are.
 
-Make `/collection` use a pure white page background and pure white product cards, so the transparent-PNG product photos sit on white instead of the current cream (`#f5f2ed`). Match the look of `eclectichive.com/inventory`.
+## What changes
 
-## Scope
+### 1. Remove "All" as a category filter
+- Delete the `All (876)` pill from the primary category rail.
+- "Overview" is implicit: when no `category` and no `q`, the page renders the inventory overview.
+- Keep URL semantics:
+  - `/collection` → overview
+  - `/collection?category=lounge` → Lounge Seating grid
+  - `/collection?q=chair` → global search results
+- Reset/“back to overview” affordance: a small `← Back to overview` link near the category title in selected-category mode (and `Reset all` already covers full reset).
 
-- **Only** `src/routes/collection.tsx`.
-- **Not touched:** navigation, footer, home page, other routes, design tokens in `src/styles.css` (cream stays the global brand baseline — only this page goes white).
-- **Not touched:** any data, server functions, CSVs, storage, or DB.
+### 2. Replace desktop category rail with a wrapping category index
+Desktop (`md:` and up):
+- No horizontal scrolling. No fade edges. No `scrollIntoView`.
+- All 18 categories visible at once, wrapping into multiple rows.
+- Same restrained uppercase tracking, just rendered in a wrap layout (`flex flex-wrap gap-x-5 gap-y-2`).
+- Active category clearly indicated (charcoal text + underline, same visual vocabulary as today).
 
-## Changes (all in `src/routes/collection.tsx`)
+Mobile (`< md`):
+- Keep the existing horizontal scroll rail (with snap, fade edges, active `scrollIntoView`).
+- Mobile still includes "Overview" as the first item to return to `/collection`.
 
-1. **Page shell** (line 177): `bg-cream` → `bg-white`.
-2. **Sticky filter bar** (line 195): `bg-cream/95` → `bg-white/95`. Borders stay charcoal/10 for the thin divider line.
-3. **Active category pill** (line 355): keep `bg-charcoal text-cream` (the dark pill on white reads correctly — same as your reference site's "ALL" pill).
-4. **Product card** (line 389): already `bg-white` — keep. Tighten border from `border-charcoal/8` to `border-transparent` and only show a hairline border on hover (`hover:border-charcoal/15`) so cards float clean on white the way the eclectichive.com inventory page does. Image well (line 391) stays `bg-white`.
-5. **Quick View modal** (lines 458–459): `bg-cream` → `bg-white` for the panel and sticky header. Backdrop stays charcoal/70.
-6. **Quick View thumbnail wells** (line 513): already `bg-white` — keep.
-7. **Quick View "Add to Inquiry" button selected state** (line 551): `bg-cream text-charcoal border-charcoal` → `bg-white text-charcoal border-charcoal` so the "added" state reads on white.
-8. **Inquiry tray** (lines 581, 594): the floating tray stays `bg-charcoal text-cream` (it's an overlay, looks correct against any page color), but the inner "View Inquiry" button `bg-cream` → `bg-white` for consistency.
+Implementation: render two variants of the rail in `collection.tsx`, gated by Tailwind responsive classes (`md:hidden` for the scroll rail, `hidden md:flex` for the wrap index). Both share the same click handlers and active state, so URL behavior is identical.
 
-## What stays cream
+### 3. "Browse by Category" index on the overview page
+Above the preview bands, render a dedicated category index block:
+- Small eyebrow: `BROWSE BY CATEGORY`
+- A wrapping list of all categories.
+- Each item: display name + count + subtle arrow.
+- Layout: `grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4` of clean text rows, charcoal-on-white, 1px hairline divider on hover, no card chrome.
+- Clicking sets `category` param.
 
-- Global CSS tokens in `src/styles.css` (other pages, nav, footer continue to use the cream brand baseline).
-- Charcoal text everywhere — no contrast changes.
-- The dark inquiry tray overlay.
+This lives only in overview mode (replaces nothing existing — it's added in the body above the existing `CategoryOverview` preview bands).
 
-## Out of scope (explicit no-ops)
+### 4. Overview body
+No change in concept. Still:
+- hero/title
+- (new) Browse by Category index
+- existing `CategoryOverview` preview bands (heading, count, first 4 products, "View all →")
 
-- No image swaps. The Squarespace CDN URLs stay in place. The transparent PNGs will now read on white instead of cream — that's the whole point.
-- No manifest run, no storage reads, no DB writes.
-- No nav/footer color changes. If you want those white too, that's a separate decision (they appear on every page, not just `/collection`).
-- No layout, grid, sort, filter, or behavior changes.
+The `CategoryOverview` component already does this correctly — no edits needed beyond the parent passing the same props.
 
-## Verification after applying
+### 5. Selected-category mode
+Unchanged from current behavior:
+- subcategory row
+- search/sort row
+- animated grid (`LayoutGroup` + `AnimatePresence` + `popLayout`)
+- Load More (48 / +48)
+- count text rules already in place
+- Add a small `← All categories` text link above the subcategory row that clears `category` and `sub`.
 
-- `/collection` page background pure white.
-- Product tiles white, transparent-PNG products read clean on white (matches your `eclectichive.com/inventory` screenshot).
-- Sticky filter bar still legible, charcoal divider still visible.
-- Quick View modal opens on white.
-- Inquiry tray still readable.
-- No console errors, no layout shift.
+### 6. Search mode
+Unchanged — `q` already filters globally when no category, scoped within category when one is set.
+
+### 7. Header/filter layout cleanup
+- The sticky filter header keeps the primary category rail/index.
+- In overview mode the sub row + search/sort still render so users can search globally from the doorway.
+- Count row stays. In overview mode it reads `876 pieces · browse by category`, which is already correct.
+
+### 8. Files touched
+- `src/routes/collection.tsx` — remove "All" pill, render mobile scroll rail + desktop wrap index, add "Browse by Category" block above `CategoryOverview` in overview mode, add small back-to-overview link in category mode, remove desktop-side `scrollIntoView` effect (keep for mobile rail only via a media query check).
+- `src/components/collection/CategoryOverview.tsx` — no functional change; may receive a small prop or wrapper for consistency. (Likely no edit.)
+- (Optional) extract `CategoryIndex` into `src/components/collection/CategoryIndex.tsx` to keep `collection.tsx` readable. Used by both the desktop sticky rail and the overview "Browse by Category" block (with two visual variants: `compact` for header, `expanded` for overview body).
+
+### 9. What I will NOT touch
+- `ProductTile.tsx` (image priority, blur-up, deferred rendering, failed-image hiding)
+- `useNearViewport`
+- Framer Motion grid wrappers / spring config / stagger
+- Quick View modal and URL param
+- InquiryTray
+- `phase3-catalog.json` and the 876 count
+- Sort, search debounce, subcategory facet derivation
+- Visual language (colors, type, spacing tokens)
+
+### 10. Acceptance check after change
+- `/collection` shows overview with no "All" pill anywhere.
+- Desktop shows every category at once, no horizontal clipping, no mouse scroll-strip.
+- Mobile still scrolls categories horizontally with snap + active-into-view.
+- `/collection?category=lounge` shows the existing animated grid + Load More.
+- `/collection?q=chair` shows global search results.
+- Public-ready count stays at 876.
+- No broken images, no raw slugs, no prices, no cart language.

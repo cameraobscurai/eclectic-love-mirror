@@ -15,6 +15,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CategoryOverview } from "@/components/collection/CategoryOverview";
+import { CategoryIndex } from "@/components/collection/CategoryIndex";
 
 const INITIAL_BATCH = 48;
 const BATCH_INCREMENT = 48;
@@ -73,13 +74,16 @@ function CollectionPage() {
   // Overview mode: category=all (i.e. no category) AND no active search query.
   const isOverviewMode = !category && !q.trim();
 
-  // Scroll the active primary pill into view when category changes — keeps
-  // every category reachable on narrow screens.
+  // Scroll the active primary pill into view on the MOBILE rail only — keeps
+  // every category reachable on narrow screens. On desktop, categories are
+  // rendered as a wrapping nav with no horizontal scroll, so this is a no-op.
   const railRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(min-width: 768px)").matches) return; // desktop: skip
     const rail = railRef.current;
     if (!rail) return;
-    const slug = category || "all";
+    const slug = category || "overview";
     const target = rail.querySelector<HTMLElement>(
       `[data-pill-slug="${slug}"]`,
     );
@@ -287,55 +291,35 @@ function CollectionPage() {
 
       {/* Sticky filter header */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Primary category row with shared layoutId underline + fade edges */}
+        {/* Primary category navigation */}
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
-          <LayoutGroup id="collection-primary-pills">
-            <div className="max-w-7xl mx-auto relative">
-              {/* edge fades */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
-              />
-              <div
-                ref={railRef}
-                className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
-              >
-                <div data-pill-slug="all" className="snap-start">
-                  <CategoryPill
-                    label={`All (${total})`}
-                    active={!category}
-                    layoutGroupId="collection-pill-active-primary"
-                    onClick={() =>
-                      navigate({
-                        search: (prev: CollectionSearch) => ({
-                          ...prev,
-                          category: "",
-                          sub: "",
-                        }),
-                        replace: true,
-                      })
-                    }
-                  />
-                </div>
-                {facets.map((f: CategoryFacet) => (
-                  <div
-                    key={f.slug}
-                    data-pill-slug={f.slug}
-                    className="snap-start"
-                  >
+          <div className="max-w-7xl mx-auto">
+            {/* MOBILE: horizontal scroll rail with "Overview" first.
+                "All" is NOT a category — Overview returns to /collection. */}
+            <LayoutGroup id="collection-mobile-pills">
+              <div className="md:hidden relative">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
+                />
+                <div
+                  ref={railRef}
+                  className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
+                >
+                  <div data-pill-slug="overview" className="snap-start">
                     <CategoryPill
-                      label={`${f.display} (${f.count})`}
-                      active={category === f.slug}
-                      layoutGroupId="collection-pill-active-primary"
+                      label="Overview"
+                      active={!category}
+                      layoutGroupId="collection-pill-active-mobile"
                       onClick={() =>
                         navigate({
                           search: (prev: CollectionSearch) => ({
                             ...prev,
-                            category: f.slug,
+                            category: "",
                             sub: "",
                           }),
                           replace: true,
@@ -343,10 +327,53 @@ function CollectionPage() {
                       }
                     />
                   </div>
-                ))}
+                  {facets.map((f: CategoryFacet) => (
+                    <div
+                      key={f.slug}
+                      data-pill-slug={f.slug}
+                      className="snap-start"
+                    >
+                      <CategoryPill
+                        label={`${f.display} (${f.count})`}
+                        active={category === f.slug}
+                        layoutGroupId="collection-pill-active-mobile"
+                        onClick={() =>
+                          navigate({
+                            search: (prev: CollectionSearch) => ({
+                              ...prev,
+                              category: f.slug,
+                              sub: "",
+                            }),
+                            replace: true,
+                          })
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
+            </LayoutGroup>
+
+            {/* DESKTOP: wrapping category nav — every category visible at once,
+                no horizontal scrolling, no clipping. */}
+            <div className="hidden md:block">
+              <CategoryIndex
+                facets={facets}
+                activeSlug={category}
+                onSelect={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: true,
+                  })
+                }
+                variant="compact"
+              />
             </div>
-          </LayoutGroup>
+          </div>
         </div>
 
         {/* Sub row + search/sort — sub pills hidden in overview mode */}
@@ -472,22 +499,39 @@ function CollectionPage() {
       <section className="px-6 lg:px-12 pt-8">
         <div className="max-w-7xl mx-auto">
           {isOverviewMode ? (
-            <CategoryOverview
-              facets={facets}
-              productsByCategory={productsByCategory}
-              onSelectCategory={(slug) =>
-                navigate({
-                  search: (prev: CollectionSearch) => ({
-                    ...prev,
-                    category: slug,
-                    sub: "",
-                  }),
-                  replace: false,
-                })
-              }
-              onOpenProduct={(id) => setQuickViewId(id)}
-              onImageFailed={markFailed}
-            />
+            <div className="space-y-16">
+              <CategoryIndex
+                facets={facets}
+                activeSlug={category}
+                onSelect={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: false,
+                  })
+                }
+                variant="expanded"
+              />
+              <CategoryOverview
+                facets={facets}
+                productsByCategory={productsByCategory}
+                onSelectCategory={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: false,
+                  })
+                }
+                onOpenProduct={(id) => setQuickViewId(id)}
+                onImageFailed={markFailed}
+              />
+            </div>
           ) : visibleProducts.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-display text-3xl">No pieces found</p>
@@ -501,6 +545,25 @@ function CollectionPage() {
             </div>
           ) : (
             <>
+              {category && (
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <button
+                    onClick={() =>
+                      navigate({
+                        search: (prev: CollectionSearch) => ({
+                          ...prev,
+                          category: "",
+                          sub: "",
+                        }),
+                        replace: false,
+                      })
+                    }
+                    className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-charcoal transition-colors"
+                  >
+                    ← All categories
+                  </button>
+                </div>
+              )}
               <LayoutGroup id="collection-grid">
                 <motion.ul
                   layout
