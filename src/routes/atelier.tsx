@@ -63,7 +63,10 @@ export const Route = createFileRoute("/atelier")({
 
 function AtelierPage() {
   return (
-    <main className="min-h-screen bg-cream text-charcoal pb-32">
+    <main
+      className="min-h-screen bg-cream text-charcoal pb-32"
+      style={{ paddingTop: "var(--nav-h)" }}
+    >
       {/* 1. HERO — type + spatial aperture. The aperture is a future hero
           image slot (studio / hands / materials), not decoration. */}
       <section

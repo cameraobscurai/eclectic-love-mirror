@@ -35,7 +35,10 @@ export const Route = createFileRoute("/gallery")({
 
 function GalleryPage() {
   return (
-    <main className="min-h-screen bg-charcoal text-cream pb-32">
+    <main
+      className="min-h-screen bg-charcoal text-cream pb-32"
+      style={{ paddingTop: "var(--nav-h)" }}
+    >
       {/* Hero */}
       <section
         className="px-6 lg:px-12"
