@@ -596,12 +596,13 @@ function CollectionPage() {
             />
 
             {visibleProducts.length === 0 ? (
-              <div className="py-32 text-center">
-                <p className="font-display text-3xl">No pieces found</p>
-                <p className="mt-3 text-charcoal/60">Try adjusting your filters.</p>
+              <div className="py-32">
+                <p className="text-[15px] leading-relaxed text-charcoal/70">
+                  No pieces match the current filters.
+                </p>
                 <button
                   onClick={resetAll}
-                  className="mt-6 text-xs uppercase tracking-[0.2em] underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                  className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                 >
                   Clear All
                 </button>
