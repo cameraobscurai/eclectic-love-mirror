@@ -23,6 +23,7 @@ import { CollectionFilterRail } from "@/components/collection/CollectionFilterRa
 import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { useScrollIdle } from "@/hooks/useScrollIdle";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -72,10 +73,40 @@ export const Route = createFileRoute("/collection")({
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
+  // Paint a skeleton matching real layout immediately on slow connections,
+  // suppress flicker on fast ones.
+  pendingComponent: CollectionSkeleton,
+  pendingMs: 0,
+  pendingMinMs: 150,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => <div className="p-12">Not found</div>,
   component: CollectionPage,
 });
+
+function CollectionSkeleton() {
+  return (
+    <main className="min-h-screen bg-white">
+      {/* Sticky utility bar placeholder — matches real header height to
+          prevent layout shift on hydration. */}
+      <div
+        className="sticky z-30 bg-white border-b border-charcoal/10"
+        style={{
+          top: "var(--nav-h)",
+          height: "var(--archive-utility-h)",
+        }}
+      />
+      <div className="px-6 lg:px-12 pt-10">
+        <div className="mx-auto" style={{ maxWidth: "var(--archive-canvas-max)" }}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-charcoal/10">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-white aspect-[4/3]" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
 
 function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
@@ -451,6 +482,10 @@ function CollectionPage() {
   useMotionValueEvent(scrollY, "change", (v) => {
     setStickyMarkActive(v > 180);
   });
+  // Per spec: nothing animates while the user is scrolling. Gate scroll-driven
+  // transforms so they only apply once the scroll thread has gone idle.
+  const scrollIdle = useScrollIdle(150);
+  const heroAnimated = scrollIdle && !reduced;
 
   // Sticky wordmark text: section + count when filtered or scroll-spied.
   // The global nav already labels the page as "HIVE SIGNATURE COLLECTION";
@@ -490,14 +525,14 @@ function CollectionPage() {
         >
           <motion.div
             style={
-              reduced
-                ? undefined
-                : {
+              heroAnimated
+                ? {
                     scale: heroScale,
                     opacity: heroOpacity,
                     y: heroY,
                     transformOrigin: "left center",
                   }
+                : undefined
             }
             className="text-left will-change-transform"
           >
