@@ -21,6 +21,7 @@ import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
 import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
