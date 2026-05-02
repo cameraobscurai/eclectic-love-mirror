@@ -306,6 +306,8 @@ function CollectionPage() {
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
       replace: false,
+      // Opening / closing Quick View must never scroll the underlying grid.
+      resetScroll: false,
     });
   };
   const quickViewIndex = useMemo(() => {
