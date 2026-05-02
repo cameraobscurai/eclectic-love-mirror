@@ -565,7 +565,9 @@ function CollectionPage() {
               ref={resultsTopRef}
               id="results-top"
               aria-hidden
-              className="scroll-mt-32"
+              style={{
+                scrollMarginTop: "calc(var(--nav-h) + var(--archive-utility-h))",
+              }}
             />
 
             {visibleProducts.length === 0 ? (
