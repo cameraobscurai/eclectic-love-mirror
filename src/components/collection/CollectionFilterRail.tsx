@@ -94,15 +94,21 @@ export function CollectionFilterRail({
       </div>
 
       <ul className="space-y-0">
-        <FilterRow
-          label="All Inventory"
-          count={totalCount}
-          active={!activeGroup}
-          onClick={() => onSelect("")}
-          isSheet={isSheet}
-        />
+        {/* Return-to-overview link — only visible when a category is pinned.
+            "All Inventory" used to live here as a destination; it isn't one
+            anymore. Returning sends the user back to the category gallery. */}
+        {activeGroup && (
+          <li className="pb-3">
+            <button
+              onClick={() => onSelect("")}
+              className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+            >
+              ← All Categories
+            </button>
+          </li>
+        )}
 
-        {orderedGroupIds.length > 0 && <li className="pt-3" aria-hidden />}
+        {orderedGroupIds.length > 0 && !activeGroup && <li className="pt-1" aria-hidden />}
         {orderedGroupIds.map((id) => {
           const count = counts.get(id) ?? 0;
           // Safety-net categories render in a quieter weight — preserves the
