@@ -76,10 +76,15 @@ export function ProductTile({
         <button
           onClick={onOpen}
           aria-label={`Open ${product.title}`}
-          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-transform duration-150"
+          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
         >
-          {/* Square object surface — pure white, no card panel, no border */}
-          <div className="relative aspect-square overflow-hidden bg-white">
+          {/* Invisible media frame — fixed responsive height keeps every
+              object optically aligned to the same baseline regardless of
+              intrinsic image ratio. No card, no border, no plate. */}
+          <div
+            className="relative w-full flex items-center justify-center bg-white overflow-hidden"
+            style={{ height: "clamp(150px, 13vw, 210px)" }}
+          >
             {/* Quiet skeleton — fades out on load. No cream plate. */}
             <div
               aria-hidden
@@ -104,7 +109,7 @@ export function ProductTile({
                 }}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                className="absolute inset-0 w-full h-full object-contain p-4 will-change-[filter,opacity,transform] transition-transform duration-500 group-hover:scale-[1.04]"
+                className="max-w-full max-h-full w-auto h-auto object-contain will-change-[filter,opacity,transform] group-hover:scale-[1.04]"
                 style={{
                   filter: loaded || reduced || skipBlur ? "blur(0px)" : "blur(14px)",
                   opacity: loaded || reduced || skipBlur ? 1 : 0.55,
@@ -114,16 +119,22 @@ export function ProductTile({
               />
             ) : null}
           </div>
-          {/* Title under image — no chips, no drawer, no overlay */}
-          <p className="mt-2 text-[13px] leading-snug text-charcoal/75 line-clamp-2 group-hover:text-charcoal transition-colors">
+          {/* Title under image — quiet archive caption */}
+          <p
+            className="mt-3 text-[13px] leading-[1.35] text-charcoal/70 line-clamp-2 group-hover:text-charcoal transition-colors"
+            style={{ maxWidth: "190px" }}
+          >
             {product.title}
           </p>
         </button>
       ) : (
         // Deferred shell — pure white, no shimmer plate
         <div aria-hidden className="block w-full bg-white">
-          <div className="relative aspect-square bg-white" />
-          <div className="mt-2 h-[34px]" />
+          <div
+            className="w-full bg-white"
+            style={{ height: "clamp(150px, 13vw, 210px)" }}
+          />
+          <div className="mt-3 h-[34px]" />
         </div>
       )}
     </motion.li>
