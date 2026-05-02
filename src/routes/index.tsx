@@ -1,8 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
-import { amangiriHome } from "@/content/amangiri";
+// Home is intentionally empty of imagery — the four apertures below define
+// the layout contract. Real photography drops in once the composition is
+// approved. See `HomeAperture` below for the dark-variant frame language
+// (mirrors `MediaAperture` used on Atelier and Gallery).
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,31 +37,15 @@ const DESTINATIONS = [
 function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [parallaxY, setParallaxY] = useState(0);
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(t);
   }, []);
 
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-    const onScroll = () => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        const y = Math.min(window.scrollY, window.innerHeight);
-        setParallaxY(y * 0.3);
-        rafRef.current = null;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+  // No scroll-driven parallax: the page is locked to one viewport with no
+  // imagery. The parallax effect was tied to the hero photo and is no longer
+  // meaningful here.
 
   return (
     <main
@@ -77,79 +65,43 @@ function HomePage() {
           maxHeight: "100dvh",
         }}
       >
-        <div
-          className="absolute inset-0 will-change-transform"
-          style={{
-            transform: `translateY(${parallaxY}px) scale(1.08)`,
-            transformOrigin: "center top",
-          }}
-        >
-          {/*
-            Editorial asymmetric grid (Layout A):
-              - left column (40%) = tall texture anchor
-              - right column (60%) split:
-                  * top 60% = wide environment hero
-                  * bottom 40% = two object-detail vignettes
-            Hairline gaps in charcoal so the page reads as composed frames.
-            Single image on mobile keeps the front door clean and fast.
-          */}
+        {/*
+          Editorial asymmetric grid (Layout A) — empty frames only.
+            - left column (40%) = tall texture anchor
+            - right column (60%) split:
+                * top 60% = wide environment hero
+                * bottom 40% = two object-detail vignettes
+          Hairline gaps in charcoal so the page reads as four mounted apertures
+          behind the wordmark + CTA bar. No imagery until the composition is
+          approved. Mobile collapses to a single full-bleed aperture.
+        */}
+        <div className="absolute inset-0">
           <div className="absolute inset-0 hidden md:grid grid-cols-[40fr_60fr] gap-[2px] bg-charcoal">
-            <img
-              src={amangiriHome.leftTall.src}
-              alt={amangiriHome.leftTall.alt}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: amangiriHome.leftTall.position }}
-              loading="eager"
-              decoding="async"
-            />
+            <HomeAperture label="LEFT · TEXTURE" />
             <div className="grid grid-rows-[60fr_40fr] gap-[2px] bg-charcoal">
-              <img
-                src={amangiriHome.topHero.src}
-                alt={amangiriHome.topHero.alt}
-                className="w-full h-full object-cover"
-                style={{ objectPosition: amangiriHome.topHero.position }}
-                loading="eager"
-                decoding="async"
-              />
+              <HomeAperture label="TOP · ENVIRONMENT" />
               <div className="grid grid-cols-2 gap-[2px] bg-charcoal">
-                <img
-                  src={amangiriHome.detailOne.src}
-                  alt={amangiriHome.detailOne.alt}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: amangiriHome.detailOne.position }}
-                  loading="eager"
-                  decoding="async"
-                />
-                <img
-                  src={amangiriHome.detailTwo.src}
-                  alt={amangiriHome.detailTwo.alt}
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: amangiriHome.detailTwo.position }}
-                  loading="eager"
-                  decoding="async"
-                />
+                <HomeAperture label="DETAIL · ONE" />
+                <HomeAperture label="DETAIL · TWO" />
               </div>
             </div>
           </div>
 
-          {/* Mobile fallback — the hero environment fills the screen. */}
-          <img
-            src={amangiriHome.topHero.src}
-            alt={amangiriHome.topHero.alt}
-            className="md:hidden absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: "center 45%" }}
-            loading="eager"
-            decoding="async"
-          />
+          {/* Mobile — single aperture so the front door stays calm. */}
+          <div className="md:hidden absolute inset-0">
+            <HomeAperture label="HERO" />
+          </div>
         </div>
 
-        <div className="absolute inset-0 bg-charcoal/[0.02]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_center,transparent_40%,rgba(20,20,20,0.3)_100%)]" />
+        {/* Subtle bottom fade preserves separation between the empty grid and
+            the LiquidGlass CTA bar. The full radial vignette and charcoal
+            wash from the photo era are removed — without imagery they only
+            muddied the empty frames. They will return with real photography. */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, transparent 75%, rgba(28,26,24,0.35) 88%, rgba(28,26,24,0.6) 100%)",
+              "linear-gradient(to bottom, transparent 0%, transparent 78%, rgba(28,26,24,0.45) 100%)",
           }}
         />
 
@@ -254,3 +206,50 @@ function HomePage() {
     </main>
   );
 }
+
+// ---------------------------------------------------------------------------
+// HomeAperture
+//
+// Dark-variant of MediaAperture for the charcoal home page. Renders an empty
+// editorial frame with:
+//   - a warm desaturated wash (sand/10 over charcoal) so the cell reads as a
+//     mounted surface, not a black box
+//   - an inset cream/10 hairline so the frame's edge is felt without shouting
+//   - a tiny ALL-CAPS slot label so the layout's intent is legible while we
+//     decide on imagery (mirrors Atelier's labeled apertures)
+//
+// When real photography is approved, swap the inner contents for an <img>
+// with object-cover; the slot positions and ratios stay identical.
+// ---------------------------------------------------------------------------
+function HomeAperture({ label }: { label: string }) {
+  return (
+    <div
+      className="relative w-full h-full overflow-hidden"
+      style={{
+        backgroundColor: "color-mix(in oklab, var(--sand) 10%, var(--charcoal))",
+      }}
+    >
+      {/* Inset hairline — print-mount feel on dark ground. */}
+      <div
+        aria-hidden="true"
+        className="absolute pointer-events-none"
+        style={{
+          top: "10px",
+          right: "10px",
+          bottom: "10px",
+          left: "10px",
+          border: "1px solid color-mix(in oklab, var(--cream) 10%, transparent)",
+        }}
+      />
+      {/* Slot label — quiet, top-left, only there so we can read the layout
+          contract while frames are empty. Removed once imagery lands. */}
+      <span
+        aria-hidden="true"
+        className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.28em] text-cream/30"
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
