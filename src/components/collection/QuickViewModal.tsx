@@ -52,12 +52,16 @@ export function QuickViewModal({
       aria-label={product.title}
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6"
     >
+      {/* Layer 1 — frosted scrim. The glass belongs to the scrim so the
+          object behind feels lifted into focus. The modal body itself stays
+          a solid cream/white surface (no glass gimmick on inspection). */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: reduced ? 0 : 0.2 }}
-        className="absolute inset-0 bg-charcoal/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-charcoal/40 backdrop-blur-md"
+        style={{ WebkitBackdropFilter: "blur(16px)" }}
         onClick={onClose}
         aria-hidden
       />
