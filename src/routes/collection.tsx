@@ -23,6 +23,7 @@ interface CollectionSearch {
   sub: string;
   q: string;
   sort: SortKey;
+  view: string;
 }
 
 const searchSchema = z.object({
@@ -30,6 +31,7 @@ const searchSchema = z.object({
   sub: fallback(z.string(), "").default(""),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
+  view: fallback(z.string(), "").default(""),
 });
 
 export const Route = createFileRoute("/collection")({
@@ -60,7 +62,7 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, facets, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { category, sub, q, sort } = search;
+  const { category, sub, q, sort, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
@@ -170,15 +172,20 @@ function CollectionPage() {
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [categoryFiltered, category]);
 
-  // Quick view
-  const [quickViewId, setQuickViewId] = useState<string | null>(null);
-  const quickViewIndex = useMemo(
-    () =>
-      quickViewId
-        ? filtered.findIndex((p: CollectionProduct) => p.id === quickViewId)
-        : -1,
-    [filtered, quickViewId],
-  );
+  // Quick view — URL-driven via ?view=<id|slug>. Back button closes it,
+  // direct links open the object, missing/non-public ids are ignored.
+  const setQuickViewId = (id: string | null) => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
+      replace: false,
+    });
+  };
+  const quickViewIndex = useMemo(() => {
+    if (!view) return -1;
+    return filtered.findIndex(
+      (p: CollectionProduct) => p.id === view || p.slug === view,
+    );
+  }, [filtered, view]);
   const quickViewProduct: CollectionProduct | null =
     quickViewIndex >= 0 ? filtered[quickViewIndex] : null;
 
@@ -195,7 +202,7 @@ function CollectionPage() {
   const resetAll = () => {
     setQLocal("");
     navigate({
-      search: () => ({ category: "", sub: "", q: "", sort: "type" as SortKey }),
+      search: () => ({ category: "", sub: "", q: "", sort: "type" as SortKey, view: "" }),
       replace: true,
     });
   };
