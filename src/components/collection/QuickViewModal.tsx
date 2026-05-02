@@ -58,6 +58,10 @@ export function QuickViewModal({
     setShowScale(false);
   }, [product.id]);
 
+  useEffect(() => {
+    setImgNatural(null);
+  }, [product.id, imgIdx]);
+
   // Track stage width for Pretext fit-to-lines measurement.
   useEffect(() => {
     const el = stageRef.current;
@@ -69,6 +73,42 @@ export function QuickViewModal({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  // Track the measurement zone's actual rendered size so we can compute the
+  // image's contained-fit footprint (object-contain leaves empty gutters
+  // we need to subtract before drawing rules).
+  useEffect(() => {
+    const el = zoneRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const r = entries[0]?.contentRect;
+      if (r) setZoneSize({ w: r.width, h: r.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Compute the rendered image box inside the zone given object-contain.
+  // This is the actual furniture footprint — what the rules should wrap.
+  const imageBox = useMemo(() => {
+    if (!imgNatural || zoneSize.w === 0 || zoneSize.h === 0) return null;
+    const zoneAR = zoneSize.w / zoneSize.h;
+    const imgAR = imgNatural.w / imgNatural.h;
+    let w: number, h: number;
+    if (imgAR > zoneAR) {
+      // image is wider than zone — pinned to width
+      w = zoneSize.w;
+      h = zoneSize.w / imgAR;
+    } else {
+      // image is taller — pinned to height
+      h = zoneSize.h;
+      w = zoneSize.h * imgAR;
+    }
+    // object-bottom: image sits at the bottom of the zone, centered horizontally
+    const left = (zoneSize.w - w) / 2;
+    const top = zoneSize.h - h;
+    return { left, top, width: w, height: h };
+  }, [imgNatural, zoneSize]);
 
   // Title sits behind the image at top-left. Width capped at 78% of the stage
   // so it never reaches under the measurement zone. Visual ceiling is also
