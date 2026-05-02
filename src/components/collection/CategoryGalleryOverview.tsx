@@ -6,6 +6,7 @@ import {
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { FitText } from "@/components/ui/FitText";
 
 interface CategoryGalleryOverviewProps {
   /**
