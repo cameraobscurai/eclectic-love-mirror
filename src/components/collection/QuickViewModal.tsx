@@ -209,6 +209,26 @@ export function QuickViewModal({
               )}
             </AnimatePresence>
           </div>
+
+          {/* Scale Rule — anchored to the bottom of the image envelope. Width
+              matches the image's max-w cap so the rule sits visually beneath
+              the silhouette. Hidden until toggled. */}
+          <AnimatePresence>
+            {showScale && widthInches !== null && (
+              <motion.div
+                key="scale-rule"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduced ? 0 : 0.18 }}
+                className="absolute inset-x-0 bottom-3 md:bottom-6 z-20 px-6 md:px-16 pointer-events-none"
+              >
+                <div className="mx-auto w-[78%] md:w-[52%]">
+                  <ScaleRule widthInches={widthInches} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
