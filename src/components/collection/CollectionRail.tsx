@@ -103,7 +103,6 @@ export function CollectionRail({
       <ul role="list">
         {BROWSE_GROUP_ORDER.map((id) => {
           const label = BROWSE_GROUP_LABELS[id];
-          const count = counts.get(id) ?? 0;
           const thumb = thumbByGroup.get(id) ?? null;
           const isActive = activeGroup === id;
           const isSpyHighlighted = !isActive && spyHighlightId === id;
@@ -112,7 +111,6 @@ export function CollectionRail({
             <li key={id}>
               <CategoryRow
                 label={label}
-                count={count}
                 thumbSrc={thumb}
                 isActive={isActive}
                 isSpyHighlighted={isSpyHighlighted}
