@@ -16,7 +16,7 @@ interface GalleryProjectPanelProps {
 }
 
 export function GalleryProjectPanel({ project, onClose }: GalleryProjectPanelProps) {
-  const allImages = [project.heroImage, ...project.detailImages];
+  const allImages = project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Lock body scroll while open.
