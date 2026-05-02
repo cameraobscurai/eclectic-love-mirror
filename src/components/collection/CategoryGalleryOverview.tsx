@@ -58,10 +58,12 @@ export function CategoryGalleryOverview({
               key={group.id}
               className="relative min-h-[260px] min-w-0 bg-white md:min-h-[280px] xl:min-h-[300px]"
               style={{
-                borderRadius: "12px",
+                position: "relative",
                 overflow: "hidden",
+                borderRadius: "12px",
+                background: "#ffffff",
                 boxShadow:
-                  "0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+                  "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
               }}
               initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
@@ -77,17 +79,17 @@ export function CategoryGalleryOverview({
                 className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
                 aria-label={label}
               >
-                {/* Specimen frame: image is contained inside deliberate padding,
-                    not edge-to-edge. Object-contain so silhouettes read as
-                    catalog plates, not lifestyle photography. */}
-                <div className="relative flex-1 p-6 sm:p-8">
+                {/* Image fills the card edge-to-edge with object-contain so the
+                    silhouette reads, while the frosted label below has actual
+                    image content to sit on top of. */}
+                <div className="relative flex-1">
                   {heroSrc ? (
                     <img
                       src={heroSrc}
                       alt={heroAlt}
                       loading={idx < 6 ? "eager" : "lazy"}
                       decoding="async"
-                      className="absolute inset-0 m-auto h-full w-full object-contain p-6 transition-opacity duration-300 group-hover:opacity-90 sm:p-8"
+                      className="absolute inset-0 h-full w-full object-contain p-4 transition-opacity duration-300 group-hover:opacity-90 sm:p-6"
                     />
                   ) : (
                     <div className="absolute inset-0" />
@@ -97,12 +99,16 @@ export function CategoryGalleryOverview({
                 {/* Frosted-glass label overlay — floats over the bottom of the
                     image, inside the card frame. Name only, no count. */}
                 <div
-                  className="absolute left-0 right-0 bottom-0 px-[14px] py-[10px]"
                   style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
                     background: "rgba(255, 255, 255, 0.65)",
                     backdropFilter: "blur(12px)",
                     WebkitBackdropFilter: "blur(12px)",
                     borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
+                    padding: "10px 14px",
                     borderRadius: "0 0 12px 12px",
                   }}
                 >
@@ -112,6 +118,7 @@ export function CategoryGalleryOverview({
                       fontFamily: "var(--font-sans)",
                       fontSize: "10px",
                       letterSpacing: "0.18em",
+                      textTransform: "uppercase",
                       color: "#1a1a1a",
                       lineHeight: 1.2,
                       margin: 0,

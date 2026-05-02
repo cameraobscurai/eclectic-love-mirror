@@ -24,13 +24,13 @@ interface CollectionRailProps {
 /**
  * Permanent left rail — always visible alongside the main pane.
  *
- * Replaces both the old CollectionFilterRail (filter widget) and the
- * "front door" framing that the overview gallery used to carry alone.
+ * Front-door framing for the collection: thumbnail + name per browse group.
+ * Counts intentionally absent everywhere on the collection page except
+ * active-search feedback in the utility bar.
  *
- * Each row is thumbnail (28×20 white) + name + count. The thumbnail is
- * sourced from the first product in that browse group with a primaryImage,
- * with optional override via CATEGORY_COVERS. No new data, no curation
- * pass needed to ship.
+ * Each row is thumbnail (28×20 white) + name. The thumbnail is sourced from
+ * the first product in that browse group with a primaryImage, with optional
+ * override via CATEGORY_COVERS. No new data, no curation pass needed to ship.
  */
 export function CollectionRail({
   products,

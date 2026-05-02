@@ -231,7 +231,10 @@ function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-cream text-charcoal pt-32 pb-32">
+    <main
+      className="min-h-screen bg-cream text-charcoal pt-32 pb-32"
+      style={{ paddingTop: "calc(var(--nav-h) + 2rem)" }}
+    >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
           {/* LEFT — editorial intro */}
