@@ -6,7 +6,6 @@ import {
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
-import { FitText } from "@/components/ui/FitText";
 
 interface CategoryGalleryOverviewProps {
   groups: Array<{
@@ -16,6 +15,16 @@ interface CategoryGalleryOverviewProps {
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
+/**
+ * Category gallery — the "front door" to the archive.
+ *
+ * Brand-aligned with the rest of the Collection page: clinical white field,
+ * 1px hairline grid, specimen-style imagery with deliberate breathing room,
+ * left-aligned uppercase Cormorant labels with the count as quiet metadata.
+ *
+ * No gradients, no dark photographic overlays, no bouncy hover scales —
+ * the same surgical/editorial register as the product grid.
+ */
 export function CategoryGalleryOverview({
   groups,
   onSelectCategory,
@@ -23,54 +32,54 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white">
-      <div className="border-b border-[color:var(--archive-rule)] px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div className="min-w-0">
-            <p
-              className="text-[10px] uppercase"
-              style={{
-                letterSpacing: "var(--label-tracking-micro)",
-                color: "var(--archive-text-muted)",
-              }}
-            >
-              Hive Signature Collection
-            </p>
-            <h1
-              className="mt-2 text-charcoal"
-              style={{ fontSize: "clamp(2rem, 5vw, 4.25rem)", lineHeight: 0.95 }}
-            >
-              Browse by category
-            </h1>
-          </div>
-
-          <p className="max-w-[30rem] text-[13px] leading-relaxed text-charcoal/55 lg:text-right">
-            A quieter front door into the archive — choose a family, then drop into the full inventory.
+    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal">
+      {/* Header — matches the editorial register of the collection hero:
+          left-aligned, uppercase Cormorant, no eyebrow that repeats the nav. */}
+      <header className="border-b border-black/10 px-6 py-6 lg:px-12 lg:py-8">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <h1
+            className="font-display uppercase leading-[0.95] text-charcoal"
+            style={{
+              fontSize: "clamp(1.75rem, 3.6vw, 3rem)",
+              letterSpacing: "-0.005em",
+            }}
+          >
+            Browse by Category
+          </h1>
+          <p className="max-w-[26rem] text-[12px] leading-relaxed text-charcoal/55 lg:text-right">
+            A quieter front door into the archive — choose a family,
+            then drop into the full inventory.
           </p>
         </div>
-      </div>
+      </header>
 
+      {/* Hairline grid — Casa Carta style. The grid lines are real 1px borders,
+          not background bleed-through, so cells stay structurally architectural
+          even on retina. */}
       <ul
-        className="grid h-full min-h-0 w-full grid-cols-2 auto-rows-fr gap-px bg-[color:var(--archive-rule)] md:grid-cols-3 xl:grid-cols-6"
+        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 [&>li]:border-r [&>li]:border-b [&>li]:border-black/10"
       >
         {groups.map((group, idx) => {
           const cover = CATEGORY_COVERS[group.id];
-          const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
-          const heroSrc = cover ?? (fallbackHero ? withCdnWidth(fallbackHero.url, 900) : null);
+          const fallbackHero = group.products.find((p) => p.primaryImage)
+            ?.primaryImage;
+          const heroSrc =
+            cover ??
+            (fallbackHero ? withCdnWidth(fallbackHero.url, 900) : null);
           const heroAlt = cover
             ? BROWSE_GROUP_LABELS[group.id]
             : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
           const label = BROWSE_GROUP_LABELS[group.id];
-          const delay = reduced ? 0 : Math.min(idx * 0.025, 0.24);
+          const delay = reduced ? 0 : Math.min(idx * 0.02, 0.2);
 
           return (
             <motion.li
               key={group.id}
-              className="relative min-h-[200px] min-w-0 bg-white md:min-h-[230px] xl:min-h-0"
-              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 10 }}
+              className="relative min-h-[260px] min-w-0 bg-white md:min-h-[280px] xl:min-h-[300px]"
+              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: reduced ? 0 : 0.45,
+                duration: reduced ? 0 : 0.4,
                 delay,
                 ease: [0.22, 1, 0.36, 1],
               }}
@@ -78,48 +87,45 @@ export function CategoryGalleryOverview({
               <button
                 type="button"
                 onClick={() => onSelectCategory(group.id)}
-                className="group relative block h-full w-full overflow-hidden bg-[color:var(--cream)] text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
+                className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:bg-black/[0.03] focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
                 aria-label={`${label} — ${group.products.length} pieces`}
               >
-                {heroSrc ? (
-                  <img
-                    src={heroSrc}
-                    alt={heroAlt}
-                    loading={idx < 6 ? "eager" : "lazy"}
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.03]"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-cream" />
-                )}
+                {/* Specimen frame: image is contained inside deliberate padding,
+                    not edge-to-edge. Object-contain so silhouettes read as
+                    catalog plates, not lifestyle photography. */}
+                <div className="relative flex-1 p-6 sm:p-8">
+                  {heroSrc ? (
+                    <img
+                      src={heroSrc}
+                      alt={heroAlt}
+                      loading={idx < 6 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="absolute inset-0 m-auto h-full w-full object-contain p-6 transition-opacity duration-300 group-hover:opacity-90 sm:p-8"
+                    />
+                  ) : (
+                    <div className="absolute inset-0" />
+                  )}
+                </div>
 
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/18 to-transparent opacity-95 transition-opacity duration-300 group-hover:opacity-100"
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-x-0 bottom-0 h-px bg-white/40 transition-opacity duration-300 group-hover:opacity-80"
-                />
-
-                <div className="absolute inset-x-0 bottom-0 px-3 py-3 sm:px-4 sm:py-4">
-                  <div className="flex items-end gap-2 text-cream">
-                    <div className="min-w-0 flex-1">
-                      <FitText
-                        as="h2"
-                        text={label}
-                        fontTemplate={'500 ${size}px "Saol Display", "Cormorant Garamond", "Times New Roman", serif'}
-                        minSize={11}
-                        maxSize={23}
-                        letterSpacingEm={0.05}
-                        className="font-display uppercase leading-none"
-                        style={{ letterSpacing: "0.05em" }}
-                      />
-                    </div>
-                    <span className="mb-0.5 shrink-0 text-[10px] uppercase tracking-[0.22em] text-cream/72">
-                      {group.products.length}
-                    </span>
-                  </div>
+                {/* Caption row — hairline rule above, label left, count right.
+                    No overlay on the image; the label lives under it like a
+                    museum placard. */}
+                <div className="border-t border-black/10 px-5 py-4 flex items-baseline justify-between gap-3">
+                  <h2
+                    className="font-display uppercase text-charcoal leading-none truncate"
+                    style={{
+                      fontSize: "clamp(0.95rem, 1.1vw, 1.1rem)",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    {label}
+                  </h2>
+                  <span
+                    className="shrink-0 text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums"
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    {group.products.length}
+                  </span>
                 </div>
               </button>
             </motion.li>
