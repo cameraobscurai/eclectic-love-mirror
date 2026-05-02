@@ -139,7 +139,7 @@ function FilterRow({
   count,
   active,
   onClick,
-  reduced,
+  
   isSheet,
   muted,
   disabled,
