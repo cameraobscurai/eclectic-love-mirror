@@ -7,8 +7,7 @@ const studioLinks = [
 ] as const;
 
 const informationLinks = [
-  { href: "/process", label: "Process" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "FAQ", hash: "faq" },
   { href: "/privacy", label: "Privacy" },
 ] as const;
 
