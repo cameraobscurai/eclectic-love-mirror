@@ -145,25 +145,22 @@ function CategoryRow({
   const [thumbFailed, setThumbFailed] = useState(false);
   const showThumb = !!thumbSrc && !thumbFailed;
 
-  // Active row uses Cormorant + charcoal. Inactive uses sans + quiet.
-  // Spy-highlighted gets a subtle elevation without taking the active slot.
-  const nameStyle: React.CSSProperties = isActive
-    ? {
-        fontFamily: "var(--font-display)",
-        fontSize: isSheet ? "14px" : "12px",
-        letterSpacing: "0.01em",
-        textTransform: "none",
-        color: "var(--charcoal)",
-      }
-    : {
-        fontFamily: "var(--font-sans)",
-        fontSize: isSheet ? "11px" : "10px",
-        letterSpacing: "0.14em",
-        textTransform: "uppercase",
-        color: isSpyHighlighted
-          ? "var(--charcoal)"
-          : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
-      };
+  // All rows share the same uppercase Inter typography. "Active" reads via
+  // full charcoal color + weight 500 + the left border indicator, NOT via
+  // a different typeface — Cormorant at 12px renders as a heavy, awkward
+  // placeholder against the surrounding sans-serif rows.
+  const nameStyle: React.CSSProperties = {
+    fontFamily: "var(--font-sans)",
+    fontSize: isSheet ? "11px" : "10px",
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
+    fontWeight: isActive ? 500 : 400,
+    color: isActive
+      ? "var(--charcoal)"
+      : isSpyHighlighted
+        ? "var(--charcoal)"
+        : "color-mix(in oklab, var(--charcoal) 55%, transparent)",
+  };
 
   return (
     <button
