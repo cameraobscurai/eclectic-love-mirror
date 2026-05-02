@@ -72,9 +72,9 @@ function AtelierPage() {
       >
         <div className="max-w-[1400px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            Atelier by The Hive
+            ATELIER BY THE HIVE
           </p>
-          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] tracking-tight">
+          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
             Imagined.
             <br />
             Refined.
