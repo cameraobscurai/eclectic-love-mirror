@@ -830,7 +830,7 @@ function CollectionPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: reduced ? 0 : 0.2 }}
               onClick={() => setSheetOpen(false)}
-              className="lg:hidden fixed inset-0 z-40 bg-charcoal/40 backdrop-blur-sm"
+              className="lg:hidden fixed inset-0 z-40 bg-charcoal/50"
               aria-hidden
             />
             <motion.div
