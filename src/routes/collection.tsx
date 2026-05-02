@@ -11,7 +11,6 @@ import {
 } from "@/lib/phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
-  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
@@ -448,18 +447,6 @@ function CollectionPage() {
 
   const gridGapClasses =
     density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
-
-  // ---------- First product per active group (powers CategoryHero specimen) ----------
-  // Same data the rail thumbnail uses — no new field, no curation table.
-  const heroFirstProduct = useMemo<CollectionProduct | null>(() => {
-    if (!activeGroup) return null;
-    for (const p of products) {
-      if (p.primaryImage && getProductBrowseGroup(p) === activeGroup) {
-        return p;
-      }
-    }
-    return null;
-  }, [products, activeGroup]);
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
