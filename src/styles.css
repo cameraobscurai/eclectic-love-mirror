@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap");
 
 /* Saol Display — owner-supplied OTFs bundled as Vite assets from
  * src/assets/fonts. Vite rewrites url(...) to hashed, cache-friendly URLs
@@ -27,8 +28,6 @@
   font-style: italic;
   font-display: swap;
 }
-
-@import url("https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
