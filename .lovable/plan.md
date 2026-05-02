@@ -1,81 +1,91 @@
-## What's actually happening in row 2
+## What changes
 
-Two unrelated problems compounding into one ugly experience:
+`/collection` no longer renders 876 tiles by default. The default landing is a **category gallery** — 18 large image cards, one per browse group. The product grid only ever mounts when the user picks a category (or types a search query). "All Inventory" is removed as a destination because, as you said, no one was actually using it as one.
 
-### 1. Every tile is downloading a 2500-pixel-wide image
+```text
+┌─ /collection (no group) ─────────────────────────────────┐
+│  THE COLLECTION                                          │
+│                                                          │
+│  BROWSE THE ARCHIVE                       18 categories  │
+│  ┌────────┐  ┌────────┐  ┌────────┐                      │
+│  │ image  │  │ image  │  │ image  │                      │
+│  │        │  │        │  │        │                      │
+│  └────────┘  └────────┘  └────────┘                      │
+│  Sofas  44   Chairs  76   Lighting  48                   │
+│  ┌────────┐  ┌────────┐  ┌────────┐                      │
+│  │ image  │  │ image  │  │ image  │                      │
+│  ...                                                     │
+└──────────────────────────────────────────────────────────┘
 
-The catalog JSON points every product image at the Squarespace CDN with `?format=2500w` baked in. Example:
+User clicks "Sofas" → /collection?group=sofas
 
+┌─ /collection?group=sofas ────────────────────────────────┐
+│  THE COLLECTION · SOFAS · 44                             │
+│  ← All Categories                                        │
+│  [filter rail]  [44-piece sofa grid]  [progress rail]    │
+└──────────────────────────────────────────────────────────┘
 ```
-.../Adagio+Disco+Ball.png?format=2500w
-```
-
-A grid tile renders at ~200–260 CSS px. We're shipping ~50× more pixels than the tile can show — for **all 60 tiles in the first batch**. That's why the page feels slow: bandwidth is saturated downloading huge originals, and the network queue chokes on tiles past row 1.
-
-### 2. The blur-up placeholder makes row 2 look broken
-
-`ProductTile` has two visual paths:
-
-- Tiles **0–5** (row 1 on a 6-col grid) — `skipBlur=true`. Image paints crisp from first byte.
-- Tiles **6+** — start at `filter: blur(14px); opacity: 0.55` and only clear once `onLoad` fires.
-
-So while row 1's huge images stream in (priority=high), row 2's huge images are still downloading — and the user stares at a wall of heavy gray-blurred rectangles. That's the "blurred row" in your screenshot. It's not a bug per se, it's the placeholder waiting for slow images.
-
-## Fix
-
-### A. Serve right-sized images
-
-Add a small helper that rewrites Squarespace `?format=NNNw` to a tile-appropriate width based on the tile's role:
-
-| Use | Width param |
-|---|---|
-| Grid tile (comfortable + dense) | `?format=750w` |
-| QuickView main stage | `?format=1500w` |
-| QuickView thumbnails | `?format=300w` |
-| Inquiry tray thumb | `?format=300w` |
-
-Helper: `src/lib/image-url.ts` exports `withCdnWidth(url, width)`. It only touches Squarespace CDN URLs (regex on `images.squarespace-cdn.com` + `format=\d+w`); anything else passes through untouched. Safe for future Supabase storage URLs — they just bypass the transform.
-
-Update call sites:
-- `ProductTile.tsx` — wrap `product.primaryImage.url` with `withCdnWidth(url, 750)`. Also add a real `srcSet`/`sizes` so retina + dense layouts pull a larger variant when needed (`750w` + `1100w`).
-- `QuickViewModal.tsx` — wrap stage image at `1500w`, thumbnails at `300w`.
-- `InquiryTray.tsx` — wrap thumbs at `300w` if it renders any.
-
-This alone should drop initial grid weight by ~10×.
-
-### B. Kill the heavy blur, keep a quiet placeholder
-
-The 14px blur + 0.55 opacity reads as "broken" the moment more than 6 tiles are in flight. Replace it with a quiet cream-tinted block that simply fades out on load. Same skeleton role, no scary blur of a low-res ghost (we never had a low-res ghost — it's just blurring nothing).
-
-In `ProductTile.tsx`:
-
-- Drop the `filter: blur(14px)` branch entirely. Image renders with `opacity: 0` initially, transitions to `opacity: 1` over 240ms on `onLoad`.
-- Skeleton overlay stays as a flat `bg-cream` block, fades out on the same 240ms.
-- `skipBlur` boolean becomes obsolete — remove it. Priority tiles and lazy tiles use the exact same fade. Consistent across all rows.
-
-Result: row 2 looks like clean cream rectangles for the brief moment it takes images to arrive, then fades to crisp images. No scary blur wall.
-
-### C. Raise the priority window slightly
-
-`HIGH_FETCH_COUNT = 6` matches a 6-col grid but on the 1303px viewport you're using, the user sees tiles 0–5 in row 1 and 6–11 in row 2 above the fold. Bump `HIGH_FETCH_COUNT = 12` so both visible rows get `fetchpriority="high"`. `EAGER_LOAD_COUNT` stays at 12.
-
-This is safe now because each "high" image is ~50× smaller after fix A.
 
 ## Files
 
-- `src/lib/image-url.ts` — new (~20 lines)
-- `src/components/collection/ProductTile.tsx` — use `withCdnWidth`, drop blur-up, simplify load state, raise priority window
-- `src/components/collection/QuickViewModal.tsx` — use `withCdnWidth` for stage + thumbs
-- `src/components/collection/InquiryTray.tsx` — use `withCdnWidth` for thumbs (if applicable)
+### New
+
+**`src/components/collection/CategoryGalleryOverview.tsx`**
+- 18 cards in a 3-col desktop / 2-col mobile grid
+- Each card: 4:5 portrait hero (first product in the group with an image, served at `?format=800w`), category name in display type, count, and an "Archive" eyebrow on safety-net categories so the owner-tier hierarchy is still felt
+- One image request per card → 18 images total, vs the current 60+ — and they're never stuck behind layout-animated tiles
+- Capped stagger (max 360ms), no AnimatePresence, no LayoutGroup
+
+### Edited
+
+**`src/routes/collection.tsx`** — the only structural edit
+- Compute `groupBuckets`: `groupProductsByBrowseGroup(products)` once via `useMemo`, then map to `[{ id, products }]` in `BROWSE_GROUP_ORDER`
+- New branching at the grid render point:
+  - `if (!activeGroup && !q.trim())` → render `<CategoryGalleryOverview>` (no filter rail to the left, no progress rail to the right; full-width canvas — see Layout section below)
+  - else → render the product grid as today, just for the one active category or search results
+- Sticky wordmark text logic simplified: overview screen says "THE COLLECTION"; category screen keeps the existing "THE COLLECTION · SOFAS · 44" pattern
+- Initial batch / load-more constants stay the same — they only matter for the per-category grid now, where the largest bucket (Pillows, 147) is the worst case. Still trim `INITIAL_BATCH` from 60 → 36 since no category needs 60 above the fold
+
+**`src/components/collection/CollectionFilterRail.tsx`**
+- Remove the "All Inventory" `FilterRow` at the top
+- Add a quiet "← All Categories" return link at the top of the rail (inherits the same uppercase tracking register, but in `text-charcoal/55`, no border-l). Visible only when `activeGroup` is set
+- When no group is active (overview screen), the rail isn't rendered at all (see route layout change)
+
+### Untouched
+- `CategoryOverview.tsx` and `CategoryIndex.tsx` stay where they are. Not deleted in this pass — they may still be useful for the contact / search surfaces. Just not wired into the route.
+- `ProductTile`, `QuickViewModal`, scroll-spy, inquiry tray — no changes
+- `phase3_catalog.json`, browse-group rules, sort intelligence — no changes
+
+## Layout: how the canvas reflows
+
+Currently the body is a 3-column cage: `[filter rail | grid | progress rail]`. On the overview screen, the cage collapses to a single full-width column — the gallery doesn't need a filter rail (each card IS the filter) and doesn't need a progress rail (no scroll-spy section to track).
+
+Implementation: keep the same outer cage container (so the hairline frame stays consistent), but conditionally render the rails as `null` and switch the grid columns to `lg:grid-cols-1` when on the overview. The hairline cage keeps the frame intact; only the internal subdivision changes.
+
+## Hero image picking
+
+For each browse group bucket, take `products.find(p => p.primaryImage)?.primaryImage`. The catalog is already sorted by `scrapedOrder` so this is a stable, well-known piece per group. No new data, no manual curation, no risk of the wrong image appearing — it's whatever the first piece in that group is, every time.
+
+If you want to override later (say "Sofas should always lead with the Cammye loveseat"), it's a one-line override map in `CategoryGalleryOverview` — out of scope for this pass.
+
+## Performance impact
+
+- Overview screen: **18 image requests** at 800w (vs 60+ at 750w today)
+- Category screen: typically **30–80 tiles** (Sofas 44, Chairs 76, Lighting 48). Pillows 147 and Styling 60 are the only buckets that approach the old size, and both are paginated by Load More
+- No more `LayoutGroup` + `AnimatePresence` over 60 tiles on first paint
+- No more "All Inventory" sort-intelligence pass (`sortProductsForCollection` over 876 items)
 
 ## Out of scope
 
-- Migrating images out of Squarespace CDN onto Supabase storage. That's an inventory/data task; not what's slowing the page today.
-- Changing the grid density or column counts.
-- Skeleton shimmer animation. Stays a quiet flat fade — the "Aesence editorial restraint" register.
+- Virtualization (option #2). Not needed once nothing renders 876 tiles
+- Search-first surface (option #3). Search still works exactly as today
+- Reordering or relabeling the 18 categories
+- New hero images — uses what's already in the catalog
+- Removing the now-unused `CategoryOverview.tsx` (defer; small risk of breaking other consumers)
 
 ## What you'll see after
 
-- First paint of the grid arrives in roughly a tenth of the bytes.
-- Row 2 doesn't go through the heavy blurred-rectangle phase — it just appears as clean cream slots that fade to images within 1–2 seconds on a normal connection.
-- No visual difference between the priority and lazy tiles in their loading state.
+- Land on /collection → instant clean grid of 18 categories, each with one beautiful image. No hangs, no skeletons sitting empty
+- Click a category → fast load of just that category's pieces, with the existing rail + progress UI
+- "← All Categories" in the rail to come back
+- Sticky header always knows where you are: "THE COLLECTION" on the overview, "THE COLLECTION · SOFAS · 44" inside a category

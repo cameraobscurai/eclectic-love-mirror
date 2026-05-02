@@ -21,6 +21,7 @@ import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
 import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
+import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
@@ -272,6 +273,29 @@ function CollectionPage() {
   }, [searchFiltered]);
 
   const allCount = searchFiltered.length;
+
+  // ---------- Category overview screen ----------
+  // The default Collection landing is the category gallery, NOT the 876-tile
+  // grid. The product grid only mounts when the user picks a category or
+  // types a search query. This is the answer to "All Inventory was never a
+  // useful destination" — we removed it.
+  const showOverview = !activeGroup && !q.trim();
+
+  const overviewGroups = useMemo(() => {
+    // Bucket the full public-ready catalog by browse group, in display order.
+    // Empty groups are excluded so every card is real and clickable.
+    const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
+    for (const id of BROWSE_GROUP_ORDER) buckets.set(id, []);
+    for (const p of products) {
+      const id = getProductBrowseGroup(p);
+      if (!id) continue;
+      buckets.get(id)!.push(p);
+    }
+    return BROWSE_GROUP_ORDER.flatMap((id) => {
+      const list = buckets.get(id)!;
+      return list.length > 0 ? [{ id, products: list }] : [];
+    });
+  }, [products]);
 
   // ---------- Load More ----------
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
@@ -621,9 +645,9 @@ function CollectionPage() {
       </div>
 
       {/* ============================================================
-          BODY — hairline cage. Three real columns separated by 1px rules:
-          [filter rail | grid | progress rail]. Top + bottom rules close
-          the cage so nothing floats.
+          BODY — hairline cage. Two render modes:
+            (a) Overview: full-width category gallery (no rails).
+            (b) Category/search: 3-column cage [filter | grid | progress].
           ============================================================ */}
       <section className="px-6 lg:px-12 pt-10">
         <div
@@ -634,129 +658,143 @@ function CollectionPage() {
             borderBottom: "1px solid var(--archive-rule)",
           }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)_var(--archive-progress-width)]">
-            {/* ===== LEFT COLUMN: filter rail ===== */}
-            <aside
-              className="hidden lg:block"
-              style={{
-                paddingRight: "var(--archive-grid-gap-x)",
-                paddingTop: "1.75rem",
-                paddingBottom: "2rem",
-              }}
-            >
-              <CollectionFilterRail
-                orderedGroupIds={orderedGroupIds}
-                counts={groupCounts}
-                totalCount={allCount}
-                activeGroup={activeGroup}
-                spyActiveGroup={spyActiveGroup}
-                onSelect={selectGroup}
-                onClear={resetAll}
-                hasActiveFilters={hasActiveFilters}
-              />
-            </aside>
-
-            {/* ===== CENTER COLUMN: grid ===== */}
+          {showOverview ? (
             <div
-              className="min-w-0 lg:border-l"
               style={{
-                borderColor: "var(--archive-rule)",
-                paddingLeft: "var(--archive-grid-gap-x)",
-                paddingRight: "var(--archive-grid-gap-x)",
-                paddingTop: "1.75rem",
-                paddingBottom: "2rem",
+                paddingTop: "2.25rem",
+                paddingBottom: "2.5rem",
               }}
             >
-              <div
-                ref={resultsTopRef}
-                id="results-top"
-                aria-hidden
-                style={{
-                  scrollMarginTop:
-                    "calc(var(--nav-h) + var(--archive-utility-h))",
-                }}
+              <CategoryGalleryOverview
+                groups={overviewGroups}
+                onSelectCategory={(id) => selectGroup(id)}
               />
-
-              {visibleProducts.length === 0 ? (
-                <div className="py-32">
-                  <p className="text-[15px] leading-relaxed text-charcoal/70">
-                    No pieces match the current filters.
-                  </p>
-                  <button
-                    onClick={resetAll}
-                    className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                  >
-                    Clear All
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <LayoutGroup id="collection-grid">
-                    <motion.ul
-                      layout
-                      className={`grid ${gridCols} ${gridGapClasses}`}
-                      transition={
-                        reduced
-                          ? { duration: 0 }
-                          : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
-                      }
-                    >
-                      <AnimatePresence mode="popLayout">
-                        {visibleBatch.map((p, i) => (
-                          <ProductTile
-                            key={p.id}
-                            product={p}
-                            index={i}
-                            onOpen={() => setQuickViewId(p.id)}
-                            onImageFailed={markFailed}
-                          />
-                        ))}
-                      </AnimatePresence>
-                    </motion.ul>
-                  </LayoutGroup>
-
-                  {hasMore && (
-                    <div className="mt-12 flex justify-center">
-                      <button
-                        onClick={() =>
-                          setVisibleCount((c) =>
-                            Math.min(c + BATCH_INCREMENT, visibleProducts.length),
-                          )
-                        }
-                        className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
-                      >
-                        Load more ({visibleProducts.length - visibleBatch.length} remaining)
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
             </div>
-
-            {/* ===== RIGHT COLUMN: progress rail (sticky, in-grid) ===== */}
-            <aside
-              className="hidden lg:block lg:border-l"
-              style={{
-                borderColor: "var(--archive-rule)",
-                paddingTop: "1.75rem",
-                paddingBottom: "2rem",
-              }}
-            >
-              <div
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)_var(--archive-progress-width)]">
+              {/* ===== LEFT COLUMN: filter rail ===== */}
+              <aside
+                className="hidden lg:block"
                 style={{
-                  position: "sticky",
-                  top: "calc(var(--nav-h) + var(--archive-utility-h) + 1.75rem)",
+                  paddingRight: "var(--archive-grid-gap-x)",
+                  paddingTop: "1.75rem",
+                  paddingBottom: "2rem",
                 }}
               >
-                <CollectionIndexStrip
-                  groups={orderedGroupIds}
-                  progressById={progressById}
+                <CollectionFilterRail
+                  orderedGroupIds={orderedGroupIds}
+                  counts={groupCounts}
+                  totalCount={allCount}
+                  activeGroup={activeGroup}
                   spyActiveGroup={spyActiveGroup}
-                  onJump={(id) => scrollToSection(id)}
+                  onSelect={selectGroup}
+                  onClear={resetAll}
+                  hasActiveFilters={hasActiveFilters}
                 />
+              </aside>
+
+              {/* ===== CENTER COLUMN: grid ===== */}
+              <div
+                className="min-w-0 lg:border-l"
+                style={{
+                  borderColor: "var(--archive-rule)",
+                  paddingLeft: "var(--archive-grid-gap-x)",
+                  paddingRight: "var(--archive-grid-gap-x)",
+                  paddingTop: "1.75rem",
+                  paddingBottom: "2rem",
+                }}
+              >
+                <div
+                  ref={resultsTopRef}
+                  id="results-top"
+                  aria-hidden
+                  style={{
+                    scrollMarginTop:
+                      "calc(var(--nav-h) + var(--archive-utility-h))",
+                  }}
+                />
+
+                {visibleProducts.length === 0 ? (
+                  <div className="py-32">
+                    <p className="text-[15px] leading-relaxed text-charcoal/70">
+                      No pieces match the current filters.
+                    </p>
+                    <button
+                      onClick={resetAll}
+                      className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <LayoutGroup id="collection-grid">
+                      <motion.ul
+                        layout
+                        className={`grid ${gridCols} ${gridGapClasses}`}
+                        transition={
+                          reduced
+                            ? { duration: 0 }
+                            : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
+                        }
+                      >
+                        <AnimatePresence mode="popLayout">
+                          {visibleBatch.map((p, i) => (
+                            <ProductTile
+                              key={p.id}
+                              product={p}
+                              index={i}
+                              onOpen={() => setQuickViewId(p.id)}
+                              onImageFailed={markFailed}
+                            />
+                          ))}
+                        </AnimatePresence>
+                      </motion.ul>
+                    </LayoutGroup>
+
+                    {hasMore && (
+                      <div className="mt-12 flex justify-center">
+                        <button
+                          onClick={() =>
+                            setVisibleCount((c) =>
+                              Math.min(c + BATCH_INCREMENT, visibleProducts.length),
+                            )
+                          }
+                          className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
+                        >
+                          Load more ({visibleProducts.length - visibleBatch.length} remaining)
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-            </aside>
-          </div>
+
+              {/* ===== RIGHT COLUMN: progress rail (sticky, in-grid) ===== */}
+              <aside
+                className="hidden lg:block lg:border-l"
+                style={{
+                  borderColor: "var(--archive-rule)",
+                  paddingTop: "1.75rem",
+                  paddingBottom: "2rem",
+                }}
+              >
+                <div
+                  style={{
+                    position: "sticky",
+                    top: "calc(var(--nav-h) + var(--archive-utility-h) + 1.75rem)",
+                  }}
+                >
+                  <CollectionIndexStrip
+                    groups={orderedGroupIds}
+                    progressById={progressById}
+                    spyActiveGroup={spyActiveGroup}
+                    onJump={(id) => scrollToSection(id)}
+                  />
+                </div>
+              </aside>
+            </div>
+          )}
         </div>
       </section>
 
