@@ -28,8 +28,8 @@ interface FitTextProps {
   /** Min/max px bounds for the search. */
   minSize?: number;
   maxSize?: number;
-  /** Letter-spacing in px (matches CSS `letter-spacing`). */
-  letterSpacing?: number;
+  /** Letter-spacing in em (matches CSS `letter-spacing: 0.06em`). Scales with font size. */
+  letterSpacingEm?: number;
   className?: string;
   style?: CSSProperties;
   as?: ElementType;
@@ -43,7 +43,7 @@ export function FitText({
   fontTemplate,
   minSize = 9,
   maxSize = 28,
-  letterSpacing = 0,
+  letterSpacingEm = 0,
   className,
   style,
   as: Tag = "span",
@@ -67,7 +67,9 @@ export function FitText({
       for (let i = 0; i < 8; i++) {
         const mid = (lo + hi) / 2;
         const font = fontTemplate.replace("${size}", String(mid));
-        const prepared = prepare(text, font, { letterSpacing });
+        const prepared = prepare(text, font, {
+          letterSpacing: letterSpacingEm * mid,
+        });
         // line height doesn't matter for line count; use the size itself.
         const { lineCount } = layout(prepared, width, mid);
         if (lineCount <= 1) {
