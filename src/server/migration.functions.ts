@@ -50,10 +50,11 @@ export const runFirecrawlMap = createServerFn({ method: 'POST' })
         includeSubdomains: false,
       })
 
-      // SDK v2: result.links is the array
-      const links: string[] = Array.isArray((result as { links?: string[] }).links)
-        ? (result as { links: string[] }).links
-        : []
+      // SDK v2: result.links is SearchResultWeb[] (objects with .url) — extract URL strings
+      const rawLinks = (result as { links?: Array<string | { url?: string }> }).links ?? []
+      const links: string[] = rawLinks
+        .map((l) => (typeof l === 'string' ? l : l?.url))
+        .filter((u): u is string => typeof u === 'string' && u.length > 0)
 
       if (links.length === 0) {
         await admin
