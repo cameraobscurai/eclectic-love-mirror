@@ -471,7 +471,7 @@ function CollectionPage() {
       data-collection-main
       className={
         showOverview
-          ? "h-[100dvh] flex flex-col bg-white text-charcoal overflow-hidden"
+          ? "min-h-screen bg-white text-charcoal flex flex-col"
           : "min-h-screen bg-white text-charcoal pb-32"
       }
     >
