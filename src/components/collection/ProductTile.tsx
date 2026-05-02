@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { CollectionProduct } from "@/server/phase3-catalog.server";
+import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface ProductTileProps {
   product: CollectionProduct;

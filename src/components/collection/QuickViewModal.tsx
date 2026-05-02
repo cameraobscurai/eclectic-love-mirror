@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
-import type { CollectionProduct } from "@/server/phase3-catalog.server";
+import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface QuickViewModalProps {
   product: CollectionProduct;

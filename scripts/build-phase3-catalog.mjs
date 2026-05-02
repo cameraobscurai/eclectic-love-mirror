@@ -1,0 +1,119 @@
+// Pre-bakes src/data/phase3/phase3_catalog.json from the frozen Phase 3 CSVs.
+// Run with: bun scripts/build-phase3-catalog.mjs
+//
+// Public-ready rule (locked):
+//   primaryImage && !known_404 && title && final_confidence >= 0.70
+
+import { readFileSync, writeFileSync } from "node:fs";
+
+function parse(text) {
+  if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
+  const rows = []; let row = [], field = "", q = false, i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i += 2; continue; } q = false; i++; continue; }
+      field += c; i++; continue;
+    }
+    if (c === '"') { q = true; i++; continue; }
+    if (c === ",") { row.push(field); field = ""; i++; continue; }
+    if (c === "\r") { i++; continue; }
+    if (c === "\n") { row.push(field); field = ""; if (!(row.length === 1 && row[0] === "")) rows.push(row); row = []; i++; continue; }
+    field += c; i++;
+  }
+  if (field.length || row.length) { row.push(field); if (!(row.length === 1 && row[0] === "")) rows.push(row); }
+  const h = rows[0];
+  return rows.slice(1).map(r => Object.fromEntries(h.map((k, j) => [k, r[j] ?? ""])));
+}
+
+const CATEGORY_DISPLAY_MAP = {
+  accents1: "Accents", bars1: "Cocktail & Bar", "benches-ottomans1": "Benches & Ottomans",
+  "chairs-stools1": "Chairs & Stools", "cocktail-bar": "Cocktail & Bar", dining: "Dining",
+  "large-decor": "Large Decor", light: "Lighting", lounge: "Lounge Seating",
+  "lounge-tables": "Lounge Tables", "pillows-throws1": "Pillows & Throws", rugs: "Rugs",
+  "sofas-loveseats1": "Sofas & Loveseats", storage1: "Storage", styling: "Styling",
+  tables1: "Tables", tableware: "Tableware", textiles: "Textiles",
+};
+const CATEGORY_DISPLAY_ORDER = [
+  "Lounge Seating", "Sofas & Loveseats", "Chairs & Stools", "Benches & Ottomans", "Lounge Tables",
+  "Tables", "Dining", "Cocktail & Bar", "Tableware", "Textiles", "Pillows & Throws", "Rugs",
+  "Lighting", "Large Decor", "Styling", "Accents", "Storage",
+];
+const SUBCATEGORY_RULES = {
+  "chairs-stools1": [{ label: "Stools", match: /\bstool/i }, { label: "Chairs", match: /\bchair/i }],
+  "benches-ottomans1": [{ label: "Ottomans", match: /\bottoman|pouf/i }, { label: "Benches", match: /\bbench/i }],
+  light: [
+    { label: "Floor Lamps", match: /\bfloor\b.*\blamp|\blamp\b.*\bfloor/i },
+    { label: "Table Lamps", match: /\btable\b.*\blamp|\blamp\b.*\btable/i },
+    { label: "Pendants", match: /\bpendant|chandelier|sconce/i },
+    { label: "Candles & Holders", match: /\bcandle|votive|hurricane/i },
+  ],
+  "lounge-tables": [{ label: "Coffee Tables", match: /\bcoffee/i }, { label: "Side Tables", match: /\bside\b/i }, { label: "Console", match: /\bconsole/i }],
+  tables1: [{ label: "Dining Tables", match: /\bdining/i }, { label: "Console", match: /\bconsole/i }, { label: "Side Tables", match: /\bside\b/i }],
+  textiles: [{ label: "Linens", match: /\blinen|napkin|runner|tablecloth/i }, { label: "Throws", match: /\bthrow|blanket/i }],
+  tableware: [{ label: "Glassware", match: /\bglass|coupe|flute|tumbler|goblet/i }, { label: "Plates", match: /\bplate|charger/i }, { label: "Flatware", match: /\bflatware|spoon|fork|knife/i }],
+  "cocktail-bar": [{ label: "Bars", match: /\bbar\b/i }, { label: "Bar Carts", match: /\bcart/i }],
+  bars1: [{ label: "Bars", match: /\bbar\b/i }, { label: "Bar Carts", match: /\bcart/i }],
+};
+const KNOWN_404 = "https://www.eclectichive.com/cocktail-bar/broadway-32in";
+const nullable = v => { if (v == null) return null; const t = v.trim(); return t.length === 0 ? null : t; };
+const bool = v => v === "true" || v === "TRUE" || v === "1";
+const num = (v, f = 0) => { if (v == null || v === "") return f; const n = Number(v); return Number.isFinite(n) ? n : f; };
+const detectSub = (cat, title) => { const r = SUBCATEGORY_RULES[cat]; if (!r) return null; for (const x of r) if (x.match.test(title)) return x.label; return null; };
+
+const productRows = parse(readFileSync("src/data/phase3/phase3_final_products.csv", "utf8"));
+const imageRows = parse(readFileSync("src/data/phase3/phase3_final_images.csv", "utf8"));
+const reviewRows = parse(readFileSync("src/data/phase3/phase3_manual_review_queue.csv", "utf8"));
+
+const reviewByUrl = new Map(reviewRows.map(r => [r.url, r.issue_type ?? ""]));
+const imagesByPid = new Map();
+for (const im of imageRows) {
+  if (!im.scraped_product_id || !im.image_url) continue;
+  const a = imagesByPid.get(im.scraped_product_id) ?? [];
+  a.push({ url: im.image_url, position: num(im.position, 0), isHero: bool(im.is_hero), inferredFilename: nullable(im.inferred_filename), altText: nullable(im.alt_text) });
+  imagesByPid.set(im.scraped_product_id, a);
+}
+for (const list of imagesByPid.values()) list.sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.position - b.position);
+
+const products = productRows.map((p, idx) => {
+  const id = p.id, url = p.url, categorySlug = p.category_slug ?? "";
+  const title = nullable(p.product_title_normalized) ?? nullable(p.product_title_original) ?? nullable(p.title) ?? "(untitled)";
+  const images = imagesByPid.get(id) ?? [];
+  const primaryImage = images.find(i => i.isHero) ?? images.find(i => i.position === 0) ?? images[0] ?? null;
+  const confidence = num(p.final_confidence, 0);
+  const reviewIssue = reviewByUrl.get(url) ?? "";
+  const isKnown404 = url === KNOWN_404 || reviewIssue === "source_404";
+  const publicReady = !!primaryImage && !isKnown404 && !!nullable(p.product_title_normalized ?? p.product_title_original) && confidence >= 0.7;
+  return {
+    id, sourceUrl: url, slug: p.product_slug ?? id, categorySlug,
+    displayCategory: CATEGORY_DISPLAY_MAP[categorySlug] ?? categorySlug,
+    title, description: nullable(p.description), dimensions: nullable(p.dimensions),
+    stockedQuantity: nullable(p.stocked_quantity), isCustomOrder: bool(p.is_custom_order_co),
+    confidence, needsManualReview: bool(p.needs_manual_review), images, primaryImage,
+    imageCount: images.length, publicReady, scrapedOrder: idx, subcategory: detectSub(categorySlug, title),
+  };
+});
+
+const publicProducts = products.filter(p => p.publicReady);
+const counts = new Map();
+for (const p of publicProducts) {
+  const e = counts.get(p.categorySlug) ?? { display: p.displayCategory, count: 0 };
+  e.count++; counts.set(p.categorySlug, e);
+}
+const orderIdx = new Map(CATEGORY_DISPLAY_ORDER.map((d, i) => [d, i]));
+const facets = [...counts.entries()]
+  .map(([slug, v]) => ({ slug, display: v.display, count: v.count }))
+  .sort((a, b) => (orderIdx.get(a.display) ?? 999) - (orderIdx.get(b.display) ?? 999) || a.display.localeCompare(b.display));
+
+const out = {
+  products: publicProducts, facets, total: publicProducts.length,
+  meta: {
+    generatedAt: new Date().toISOString(),
+    totalRecords: products.length,
+    publicReadyCount: publicProducts.length,
+    excludedCount: products.length - publicProducts.length,
+    categoryDisplayOrder: CATEGORY_DISPLAY_ORDER,
+  },
+};
+writeFileSync("src/data/phase3/phase3_catalog.json", JSON.stringify(out));
+console.log(`Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`);
