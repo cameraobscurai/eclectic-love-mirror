@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
-import { parseWidthInches } from "@/lib/parse-dimensions";
-import { ScaleRule } from "./ScaleRule";
+import { parseDimensions } from "@/lib/parse-dimensions";
+import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
