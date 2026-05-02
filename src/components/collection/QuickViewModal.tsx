@@ -39,7 +39,10 @@ export function QuickViewModal({
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const zoneRef = useRef<HTMLDivElement>(null);
   const [stageWidth, setStageWidth] = useState(0);
+  const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
+  const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
   // Parse W / D / H once per product. Toggle is offered whenever ANY axis
   // (width, height, or diameter) parses confidently — silent fallback for
