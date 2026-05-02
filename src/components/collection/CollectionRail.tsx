@@ -208,16 +208,6 @@ function CategoryRow({
         {label}
       </span>
 
-      <span
-        className="shrink-0 tabular-nums"
-        style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: isSheet ? "11px" : "10px",
-          color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
-        }}
-      >
-        {count}
-      </span>
     </button>
   );
 }
