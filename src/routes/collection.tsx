@@ -286,6 +286,17 @@ function CollectionPage() {
   );
   const hasMore = visibleProducts.length > visibleCount;
 
+  // ---------- Scroll-spy ----------
+  // Reads `data-spy-section="<browseGroupId>"` off ProductTile <li> nodes and
+  // produces an active group + per-group fill 0..1. Drives the right-edge
+  // segmented progress rail and the left-rail quiet highlight.
+  // Watch on visibleBatch.length re-scans bounds when the grid mutates
+  // (filter / sort / Load More). Mutation observer inside the hook covers
+  // the in-between cases (tiles entering via near-viewport gating).
+  const { activeId: spyActiveId, progressById, scrollToSection } =
+    useScrollSpy({ watch: visibleBatch.length });
+  const spyActiveGroup = (spyActiveId as BrowseGroupId | null) ?? null;
+
   // ---------- Results anchor ----------
   // Anchor kept for #results-top deep links and skip-to-results affordances.
   // We deliberately do NOT auto-scroll the page on filter / search / sort
