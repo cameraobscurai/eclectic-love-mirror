@@ -309,11 +309,11 @@ function CollectionPage() {
           </LayoutGroup>
         </div>
 
-        {/* Sub row + search/sort */}
+        {/* Sub row + search/sort — sub pills hidden in overview mode */}
         <div className="px-6 lg:px-12">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 py-3">
             <AnimatePresence mode="wait">
-              {subcategoryFacets.length > 0 ? (
+              {!isOverviewMode && subcategoryFacets.length > 0 ? (
                 <motion.div
                   key={`sub-${category}`}
                   initial={
