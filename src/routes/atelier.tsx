@@ -1,26 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
+import { AtelierTeam } from "@/components/atelier/team";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
 //
-// Six sections: Hero · The Team · The Creative Space · Scope + Fabrication
-// · Atelier Approach · CTA. No FAQ on this page. No fake portraits, no fake
-// roster rows, no stock studio shots. Empty arrays render text-only blocks.
+// Six sections in fixed order:
+//   1. Hero
+//   2. THE TEAM       (real staff module — names + roles + portrait apertures)
+//   3. The Creative Space
+//   4. Scope + Fabrication
+//   5. Atelier Approach (Imagined · Refined · Crafted)
+//   6. CTA
+//
+// No FAQ here. No fake portraits, no stock studio shots. Empty arrays render
+// designed apertures, not blank space.
 // ---------------------------------------------------------------------------
-
-interface TeamMember {
-  name: string;
-  role: string;
-  portraitSrc?: string;
-}
 
 interface SpaceImage {
   src: string;
   alt: string;
 }
 
-const TEAM: TeamMember[] = [];
 const SPACE_IMAGES: SpaceImage[] = [];
 
 const CAPABILITIES = [
@@ -96,54 +97,11 @@ function AtelierPage() {
         </div>
       </section>
 
-      {/* 2. THE TEAM */}
+      {/* 2. THE TEAM — real staff module. Always renders, even before
+          portraits exist. See src/components/atelier/team.tsx for the data
+          model and the public-render gate. */}
       <Section eyebrow="The Team">
-        <div className="grid md:grid-cols-12 gap-10">
-          <p className="md:col-span-5 font-display italic text-2xl md:text-3xl leading-[1.2] text-charcoal/80">
-            Professional, precise, and approachable.
-          </p>
-          <div className="md:col-span-7 space-y-5 text-base leading-relaxed text-charcoal/70">
-            <p>
-              The Atelier is a small team of designers, fabricators, and
-              producers working under a single roof in Denver. Each project is
-              led by a designer who stays with it from concept through install.
-            </p>
-            <p>
-              Personality is welcome. The studio is rigorous about craft and
-              relaxed about everything else.
-            </p>
-          </div>
-        </div>
-
-        {TEAM.length > 0 ? (
-          <ul className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
-            {TEAM.map((member) => (
-              <li key={member.name}>
-                {member.portraitSrc && (
-                  <div className="aspect-[4/5] bg-white overflow-hidden grayscale">
-                    <img
-                      src={member.portraitSrc}
-                      alt={`Portrait of ${member.name}`}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <p className="mt-4 font-display text-xl">{member.name}</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                  {member.role}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          // Empty-state: portrait apertures, no fake names, no fake roles.
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <MediaAperture key={i} ratio="4/5" />
-            ))}
-          </div>
-        )}
+        <AtelierTeam />
       </Section>
 
       {/* 3. THE CREATIVE SPACE */}
