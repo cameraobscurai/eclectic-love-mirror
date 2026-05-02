@@ -1,9 +1,11 @@
 import {
+  createElement,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
+  type ElementType,
 } from "react";
 import { prepare, layout } from "@chenglou/pretext";
 
@@ -30,7 +32,7 @@ interface FitTextProps {
   letterSpacing?: number;
   className?: string;
   style?: CSSProperties;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
 }
 
 const useIsoLayoutEffect =
@@ -85,19 +87,20 @@ export function FitText({
     return () => ro.disconnect();
   }, [text, fontTemplate, minSize, maxSize, letterSpacing]);
 
-  return (
-    <Tag
-      ref={ref as never}
-      className={className}
-      style={{
+  return createElement(
+    Tag,
+    {
+      ref,
+      className,
+      style: {
         ...style,
         fontSize: `${size}px`,
         lineHeight: 1,
         whiteSpace: "nowrap",
         display: "block",
-      }}
-    >
-      {text}
-    </Tag>
+      },
+    },
+    text,
   );
 }
+
