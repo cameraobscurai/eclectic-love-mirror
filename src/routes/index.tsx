@@ -90,6 +90,11 @@ function HomePage() {
   const wmY = useTransform(wmSpringY, [-0.5, 0.5], [6, -6]);
 
   const parallaxOn = !reduced && isPointerFine;
+  // Use the WebGL displacement layer when we have everything for it. The
+  // Framer translate parallax (Phase 1) only kicks in as a fallback when
+  // WebGL2 isn't available.
+  const useDisplacement = !reduced && isPointerFine && webglOk;
+  const useFramerParallax = parallaxOn && !useDisplacement;
 
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
     if (!parallaxOn) return;
