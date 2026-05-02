@@ -896,28 +896,20 @@ function CollectionPage() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-5">
-                <CollectionFilterRail
-                  orderedGroupIds={orderedGroupIds}
+              <div className="flex-1 overflow-y-auto px-2 py-3">
+                <CollectionRail
+                  products={products}
                   counts={groupCounts}
-                  totalCount={allCount}
                   activeGroup={activeGroup}
-                  onSelect={(groupId) => {
+                  onSelect={(groupId: BrowseGroupId | "") => {
                     // On mobile the sheet covers the entire viewport, so
                     // selecting a category with the sheet still open feels
                     // like nothing happened — the user can't see the grid
                     // reflow underneath. Dismiss the sheet immediately on
-                    // select so the result of the tap is visible. The
-                    // "Show N pieces" CTA below remains for users who want
-                    // to scan multiple categories before committing.
+                    // select so the result of the tap is visible.
                     selectGroup(groupId);
                     setSheetOpen(false);
                   }}
-                  onClear={() => {
-                    resetAll();
-                    setSheetOpen(false);
-                  }}
-                  hasActiveFilters={hasActiveFilters}
                   variant="sheet"
                 />
               </div>
