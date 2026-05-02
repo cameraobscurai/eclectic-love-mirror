@@ -125,13 +125,24 @@ export const BROWSE_GROUP_TIER: Record<BrowseGroupId, BrowseTier> = {
 
 interface BrowseRule {
   id: BrowseGroupId;
-  /** Product.categorySlug must be in this list. */
+  /** Product.categorySlug must be in this list to even consider the rule. */
   categories: string[];
   /** Lower-cased keyword fragments matched against product.title. */
   keywords: string[];
-  /** Owner rules require BOTH category + keyword. Safety-net rules accept
-   *  category alone (keyword is then a no-op pass). */
+  /**
+   * If true, the title MUST match a keyword regardless of which category slug
+   * the product belongs to. Owner-tier rules use this.
+   *
+   * If false, fall back to monoCategories logic: products whose slug is in
+   * monoCategories pass on category alone; products whose slug is in
+   * `categories` but NOT monoCategories still require a keyword match.
+   * This lets one rule combine a "mono" slug (e.g. dining) with a "keyworded"
+   * cross-slug (e.g. tables1 highboys → Dining).
+   */
   requireKeyword: boolean;
+  /** Slugs that pass on category alone when requireKeyword is false. Defaults
+   *  to all `categories` if omitted (preserves prior behavior). */
+  monoCategories?: string[];
   /** Optional: titles containing any of these keywords are excluded. */
   excludeKeywords?: string[];
 }
