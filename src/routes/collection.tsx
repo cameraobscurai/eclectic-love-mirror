@@ -70,16 +70,8 @@ function CollectionPage() {
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
-  // Default category: "lounge" if available
-  useEffect(() => {
-    if (!category && facets.some((f: CategoryFacet) => f.slug === "lounge")) {
-      navigate({
-        search: (prev: CollectionSearch) => ({ ...prev, category: "lounge" }),
-        replace: true,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Overview mode: category=all (i.e. no category) AND no active search query.
+  const isOverviewMode = !category && !q.trim();
 
   // Debounced search input
   const [qLocal, setQLocal] = useState(q);
