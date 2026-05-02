@@ -430,8 +430,8 @@ function CollectionPage() {
   };
 
   // ---- Result meta line text ----
-  // Spec: "876 pieces" for browse, "Sofas · 44 pieces" for group,
-  // "24 results matching '...'" for search.
+  // Counts removed from the collection page everywhere except active-search
+  // feedback. Group state shows the category name only; overview shows nothing.
   const groupLabel = activeGroup ? BROWSE_GROUP_LABELS[activeGroup] : null;
   const trimmedQ = q.trim();
   let resultMeta: string;
@@ -439,10 +439,9 @@ function CollectionPage() {
     const n = visibleProducts.length;
     resultMeta = `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`;
   } else if (groupLabel) {
-    const n = visibleProducts.length;
-    resultMeta = `${groupLabel} · ${n} ${n === 1 ? "piece" : "pieces"}`;
+    resultMeta = groupLabel;
   } else {
-    resultMeta = `${visibleProducts.length} pieces`;
+    resultMeta = "";
   }
 
   const gridCols =
