@@ -53,14 +53,30 @@ export function CollectionFilterRail({
   return (
     <nav
       aria-label="Filter inventory by category"
-      className={
+      className={isSheet ? "px-1" : "pr-2"}
+      style={
         isSheet
-          ? "px-1"
-          : "sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2"
+          ? undefined
+          : {
+              // Sticky offset = global nav + sticky utility row. Both sourced
+              // from tokens so any height change propagates here automatically.
+              position: "sticky",
+              top: "calc(var(--nav-h) + var(--archive-utility-h))",
+              maxHeight:
+                "calc(100dvh - (var(--nav-h) + var(--archive-utility-h) + 1rem))",
+              overflowY: "auto",
+            }
       }
     >
       <div className="flex items-baseline justify-between mb-3">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
+        <p
+          className="uppercase"
+          style={{
+            fontSize: "var(--label-size-micro)",
+            letterSpacing: "var(--label-tracking-micro)",
+            color: "var(--archive-text-muted)",
+          }}
+        >
           Categories
         </p>
         {hasActiveFilters && (
