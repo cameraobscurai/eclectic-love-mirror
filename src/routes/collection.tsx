@@ -291,13 +291,12 @@ function CollectionPage() {
 
       {/* Sticky filter header */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Primary category navigation */}
+        {/* Primary category navigation — compact horizontal rail on all sizes.
+            Full orientation lives in the right Inventory Index Rail (desktop). */}
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
           <div className="max-w-7xl mx-auto">
-            {/* MOBILE: horizontal scroll rail with "Overview" first.
-                "All" is NOT a category — Overview returns to /collection. */}
-            <LayoutGroup id="collection-mobile-pills">
-              <div className="md:hidden relative">
+            <LayoutGroup id="collection-primary-pills">
+              <div className="relative">
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
@@ -314,7 +313,7 @@ function CollectionPage() {
                     <CategoryPill
                       label="Overview"
                       active={!category}
-                      layoutGroupId="collection-pill-active-mobile"
+                      layoutGroupId="collection-pill-active-primary"
                       onClick={() =>
                         navigate({
                           search: (prev: CollectionSearch) => ({
@@ -336,7 +335,7 @@ function CollectionPage() {
                       <CategoryPill
                         label={`${f.display} (${f.count})`}
                         active={category === f.slug}
-                        layoutGroupId="collection-pill-active-mobile"
+                        layoutGroupId="collection-pill-active-primary"
                         onClick={() =>
                           navigate({
                             search: (prev: CollectionSearch) => ({
@@ -353,26 +352,6 @@ function CollectionPage() {
                 </div>
               </div>
             </LayoutGroup>
-
-            {/* DESKTOP: wrapping category nav — every category visible at once,
-                no horizontal scrolling, no clipping. */}
-            <div className="hidden md:block">
-              <CategoryIndex
-                facets={facets}
-                activeSlug={category}
-                onSelect={(slug) =>
-                  navigate({
-                    search: (prev: CollectionSearch) => ({
-                      ...prev,
-                      category: slug,
-                      sub: "",
-                    }),
-                    replace: true,
-                  })
-                }
-                variant="compact"
-              />
-            </div>
           </div>
         </div>
 
