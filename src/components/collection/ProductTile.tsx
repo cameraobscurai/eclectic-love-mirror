@@ -84,24 +84,27 @@ export function ProductTile({
             className="relative w-full flex items-center justify-center bg-white overflow-hidden"
             style={{ height: "var(--archive-tile-media-h)" }}
           >
-            {/* Quiet skeleton overlay.
-                - Priority tiles (skipBlur=true) start fully transparent so
-                  cached/crisp first paints never flash an overlay.
-                - Non-priority tiles start opaque and fade out fast (220ms)
-                  the moment the image reports loaded — it's covering load,
-                  not animating it. */}
+            {/* Quiet skeleton overlay — flat cream block that fades out the
+                moment the image reports loaded. Same behavior across every
+                tile (no special blur path for priority tiles), so rows look
+                consistent while the grid streams in. */}
             <div
               aria-hidden
-              className="absolute inset-0 bg-white"
+              className="absolute inset-0 bg-cream"
               style={{
-                opacity: skipBlur || loaded || !product.primaryImage ? 0 : 1,
-                transition: "opacity 220ms ease-out",
+                opacity: loaded || !product.primaryImage ? 0 : 1,
+                transition: "opacity 240ms ease-out",
               }}
             />
 
             {product.primaryImage ? (
               <img
-                src={product.primaryImage.url}
+                src={withCdnWidth(product.primaryImage.url, 750)}
+                srcSet={
+                  buildCdnSrcSet(product.primaryImage.url, [500, 750, 1100]) ||
+                  undefined
+                }
+                sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                 alt={product.primaryImage.altText ?? product.title}
                 width={800}
                 height={800}
@@ -116,23 +119,12 @@ export function ProductTile({
                 }}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                className="max-w-full max-h-full w-auto h-auto object-contain will-change-[filter,opacity,transform] group-hover:scale-[1.04]"
-                style={
-                  skipBlur || reduced
-                    ? {
-                        // Priority + reduced-motion paths: no blur ramp at
-                        // all. The image renders crisp at first paint.
-                        filter: "none",
-                        opacity: 1,
-                        transition: "transform 500ms ease-out",
-                      }
-                    : {
-                        filter: loaded ? "blur(0px)" : "blur(14px)",
-                        opacity: loaded ? 1 : 0.55,
-                        transition:
-                          "filter 600ms ease-out, opacity 600ms ease-out, transform 500ms ease-out",
-                      }
-                }
+                className="max-w-full max-h-full w-auto h-auto object-contain will-change-[opacity,transform] group-hover:scale-[1.04]"
+                style={{
+                  opacity: loaded ? 1 : 0,
+                  transition:
+                    "opacity 240ms ease-out, transform 500ms ease-out",
+                }}
               />
             ) : null}
 
