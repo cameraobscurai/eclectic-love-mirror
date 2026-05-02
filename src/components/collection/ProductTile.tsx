@@ -39,6 +39,8 @@ export function ProductTile({
   // this only fires for newly-entering cards; reflowing cards skip it.
   const stagger = reduced ? 0 : Math.min(index * 0.045, 0.42);
   const showInternals = near; // gates image, hover label, fetch
+  // Skip blur-up for the first 6 priority tiles so the LCP image paints crisp.
+  const skipBlur = index < HIGH_FETCH_COUNT;
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
@@ -73,7 +75,8 @@ export function ProductTile({
       {showInternals ? (
         <button
           onClick={onOpen}
-          className="group block w-full text-left bg-white active:scale-[0.98] transition-transform duration-150"
+          aria-label={`Open ${product.title}`}
+          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-transform duration-150"
         >
           {/* Square object surface — pure white, no card panel, no border */}
           <div className="relative aspect-square overflow-hidden bg-white">
@@ -81,13 +84,15 @@ export function ProductTile({
             <div
               aria-hidden
               className="absolute inset-0 bg-white transition-opacity duration-500"
-              style={{ opacity: loaded || !product.primaryImage ? 0 : 1 }}
+              style={{ opacity: loaded || !product.primaryImage || skipBlur ? 0 : 1 }}
             />
 
             {product.primaryImage ? (
               <img
                 src={product.primaryImage.url}
                 alt={product.primaryImage.altText ?? product.title}
+                width={800}
+                height={800}
                 loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
                 decoding="async"
                 ref={(el) => {
@@ -101,8 +106,8 @@ export function ProductTile({
                 onError={() => onImageFailed?.(product.id)}
                 className="absolute inset-0 w-full h-full object-contain p-4 will-change-[filter,opacity,transform] transition-transform duration-500 group-hover:scale-[1.04]"
                 style={{
-                  filter: loaded || reduced ? "blur(0px)" : "blur(14px)",
-                  opacity: loaded || reduced ? 1 : 0.55,
+                  filter: loaded || reduced || skipBlur ? "blur(0px)" : "blur(14px)",
+                  opacity: loaded || reduced || skipBlur ? 1 : 0.55,
                   transition:
                     "filter 600ms ease-out, opacity 600ms ease-out, transform 500ms ease-out",
                 }}
