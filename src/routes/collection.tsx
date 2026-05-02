@@ -3,13 +3,13 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useMemo, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { getCollectionCatalog } from "@/server/phase3-catalog.functions";
 import {
+  getCollectionCatalog,
   CATEGORY_DISPLAY_ORDER,
   type CollectionProduct,
   type CategoryFacet,
   type CatalogPayload,
-} from "@/server/phase3-catalog.server";
+} from "@/lib/phase3-catalog";
 import { CategoryPill } from "@/components/collection/CategoryPill";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
