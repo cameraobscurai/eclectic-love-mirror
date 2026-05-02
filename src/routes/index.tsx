@@ -43,23 +43,9 @@ function HomePage() {
     return () => clearTimeout(t);
   }, []);
 
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
-    const onScroll = () => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        const y = Math.min(window.scrollY, window.innerHeight);
-        setParallaxY(y * 0.3);
-        rafRef.current = null;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+  // No scroll-driven parallax: the page is locked to one viewport with no
+  // imagery. The parallax effect was tied to the hero photo and is no longer
+  // meaningful here.
 
   return (
     <main
