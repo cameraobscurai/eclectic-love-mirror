@@ -279,6 +279,53 @@ export type Database = {
           },
         ]
       }
+      scrape_errors: {
+        Row: {
+          attempt: number
+          created_at: string
+          error_message: string | null
+          error_type: string
+          http_status: number | null
+          id: string
+          phase: string
+          raw: Json | null
+          run_id: string | null
+          url: string
+        }
+        Insert: {
+          attempt?: number
+          created_at?: string
+          error_message?: string | null
+          error_type: string
+          http_status?: number | null
+          id?: string
+          phase: string
+          raw?: Json | null
+          run_id?: string | null
+          url: string
+        }
+        Update: {
+          attempt?: number
+          created_at?: string
+          error_message?: string | null
+          error_type?: string
+          http_status?: number | null
+          id?: string
+          phase?: string
+          raw?: Json | null
+          run_id?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scrape_errors_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scrape_runs: {
         Row: {
           created_at: string
@@ -386,9 +433,12 @@ export type Database = {
           height: number | null
           id: string
           image_url: string
+          inferred_filename: string | null
           is_hero: boolean
           position: number
           scraped_product_id: string
+          source_page_url: string | null
+          visible_filename: string | null
           width: number | null
         }
         Insert: {
@@ -396,9 +446,12 @@ export type Database = {
           height?: number | null
           id?: string
           image_url: string
+          inferred_filename?: string | null
           is_hero?: boolean
           position?: number
           scraped_product_id: string
+          source_page_url?: string | null
+          visible_filename?: string | null
           width?: number | null
         }
         Update: {
@@ -406,9 +459,12 @@ export type Database = {
           height?: number | null
           id?: string
           image_url?: string
+          inferred_filename?: string | null
           is_hero?: boolean
           position?: number
           scraped_product_id?: string
+          source_page_url?: string | null
+          visible_filename?: string | null
           width?: number | null
         }
         Relationships: [
@@ -421,48 +477,152 @@ export type Database = {
           },
         ]
       }
+      scraped_product_variants: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          label: string | null
+          position: number
+          raw: Json | null
+          scraped_product_id: string
+          value: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          label?: string | null
+          position?: number
+          raw?: Json | null
+          scraped_product_id: string
+          value?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string | null
+          position?: number
+          raw?: Json | null
+          scraped_product_id?: string
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scraped_products: {
         Row: {
+          add_to_cart_present: boolean | null
           breadcrumb: string[] | null
           category_slug: string | null
+          color_notes: string | null
           description: string | null
+          dimensions: string | null
+          extraction_confidence: number | null
+          generic_notes: string | null
           hero_image_url: string | null
           id: string
+          inferred_category_label: string | null
+          is_custom_order_co: boolean | null
+          material_notes: string | null
+          missing_fields: string[] | null
+          next_product_url: string | null
+          parse_errors: string[] | null
+          phase: string | null
+          previous_product_url: string | null
+          product_title_normalized: string | null
+          product_title_original: string | null
+          quantity_selector_present: boolean | null
           raw: Json | null
+          related_product_urls: string[] | null
           run_id: string
           scraped_at: string
+          size_notes: string | null
           slug: string
+          stocked_quantity: string | null
           subcategory_slug: string | null
           title: string
           url: string
+          variant_selector_present: boolean | null
+          warnings: string[] | null
         }
         Insert: {
+          add_to_cart_present?: boolean | null
           breadcrumb?: string[] | null
           category_slug?: string | null
+          color_notes?: string | null
           description?: string | null
+          dimensions?: string | null
+          extraction_confidence?: number | null
+          generic_notes?: string | null
           hero_image_url?: string | null
           id?: string
+          inferred_category_label?: string | null
+          is_custom_order_co?: boolean | null
+          material_notes?: string | null
+          missing_fields?: string[] | null
+          next_product_url?: string | null
+          parse_errors?: string[] | null
+          phase?: string | null
+          previous_product_url?: string | null
+          product_title_normalized?: string | null
+          product_title_original?: string | null
+          quantity_selector_present?: boolean | null
           raw?: Json | null
+          related_product_urls?: string[] | null
           run_id: string
           scraped_at?: string
+          size_notes?: string | null
           slug: string
+          stocked_quantity?: string | null
           subcategory_slug?: string | null
           title: string
           url: string
+          variant_selector_present?: boolean | null
+          warnings?: string[] | null
         }
         Update: {
+          add_to_cart_present?: boolean | null
           breadcrumb?: string[] | null
           category_slug?: string | null
+          color_notes?: string | null
           description?: string | null
+          dimensions?: string | null
+          extraction_confidence?: number | null
+          generic_notes?: string | null
           hero_image_url?: string | null
           id?: string
+          inferred_category_label?: string | null
+          is_custom_order_co?: boolean | null
+          material_notes?: string | null
+          missing_fields?: string[] | null
+          next_product_url?: string | null
+          parse_errors?: string[] | null
+          phase?: string | null
+          previous_product_url?: string | null
+          product_title_normalized?: string | null
+          product_title_original?: string | null
+          quantity_selector_present?: boolean | null
           raw?: Json | null
+          related_product_urls?: string[] | null
           run_id?: string
           scraped_at?: string
+          size_notes?: string | null
           slug?: string
+          stocked_quantity?: string | null
           subcategory_slug?: string | null
           title?: string
           url?: string
+          variant_selector_present?: boolean | null
+          warnings?: string[] | null
         }
         Relationships: [
           {
