@@ -52,16 +52,16 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Reserve ~10% of stage width for breathing room on the right.
-  // The title gets ~70% of the stage on desktop so the image can overlap.
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.7 - 16 : 0;
+  // Title gets ~85% of the stage width so it can extend behind the centered image.
+  // The image overlaps the middle of the title (Calista reference behavior).
+  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.85 - 16 : 0;
   const fittedSize = useFitToLines({
     text: product.title,
     maxWidth: titleMaxWidth,
     family: "Cormorant",
     weight: 400,
     minPx: 28,
-    maxPx: 112,
+    maxPx: 128,
     targetLines: 2,
   });
 
