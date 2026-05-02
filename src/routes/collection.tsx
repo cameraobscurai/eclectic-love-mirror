@@ -21,6 +21,7 @@ import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
 import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -285,6 +286,17 @@ function CollectionPage() {
   );
   const hasMore = visibleProducts.length > visibleCount;
 
+  // ---------- Scroll-spy ----------
+  // Reads `data-spy-section="<browseGroupId>"` off ProductTile <li> nodes and
+  // produces an active group + per-group fill 0..1. Drives the right-edge
+  // segmented progress rail and the left-rail quiet highlight.
+  // Watch on visibleBatch.length re-scans bounds when the grid mutates
+  // (filter / sort / Load More). Mutation observer inside the hook covers
+  // the in-between cases (tiles entering via near-viewport gating).
+  const { activeId: spyActiveId, progressById, scrollToSection } =
+    useScrollSpy({ watch: visibleBatch.length });
+  const spyActiveGroup = (spyActiveId as BrowseGroupId | null) ?? null;
+
   // ---------- Results anchor ----------
   // Anchor kept for #results-top deep links and skip-to-results affordances.
   // We deliberately do NOT auto-scroll the page on filter / search / sort
@@ -408,15 +420,14 @@ function CollectionPage() {
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
-      {/* Index Strip — desktop-only right-edge orientation rail. Mirrors the
-          left filter rail so a user can switch categories without scrolling
-          back to the top. */}
+      {/* Right-edge segmented progress rail. One thin segment per category;
+          fills as the viewport scrolls through that category's tiles. Click
+          jumps to the first tile of that section. */}
       <CollectionIndexStrip
         groups={orderedGroupIds}
-        activeGroup={activeGroup}
-        counts={groupCounts}
-        totalCount={allCount}
-        onSelect={selectGroup}
+        progressById={progressById}
+        spyActiveGroup={spyActiveGroup}
+        onJump={(id) => scrollToSection(id)}
       />
 
       {/* Hero — quiet, archive-style */}
@@ -572,6 +583,7 @@ function CollectionPage() {
               counts={groupCounts}
               totalCount={allCount}
               activeGroup={activeGroup}
+              spyActiveGroup={spyActiveGroup}
               onSelect={selectGroup}
               onClear={resetAll}
               hasActiveFilters={hasActiveFilters}

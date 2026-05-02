@@ -1,103 +1,116 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 
-// Short-label overrides keep the right-edge rail narrow while still readable.
-// Most labels fit in 6–9 characters; only the long ones get shortened.
-const SHORT_LABEL: Partial<Record<BrowseGroupId, string>> = {
-  "benches-ottomans": "BO",
-  "coffee-tables": "COFFEE",
-  "side-tables": "SIDE",
-  "cocktail-tables": "COCKTAIL",
-  "large-decor": "DECOR",
-};
-
 interface CollectionIndexStripProps {
-  /** Ordered group ids that actually have at least one piece in the catalog. */
+  /** Ordered group ids that have at least one piece in the catalog. One
+   *  segment is rendered per id, in this order. */
   groups: BrowseGroupId[];
-  /** Currently active group, or "" for the "all" view. */
-  activeGroup: BrowseGroupId | "";
-  /** Per-group counts for the current search-filtered set. */
-  counts: Map<BrowseGroupId, number>;
-  /** Total count for the "all" anchor at the top of the rail. */
-  totalCount: number;
-  /** Apply or clear the group filter. */
-  onSelect: (id: BrowseGroupId | "") => void;
+  /** Per-group fill: 0 = not yet entered, 1 = scrolled past. Driven by the
+   *  scroll-spy hook on the parent. */
+  progressById: Map<string, number>;
+  /** Currently dominant group in the viewport — receives the active accent. */
+  spyActiveGroup: BrowseGroupId | null;
+  /** Click handler — jumps to the first tile of that group via the spy. */
+  onJump: (id: BrowseGroupId) => void;
 }
 
 /**
- * The Index Strip — a hairline rail pinned to the right edge of the Collection
- * viewport. Quiet by default; uses the same micro-typography as the rest of
- * the archive chrome. Desktop only (`md:` and up).
+ * Right-edge segmented progress rail.
  *
- * Mirrors the left filter rail's behavior — clicking a label applies that
- * group filter — so a user scrolling deep in the grid never has to scroll
- * back up to switch categories.
+ * One thin vertical segment per category. Each segment fills (cream → charcoal)
+ * as the viewport scrolls through the tiles tagged with that category. The
+ * currently-dominant segment is slightly wider and shows its label on hover.
+ *
+ * Quiet by default, ambient — the rail is informational, not navigational
+ * chrome. Click a segment to jump to that category's first tile.
+ *
+ * Desktop-only (`md:` and up). The rail is fixed to the right edge and
+ * vertically centered.
  */
 export function CollectionIndexStrip({
   groups,
-  activeGroup,
-  counts,
-  totalCount,
-  onSelect,
+  progressById,
+  spyActiveGroup,
+  onJump,
 }: CollectionIndexStripProps) {
-  const items: Array<{
-    id: BrowseGroupId | "";
-    label: string;
-    count: number;
-    active: boolean;
-  }> = [
-    {
-      id: "",
-      label: "ALL",
-      count: totalCount,
-      active: activeGroup === "",
-    },
-    ...groups.map((id) => ({
-      id,
-      label: (SHORT_LABEL[id] ?? BROWSE_GROUP_LABELS[id]).toUpperCase(),
-      count: counts.get(id) ?? 0,
-      active: activeGroup === id,
-    })),
-  ];
+  const [hoveredId, setHoveredId] = useState<BrowseGroupId | null>(null);
+
+  if (groups.length === 0) return null;
+
+  // Each segment height: derive from a fixed total so the rail length stays
+  // visually constant regardless of group count. ~280px feels right at most
+  // viewport heights without crowding the rest of the page.
+  const TOTAL_H = 280;
+  const GAP = 4;
+  const segH = Math.max(
+    14,
+    (TOTAL_H - GAP * (groups.length - 1)) / groups.length,
+  );
 
   return (
     <nav
-      aria-label="Collection index"
-      className="hidden md:flex fixed top-1/2 -translate-y-1/2 right-6 lg:right-8 z-20 pointer-events-none"
+      aria-label="Collection scroll progress"
+      className="hidden md:block fixed top-1/2 -translate-y-1/2 right-5 lg:right-7 z-20"
     >
-      <ul
-        className="flex flex-col items-stretch gap-[2px] border-l border-charcoal/15 pl-3 max-h-[78vh] overflow-y-auto pointer-events-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        aria-orientation="vertical"
-      >
-        {items.map((it) => {
-          const disabled = it.count === 0 && it.id !== "";
+      <ol className="flex flex-col items-end" style={{ gap: `${GAP}px` }}>
+        {groups.map((id) => {
+          const progress = Math.max(0, Math.min(1, progressById.get(id) ?? 0));
+          const isActive = spyActiveGroup === id;
+          const isHovered = hoveredId === id;
+          const showLabel = isActive || isHovered;
+
           return (
-            <li key={it.id || "all"}>
+            <li
+              key={id}
+              className="relative flex items-center justify-end"
+              style={{ height: `${segH}px` }}
+              onMouseEnter={() => setHoveredId(id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
+              {/* Label appears on the left side of the segment when active or hovered */}
+              <span
+                className={cn(
+                  "absolute right-full mr-3 whitespace-nowrap text-[10px] uppercase tracking-[0.28em] tabular-nums leading-none transition-opacity duration-200 pointer-events-none",
+                  showLabel ? "opacity-100 text-charcoal" : "opacity-0",
+                )}
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {BROWSE_GROUP_LABELS[id]}
+              </span>
+
               <button
                 type="button"
-                onClick={() => onSelect(it.id)}
-                disabled={disabled}
-                aria-current={it.active ? "true" : undefined}
+                onClick={() => onJump(id)}
+                aria-label={`Jump to ${BROWSE_GROUP_LABELS[id]}`}
+                aria-current={isActive ? "true" : undefined}
                 className={cn(
-                  "group block text-right text-[10px] uppercase tracking-[0.28em] tabular-nums leading-none py-[5px] pr-0 pl-0 transition-all duration-200",
-                  "focus:outline-none focus-visible:underline underline-offset-4",
-                  it.active
-                    ? "text-charcoal translate-x-0"
-                    : disabled
-                      ? "text-charcoal/20 cursor-not-allowed"
-                      : "text-charcoal/45 hover:text-charcoal hover:-translate-x-1",
+                  "relative h-full transition-all duration-200 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  isActive || isHovered ? "w-[3px]" : "w-px",
                 )}
-                title={`${it.label}${it.count ? ` · ${it.count}` : ""}`}
               >
-                {it.label}
+                {/* Track */}
+                <span
+                  aria-hidden
+                  className="absolute inset-0 bg-charcoal/15"
+                />
+                {/* Fill */}
+                <span
+                  aria-hidden
+                  className={cn(
+                    "absolute left-0 right-0 top-0 transition-[height] duration-150 ease-out",
+                    isActive ? "bg-charcoal" : "bg-charcoal/55",
+                  )}
+                  style={{ height: `${progress * 100}%` }}
+                />
               </button>
             </li>
           );
         })}
-      </ul>
+      </ol>
     </nav>
   );
 }

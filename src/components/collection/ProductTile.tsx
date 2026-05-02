@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -43,6 +44,10 @@ export function ProductTile({
   // Skip blur-up for the first 6 priority tiles so the LCP image paints crisp.
   const skipBlur = index < HIGH_FETCH_COUNT;
 
+  // Spy section id — drives the right-rail segmented progress and left-rail
+  // active highlight. Pure function of the product, so safe to compute here.
+  const spyGroup = getProductBrowseGroup(product);
+
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
   const layoutSpring = { type: "spring" as const, stiffness: 260, damping: 32, mass: 0.8 };
@@ -50,6 +55,7 @@ export function ProductTile({
   return (
     <motion.li
       ref={ref}
+      data-spy-section={spyGroup ?? undefined}
       layout
       layoutId={`tile-${product.id}`}
       initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
