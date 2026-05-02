@@ -78,10 +78,14 @@ export function ProductTile({
           aria-label={`Open ${product.title}`}
           className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
         >
-          {/* Invisible media frame — height locked to a token so layout
-              never shifts regardless of image dimensions or load timing. */}
+          {/* Specimen frame — fixed height, generous interior padding,
+              and a shared bottom baseline so every product sits on one
+              optical line regardless of its native dimensions. This is
+              what makes a wall of mismatched silhouettes (low wide sofa
+              next to tall slim lamp) read as a single organized grid
+              instead of floating tiles at random heights. */}
           <div
-            className="relative w-full flex items-center justify-center bg-white overflow-hidden"
+            className="relative w-full bg-white overflow-hidden"
             style={{ height: "var(--archive-tile-media-h)" }}
           >
             {/* Quiet skeleton overlay — pure white so empty tiles read as
@@ -118,11 +122,13 @@ export function ProductTile({
                 }}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                className="max-w-full max-h-full w-auto h-auto object-contain will-change-[opacity,transform] group-hover:scale-[1.04]"
+                // absolute + inset padding gives uniform breathing room on
+                // every side; object-contain + object-bottom plants every
+                // silhouette on a shared baseline at the bottom of the frame.
+                className="absolute inset-0 h-full w-full object-contain object-bottom p-5 md:p-6 lg:p-7 will-change-opacity"
                 style={{
                   opacity: loaded ? 1 : 0,
-                  transition:
-                    "opacity 240ms ease-out, transform 500ms ease-out",
+                  transition: "opacity 240ms ease-out",
                 }}
               />
             ) : null}
