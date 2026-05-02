@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
+import { HeroDisplacement } from "@/components/hero/HeroDisplacement";
 import { cn } from "@/lib/utils";
 import homeHero from "@/assets/home-hero.webp";
 
@@ -41,6 +42,8 @@ function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isPointerFine, setIsPointerFine] = useState(false);
+  const [webglOk, setWebglOk] = useState(false);
+  const [webglReady, setWebglReady] = useState(false);
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -56,6 +59,18 @@ function HomePage() {
     update();
     mql.addEventListener("change", update);
     return () => mql.removeEventListener("change", update);
+  }, []);
+
+  // Detect WebGL2 once. If unavailable, the static <img> + Framer translate
+  // parallax (Phase 1) handles the hero with no flash and no console noise.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const ok = !!document.createElement("canvas").getContext("webgl2");
+      setWebglOk(ok);
+    } catch {
+      setWebglOk(false);
+    }
   }, []);
 
   // Normalized pointer offsets in range [-0.5, 0.5], local to the hero section.
@@ -75,9 +90,14 @@ function HomePage() {
   const wmY = useTransform(wmSpringY, [-0.5, 0.5], [6, -6]);
 
   const parallaxOn = !reduced && isPointerFine;
+  // Use the WebGL displacement layer when we have everything for it. The
+  // Framer translate parallax (Phase 1) only kicks in as a fallback when
+  // WebGL2 isn't available.
+  const useDisplacement = !reduced && isPointerFine && webglOk;
+  const useFramerParallax = parallaxOn && !useDisplacement;
 
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (!parallaxOn) return;
+    if (!useFramerParallax) return;
     const el = sectionRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -88,7 +108,7 @@ function HomePage() {
   };
 
   const handlePointerLeave = () => {
-    if (!parallaxOn) return;
+    if (!useFramerParallax) return;
     mx.set(0);
     my.set(0);
   };
@@ -111,31 +131,53 @@ function HomePage() {
         }}
       >
         {/*
-          Backdrop — the entire editorial composition (triptych glass plates,
-          sketch + swatch moodboard, etched ECLECTIC HIVE wordmark on the
-          center plate) is baked into a single image. We render it full-bleed
-          and let the rest of the page (CTA bar) sit on top.
+          Backdrop — the entire editorial composition is baked into a single
+          image. Three render paths share this section, in priority order:
 
-          A live <h1> remains in the DOM as sr-only so SEO and assistive tech
-          still pick up the brand name even though the visible mark lives
-          inside the artwork.
+          1. WebGL whisper-displacement (HeroDisplacement) — best path. Full
+             pixel control via fragment shader, ~6px max warp around cursor,
+             dead-still at rest. Fades in only after the texture is on the
+             GPU AND the first frame has painted (no flash).
+          2. Framer translate parallax (Phase 1) — fallback when WebGL2 is
+             missing but the user has a fine pointer + motion is OK.
+          3. Static image — universal baseline (touch / reduced-motion).
+
+          The static <img> is always rendered for SSR + as the safety net,
+          and gets cross-faded out once the WebGL layer reports ready.
         */}
         <motion.img
           src={homeHero}
           alt=""
           aria-hidden="true"
           className={cn(
-            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-700",
             "object-[50%_25%] md:object-[50%_38%]",
-            loaded ? "opacity-100" : "opacity-0"
+            loaded && !webglReady ? "opacity-100" : "",
+            !loaded ? "opacity-0" : "",
+            webglReady ? "opacity-0" : ""
           )}
           draggable={false}
           style={
-            parallaxOn
+            useFramerParallax
               ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
               : undefined
           }
         />
+
+        {useDisplacement && (
+          <div
+            className={cn(
+              "absolute inset-0 transition-opacity duration-700",
+              webglReady ? "opacity-100" : "opacity-0"
+            )}
+          >
+            <HeroDisplacement
+              src={homeHero}
+              className="absolute inset-0 w-full h-full"
+              onReady={() => setWebglReady(true)}
+            />
+          </div>
+        )}
 
         {/* Wordmark — sits inside the empty horizontal glass band baked into
             the artwork. Uses clamp() so it scales fluidly to fit the band on
@@ -149,7 +191,7 @@ function HomePage() {
           )}
           style={{
             transitionDelay: loaded ? "300ms" : "0ms",
-            ...(parallaxOn
+            ...(useFramerParallax
               ? { x: wmX, y: wmY, willChange: "transform" }
               : {}),
           }}
