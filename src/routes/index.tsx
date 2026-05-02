@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 import homeHero from "@/assets/home-hero.webp";
