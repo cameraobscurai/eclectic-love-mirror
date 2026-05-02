@@ -180,7 +180,9 @@ export function ProductTile({
             className="w-full bg-white"
             style={{ height: "var(--archive-tile-media-h)" }}
           />
-          <div className="mt-3 h-[34px]" />
+          {/* Caption spacer mirrors hydrated state: only present on mobile,
+              where the visible caption lives below the image. */}
+          <div className="md:hidden mt-3 h-[34px]" />
         </div>
       )}
     </motion.li>
