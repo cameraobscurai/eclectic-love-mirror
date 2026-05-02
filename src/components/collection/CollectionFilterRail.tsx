@@ -155,8 +155,8 @@ function FilterRow({
     : active
       ? "text-charcoal"
       : muted
-        ? "text-charcoal/55 hover:text-charcoal"
-        : "text-charcoal/75 hover:text-charcoal";
+        ? "text-charcoal/55 hover:text-charcoal/90"
+        : "text-charcoal/55 hover:text-charcoal/90";
 
   return (
     <li>
@@ -167,40 +167,30 @@ function FilterRow({
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : 0}
         className={[
-          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors",
-          "rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors leading-none",
+          "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+          // Left rule lives in the row itself; reserve 10px padding-left always
+          // so labels never shift horizontally when active toggles.
+          "pl-[10px] border-l-2",
+          active ? "border-charcoal" : "border-transparent",
           isSheet
-            ? "py-2.5 min-h-[44px] text-[14px]"
-            : "py-1.5 text-[13px]",
+            ? "py-3 min-h-[44px] text-[14px]"
+            : "py-2 text-[14px]",
           tone,
         ].join(" ")}
       >
         <span
-          className={[
-            "relative",
-            active ? "font-medium" : "font-normal",
-          ].join(" ")}
+          className={active ? "font-medium" : "font-normal"}
         >
           {label}
-          {active && (
-            <motion.span
-              layoutId="filter-rail-active"
-              className="absolute -left-3 top-1/2 -translate-y-1/2 h-[1px] w-2 bg-charcoal"
-              transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 500, damping: 35 }
-              }
-            />
-          )}
         </span>
         <span
           className={[
-            "tabular-nums text-[11px]",
+            "tabular-nums text-[12px]",
             disabled
               ? "text-charcoal/20"
               : active
-                ? "text-charcoal/55"
+                ? "text-charcoal/70"
                 : "text-charcoal/35",
           ].join(" ")}
         >
