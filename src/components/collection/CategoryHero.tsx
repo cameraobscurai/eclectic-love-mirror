@@ -43,7 +43,7 @@ export function CategoryHero({ group, firstProduct }: CategoryHeroProps) {
       className="grid items-end gap-6 border-b"
       style={{
         gridTemplateColumns: "1fr auto",
-        padding: "32px 32px 24px",
+        padding: "32px 32px 24px 0",
         borderColor: "var(--archive-rule)",
       }}
     >
