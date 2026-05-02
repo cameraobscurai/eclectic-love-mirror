@@ -93,13 +93,15 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="absolute inset-0 bg-charcoal/[0.02]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_center,transparent_40%,rgba(20,20,20,0.3)_100%)]" />
+        {/* Subtle bottom fade preserves separation between the empty grid and
+            the LiquidGlass CTA bar. The full radial vignette and charcoal
+            wash from the photo era are removed — without imagery they only
+            muddied the empty frames. They will return with real photography. */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, transparent 75%, rgba(28,26,24,0.35) 88%, rgba(28,26,24,0.6) 100%)",
+              "linear-gradient(to bottom, transparent 0%, transparent 78%, rgba(28,26,24,0.45) 100%)",
           }}
         />
 
@@ -204,3 +206,50 @@ function HomePage() {
     </main>
   );
 }
+
+// ---------------------------------------------------------------------------
+// HomeAperture
+//
+// Dark-variant of MediaAperture for the charcoal home page. Renders an empty
+// editorial frame with:
+//   - a warm desaturated wash (sand/10 over charcoal) so the cell reads as a
+//     mounted surface, not a black box
+//   - an inset cream/10 hairline so the frame's edge is felt without shouting
+//   - a tiny ALL-CAPS slot label so the layout's intent is legible while we
+//     decide on imagery (mirrors Atelier's labeled apertures)
+//
+// When real photography is approved, swap the inner contents for an <img>
+// with object-cover; the slot positions and ratios stay identical.
+// ---------------------------------------------------------------------------
+function HomeAperture({ label }: { label: string }) {
+  return (
+    <div
+      className="relative w-full h-full overflow-hidden"
+      style={{
+        backgroundColor: "color-mix(in oklab, var(--sand) 10%, var(--charcoal))",
+      }}
+    >
+      {/* Inset hairline — print-mount feel on dark ground. */}
+      <div
+        aria-hidden="true"
+        className="absolute pointer-events-none"
+        style={{
+          top: "10px",
+          right: "10px",
+          bottom: "10px",
+          left: "10px",
+          border: "1px solid color-mix(in oklab, var(--cream) 10%, transparent)",
+        }}
+      />
+      {/* Slot label — quiet, top-left, only there so we can read the layout
+          contract while frames are empty. Removed once imagery lands. */}
+      <span
+        aria-hidden="true"
+        className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.28em] text-cream/30"
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
