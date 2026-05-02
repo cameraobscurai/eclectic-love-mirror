@@ -257,7 +257,7 @@ function AtelierPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              Begin
+              BEGIN
             </p>
             <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] tracking-tight max-w-2xl">
               Bring a project to the Atelier.
@@ -266,7 +266,7 @@ function AtelierPage() {
               to="/contact"
               className="mt-8 inline-block text-xs uppercase tracking-[0.22em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              Start a conversation
+              START A CONVERSATION
             </Link>
           </div>
         </div>
