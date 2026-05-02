@@ -1,91 +1,111 @@
 /**
- * Architectural scale rule, drawn in charcoal hairline.
+ * Architectural scale annotations drawn around the silhouette.
  *
- * Renders a horizontal measurement bar with serifed end caps and a centered
- * width label. Width is given in inches; the rendered length is computed as
- * a fraction of `imageWidthCeilingInches` (default 84") so a long sofa fills
- * the frame and a small bowl renders short — the user *sees* relative size,
- * not just reads a number.
+ * - `ScaleRuleWidth`  — horizontal hairline beneath the image, labeled with
+ *                       the width in inches.
+ * - `ScaleRuleHeight` — vertical hairline along the right side of the image,
+ *                       labeled with the height in inches (rotated 90°).
  *
- * Pure SVG, no animation, no fonts beyond what the rest of the modal uses.
+ * Both share the same visual register (charcoal/55, 0.4-stroke hairline,
+ * serifed end caps, micro-typographic label in the existing modal type
+ * scale). They render proportionally — bigger pieces fill more of the
+ * envelope, smaller pieces visibly shrink — so the eye reads relative size,
+ * not just digits.
+ *
+ * Pure SVG, no animation. Animation is the parent's job (AnimatePresence).
  */
 
-interface ScaleRuleProps {
-  /** Actual width of the piece in inches. */
-  widthInches: number;
-  /**
-   * Inches that map to 100% of the rule's container width. Defaults to 84"
-   * (the long side of a generous sofa) — bigger pieces still fit; smaller
-   * pieces visibly shrink.
-   */
-  imageWidthCeilingInches?: number;
+const CEILING_W = 84; // inches that map to 100% horizontal envelope (long sofa)
+const CEILING_H = 84; // inches that map to 100% vertical envelope (tall piece)
+
+function format(n: number): string {
+  return Number.isInteger(n) ? `${n}″` : `${n.toFixed(1)}″`;
 }
 
-export function ScaleRule({
-  widthInches,
-  imageWidthCeilingInches = 84,
-}: ScaleRuleProps) {
-  // Rule width as a percentage of the available container — clamp 8%..100%.
-  const pct = Math.max(
-    8,
-    Math.min(100, (widthInches / imageWidthCeilingInches) * 100),
-  );
+function pctOf(value: number, ceiling: number): number {
+  return Math.max(8, Math.min(100, (value / ceiling) * 100));
+}
 
-  // Format: integer if whole, otherwise one decimal.
-  const formatted = Number.isInteger(widthInches)
-    ? `${widthInches}″`
-    : `${widthInches.toFixed(1)}″`;
+interface AxisProps {
+  /** Inches along the relevant axis. */
+  inches: number;
+}
+
+export function ScaleRuleWidth({ inches }: AxisProps) {
+  const pct = pctOf(inches, CEILING_W);
+  const label = format(inches);
 
   return (
     <div
       className="w-full flex justify-center pointer-events-none select-none"
-      aria-label={`Width: ${formatted}`}
+      aria-label={`Width: ${label}`}
     >
       <div className="relative" style={{ width: `${pct}%` }}>
-        {/* Centered label sits above the rule */}
         <div className="text-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums mb-1.5">
-          {formatted}
+          {label}
         </div>
         <svg
           viewBox="0 0 100 6"
           preserveAspectRatio="none"
-          className="w-full h-[6px] block"
+          className="w-full h-[6px] block text-charcoal/55"
           aria-hidden
         >
-          {/* Horizontal hairline */}
-          <line
-            x1="0.5"
-            y1="3"
-            x2="99.5"
-            y2="3"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            vectorEffect="non-scaling-stroke"
-            className="text-charcoal/55"
-          />
-          {/* Serif end caps */}
-          <line
-            x1="0.5"
-            y1="0.5"
-            x2="0.5"
-            y2="5.5"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            vectorEffect="non-scaling-stroke"
-            className="text-charcoal/55"
-          />
-          <line
-            x1="99.5"
-            y1="0.5"
-            x2="99.5"
-            y2="5.5"
-            stroke="currentColor"
-            strokeWidth="0.4"
-            vectorEffect="non-scaling-stroke"
-            className="text-charcoal/55"
-          />
+          <line x1="0.5" y1="3" x2="99.5" y2="3" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+          <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+          <line x1="99.5" y1="0.5" x2="99.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
         </svg>
       </div>
     </div>
   );
+}
+
+export function ScaleRuleHeight({ inches }: AxisProps) {
+  // Height fills a percentage of the available vertical envelope. The label
+  // is rotated 90° and tracks the same micro-type register as the width rule.
+  const pct = pctOf(inches, CEILING_H);
+  const label = format(inches);
+
+  return (
+    <div
+      className="h-full flex items-center pointer-events-none select-none"
+      aria-label={`Height: ${label}`}
+    >
+      <div
+        className="relative flex items-center"
+        style={{ height: `${pct}%` }}
+      >
+        {/* Rotated label sits to the LEFT of the rule (between rule and image) */}
+        <div
+          className="absolute right-full mr-1.5 top-1/2 -translate-y-1/2 origin-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums whitespace-nowrap"
+          style={{ transform: "translateY(-50%) rotate(-90deg)" }}
+        >
+          {label}
+        </div>
+        <svg
+          viewBox="0 0 6 100"
+          preserveAspectRatio="none"
+          className="h-full w-[6px] block text-charcoal/55"
+          aria-hidden
+        >
+          <line x1="3" y1="0.5" x2="3" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+          <line x1="0.5" y1="0.5" x2="5.5" y2="0.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+          <line x1="0.5" y1="99.5" x2="5.5" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Back-compat: keep the legacy <ScaleRule width=... /> export so any external
+// import keeps working. New code should use the named axis components.
+// ---------------------------------------------------------------------------
+
+interface LegacyScaleRuleProps {
+  widthInches: number;
+  imageWidthCeilingInches?: number;
+}
+
+export function ScaleRule({ widthInches }: LegacyScaleRuleProps) {
+  return <ScaleRuleWidth inches={widthInches} />;
 }
