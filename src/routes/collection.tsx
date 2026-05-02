@@ -73,6 +73,25 @@ function CollectionPage() {
   // Overview mode: category=all (i.e. no category) AND no active search query.
   const isOverviewMode = !category && !q.trim();
 
+  // Scroll the active primary pill into view when category changes — keeps
+  // every category reachable on narrow screens.
+  const railRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const slug = category || "all";
+    const target = rail.querySelector<HTMLElement>(
+      `[data-pill-slug="${slug}"]`,
+    );
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [category]);
+
   // Debounced search input
   const [qLocal, setQLocal] = useState(q);
   useEffect(() => setQLocal(q), [q]);
