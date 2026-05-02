@@ -172,11 +172,11 @@ export function QuickViewModal({
             {product.title}
           </h2>
 
-          {/* Image — refined specimen, not billboard. Capped on both axes so
-              low-res sources never get blown up. Bottom-anchored, centered,
-              overlapping the lower half of the title. Same envelope across
-              sofas, lamps, chairs, accessories — silhouette varies, frame doesn't. */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-center justify-center md:items-end md:justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
+          {/* Image — refined specimen, vertically centered in the stage so it
+              overlaps the lower half of the title and fills the dead space.
+              Capped on both axes so low-res sources never get blown up.
+              Same envelope across silhouettes. */}
+          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-center justify-center px-6 md:px-16 pt-2 md:pt-[6%] pb-6 md:pb-10 pointer-events-none">
             <AnimatePresence mode="wait">
               {img ? (
                 <motion.img
@@ -187,7 +187,7 @@ export function QuickViewModal({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="w-auto max-w-[78%] md:max-w-[52%] max-h-[62%] md:max-h-[62%] object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                  className="w-auto max-w-[82%] md:max-w-[62%] max-h-[70%] md:max-h-[78%] object-contain drop-shadow-[0_24px_36px_rgba(26,26,26,0.12)]"
                 />
               ) : (
                 <div className="grid place-items-center text-charcoal/30">
