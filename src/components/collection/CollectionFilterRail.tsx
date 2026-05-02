@@ -46,10 +46,9 @@ export function CollectionFilterRail({
 }: CollectionFilterRailProps) {
   const isSheet = variant === "sheet";
 
-  // Split ordered list into owner / safety-net while preserving order.
-  const ownerIds = orderedGroupIds.filter((id) => OWNER_SET.has(id));
-  const safetyIds = orderedGroupIds.filter((id) => SAFETY_SET.has(id));
-
+  // Single unified list rendered in BROWSE_GROUP_ORDER. Tier metadata still
+  // drives a quieter weight for safety-net categories so the owner's curation
+  // is felt without breaking the navigational flow.
   return (
     <nav
       aria-label="Filter inventory by category"
@@ -98,9 +97,12 @@ export function CollectionFilterRail({
           isSheet={isSheet}
         />
 
-        {ownerIds.length > 0 && <li className="pt-3" aria-hidden />}
-        {ownerIds.map((id) => {
+        {orderedGroupIds.length > 0 && <li className="pt-3" aria-hidden />}
+        {orderedGroupIds.map((id) => {
           const count = counts.get(id) ?? 0;
+          // Safety-net categories render in a quieter weight — preserves the
+          // owner's emphasis without forcing them into a visual second-class.
+          const isSafety = SAFETY_SET.has(id);
           return (
             <FilterRow
               key={id}
@@ -110,27 +112,7 @@ export function CollectionFilterRail({
               disabled={count === 0}
               onClick={() => onSelect(id)}
               isSheet={isSheet}
-            />
-          );
-        })}
-
-        {safetyIds.length > 0 && (
-          // Spacing-only separation. No hard rule between families so no
-          // category feels secondary or orphaned.
-          <li className="pt-4" aria-hidden />
-        )}
-        {safetyIds.map((id) => {
-          const count = counts.get(id) ?? 0;
-          return (
-            <FilterRow
-              key={id}
-              label={BROWSE_GROUP_LABELS[id]}
-              count={count}
-              active={activeGroup === id}
-              disabled={count === 0}
-              onClick={() => onSelect(id)}
-              isSheet={isSheet}
-              muted
+              muted={isSafety}
             />
           );
         })}
