@@ -189,6 +189,7 @@ function HomePage() {
                 <Link
                   key={dest.href}
                   to={dest.href}
+                  preload="viewport"
                   aria-label={`${dest.title} — ${dest.label}`}
                   className={cn(
                     "group transition-all duration-700",
