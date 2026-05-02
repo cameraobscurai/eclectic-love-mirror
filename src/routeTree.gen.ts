@@ -17,6 +17,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicMigrationMapOneshotRouteImport } from './routes/api/public/migration-map-oneshot'
 
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
@@ -58,6 +59,12 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMigrationMapOneshotRoute =
+  ApiPublicMigrationMapOneshotRouteImport.update({
+    id: '/api/public/migration-map-oneshot',
+    path: '/api/public/migration-map-oneshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/api/public/migration-map-oneshot': typeof ApiPublicMigrationMapOneshotRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +86,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/api/public/migration-map-oneshot': typeof ApiPublicMigrationMapOneshotRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +98,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/api/public/migration-map-oneshot': typeof ApiPublicMigrationMapOneshotRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +111,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/api/public/migration-map-oneshot'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +122,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/api/public/migration-map-oneshot'
   id:
     | '__root__'
     | '/'
@@ -121,6 +133,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/api/public/migration-map-oneshot'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +145,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
+  ApiPublicMigrationMapOneshotRoute: typeof ApiPublicMigrationMapOneshotRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/migration-map-oneshot': {
+      id: '/api/public/migration-map-oneshot'
+      path: '/api/public/migration-map-oneshot'
+      fullPath: '/api/public/migration-map-oneshot'
+      preLoaderRoute: typeof ApiPublicMigrationMapOneshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,7 +225,17 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
+  ApiPublicMigrationMapOneshotRoute: ApiPublicMigrationMapOneshotRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
