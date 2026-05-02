@@ -472,7 +472,7 @@ function CollectionPage() {
 
             <label
               htmlFor="collection-sort"
-              className="hidden sm:inline-flex items-center h-10 text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+              className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
             >
               Sort by
             </label>
