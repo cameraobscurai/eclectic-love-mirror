@@ -41,12 +41,14 @@ export function QuickViewModal({
   const stageRef = useRef<HTMLDivElement>(null);
   const [stageWidth, setStageWidth] = useState(0);
 
-  // Width-only scale parse — null when not confidently parseable; the toggle
-  // button is hidden in that case (silent fallback, no "unavailable" labels).
-  const widthInches = useMemo(
-    () => parseWidthInches(product.dimensions),
+  // Parse W / D / H once per product. Toggle is offered whenever ANY axis
+  // (width, height, or diameter) parses confidently — silent fallback for
+  // pieces with no dimensions in the catalog.
+  const dims = useMemo(
+    () => parseDimensions(product.dimensions),
     [product.dimensions],
   );
+  const hasScale = dims.width !== null || dims.height !== null;
 
   useEffect(() => {
     setImgIdx(0);
