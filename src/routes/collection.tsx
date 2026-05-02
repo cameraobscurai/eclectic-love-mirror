@@ -402,15 +402,19 @@ function CollectionPage() {
         <div className="px-6 lg:px-12 border-t border-charcoal/10">
           <div className="max-w-7xl mx-auto flex items-center justify-between py-2.5">
             <motion.p
-              key={visibleProducts.length}
+              key={`${visibleProducts.length}-${visibleBatch.length}-${isOverviewMode}`}
               initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: reduced ? 0 : 0.25 }}
               className="text-xs uppercase tracking-[0.2em] text-charcoal/60"
             >
-              {q.trim()
-                ? `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
-                : `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`}
+              {isOverviewMode
+                ? `${total} pieces · browse by category`
+                : q.trim()
+                  ? `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
+                  : hasMore
+                    ? `Showing ${visibleBatch.length} of ${visibleProducts.length} pieces`
+                    : `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`}
             </motion.p>
             {hasActiveFilters && (
               <button
@@ -424,10 +428,27 @@ function CollectionPage() {
         </div>
       </div>
 
-      {/* Grid */}
+      {/* Body — overview mode OR animated grid mode */}
       <section className="px-6 lg:px-12 pt-8">
         <div className="max-w-7xl mx-auto">
-          {visibleProducts.length === 0 ? (
+          {isOverviewMode ? (
+            <CategoryOverview
+              facets={facets}
+              productsByCategory={productsByCategory}
+              onSelectCategory={(slug) =>
+                navigate({
+                  search: (prev: CollectionSearch) => ({
+                    ...prev,
+                    category: slug,
+                    sub: "",
+                  }),
+                  replace: false,
+                })
+              }
+              onOpenProduct={(id) => setQuickViewId(id)}
+              onImageFailed={markFailed}
+            />
+          ) : visibleProducts.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-display text-3xl">No pieces found</p>
               <p className="mt-3 text-charcoal/60">Try adjusting your filters.</p>
@@ -439,31 +460,46 @@ function CollectionPage() {
               </button>
             </div>
           ) : (
-            <LayoutGroup id="collection-grid">
-              {/* motion.ul with `layout` — container participates in reflow
-                  so column-count changes (e.g. resize) animate too. */}
-              <motion.ul
-                layout
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4"
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
-                }
-              >
-                <AnimatePresence mode="popLayout" initial={false}>
-                  {visibleProducts.map((p: CollectionProduct, i: number) => (
-                    <ProductTile
-                      key={p.id}
-                      product={p}
-                      index={i}
-                      onOpen={() => setQuickViewId(p.id)}
-                      onImageFailed={markFailed}
-                    />
-                  ))}
-                </AnimatePresence>
-              </motion.ul>
-            </LayoutGroup>
+            <>
+              <LayoutGroup id="collection-grid">
+                <motion.ul
+                  layout
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4"
+                  transition={
+                    reduced
+                      ? { duration: 0 }
+                      : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
+                  }
+                >
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    {visibleBatch.map((p: CollectionProduct, i: number) => (
+                      <ProductTile
+                        key={p.id}
+                        product={p}
+                        index={i}
+                        onOpen={() => setQuickViewId(p.id)}
+                        onImageFailed={markFailed}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </motion.ul>
+              </LayoutGroup>
+
+              {hasMore && (
+                <div className="mt-12 flex justify-center">
+                  <button
+                    onClick={() =>
+                      setVisibleCount((c) =>
+                        Math.min(c + BATCH_INCREMENT, visibleProducts.length),
+                      )
+                    }
+                    className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white transition-colors active:scale-[0.98]"
+                  >
+                    Load more ({visibleProducts.length - visibleBatch.length} remaining)
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
