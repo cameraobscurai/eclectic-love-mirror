@@ -78,7 +78,7 @@ export function QuickViewModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full md:max-w-[1280px] md:max-h-[90vh] bg-white text-charcoal shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full h-[100dvh] md:h-auto md:max-h-[90dvh] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
       >
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
