@@ -877,7 +877,12 @@ export type Database = {
         | "exclude_test"
         | "exclude_vanity_or_marketing"
         | "unknown_needs_review"
-      scrape_phase: "map" | "category_scrape" | "product_scrape" | "reconcile"
+      scrape_phase:
+        | "map"
+        | "category_scrape"
+        | "product_scrape"
+        | "reconcile"
+        | "phase3a_markdown"
       scrape_run_status:
         | "pending"
         | "running"
@@ -1028,7 +1033,13 @@ export const Constants = {
         "exclude_vanity_or_marketing",
         "unknown_needs_review",
       ],
-      scrape_phase: ["map", "category_scrape", "product_scrape", "reconcile"],
+      scrape_phase: [
+        "map",
+        "category_scrape",
+        "product_scrape",
+        "reconcile",
+        "phase3a_markdown",
+      ],
       scrape_run_status: [
         "pending",
         "running",
