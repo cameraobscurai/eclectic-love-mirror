@@ -114,6 +114,7 @@ export function CollectionFilterRail({
               label={BROWSE_GROUP_LABELS[id]}
               count={count}
               active={activeGroup === id}
+              spied={spyHighlightId === id}
               disabled={count === 0}
               onClick={() => onSelect(id)}
               isSheet={isSheet}
@@ -130,6 +131,9 @@ interface FilterRowProps {
   label: string;
   count: number;
   active: boolean;
+  /** Quiet highlight when scroll-spy says this section is in the viewport
+   *  but the user hasn't pinned a manual filter. Visually below `active`. */
+  spied?: boolean;
   onClick: () => void;
   isSheet: boolean;
   muted?: boolean;
@@ -140,20 +144,29 @@ function FilterRow({
   label,
   count,
   active,
+  spied,
   onClick,
-  
   isSheet,
   muted,
   disabled,
 }: FilterRowProps) {
-  // Color logic — disabled trumps muted trumps active.
+  // Color logic — disabled trumps muted trumps active trumps spied.
   const tone = disabled
-    ? "text-charcoal/25 cursor-not-allowed"
+    ? "text-charcoal/30 cursor-not-allowed"
     : active
       ? "text-charcoal"
-      : muted
-        ? "text-charcoal/55 hover:text-charcoal/90"
-        : "text-charcoal/55 hover:text-charcoal/90";
+      : spied
+        ? "text-charcoal/85"
+        : muted
+          ? "text-charcoal/55 hover:text-charcoal"
+          : "text-charcoal/55 hover:text-charcoal";
+
+  // Border accent — active is solid, spied is a thinner half-tone tick.
+  const borderColor = active
+    ? "border-charcoal"
+    : spied
+      ? "border-charcoal/40"
+      : "border-transparent";
 
   return (
     <li>
@@ -164,32 +177,36 @@ function FilterRow({
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : 0}
         className={[
-          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors leading-none",
+          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors leading-none uppercase",
           "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
           // Left rule lives in the row itself; reserve 10px padding-left always
           // so labels never shift horizontally when active toggles.
           "pl-[10px] border-l-2",
-          active ? "border-charcoal" : "border-transparent",
+          borderColor,
           isSheet
-            ? "py-3 min-h-[44px] text-[14px]"
-            : "py-2 text-[14px]",
+            ? "py-3 min-h-[44px] text-[13px]"
+            : "py-[7px] text-[13px]",
           tone,
         ].join(" ")}
+        style={{
+          fontFamily: "var(--font-display)",
+          letterSpacing: "0.18em",
+        }}
       >
-        <span
-          className={active ? "font-medium" : "font-normal"}
-        >
+        <span className={active ? "font-semibold" : "font-normal"}>
           {label}
         </span>
         <span
           className={[
-            "tabular-nums text-[12px]",
+            "tabular-nums text-[11px]",
+            // Counter stays in sans for clean numerals
             disabled
               ? "text-charcoal/20"
               : active
                 ? "text-charcoal/70"
                 : "text-charcoal/35",
           ].join(" ")}
+          style={{ fontFamily: "var(--font-sans)", letterSpacing: "0.05em" }}
         >
           {count}
         </span>
