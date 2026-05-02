@@ -78,7 +78,7 @@ export function QuickViewModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
+        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-cream text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
       >
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
@@ -117,20 +117,20 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — fixed grid row. Owns the composition. */}
-        <div className="relative min-h-0 overflow-hidden bg-white">
-          {/* Display-type product name — anchored bottom-left, behind image */}
+        {/* STAGE — title top-left (wraps), image bottom-right (overlaps). */}
+        <div className="relative min-h-0 overflow-hidden bg-cream">
+          {/* Display title — top-left, wraps, capped width so it never overflows */}
           <h2
-            className="absolute left-6 right-6 md:left-10 md:right-10 bottom-6 md:bottom-10 z-0 font-display leading-[0.85] tracking-[-0.01em] text-charcoal whitespace-nowrap overflow-hidden pointer-events-none select-none"
+            className="absolute top-4 md:top-6 left-6 md:left-10 z-0 max-w-[78%] md:max-w-[68%] font-display leading-[0.92] tracking-[-0.015em] text-charcoal pointer-events-none select-none break-words"
             style={{
-              fontSize: "clamp(2.75rem, 8vw, 8rem)",
+              fontSize: "clamp(2.5rem, 6.5vw, 6.5rem)",
             }}
           >
             {product.title}
           </h2>
 
-          {/* Image — fits the stage, never reshapes it */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center px-8 md:px-14 py-8 md:py-12">
+          {/* Image — anchored bottom-right, overlaps the title */}
+          <div className="absolute inset-0 z-10 flex items-end justify-center md:justify-end px-6 md:px-10 pt-20 md:pt-24 pb-4 md:pb-6 pointer-events-none">
             <AnimatePresence mode="wait">
               {img ? (
                 <motion.img
@@ -141,7 +141,7 @@ export function QuickViewModal({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="max-h-full max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
+                  className="max-h-full max-w-full md:max-w-[78%] object-contain object-bottom drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
                 />
               ) : (
                 <div className="grid place-items-center text-charcoal/30">
