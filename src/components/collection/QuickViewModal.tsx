@@ -13,12 +13,13 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
-// Editorial QuickView — single-screen magazine spread.
-// Layers (back → front): cream stage · oversized display-type product name ·
-// product image (object-contain, lifts off type) · top eyebrow + nav bar ·
-// thin footer with thumbs · dimensions · stocked · CTA.
+// Stage-driven QuickView.
+// The modal is a 3-row grid: [top bar] · [stage 1fr] · [footer].
+// The stage owns the composition; the image fits inside it via object-contain.
+// Image dimensions never reshape the modal — every product yields the same
+// frame, only the image inside the stage adapts.
 //
-// Charcoal/cream only. No accent color. No side panel. Hairline dividers.
+// Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
 
 export function QuickViewModal({
   product,
@@ -77,7 +78,7 @@ export function QuickViewModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full md:max-w-[1280px] md:max-h-[90vh] bg-white text-charcoal shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full h-[100dvh] md:h-auto md:max-h-[90dvh] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
       >
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
@@ -116,20 +117,20 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — name as backdrop typography (bottom-left), image in front */}
-        <div className="relative flex-1 min-h-[58vh] md:min-h-0 px-6 md:px-10 pt-2 pb-4 overflow-hidden">
-          {/* Display-type product name — anchored bottom-left, image sits on top */}
+        {/* STAGE — fixed grid row. Owns the composition. */}
+        <div className="relative min-h-0 overflow-hidden bg-white">
+          {/* Display-type product name — anchored bottom-left, behind image */}
           <h2
-            className="absolute left-6 right-6 md:left-10 md:right-10 bottom-4 md:bottom-6 font-display leading-[0.9] tracking-[-0.01em] text-charcoal/90 pointer-events-none select-none line-clamp-2"
+            className="absolute left-6 right-6 md:left-10 md:right-10 bottom-6 md:bottom-10 z-0 font-display leading-[0.85] tracking-[-0.01em] text-charcoal whitespace-nowrap overflow-hidden pointer-events-none select-none"
             style={{
-              fontSize: "clamp(2.5rem, 7vw, 8rem)",
+              fontSize: "clamp(2.75rem, 8vw, 8rem)",
             }}
           >
             {product.title}
           </h2>
 
-          {/* Image — floats above the type baseline */}
-          <div className="relative w-full h-full grid place-items-center pt-6 md:pt-8">
+          {/* Image — fits the stage, never reshapes it */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center px-8 md:px-14 py-8 md:py-12">
             <AnimatePresence mode="wait">
               {img ? (
                 <motion.img
@@ -140,10 +141,10 @@ export function QuickViewModal({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="relative z-[2] max-h-[55vh] md:max-h-[60vh] w-auto max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
+                  className="max-h-full max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
                 />
               ) : (
-                <div className="grid place-items-center h-64 text-charcoal/30">
+                <div className="grid place-items-center text-charcoal/30">
                   No image
                 </div>
               )}
@@ -156,7 +157,7 @@ export function QuickViewModal({
           className="border-t border-charcoal/12 bg-white/75 backdrop-blur-xl"
           style={{ WebkitBackdropFilter: "blur(20px)" }}
         >
-          <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] gap-5 md:gap-10 items-center">
+          <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs */}
             <div className="flex gap-2 order-2 md:order-1">
               {product.images.length > 1 ? (
@@ -186,7 +187,7 @@ export function QuickViewModal({
             </div>
 
             {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:pl-2 md:border-l md:border-charcoal/12 md:pl-10">
+            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {product.dimensions && (
                 <SpecCol label="Dimensions" value={product.dimensions} />
               )}
@@ -198,11 +199,8 @@ export function QuickViewModal({
               )}
             </div>
 
-            {/* spacer for grid */}
-            <div className="hidden md:block order-3" />
-
             {/* CTA */}
-            <div className="order-1 md:order-4 flex justify-end">
+            <div className="order-1 md:order-3 flex justify-end">
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
