@@ -201,12 +201,12 @@ function CollectionPage() {
   };
   const quickViewIndex = useMemo(() => {
     if (!view) return -1;
-    return filtered.findIndex(
+    return visibleProducts.findIndex(
       (p: CollectionProduct) => p.id === view || p.slug === view,
     );
-  }, [filtered, view]);
+  }, [visibleProducts, view]);
   const quickViewProduct: CollectionProduct | null =
-    quickViewIndex >= 0 ? filtered[quickViewIndex] : null;
+    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
   // Body scroll lock when Quick View open
   useEffect(() => {
