@@ -9,7 +9,17 @@ import {
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
+import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
+
+// --- Wordmark tunables (single source of truth) ---
+const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
+const COUNTER_DRIFT_X = 2;        // px max horizontal counter-drift
+const COUNTER_DRIFT_Y = 1.5;      // px max vertical counter-drift
+const SPECULAR_RADIUS = 4;        // px shadow offset radius
+const BREATH_AMPLITUDE = 0.005;   // em
+const BREATH_PERIOD = 9000;       // ms
+const BASE_LETTER_SPACING = 0.32; // em
 
 export const Route = createFileRoute("/")({
   head: () => ({
