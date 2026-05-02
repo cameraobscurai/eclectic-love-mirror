@@ -1,14 +1,14 @@
 import { Link } from "@tanstack/react-router";
 
 const studioLinks = [
-  { href: "/atelier", label: "Atelier by The Hive" },
-  { href: "/collection", label: "Hive Signature Collection" },
-  { href: "/gallery", label: "The Gallery" },
+  { href: "/atelier", label: "ATELIER BY THE HIVE" },
+  { href: "/collection", label: "HIVE SIGNATURE COLLECTION" },
+  { href: "/gallery", label: "THE GALLERY" },
 ] as const;
 
 const informationLinks = [
   { href: "/contact", label: "FAQ", hash: "faq" },
-  { href: "/privacy", label: "Privacy" },
+  { href: "/privacy", label: "PRIVACY" },
 ] as const;
 
 export function Footer() {
@@ -20,7 +20,7 @@ export function Footer() {
           {/* Brand block — Vercel uses a quiet editorial paragraph */}
           <div className="md:col-span-5">
             <h2 className="font-brand text-[1.3rem] lg:text-[1.5rem] tracking-[0.18em] uppercase font-light">
-              Eclectic Hive
+              ECLECTIC HIVE
             </h2>
             <p className="mt-6 text-cream/65 max-w-md leading-[1.7] text-[15px]">
               Two parts luxe, one part regal, and a dash of edge. A full-service
@@ -29,9 +29,9 @@ export function Footer() {
             </p>
           </div>
 
-          <FooterColumn title="Studio" links={studioLinks} className="md:col-span-2" />
+          <FooterColumn title="STUDIO" links={studioLinks} className="md:col-span-2" />
           <FooterColumn
-            title="Information"
+            title="INFORMATION"
             links={informationLinks}
             className="md:col-span-2"
           />
@@ -39,15 +39,15 @@ export function Footer() {
           {/* Connect column — Vercel persistent corner content */}
           <div className="md:col-span-3">
             <h3 className="text-[10px] uppercase tracking-[0.28em] text-cream/40 mb-5">
-              Connect
+              CONNECT
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
                   to="/contact"
-                  className="text-[14px] text-cream/70 hover:text-cream transition-colors"
+                  className="text-[11px] uppercase tracking-[0.22em] text-cream/70 hover:text-cream transition-colors"
                 >
-                  Start a conversation
+                  START A CONVERSATION
                 </Link>
               </li>
               <li>
@@ -65,8 +65,8 @@ export function Footer() {
 
         {/* Bottom rule — quiet copyright */}
         <div className="mt-20 pt-6 border-t border-cream/10 flex flex-col md:flex-row justify-between gap-3 text-[10px] uppercase tracking-[0.28em] text-cream/35">
-          <p>© {new Date().getFullYear()} Eclectic Hive</p>
-          <p>Denver, Colorado</p>
+          <p>© {new Date().getFullYear()} ECLECTIC HIVE</p>
+          <p>DENVER, COLORADO</p>
         </div>
       </div>
     </footer>
@@ -91,7 +91,7 @@ function FooterColumn({ title, links, className }: FooterColumnProps) {
             <Link
               to={l.href}
               hash={l.hash}
-              className="text-[14px] text-cream/70 hover:text-cream transition-colors"
+              className="text-[11px] uppercase tracking-[0.22em] text-cream/70 hover:text-cream transition-colors"
             >
               {l.label}
             </Link>
