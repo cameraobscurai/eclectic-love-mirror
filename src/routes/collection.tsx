@@ -734,7 +734,7 @@ function CollectionPage() {
 
                   <div
                     style={{
-                      paddingLeft: "var(--archive-grid-gap-x)",
+                      paddingLeft: 0,
                       paddingRight: "var(--archive-grid-gap-x)",
                       paddingTop: "1.75rem",
                       paddingBottom: "2rem",
