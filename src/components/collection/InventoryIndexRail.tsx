@@ -62,7 +62,7 @@ export function InventoryIndexRail({
             {facets.map((f) => (
               <li key={f.slug}>
                 <RailItem
-                  label={f.display}
+                  label={RAIL_LABEL_OVERRIDES[f.slug] ?? f.display}
                   count={f.count}
                   active={activeSlug === f.slug}
                   onClick={() => onSelectCategory(f.slug)}
