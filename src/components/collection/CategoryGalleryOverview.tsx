@@ -36,21 +36,15 @@ export function CategoryGalleryOverview({
       {/* Header — matches the editorial register of the collection hero:
           left-aligned, uppercase Cormorant, no eyebrow that repeats the nav. */}
       <header className="border-b border-black/10 px-6 py-6 lg:px-12 lg:py-8">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <h1
-            className="font-display uppercase leading-[0.95] text-charcoal"
-            style={{
-              fontSize: "clamp(1.75rem, 3.6vw, 3rem)",
-              letterSpacing: "-0.005em",
-            }}
-          >
-            Browse by Category
-          </h1>
-          <p className="max-w-[26rem] text-[12px] leading-relaxed text-charcoal/55 lg:text-right">
-            A quieter front door into the archive — choose a family,
-            then drop into the full inventory.
-          </p>
-        </div>
+        <h1
+          className="font-display uppercase leading-[0.95] text-charcoal"
+          style={{
+            fontSize: "clamp(1.75rem, 3.6vw, 3rem)",
+            letterSpacing: "-0.005em",
+          }}
+        >
+          Browse by Category
+        </h1>
       </header>
 
       {/* Hairline grid — Casa Carta style. The grid lines are real 1px borders,
