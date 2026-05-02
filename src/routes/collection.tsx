@@ -20,6 +20,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
+import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
