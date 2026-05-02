@@ -66,7 +66,7 @@
 
 :root {
   /* Eclectic Hive — Black, Charcoal, Sand, Cream */
-  --background: oklch(0.957 0.008 80);   /* #f5f2ed cream */
+  --background: #ffffff;                 /* full white reset (was #f5f2ed cream) */
   --foreground: oklch(0.18 0 0);         /* #1a1a1a charcoal */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0 0);
