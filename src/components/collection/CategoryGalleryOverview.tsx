@@ -1,7 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import {
   BROWSE_GROUP_LABELS,
-  BROWSE_GROUP_TIER,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 import { withCdnWidth } from "@/lib/image-url";
@@ -20,13 +19,21 @@ interface CategoryGalleryOverviewProps {
 }
 
 /**
- * Editorial category landing for /collection. Replaces the All Inventory
- * grid so the user never has to wait for 876 tiles to render. Each card is a
- * single hero image + category name + count — click to enter that category's
- * grid (a real working size, never more than ~150 pieces).
+ * Single-fold category landing for /collection.
  *
- * Register: Casa Carta archive — restrained type, generous negative space,
- * no shadows, no rounded corners. The hero image earns the visual weight.
+ * The whole gallery sits inside the viewport — no scrolling required to see
+ * the full taxonomy. CSS Grid does the heavy lifting:
+ *   - The wrapper is sized by the route to the available viewport height.
+ *   - The <ul> uses `grid-template-rows: repeat(N, minmax(0,1fr))` so all
+ *     rows divide the available height equally.
+ *   - Each card is a single image cell with a thin label strip at the
+ *     bottom — no aspect-ratio lock fighting the row height.
+ *
+ * Layouts (for 18 categories):
+ *   - mobile (<sm):  2 cols × 9 rows  — scrolls vertically (intentional;
+ *                    one fold on a phone can't show 18 hero images legibly)
+ *   - sm/md:         3 cols × 6 rows
+ *   - lg+:           6 cols × 3 rows  — landscape, fully in fold
  */
 export function CategoryGalleryOverview({
   groups,
@@ -35,85 +42,78 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <section aria-labelledby="collection-overview-heading" className="pb-16">
-      <div className="mb-10 flex items-baseline justify-between gap-4">
-        <p
-          id="collection-overview-heading"
-          className="text-[10px] uppercase tracking-[0.32em] text-charcoal/55"
-        >
-          Browse the Archive
-        </p>
-        <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums">
-          {groups.length} categories
-        </p>
-      </div>
+    <ul
+      className="
+        grid h-full w-full
+        grid-cols-2 grid-rows-9
+        sm:grid-cols-3 sm:grid-rows-6
+        lg:grid-cols-6 lg:grid-rows-3
+        gap-px bg-[color:var(--archive-rule)]
+      "
+    >
+      {groups.map((group, idx) => {
+        const hero = group.products.find((p) => p.primaryImage)?.primaryImage;
+        const label = BROWSE_GROUP_LABELS[group.id];
+        // Stagger capped — never more than ~360ms even with 18 cards.
+        const delay = reduced ? 0 : Math.min(idx * 0.03, 0.36);
 
-      <ul className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-x-10 md:gap-y-16">
-        {groups.map((group, idx) => {
-          const hero = group.products.find((p) => p.primaryImage)?.primaryImage;
-          const label = BROWSE_GROUP_LABELS[group.id];
-          const tier = BROWSE_GROUP_TIER[group.id];
-          // Stagger capped — never more than ~360ms even with 18 cards.
-          const delay = reduced ? 0 : Math.min(idx * 0.04, 0.36);
-
-          return (
-            <motion.li
-              key={group.id}
-              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduced ? 0 : 0.4,
-                delay,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+        return (
+          <motion.li
+            key={group.id}
+            className="relative min-h-0 min-w-0 bg-white"
+            initial={reduced ? { opacity: 1 } : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: reduced ? 0 : 0.5,
+              delay,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => onSelectCategory(group.id)}
+              className="group relative block h-full w-full overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-inset"
+              aria-label={`${label} — ${group.products.length} pieces`}
             >
-              <button
-                type="button"
-                onClick={() => onSelectCategory(group.id)}
-                className="group block w-full text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white"
-              >
-                {/* Hero frame — 4:5 portrait. Soft cream wash so empty
-                    space reads as architecture, not error. */}
-                <div
-                  className="relative w-full overflow-hidden bg-cream"
-                  style={{ aspectRatio: "4 / 5" }}
+              {/* Hero image fills the entire cell */}
+              {hero ? (
+                <img
+                  src={withCdnWidth(hero.url, 700)}
+                  alt={hero.altText ?? label}
+                  loading={idx < 6 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-cream" />
+              )}
+
+              {/* Bottom gradient + label strip — readable on any image. */}
+              <div
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none bg-gradient-to-t from-charcoal/75 via-charcoal/15 to-transparent"
+              />
+
+              <div className="absolute inset-x-0 bottom-0 px-3 py-3 lg:px-4 lg:py-4 flex items-baseline justify-between gap-2 text-white">
+                <h3
+                  className="font-display leading-none tracking-tight uppercase truncate"
+                  style={{
+                    fontSize: "clamp(0.85rem, 1.2vw, 1.25rem)",
+                    letterSpacing: "0.06em",
+                  }}
                 >
-                  {hero ? (
-                    <img
-                      src={withCdnWidth(hero.url, 800)}
-                      alt={hero.altText ?? label}
-                      loading={idx < 6 ? "eager" : "lazy"}
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.025]"
-                    />
-                  ) : null}
-                </div>
-
-                <div className="mt-4 flex items-baseline justify-between gap-3">
-                  <h3
-                    className="font-display text-charcoal leading-none tracking-tight uppercase"
-                    style={{
-                      fontSize: "clamp(1.05rem, 1.4vw, 1.5rem)",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {label}
-                  </h3>
-                  <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
-                    {group.products.length}
-                  </span>
-                </div>
-
-                {tier === "safety-net" && (
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.24em] text-charcoal/35">
-                    Archive
-                  </p>
-                )}
-              </button>
-            </motion.li>
-          );
-        })}
-      </ul>
-    </section>
+                  {label}
+                </h3>
+                <span
+                  className="text-[10px] uppercase tracking-[0.18em] tabular-nums text-white/70 flex-shrink-0"
+                >
+                  {group.products.length}
+                </span>
+              </div>
+            </button>
+          </motion.li>
+        );
+      })}
+    </ul>
   );
 }
