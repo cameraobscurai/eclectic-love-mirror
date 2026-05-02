@@ -539,8 +539,8 @@ function CollectionPage() {
       {/* Body — left filter rail + grid */}
       <section className="px-6 lg:px-12 pt-10">
         <div
-          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[17.5rem_minmax(0,1fr)]"
-          style={{ columnGap: "clamp(48px, 5vw, 72px)", rowGap: "2.5rem" }}
+          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)]"
+          style={{ columnGap: "var(--archive-grid-gap-x)", rowGap: "2.5rem" }}
         >
           {/* Desktop filter rail */}
           <aside className="hidden lg:block">
