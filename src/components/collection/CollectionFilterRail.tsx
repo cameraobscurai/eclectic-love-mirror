@@ -115,11 +115,9 @@ export function CollectionFilterRail({
         })}
 
         {safetyIds.length > 0 && (
-          <li
-            className="pt-3 mt-2 border-t"
-            style={{ borderColor: "var(--archive-rule)" }}
-            aria-hidden
-          />
+          // Spacing-only separation. No hard rule between families so no
+          // category feels secondary or orphaned.
+          <li className="pt-4" aria-hidden />
         )}
         {safetyIds.map((id) => {
           const count = counts.get(id) ?? 0;
