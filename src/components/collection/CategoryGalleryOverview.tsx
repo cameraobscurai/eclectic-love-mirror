@@ -32,13 +32,13 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal">
-      {/* Hairline grid — Casa Carta style. The grid lines are real 1px borders,
-          not background bleed-through, so cells stay structurally architectural
-          even on retina. The rail to the left now owns the "Browse by Category"
-          framing — no internal header needed. */}
+    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-4">
+      {/* White grid — 16px gap, no hairlines, no internal borders. Cards lift
+          off the white field via soft shadow + radius. The rail on the left
+          owns the "Browse by Category" framing — no internal header needed. */}
       <ul
-        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 [&>li]:border-r [&>li]:border-b [&>li]:border-black/10"
+        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 gap-4"
+        style={{ background: "#ffffff" }}
       >
         {groups.map((group, idx) => {
           const cover = CATEGORY_COVERS[group.id];
@@ -57,6 +57,12 @@ export function CategoryGalleryOverview({
             <motion.li
               key={group.id}
               className="relative min-h-[260px] min-w-0 bg-white md:min-h-[280px] xl:min-h-[300px]"
+              style={{
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow:
+                  "0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+              }}
               initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
