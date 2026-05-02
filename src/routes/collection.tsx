@@ -51,8 +51,6 @@ const searchSchema = z.object({
 
 const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
-const COLLECTION_INTRO =
-  "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.";
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
