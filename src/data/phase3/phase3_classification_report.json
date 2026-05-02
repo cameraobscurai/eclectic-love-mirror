@@ -1,0 +1,379 @@
+{
+  "generatedAt": "2026-05-02T11:58:31.508Z",
+  "totalProducts": 876,
+  "perGroupCounts": {
+    "sofas": 44,
+    "chairs": 76,
+    "benches-ottomans": 52,
+    "coffee-tables": 28,
+    "side-tables": 53,
+    "cocktail-tables": 10,
+    "dining": 32,
+    "bar": 75,
+    "storage": 13,
+    "lighting": 48,
+    "rugs": 26,
+    "pillows": 147,
+    "throws": 54,
+    "tableware": 38,
+    "serveware": 30,
+    "styling": 60,
+    "accents": 64,
+    "large-decor": 26
+  },
+  "noRuleFiredCount": 0,
+  "noRuleFired": [],
+  "lowMarginCount": 22,
+  "lowMarginThreshold": 50,
+  "lowMargin": [
+    {
+      "id": "0579e60d-1658-4550-b2d9-8c8465e6455b",
+      "title": "Cupra Copper Beverage Tub",
+      "categorySlug": "tableware",
+      "winner": "serveware",
+      "margin": 10,
+      "candidates": [
+        {
+          "id": "serveware",
+          "score": 240,
+          "reason": "tableware/serveware slug + serving keyword"
+        },
+        {
+          "id": "tableware",
+          "score": 230,
+          "reason": "tableware slug + dining piece keyword"
+        },
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "8a56f84a-36fb-4754-bc1d-6cb752314f2a",
+      "title": "Dinay Cut Glass Beverage Dispenser",
+      "categorySlug": "tableware",
+      "winner": "serveware",
+      "margin": 10,
+      "candidates": [
+        {
+          "id": "serveware",
+          "score": 240,
+          "reason": "tableware/serveware slug + serving keyword"
+        },
+        {
+          "id": "tableware",
+          "score": 230,
+          "reason": "tableware slug + dining piece keyword"
+        },
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "023850f1-c134-4ec7-a670-25b187e9a497",
+      "title": "Excursion Champagne Bar Trunk",
+      "categorySlug": "cocktail-bar",
+      "winner": "storage",
+      "margin": 20,
+      "candidates": [
+        {
+          "id": "storage",
+          "score": 230,
+          "reason": "storage slug (mono) or cabinet keyword"
+        },
+        {
+          "id": "bar",
+          "score": 210,
+          "reason": "bar slug + bar keyword"
+        },
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "ef4d5e2d-0828-4705-b094-f0920595b4d2",
+      "title": "Voyage Bar Trunk",
+      "categorySlug": "cocktail-bar",
+      "winner": "storage",
+      "margin": 20,
+      "candidates": [
+        {
+          "id": "storage",
+          "score": 230,
+          "reason": "storage slug (mono) or cabinet keyword"
+        },
+        {
+          "id": "bar",
+          "score": 210,
+          "reason": "bar slug + bar keyword"
+        },
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "04691fd1-10fe-479d-9321-8236581ab73b",
+      "title": "Anathema 82\" Dark Ash Console",
+      "categorySlug": "cocktail-bar",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "a7a5877c-6ee7-4108-8d7e-19c4e689e1da",
+      "title": "Nantucket Oak Wood Column",
+      "categorySlug": "cocktail-bar",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "3a6712d5-ab13-493b-be35-cfa2b622604b",
+      "title": "Relic Limestone Column",
+      "categorySlug": "cocktail-bar",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "780d82a1-ebb9-45db-a85f-ae4902ff308a",
+      "title": "Toshia Mirror Column",
+      "categorySlug": "cocktail-bar",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "dbc09774-910d-4d93-a1db-8459e1f16174",
+      "title": "Luna Platform Bed, Large",
+      "categorySlug": "sofas-loveseats1",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "939a9c8b-ba3f-4f9d-8f61-6ef1432d601b",
+      "title": "Monaco Grey Collection",
+      "categorySlug": "sofas-loveseats1",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "5615db75-b302-4321-b64c-0076dc8a964b",
+      "title": "Na'eem Indian Wood Table",
+      "categorySlug": "tables1",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "a90686b2-4080-4198-8dd6-ce9dbb9bb7a8",
+      "title": "Akoya",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "bfca3624-faa0-4f28-972a-89b684870b00",
+      "title": "Alumina",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "78afa659-1c26-4d8a-b029-d21352a99563",
+      "title": "Belissa",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "e9d67d36-aede-4fb1-b069-dfb4940a6916",
+      "title": "EDEN",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "36eaea3e-eca7-4802-95d4-1173cab4ad84",
+      "title": "JAIN",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "090d11ae-2ddb-42ed-b23e-a98930a36836",
+      "title": "LAPIS",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "eea200ef-e262-4cf7-a768-db3aa294926c",
+      "title": "Midori",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "e46c1d7f-e0ed-466f-974e-0d0a069fbd9f",
+      "title": "Olive Green Leather Cahrger",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "f49b3e1e-4fa3-460b-beb7-5e2febd74a3e",
+      "title": "Ophidia",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "5f565874-4745-4e2c-98d9-d5dcd11840e8",
+      "title": "Bulan",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    },
+    {
+      "id": "df80639e-3c5d-45a7-9aa8-2048d42dfe74",
+      "title": "Tillery",
+      "categorySlug": "tableware",
+      "winner": "accents",
+      "margin": 30,
+      "candidates": [
+        {
+          "id": "accents",
+          "score": 30,
+          "reason": "accents slug or unmatched-table fallback"
+        }
+      ]
+    }
+  ],
+  "movedSinceSnapshot": []
+}
