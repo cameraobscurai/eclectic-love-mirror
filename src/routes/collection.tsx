@@ -291,55 +291,35 @@ function CollectionPage() {
 
       {/* Sticky filter header */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Primary category row with shared layoutId underline + fade edges */}
+        {/* Primary category navigation */}
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
-          <LayoutGroup id="collection-primary-pills">
-            <div className="max-w-7xl mx-auto relative">
-              {/* edge fades */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
-              />
-              <div
-                ref={railRef}
-                className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
-              >
-                <div data-pill-slug="all" className="snap-start">
-                  <CategoryPill
-                    label={`All (${total})`}
-                    active={!category}
-                    layoutGroupId="collection-pill-active-primary"
-                    onClick={() =>
-                      navigate({
-                        search: (prev: CollectionSearch) => ({
-                          ...prev,
-                          category: "",
-                          sub: "",
-                        }),
-                        replace: true,
-                      })
-                    }
-                  />
-                </div>
-                {facets.map((f: CategoryFacet) => (
-                  <div
-                    key={f.slug}
-                    data-pill-slug={f.slug}
-                    className="snap-start"
-                  >
+          <div className="max-w-7xl mx-auto">
+            {/* MOBILE: horizontal scroll rail with "Overview" first.
+                "All" is NOT a category — Overview returns to /collection. */}
+            <LayoutGroup id="collection-mobile-pills">
+              <div className="md:hidden relative">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10"
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
+                />
+                <div
+                  ref={railRef}
+                  className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
+                >
+                  <div data-pill-slug="overview" className="snap-start">
                     <CategoryPill
-                      label={`${f.display} (${f.count})`}
-                      active={category === f.slug}
-                      layoutGroupId="collection-pill-active-primary"
+                      label="Overview"
+                      active={!category}
+                      layoutGroupId="collection-pill-active-mobile"
                       onClick={() =>
                         navigate({
                           search: (prev: CollectionSearch) => ({
                             ...prev,
-                            category: f.slug,
+                            category: "",
                             sub: "",
                           }),
                           replace: true,
@@ -347,10 +327,53 @@ function CollectionPage() {
                       }
                     />
                   </div>
-                ))}
+                  {facets.map((f: CategoryFacet) => (
+                    <div
+                      key={f.slug}
+                      data-pill-slug={f.slug}
+                      className="snap-start"
+                    >
+                      <CategoryPill
+                        label={`${f.display} (${f.count})`}
+                        active={category === f.slug}
+                        layoutGroupId="collection-pill-active-mobile"
+                        onClick={() =>
+                          navigate({
+                            search: (prev: CollectionSearch) => ({
+                              ...prev,
+                              category: f.slug,
+                              sub: "",
+                            }),
+                            replace: true,
+                          })
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
+            </LayoutGroup>
+
+            {/* DESKTOP: wrapping category nav — every category visible at once,
+                no horizontal scrolling, no clipping. */}
+            <div className="hidden md:block">
+              <CategoryIndex
+                facets={facets}
+                activeSlug={category}
+                onSelect={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: true,
+                  })
+                }
+                variant="compact"
+              />
             </div>
-          </LayoutGroup>
+          </div>
         </div>
 
         {/* Sub row + search/sort — sub pills hidden in overview mode */}
