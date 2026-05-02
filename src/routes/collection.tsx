@@ -499,22 +499,39 @@ function CollectionPage() {
       <section className="px-6 lg:px-12 pt-8">
         <div className="max-w-7xl mx-auto">
           {isOverviewMode ? (
-            <CategoryOverview
-              facets={facets}
-              productsByCategory={productsByCategory}
-              onSelectCategory={(slug) =>
-                navigate({
-                  search: (prev: CollectionSearch) => ({
-                    ...prev,
-                    category: slug,
-                    sub: "",
-                  }),
-                  replace: false,
-                })
-              }
-              onOpenProduct={(id) => setQuickViewId(id)}
-              onImageFailed={markFailed}
-            />
+            <div className="space-y-16">
+              <CategoryIndex
+                facets={facets}
+                activeSlug={category}
+                onSelect={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: false,
+                  })
+                }
+                variant="expanded"
+              />
+              <CategoryOverview
+                facets={facets}
+                productsByCategory={productsByCategory}
+                onSelectCategory={(slug) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      category: slug,
+                      sub: "",
+                    }),
+                    replace: false,
+                  })
+                }
+                onOpenProduct={(id) => setQuickViewId(id)}
+                onImageFailed={markFailed}
+              />
+            </div>
           ) : visibleProducts.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-display text-3xl">No pieces found</p>
@@ -528,6 +545,25 @@ function CollectionPage() {
             </div>
           ) : (
             <>
+              {category && (
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <button
+                    onClick={() =>
+                      navigate({
+                        search: (prev: CollectionSearch) => ({
+                          ...prev,
+                          category: "",
+                          sub: "",
+                        }),
+                        replace: false,
+                      })
+                    }
+                    className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-charcoal transition-colors"
+                  >
+                    ← All categories
+                  </button>
+                </div>
+              )}
               <LayoutGroup id="collection-grid">
                 <motion.ul
                   layout
