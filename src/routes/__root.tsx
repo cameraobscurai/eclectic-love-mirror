@@ -1,4 +1,12 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  HeadContent,
+  Scripts,
+  useLocation,
+} from "@tanstack/react-router";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 
@@ -11,7 +19,7 @@ function NotFoundComponent() {
         <h1 className="font-brand text-7xl">404</h1>
         <h2 className="mt-4 text-xl font-brand tracking-[0.2em] uppercase">Page not found</h2>
         <p className="mt-2 text-sm text-cream/60">
-          The page you're looking for doesn't exist or has been moved.
+          The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
         <div className="mt-6">
           <Link
@@ -44,15 +52,30 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
       { name: "twitter:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
-      { name: "description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
-      { property: "og:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
-      { name: "twitter:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png" },
+      {
+        name: "description",
+        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
+      },
+      {
+        property: "og:description",
+        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
+      },
+      {
+        name: "twitter:description",
+        content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png",
+      },
     ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -76,6 +99,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  const reduced = useReducedMotion();
+
   return (
     <>
       <a
@@ -85,14 +110,27 @@ function RootComponent() {
         Skip to main content
       </a>
       <Navigation />
-      <Outlet />
-      {/* Desktop homepage = single viewport (no scroll). Mobile still gets
-          the footer at the bottom of the scroll. Every other route gets it
-          at every breakpoint. */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={pathname}
+          initial={reduced ? false : { opacity: 0, y: 10, filter: "blur(4px)" }}
+          animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={reduced ? { opacity: 1 } : { opacity: 0, y: -8, filter: "blur(3px)" }}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : {
+                  duration: 0.42,
+                  ease: [0.22, 1, 0.36, 1],
+                }
+          }
+        >
+          <Outlet />
+        </motion.div>
+      </AnimatePresence>
       <div className={isHome ? "lg:hidden" : undefined}>
         <Footer />
       </div>
     </>
   );
 }
-
