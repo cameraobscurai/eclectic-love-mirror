@@ -39,7 +39,10 @@ export function QuickViewModal({
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const zoneRef = useRef<HTMLDivElement>(null);
   const [stageWidth, setStageWidth] = useState(0);
+  const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
+  const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
   // Parse W / D / H once per product. Toggle is offered whenever ANY axis
   // (width, height, or diameter) parses confidently — silent fallback for
@@ -55,6 +58,10 @@ export function QuickViewModal({
     setShowScale(false);
   }, [product.id]);
 
+  useEffect(() => {
+    setImgNatural(null);
+  }, [product.id, imgIdx]);
+
   // Track stage width for Pretext fit-to-lines measurement.
   useEffect(() => {
     const el = stageRef.current;
@@ -66,6 +73,42 @@ export function QuickViewModal({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
+  // Track the measurement zone's actual rendered size so we can compute the
+  // image's contained-fit footprint (object-contain leaves empty gutters
+  // we need to subtract before drawing rules).
+  useEffect(() => {
+    const el = zoneRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const r = entries[0]?.contentRect;
+      if (r) setZoneSize({ w: r.width, h: r.height });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Compute the rendered image box inside the zone given object-contain.
+  // This is the actual furniture footprint — what the rules should wrap.
+  const imageBox = useMemo(() => {
+    if (!imgNatural || zoneSize.w === 0 || zoneSize.h === 0) return null;
+    const zoneAR = zoneSize.w / zoneSize.h;
+    const imgAR = imgNatural.w / imgNatural.h;
+    let w: number, h: number;
+    if (imgAR > zoneAR) {
+      // image is wider than zone — pinned to width
+      w = zoneSize.w;
+      h = zoneSize.w / imgAR;
+    } else {
+      // image is taller — pinned to height
+      h = zoneSize.h;
+      w = zoneSize.h * imgAR;
+    }
+    // object-bottom: image sits at the bottom of the zone, centered horizontally
+    const left = (zoneSize.w - w) / 2;
+    const top = zoneSize.h - h;
+    return { left, top, width: w, height: h };
+  }, [imgNatural, zoneSize]);
 
   // Title sits behind the image at top-left. Width capped at 78% of the stage
   // so it never reaches under the measurement zone. Visual ceiling is also
@@ -199,7 +242,8 @@ export function QuickViewModal({
               so they wrap the actual furniture region, not the empty stage. */}
           <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
             <div
-              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%] flex items-end justify-center"
+              ref={zoneRef}
+              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%]"
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -211,40 +255,53 @@ export function QuickViewModal({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.25 }}
-                    className="w-auto h-auto max-w-full max-h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    onLoad={(e) => {
+                      const t = e.currentTarget;
+                      setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
+                    }}
+                    className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
                   />
                 ) : (
-                  <div className="grid place-items-center text-charcoal/30">
+                  <div className="absolute inset-0 grid place-items-center text-charcoal/30">
                     No image
                   </div>
                 )}
               </AnimatePresence>
 
-              {/* Scale rules — bound to the zone's edges, not the stage.
-                  Width rule sits just below the zone; height rule just to
-                  its right. They render independently if only one axis is
-                  parseable. */}
+              {/* Scale rules — bound to the actual rendered image footprint
+                  (computed from naturalWidth/Height + object-contain math),
+                  not the zone envelope. The rules wrap the furniture itself. */}
               <AnimatePresence>
-                {showScale && hasScale && dims.width !== null && (
+                {showScale && hasScale && imageBox && dims.width !== null && (
                   <motion.div
                     key="scale-width"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.18 }}
-                    className="absolute left-0 right-0 -bottom-7 pointer-events-none"
+                    className="absolute pointer-events-none"
+                    style={{
+                      left: `${imageBox.left}px`,
+                      width: `${imageBox.width}px`,
+                      top: `${imageBox.top + imageBox.height + 10}px`,
+                    }}
                   >
                     <ScaleRuleWidth inches={dims.width} />
                   </motion.div>
                 )}
-                {showScale && hasScale && dims.height !== null && (
+                {showScale && hasScale && imageBox && dims.height !== null && (
                   <motion.div
                     key="scale-height"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.22 }}
-                    className="absolute top-0 bottom-0 -right-6 pointer-events-none"
+                    className="absolute pointer-events-none"
+                    style={{
+                      top: `${imageBox.top}px`,
+                      height: `${imageBox.height}px`,
+                      left: `${imageBox.left + imageBox.width + 10}px`,
+                    }}
                   >
                     <ScaleRuleHeight inches={dims.height} />
                   </motion.div>
