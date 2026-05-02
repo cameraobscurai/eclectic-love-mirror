@@ -80,8 +80,13 @@ export function MediaAperture({
           />
         )}
       </div>
+      {label && (
+        <figcaption className="mt-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+          {label}
+        </figcaption>
+      )}
       {caption && (
-        <figcaption className="mt-3 text-[10px] uppercase tracking-[0.22em] text-charcoal/50">
+        <figcaption className="mt-2 text-[13px] leading-relaxed text-charcoal/65">
           {caption}
         </figcaption>
       )}
