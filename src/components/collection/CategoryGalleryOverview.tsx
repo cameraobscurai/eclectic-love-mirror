@@ -111,7 +111,7 @@ export function CategoryGalleryOverview({
                     fontTemplate={'500 ${size}px "Cormorant Garamond", "Times New Roman", serif'}
                     minSize={10}
                     maxSize={22}
-                    letterSpacing={0.06 * 16}
+                    letterSpacingEm={0.06}
                     className="font-display uppercase"
                     style={{ letterSpacing: "0.06em" }}
                   />

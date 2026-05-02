@@ -87,7 +87,7 @@ export function FitText({
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [text, fontTemplate, minSize, maxSize, letterSpacing]);
+  }, [text, fontTemplate, minSize, maxSize, letterSpacingEm]);
 
   return createElement(
     Tag,
