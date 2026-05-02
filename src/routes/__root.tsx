@@ -42,6 +42,13 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "ECLECTIC HIVE" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
+      { name: "twitter:title", content: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
+      { name: "description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { property: "og:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { name: "twitter:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
