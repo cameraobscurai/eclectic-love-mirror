@@ -425,7 +425,10 @@ function CollectionPage() {
       {/* Sticky control bar — single row, 64px min height, baseline-aligned */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-black/[0.08]">
         <div className="px-6 lg:px-12">
-          <div className="max-w-[1600px] mx-auto flex items-center gap-3 min-h-[64px] py-2">
+          <div
+            className="max-w-[1600px] mx-auto flex items-center gap-3 py-2"
+            style={{ minHeight: "var(--archive-utility-h)" }}
+          >
             {/* Mobile: filters trigger */}
             <button
               ref={filtersTriggerRef}
