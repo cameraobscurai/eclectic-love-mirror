@@ -50,7 +50,7 @@ const searchSchema = z.object({
 const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
 const COLLECTION_INTRO =
-  "A working rental inventory of furniture, lighting, tableware, and bespoke pieces. Browse by category, search by name, then add favorites to an inquiry.";
+  "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.";
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
@@ -59,13 +59,13 @@ export const Route = createFileRoute("/collection")({
       {
         name: "description",
         content:
-          "A working rental inventory of furniture, lighting, tableware, and bespoke pieces. Browse, search, and add favorites to an inquiry.",
+          "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental from Eclectic Hive.",
       },
       { property: "og:title", content: "Hive Signature Collection — Eclectic Hive" },
       {
         property: "og:description",
         content:
-          "A working rental inventory of furniture, lighting, tableware, and bespoke pieces.",
+          "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.",
       },
     ],
   }),

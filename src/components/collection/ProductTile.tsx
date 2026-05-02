@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
+import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -135,10 +136,35 @@ export function ProductTile({
                 }
               />
             ) : null}
+
+            {/* Desktop-only object label — frosted plate anchored inside the
+                media frame. Hidden at rest, revealed on hover/focus.
+                aria-hidden because the parent button already exposes the
+                product title via aria-label; this is purely decorative. */}
+            <div
+              aria-hidden
+              className={[
+                "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
+                "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
+                "group-hover:opacity-100 group-hover:translate-y-0",
+                "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
+                reduced ? "transition-none" : "",
+              ].join(" ")}
+            >
+              <div
+                className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
+                style={webkitGlassBlur}
+              >
+                <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2">
+                  {product.title}
+                </p>
+              </div>
+            </div>
           </div>
-          {/* Title under image — quiet archive caption */}
+          {/* Caption — visible on mobile only (no hover available there).
+              Desktop relies on the glass label inside the frame above. */}
           <p
-            className="mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors"
+            className="md:hidden mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors"
             style={{
               maxWidth: "var(--archive-tile-caption-w)",
               color: "var(--archive-text-quiet)",
@@ -154,7 +180,9 @@ export function ProductTile({
             className="w-full bg-white"
             style={{ height: "var(--archive-tile-media-h)" }}
           />
-          <div className="mt-3 h-[34px]" />
+          {/* Caption spacer mirrors hydrated state: only present on mobile,
+              where the visible caption lives below the image. */}
+          <div className="md:hidden mt-3 h-[34px]" />
         </div>
       )}
     </motion.li>
