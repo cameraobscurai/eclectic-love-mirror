@@ -1,93 +1,145 @@
-# Production alignment pass — scoped CSS + 4 fixes
+# Brand Alignment + Collection Interaction QA (final)
 
-The site shell, Collection IA, copy, sort options, footer, and visual restraint already match the Vercel benchmark from prior passes. This pass implements only the four concrete fixes called out at the bottom of the message, plus the new hard rule that the desktop homepage must not scroll.
+Two passes ship together. Both required for production-ready sign-off.
 
-No IA changes. No data changes. No new components. No new routes.
+**Pass A — Brand Alignment:** DECISIONS doc, Gallery, Atelier, Contact FAQ, safe route redirects.
+**Pass B — Collection Interaction QA:** No IA/data/visual changes. Only scroll, sticky, loading, focus, touch.
 
-## 1. Desktop homepage = single viewport
+Critical rule for this pass: **Gallery layout first. Real project media later. No fake bridge content.**
 
-The homepage hero (`src/routes/index.tsx`) already renders one `100svh` section with no content below it. The reason `/` scrolls today is that `__root.tsx` mounts a global `<Footer />` after the route outlet, which pushes a second screen below the fold.
+---
 
-Fix:
+## Governance — `docs/DECISIONS.md` (new)
 
-- Switch the hero from `h-[100svh]` to `h-[100dvh]` and clamp `min-h: 100dvh / max-h: 100dvh` so it cannot grow. Add `overflow-hidden` on the page container at `lg:` so very short viewports compress the entry-path grid instead of revealing scroll.
-- Hide the global `<Footer />` on `/` at `lg:` and up only — mobile keeps the footer reachable by scroll, per the spec ("mobile can scroll if needed, but desktop homepage should not"). Done with a small `useLocation` check inside `RootComponent` and a `lg:hidden` wrap when on `/`.
-- Add `overscroll-behavior: none` on the homepage hero so trackpad rubber-banding doesn't reveal anything below.
+- Brand register: Prada · Casa Carta · Saol Display · Aesence (editorial restraint with image texture, detail, and edge — not sterile minimalism)
+- Site IA + brand hierarchy locked
+- Page roles: Home=intrigue, Collection=archive, Atelier=capability, Gallery=taste, Contact=convert+FAQ
+- **Collection rule (verbatim):** *Collection is locked at the IA/data level, not exempt from UX hardening. Any future pass must preserve the working archive but still verify scroll, sticky, loading, filter, Quick View, mobile sheet, and accessibility behavior.*
+- **Gallery rule (verbatim):** *Gallery layout first. Real project media later. No fake bridge content. The empty-state page must still feel designed — never use developer/admin language like "No projects found" or "Add projects".*
+- Final principle: *Homepage creates intrigue. Collection proves inventory. Atelier proves capability. Gallery proves taste. Contact converts. Don't make every page do every job.*
 
-Acceptance: at any desktop viewport ≥1024px, scrolling on `/` produces zero vertical movement; the brand mark, three entry tiles, and corner nav all stay visible.
+---
 
-## 2. Design tokens for the archive
+## Pass A — Brand Alignment
 
-Add a small set of archive-scoped CSS variables to `src/styles.css` so the filter rail, utility row, and product tiles read from one source. This replaces the literal `text-charcoal/55`, `border-black/[0.08]`, `clamp(150px, 13vw, 210px)` etc. that are repeated across files.
+### A1. Gallery (`src/routes/gallery.tsx` — rewrite, ships empty)
 
-New tokens (under `:root` in `styles.css`):
+Truthful production-ready shell. No fake project entries. No PDF imagery. No `/gallery/$slug` subroutes.
 
-```text
---archive-text:            var(--charcoal)
---archive-text-quiet:      color-mix(in oklab, var(--charcoal) 55%, transparent)
---archive-text-muted:      color-mix(in oklab, var(--charcoal) 35%, transparent)
---archive-rule:            color-mix(in oklab, black 8%, transparent)
---archive-rule-strong:     color-mix(in oklab, black 14%, transparent)
---archive-tile-media-h:    clamp(150px, 13vw, 210px)
---archive-tile-caption-w:  190px
---archive-utility-h:       64px
---archive-rail-width:      17.5rem
---archive-grid-gap-x:      clamp(48px, 5vw, 72px)
---label-size-micro:        11px
---label-tracking-micro:    0.22em
+**Structure:**
+- Hero: eyebrow `THE GALLERY` · display `Selected Projects` · short factual intro
+- Selected Projects area: when `PROJECTS.length === 0`, renders a single quiet editorial line — *"Selected projects are being prepared."*
+- CTA: "Start a conversation" → `/contact`
+
+**No index table renders when PROJECTS is empty.** No giant placeholder cards, no broken image frames, no "Coming soon" balloon, no app-style "No projects found" messaging.
+
+**Typed contract at top of file:**
+
+```ts
+type GalleryProject = {
+  number: string;          // "01"
+  name: string;
+  location: string;
+  year: string;
+  category: "Luxury Weddings" | "Meetings + Incentive Travel" | "Social + Non-Profit";
+  heroImage: { src: string; alt: string };
+  detailImages: { src: string; alt: string }[];
+  href?: string;           // only set when a real subroute exists
+};
+
+const PROJECTS: GalleryProject[] = [];
 ```
 
-Then update three files to consume the tokens (no visual change intended — these are the same values already in use):
+When real entries arrive later, the same array drives the editorial section and a future index table. Detail-route wiring happens in a later pass — not this one.
 
-- `CollectionFilterRail.tsx` — header label, row tone classes, divider.
-- `ProductTile.tsx` — media-frame height, caption max-width.
-- `routes/collection.tsx` — sticky utility row min-height, body grid `column-gap` and `lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)]`.
+**Visual:** cream background, charcoal type, no dark template, no fake media.
 
-Acceptance: changing any token in `styles.css` propagates to rail + tiles + utility row consistently. Build is clean. No visible diff vs. current screenshot.
+### A2. Atelier (`src/routes/atelier.tsx` — rewrite)
 
-## 3. Sticky rail top offset matches the new utility row
+Six sections: Hero (locked tagline *Imagined. Refined. Crafted.*) → The Team → The Creative Space → Scope + Fabrication → Atelier Approach triptych → CTA.
 
-The desktop rail in `CollectionFilterRail.tsx` currently uses `sticky top-24 max-h-[calc(100vh-7rem)]`. That `top-24` was sized for the older padded utility row. With the hardened 64px utility row plus the 64px global nav, the correct offset is the actual sum, not a magic number.
+Truth rules:
+- `TEAM` array empty by default. **If empty, the Team section renders no roster** — only a short team-philosophy paragraph. **No fake "Name · Role" rows.**
+- `SPACE_IMAGES` array empty by default. If empty, that section is text-only.
+- Capability list is real (sourced from owner's first deck FAQ A: lounge furniture, bars, lighting, tableware, dining, custom design + fabrication, stage, drape, accents, production management).
+- No FAQ on this page.
 
-Fix:
+### A3. Contact (`src/routes/contact.tsx` — append)
 
-- Replace the literal with token math: `top: calc(var(--nav-h, 4rem) + var(--archive-utility-h))` and `max-height: calc(100dvh - (var(--nav-h, 4rem) + var(--archive-utility-h) + 1rem))`.
-- Add `--nav-h: 4rem` to `:root` (matches the resting nav height; nav uses `py-2` at scrolled state so 64px is correct).
-- Switch `100vh` to `100dvh` so iOS Safari doesn't clip the rail behind the bottom toolbar.
+Add compact 4-item FAQ accordion at the bottom using native `<details>` inside `<section id="faq">` so `/contact#faq` deep-links work.
 
-Acceptance: at any scroll position, the rail's top edge sits flush against the bottom of the sticky utility row with no gap and no overlap. The rail bottom never gets clipped — internal scroll appears only if rail content actually exceeds the available height.
+Items: What we offer · How to begin a proposal · Travel · Minimums.
 
-## 4. Image skeleton timing — no flicker, no shift
+### A4. Route cleanup — redirects, not deletes
 
-In `ProductTile.tsx` today the skeleton overlay fades over 500ms and the image's blur/opacity transitions over 600ms. On fast connections the image's `onLoad` fires before the overlay has finished fading in, producing a brief double-state (overlay + crisp image) and a perceived flash. On the first 6 priority tiles `skipBlur` is set, but the overlay still mounts with `opacity: 1` and snaps to `0` only after `loaded`.
+`/faq` and `/process` ARE referenced in `src/components/footer.tsx`. Convert to redirects so cached/external links resolve:
 
-Fix (same file, no API change):
+- `src/routes/faq.tsx` → redirects to `/contact#faq`
+- `src/routes/process.tsx` → redirects to `/atelier`
+- `src/components/footer.tsx` → drop the Process row, repoint FAQ link to `/contact#faq`
 
-- Initialize the skeleton overlay's `opacity` with a `--archive-skel-min-show: 120ms` minimum-show clock: don't start the overlay opaque on tiles where `skipBlur` is true (priority tiles) — start it at `0` so cached/crisp first-paint images never flash an overlay.
-- For non-priority tiles, shorten the overlay fade-out from `500ms` to `220ms` (it's just covering load, not the image transition) and key it off `loaded || skipBlur`.
-- Decouple the image-blur transition: when `skipBlur` is true, set `filter: none` and `opacity: 1` from mount and disable the inline `transition` so there is no fade. When `skipBlur` is false, keep the existing 600ms blur-out but begin it with a 1-frame `requestAnimationFrame` after `onLoad` so the browser has committed paint before the transition starts (prevents the "shift" perception when blur resolves).
-- Use `<img loading=...>` only — don't toggle `decoding` based on index. Already correct; just verify after the change.
-- Keep the invisible media frame as the single source of layout — height is locked by `--archive-tile-media-h`, so no layout shift can occur regardless of image dimensions or load timing.
+### A5. Memory
 
-Acceptance: on a fast connection, the first-viewport tiles paint crisp with no skeleton flash. On a throttled connection, below-fold tiles fade up smoothly without a hard cut. No tile changes height during load.
+Append two Core lines to `mem://index.md`:
+- Brand register: Prada · Casa Carta · Saol Display · Aesence. Editorial restraint with image texture, detail, and edge — not sterile minimalism.
+- Page roles locked: Home=intrigue, Collection=archive, Atelier=capability, Gallery=taste (layout first, media later, no fake bridge content), Contact=convert+FAQ. Collection IA/data locked but UX still subject to hardening.
+
+---
+
+## Pass B — Collection Interaction QA Gate
+
+**No IA changes. No data changes. No visual redesign. No new routes.**
+
+### Allowed fixes only
+
+Scroll restoration · results-top scroll timing · sticky utility row offset · sticky rail offset · image skeleton timing · mobile sheet scroll lock · Quick View scroll preservation · focus restoration · reduced-motion handling · accessibility bugs.
+
+### Required checks
+
+| # | Behavior | Acceptance |
+|---|----------|------------|
+| A | Initial load | `/collection` loads at top unless URL state targets a filter/product. No mount auto-scroll. No late layout shift moves viewport. |
+| B | Filter click | State + count + grid update. Scrolls to results-top only when results aren't visible. Target accounts for sticky nav + utility row. No double jump. No delayed second jump from late images. |
+| C | Search | No keystroke scroll. Only debounced commit may scroll. Clearing doesn't jump. Rail order stable while typing. Zero-count rows mute, don't reorder. |
+| D | Sort | Single scroll on commit. Options remain By Type / A-Z only. |
+| E | Load More | Appends without scrolling user. Reserves space for pending images. |
+| F | Quick View | Open: body locks, grid stays. Close: scroll restored. Browser back closes modal without jumping. Focus returns to opened tile. |
+| G | Mobile sheet | Open: scroll locks, no shift. Close: scroll restored. Apply/Clear update predictably. 44px touch targets. Escape closes. Focus trap. |
+| H | Sticky | Utility row constant height. Rail sticks below it. No nav overlap, no bottom clip, no jump on activation. Token math (no magic `top-24`). |
+| I | Image loading | First viewport crisp fast. First 6 priority tiles skip skeleton/blur. Below-fold lazy. Wrappers prevent CLS. Skeleton fade doesn't flicker. Failed-image hiding still works. |
+| J | Reduced motion | Scroll animations minimized when `prefers-reduced-motion: reduce`. No forced smooth scroll. |
+
+### Invariants (must remain true)
+
+- public-ready count = **876**
+- Broadway 32in remains excluded
+- left rail / pure-white grid / one utility row / mobile bottom sheet / Quick View / Add to Inquiry / Load More / By Type-A-Z all unchanged
+- no overview bands, no category rail, no right index, no letterform hero, no cards, no plates, no prices, no cart language
+
+### QA method
+
+For each check: code review of the relevant component (CollectionFilterRail, ProductTile, QuickViewModal, InquiryTray, collection.tsx) against acceptance criteria, then live verification at desktop (1440 + 1024) and mobile (390) via the browser tool. Each failed check gets a minimum-surface fix from the allowed-fixes list.
+
+---
 
 ## Files touched
 
-- `src/styles.css` — add archive tokens + `--nav-h`.
-- `src/routes/index.tsx` — `100dvh` clamp + `overflow-hidden` + `overscroll-behavior: none`.
-- `src/routes/__root.tsx` — conditional `<Footer />` (hidden on `/` at `lg:` and up).
-- `src/routes/collection.tsx` — utility row and body grid read from tokens.
-- `src/components/collection/CollectionFilterRail.tsx` — sticky offset uses token math; row tones use tokens.
-- `src/components/collection/ProductTile.tsx` — skeleton/blur timing fix; media frame uses token.
+**Pass A:**
+- new: `docs/DECISIONS.md`
+- rewrite: `src/routes/gallery.tsx` (ships with `PROJECTS = []`), `src/routes/atelier.tsx`
+- edit: `src/routes/contact.tsx` (FAQ accordion + `#faq` anchor)
+- convert to redirect: `src/routes/faq.tsx`, `src/routes/process.tsx`
+- edit: `src/components/footer.tsx` (drop Process, repoint FAQ → `/contact#faq`)
+- edit: `mem://index.md` (two Core lines)
 
-## Out of scope (already shipped or explicitly preserved)
+**Pass B (as needed, scroll/sticky/loading only):**
+- `src/routes/collection.tsx`, `src/components/collection/CollectionFilterRail.tsx`, `src/components/collection/ProductTile.tsx`, `src/components/collection/QuickViewModal.tsx`, `src/components/collection/InquiryTray.tsx`, `src/styles.css` (token tweaks only)
 
-- Site shell + nav (4 links, charcoal/cream switching, white background on `/collection`) — done.
-- Collection copy ("The Collection", canonical intro) — done.
-- Filter rail behavior (stable order, mute-not-disappear, quiet active state with left rule) — done.
-- Sort options (By Type, A–Z only) — done.
-- Footer copy ("Two parts luxe…") + structure — done.
-- Quick View scroll preservation, mobile sheet focus trap, Load More — done.
-- Inventory engine, 876 count, Broadway 32in exclusion — untouched.
+---
 
-The deliverable is a production-grade homepage constraint and a token spine the rest of the archive page reads from. No new visual systems, no fake content, no demo UI.
+## Final acceptance (both must be yes)
+
+- **Pass A:** DECISIONS exists; Gallery ships with truthful empty state and no fake projects/media/links/subroutes; Atelier rebuilt with no fake roster; Contact has FAQ accordion at `#faq`; `/faq` + `/process` redirect cleanly; footer points to `/contact#faq`; no broken inbound links; no fake content anywhere.
+- **Pass B:** All 10 Collection interaction checks (A–J) pass at desktop + mobile; all invariants preserved; 876 count and Broadway exclusion verified.
+
+Brand alignment is not production readiness. Both passes ship together.
