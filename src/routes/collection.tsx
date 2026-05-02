@@ -885,7 +885,17 @@ function CollectionPage() {
                   counts={groupCounts}
                   totalCount={allCount}
                   activeGroup={activeGroup}
-                  onSelect={selectGroup}
+                  onSelect={(groupId) => {
+                    // On mobile the sheet covers the entire viewport, so
+                    // selecting a category with the sheet still open feels
+                    // like nothing happened — the user can't see the grid
+                    // reflow underneath. Dismiss the sheet immediately on
+                    // select so the result of the tap is visible. The
+                    // "Show N pieces" CTA below remains for users who want
+                    // to scan multiple categories before committing.
+                    selectGroup(groupId);
+                    setSheetOpen(false);
+                  }}
                   onClear={() => {
                     resetAll();
                     setSheetOpen(false);
