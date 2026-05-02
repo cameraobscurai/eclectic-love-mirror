@@ -106,8 +106,10 @@
    * Change a token here and the whole archive page follows. */
   --nav-h: 4rem;                          /* resting global nav height */
   --archive-utility-h: 64px;              /* sticky utility row min-height */
-  --archive-rail-width: 17.5rem;          /* desktop left filter rail */
-  --archive-grid-gap-x: clamp(48px, 5vw, 72px);
+  --archive-rail-width: 15rem;            /* desktop left filter rail */
+  --archive-progress-width: 3rem;         /* desktop right progress rail */
+  --archive-grid-gap-x: clamp(40px, 4vw, 64px);
+  --archive-canvas-max: 1600px;           /* hairline cage max width */
 
   --archive-text:        var(--charcoal);
   --archive-text-quiet:  color-mix(in oklab, var(--charcoal) 55%, transparent);
