@@ -11,7 +11,6 @@ import {
 } from "@/lib/phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
-  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
@@ -20,7 +19,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
-import { CategoryHero } from "@/components/collection/CategoryHero";
+
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
@@ -430,16 +429,13 @@ function CollectionPage() {
   };
 
   // ---- Result meta line text ----
-  // Counts removed from the collection page everywhere except active-search
-  // feedback. Group state shows the category name only; overview shows nothing.
-  const groupLabel = activeGroup ? BROWSE_GROUP_LABELS[activeGroup] : null;
+  // The category name is owned by the rail. The utility bar stays silent
+  // unless the user is actively searching.
   const trimmedQ = q.trim();
   let resultMeta: string;
   if (trimmedQ) {
     const n = visibleProducts.length;
     resultMeta = `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`;
-  } else if (groupLabel) {
-    resultMeta = groupLabel;
   } else {
     resultMeta = "";
   }
@@ -451,18 +447,6 @@ function CollectionPage() {
 
   const gridGapClasses =
     density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
-
-  // ---------- First product per active group (powers CategoryHero specimen) ----------
-  // Same data the rail thumbnail uses — no new field, no curation table.
-  const heroFirstProduct = useMemo<CollectionProduct | null>(() => {
-    if (!activeGroup) return null;
-    for (const p of products) {
-      if (p.primaryImage && getProductBrowseGroup(p) === activeGroup) {
-        return p;
-      }
-    }
-    return null;
-  }, [products, activeGroup]);
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
@@ -525,25 +509,6 @@ function CollectionPage() {
           >
             The Collection
           </h1>
-          {activeGroup && (
-            <button
-              type="button"
-              onClick={() => selectGroup("")}
-              className="mt-1 inline-flex items-baseline text-charcoal/55 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-              aria-label="Back to all categories"
-            >
-              <span
-                className="font-display"
-                style={{
-                  fontSize: "clamp(20px, 2vw, 32px)",
-                  fontWeight: 400,
-                  letterSpacing: "-0.005em",
-                }}
-              >
-                {BROWSE_GROUP_LABELS[activeGroup]}
-              </span>
-            </button>
-          )}
         </div>
       </div>
 
@@ -725,13 +690,6 @@ function CollectionPage() {
                 </div>
               ) : (
                 <>
-                  {activeGroup && (
-                    <CategoryHero
-                      group={activeGroup}
-                      firstProduct={heroFirstProduct}
-                    />
-                  )}
-
                   <div
                     style={{
                       paddingLeft: 0,
