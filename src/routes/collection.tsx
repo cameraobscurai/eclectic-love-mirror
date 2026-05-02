@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   getCollectionCatalog,
