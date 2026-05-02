@@ -13,6 +13,13 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
+// Editorial QuickView — single-screen magazine spread.
+// Layers (back → front): cream stage · oversized display-type product name ·
+// product image (object-contain, lifts off type) · top eyebrow + nav bar ·
+// thin footer with thumbs · dimensions · stocked · CTA.
+//
+// Charcoal/cream only. No accent color. No side panel. Hairline dividers.
+
 export function QuickViewModal({
   product,
   hasPrev,
@@ -45,16 +52,22 @@ export function QuickViewModal({
 
   const img = product.images[imgIdx] ?? product.primaryImage;
 
+  // Short tagline: prefer description's first sentence (≤120 chars), else null.
+  const tagline = (() => {
+    if (!product.description) return null;
+    const first = product.description.split(/(?<=[.!?])\s+/)[0]?.trim();
+    if (!first) return null;
+    return first.length > 140 ? first.slice(0, 137) + "…" : first;
+  })();
+
   return (
     <div
       role="dialog"
       aria-modal="true"
       aria-label={product.title}
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6"
+      className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-6"
     >
-      {/* Layer 1 — frosted scrim. The glass belongs to the scrim so the
-          object behind feels lifted into focus. The modal body itself stays
-          a solid cream/white surface (no glass gimmick on inspection). */}
+      {/* Frosted scrim */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -65,87 +78,114 @@ export function QuickViewModal({
         onClick={onClose}
         aria-hidden
       />
+
+      {/* Cream stage */}
       <motion.div
-        initial={
-          reduced ? { opacity: 1 } : { opacity: 0, y: 20, scale: 0.98 }
-        }
+        initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={
-          reduced ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.98 }
-        }
-        transition={{
-          duration: reduced ? 0 : 0.32,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        className="relative w-full md:max-w-5xl bg-white text-charcoal shadow-2xl max-h-[92vh] md:max-h-[85vh] overflow-auto"
+        exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
+        transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full md:max-w-[1280px] md:max-h-[90vh] bg-cream text-charcoal shadow-2xl flex flex-col overflow-hidden"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur border-b border-charcoal/10">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+        {/* TOP BAR — eyebrow left, nav right */}
+        <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
             {product.displayCategory}
           </p>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 text-charcoal">
             <button
               onClick={onPrev}
               disabled={!hasPrev}
               aria-label="Previous piece"
               aria-keyshortcuts="ArrowLeft"
-              className="h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
-              ‹ PREV
+              <span aria-hidden>←</span> PREV
             </button>
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
             <button
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
               aria-keyshortcuts="ArrowRight"
-              className="h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
-              NEXT ›
+              NEXT <span aria-hidden>→</span>
             </button>
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="h-8 w-8 grid place-items-center text-lg hover:text-charcoal/60 transition-colors active:scale-90"
+              className="h-8 w-8 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
             >
               ×
             </button>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-0">
-          <div className="bg-white">
-            <div className="relative aspect-square">
-              <AnimatePresence mode="wait">
-                {img ? (
-                  <motion.img
-                    key={img.url}
-                    src={img.url}
-                    alt={img.altText ?? product.title}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.2 }}
-                    className="absolute inset-0 w-full h-full object-contain p-6"
-                  />
-                ) : (
-                  <div className="absolute inset-0 grid place-items-center text-charcoal/30">
-                    No image
-                  </div>
-                )}
-              </AnimatePresence>
+        {/* STAGE — name behind, image in front */}
+        <div className="relative flex-1 min-h-[58vh] md:min-h-0 px-6 md:px-10 pt-2 pb-4 overflow-hidden">
+          {/* Optional tagline, top-right */}
+          {tagline && (
+            <div className="hidden md:block absolute top-4 right-10 max-w-[260px] text-right z-10">
+              <span aria-hidden className="block ml-auto h-px w-10 bg-charcoal/40 mb-3" />
+              <p className="text-[13px] leading-relaxed text-charcoal/75">
+                {tagline}
+              </p>
             </div>
-            {product.images.length > 1 && (
-              <div className="flex gap-2 p-3 overflow-x-auto border-t border-charcoal/10">
-                {product.images.map((im, i) => (
+          )}
+
+          {/* Display-type product name — sits behind the image */}
+          <h2
+            className="absolute inset-x-6 md:inset-x-10 top-6 md:top-10 font-display leading-[0.92] tracking-[-0.01em] text-charcoal pointer-events-none select-none"
+            style={{
+              fontSize: "clamp(3.5rem, 11vw, 11rem)",
+            }}
+          >
+            {product.title}
+          </h2>
+
+          {/* Image — floats over the type */}
+          <div className="relative w-full h-full grid place-items-end md:place-items-center pt-24 md:pt-10">
+            <AnimatePresence mode="wait">
+              {img ? (
+                <motion.img
+                  key={img.url}
+                  src={img.url}
+                  alt={img.altText ?? product.title}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduced ? 0 : 0.25 }}
+                  className="relative z-[1] max-h-[58vh] md:max-h-[62vh] w-auto max-w-full object-contain drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
+                />
+              ) : (
+                <div className="grid place-items-center h-64 text-charcoal/30">
+                  No image
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* FOOTER — thumbs · dimensions · stocked · CTA */}
+        <div className="border-t border-charcoal/12 bg-cream">
+          <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto_auto] gap-5 md:gap-10 items-center">
+            {/* Thumbs */}
+            <div className="flex gap-2 order-2 md:order-1">
+              {product.images.length > 1 ? (
+                product.images.slice(0, 5).map((im, i) => (
                   <button
                     key={im.url}
                     onClick={() => setImgIdx(i)}
+                    aria-label={`View image ${i + 1}`}
+                    aria-current={i === imgIdx}
                     className={cn(
-                      "relative h-16 w-16 flex-shrink-0 bg-white border transition-colors active:scale-95",
+                      "relative h-12 w-16 flex-shrink-0 bg-white border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
                       i === imgIdx
                         ? "border-charcoal"
-                        : "border-charcoal/10 hover:border-charcoal/40",
+                        : "border-charcoal/15 hover:border-charcoal/45",
                     )}
                   >
                     <img
@@ -154,45 +194,36 @@ export function QuickViewModal({
                       className="absolute inset-0 w-full h-full object-contain p-1"
                     />
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
+                ))
+              ) : (
+                <div className="h-12 w-16" aria-hidden />
+              )}
+            </div>
 
-          <div className="p-6 lg:p-8 flex flex-col">
-            <h2 className="font-display text-3xl leading-tight">
-              {product.title}
-            </h2>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
-              {product.displayCategory}
-              {product.subcategory ? ` · ${product.subcategory}` : ""}
-            </p>
-
-            <dl className="mt-6 space-y-3 text-sm">
+            {/* Spec columns */}
+            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:pl-2 md:border-l md:border-charcoal/12 md:pl-10">
               {product.dimensions && (
-                <Row label="Dimensions" value={product.dimensions} />
+                <SpecCol label="Dimensions" value={product.dimensions} />
               )}
               {product.stockedQuantity && (
-                <Row label="Stocked" value={product.stockedQuantity} />
+                <SpecCol label="Stocked" value={product.stockedQuantity} />
               )}
-              {product.isCustomOrder && (
-                <Row label="Availability" value="Custom order" />
+              {product.isCustomOrder && !product.stockedQuantity && (
+                <SpecCol label="Availability" value="Custom order" />
               )}
-            </dl>
+            </div>
 
-            {product.description && (
-              <p className="mt-6 text-sm leading-relaxed text-charcoal/75 whitespace-pre-line">
-                {product.description}
-              </p>
-            )}
+            {/* spacer for grid */}
+            <div className="hidden md:block order-3" />
 
-            <div className="mt-auto pt-8 flex flex-wrap gap-3">
+            {/* CTA */}
+            <div className="order-1 md:order-4 flex justify-end">
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
-                  "px-5 py-3 text-[11px] uppercase tracking-[0.22em] transition-all border active:scale-[0.97]",
+                  "px-6 py-3 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.97]",
                   inInquiry
-                    ? "bg-white text-charcoal border-charcoal"
+                    ? "bg-cream text-charcoal border-charcoal"
                     : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
                 )}
               >
@@ -206,13 +237,13 @@ export function QuickViewModal({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function SpecCol({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-4 border-b border-charcoal/8 pb-2">
-      <dt className="w-28 flex-shrink-0 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 pt-1">
+    <div className="flex flex-col gap-1 min-w-0">
+      <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
         {label}
-      </dt>
-      <dd className="text-sm text-charcoal">{value}</dd>
+      </span>
+      <span className="text-sm text-charcoal">{value}</span>
     </div>
   );
 }
