@@ -52,16 +52,16 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Reserve ~10% of stage width for breathing room on the right.
-  // The title gets ~70% of the stage on desktop so the image can overlap.
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.7 - 16 : 0;
+  // Title gets ~85% of the stage width so it can extend behind the centered image.
+  // The image overlaps the middle of the title (Calista reference behavior).
+  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.85 - 16 : 0;
   const fittedSize = useFitToLines({
     text: product.title,
     maxWidth: titleMaxWidth,
     family: "Cormorant",
     weight: 400,
     minPx: 28,
-    maxPx: 112,
+    maxPx: 128,
     targetLines: 2,
   });
 
@@ -172,8 +172,8 @@ export function QuickViewModal({
             {product.title}
           </h2>
 
-          {/* Image — mobile: centered & flexed; desktop: bottom-right overlap */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-center justify-center md:items-end md:justify-end px-6 md:px-10 pt-2 md:pt-[18%] pb-4 md:pb-8 pointer-events-none">
+          {/* Image — mobile: centered & flexed; desktop: BIG, centered, bottom-anchored, overlaps title */}
+          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-center justify-center md:items-end md:justify-center px-6 md:px-16 pt-2 md:pt-[8%] pb-4 md:pb-10 pointer-events-none">
             <AnimatePresence mode="wait">
               {img ? (
                 <motion.img
@@ -184,7 +184,7 @@ export function QuickViewModal({
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: reduced ? 0 : 0.25 }}
-                  className="max-h-full max-w-full md:max-w-[68%] object-contain md:object-bottom drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]"
+                  className="h-full w-auto max-w-full md:max-w-[85%] object-contain object-bottom drop-shadow-[0_30px_40px_rgba(26,26,26,0.15)]"
                 />
               ) : (
                 <div className="grid place-items-center text-charcoal/30">
