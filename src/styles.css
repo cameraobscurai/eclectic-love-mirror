@@ -237,3 +237,41 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Inquiry CTA — single loud moment per modal/tile context.
+ * Charcoal field, cream type, brass wipe on hover from left to right. */
+.btn-inquiry {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #f5f2ed;
+  background: #1a1a1a;
+  border: 1px solid #1a1a1a;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+}
+.btn-inquiry::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #b08d57 0%, #d4af7a 50%, #b08d57 100%);
+  transform: translateX(-101%);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+.btn-inquiry:hover::before { transform: translateX(0); }
+.btn-inquiry > * { position: relative; z-index: 1; }
+.btn-inquiry:hover { color: #1a1a1a; }
+.btn-inquiry:active { transform: scale(0.98); }
+.btn-inquiry[data-active="true"] {
+  background: #f5f2ed;
+  color: #1a1a1a;
+}
+.btn-inquiry[data-active="true"]::before { display: none; }

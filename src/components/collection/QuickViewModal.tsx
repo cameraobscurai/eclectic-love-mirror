@@ -3,10 +3,8 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
-import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
-import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
 
 interface QuickViewModalProps {
@@ -18,14 +16,9 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
-// Stage-driven QuickView.
-// The modal is a 3-row grid: [top bar] · [stage 1fr] · [footer].
-// The stage owns the composition; the image fits inside it via object-contain.
-// Image dimensions never reshape the modal — every product yields the same
-// frame, only the image inside the stage adapts.
-//
-// Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
-
+// Two-column composition: image on the left in a quiet studio ground,
+// metadata stacked on the right with the inquiry CTA + thumbs in a footer
+// row. Scale rules attach to the rendered image's actual bounds.
 export function QuickViewModal({
   product,
   hasPrev,
@@ -40,15 +33,12 @@ export function QuickViewModal({
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
+
   const stageRef = useRef<HTMLDivElement>(null);
-  const zoneRef = useRef<HTMLDivElement>(null);
-  const [stageWidth, setStageWidth] = useState(0);
-  const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [stageSize, setStageSize] = useState({ w: 0, h: 0 });
   const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
-  // Parse W / D / H once per product. Toggle is offered whenever ANY axis
-  // (width, height, or diameter) parses confidently — silent fallback for
-  // pieces with no dimensions in the catalog.
   const dims = useMemo(
     () => parseDimensions(product.dimensions),
     [product.dimensions],
@@ -64,70 +54,40 @@ export function QuickViewModal({
     setImgNatural(null);
   }, [product.id, imgIdx]);
 
-  // Track stage width for Pretext fit-to-lines measurement.
+  // Track stage box so we can compute the contained image footprint
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
     const ro = new ResizeObserver((entries) => {
-      const w = entries[0]?.contentRect.width ?? 0;
-      setStageWidth(w);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  // Track the measurement zone's actual rendered size so we can compute the
-  // image's contained-fit footprint (object-contain leaves empty gutters
-  // we need to subtract before drawing rules).
-  useEffect(() => {
-    const el = zoneRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver((entries) => {
       const r = entries[0]?.contentRect;
-      if (r) setZoneSize({ w: r.width, h: r.height });
+      if (r) setStageSize({ w: r.width, h: r.height });
     });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Compute the rendered image box inside the zone given object-contain.
-  // This is the actual furniture footprint — what the rules should wrap.
+  // Compute rendered image box inside stage using object-contain math
   const imageBox = useMemo(() => {
-    if (!imgNatural || zoneSize.w === 0 || zoneSize.h === 0) return null;
-    const zoneAR = zoneSize.w / zoneSize.h;
+    if (!imgNatural || stageSize.w === 0 || stageSize.h === 0) return null;
+    // Stage padding is 40px → usable area
+    const pad = 40;
+    const availW = Math.max(0, stageSize.w - pad * 2);
+    const availH = Math.max(0, stageSize.h - pad * 2);
+    if (availW === 0 || availH === 0) return null;
+    const stageAR = availW / availH;
     const imgAR = imgNatural.w / imgNatural.h;
     let w: number, h: number;
-    if (imgAR > zoneAR) {
-      // image is wider than zone — pinned to width
-      w = zoneSize.w;
-      h = zoneSize.w / imgAR;
+    if (imgAR > stageAR) {
+      w = availW;
+      h = availW / imgAR;
     } else {
-      // image is taller — pinned to height
-      h = zoneSize.h;
-      w = zoneSize.h * imgAR;
+      h = availH;
+      w = availH * imgAR;
     }
-    // object-bottom: image sits at the bottom of the zone, centered horizontally
-    const left = (zoneSize.w - w) / 2;
-    const top = zoneSize.h - h;
+    const left = pad + (availW - w) / 2;
+    const top = pad + (availH - h) / 2;
     return { left, top, width: w, height: h };
-  }, [imgNatural, zoneSize]);
-
-  // Title sits behind the image at top-left. Width capped at 78% of the stage
-  // so it never reaches under the measurement zone. Visual ceiling is also
-  // capped by character count — short names ("Lyon Stool") shouldn't explode
-  // to display-billboard size, long names ("Hadley Velvet Arm Chair") get
-  // the full 92px.
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.78 - 16 : 0;
-  const titleMaxPx = product.title.trim().length < 14 ? 72 : 92;
-  const fittedSize = useFitToLines({
-    text: product.title,
-    maxWidth: titleMaxWidth,
-    family: "Cormorant",
-    weight: 400,
-    minPx: 28,
-    maxPx: titleMaxPx,
-    targetLines: 2,
-  });
+  }, [imgNatural, stageSize]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -166,253 +126,302 @@ export function QuickViewModal({
         aria-hidden
       />
 
-      {/* White stage — exhibition surface */}
+      {/* Modal shell — constrained, no radius */}
       <motion.div
         initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
+        className="relative bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] h-[100dvh] md:h-auto"
+        style={{
+          width: "92vw",
+          maxWidth: 900,
+          maxHeight: "85vh",
+          borderRadius: 0,
+        }}
       >
-        {/* TOP BAR — eyebrow left, nav right */}
-        <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
-          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
+        {/* TOP BAR — 48px tall */}
+        <div
+          className="flex items-center justify-between border-b border-charcoal/[0.08]"
+          style={{ height: 48, padding: "0 24px" }}
+        >
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
             {product.displayCategory}
           </p>
-          <div className="flex items-center gap-1 text-charcoal">
+          <div className="flex items-center text-charcoal">
             <button
               onClick={onPrev}
               disabled={!hasPrev}
               aria-label="Previous piece"
-              aria-keyshortcuts="ArrowLeft"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 transition-colors"
             >
               <span aria-hidden>←</span> PREV
             </button>
-            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <span aria-hidden className="h-4 w-px bg-charcoal/[0.12]" />
             <button
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
-              aria-keyshortcuts="ArrowRight"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 transition-colors"
             >
               NEXT <span aria-hidden>→</span>
             </button>
-            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <span aria-hidden className="h-4 w-px bg-charcoal/[0.12]" />
             <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="h-8 w-8 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              className="h-8 w-8 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors"
             >
               ×
             </button>
           </div>
         </div>
 
-        {/* STAGE — desktop: title top-left + image bottom-right overlap.
-            Mobile: clean stack, title above image, no overlap. */}
+        {/* TWO-COLUMN BODY */}
         <div
-          ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white flex flex-col md:block"
+          className="min-h-0"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "55fr 45fr",
+            height: "100%",
+          }}
         >
-          {/* Mobile-only title (block flow, no overlap) */}
-          <h2
-            className="md:hidden px-6 pt-6 pb-2 font-display leading-[0.95] tracking-[-0.015em] text-charcoal break-words"
+          {/* LEFT — image stage */}
+          <div
+            ref={stageRef}
+            className="relative"
             style={{
-              fontSize: fittedSize ? `${Math.min(fittedSize, 56)}px` : "clamp(2.25rem, 9vw, 3.5rem)",
+              background: "#f9f8f6",
+              padding: 40,
+              minHeight: 0,
             }}
           >
-            {product.title}
-          </h2>
-
-          {/* Desktop-only title — absolute, top-left, image overlaps it */}
-          <h2
-            className="hidden md:block absolute top-[10%] left-10 z-0 font-display leading-[0.92] tracking-[-0.015em] text-charcoal pointer-events-none select-none break-words"
-            style={{
-              maxWidth: titleMaxWidth > 0 ? `${titleMaxWidth}px` : "70%",
-              fontSize: fittedSize ? `${fittedSize}px` : "clamp(2.5rem, 5.5vw, 5.5rem)",
-            }}
-          >
-            {product.title}
-          </h2>
-
-          {/* MEASUREMENT ZONE — the formal frame the furniture sits inside.
-              Same envelope across every piece (sofa, lamp, chair, accessory).
-              The image fills the zone via object-contain. The scale rules,
-              when toggled on, attach to the zone's own edges — width rule
-              flush to the bottom edge, height rule flush to the right edge —
-              so they wrap the actual furniture region, not the empty stage. */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
-            <div
-              ref={zoneRef}
-              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%]"
-            >
-              <AnimatePresence mode="wait">
-                {img ? (
-                  <motion.img
-                    key={img.url}
-                    src={withCdnWidth(img.url, 1500)}
-                    alt={img.altText ?? product.title}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.25 }}
-                    onLoad={(e) => {
-                      const t = e.currentTarget;
-                      setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
-                    }}
-                    className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
-                  />
-                ) : (
-                  <div className="absolute inset-0 grid place-items-center text-charcoal/30">
-                    No image
-                  </div>
-                )}
-              </AnimatePresence>
-
-              {/* Scale rules — bound to the actual rendered image footprint
-                  (computed from naturalWidth/Height + object-contain math),
-                  not the zone envelope. The rules wrap the furniture itself. */}
-              <AnimatePresence>
-                {showScale && hasScale && imageBox && dims.width !== null && (
-                  <motion.div
-                    key="scale-width"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.18 }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      left: `${imageBox.left}px`,
-                      width: `${imageBox.width}px`,
-                      top: `${imageBox.top + imageBox.height + 10}px`,
-                    }}
-                  >
-                    <ScaleRuleWidth inches={dims.width} />
-                  </motion.div>
-                )}
-                {showScale && hasScale && imageBox && dims.height !== null && (
-                  <motion.div
-                    key="scale-height"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.22 }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: `${imageBox.top}px`,
-                      height: `${imageBox.height}px`,
-                      left: `${imageBox.left + imageBox.width + 10}px`,
-                    }}
-                  >
-                    <ScaleRuleHeight inches={dims.height} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-
-
-        {/* FOOTER — thumbs · dimensions · stocked · CTA */}
-        <div className="border-t border-charcoal/15 bg-white">
-          <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
-            {/* Thumbs — all visible, horizontal scroll with soft fade edge,
-                quiet counter in the typographic register. */}
-            <div className="order-2 md:order-1 flex items-center gap-4 min-w-0">
-              {product.images.length > 1 ? (
-                <>
-                  <div
-                    className="relative min-w-0"
-                    style={{
-                      maskImage:
-                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
-                      WebkitMaskImage:
-                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
-                    }}
-                  >
-                    <div
-                      className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                    >
-                      {product.images.map((im, i) => (
-                        <button
-                          key={im.url}
-                          onClick={() => setImgIdx(i)}
-                          aria-label={`View image ${i + 1} of ${product.images.length}`}
-                          aria-current={i === imgIdx}
-                          className={cn(
-                            "relative h-12 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                            i === imgIdx
-                              ? "border-charcoal"
-                              : "border-charcoal/15 hover:border-charcoal/45",
-                          )}
-                        >
-                          <img
-                            src={withCdnWidth(im.url, 300)}
-                            alt=""
-                            className="absolute inset-0 w-full h-full object-contain p-1"
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <span
-                    aria-hidden
-                    className="hidden sm:inline-block flex-shrink-0 text-[10px] uppercase tracking-[0.28em] text-charcoal/55 tabular-nums"
-                  >
-                    {String(imgIdx + 1).padStart(2, "0")}
-                    <span className="mx-1.5 text-charcoal/30">/</span>
-                    {String(product.images.length).padStart(2, "0")}
-                  </span>
-                </>
+            <AnimatePresence mode="wait">
+              {img ? (
+                <motion.img
+                  ref={imgRef}
+                  key={img.url}
+                  src={withCdnWidth(img.url, 1500)}
+                  alt={img.altText ?? product.title}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduced ? 0 : 0.25 }}
+                  onLoad={(e) => {
+                    const t = e.currentTarget;
+                    setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
+                  }}
+                  className="absolute inset-0 w-full h-full object-contain"
+                  style={{ padding: 40 }}
+                />
               ) : (
-                <div className="h-12 w-16" aria-hidden />
+                <div className="absolute inset-0 grid place-items-center text-charcoal/30">
+                  No image
+                </div>
               )}
-            </div>
+            </AnimatePresence>
 
-            {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
-              {product.dimensions && (
-                <SpecCol label="Dimensions" value={product.dimensions} />
-              )}
-              {product.stockedQuantity && (
-                <SpecCol label="Stocked" value={product.stockedQuantity} />
-              )}
-              {product.isCustomOrder && !product.stockedQuantity && (
-                <SpecCol label="Availability" value="Custom order" />
-              )}
-              {hasScale && (
-                <button
-                  type="button"
-                  onClick={() => setShowScale((s) => !s)}
-                  aria-pressed={showScale}
-                  className={cn(
-                    "self-end h-7 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                    showScale
-                      ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
-                      : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
-                  )}
+            {/* Scale overlay — bound to rendered image footprint */}
+            <AnimatePresence>
+              {showScale && hasScale && imageBox && (
+                <motion.div
+                  key="scale-overlay"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: reduced ? 0 : 0.2 }}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: imageBox.left,
+                    top: imageBox.top,
+                    width: imageBox.width,
+                    height: imageBox.height,
+                  }}
                 >
-                  {showScale ? "Hide Scale" : "Show Scale"}
-                </button>
+                  {dims.height !== null && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: -20,
+                        top: 0,
+                        bottom: 0,
+                        borderRight: "1px solid rgba(26,26,26,0.3)",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          transform: "rotate(90deg)",
+                          fontSize: 9,
+                          letterSpacing: "0.2em",
+                          color: "rgba(26,26,26,0.55)",
+                          whiteSpace: "nowrap",
+                          marginLeft: 6,
+                        }}
+                      >
+                        {formatInches(dims.height)}
+                      </span>
+                    </div>
+                  )}
+                  {dims.width !== null && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: -20,
+                        left: 0,
+                        right: 0,
+                        borderBottom: "1px solid rgba(26,26,26,0.3)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: 9,
+                          letterSpacing: "0.2em",
+                          color: "rgba(26,26,26,0.55)",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {formatInches(dims.width)}
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* RIGHT — metadata column */}
+          <div
+            className="flex flex-col min-h-0 overflow-hidden"
+            style={{
+              padding: "32px 36px",
+              borderLeft: "1px solid rgba(26,26,26,0.08)",
+            }}
+          >
+            {/* Top — category, title, description */}
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
+              <p
+                className="uppercase text-charcoal/40"
+                style={{ fontSize: 8, letterSpacing: "0.22em" }}
+              >
+                {product.displayCategory}
+              </p>
+              <h2
+                className="font-display text-charcoal break-words"
+                style={{
+                  marginTop: 12,
+                  fontSize: "clamp(28px, 3vw, 44px)",
+                  lineHeight: 1.05,
+                  letterSpacing: "var(--tracking-display)",
+                  fontWeight: 400,
+                }}
+              >
+                {product.title}
+              </h2>
+              {product.description && (
+                <p
+                  className="text-charcoal/60"
+                  style={{
+                    marginTop: 16,
+                    fontSize: 13,
+                    lineHeight: 1.75,
+                    maxWidth: 280,
+                  }}
+                >
+                  {product.description}
+                </p>
               )}
             </div>
 
-            {/* CTA */}
-            <div className="order-1 md:order-3 flex justify-end">
-              <button
-                onClick={() => inquiry.toggle(product.id)}
-                className={cn(
-                  "px-6 py-3 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.97]",
-                  inInquiry
-                    ? "bg-cream text-charcoal border-charcoal"
-                    : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
+            {/* Footer — thumbs · specs · CTA */}
+            <div
+              className="flex flex-col gap-4"
+              style={{
+                marginTop: 20,
+                paddingTop: 20,
+                borderTop: "1px solid rgba(26,26,26,0.08)",
+              }}
+            >
+              {/* Row 1: thumbs + scale toggle */}
+              <div className="flex items-center justify-between gap-4">
+                {product.images.length > 1 ? (
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                    {product.images.map((im, i) => (
+                      <button
+                        key={im.url}
+                        onClick={() => setImgIdx(i)}
+                        aria-label={`View image ${i + 1}`}
+                        aria-current={i === imgIdx}
+                        style={{ flexShrink: 0 }}
+                      >
+                        <img
+                          src={withCdnWidth(im.url, 200)}
+                          alt=""
+                          width={64}
+                          height={48}
+                          style={{
+                            objectFit: "cover",
+                            width: 64,
+                            height: 48,
+                            opacity: i === imgIdx ? 1 : 0.45,
+                            outline:
+                              i === imgIdx
+                                ? "1.5px solid #1a1a1a"
+                                : "none",
+                            outlineOffset: "-1px",
+                            transition: "opacity 0.15s ease",
+                            display: "block",
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div />
                 )}
-              >
-                {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
-              </button>
+                {hasScale && (
+                  <button
+                    type="button"
+                    onClick={() => setShowScale((s) => !s)}
+                    aria-pressed={showScale}
+                    className={cn(
+                      "h-7 px-3 text-[10px] uppercase tracking-[0.22em] border transition-colors flex-shrink-0",
+                      showScale
+                        ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
+                        : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
+                    )}
+                  >
+                    {showScale ? "Hide Scale" : "Show Scale"}
+                  </button>
+                )}
+              </div>
+
+              {/* Row 2: specs + CTA */}
+              <div className="flex items-end justify-between gap-4 flex-wrap">
+                <div className="flex flex-wrap items-end gap-x-6 gap-y-2">
+                  {product.dimensions && (
+                    <SpecCol label="Dimensions" value={product.dimensions} />
+                  )}
+                  {product.stockedQuantity && (
+                    <SpecCol label="Stocked" value={product.stockedQuantity} />
+                  )}
+                  {product.isCustomOrder && !product.stockedQuantity && (
+                    <SpecCol label="Availability" value="Custom order" />
+                  )}
+                </div>
+                <button
+                  onClick={() => inquiry.toggle(product.id)}
+                  className="btn-inquiry"
+                  data-active={inInquiry || undefined}
+                >
+                  <span>{inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -422,13 +431,20 @@ export function QuickViewModal({
   );
 }
 
+function formatInches(n: number): string {
+  return Number.isInteger(n) ? `${n}″` : `${n.toFixed(1)}″`;
+}
+
 function SpecCol({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 min-w-0">
-      <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+      <span
+        className="uppercase text-charcoal/45"
+        style={{ fontSize: 9, letterSpacing: "0.22em" }}
+      >
         {label}
       </span>
-      <span className="text-sm text-charcoal">{value}</span>
+      <span className="text-[12px] text-charcoal leading-snug">{value}</span>
     </div>
   );
 }
