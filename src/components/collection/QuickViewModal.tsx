@@ -67,16 +67,20 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Title gets ~85% of the stage width so it can extend behind the centered image.
-  // The image overlaps the middle of the title (Calista reference behavior).
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.85 - 16 : 0;
+  // Title sits behind the image at top-left. Width capped at 78% of the stage
+  // so it never reaches under the measurement zone. Visual ceiling is also
+  // capped by character count — short names ("Lyon Stool") shouldn't explode
+  // to display-billboard size, long names ("Hadley Velvet Arm Chair") get
+  // the full 92px.
+  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.78 - 16 : 0;
+  const titleMaxPx = product.title.trim().length < 14 ? 72 : 92;
   const fittedSize = useFitToLines({
     text: product.title,
     maxWidth: titleMaxWidth,
     family: "Cormorant",
     weight: 400,
     minPx: 28,
-    maxPx: 112,
+    maxPx: titleMaxPx,
     targetLines: 2,
   });
 
