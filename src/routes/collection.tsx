@@ -199,18 +199,26 @@ function CollectionPage() {
     [filtered, failedIds],
   );
 
-  // Subcategory facets — derived from category-filtered list (Local Love pattern)
-  const subcategoryFacets = useMemo(() => {
-    if (!category) return [] as { label: string; count: number }[];
-    const m = new Map<string, number>();
-    for (const p of categoryFiltered) {
-      if (!p.subcategory) continue;
-      m.set(p.subcategory, (m.get(p.subcategory) ?? 0) + 1);
+  // Subcategory options — derived UI taxonomy from the category-filtered list.
+  // Returns [] when the selected category has no meaningful derived groups,
+  // which the UI uses to hide the sub row entirely. Includes a leading "All".
+  const subcategoryOptions = useMemo(() => {
+    if (!category) return [];
+    return getSubcategoryOptions(category, categoryFiltered);
+  }, [category, categoryFiltered]);
+
+  // Self-heal: if the active sub no longer exists after category/search change,
+  // silently reset to "all" (empty in URL).
+  useEffect(() => {
+    if (!sub || sub === "all") return;
+    const stillValid = subcategoryOptions.some((o) => o.id === sub);
+    if (!stillValid) {
+      navigate({
+        search: (prev: CollectionSearch) => ({ ...prev, sub: "" }),
+        replace: true,
+      });
     }
-    return [...m.entries()]
-      .map(([label, count]) => ({ label, count }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [categoryFiltered, category]);
+  }, [sub, subcategoryOptions, navigate]);
 
   // Group public-ready products by category for overview mode preview bands.
   // Sorted by `scrapedOrder` (newest first) so overview shows fresh hero pieces.
