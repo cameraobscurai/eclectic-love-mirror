@@ -472,43 +472,27 @@ function CollectionPage() {
         </div>
       </div>
 
-      {/* Body — overview mode OR animated grid mode */}
+      {/* Body — main content + persistent right Inventory Index Rail (desktop) */}
       <section className="px-6 lg:px-12 pt-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex gap-10 xl:gap-12 items-start">
+          <div className="flex-1 min-w-0">
           {isOverviewMode ? (
-            <div className="space-y-16">
-              <CategoryIndex
-                facets={facets}
-                activeSlug={category}
-                onSelect={(slug) =>
-                  navigate({
-                    search: (prev: CollectionSearch) => ({
-                      ...prev,
-                      category: slug,
-                      sub: "",
-                    }),
-                    replace: false,
-                  })
-                }
-                variant="expanded"
-              />
-              <CategoryOverview
-                facets={facets}
-                productsByCategory={productsByCategory}
-                onSelectCategory={(slug) =>
-                  navigate({
-                    search: (prev: CollectionSearch) => ({
-                      ...prev,
-                      category: slug,
-                      sub: "",
-                    }),
-                    replace: false,
-                  })
-                }
-                onOpenProduct={(id) => setQuickViewId(id)}
-                onImageFailed={markFailed}
-              />
-            </div>
+            <CategoryOverview
+              facets={facets}
+              productsByCategory={productsByCategory}
+              onSelectCategory={(slug) =>
+                navigate({
+                  search: (prev: CollectionSearch) => ({
+                    ...prev,
+                    category: slug,
+                    sub: "",
+                  }),
+                  replace: false,
+                })
+              }
+              onOpenProduct={(id) => setQuickViewId(id)}
+              onImageFailed={markFailed}
+            />
           ) : visibleProducts.length === 0 ? (
             <div className="py-32 text-center">
               <p className="font-display text-3xl">No pieces found</p>
