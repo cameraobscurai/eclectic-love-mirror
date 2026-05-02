@@ -145,7 +145,9 @@ export function QuickViewModal({
 
   const img = product.images[imgIdx] ?? product.primaryImage;
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
