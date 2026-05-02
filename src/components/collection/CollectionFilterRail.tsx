@@ -44,7 +44,6 @@ export function CollectionFilterRail({
   hasActiveFilters,
   variant = "rail",
 }: CollectionFilterRailProps) {
-  const reduced = useReducedMotion();
   const isSheet = variant === "sheet";
 
   // Split ordered list into owner / safety-net while preserving order.
