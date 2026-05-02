@@ -285,7 +285,9 @@ function CollectionPage() {
   // ---------- Scroll-to-results on committed filter changes ----------
   const resultsTopRef = useRef<HTMLDivElement>(null);
   // Skip the very first effect run (initial mount) so we don't yank the
-  // landing position. Subsequent commits scroll.
+  // landing position. Subsequent commits scroll only when the results anchor
+  // is meaningfully out of view (above the sticky utility row, or below the
+  // viewport entirely). If the user can already see results, we don't move.
   const firstCommitRef = useRef(true);
   useEffect(() => {
     if (firstCommitRef.current) {
@@ -295,6 +297,19 @@ function CollectionPage() {
     const target = resultsTopRef.current;
     if (!target) return;
     const r = requestAnimationFrame(() => {
+      // Compute sticky offset live from the same tokens the layout uses,
+      // so this stays correct if the utility row height ever changes.
+      const styles = getComputedStyle(document.documentElement);
+      const navH = parseFloat(styles.getPropertyValue("--nav-h")) || 64;
+      const utilH = parseFloat(styles.getPropertyValue("--archive-utility-h")) || 64;
+      const stickyOffset = navH + utilH;
+      const rect = target.getBoundingClientRect();
+      // Only scroll when the anchor is hidden behind the sticky row OR
+      // sits below the viewport. If it's already visible, leave the user
+      // exactly where they are — no double jump, no unwanted snap.
+      const aboveSticky = rect.top < stickyOffset;
+      const belowViewport = rect.top > window.innerHeight;
+      if (!aboveSticky && !belowViewport) return;
       target.scrollIntoView({
         block: "start",
         behavior: reduced ? "auto" : "smooth",
@@ -305,11 +320,15 @@ function CollectionPage() {
     // NOT view (Quick View), NOT qLocal (pre-debounce).
   }, [activeGroup, q, sort, reduced]);
 
-  // ---------- Quick View — URL-driven + scroll snapshot ----------
+  // ---------- Quick View — URL-driven + scroll snapshot + focus return ----
   const grabbedScrollY = useRef<number | null>(null);
+  // Remember which tile opened the modal so we can return focus on close.
+  const openerRef = useRef<HTMLElement | null>(null);
   const setQuickViewId = (id: string | null) => {
     if (id !== null && grabbedScrollY.current === null) {
       grabbedScrollY.current = window.scrollY;
+      // Snapshot the active element (the tile button) for focus return.
+      openerRef.current = document.activeElement as HTMLElement | null;
     }
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
@@ -323,7 +342,7 @@ function CollectionPage() {
   const quickViewProduct: CollectionProduct | null =
     quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
-  // Body lock + scroll restore on Quick View open/close
+  // Body lock + scroll restore + focus return on Quick View open/close
   useEffect(() => {
     if (!quickViewProduct) return undefined;
     document.body.style.overflow = "hidden";
@@ -332,9 +351,15 @@ function CollectionPage() {
       // Restore the grid scroll position so the user lands where they left.
       const y = grabbedScrollY.current;
       grabbedScrollY.current = null;
+      const opener = openerRef.current;
+      openerRef.current = null;
       if (y !== null) {
         requestAnimationFrame(() => {
           window.scrollTo({ top: y, behavior: "auto" });
+          // Return focus to the originating tile if it's still in the DOM.
+          if (opener && document.contains(opener)) {
+            opener.focus({ preventScroll: true });
+          }
         });
       }
     };
