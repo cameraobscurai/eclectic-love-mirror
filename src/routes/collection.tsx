@@ -187,6 +187,32 @@ function CollectionPage() {
       .sort((a, b) => a.label.localeCompare(b.label));
   }, [categoryFiltered, category]);
 
+  // Group public-ready products by category for overview mode preview bands.
+  // Sorted by `scrapedOrder` (newest first) so overview shows fresh hero pieces.
+  const productsByCategory = useMemo(() => {
+    if (!isOverviewMode) return {} as Record<string, CollectionProduct[]>;
+    const map: Record<string, CollectionProduct[]> = {};
+    for (const p of products) {
+      (map[p.categorySlug] ??= []).push(p);
+    }
+    for (const slug of Object.keys(map)) {
+      map[slug].sort((a, b) => a.scrapedOrder - b.scrapedOrder);
+    }
+    return map;
+  }, [products, isOverviewMode]);
+
+  // Load More — only applies to grid mode. Reset whenever the filter shape
+  // changes so a new selection always starts from the first batch.
+  const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
+  useEffect(() => {
+    setVisibleCount(INITIAL_BATCH);
+  }, [category, sub, q, sort]);
+  const visibleBatch = useMemo(
+    () => visibleProducts.slice(0, visibleCount),
+    [visibleProducts, visibleCount],
+  );
+  const hasMore = visibleProducts.length > visibleCount;
+
   // Quick view — URL-driven via ?view=<id|slug>. Back button closes it,
   // direct links open the object, missing/non-public ids are ignored.
   const setQuickViewId = (id: string | null) => {
