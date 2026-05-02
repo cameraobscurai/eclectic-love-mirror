@@ -90,7 +90,7 @@
   --sand: oklch(0.85 0.012 75);          /* #d4cdc4 */
   --warm-gray: oklch(0.6 0 0);           /* #8a8a8a */
   --charcoal: oklch(0.18 0 0);           /* #1a1a1a */
-  --cream: oklch(0.957 0.008 80);        /* #f5f2ed */
+  --cream: #ffffff;                      /* was #f5f2ed — full white reset */
   --black: oklch(0 0 0);
 
   /* Typography tracking presets */
