@@ -172,7 +172,7 @@ export function QuickViewModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-cream text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
+        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
       >
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
@@ -215,7 +215,7 @@ export function QuickViewModal({
             Mobile: clean stack, title above image, no overlap. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-cream flex flex-col md:block"
+          className="relative min-h-0 overflow-hidden bg-white flex flex-col md:block"
         >
           {/* Mobile-only title (block flow, no overlap) */}
           <h2
@@ -317,7 +317,7 @@ export function QuickViewModal({
 
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
-        <div className="border-t border-charcoal/15 bg-cream">
+        <div className="border-t border-charcoal/15 bg-white">
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs — all visible, horizontal scroll with soft fade edge,
                 quiet counter in the typographic register. */}
