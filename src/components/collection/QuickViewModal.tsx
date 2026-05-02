@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
@@ -144,7 +145,9 @@ export function QuickViewModal({
 
   const img = product.images[imgIdx] ?? product.primaryImage;
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -414,7 +417,8 @@ export function QuickViewModal({
           </div>
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
