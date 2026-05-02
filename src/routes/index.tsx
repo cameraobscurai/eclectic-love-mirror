@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 import homeHero from "@/assets/home-hero.webp";
@@ -33,11 +40,58 @@ const DESTINATIONS = [
 function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isPointerFine, setIsPointerFine] = useState(false);
+  const reduced = useReducedMotion();
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(pointer: fine)");
+    const update = () => setIsPointerFine(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  // Normalized pointer offsets in range [-0.5, 0.5], local to the hero section.
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+
+  // Background — soft, follows cursor (positive depth).
+  const bgSpringX = useSpring(mx, { stiffness: 60, damping: 25, mass: 0.6 });
+  const bgSpringY = useSpring(my, { stiffness: 60, damping: 25, mass: 0.6 });
+  const bgX = useTransform(bgSpringX, [-0.5, 0.5], [-18, 18]);
+  const bgY = useTransform(bgSpringY, [-0.5, 0.5], [-12, 12]);
+
+  // Wordmark — snappier, counter-moves (negative depth).
+  const wmSpringX = useSpring(mx, { stiffness: 90, damping: 18, mass: 0.5 });
+  const wmSpringY = useSpring(my, { stiffness: 90, damping: 18, mass: 0.5 });
+  const wmX = useTransform(wmSpringX, [-0.5, 0.5], [10, -10]);
+  const wmY = useTransform(wmSpringY, [-0.5, 0.5], [6, -6]);
+
+  const parallaxOn = !reduced && isPointerFine;
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (!parallaxOn) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    mx.set(nx);
+    my.set(ny);
+  };
+
+  const handlePointerLeave = () => {
+    if (!parallaxOn) return;
+    mx.set(0);
+    my.set(0);
+  };
 
   return (
     <main
@@ -46,6 +100,9 @@ function HomePage() {
       style={{ overscrollBehavior: "none" }}
     >
       <section
+        ref={sectionRef}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
         className="relative flex flex-col overflow-hidden"
         style={{
           height: "100dvh",
@@ -63,7 +120,7 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        <img
+        <motion.img
           src={homeHero}
           alt=""
           aria-hidden="true"
@@ -73,19 +130,29 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           draggable={false}
+          style={
+            parallaxOn
+              ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
+              : undefined
+          }
         />
 
         {/* Wordmark — sits inside the empty horizontal glass band baked into
             the artwork. Uses clamp() so it scales fluidly to fit the band on
             every viewport, from 320px phones to ultra-wide desktops. */}
-        <div
+        <motion.div
           aria-hidden="true"
           className={cn(
             "absolute inset-x-0 z-10 flex justify-center pointer-events-none transition-opacity duration-1000",
             "top-[52%]",
             loaded ? "opacity-100" : "opacity-0"
           )}
-          style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
+          style={{
+            transitionDelay: loaded ? "300ms" : "0ms",
+            ...(parallaxOn
+              ? { x: wmX, y: wmY, willChange: "transform" }
+              : {}),
+          }}
         >
           <div
             className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
@@ -99,7 +166,7 @@ function HomePage() {
           >
             Eclectic&nbsp;Hive
           </div>
-        </div>
+        </motion.div>
 
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
             against the moodboard texture without dimming the wordmark plate. */}
