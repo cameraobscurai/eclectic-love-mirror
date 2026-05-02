@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-ro
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { LayoutGroup, AnimatePresence, motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
   getCollectionCatalog,
