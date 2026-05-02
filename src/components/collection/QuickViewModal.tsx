@@ -327,7 +327,12 @@ export function QuickViewModal({
                   type="button"
                   onClick={() => setShowScale((s) => !s)}
                   aria-pressed={showScale}
-                  className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55 hover:text-charcoal underline underline-offset-[6px] decoration-charcoal/25 hover:decoration-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+                  className={cn(
+                    "self-end h-7 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                    showScale
+                      ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
+                      : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
+                  )}
                 >
                   {showScale ? "Hide Scale" : "Show Scale"}
                 </button>
