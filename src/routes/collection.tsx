@@ -391,13 +391,24 @@ function CollectionPage() {
       ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7"
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 
+  const gridGapClasses =
+    density === "dense"
+      ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
+      : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
+
   return (
     <main
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
       {/* Hero — quiet, archive-style */}
-      <section className="pt-32 pb-10 px-6 lg:px-12">
+      <section
+        className="px-6 lg:px-12"
+        style={{
+          paddingTop: "clamp(64px, 7vw, 112px)",
+          paddingBottom: "clamp(48px, 5vw, 80px)",
+        }}
+      >
         <div className="max-w-[1600px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             HIVE SIGNATURE COLLECTION
