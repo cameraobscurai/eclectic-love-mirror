@@ -289,7 +289,8 @@ const BROWSE_RULES: BrowseRule[] = [
     // that didn't match Sofas/Chairs above.
     categories: ["benches-ottomans1", "lounge"],
     keywords: ["bench", "ottoman", "daybed", "pouf", "footstool", "banquette"],
-    requireKeyword: false, // benches-ottomans1 accepts all; keywords filter lounge
+    requireKeyword: false,
+    monoCategories: ["benches-ottomans1"], // lounge requires keyword
   },
   {
     id: "dining",
@@ -306,7 +307,8 @@ const BROWSE_RULES: BrowseRule[] = [
       "farm table",
       "dining chair",
     ],
-    requireKeyword: false, // dining accepts all; keywords filter tables1
+    requireKeyword: false,
+    monoCategories: ["dining"], // tables1 requires keyword
   },
   {
     id: "lighting",
