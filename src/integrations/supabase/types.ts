@@ -333,6 +333,13 @@ export type Database = {
             referencedRelation: "scraped_products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_canonical"
+            referencedColumns: ["id"]
+          },
         ]
       }
       scrape_errors: {
@@ -531,6 +538,13 @@ export type Database = {
             referencedRelation: "scraped_products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_canonical"
+            referencedColumns: ["id"]
+          },
         ]
       }
       scraped_product_pages_markdown: {
@@ -620,6 +634,13 @@ export type Database = {
             columns: ["scraped_product_id"]
             isOneToOne: false
             referencedRelation: "scraped_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_canonical"
             referencedColumns: ["id"]
           },
         ]
@@ -855,7 +876,115 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      llm_reextract_candidates_canonical: {
+        Row: {
+          ambiguity_flags: string[] | null
+          category_slug: string | null
+          created_at: string | null
+          decided_at: string | null
+          decided_by: string | null
+          id: string | null
+          missing_fields: string[] | null
+          parse_confidence: number | null
+          product_slug: string | null
+          reason: string | null
+          rn: number | null
+          run_id: string | null
+          status: string | null
+          url: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_reextract_candidates_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_product_images_canonical: {
+        Row: {
+          alt_text: string | null
+          height: number | null
+          id: string | null
+          image_url: string | null
+          inferred_filename: string | null
+          is_hero: boolean | null
+          position: number | null
+          scraped_product_id: string | null
+          source_page_url: string | null
+          visible_filename: string | null
+          width: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products_canonical"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_products_canonical: {
+        Row: {
+          add_to_cart_present: boolean | null
+          ambiguity_flags: string[] | null
+          breadcrumb: string[] | null
+          category_slug: string | null
+          color_notes: string | null
+          description: string | null
+          dimensions: string | null
+          extraction_confidence: number | null
+          generic_notes: string | null
+          hero_image_url: string | null
+          id: string | null
+          inferred_category_label: string | null
+          is_custom_order_co: boolean | null
+          material_notes: string | null
+          missing_fields: string[] | null
+          needs_llm_reextract: boolean | null
+          next_product_url: string | null
+          parse_confidence: number | null
+          parse_errors: string[] | null
+          phase: string | null
+          previous_product_url: string | null
+          product_title_normalized: string | null
+          product_title_original: string | null
+          quantity_selector_present: boolean | null
+          raw: Json | null
+          reextract_reason: string | null
+          related_product_urls: string[] | null
+          rn: number | null
+          run_id: string | null
+          scraped_at: string | null
+          size_notes: string | null
+          slug: string | null
+          stocked_quantity: string | null
+          subcategory_slug: string | null
+          title: string | null
+          url: string | null
+          variant_selector_present: boolean | null
+          warnings: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_products_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
