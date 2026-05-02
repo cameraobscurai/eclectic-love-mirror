@@ -32,13 +32,13 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal">
-      {/* Hairline grid — Casa Carta style. The grid lines are real 1px borders,
-          not background bleed-through, so cells stay structurally architectural
-          even on retina. The rail to the left now owns the "Browse by Category"
-          framing — no internal header needed. */}
+    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-4">
+      {/* White grid — 16px gap, no hairlines, no internal borders. Cards lift
+          off the white field via soft shadow + radius. The rail on the left
+          owns the "Browse by Category" framing — no internal header needed. */}
       <ul
-        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 [&>li]:border-r [&>li]:border-b [&>li]:border-black/10"
+        className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 gap-4"
+        style={{ background: "#ffffff" }}
       >
         {groups.map((group, idx) => {
           const cover = CATEGORY_COVERS[group.id];
@@ -57,6 +57,12 @@ export function CategoryGalleryOverview({
             <motion.li
               key={group.id}
               className="relative min-h-[260px] min-w-0 bg-white md:min-h-[280px] xl:min-h-[300px]"
+              style={{
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow:
+                  "0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+              }}
               initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -68,8 +74,8 @@ export function CategoryGalleryOverview({
               <button
                 type="button"
                 onClick={() => onSelectCategory(group.id)}
-                className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:bg-black/[0.03] focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
-                aria-label={`${label} — ${group.products.length} pieces`}
+                className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
+                aria-label={label}
               >
                 {/* Specimen frame: image is contained inside deliberate padding,
                     not edge-to-edge. Object-contain so silhouettes read as
@@ -88,25 +94,31 @@ export function CategoryGalleryOverview({
                   )}
                 </div>
 
-                {/* Caption row — hairline rule above, label left, count right.
-                    No overlay on the image; the label lives under it like a
-                    museum placard. */}
-                <div className="border-t border-black/10 px-5 py-4 flex items-baseline justify-between gap-3">
+                {/* Frosted-glass label overlay — floats over the bottom of the
+                    image, inside the card frame. Name only, no count. */}
+                <div
+                  className="absolute left-0 right-0 bottom-0 px-[14px] py-[10px]"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.65)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
+                    borderRadius: "0 0 12px 12px",
+                  }}
+                >
                   <h2
-                    className="font-display uppercase text-charcoal leading-none truncate"
+                    className="uppercase truncate"
                     style={{
-                      fontSize: "clamp(0.95rem, 1.1vw, 1.1rem)",
-                      letterSpacing: "-0.005em",
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "10px",
+                      letterSpacing: "0.18em",
+                      color: "#1a1a1a",
+                      lineHeight: 1.2,
+                      margin: 0,
                     }}
                   >
                     {label}
                   </h2>
-                  <span
-                    className="shrink-0 text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums"
-                    style={{ fontFamily: "var(--font-sans)" }}
-                  >
-                    {group.products.length}
-                  </span>
                 </div>
               </button>
             </motion.li>

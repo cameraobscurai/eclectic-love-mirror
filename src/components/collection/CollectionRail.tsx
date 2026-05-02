@@ -12,8 +12,6 @@ import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 interface CollectionRailProps {
   /** Full catalog — used to source per-row thumbnail (firstProduct.primaryImage). */
   products: CollectionProduct[];
-  /** Per-group counts under the *committed* search/filter state. May be 0. */
-  counts: Map<BrowseGroupId, number>;
   activeGroup: BrowseGroupId | "";
   /** Group currently dominant in the viewport per scroll-spy. Drives a quiet
    *  highlight on the corresponding row when no manual filter is active. */
@@ -36,7 +34,6 @@ interface CollectionRailProps {
  */
 export function CollectionRail({
   products,
-  counts,
   activeGroup,
   spyActiveGroup,
   onSelect,
@@ -106,7 +103,6 @@ export function CollectionRail({
       <ul role="list">
         {BROWSE_GROUP_ORDER.map((id) => {
           const label = BROWSE_GROUP_LABELS[id];
-          const count = counts.get(id) ?? 0;
           const thumb = thumbByGroup.get(id) ?? null;
           const isActive = activeGroup === id;
           const isSpyHighlighted = !isActive && spyHighlightId === id;
@@ -115,7 +111,6 @@ export function CollectionRail({
             <li key={id}>
               <CategoryRow
                 label={label}
-                count={count}
                 thumbSrc={thumb}
                 isActive={isActive}
                 isSpyHighlighted={isSpyHighlighted}
@@ -132,7 +127,6 @@ export function CollectionRail({
 
 interface CategoryRowProps {
   label: string;
-  count: number;
   thumbSrc: string | null;
   isActive: boolean;
   isSpyHighlighted: boolean;
@@ -142,7 +136,6 @@ interface CategoryRowProps {
 
 function CategoryRow({
   label,
-  count,
   thumbSrc,
   isActive,
   isSpyHighlighted,
@@ -215,16 +208,6 @@ function CategoryRow({
         {label}
       </span>
 
-      <span
-        className="shrink-0 tabular-nums"
-        style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: isSheet ? "11px" : "10px",
-          color: "color-mix(in oklab, var(--charcoal) 45%, transparent)",
-        }}
-      >
-        {count}
-      </span>
     </button>
   );
 }

@@ -430,8 +430,8 @@ function CollectionPage() {
   };
 
   // ---- Result meta line text ----
-  // Spec: "876 pieces" for browse, "Sofas · 44 pieces" for group,
-  // "24 results matching '...'" for search.
+  // Counts removed from the collection page everywhere except active-search
+  // feedback. Group state shows the category name only; overview shows nothing.
   const groupLabel = activeGroup ? BROWSE_GROUP_LABELS[activeGroup] : null;
   const trimmedQ = q.trim();
   let resultMeta: string;
@@ -439,10 +439,9 @@ function CollectionPage() {
     const n = visibleProducts.length;
     resultMeta = `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`;
   } else if (groupLabel) {
-    const n = visibleProducts.length;
-    resultMeta = `${groupLabel} · ${n} ${n === 1 ? "piece" : "pieces"}`;
+    resultMeta = groupLabel;
   } else {
-    resultMeta = `${visibleProducts.length} pieces`;
+    resultMeta = "";
   }
 
   const gridCols =
@@ -451,9 +450,7 @@ function CollectionPage() {
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 
   const gridGapClasses =
-    density === "dense"
-      ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
-      : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
+    density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
 
   // ---------- First product per active group (powers CategoryHero specimen) ----------
   // Same data the rail thumbnail uses — no new field, no curation table.
@@ -710,7 +707,6 @@ function CollectionPage() {
             >
               <CollectionRail
                 products={products}
-                counts={groupCounts}
                 activeGroup={activeGroup}
                 spyActiveGroup={spyActiveGroup}
                 onSelect={selectGroup}
@@ -739,7 +735,6 @@ function CollectionPage() {
                     <CategoryHero
                       group={activeGroup}
                       firstProduct={heroFirstProduct}
-                      count={visibleProducts.length}
                     />
                   )}
 
@@ -887,7 +882,6 @@ function CollectionPage() {
               <div className="flex-1 overflow-y-auto px-2 py-3">
                 <CollectionRail
                   products={products}
-                  counts={groupCounts}
                   activeGroup={activeGroup}
                   onSelect={(groupId: BrowseGroupId | "") => {
                     // On mobile the sheet covers the entire viewport, so

@@ -12,19 +12,20 @@ interface CategoryHeroProps {
   group: BrowseGroupId;
   /** First product in this bucket with a primaryImage. May be null. */
   firstProduct: CollectionProduct | null;
-  count: number;
 }
 
 /**
  * Category hero — sits above the sticky utility bar in the category state.
  *
- * Eyebrow + Cormorant H1 + one-sentence description + count, with a
- * museum-placard specimen plate to the right. The specimen image is
- * sourced from the same data the rail thumbnail uses (firstProduct.primaryImage,
- * with optional CATEGORY_COVERS override) — no new data field, no new
- * curation pass.
+ * Eyebrow + Cormorant H1 + one-sentence description, with a museum-placard
+ * specimen plate to the right. The specimen image is sourced from the same
+ * data the rail thumbnail uses (firstProduct.primaryImage, with optional
+ * CATEGORY_COVERS override) — no new data field, no new curation pass.
+ *
+ * Counts intentionally omitted everywhere on the collection page except the
+ * "N results matching …" search-feedback line in the utility bar.
  */
-export function CategoryHero({ group, firstProduct, count }: CategoryHeroProps) {
+export function CategoryHero({ group, firstProduct }: CategoryHeroProps) {
   const [imgFailed, setImgFailed] = useState(false);
   const label = BROWSE_GROUP_LABELS[group];
   const description = BROWSE_GROUP_DESCRIPTIONS[group];
@@ -71,36 +72,29 @@ export function CategoryHero({ group, firstProduct, count }: CategoryHeroProps) 
           {label}
         </h2>
         <p
-          className="text-charcoal/55"
           style={{
             fontFamily: "var(--font-sans)",
-            fontSize: "12px",
-            lineHeight: 1.65,
+            fontSize: "13px",
+            lineHeight: 1.7,
             marginTop: "12px",
-            maxWidth: "320px",
+            maxWidth: "360px",
+            color: "rgba(26, 26, 26, 0.60)",
           }}
         >
           {description}
         </p>
-        <p
-          className="uppercase text-charcoal/45"
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.25em",
-            marginTop: "16px",
-          }}
-        >
-          {count} {count === 1 ? "Piece" : "Pieces"}
-        </p>
       </div>
 
-      {/* Specimen plate — explicit dimensions, white tile against cream field. */}
+      {/* Specimen plate — soft shadow, no border, against the white field. */}
       <div
         className="hidden sm:flex shrink-0 items-center justify-center bg-white"
         style={{
           width: "200px",
           height: "150px",
-          border: "1px solid var(--archive-rule)",
+          borderRadius: "8px",
+          boxShadow:
+            "0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)",
+          overflow: "hidden",
         }}
       >
         {showImage && (
