@@ -250,7 +250,7 @@ export function QuickViewModal({
                 {img ? (
                   <motion.img
                     key={img.url}
-                    src={img.url}
+                    src={withCdnWidth(img.url, 1500)}
                     alt={img.altText ?? product.title}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -347,7 +347,7 @@ export function QuickViewModal({
                           )}
                         >
                           <img
-                            src={im.url}
+                            src={withCdnWidth(im.url, 300)}
                             alt=""
                             className="absolute inset-0 w-full h-full object-contain p-1"
                           />
