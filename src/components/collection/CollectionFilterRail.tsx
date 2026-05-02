@@ -6,52 +6,59 @@ import {
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 
-export interface FilterOption {
-  id: BrowseGroupId;
-  count: number;
-}
-
 interface CollectionFilterRailProps {
-  options: FilterOption[];
-  activeGroup: BrowseGroupId | "";
+  /**
+   * Stable list of group ids to render, in order. Computed once from the full
+   * public-ready catalog so it never reorders or disappears while a user types.
+   */
+  orderedGroupIds: BrowseGroupId[];
+  /** Per-group counts under the *committed* search/filter state. May be 0. */
+  counts: Map<BrowseGroupId, number>;
+  /** Total count for the "All Inventory" anchor under current commit. */
   totalCount: number;
+  activeGroup: BrowseGroupId | "";
   onSelect: (id: BrowseGroupId | "") => void;
   onClear: () => void;
   hasActiveFilters: boolean;
-  /** Compact layout for the mobile bottom sheet */
+  /** Compact layout for the mobile bottom sheet (≥44px touch targets) */
   variant?: "rail" | "sheet";
 }
 
+const OWNER_SET = new Set<BrowseGroupId>(OWNER_BROWSE_ORDER);
+const SAFETY_SET = new Set<BrowseGroupId>(SAFETY_NET_BROWSE_ORDER);
+
 /**
  * Auction-house style left filter rail.
- * - One persistent surface for category selection
- * - Owner tier on top, safety-net tier below a thin divider
- * - Active state = filled charcoal underline + bold weight
- * - No boxes, no chrome — pure typographic list
+ * - Order is fixed by the parent (derived from the full catalog) — never
+ *   reorders during typing.
+ * - Counts respond to filtered state. Zero-count rows render muted + disabled
+ *   instead of disappearing, so navigation stays stable.
  */
 export function CollectionFilterRail({
-  options,
-  activeGroup,
+  orderedGroupIds,
+  counts,
   totalCount,
+  activeGroup,
   onSelect,
   onClear,
   hasActiveFilters,
   variant = "rail",
 }: CollectionFilterRailProps) {
   const reduced = useReducedMotion();
-  const countMap = new Map(options.map((o) => [o.id, o.count]));
-
-  const ownerItems = OWNER_BROWSE_ORDER.filter((id) => (countMap.get(id) ?? 0) > 0);
-  const safetyItems = SAFETY_NET_BROWSE_ORDER.filter(
-    (id) => (countMap.get(id) ?? 0) > 0,
-  );
-
   const isSheet = variant === "sheet";
+
+  // Split ordered list into owner / safety-net while preserving order.
+  const ownerIds = orderedGroupIds.filter((id) => OWNER_SET.has(id));
+  const safetyIds = orderedGroupIds.filter((id) => SAFETY_SET.has(id));
 
   return (
     <nav
       aria-label="Filter inventory by category"
-      className={isSheet ? "px-1" : "sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2"}
+      className={
+        isSheet
+          ? "px-1"
+          : "sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2"
+      }
     >
       <div className="flex items-baseline justify-between mb-4">
         <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50">
@@ -60,51 +67,62 @@ export function CollectionFilterRail({
         {hasActiveFilters && (
           <button
             onClick={onClear}
-            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal transition-colors"
+            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
           >
-            Clear
+            Clear All
           </button>
         )}
       </div>
 
       <ul className="space-y-1">
         <FilterRow
-          label="All pieces"
+          label="All Inventory"
           count={totalCount}
           active={!activeGroup}
           onClick={() => onSelect("")}
           reduced={reduced}
-          emphasized
+          isSheet={isSheet}
         />
 
-        {ownerItems.length > 0 && (
-          <li className="pt-3" aria-hidden />
-        )}
-        {ownerItems.map((id) => (
-          <FilterRow
-            key={id}
-            label={BROWSE_GROUP_LABELS[id]}
-            count={countMap.get(id) ?? 0}
-            active={activeGroup === id}
-            onClick={() => onSelect(id)}
-            reduced={reduced}
-          />
-        ))}
+        {ownerIds.length > 0 && <li className="pt-3" aria-hidden />}
+        {ownerIds.map((id) => {
+          const count = counts.get(id) ?? 0;
+          return (
+            <FilterRow
+              key={id}
+              label={BROWSE_GROUP_LABELS[id]}
+              count={count}
+              active={activeGroup === id}
+              disabled={count === 0}
+              onClick={() => onSelect(id)}
+              reduced={reduced}
+              isSheet={isSheet}
+            />
+          );
+        })}
 
-        {safetyItems.length > 0 && (
-          <li className="pt-4 mt-2 border-t border-charcoal/10" aria-hidden />
-        )}
-        {safetyItems.map((id) => (
-          <FilterRow
-            key={id}
-            label={BROWSE_GROUP_LABELS[id]}
-            count={countMap.get(id) ?? 0}
-            active={activeGroup === id}
-            onClick={() => onSelect(id)}
-            reduced={reduced}
-            muted
+        {safetyIds.length > 0 && (
+          <li
+            className="pt-4 mt-2 border-t border-charcoal/10"
+            aria-hidden
           />
-        ))}
+        )}
+        {safetyIds.map((id) => {
+          const count = counts.get(id) ?? 0;
+          return (
+            <FilterRow
+              key={id}
+              label={BROWSE_GROUP_LABELS[id]}
+              count={count}
+              active={activeGroup === id}
+              disabled={count === 0}
+              onClick={() => onSelect(id)}
+              reduced={reduced}
+              isSheet={isSheet}
+              muted
+            />
+          );
+        })}
       </ul>
     </nav>
   );
@@ -116,8 +134,9 @@ interface FilterRowProps {
   active: boolean;
   onClick: () => void;
   reduced: boolean | null;
-  emphasized?: boolean;
+  isSheet: boolean;
   muted?: boolean;
+  disabled?: boolean;
 }
 
 function FilterRow({
@@ -126,24 +145,35 @@ function FilterRow({
   active,
   onClick,
   reduced,
-  emphasized,
+  isSheet,
   muted,
+  disabled,
 }: FilterRowProps) {
+  // Color logic — disabled trumps muted trumps active.
+  const tone = disabled
+    ? "text-charcoal/25 cursor-not-allowed"
+    : active
+      ? "text-charcoal"
+      : muted
+        ? "text-charcoal/55 hover:text-charcoal"
+        : "text-charcoal/75 hover:text-charcoal";
+
   return (
     <li>
       <button
-        onClick={onClick}
+        onClick={disabled ? undefined : onClick}
+        disabled={disabled}
+        aria-pressed={active}
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : 0}
         className={[
-          "group relative w-full flex items-baseline justify-between gap-3 py-1.5 text-left transition-colors",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-          emphasized ? "text-[13px]" : "text-[13px]",
-          active
-            ? "text-charcoal"
-            : muted
-              ? "text-charcoal/55 hover:text-charcoal"
-              : "text-charcoal/75 hover:text-charcoal",
+          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors",
+          "rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+          isSheet
+            ? "py-2.5 min-h-[44px] text-[14px]"
+            : "py-1.5 text-[13px]",
+          tone,
         ].join(" ")}
-        aria-current={active ? "true" : undefined}
       >
         <span
           className={[
@@ -167,7 +197,11 @@ function FilterRow({
         <span
           className={[
             "tabular-nums text-[11px]",
-            active ? "text-charcoal/55" : "text-charcoal/35",
+            disabled
+              ? "text-charcoal/20"
+              : active
+                ? "text-charcoal/55"
+                : "text-charcoal/35",
           ].join(" ")}
         >
           {count}

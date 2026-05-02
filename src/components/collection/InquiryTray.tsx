@@ -20,6 +20,8 @@ export function InquiryTray() {
             ease: [0.22, 1, 0.36, 1],
           }}
           className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-charcoal text-cream shadow-2xl"
+          role="region"
+          aria-label="Inquiry"
         >
           <div className="flex items-center gap-4 px-5 py-3">
             <span className="text-xs uppercase tracking-[0.22em]">
@@ -27,15 +29,15 @@ export function InquiryTray() {
             </span>
             <button
               onClick={clear}
-              className="text-[10px] uppercase tracking-[0.22em] text-cream/60 hover:text-cream transition-colors"
+              className="text-[10px] uppercase tracking-[0.22em] text-cream/60 hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-colors"
             >
-              Clear
+              Clear All
             </button>
             <Link
               to={href as never}
-              className="bg-white text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 transition-all"
+              className="bg-white text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
             >
-              Review inquiry
+              Inquiry
             </Link>
           </div>
         </motion.div>
