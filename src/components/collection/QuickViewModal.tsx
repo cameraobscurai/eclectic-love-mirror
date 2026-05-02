@@ -35,8 +35,35 @@ export function QuickViewModal({
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stageWidth, setStageWidth] = useState(0);
 
   useEffect(() => setImgIdx(0), [product.id]);
+
+  // Track stage width for Pretext fit-to-lines measurement.
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      const w = entries[0]?.contentRect.width ?? 0;
+      setStageWidth(w);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Reserve ~10% of stage width for breathing room on the right.
+  // The title gets ~70% of the stage on desktop so the image can overlap.
+  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.7 - 16 : 0;
+  const fittedSize = useFitToLines({
+    text: product.title,
+    maxWidth: titleMaxWidth,
+    family: "Cormorant",
+    weight: 400,
+    minPx: 28,
+    maxPx: 112,
+    targetLines: 2,
+  });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
