@@ -116,6 +116,8 @@ function CollectionPage() {
         navigate({
           search: (prev: CollectionSearch) => ({ ...prev, q: qLocal }),
           replace: true,
+          // Search input mutates URL state in place. Never reset scroll.
+          resetScroll: false,
         });
       }
     }, SEARCH_DEBOUNCE_MS);
