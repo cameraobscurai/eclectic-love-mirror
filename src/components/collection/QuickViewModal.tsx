@@ -242,7 +242,8 @@ export function QuickViewModal({
               so they wrap the actual furniture region, not the empty stage. */}
           <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
             <div
-              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%] flex items-end justify-center"
+              ref={zoneRef}
+              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%]"
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -254,40 +255,53 @@ export function QuickViewModal({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.25 }}
-                    className="w-auto h-auto max-w-full max-h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    onLoad={(e) => {
+                      const t = e.currentTarget;
+                      setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
+                    }}
+                    className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
                   />
                 ) : (
-                  <div className="grid place-items-center text-charcoal/30">
+                  <div className="absolute inset-0 grid place-items-center text-charcoal/30">
                     No image
                   </div>
                 )}
               </AnimatePresence>
 
-              {/* Scale rules — bound to the zone's edges, not the stage.
-                  Width rule sits just below the zone; height rule just to
-                  its right. They render independently if only one axis is
-                  parseable. */}
+              {/* Scale rules — bound to the actual rendered image footprint
+                  (computed from naturalWidth/Height + object-contain math),
+                  not the zone envelope. The rules wrap the furniture itself. */}
               <AnimatePresence>
-                {showScale && hasScale && dims.width !== null && (
+                {showScale && hasScale && imageBox && dims.width !== null && (
                   <motion.div
                     key="scale-width"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.18 }}
-                    className="absolute left-0 right-0 -bottom-7 pointer-events-none"
+                    className="absolute pointer-events-none"
+                    style={{
+                      left: `${imageBox.left}px`,
+                      width: `${imageBox.width}px`,
+                      top: `${imageBox.top + imageBox.height + 10}px`,
+                    }}
                   >
                     <ScaleRuleWidth inches={dims.width} />
                   </motion.div>
                 )}
-                {showScale && hasScale && dims.height !== null && (
+                {showScale && hasScale && imageBox && dims.height !== null && (
                   <motion.div
                     key="scale-height"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.22 }}
-                    className="absolute top-0 bottom-0 -right-6 pointer-events-none"
+                    className="absolute pointer-events-none"
+                    style={{
+                      top: `${imageBox.top}px`,
+                      height: `${imageBox.height}px`,
+                      left: `${imageBox.left + imageBox.width + 10}px`,
+                    }}
                   >
                     <ScaleRuleHeight inches={dims.height} />
                   </motion.div>
