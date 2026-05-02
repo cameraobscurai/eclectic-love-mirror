@@ -391,13 +391,24 @@ function CollectionPage() {
       ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7"
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 
+  const gridGapClasses =
+    density === "dense"
+      ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
+      : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
+
   return (
     <main
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
       {/* Hero — quiet, archive-style */}
-      <section className="pt-32 pb-10 px-6 lg:px-12">
+      <section
+        className="px-6 lg:px-12"
+        style={{
+          paddingTop: "clamp(64px, 7vw, 112px)",
+          paddingBottom: "clamp(48px, 5vw, 80px)",
+        }}
+      >
         <div className="max-w-[1600px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             HIVE SIGNATURE COLLECTION
@@ -411,15 +422,15 @@ function CollectionPage() {
         </div>
       </section>
 
-      {/* Sticky control bar — single row */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
+      {/* Sticky control bar — single row, 64px min height, baseline-aligned */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-black/[0.08]">
         <div className="px-6 lg:px-12">
-          <div className="max-w-[1600px] mx-auto flex items-center gap-3 py-3">
+          <div className="max-w-[1600px] mx-auto flex items-center gap-3 min-h-[64px] py-2">
             {/* Mobile: filters trigger */}
             <button
               ref={filtersTriggerRef}
               onClick={() => setSheetOpen(true)}
-              className="lg:hidden inline-flex items-center gap-2 h-11 px-3 border border-charcoal/20 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+              className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
               aria-label="Open filters"
               aria-haspopup="dialog"
             >
@@ -438,7 +449,7 @@ function CollectionPage() {
               initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: reduced ? 0 : 0.25 }}
-              className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 flex-shrink-0 hidden sm:block"
+              className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 flex-shrink-0 hidden sm:flex items-center h-10"
               aria-live="polite"
             >
               {resultMeta}
@@ -456,12 +467,12 @@ function CollectionPage() {
               placeholder="Search pieces"
               value={qLocal}
               onChange={(e) => setQLocal(e.target.value)}
-              className="h-9 w-32 sm:w-56 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+              className="h-10 w-32 sm:w-56 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
             />
 
             <label
               htmlFor="collection-sort"
-              className="hidden sm:inline-block text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+              className="hidden sm:inline-flex items-center h-10 text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
             >
               Sort by
             </label>
@@ -477,26 +488,26 @@ function CollectionPage() {
                   replace: true,
                 })
               }
-              className="h-9 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
+              className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
             >
               <option value="type">By Type</option>
               <option value="az">A–Z</option>
             </select>
 
-            {/* Density toggle — desktop only */}
+            {/* Density toggle — desktop only, quieter */}
             <div
-              className="hidden lg:flex items-center border border-charcoal/15"
+              className="hidden lg:flex items-center border border-charcoal/10"
               role="group"
               aria-label="Grid density"
             >
               <button
                 onClick={() => setDensity("comfortable")}
                 className={[
-                  "h-9 w-9 inline-flex items-center justify-center transition-colors",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                  "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "comfortable"
                     ? "bg-charcoal text-white"
-                    : "text-charcoal/55 hover:text-charcoal",
+                    : "text-charcoal/45 hover:text-charcoal",
                 ].join(" ")}
                 aria-label="Comfortable grid"
                 aria-pressed={density === "comfortable"}
@@ -506,11 +517,11 @@ function CollectionPage() {
               <button
                 onClick={() => setDensity("dense")}
                 className={[
-                  "h-9 w-9 inline-flex items-center justify-center transition-colors",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                  "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "dense"
                     ? "bg-charcoal text-white"
-                    : "text-charcoal/55 hover:text-charcoal",
+                    : "text-charcoal/45 hover:text-charcoal",
                 ].join(" ")}
                 aria-label="Dense grid"
                 aria-pressed={density === "dense"}
@@ -524,7 +535,10 @@ function CollectionPage() {
 
       {/* Body — left filter rail + grid */}
       <section className="px-6 lg:px-12 pt-10">
-        <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[14rem_1fr] xl:grid-cols-[16rem_1fr] gap-10 lg:gap-12">
+        <div
+          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[17.5rem_minmax(0,1fr)]"
+          style={{ columnGap: "clamp(48px, 5vw, 72px)", rowGap: "2.5rem" }}
+        >
           {/* Desktop filter rail */}
           <aside className="hidden lg:block">
             <CollectionFilterRail
@@ -564,7 +578,7 @@ function CollectionPage() {
                 <LayoutGroup id="collection-grid">
                   <motion.ul
                     layout
-                    className={`grid ${gridCols} gap-3 lg:gap-4`}
+                    className={`grid ${gridCols} ${gridGapClasses}`}
                     transition={
                       reduced
                         ? { duration: 0 }

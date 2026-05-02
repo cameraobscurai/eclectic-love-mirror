@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+
 import {
   BROWSE_GROUP_LABELS,
   OWNER_BROWSE_ORDER,
@@ -44,7 +44,6 @@ export function CollectionFilterRail({
   hasActiveFilters,
   variant = "rail",
 }: CollectionFilterRailProps) {
-  const reduced = useReducedMotion();
   const isSheet = variant === "sheet";
 
   // Split ordered list into owner / safety-net while preserving order.
@@ -60,27 +59,26 @@ export function CollectionFilterRail({
           : "sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2"
       }
     >
-      <div className="flex items-baseline justify-between mb-4">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50">
+      <div className="flex items-baseline justify-between mb-3">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
           Categories
         </p>
         {hasActiveFilters && (
           <button
             onClick={onClear}
-            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
           >
             Clear All
           </button>
         )}
       </div>
 
-      <ul className="space-y-1">
+      <ul className="space-y-0">
         <FilterRow
           label="All Inventory"
           count={totalCount}
           active={!activeGroup}
           onClick={() => onSelect("")}
-          reduced={reduced}
           isSheet={isSheet}
         />
 
@@ -95,7 +93,6 @@ export function CollectionFilterRail({
               active={activeGroup === id}
               disabled={count === 0}
               onClick={() => onSelect(id)}
-              reduced={reduced}
               isSheet={isSheet}
             />
           );
@@ -103,7 +100,7 @@ export function CollectionFilterRail({
 
         {safetyIds.length > 0 && (
           <li
-            className="pt-4 mt-2 border-t border-charcoal/10"
+            className="pt-3 mt-2 border-t border-black/[0.08]"
             aria-hidden
           />
         )}
@@ -117,7 +114,6 @@ export function CollectionFilterRail({
               active={activeGroup === id}
               disabled={count === 0}
               onClick={() => onSelect(id)}
-              reduced={reduced}
               isSheet={isSheet}
               muted
             />
@@ -133,7 +129,6 @@ interface FilterRowProps {
   count: number;
   active: boolean;
   onClick: () => void;
-  reduced: boolean | null;
   isSheet: boolean;
   muted?: boolean;
   disabled?: boolean;
@@ -144,7 +139,7 @@ function FilterRow({
   count,
   active,
   onClick,
-  reduced,
+  
   isSheet,
   muted,
   disabled,
@@ -155,8 +150,8 @@ function FilterRow({
     : active
       ? "text-charcoal"
       : muted
-        ? "text-charcoal/55 hover:text-charcoal"
-        : "text-charcoal/75 hover:text-charcoal";
+        ? "text-charcoal/55 hover:text-charcoal/90"
+        : "text-charcoal/55 hover:text-charcoal/90";
 
   return (
     <li>
@@ -167,40 +162,30 @@ function FilterRow({
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : 0}
         className={[
-          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors",
-          "rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+          "group relative w-full flex items-baseline justify-between gap-3 text-left transition-colors leading-none",
+          "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+          // Left rule lives in the row itself; reserve 10px padding-left always
+          // so labels never shift horizontally when active toggles.
+          "pl-[10px] border-l-2",
+          active ? "border-charcoal" : "border-transparent",
           isSheet
-            ? "py-2.5 min-h-[44px] text-[14px]"
-            : "py-1.5 text-[13px]",
+            ? "py-3 min-h-[44px] text-[14px]"
+            : "py-2 text-[14px]",
           tone,
         ].join(" ")}
       >
         <span
-          className={[
-            "relative",
-            active ? "font-medium" : "font-normal",
-          ].join(" ")}
+          className={active ? "font-medium" : "font-normal"}
         >
           {label}
-          {active && (
-            <motion.span
-              layoutId="filter-rail-active"
-              className="absolute -left-3 top-1/2 -translate-y-1/2 h-[1px] w-2 bg-charcoal"
-              transition={
-                reduced
-                  ? { duration: 0 }
-                  : { type: "spring", stiffness: 500, damping: 35 }
-              }
-            />
-          )}
         </span>
         <span
           className={[
-            "tabular-nums text-[11px]",
+            "tabular-nums text-[12px]",
             disabled
               ? "text-charcoal/20"
               : active
-                ? "text-charcoal/55"
+                ? "text-charcoal/70"
                 : "text-charcoal/35",
           ].join(" ")}
         >
