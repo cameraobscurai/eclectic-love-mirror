@@ -42,8 +42,6 @@ export function ProductTile({
   // this only fires for newly-entering cards; reflowing cards skip it.
   const stagger = reduced ? 0 : Math.min(index * 0.045, 0.42);
   const showInternals = near; // gates image, hover label, fetch
-  // Skip blur-up for the first 6 priority tiles so the LCP image paints crisp.
-  const skipBlur = index < HIGH_FETCH_COUNT;
 
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
