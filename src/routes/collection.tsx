@@ -280,18 +280,8 @@ function CollectionPage() {
   );
 
   // ---------- Filter rail data: stable order + responsive counts ----------
-  // Order is fixed once from the FULL public-ready catalog. It does not move
-  // while the user types or filters.
-  const orderedGroupIds = useMemo<BrowseGroupId[]>(() => {
-    const seen = new Set<BrowseGroupId>();
-    for (const p of products) {
-      const id = getProductBrowseGroup(p);
-      if (id) seen.add(id);
-    }
-    return BROWSE_GROUP_ORDER.filter((id) => seen.has(id));
-  }, [products]);
-
-  // Counts respond to the committed search-filtered set.
+  // Counts respond to the committed search-filtered set. Powers the rail's
+  // per-row count badge.
   const groupCounts = useMemo(() => {
     const counts = new Map<BrowseGroupId, number>();
     for (const p of searchFiltered) {
@@ -301,8 +291,6 @@ function CollectionPage() {
     }
     return counts;
   }, [searchFiltered]);
-
-  const allCount = searchFiltered.length;
 
   // ---------- Category overview screen ----------
   // The default Collection landing is the category gallery, NOT the 876-tile
