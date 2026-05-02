@@ -1,7 +1,6 @@
 
 import {
   BROWSE_GROUP_LABELS,
-  OWNER_BROWSE_ORDER,
   SAFETY_NET_BROWSE_ORDER,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
@@ -24,7 +23,6 @@ interface CollectionFilterRailProps {
   variant?: "rail" | "sheet";
 }
 
-const OWNER_SET = new Set<BrowseGroupId>(OWNER_BROWSE_ORDER);
 const SAFETY_SET = new Set<BrowseGroupId>(SAFETY_NET_BROWSE_ORDER);
 
 /**
