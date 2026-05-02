@@ -44,7 +44,10 @@ export function CollectionIndexStrip({
   // Each segment height: derive from a fixed total so the rail length stays
   // visually constant regardless of group count. ~280px feels right at most
   // viewport heights without crowding the rest of the page.
-  const TOTAL_H = 280;
+  // Each segment height: derive from a fixed total so the rail length stays
+  // visually constant. Now lives inside a sticky column inside the cage —
+  // no longer fixed to the viewport. Slightly shorter to breathe in-column.
+  const TOTAL_H = 240;
   const GAP = 4;
   const segH = Math.max(
     14,
@@ -54,7 +57,7 @@ export function CollectionIndexStrip({
   return (
     <nav
       aria-label="Collection scroll progress"
-      className="hidden md:block fixed top-1/2 -translate-y-1/2 right-5 lg:right-7 z-20"
+      className="hidden md:block"
     >
       <ol className="flex flex-col items-end" style={{ gap: `${GAP}px` }}>
         {groups.map((id) => {
