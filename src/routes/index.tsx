@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
-// Home is intentionally empty of imagery — the four apertures below define
-// the layout contract. Real photography drops in once the composition is
-// approved. See `HomeAperture` below for the dark-variant frame language
-// (mirrors `MediaAperture` used on Atelier and Gallery).
-
+import homeHero from "@/assets/home-hero.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,19 +39,11 @@ function HomePage() {
     return () => clearTimeout(t);
   }, []);
 
-  // No scroll-driven parallax: the page is locked to one viewport with no
-  // imagery. The parallax effect was tied to the hero photo and is no longer
-  // meaningful here.
-
   return (
     <main
       id="main-content"
       className="bg-charcoal lg:overflow-hidden"
-      style={{
-        // Desktop: clamp the front door to one viewport, no scroll possible.
-        // Mobile keeps natural height so it can scroll if the device is short.
-        overscrollBehavior: "none",
-      }}
+      style={{ overscrollBehavior: "none" }}
     >
       <section
         className="relative flex flex-col overflow-hidden"
@@ -66,64 +54,40 @@ function HomePage() {
         }}
       >
         {/*
-          Editorial asymmetric grid (Layout A) — empty frames only.
-            - left column (40%) = tall texture anchor
-            - right column (60%) split:
-                * top 60% = wide environment hero
-                * bottom 40% = two object-detail vignettes
-          Hairline gaps in charcoal so the page reads as four mounted apertures
-          behind the wordmark + CTA bar. No imagery until the composition is
-          approved. Mobile collapses to a single full-bleed aperture.
+          Backdrop — the entire editorial composition (triptych glass plates,
+          sketch + swatch moodboard, etched ECLECTIC HIVE wordmark on the
+          center plate) is baked into a single image. We render it full-bleed
+          and let the rest of the page (CTA bar) sit on top.
+
+          A live <h1> remains in the DOM as sr-only so SEO and assistive tech
+          still pick up the brand name even though the visible mark lives
+          inside the artwork.
         */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 hidden md:grid grid-cols-[40fr_60fr] gap-[2px] bg-charcoal">
-            <HomeAperture label="LEFT · TEXTURE" />
-            <div className="grid grid-rows-[60fr_40fr] gap-[2px] bg-charcoal">
-              <HomeAperture label="TOP · ENVIRONMENT" />
-              <div className="grid grid-cols-2 gap-[2px] bg-charcoal">
-                <HomeAperture label="DETAIL · ONE" />
-                <HomeAperture label="DETAIL · TWO" />
-              </div>
-            </div>
-          </div>
+        <img
+          src={homeHero}
+          alt=""
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+            "object-[50%_35%] md:object-center",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+          draggable={false}
+        />
 
-          {/* Mobile — single aperture so the front door stays calm. */}
-          <div className="md:hidden absolute inset-0">
-            <HomeAperture label="HERO" />
-          </div>
-        </div>
-
-        {/* Subtle bottom fade preserves separation between the empty grid and
-            the LiquidGlass CTA bar. The full radial vignette and charcoal
-            wash from the photo era are removed — without imagery they only
-            muddied the empty frames. They will return with real photography. */}
+        {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
+            against the moodboard texture without dimming the wordmark plate. */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-[28%] pointer-events-none"
           style={{
             background:
-              "linear-gradient(to bottom, transparent 0%, transparent 78%, rgba(28,26,24,0.45) 100%)",
+              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--charcoal) 55%, transparent) 100%)",
           }}
         />
 
-        <div className="relative z-10 flex-1 flex items-center justify-center pb-[22vh] md:pb-[20vh]">
-          <h1
-            className="font-brand text-[clamp(2.4rem,8.5vw,7rem)] tracking-[0.12em] text-cream uppercase drop-shadow-[0_4px_40px_rgba(0,0,0,0.25)]"
-            style={{ fontWeight: 400 }}
-          >
-            {"ECLECTIC HIVE".split("").map((char, i) => (
-              <span
-                key={i}
-                className={cn(
-                  "inline-block transition-all duration-700",
-                  loaded ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-                )}
-                style={{ transitionDelay: `${250 + i * 30}ms` }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
-          </h1>
-        </div>
+        {/* SEO / a11y wordmark — visible mark is in the backdrop image. */}
+        <h1 className="sr-only">ECLECTIC HIVE — Luxury Event Design &amp; Production</h1>
 
         <div className="absolute bottom-0 left-0 right-0 z-20 px-4 pb-5 md:px-8 md:pb-8">
           <div className="max-w-5xl mx-auto">
@@ -137,7 +101,7 @@ function HomePage() {
                     "group transition-all duration-700",
                     loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                   )}
-                  style={{ transitionDelay: loaded ? `${700 + i * 100}ms` : "0ms" }}
+                  style={{ transitionDelay: loaded ? `${500 + i * 100}ms` : "0ms" }}
                   onMouseEnter={() => setHoveredIndex(i)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
@@ -206,50 +170,3 @@ function HomePage() {
     </main>
   );
 }
-
-// ---------------------------------------------------------------------------
-// HomeAperture
-//
-// Dark-variant of MediaAperture for the charcoal home page. Renders an empty
-// editorial frame with:
-//   - a warm desaturated wash (sand/10 over charcoal) so the cell reads as a
-//     mounted surface, not a black box
-//   - an inset cream/10 hairline so the frame's edge is felt without shouting
-//   - a tiny ALL-CAPS slot label so the layout's intent is legible while we
-//     decide on imagery (mirrors Atelier's labeled apertures)
-//
-// When real photography is approved, swap the inner contents for an <img>
-// with object-cover; the slot positions and ratios stay identical.
-// ---------------------------------------------------------------------------
-function HomeAperture({ label }: { label: string }) {
-  return (
-    <div
-      className="relative w-full h-full overflow-hidden"
-      style={{
-        backgroundColor: "color-mix(in oklab, var(--sand) 10%, var(--charcoal))",
-      }}
-    >
-      {/* Inset hairline — print-mount feel on dark ground. */}
-      <div
-        aria-hidden="true"
-        className="absolute pointer-events-none"
-        style={{
-          top: "10px",
-          right: "10px",
-          bottom: "10px",
-          left: "10px",
-          border: "1px solid color-mix(in oklab, var(--cream) 10%, transparent)",
-        }}
-      />
-      {/* Slot label — quiet, top-left, only there so we can read the layout
-          contract while frames are empty. Removed once imagery lands. */}
-      <span
-        aria-hidden="true"
-        className="absolute top-3 left-3 text-[9px] uppercase tracking-[0.28em] text-cream/30"
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
