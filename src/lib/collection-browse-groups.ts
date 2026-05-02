@@ -75,10 +75,45 @@ export const SAFETY_NET_BROWSE_ORDER: BrowseGroupId[] = [
   "accents",
 ];
 
-/** Combined order used by the browse line, sort intelligence, and overview. */
+/**
+ * Combined order used by the browse line, sort intelligence, overview, and
+ * filter rail.
+ *
+ * This is NOT a concatenation of OWNER + SAFETY-NET. The owner's curation
+ * still drives emphasis (see BROWSE_GROUP_TIER below — safety-net groups
+ * render in a quieter weight in the rail), but for navigation we interleave
+ * the safety-net categories into their semantically reasonable positions so
+ * the rail reads as one coherent index instead of "primary + leftover."
+ *
+ * Logic per slot:
+ *   - Benches & Ottomans → after Chairs (seating family)
+ *   - Cocktail Tables    → promoted up with Coffee/Side Tables (table family)
+ *   - Dining             → after Cocktail Tables (tables-and-chairs cluster)
+ *   - Lighting           → mid-list, between Storage and Rugs (real category,
+ *                          deserves visibility — owner just didn't author it)
+ *   - Throws             → directly after Pillows (soft-goods pair)
+ *   - Accents            → with Styling (decorative finishing)
+ *   - Large Decor        → last (biggest, most niche pieces)
+ */
 export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
-  ...OWNER_BROWSE_ORDER,
-  ...SAFETY_NET_BROWSE_ORDER,
+  "sofas",
+  "chairs",
+  "benches-ottomans",
+  "coffee-tables",
+  "side-tables",
+  "cocktail-tables",
+  "dining",
+  "bar",
+  "storage",
+  "lighting",
+  "rugs",
+  "pillows",
+  "throws",
+  "tableware",
+  "serveware",
+  "styling",
+  "accents",
+  "large-decor",
 ];
 
 export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
