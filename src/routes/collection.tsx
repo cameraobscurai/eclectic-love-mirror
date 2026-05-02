@@ -74,13 +74,16 @@ function CollectionPage() {
   // Overview mode: category=all (i.e. no category) AND no active search query.
   const isOverviewMode = !category && !q.trim();
 
-  // Scroll the active primary pill into view when category changes — keeps
-  // every category reachable on narrow screens.
+  // Scroll the active primary pill into view on the MOBILE rail only — keeps
+  // every category reachable on narrow screens. On desktop, categories are
+  // rendered as a wrapping nav with no horizontal scroll, so this is a no-op.
   const railRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(min-width: 768px)").matches) return; // desktop: skip
     const rail = railRef.current;
     if (!rail) return;
-    const slug = category || "all";
+    const slug = category || "overview";
     const target = rail.querySelector<HTMLElement>(
       `[data-pill-slug="${slug}"]`,
     );
