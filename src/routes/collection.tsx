@@ -886,7 +886,6 @@ function CollectionPage() {
               <div className="flex-1 overflow-y-auto px-2 py-3">
                 <CollectionRail
                   products={products}
-                  counts={groupCounts}
                   activeGroup={activeGroup}
                   onSelect={(groupId: BrowseGroupId | "") => {
                     // On mobile the sheet covers the entire viewport, so
