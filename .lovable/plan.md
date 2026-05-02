@@ -1,127 +1,83 @@
+## Problem
 
-# Two surgical additions
+In QuickView today, the scale annotations float in **stage coordinates**, not in **furniture coordinates**:
 
-Both ideas are *quiet by default* — they only ask for attention when you need them. Neither adds chrome to pages that don't need it. Neither costs performance. Neither competes with the existing typography.
+- Width rule: pinned to the bottom of the stage at a fixed `52%` width
+- Height rule: pinned to the right side of the stage at a fixed top/bottom inset
+- Image: lives in its own absolutely-positioned container, also sized to ~52% of stage
 
----
+The rules and the image are sized identically by coincidence, but they're **two unrelated layout systems**. There's no formal "this is the furniture's zone" — so the rules read as floating chrome, not as architecture wrapping the object.
 
-## 1A — The Index Strip (Collection page)
+Plus the title's fit-to-lines logic produces inconsistent results across pieces — short names get blown up to 112px, long names break awkwardly.
 
-A thin vertical rail pinned to the **right edge** of the Collection viewport. It lists every browse group as a short label, set in the existing `text-[10px] uppercase tracking-[0.28em]` register. Click a label, page snaps to that group.
+## Goal
 
-### What it looks like
+Define a single **measurement zone** — the rectangle the image lives inside — and attach the scale rules to its edges. Same envelope for every piece (per your direction), but the rules now formally wrap that envelope. Then tighten title sizing so it reads consistently.
 
-```text
-                                        │
-                                        │ SOFAS
-                                        │ CHAIRS
-                                        │ BO
-                                        │ COFFEE
-                                        │ SIDE
-                                        │ COCKTAIL
-                                        │ DINING
-   ╭───────────────────────╮            │ BAR
-   │   archive grid here   │            │ STORAGE
-   ╰───────────────────────╯            │ LIGHTING
-                                        │ RUGS
-                                        │ PILLOWS
-                                        │ THROWS
-                                        │ TABLEWARE
-                                        │ SERVEWARE
-                                        │ STYLING
-                                        │ ACCENTS
-                                        │ DECOR
-                                        │
-```
+## Build
 
-- One vertical hairline (`border-l border-charcoal/15`) is the only chrome. The labels float beside it, no buttons, no background.
-- Hover: label slides 4px left, hairline tick beside it darkens. That's it.
-- Active group (whichever one fills most of the viewport): label is full-charcoal weight, others sit at `text-charcoal/45`.
-- Click: smooth-scroll to that group's heading.
+### 1. Introduce a measurement zone in QuickViewModal
 
-### Honest caveats already addressed
-
-- **Initial-letter collisions** (Sofas/Side/Storage/Serveware/Styling all S; Coffee/Cocktail/Chairs all C) make a single-letter strip useless. Solution: **short word labels**, not initials. Most fit in 6–9 characters; "Benches & Ottomans" becomes "BO", "Large Decor" becomes "DECOR". Saves space, stays readable.
-- **Mobile**: the rail is hidden under `md:`. Mobile already has horizontal category scroll at the top; adding a side rail would crowd a small screen. Desktop-only is the honest answer.
-- **Doesn't replace** the existing top-row category nav. The strip is an *orientation* device while you scroll, not a primary nav. Both can coexist because the strip is so quiet (no buttons, no background).
-
-### Why this earns its place
-
-876 pieces is too many to scroll without losing your bearings. The strip means you can always see "where am I in the archive" and "what else is here" without ever opening a menu.
-
----
-
-## 5C — The Scale Rule (QuickView modal)
-
-A small, museum-style measurement rule beside the product image. **Not a human silhouette** — just a labeled architectural rule, drawn in charcoal hairline, showing the actual width of the piece.
-
-### What it looks like
+Replace the two independent absolutely-positioned containers (image div + width-rule div + height-rule div) with one **zone wrapper** that owns all three:
 
 ```text
-            ┌──────────────────────────┐
-            │                          │
-            │      [ product image ]   │
-            │                          │
-            │                          │
-            │  ├─────── 32" ───────┤   │
-            │  ╵                   ╵   │
-            └──────────────────────────┘
-                 (rule sits below image,
-                  at the actual proportional
-                  width relative to the frame)
+┌─ stage ────────────────────────────────────────┐
+│  TITLE (top-left, behind)                       │
+│                                                 │
+│        ┌─ measurement zone ─────────┐           │
+│        │                            │           │
+│        │       [image]              │  height   │
+│        │                            │   rule    │
+│        │                            │           │
+│        └────────────────────────────┘           │
+│                  width rule                     │
+└────────────────────────────────────────────────┘
 ```
 
-- A horizontal hairline rule with serifs at each end, labeled with the piece's width in inches (the most useful single number).
-- Toggled by **one quiet button** in the spec footer: `SHOW SCALE` → `HIDE SCALE`. Lives in the same `text-[10px] uppercase tracking-[0.28em]` register as everything else in the modal — invisible to people who don't need it.
-- The rule is drawn at the *actual proportional width* of the piece relative to the visible image frame. So a 32" side table renders a short rule; an 84" sofa renders a long one. The user *sees* width, not just reads a number.
-- **No human, no AR, no toggling between heights, no second product comparison.** Single number, single rule. Architectural register, not retail register.
+Concretely, in the stage:
 
-### Data path
+- One absolutely-positioned `.zone` element, sized to the existing image envelope (`max-w-[52%] max-h-[62%]`), bottom-anchored, centered
+- Inside the zone: the image (fills it via `object-contain`)
+- When `showScale` is on:
+  - Width rule rendered as a sibling of the image, positioned `absolute -bottom-6 left-0 right-0`, width = 100% of zone
+  - Height rule rendered as a sibling, positioned `absolute -right-6 top-0 bottom-0`, height = 100% of zone
 
-- We already have `dimensions` text like `32"W x 14"D x 6"H` on **369 of 876** products.
-- A small parser extracts the W (width) value. If width can't be parsed → button doesn't render. Silent fallback, no broken state.
-- The other 507 products simply don't get the toggle. No "scale unavailable" labels. Absence is the message.
+Both rules now physically attach to the image's actual frame. As the image's bounding box is the zone, the rules wrap the furniture region — not the stage.
 
-### Why this earns its place
+### 2. Simplify ScaleRule
 
-Furniture's #1 online problem: you can't tell how big it is. Most sites solve this with bloated 3D viewers or AR features that fail on 30% of devices. A literal ruler is the most honest answer in the world, fits the Aesence/Casa Carta editorial register, and costs nothing.
+Drop the `pctOf` ceiling math (`CEILING_W`, `CEILING_H`) — the zone now controls size. The rule components become pure span-the-parent renderers:
 
----
+- `ScaleRuleWidth` → full-width hairline + serifed end caps + label, fills its parent
+- `ScaleRuleHeight` → full-height hairline + serifed end caps + rotated label, fills its parent
 
-## Technical details
+Keep the same visual register (charcoal/55, 0.4 stroke, 10px Saol-style label, 0.28em tracking).
 
-**Index Strip**
+### 3. Tighten title fit-to-lines
 
-- New component: `src/components/collection/CollectionIndexStrip.tsx`
-- Props: `groups: { id, label, count }[]`, `activeGroupId`, `onJump(id)`
-- Reads `BROWSE_GROUP_ORDER` + `BROWSE_GROUP_LABELS` from `collection-browse-groups.ts`
-- Adds short-label override map (e.g. `benches-ottomans → "BO"`, `large-decor → "DECOR"`) to keep the rail narrow.
-- Uses `IntersectionObserver` on the existing group section headers to track active group; throttled with `requestAnimationFrame`.
-- Fixed positioning on `md:` and up; right edge with ~32px margin from viewport. Hidden on mobile.
-- Click → `scrollIntoView({ behavior: 'smooth', block: 'start' })` on the matching section.
-- Updated route: `src/routes/collection.tsx` mounts the strip, passes group anchors.
+Current logic targets 2 lines, range 28–112px, max-width = 85% of stage. Issues:
 
-**Scale Rule**
+- Short titles ("Lyon Stool") explode to 112px and look comical
+- Long titles ("Hadley Velvet Arm Chair") wrap unpredictably
 
-- New util: `src/lib/parse-dimensions.ts` — pure function `parseWidthInches(dim: string | null): number | null`. Regex match for `(\d+(?:\.\d+)?)"?\s*W` (case-insensitive). Returns `null` on no match.
-- New component: `src/components/collection/ScaleRule.tsx` — pure SVG, hairline stroke, serifed end caps, label centered above. No animation needed; if `prefers-reduced-motion` fine, the toggle still uses a 150ms opacity fade for grace.
-- Updated component: `src/components/collection/QuickViewModal.tsx`
-  - New state: `const [showScale, setShowScale] = useState(false)`
-  - New computed: `const widthInches = parseWidthInches(product.dimensions)`
-  - Spec footer renders the toggle button only when `widthInches !== null`
-  - `<ScaleRule>` mounts inside the image stage when `showScale && widthInches`
-  - Rule is positioned absolutely at the bottom of the image frame, scaled so its rendered width matches `widthInches / 84` × the available image width (84" as the assumed visual ceiling — a long sofa fills the frame, a small bowl is short).
-- No new dependencies. No new data. No DB writes.
+Changes:
 
-**Both ideas are reversible.** Either can be ripped out by deleting one component import. Neither touches the inventory contract, the data layer, or any existing UX.
+- Lower max from 112px → 92px (cap the visual ceiling)
+- Cap by character count too: if `title.length < 14`, max = 72px; otherwise 92px
+- Keep target = 2 lines, but allow 1 line for short titles (don't force a wrap)
+- Tighten max-width from 85% → 78% of stage so the title never reaches under the image
 
----
+### 4. Show Scale label refinement
 
-## What does *not* get built
+Move the toggle from "underline link in the spec row" to a small button beside Dimensions with a hairline frame, so it reads as a tool tied to the dimension, not a footer affordance. Same uppercase tracking, same typography. (Matches your screenshot's framed "SHOW SCALE" pill — keep that idea, just visually quieter.)
 
-- No human silhouettes (rejected as IKEA-coded)
-- No A–Z by product title (rejected — names are inventions, useless for browsing)
-- No scale toggle for height/depth (just width — single most useful number)
-- No mobile index strip (would crowd a small viewport)
-- No "scale unavailable" labels for the 507 dimension-less products (silence is correct)
+## Files
 
+- `src/components/collection/ScaleRule.tsx` — drop ceiling math, rules now span parent
+- `src/components/collection/QuickViewModal.tsx` — introduce zone wrapper, attach rules to zone, tighten title fit, refine toggle placement
+
+## Out of scope
+
+- True relative scaling (32" stool visibly smaller than 84" sofa) — explicitly rejected; zone stays constant
+- ProductTile changes — this is QuickView-only
+- Any data / inventory work

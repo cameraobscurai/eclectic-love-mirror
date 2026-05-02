@@ -1,29 +1,22 @@
 /**
- * Architectural scale annotations drawn around the silhouette.
+ * Architectural scale annotations that wrap the measurement zone.
  *
- * - `ScaleRuleWidth`  — horizontal hairline beneath the image, labeled with
- *                       the width in inches.
- * - `ScaleRuleHeight` — vertical hairline along the right side of the image,
+ * - `ScaleRuleWidth`  — horizontal hairline that fills its parent's width,
+ *                       labeled with the width in inches.
+ * - `ScaleRuleHeight` — vertical hairline that fills its parent's height,
  *                       labeled with the height in inches (rotated 90°).
  *
- * Both share the same visual register (charcoal/55, 0.4-stroke hairline,
- * serifed end caps, micro-typographic label in the existing modal type
- * scale). They render proportionally — bigger pieces fill more of the
- * envelope, smaller pieces visibly shrink — so the eye reads relative size,
- * not just digits.
+ * The rule no longer sizes itself relative to a global ceiling — the parent
+ * (the measurement zone in QuickViewModal) controls the bounding box, and
+ * the rule simply spans it. This means the rules formally wrap the image's
+ * actual frame, not floating chrome on the stage.
  *
- * Pure SVG, no animation. Animation is the parent's job (AnimatePresence).
+ * Visual register: charcoal/55, 0.4-stroke hairline, serifed end caps,
+ * 10px label with 0.28em tracking. Pure SVG, no animation.
  */
-
-const CEILING_W = 84; // inches that map to 100% horizontal envelope (long sofa)
-const CEILING_H = 84; // inches that map to 100% vertical envelope (tall piece)
 
 function format(n: number): string {
   return Number.isInteger(n) ? `${n}″` : `${n.toFixed(1)}″`;
-}
-
-function pctOf(value: number, ceiling: number): number {
-  return Math.max(8, Math.min(100, (value / ceiling) * 100));
 }
 
 interface AxisProps {
@@ -32,37 +25,31 @@ interface AxisProps {
 }
 
 export function ScaleRuleWidth({ inches }: AxisProps) {
-  const pct = pctOf(inches, CEILING_W);
   const label = format(inches);
 
   return (
     <div
-      className="w-full flex justify-center pointer-events-none select-none"
+      className="w-full pointer-events-none select-none"
       aria-label={`Width: ${label}`}
     >
-      <div className="relative" style={{ width: `${pct}%` }}>
-        <div className="text-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums mb-1.5">
-          {label}
-        </div>
-        <svg
-          viewBox="0 0 100 6"
-          preserveAspectRatio="none"
-          className="w-full h-[6px] block text-charcoal/55"
-          aria-hidden
-        >
-          <line x1="0.5" y1="3" x2="99.5" y2="3" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-          <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-          <line x1="99.5" y1="0.5" x2="99.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        </svg>
+      <svg
+        viewBox="0 0 100 6"
+        preserveAspectRatio="none"
+        className="w-full h-[6px] block text-charcoal/55"
+        aria-hidden
+      >
+        <line x1="0.5" y1="3" x2="99.5" y2="3" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line x1="0.5" y1="0.5" x2="0.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line x1="99.5" y1="0.5" x2="99.5" y2="5.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div className="text-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums mt-1.5">
+        {label}
       </div>
     </div>
   );
 }
 
 export function ScaleRuleHeight({ inches }: AxisProps) {
-  // Height fills a percentage of the available vertical envelope. The label
-  // is rotated 90° and tracks the same micro-type register as the width rule.
-  const pct = pctOf(inches, CEILING_H);
   const label = format(inches);
 
   return (
@@ -70,27 +57,21 @@ export function ScaleRuleHeight({ inches }: AxisProps) {
       className="h-full flex items-center pointer-events-none select-none"
       aria-label={`Height: ${label}`}
     >
-      <div
-        className="relative flex items-center"
-        style={{ height: `${pct}%` }}
+      <svg
+        viewBox="0 0 6 100"
+        preserveAspectRatio="none"
+        className="h-full w-[6px] block text-charcoal/55"
+        aria-hidden
       >
-        {/* Rotated label sits to the LEFT of the rule (between rule and image) */}
-        <div
-          className="absolute right-full mr-1.5 top-1/2 -translate-y-1/2 origin-center text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums whitespace-nowrap"
-          style={{ transform: "translateY(-50%) rotate(-90deg)" }}
-        >
-          {label}
-        </div>
-        <svg
-          viewBox="0 0 6 100"
-          preserveAspectRatio="none"
-          className="h-full w-[6px] block text-charcoal/55"
-          aria-hidden
-        >
-          <line x1="3" y1="0.5" x2="3" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-          <line x1="0.5" y1="0.5" x2="5.5" y2="0.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-          <line x1="0.5" y1="99.5" x2="5.5" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-        </svg>
+        <line x1="3" y1="0.5" x2="3" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line x1="0.5" y1="0.5" x2="5.5" y2="0.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+        <line x1="0.5" y1="99.5" x2="5.5" y2="99.5" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div
+        className="ml-2 text-[10px] uppercase tracking-[0.28em] text-charcoal/65 tabular-nums whitespace-nowrap origin-left"
+        style={{ writingMode: "vertical-rl" }}
+      >
+        {label}
       </div>
     </div>
   );
