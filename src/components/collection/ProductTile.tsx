@@ -52,21 +52,15 @@ export function ProductTile({
       ref={ref}
       layout
       layoutId={`tile-${product.id}`}
-      initial={
-        reduced
-          ? { opacity: 1 }
-          : { opacity: 0, scale: 0.965, y: 10, filter: "blur(8px)" }
-      }
-      animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-      exit={
-        reduced
-          ? { opacity: 0 }
-          : { opacity: 0, scale: 0.965, y: -4, filter: "blur(8px)" }
-      }
+      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={reduced ? { opacity: 0 } : { opacity: 0, y: -2 }}
       transition={{
-        // Enter / exit visual properties — short ease-out so the blur
-        // resolves crisply rather than spring-wobbling.
-        duration: reduced ? 0 : 0.45,
+        // Enter / exit — short, no blur ramp. Cards must be visible at first
+        // paint even when AnimatePresence skips the initial animation
+        // (initial={false} on the parent), so the resting state is fully
+        // opaque with no filter.
+        duration: reduced ? 0 : 0.32,
         delay: stagger,
         ease: [0.22, 1, 0.36, 1],
         // Layout (position) reflow — restrained spring family

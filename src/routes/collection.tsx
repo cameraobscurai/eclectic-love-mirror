@@ -602,7 +602,7 @@ function CollectionPage() {
                         : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
                     }
                   >
-                    <AnimatePresence mode="popLayout" initial={false}>
+                    <AnimatePresence mode="popLayout">
                       {visibleBatch.map((p, i) => (
                         <ProductTile
                           key={p.id}
