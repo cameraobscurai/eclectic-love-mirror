@@ -1,42 +1,104 @@
 /**
- * Parses an Eclectic Hive dimensions string and extracts width in inches.
+ * Parses an Eclectic Hive dimensions string into width / depth / height,
+ * all in inches. Source format examples (Phase 3 catalog):
  *
- * Source format examples (from the Phase 3 catalog):
  *   "32\"W x 14\"D x 6\"H"
  *   "84\" W x 38\" D x 32\" H"
  *   "Diameter 18\""
  *   "20\" diameter x 24\" H"
+ *   "12'W x 4'D x 30\"H"     (feet on width/depth, inches on height)
  *
- * Returns the width in inches if confidently parsed, otherwise null.
- * Silent fallback — never throws. Callers use the null to hide the Scale Rule
- * affordance entirely (no "unavailable" labels).
+ * Returns whichever fields parsed confidently. Round pieces report `width`
+ * = `depth` = diameter so the scale rule has both a horizontal and vertical
+ * dimension to draw. Silent fallback — never throws.
  */
-export function parseWidthInches(dim: string | null | undefined): number | null {
-  if (!dim) return null;
-  const s = dim.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 
-  // Pattern 1a: feet — "12'W"  or  "12' W"  (convert to inches)
-  const feetMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:'|ft|feet)\s*W\b/i);
-  if (feetMatch) {
-    const n = Number(feetMatch[1]) * 12;
-    if (Number.isFinite(n) && n > 0 && n < 500) return n;
+export interface ParsedDimensions {
+  width: number | null;   // inches
+  depth: number | null;   // inches
+  height: number | null;  // inches
+  /** True if dimensions came from a "diameter" expression (round piece). */
+  isDiameter: boolean;
+}
+
+const MIN = 0.5;
+const MAX = 500;
+
+function clamp(n: number): number | null {
+  return Number.isFinite(n) && n >= MIN && n <= MAX ? n : null;
+}
+
+/**
+ * Match a numeric value followed by an optional unit and a required axis flag
+ * (W, D, or H). Accepts feet (' / ft / feet) or inches ("/ in / inches /
+ * blank). Feet are converted to inches before being clamped.
+ */
+function matchAxis(s: string, axis: "W" | "D" | "H"): number | null {
+  // Feet first (avoids "12'" being eaten by the inches matcher).
+  const feet = s.match(
+    new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(?:'|ft|feet)\\s*${axis}\\b`, "i"),
+  );
+  if (feet) {
+    const n = clamp(Number(feet[1]) * 12);
+    if (n) return n;
   }
+  const inch = s.match(
+    new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(?:"|in|inches)?\\s*${axis}\\b`, "i"),
+  );
+  if (inch) return clamp(Number(inch[1]));
+  return null;
+}
 
-  // Pattern 1b: inches — "32"W"  or  "32" W"  or  "32 in W"  (W flag)
-  const widthMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:"|in|inches)?\s*W\b/i);
-  if (widthMatch) {
-    const n = Number(widthMatch[1]);
-    if (Number.isFinite(n) && n > 0 && n < 500) return n;
-  }
-
-  // Pattern 2: "Diameter 18"" or "18" diameter"  (round pieces — diameter IS width)
-  const diaMatch =
+function matchDiameter(s: string): number | null {
+  const m =
     s.match(/diameter\s*[:=]?\s*(\d+(?:\.\d+)?)/i) ??
     s.match(/(\d+(?:\.\d+)?)\s*(?:"|in|inches)?\s*(?:dia|diameter)\b/i);
-  if (diaMatch) {
-    const n = Number(diaMatch[1]);
-    if (Number.isFinite(n) && n > 0 && n < 500) return n;
+  if (m) return clamp(Number(m[1]));
+  return null;
+}
+
+export function parseDimensions(
+  dim: string | null | undefined,
+): ParsedDimensions {
+  const empty: ParsedDimensions = {
+    width: null,
+    depth: null,
+    height: null,
+    isDiameter: false,
+  };
+  if (!dim) return empty;
+  const s = dim.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+
+  // Round pieces — diameter alone often appears with a separate height.
+  const dia = matchDiameter(s);
+  const height = matchAxis(s, "H");
+
+  if (dia != null && matchAxis(s, "W") == null && matchAxis(s, "D") == null) {
+    return {
+      width: dia,
+      depth: dia,
+      height,
+      isDiameter: true,
+    };
   }
 
-  return null;
+  return {
+    width: matchAxis(s, "W"),
+    depth: matchAxis(s, "D"),
+    height,
+    isDiameter: false,
+  };
+}
+
+/**
+ * Back-compat shim — older callers (and the existing toggle-gate logic in
+ * QuickViewModal) just want a width number to decide whether to render the
+ * Scale affordance. Returns the parsed width, or the diameter for round
+ * pieces, or null when no horizontal dimension is available.
+ */
+export function parseWidthInches(
+  dim: string | null | undefined,
+): number | null {
+  const p = parseDimensions(dim);
+  return p.width;
 }
