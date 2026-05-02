@@ -12,8 +12,6 @@ import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 interface CollectionRailProps {
   /** Full catalog — used to source per-row thumbnail (firstProduct.primaryImage). */
   products: CollectionProduct[];
-  /** Per-group counts under the *committed* search/filter state. May be 0. */
-  counts: Map<BrowseGroupId, number>;
   activeGroup: BrowseGroupId | "";
   /** Group currently dominant in the viewport per scroll-spy. Drives a quiet
    *  highlight on the corresponding row when no manual filter is active. */
