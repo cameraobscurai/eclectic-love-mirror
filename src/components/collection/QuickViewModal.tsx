@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { useFitToLines } from "@/hooks/use-fit-to-lines";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { parseWidthInches } from "@/lib/parse-dimensions";
+import { ScaleRule } from "./ScaleRule";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
@@ -32,13 +34,24 @@ export function QuickViewModal({
 }: QuickViewModalProps) {
   const reduced = useReducedMotion();
   const [imgIdx, setImgIdx] = useState(0);
+  const [showScale, setShowScale] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [stageWidth, setStageWidth] = useState(0);
 
-  useEffect(() => setImgIdx(0), [product.id]);
+  // Width-only scale parse — null when not confidently parseable; the toggle
+  // button is hidden in that case (silent fallback, no "unavailable" labels).
+  const widthInches = useMemo(
+    () => parseWidthInches(product.dimensions),
+    [product.dimensions],
+  );
+
+  useEffect(() => {
+    setImgIdx(0);
+    setShowScale(false);
+  }, [product.id]);
 
   // Track stage width for Pretext fit-to-lines measurement.
   useEffect(() => {
@@ -196,6 +209,26 @@ export function QuickViewModal({
               )}
             </AnimatePresence>
           </div>
+
+          {/* Scale Rule — anchored to the bottom of the image envelope. Width
+              matches the image's max-w cap so the rule sits visually beneath
+              the silhouette. Hidden until toggled. */}
+          <AnimatePresence>
+            {showScale && widthInches !== null && (
+              <motion.div
+                key="scale-rule"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduced ? 0 : 0.18 }}
+                className="absolute inset-x-0 bottom-3 md:bottom-6 z-20 px-6 md:px-16 pointer-events-none"
+              >
+                <div className="mx-auto w-[78%] md:w-[52%]">
+                  <ScaleRule widthInches={widthInches} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
@@ -255,7 +288,7 @@ export function QuickViewModal({
             </div>
 
             {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
+            <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {product.dimensions && (
                 <SpecCol label="Dimensions" value={product.dimensions} />
               )}
@@ -264,6 +297,16 @@ export function QuickViewModal({
               )}
               {product.isCustomOrder && !product.stockedQuantity && (
                 <SpecCol label="Availability" value="Custom order" />
+              )}
+              {widthInches !== null && (
+                <button
+                  type="button"
+                  onClick={() => setShowScale((s) => !s)}
+                  aria-pressed={showScale}
+                  className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55 hover:text-charcoal underline underline-offset-[6px] decoration-charcoal/25 hover:decoration-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+                >
+                  {showScale ? "Hide Scale" : "Show Scale"}
+                </button>
               )}
             </div>
 

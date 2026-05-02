@@ -20,6 +20,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionFilterRail } from "@/components/collection/CollectionFilterRail";
+import { CollectionIndexStrip } from "@/components/collection/CollectionIndexStrip";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -407,6 +408,17 @@ function CollectionPage() {
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
+      {/* Index Strip — desktop-only right-edge orientation rail. Mirrors the
+          left filter rail so a user can switch categories without scrolling
+          back to the top. */}
+      <CollectionIndexStrip
+        groups={orderedGroupIds}
+        activeGroup={activeGroup}
+        counts={groupCounts}
+        totalCount={allCount}
+        onSelect={selectGroup}
+      />
+
       {/* Hero — quiet, archive-style */}
       <section
         className="px-6 lg:px-12"
