@@ -124,94 +124,303 @@ export type Database = {
         }
         Relationships: []
       }
-      scrape_jobs: {
+      reconciliation_matches: {
+        Row: {
+          applied_at: string | null
+          applied_inventory_item_id: string | null
+          confidence: number | null
+          conflicts: Json
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision: Database["public"]["Enums"]["match_decision"]
+          id: string
+          local_image_path: string | null
+          match_reasons: Json
+          scraped_product_id: string | null
+          updated_at: string
+          xlsx_current_rms_id: string | null
+          xlsx_name: string | null
+          xlsx_product_group: string | null
+        }
+        Insert: {
+          applied_at?: string | null
+          applied_inventory_item_id?: string | null
+          confidence?: number | null
+          conflicts?: Json
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision?: Database["public"]["Enums"]["match_decision"]
+          id?: string
+          local_image_path?: string | null
+          match_reasons?: Json
+          scraped_product_id?: string | null
+          updated_at?: string
+          xlsx_current_rms_id?: string | null
+          xlsx_name?: string | null
+          xlsx_product_group?: string | null
+        }
+        Update: {
+          applied_at?: string | null
+          applied_inventory_item_id?: string | null
+          confidence?: number | null
+          conflicts?: Json
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision?: Database["public"]["Enums"]["match_decision"]
+          id?: string
+          local_image_path?: string | null
+          match_reasons?: Json
+          scraped_product_id?: string | null
+          updated_at?: string
+          xlsx_current_rms_id?: string | null
+          xlsx_name?: string | null
+          xlsx_product_group?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scrape_runs: {
         Row: {
           created_at: string
+          credits_estimated: number | null
+          credits_used: number | null
           error_message: string | null
           finished_at: string | null
           firecrawl_job_id: string | null
           id: string
-          pages_completed: number
-          pages_total: number | null
-          source_url: string
+          items_completed: number
+          items_total: number | null
+          notes: string | null
+          phase: Database["public"]["Enums"]["scrape_phase"]
+          source_url: string | null
           started_at: string
-          status: string
+          status: Database["public"]["Enums"]["scrape_run_status"]
           updated_at: string
         }
         Insert: {
           created_at?: string
+          credits_estimated?: number | null
+          credits_used?: number | null
           error_message?: string | null
           finished_at?: string | null
           firecrawl_job_id?: string | null
           id?: string
-          pages_completed?: number
-          pages_total?: number | null
-          source_url: string
+          items_completed?: number
+          items_total?: number | null
+          notes?: string | null
+          phase: Database["public"]["Enums"]["scrape_phase"]
+          source_url?: string | null
           started_at?: string
-          status?: string
+          status?: Database["public"]["Enums"]["scrape_run_status"]
           updated_at?: string
         }
         Update: {
           created_at?: string
+          credits_estimated?: number | null
+          credits_used?: number | null
           error_message?: string | null
           finished_at?: string | null
           firecrawl_job_id?: string | null
           id?: string
-          pages_completed?: number
-          pages_total?: number | null
-          source_url?: string
+          items_completed?: number
+          items_total?: number | null
+          notes?: string | null
+          phase?: Database["public"]["Enums"]["scrape_phase"]
+          source_url?: string | null
           started_at?: string
-          status?: string
+          status?: Database["public"]["Enums"]["scrape_run_status"]
           updated_at?: string
         }
         Relationships: []
       }
-      scraped_pages: {
+      scraped_categories: {
         Row: {
-          created_at: string
-          description: string | null
+          display_order: number | null
           id: string
-          image_urls: string[]
-          job_id: string
-          links: string[]
-          markdown: string | null
-          raw_response: Json | null
-          status_code: number | null
-          title: string | null
+          name: string
+          parent_slug: string | null
+          product_count: number | null
+          raw: Json | null
+          run_id: string
+          scraped_at: string
+          slug: string
           url: string
         }
         Insert: {
-          created_at?: string
-          description?: string | null
+          display_order?: number | null
           id?: string
-          image_urls?: string[]
-          job_id: string
-          links?: string[]
-          markdown?: string | null
-          raw_response?: Json | null
-          status_code?: number | null
-          title?: string | null
+          name: string
+          parent_slug?: string | null
+          product_count?: number | null
+          raw?: Json | null
+          run_id: string
+          scraped_at?: string
+          slug: string
           url: string
         }
         Update: {
-          created_at?: string
-          description?: string | null
+          display_order?: number | null
           id?: string
-          image_urls?: string[]
-          job_id?: string
-          links?: string[]
-          markdown?: string | null
-          raw_response?: Json | null
-          status_code?: number | null
-          title?: string | null
+          name?: string
+          parent_slug?: string | null
+          product_count?: number | null
+          raw?: Json | null
+          run_id?: string
+          scraped_at?: string
+          slug?: string
           url?: string
         }
         Relationships: [
           {
-            foreignKeyName: "scraped_pages_job_id_fkey"
-            columns: ["job_id"]
+            foreignKeyName: "scraped_categories_run_id_fkey"
+            columns: ["run_id"]
             isOneToOne: false
-            referencedRelation: "scrape_jobs"
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_product_images: {
+        Row: {
+          alt_text: string | null
+          height: number | null
+          id: string
+          image_url: string
+          is_hero: boolean
+          position: number
+          scraped_product_id: string
+          width: number | null
+        }
+        Insert: {
+          alt_text?: string | null
+          height?: number | null
+          id?: string
+          image_url: string
+          is_hero?: boolean
+          position?: number
+          scraped_product_id: string
+          width?: number | null
+        }
+        Update: {
+          alt_text?: string | null
+          height?: number | null
+          id?: string
+          image_url?: string
+          is_hero?: boolean
+          position?: number
+          scraped_product_id?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
+            columns: ["scraped_product_id"]
+            isOneToOne: false
+            referencedRelation: "scraped_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_products: {
+        Row: {
+          breadcrumb: string[] | null
+          category_slug: string | null
+          description: string | null
+          hero_image_url: string | null
+          id: string
+          raw: Json | null
+          run_id: string
+          scraped_at: string
+          slug: string
+          subcategory_slug: string | null
+          title: string
+          url: string
+        }
+        Insert: {
+          breadcrumb?: string[] | null
+          category_slug?: string | null
+          description?: string | null
+          hero_image_url?: string | null
+          id?: string
+          raw?: Json | null
+          run_id: string
+          scraped_at?: string
+          slug: string
+          subcategory_slug?: string | null
+          title: string
+          url: string
+        }
+        Update: {
+          breadcrumb?: string[] | null
+          category_slug?: string | null
+          description?: string | null
+          hero_image_url?: string | null
+          id?: string
+          raw?: Json | null
+          run_id?: string
+          scraped_at?: string
+          slug?: string
+          subcategory_slug?: string | null
+          title?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_products_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraped_urls: {
+        Row: {
+          classification_reason: string | null
+          depth: number | null
+          discovered_at: string
+          id: string
+          kind: Database["public"]["Enums"]["scraped_url_kind"]
+          path: string
+          run_id: string
+          url: string
+        }
+        Insert: {
+          classification_reason?: string | null
+          depth?: number | null
+          discovered_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["scraped_url_kind"]
+          path: string
+          run_id: string
+          url: string
+        }
+        Update: {
+          classification_reason?: string | null
+          depth?: number | null
+          discovered_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["scraped_url_kind"]
+          path?: string
+          run_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraped_urls_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "scrape_runs"
             referencedColumns: ["id"]
           },
         ]
@@ -253,6 +462,20 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user"
       item_status: "available" | "reserved" | "sold" | "draft"
+      match_decision: "pending" | "approved" | "rejected" | "needs_review"
+      scrape_phase: "map" | "category_scrape" | "product_scrape" | "reconcile"
+      scrape_run_status:
+        | "pending"
+        | "running"
+        | "succeeded"
+        | "failed"
+        | "cancelled"
+      scraped_url_kind:
+        | "unclassified"
+        | "category_index"
+        | "product_detail"
+        | "nav_page"
+        | "noise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -382,6 +605,22 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "user"],
       item_status: ["available", "reserved", "sold", "draft"],
+      match_decision: ["pending", "approved", "rejected", "needs_review"],
+      scrape_phase: ["map", "category_scrape", "product_scrape", "reconcile"],
+      scrape_run_status: [
+        "pending",
+        "running",
+        "succeeded",
+        "failed",
+        "cancelled",
+      ],
+      scraped_url_kind: [
+        "unclassified",
+        "category_index",
+        "product_detail",
+        "nav_page",
+        "noise",
+      ],
     },
   },
 } as const
