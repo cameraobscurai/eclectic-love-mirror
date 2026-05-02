@@ -3,6 +3,7 @@ import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
+import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
