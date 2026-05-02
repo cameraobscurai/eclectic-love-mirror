@@ -91,8 +91,10 @@ function extractFilenameFromUrl(u: string): string | null {
   }
 }
 
-// Detect dimensions like: 32"W x 30"D x 36"H, 32W x 30D x 36H, 32” W x 30” D x 36” H
-const DIM_RE = /(\d{1,3}(?:[.,]\d+)?\s*[”"']?\s*[WwDdHhLl](?:\s*x\s*\d{1,3}(?:[.,]\d+)?\s*[”"']?\s*[WwDdHhLl]){1,3})/
+// Detect dimensions like: 32"W x 30"D x 36"H, 32W x 30D x 36H, 32” W x 30” D x 36” H.
+// Must start with the first measurement (anchored on whitespace/punctuation) so we don't
+// truncate to the middle of a longer dimension string.
+const DIM_RE = /(?:^|[\s,;:>(])(\d{1,3}(?:[.,]\d+)?\s*[”"']?\s*[WwDdHhLl](?:\s*x\s*x?\s*\d{1,3}(?:[.,]\d+)?\s*[”"']?\s*[WwDdHhLl]){1,3})/
 
 // Detect stocked quantity statements
 const STOCKED_RE = /Stocked\s*(?:Quantity|Qty)\s*[:\-]?\s*(\d+|\*+|N\/A|See description|inquire|TBD)/i
