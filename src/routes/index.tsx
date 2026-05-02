@@ -82,7 +82,7 @@ function HomePage() {
           aria-hidden="true"
           className={cn(
             "absolute inset-x-0 z-10 flex justify-center pointer-events-none transition-opacity duration-1000",
-            "top-[52%] md:top-[49%]",
+            "top-[52%]",
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
