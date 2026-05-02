@@ -103,7 +103,7 @@ export function CollectionFilterRail({
 
         {safetyIds.length > 0 && (
           <li
-            className="pt-4 mt-2 border-t border-charcoal/10"
+            className="pt-3 mt-2 border-t border-black/[0.08]"
             aria-hidden
           />
         )}
