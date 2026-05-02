@@ -467,38 +467,43 @@ function CollectionPage() {
       ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
       : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
 
-  // ---------- Scroll-driven hero compression ----------
-  // The big "The Collection" wordmark lives above the cage. As the user
-  // scrolls the first ~280px, it scales down + fades, while the wordmark in
-  // the sticky bar fades IN. They cross-fade — feels like one continuous
-  // header that compresses, not two separate things.
-  const { scrollY } = useScroll();
-  const heroScale = useTransform(scrollY, [0, 280], [1, 0.62]);
-  const heroOpacity = useTransform(scrollY, [0, 200, 280], [1, 0.4, 0]);
-  const heroY = useTransform(scrollY, [0, 280], [0, -40]);
-  const stickyMarkOpacity = useTransform(scrollY, [120, 240], [0, 1]);
-  const [stickyMarkActive, setStickyMarkActive] = useState(false);
-  useMotionValueEvent(scrollY, "change", (v) => {
-    setStickyMarkActive(v > 180);
-  });
-  // Per spec: nothing animates while the user is scrolling. Gate scroll-driven
-  // transforms so they only apply once the scroll thread has gone idle.
-  const scrollIdle = useScrollIdle(150);
-  const heroAnimated = scrollIdle && !reduced;
+  // ---------- First product per active group (powers CategoryHero specimen) ----------
+  // Same data the rail thumbnail uses — no new field, no curation table.
+  const heroFirstProduct = useMemo<CollectionProduct | null>(() => {
+    if (!activeGroup) return null;
+    for (const p of products) {
+      if (p.primaryImage && getProductBrowseGroup(p) === activeGroup) {
+        return p;
+      }
+    }
+    return null;
+  }, [products, activeGroup]);
 
-  // Sticky wordmark text: section + count when filtered or scroll-spied.
-  // The global nav already labels the page as "HIVE SIGNATURE COLLECTION";
-  // we don't repeat it here. On overview we hide the wordmark and let the
-  // result-meta on the left carry the count.
-  const stickyMarkLabel = (() => {
-    const section = activeGroup
-      ? BROWSE_GROUP_LABELS[activeGroup]
-      : spyActiveGroup
-        ? BROWSE_GROUP_LABELS[spyActiveGroup]
-        : null;
-    if (!section) return "";
-    return `${section.toUpperCase()} · ${visibleProducts.length}`;
-  })();
+  // ---------- Heading height tracking (for sticky stack offset) ----------
+  // The static "THE COLLECTION" block sits above the sticky utility bar.
+  // The rail and the utility bar both stick beneath it, so we publish the
+  // heading's measured height as a CSS var (`--collection-heading-h`) via a
+  // ResizeObserver. One observer, one property, no recalculation loop.
+  const headingRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = headingRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const apply = () => {
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty(
+        "--collection-heading-h",
+        `${h}px`,
+      );
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty("--collection-heading-h");
+    };
+  }, []);
+
 
   return (
     <main
