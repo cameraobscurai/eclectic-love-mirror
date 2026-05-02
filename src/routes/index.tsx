@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
+import { HeroDisplacement } from "@/components/hero/HeroDisplacement";
 import { cn } from "@/lib/utils";
 import homeHero from "@/assets/home-hero.webp";
 
