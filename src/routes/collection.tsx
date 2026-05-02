@@ -16,6 +16,10 @@ import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CategoryOverview } from "@/components/collection/CategoryOverview";
 import { InventoryIndexRail } from "@/components/collection/InventoryIndexRail";
+import {
+  getSubcategoryOptions,
+  getProductSubcategory,
+} from "@/lib/collection-subcategories";
 
 const INITIAL_BATCH = 48;
 const BATCH_INCREMENT = 48;
