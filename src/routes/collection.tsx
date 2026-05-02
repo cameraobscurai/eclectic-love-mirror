@@ -14,6 +14,10 @@ import { CategoryPill } from "@/components/collection/CategoryPill";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
+import { CategoryOverview } from "@/components/collection/CategoryOverview";
+
+const INITIAL_BATCH = 48;
+const BATCH_INCREMENT = 48;
 
 const SORTS = ["type", "az", "newest", "oldest"] as const;
 type SortKey = (typeof SORTS)[number];
