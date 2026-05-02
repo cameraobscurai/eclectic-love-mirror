@@ -33,23 +33,10 @@ export function CategoryGalleryOverview({
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-white text-charcoal">
-      {/* Header — matches the editorial register of the collection hero:
-          left-aligned, uppercase Cormorant, no eyebrow that repeats the nav. */}
-      <header className="border-b border-black/10 px-6 py-6 lg:px-12 lg:py-8">
-        <h1
-          className="font-display uppercase leading-[0.95] text-charcoal"
-          style={{
-            fontSize: "clamp(1.75rem, 3.6vw, 3rem)",
-            letterSpacing: "-0.005em",
-          }}
-        >
-          Browse by Category
-        </h1>
-      </header>
-
       {/* Hairline grid — Casa Carta style. The grid lines are real 1px borders,
           not background bleed-through, so cells stay structurally architectural
-          even on retina. */}
+          even on retina. The rail to the left now owns the "Browse by Category"
+          framing — no internal header needed. */}
       <ul
         className="grid w-full grid-cols-2 auto-rows-fr md:grid-cols-3 xl:grid-cols-6 [&>li]:border-r [&>li]:border-b [&>li]:border-black/10"
       >
