@@ -415,247 +415,349 @@ function CollectionPage() {
       ? "gap-x-9 gap-y-14 lg:gap-x-12 lg:gap-y-16"
       : "gap-x-12 gap-y-20 lg:gap-x-14 lg:gap-y-24";
 
+  // ---------- Scroll-driven hero compression ----------
+  // The big "The Collection" wordmark lives above the cage. As the user
+  // scrolls the first ~280px, it scales down + fades, while the wordmark in
+  // the sticky bar fades IN. They cross-fade — feels like one continuous
+  // header that compresses, not two separate things.
+  const { scrollY } = useScroll();
+  const heroScale = useTransform(scrollY, [0, 280], [1, 0.62]);
+  const heroOpacity = useTransform(scrollY, [0, 200, 280], [1, 0.4, 0]);
+  const heroY = useTransform(scrollY, [0, 280], [0, -40]);
+  const stickyMarkOpacity = useTransform(scrollY, [120, 240], [0, 1]);
+  const [stickyMarkActive, setStickyMarkActive] = useState(false);
+  useMotionValueEvent(scrollY, "change", (v) => {
+    setStickyMarkActive(v > 180);
+  });
+
+  // Sticky wordmark text: "THE COLLECTION" → adds active section + count
+  // when the user has filtered or scroll-spy has locked onto a section.
+  const stickyMarkLabel = (() => {
+    const section = activeGroup
+      ? BROWSE_GROUP_LABELS[activeGroup]
+      : spyActiveGroup
+        ? BROWSE_GROUP_LABELS[spyActiveGroup]
+        : null;
+    if (!section) return "THE COLLECTION";
+    return `THE COLLECTION · ${section.toUpperCase()} · ${visibleProducts.length}`;
+  })();
+
   return (
     <main
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
-      {/* Right-edge segmented progress rail. One thin segment per category;
-          fills as the viewport scrolls through that category's tiles. Click
-          jumps to the first tile of that section. */}
-      <CollectionIndexStrip
-        groups={orderedGroupIds}
-        progressById={progressById}
-        spyActiveGroup={spyActiveGroup}
-        onJump={(id) => scrollToSection(id)}
-      />
-
-      {/* Hero — quiet, archive-style */}
+      {/* ============================================================
+          HERO — centered wordmark, scroll-compressed.
+          No "living inventory" paragraph. Pure type, breathing room.
+          ============================================================ */}
       <section
         className="px-6 lg:px-12"
         style={{
-          paddingTop: "clamp(64px, 7vw, 112px)",
-          paddingBottom: "clamp(48px, 5vw, 80px)",
+          paddingTop: "clamp(80px, 9vw, 140px)",
+          paddingBottom: "clamp(40px, 4vw, 64px)",
         }}
       >
-        <div className="max-w-[1600px] mx-auto">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+        <motion.div
+          style={
+            reduced
+              ? undefined
+              : { scale: heroScale, opacity: heroOpacity, y: heroY }
+          }
+          className="text-center will-change-transform"
+        >
+          <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">
             HIVE SIGNATURE COLLECTION
           </p>
-          <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1] tracking-tight">
+          <h1
+            className="mt-5 font-display leading-[0.95] tracking-tight text-charcoal"
+            style={{ fontSize: "clamp(3rem, 9vw, 7.5rem)" }}
+          >
             The Collection
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            {COLLECTION_INTRO}
-          </p>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Sticky control bar — single row, 64px min height, baseline-aligned */}
+      {/* ============================================================
+          STICKY HEADER — single source of truth while scrolling.
+          Three columns: [controls left] · [centered wordmark] · [controls right]
+          The wordmark fades in as the hero compresses out.
+          ============================================================ */}
       <div
-        className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y"
-        style={{ borderColor: "var(--archive-rule)" }}
+        className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm"
+        style={{
+          borderTop: "1px solid var(--archive-rule)",
+          borderBottom: "1px solid var(--archive-rule)",
+        }}
       >
         <div className="px-6 lg:px-12">
           <div
-            className="max-w-[1600px] mx-auto flex items-center gap-3 py-2"
-            style={{ minHeight: "var(--archive-utility-h)" }}
+            className="mx-auto grid grid-cols-[1fr_auto_1fr] items-center gap-4 py-2"
+            style={{
+              maxWidth: "var(--archive-canvas-max)",
+              minHeight: "var(--archive-utility-h)",
+            }}
           >
-            {/* Mobile: filters trigger */}
-            <button
-              ref={filtersTriggerRef}
-              onClick={() => setSheetOpen(true)}
-              className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-              aria-label="Open filters"
-              aria-haspopup="dialog"
-            >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              Filters
-              {hasActiveFilters && (
-                <span
-                  aria-hidden
-                  className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
-                />
-              )}
-            </button>
-
-            <motion.p
-              key={`${activeGroup}-${q}-${sort}`}
-              initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: reduced ? 0 : 0.25 }}
-              className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 flex-shrink-0 hidden sm:flex items-center h-10"
-              aria-live="polite"
-            >
-              {resultMeta}
-            </motion.p>
-
-            <div className="flex-1" />
-
-            <label htmlFor="collection-search" className="sr-only">
-              Search pieces
-            </label>
-            <input
-              id="collection-search"
-              type="text"
-              inputMode="search"
-              placeholder="Search pieces"
-              value={qLocal}
-              onChange={(e) => setQLocal(e.target.value)}
-              className="h-10 w-32 sm:w-56 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
-            />
-
-            <label
-              htmlFor="collection-sort"
-              className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
-            >
-              Sort by
-            </label>
-            <select
-              id="collection-sort"
-              value={sort}
-              onChange={(e) =>
-                navigate({
-                  search: (prev: CollectionSearch) => ({
-                    ...prev,
-                    sort: e.target.value as SortKey,
-                  }),
-                  replace: true,
-                  resetScroll: false,
-                })
-              }
-              className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
-            >
-              <option value="type">By Type</option>
-              <option value="az">A–Z</option>
-            </select>
-
-            {/* Density toggle — desktop only. Quiet active state: thin frame
-                + charcoal glyph instead of inverted black plate. */}
-            <div
-              className="hidden lg:flex items-center border border-charcoal/10"
-              role="group"
-              aria-label="Grid density"
-            >
+            {/* LEFT: mobile filters trigger + result meta */}
+            <div className="flex items-center gap-3 min-w-0">
               <button
-                onClick={() => setDensity("comfortable")}
-                className={[
-                  "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                  "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                  density === "comfortable"
-                    ? "text-charcoal bg-charcoal/[0.04]"
-                    : "text-charcoal/40 hover:text-charcoal/80",
-                ].join(" ")}
-                aria-label="Comfortable grid"
-                aria-pressed={density === "comfortable"}
+                ref={filtersTriggerRef}
+                onClick={() => setSheetOpen(true)}
+                className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                aria-label="Open filters"
+                aria-haspopup="dialog"
               >
-                <DensityIconLarge />
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                Filters
+                {hasActiveFilters && (
+                  <span
+                    aria-hidden
+                    className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
+                  />
+                )}
               </button>
-              <button
-                onClick={() => setDensity("dense")}
-                className={[
-                  "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                  "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                  density === "dense"
-                    ? "text-charcoal bg-charcoal/[0.04]"
-                    : "text-charcoal/40 hover:text-charcoal/80",
-                ].join(" ")}
-                aria-label="Dense grid"
-                aria-pressed={density === "dense"}
+
+              <motion.p
+                key={`${activeGroup}-${q}-${sort}`}
+                initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
+                animate={{ opacity: stickyMarkActive ? 0 : 1 }}
+                transition={{ duration: reduced ? 0 : 0.25 }}
+                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
+                aria-live="polite"
               >
-                <DensityIconSmall />
-              </button>
+                {resultMeta}
+              </motion.p>
+            </div>
+
+            {/* CENTER: scroll-revealed wordmark */}
+            <motion.div
+              style={reduced ? undefined : { opacity: stickyMarkOpacity }}
+              className="flex items-center justify-center pointer-events-none"
+              aria-hidden={!stickyMarkActive}
+            >
+              <span
+                className="text-[13px] sm:text-[14px] tracking-[0.28em] text-charcoal whitespace-nowrap"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {stickyMarkLabel}
+              </span>
+            </motion.div>
+
+            {/* RIGHT: search · sort · density */}
+            <div className="flex items-center justify-end gap-3 min-w-0">
+              <label htmlFor="collection-search" className="sr-only">
+                Search pieces
+              </label>
+              <input
+                id="collection-search"
+                type="text"
+                inputMode="search"
+                placeholder="Search"
+                value={qLocal}
+                onChange={(e) => setQLocal(e.target.value)}
+                className="h-10 w-28 sm:w-44 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+              />
+
+              <label
+                htmlFor="collection-sort"
+                className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+              >
+                Sort
+              </label>
+              <select
+                id="collection-sort"
+                value={sort}
+                onChange={(e) =>
+                  navigate({
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      sort: e.target.value as SortKey,
+                    }),
+                    replace: true,
+                    resetScroll: false,
+                  })
+                }
+                className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
+              >
+                <option value="type">By Type</option>
+                <option value="az">A–Z</option>
+              </select>
+
+              <div
+                className="hidden lg:flex items-center border border-charcoal/10"
+                role="group"
+                aria-label="Grid density"
+              >
+                <button
+                  onClick={() => setDensity("comfortable")}
+                  className={[
+                    "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                    density === "comfortable"
+                      ? "text-charcoal bg-charcoal/[0.04]"
+                      : "text-charcoal/40 hover:text-charcoal/80",
+                  ].join(" ")}
+                  aria-label="Comfortable grid"
+                  aria-pressed={density === "comfortable"}
+                >
+                  <DensityIconLarge />
+                </button>
+                <button
+                  onClick={() => setDensity("dense")}
+                  className={[
+                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                    density === "dense"
+                      ? "text-charcoal bg-charcoal/[0.04]"
+                      : "text-charcoal/40 hover:text-charcoal/80",
+                  ].join(" ")}
+                  aria-label="Dense grid"
+                  aria-pressed={density === "dense"}
+                >
+                  <DensityIconSmall />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Body — left filter rail + grid */}
+      {/* ============================================================
+          BODY — hairline cage. Three real columns separated by 1px rules:
+          [filter rail | grid | progress rail]. Top + bottom rules close
+          the cage so nothing floats.
+          ============================================================ */}
       <section className="px-6 lg:px-12 pt-10">
         <div
-          className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)]"
-          style={{ columnGap: "var(--archive-grid-gap-x)", rowGap: "2.5rem" }}
+          className="mx-auto"
+          style={{
+            maxWidth: "var(--archive-canvas-max)",
+            borderTop: "1px solid var(--archive-rule)",
+            borderBottom: "1px solid var(--archive-rule)",
+          }}
         >
-          {/* Desktop filter rail */}
-          <aside className="hidden lg:block">
-            <CollectionFilterRail
-              orderedGroupIds={orderedGroupIds}
-              counts={groupCounts}
-              totalCount={allCount}
-              activeGroup={activeGroup}
-              spyActiveGroup={spyActiveGroup}
-              onSelect={selectGroup}
-              onClear={resetAll}
-              hasActiveFilters={hasActiveFilters}
-            />
-          </aside>
-
-          {/* Grid */}
-          <div className="min-w-0">
-            {/* Scroll-to-results anchor (offset for sticky utility bar) */}
-            <div
-              ref={resultsTopRef}
-              id="results-top"
-              aria-hidden
+          <div className="grid grid-cols-1 lg:grid-cols-[var(--archive-rail-width)_minmax(0,1fr)_var(--archive-progress-width)]">
+            {/* ===== LEFT COLUMN: filter rail ===== */}
+            <aside
+              className="hidden lg:block"
               style={{
-                scrollMarginTop: "calc(var(--nav-h) + var(--archive-utility-h))",
+                paddingRight: "var(--archive-grid-gap-x)",
+                paddingTop: "1.75rem",
+                paddingBottom: "2rem",
               }}
-            />
+            >
+              <CollectionFilterRail
+                orderedGroupIds={orderedGroupIds}
+                counts={groupCounts}
+                totalCount={allCount}
+                activeGroup={activeGroup}
+                spyActiveGroup={spyActiveGroup}
+                onSelect={selectGroup}
+                onClear={resetAll}
+                hasActiveFilters={hasActiveFilters}
+              />
+            </aside>
 
-            {visibleProducts.length === 0 ? (
-              <div className="py-32">
-                <p className="text-[15px] leading-relaxed text-charcoal/70">
-                  No pieces match the current filters.
-                </p>
-                <button
-                  onClick={resetAll}
-                  className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                >
-                  Clear All
-                </button>
-              </div>
-            ) : (
-              <>
-                <LayoutGroup id="collection-grid">
-                  <motion.ul
-                    layout
-                    className={`grid ${gridCols} ${gridGapClasses}`}
-                    transition={
-                      reduced
-                        ? { duration: 0 }
-                        : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
-                    }
+            {/* ===== CENTER COLUMN: grid ===== */}
+            <div
+              className="min-w-0 lg:border-l"
+              style={{
+                borderColor: "var(--archive-rule)",
+                paddingLeft: "var(--archive-grid-gap-x)",
+                paddingRight: "var(--archive-grid-gap-x)",
+                paddingTop: "1.75rem",
+                paddingBottom: "2rem",
+              }}
+            >
+              <div
+                ref={resultsTopRef}
+                id="results-top"
+                aria-hidden
+                style={{
+                  scrollMarginTop:
+                    "calc(var(--nav-h) + var(--archive-utility-h))",
+                }}
+              />
+
+              {visibleProducts.length === 0 ? (
+                <div className="py-32">
+                  <p className="text-[15px] leading-relaxed text-charcoal/70">
+                    No pieces match the current filters.
+                  </p>
+                  <button
+                    onClick={resetAll}
+                    className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                   >
-                    <AnimatePresence mode="popLayout">
-                      {visibleBatch.map((p, i) => (
-                        <ProductTile
-                          key={p.id}
-                          product={p}
-                          index={i}
-                          onOpen={() => setQuickViewId(p.id)}
-                          onImageFailed={markFailed}
-                        />
-                      ))}
-                    </AnimatePresence>
-                  </motion.ul>
-                </LayoutGroup>
-
-                {hasMore && (
-                  <div className="mt-12 flex justify-center">
-                    <button
-                      onClick={() =>
-                        setVisibleCount((c) =>
-                          Math.min(c + BATCH_INCREMENT, visibleProducts.length),
-                        )
+                    Clear All
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <LayoutGroup id="collection-grid">
+                    <motion.ul
+                      layout
+                      className={`grid ${gridCols} ${gridGapClasses}`}
+                      transition={
+                        reduced
+                          ? { duration: 0 }
+                          : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
                       }
-                      className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
                     >
-                      Load more ({visibleProducts.length - visibleBatch.length} remaining)
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+                      <AnimatePresence mode="popLayout">
+                        {visibleBatch.map((p, i) => (
+                          <ProductTile
+                            key={p.id}
+                            product={p}
+                            index={i}
+                            onOpen={() => setQuickViewId(p.id)}
+                            onImageFailed={markFailed}
+                          />
+                        ))}
+                      </AnimatePresence>
+                    </motion.ul>
+                  </LayoutGroup>
+
+                  {hasMore && (
+                    <div className="mt-12 flex justify-center">
+                      <button
+                        onClick={() =>
+                          setVisibleCount((c) =>
+                            Math.min(c + BATCH_INCREMENT, visibleProducts.length),
+                          )
+                        }
+                        className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
+                      >
+                        Load more ({visibleProducts.length - visibleBatch.length} remaining)
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* ===== RIGHT COLUMN: progress rail (sticky, in-grid) ===== */}
+            <aside
+              className="hidden lg:block lg:border-l"
+              style={{
+                borderColor: "var(--archive-rule)",
+                paddingTop: "1.75rem",
+                paddingBottom: "2rem",
+              }}
+            >
+              <div
+                style={{
+                  position: "sticky",
+                  top: "calc(var(--nav-h) + var(--archive-utility-h) + 1.75rem)",
+                }}
+              >
+                <CollectionIndexStrip
+                  groups={orderedGroupIds}
+                  progressById={progressById}
+                  spyActiveGroup={spyActiveGroup}
+                  onJump={(id) => scrollToSection(id)}
+                />
+              </div>
+            </aside>
           </div>
         </div>
       </section>
