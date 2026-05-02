@@ -196,8 +196,8 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. SCOPE + FABRICATION CAPABILITIES */}
-      <Section eyebrow="Capabilities">
+      {/* 4. SCOPE + FABRICATION — capability evidence, not a services list. */}
+      <Section eyebrow="Scope + Fabrication">
         <div className="grid md:grid-cols-12 gap-10">
           <div className="md:col-span-5 space-y-5 text-base leading-relaxed text-charcoal/70">
             <p>
@@ -214,20 +214,29 @@ function AtelierPage() {
             className="md:col-span-7 divide-y"
             style={{ borderColor: "var(--archive-rule)" }}
           >
-            {CAPABILITIES.map((item) => (
+            {CAPABILITIES.map((item, i) => (
               <li
                 key={item}
-                className="py-4 text-[15px] text-charcoal/85 flex items-baseline gap-4 border-t first:border-t-0"
+                className="py-4 text-[13px] tracking-[0.18em] uppercase text-charcoal/85 flex items-baseline gap-6 border-t first:border-t-0"
                 style={{ borderColor: "var(--archive-rule)" }}
               >
-                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
-                  ·
+                <span className="text-[10px] tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <span>{item}</span>
               </li>
             ))}
           </ul>
         </div>
+
+        {/* Material board: fabric swatch · sketch · material detail. Designed
+            empty frames — no fake images, no captions. */}
+        <div className="mt-12 grid grid-cols-3 gap-3">
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+        </div>
+      </Section>
       </Section>
 
       {/* 5. ATELIER APPROACH triptych */}
