@@ -42,6 +42,8 @@ function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isPointerFine, setIsPointerFine] = useState(false);
+  const [webglOk, setWebglOk] = useState(false);
+  const [webglReady, setWebglReady] = useState(false);
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -57,6 +59,18 @@ function HomePage() {
     update();
     mql.addEventListener("change", update);
     return () => mql.removeEventListener("change", update);
+  }, []);
+
+  // Detect WebGL2 once. If unavailable, the static <img> + Framer translate
+  // parallax (Phase 1) handles the hero with no flash and no console noise.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const ok = !!document.createElement("canvas").getContext("webgl2");
+      setWebglOk(ok);
+    } catch {
+      setWebglOk(false);
+    }
   }, []);
 
   // Normalized pointer offsets in range [-0.5, 0.5], local to the hero section.
