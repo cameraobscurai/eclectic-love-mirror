@@ -15,7 +15,14 @@ export function parseWidthInches(dim: string | null | undefined): number | null 
   if (!dim) return null;
   const s = dim.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 
-  // Pattern 1: "32"W"  or  "32" W"  or  "32 in W"  (W flag)
+  // Pattern 1a: feet — "12'W"  or  "12' W"  (convert to inches)
+  const feetMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:'|ft|feet)\s*W\b/i);
+  if (feetMatch) {
+    const n = Number(feetMatch[1]) * 12;
+    if (Number.isFinite(n) && n > 0 && n < 500) return n;
+  }
+
+  // Pattern 1b: inches — "32"W"  or  "32" W"  or  "32 in W"  (W flag)
   const widthMatch = s.match(/(\d+(?:\.\d+)?)\s*(?:"|in|inches)?\s*W\b/i);
   if (widthMatch) {
     const n = Number(widthMatch[1]);
