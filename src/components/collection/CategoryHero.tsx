@@ -12,19 +12,20 @@ interface CategoryHeroProps {
   group: BrowseGroupId;
   /** First product in this bucket with a primaryImage. May be null. */
   firstProduct: CollectionProduct | null;
-  count: number;
 }
 
 /**
  * Category hero — sits above the sticky utility bar in the category state.
  *
- * Eyebrow + Cormorant H1 + one-sentence description + count, with a
- * museum-placard specimen plate to the right. The specimen image is
- * sourced from the same data the rail thumbnail uses (firstProduct.primaryImage,
- * with optional CATEGORY_COVERS override) — no new data field, no new
- * curation pass.
+ * Eyebrow + Cormorant H1 + one-sentence description, with a museum-placard
+ * specimen plate to the right. The specimen image is sourced from the same
+ * data the rail thumbnail uses (firstProduct.primaryImage, with optional
+ * CATEGORY_COVERS override) — no new data field, no new curation pass.
+ *
+ * Counts intentionally omitted everywhere on the collection page except the
+ * "N results matching …" search-feedback line in the utility bar.
  */
-export function CategoryHero({ group, firstProduct, count }: CategoryHeroProps) {
+export function CategoryHero({ group, firstProduct }: CategoryHeroProps) {
   const [imgFailed, setImgFailed] = useState(false);
   const label = BROWSE_GROUP_LABELS[group];
   const description = BROWSE_GROUP_DESCRIPTIONS[group];
