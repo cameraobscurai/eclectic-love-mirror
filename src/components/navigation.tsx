@@ -18,9 +18,8 @@ const LIGHT_BG_PAGES = [
   "/atelier",
   "/collection",
   "/contact",
-  "/faq",
+  "/gallery",
   "/privacy",
-  "/process",
 ];
 
 const WHITE_BG_PAGES = ["/collection"];
