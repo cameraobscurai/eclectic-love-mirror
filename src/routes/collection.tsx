@@ -352,6 +352,8 @@ function CollectionPage() {
         view: "",
       }),
       replace: true,
+      // Stay where we are — clearing filters should not yank the page.
+      resetScroll: false,
     });
   };
 
@@ -359,6 +361,9 @@ function CollectionPage() {
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, group: id }),
       replace: true,
+      // Category click must NEVER scroll to top. The sticky utility row
+      // and filter rail keep their position; only the grid swaps.
+      resetScroll: false,
     });
     setSheetOpen(false);
   };
@@ -367,6 +372,7 @@ function CollectionPage() {
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, density: next }),
       replace: true,
+      resetScroll: false,
     });
   };
 
