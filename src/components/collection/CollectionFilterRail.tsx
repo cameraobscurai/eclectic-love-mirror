@@ -116,7 +116,8 @@ export function CollectionFilterRail({
 
         {safetyIds.length > 0 && (
           <li
-            className="pt-3 mt-2 border-t border-black/[0.08]"
+            className="pt-3 mt-2 border-t"
+            style={{ borderColor: "var(--archive-rule)" }}
             aria-hidden
           />
         )}
