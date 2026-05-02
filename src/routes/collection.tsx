@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
@@ -10,12 +10,12 @@ import {
   type CatalogPayload,
 } from "@/lib/phase3-catalog";
 import {
-  BROWSE_GROUP_LABELS,
   BROWSE_GROUP_ORDER,
+  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
-  getBrowseGroupOptions,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
+import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
@@ -23,8 +23,9 @@ import { CollectionFilterRail } from "@/components/collection/CollectionFilterRa
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
+const SEARCH_DEBOUNCE_MS = 280;
 
-const SORTS = ["type", "az", "newest", "oldest"] as const;
+const SORTS = ["type", "az"] as const;
 type SortKey = (typeof SORTS)[number];
 
 const DENSITIES = ["comfortable", "dense"] as const;
@@ -34,19 +35,22 @@ interface CollectionSearch {
   group: string;
   q: string;
   sort: SortKey;
+  density: Density;
   view: string;
-  d: Density;
 }
 
 const searchSchema = z.object({
   group: fallback(z.string(), "").default(""),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
+  density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
   view: fallback(z.string(), "").default(""),
-  d: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
 });
 
 const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
+
+const COLLECTION_INTRO =
+  "A working rental inventory of furniture, lighting, tableware, and bespoke pieces. Browse by category, search by name, then add favorites to an inquiry.";
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
@@ -55,13 +59,13 @@ export const Route = createFileRoute("/collection")({
       {
         name: "description",
         content:
-          "Browse the Hive Signature Collection: a curated rental archive of one-of-one furniture, lighting, tableware, and bespoke pieces.",
+          "A working rental inventory of furniture, lighting, tableware, and bespoke pieces. Browse, search, and add favorites to an inquiry.",
       },
       { property: "og:title", content: "Hive Signature Collection — Eclectic Hive" },
       {
         property: "og:description",
         content:
-          "A working rental archive of luxury event furniture, lighting, tableware, and decor.",
+          "A working rental inventory of furniture, lighting, tableware, and bespoke pieces.",
       },
     ],
   }),
@@ -76,14 +80,34 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, q, sort, view, d } = search;
+  const { group, q, sort, density, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
   const activeGroup: BrowseGroupId | "" =
     group && BROWSE_GROUP_SET.has(group) ? (group as BrowseGroupId) : "";
 
-  // Debounced search input
+  // ---------- history.scrollRestoration guard ----------
+  // Pin to "manual" while the route is mounted so opening/closing Quick View
+  // never causes the document to jump. Restore the previous value on unmount.
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const prev = window.history.scrollRestoration;
+    try {
+      window.history.scrollRestoration = "manual";
+    } catch {
+      /* ignore — older browsers */
+    }
+    return () => {
+      try {
+        window.history.scrollRestoration = prev;
+      } catch {
+        /* ignore */
+      }
+    };
+  }, []);
+
+  // ---------- Debounced search input ----------
   const [qLocal, setQLocal] = useState(q);
   useEffect(() => setQLocal(q), [q]);
   useEffect(() => {
@@ -94,19 +118,81 @@ function CollectionPage() {
           replace: true,
         });
       }
-    }, 250);
+    }, SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qLocal]);
 
-  // Mobile filter sheet
+  // ---------- Mobile filter sheet ----------
   const [sheetOpen, setSheetOpen] = useState(false);
+  const filtersTriggerRef = useRef<HTMLButtonElement>(null);
+  const sheetCloseRef = useRef<HTMLButtonElement>(null);
+  const sheetPanelRef = useRef<HTMLDivElement>(null);
+
+  // Body scroll lock + background inert (applied to <main>, NOT to the sheet)
   useEffect(() => {
     if (!sheetOpen) return undefined;
+    const main = document.querySelector("main[data-collection-main]");
     document.body.style.overflow = "hidden";
+    if (main) {
+      main.setAttribute("aria-hidden", "true");
+      // `inert` is supported broadly now; setAttribute keeps TS happy.
+      main.setAttribute("inert", "");
+    }
     return () => {
       document.body.style.removeProperty("overflow");
+      if (main) {
+        main.removeAttribute("aria-hidden");
+        main.removeAttribute("inert");
+      }
     };
+  }, [sheetOpen]);
+
+  // Focus management for the sheet: focus close on open, return focus on close
+  useEffect(() => {
+    if (!sheetOpen) return undefined;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    // RAF so the sheet has actually mounted
+    const r = requestAnimationFrame(() => sheetCloseRef.current?.focus());
+    return () => {
+      cancelAnimationFrame(r);
+      // Return focus to the Filters trigger if it's still in the DOM
+      if (filtersTriggerRef.current && document.contains(filtersTriggerRef.current)) {
+        filtersTriggerRef.current.focus();
+      } else if (previouslyFocused && document.contains(previouslyFocused)) {
+        previouslyFocused.focus();
+      }
+    };
+  }, [sheetOpen]);
+
+  // Lightweight focus trap inside the sheet panel
+  useEffect(() => {
+    if (!sheetOpen) return undefined;
+    const panel = sheetPanelRef.current;
+    if (!panel) return undefined;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        setSheetOpen(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const focusables = panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), select, input, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    panel.addEventListener("keydown", onKey);
+    return () => panel.removeEventListener("keydown", onKey);
   }, [sheetOpen]);
 
   // ====== FILTER PIPELINE ======
@@ -126,6 +212,7 @@ function CollectionPage() {
     const list = [...groupFiltered];
     const query = q.trim().toLowerCase();
 
+    // Search-rank trumps the chosen sort while a query is active.
     if (query) {
       const rank = (p: CollectionProduct) => {
         const t = p.title.toLowerCase();
@@ -137,32 +224,9 @@ function CollectionPage() {
       return list;
     }
 
-    switch (sort) {
-      case "az":
-        list.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "newest":
-        list.sort((a, b) => a.scrapedOrder - b.scrapedOrder);
-        break;
-      case "oldest":
-        list.sort((a, b) => b.scrapedOrder - a.scrapedOrder);
-        break;
-      case "type":
-      default: {
-        const orderIdx = new Map<string, number>(
-          BROWSE_GROUP_ORDER.map((id, i) => [id, i] as const),
-        );
-        list.sort((a, b) => {
-          const ga = getProductBrowseGroup(a) ?? "";
-          const gb = getProductBrowseGroup(b) ?? "";
-          return (
-            (orderIdx.get(ga) ?? 999) - (orderIdx.get(gb) ?? 999) ||
-            a.title.localeCompare(b.title)
-          );
-        });
-      }
-    }
-    return list;
+    return sortProductsForCollection(list, {
+      mode: sort === "az" ? "az" : "by-type",
+    });
   }, [groupFiltered, sort, q]);
 
   // Failed-image filter (per-session)
@@ -182,15 +246,32 @@ function CollectionPage() {
     [filtered, failedIds],
   );
 
-  // Filter rail counts derive from the search-filtered set so a typed query
-  // narrows the rail too. Use the *full unfiltered* dataset for "All pieces".
-  const filterOptions = useMemo(
-    () => getBrowseGroupOptions(searchFiltered),
-    [searchFiltered],
-  );
+  // ---------- Filter rail data: stable order + responsive counts ----------
+  // Order is fixed once from the FULL public-ready catalog. It does not move
+  // while the user types or filters.
+  const orderedGroupIds = useMemo<BrowseGroupId[]>(() => {
+    const seen = new Set<BrowseGroupId>();
+    for (const p of products) {
+      const id = getProductBrowseGroup(p);
+      if (id) seen.add(id);
+    }
+    return BROWSE_GROUP_ORDER.filter((id) => seen.has(id));
+  }, [products]);
+
+  // Counts respond to the committed search-filtered set.
+  const groupCounts = useMemo(() => {
+    const counts = new Map<BrowseGroupId, number>();
+    for (const p of searchFiltered) {
+      const id = getProductBrowseGroup(p);
+      if (!id) continue;
+      counts.set(id, (counts.get(id) ?? 0) + 1);
+    }
+    return counts;
+  }, [searchFiltered]);
+
   const allCount = searchFiltered.length;
 
-  // Load More
+  // ---------- Load More ----------
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH);
@@ -201,8 +282,35 @@ function CollectionPage() {
   );
   const hasMore = visibleProducts.length > visibleCount;
 
-  // Quick View — URL-driven
+  // ---------- Scroll-to-results on committed filter changes ----------
+  const resultsTopRef = useRef<HTMLDivElement>(null);
+  // Skip the very first effect run (initial mount) so we don't yank the
+  // landing position. Subsequent commits scroll.
+  const firstCommitRef = useRef(true);
+  useEffect(() => {
+    if (firstCommitRef.current) {
+      firstCommitRef.current = false;
+      return;
+    }
+    const target = resultsTopRef.current;
+    if (!target) return;
+    const r = requestAnimationFrame(() => {
+      target.scrollIntoView({
+        block: "start",
+        behavior: reduced ? "auto" : "smooth",
+      });
+    });
+    return () => cancelAnimationFrame(r);
+    // Only commit-driven values: NOT visibleCount (Load More), NOT density,
+    // NOT view (Quick View), NOT qLocal (pre-debounce).
+  }, [activeGroup, q, sort, reduced]);
+
+  // ---------- Quick View — URL-driven + scroll snapshot ----------
+  const grabbedScrollY = useRef<number | null>(null);
   const setQuickViewId = (id: string | null) => {
+    if (id !== null && grabbedScrollY.current === null) {
+      grabbedScrollY.current = window.scrollY;
+    }
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
       replace: false,
@@ -215,11 +323,20 @@ function CollectionPage() {
   const quickViewProduct: CollectionProduct | null =
     quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
+  // Body lock + scroll restore on Quick View open/close
   useEffect(() => {
     if (!quickViewProduct) return undefined;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.removeProperty("overflow");
+      // Restore the grid scroll position so the user lands where they left.
+      const y = grabbedScrollY.current;
+      grabbedScrollY.current = null;
+      if (y !== null) {
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: y, behavior: "auto" });
+        });
+      }
     };
   }, [quickViewProduct]);
 
@@ -231,8 +348,8 @@ function CollectionPage() {
         group: "",
         q: "",
         sort: "type" as SortKey,
+        density,
         view: "",
-        d: d as Density,
       }),
       replace: true,
     });
@@ -248,48 +365,48 @@ function CollectionPage() {
 
   const setDensity = (next: Density) => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, d: next }),
+      search: (prev: CollectionSearch) => ({ ...prev, density: next }),
       replace: true,
     });
   };
 
   // ---- Result meta line text ----
+  // Spec: "876 pieces" for browse, "Sofas · 44 pieces" for group,
+  // "24 results matching '...'" for search.
   const groupLabel = activeGroup ? BROWSE_GROUP_LABELS[activeGroup] : null;
   const trimmedQ = q.trim();
   let resultMeta: string;
-  if (trimmedQ && !activeGroup) {
-    resultMeta = `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${trimmedQ}”`;
-  } else if (groupLabel && hasMore) {
-    resultMeta = `${groupLabel} · ${visibleBatch.length} of ${visibleProducts.length}`;
+  if (trimmedQ) {
+    const n = visibleProducts.length;
+    resultMeta = `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`;
   } else if (groupLabel) {
-    resultMeta = `${groupLabel} · ${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`;
-  } else if (hasMore) {
-    resultMeta = `${visibleBatch.length} of ${visibleProducts.length} pieces`;
+    const n = visibleProducts.length;
+    resultMeta = `${groupLabel} · ${n} ${n === 1 ? "piece" : "pieces"}`;
   } else {
-    resultMeta = `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`;
+    resultMeta = `${visibleProducts.length} pieces`;
   }
 
-  // Density → grid columns
   const gridCols =
-    d === "dense"
+    density === "dense"
       ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7"
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 
   return (
-    <main className="min-h-screen bg-white text-charcoal pb-32">
+    <main
+      data-collection-main
+      className="min-h-screen bg-white text-charcoal pb-32"
+    >
       {/* Hero — quiet, archive-style */}
       <section className="pt-32 pb-10 px-6 lg:px-12">
         <div className="max-w-[1600px] mx-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            Hive Signature Collection
+            HIVE SIGNATURE COLLECTION
           </p>
           <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1] tracking-tight">
-            The Archive
+            The Collection
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            {total} one-of-one pieces — furniture, lighting, tableware, and bespoke objects
-            available for rental. Filter by category, search by name, then add favorites to
-            an inquiry.
+            {COLLECTION_INTRO}
           </p>
         </div>
       </section>
@@ -300,38 +417,56 @@ function CollectionPage() {
           <div className="max-w-[1600px] mx-auto flex items-center gap-3 py-3">
             {/* Mobile: filters trigger */}
             <button
+              ref={filtersTriggerRef}
               onClick={() => setSheetOpen(true)}
-              className="lg:hidden inline-flex items-center gap-2 h-9 px-3 border border-charcoal/20 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white transition-colors"
+              className="lg:hidden inline-flex items-center gap-2 h-11 px-3 border border-charcoal/20 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
               aria-label="Open filters"
+              aria-haspopup="dialog"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               Filters
               {hasActiveFilters && (
-                <span className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-charcoal lg:bg-current" />
+                <span
+                  aria-hidden
+                  className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
+                />
               )}
             </button>
 
             <motion.p
-              key={`${visibleProducts.length}-${visibleBatch.length}-${activeGroup}`}
+              key={`${activeGroup}-${q}-${sort}`}
               initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
               animate={{ opacity: 1 }}
               transition={{ duration: reduced ? 0 : 0.25 }}
               className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 flex-shrink-0 hidden sm:block"
+              aria-live="polite"
             >
               {resultMeta}
             </motion.p>
 
             <div className="flex-1" />
 
+            <label htmlFor="collection-search" className="sr-only">
+              Search pieces
+            </label>
             <input
+              id="collection-search"
               type="text"
               inputMode="search"
-              placeholder="Search pieces…"
+              placeholder="Search pieces"
               value={qLocal}
               onChange={(e) => setQLocal(e.target.value)}
               className="h-9 w-32 sm:w-56 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
             />
+
+            <label
+              htmlFor="collection-sort"
+              className="hidden sm:inline-block text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+            >
+              Sort by
+            </label>
             <select
+              id="collection-sort"
               value={sort}
               onChange={(e) =>
                 navigate({
@@ -343,12 +478,9 @@ function CollectionPage() {
                 })
               }
               className="h-9 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
-              aria-label="Sort"
             >
               <option value="type">By Type</option>
               <option value="az">A–Z</option>
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
             </select>
 
             {/* Density toggle — desktop only */}
@@ -361,12 +493,13 @@ function CollectionPage() {
                 onClick={() => setDensity("comfortable")}
                 className={[
                   "h-9 w-9 inline-flex items-center justify-center transition-colors",
-                  d === "comfortable"
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  density === "comfortable"
                     ? "bg-charcoal text-white"
                     : "text-charcoal/55 hover:text-charcoal",
                 ].join(" ")}
-                aria-label="Comfortable density"
-                aria-pressed={d === "comfortable"}
+                aria-label="Comfortable grid"
+                aria-pressed={density === "comfortable"}
               >
                 <DensityIconLarge />
               </button>
@@ -374,12 +507,13 @@ function CollectionPage() {
                 onClick={() => setDensity("dense")}
                 className={[
                   "h-9 w-9 inline-flex items-center justify-center transition-colors",
-                  d === "dense"
+                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  density === "dense"
                     ? "bg-charcoal text-white"
                     : "text-charcoal/55 hover:text-charcoal",
                 ].join(" ")}
-                aria-label="Dense density"
-                aria-pressed={d === "dense"}
+                aria-label="Dense grid"
+                aria-pressed={density === "dense"}
               >
                 <DensityIconSmall />
               </button>
@@ -394,9 +528,10 @@ function CollectionPage() {
           {/* Desktop filter rail */}
           <aside className="hidden lg:block">
             <CollectionFilterRail
-              options={filterOptions}
-              activeGroup={activeGroup}
+              orderedGroupIds={orderedGroupIds}
+              counts={groupCounts}
               totalCount={allCount}
+              activeGroup={activeGroup}
               onSelect={selectGroup}
               onClear={resetAll}
               hasActiveFilters={hasActiveFilters}
@@ -405,15 +540,23 @@ function CollectionPage() {
 
           {/* Grid */}
           <div className="min-w-0">
+            {/* Scroll-to-results anchor (offset for sticky utility bar) */}
+            <div
+              ref={resultsTopRef}
+              id="results-top"
+              aria-hidden
+              className="scroll-mt-32"
+            />
+
             {visibleProducts.length === 0 ? (
               <div className="py-32 text-center">
                 <p className="font-display text-3xl">No pieces found</p>
                 <p className="mt-3 text-charcoal/60">Try adjusting your filters.</p>
                 <button
                   onClick={resetAll}
-                  className="mt-6 text-xs uppercase tracking-[0.2em] underline underline-offset-4 hover:text-charcoal/70 transition-colors"
+                  className="mt-6 text-xs uppercase tracking-[0.2em] underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                 >
-                  Clear filters
+                  Clear All
                 </button>
               </div>
             ) : (
@@ -450,7 +593,7 @@ function CollectionPage() {
                           Math.min(c + BATCH_INCREMENT, visibleProducts.length),
                         )
                       }
-                      className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white transition-colors active:scale-[0.98]"
+                      className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
                     >
                       Load more ({visibleProducts.length - visibleBatch.length} remaining)
                     </button>
@@ -462,7 +605,8 @@ function CollectionPage() {
         </div>
       </section>
 
-      {/* Mobile filter bottom-sheet */}
+      {/* Mobile filter bottom-sheet — rendered OUTSIDE <main> so inert on
+          <main> never accidentally inerts the sheet itself. */}
       <AnimatePresence>
         {sheetOpen && (
           <>
@@ -474,9 +618,11 @@ function CollectionPage() {
               transition={{ duration: reduced ? 0 : 0.2 }}
               onClick={() => setSheetOpen(false)}
               className="lg:hidden fixed inset-0 z-40 bg-charcoal/40 backdrop-blur-sm"
+              aria-hidden
             />
             <motion.div
               key="sheet"
+              ref={sheetPanelRef}
               initial={reduced ? { opacity: 0 } : { y: "100%" }}
               animate={reduced ? { opacity: 1 } : { y: 0 }}
               exit={reduced ? { opacity: 0 } : { y: "100%" }}
@@ -485,28 +631,47 @@ function CollectionPage() {
                   ? { duration: 0 }
                   : { type: "spring", stiffness: 320, damping: 34 }
               }
+              drag={reduced ? false : "y"}
+              dragConstraints={{ top: 0, bottom: 0 }}
+              dragElastic={{ top: 0, bottom: 0.3 }}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 120 || info.velocity.y > 400) {
+                  setSheetOpen(false);
+                }
+              }}
               className="lg:hidden fixed inset-x-0 bottom-0 z-50 max-h-[85vh] bg-white rounded-t-2xl shadow-2xl flex flex-col"
               role="dialog"
               aria-modal="true"
               aria-label="Filters"
             >
-              <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b border-charcoal/10">
+              {/* Drag handle */}
+              <div
+                className="pt-2.5 pb-1 flex justify-center"
+                aria-hidden
+              >
+                <div className="h-1 w-10 bg-charcoal/15 rounded-full" />
+              </div>
+
+              <div className="flex items-center justify-between px-6 pt-2 pb-3 border-b border-charcoal/10">
                 <p className="text-[11px] uppercase tracking-[0.25em] text-charcoal/70">
-                  Filter
+                  Filters
                 </p>
                 <button
+                  ref={sheetCloseRef}
                   onClick={() => setSheetOpen(false)}
-                  className="w-8 h-8 inline-flex items-center justify-center text-charcoal/60 hover:text-charcoal"
+                  className="w-11 h-11 inline-flex items-center justify-center text-charcoal/60 hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   aria-label="Close filters"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
+
               <div className="flex-1 overflow-y-auto px-6 py-5">
                 <CollectionFilterRail
-                  options={filterOptions}
-                  activeGroup={activeGroup}
+                  orderedGroupIds={orderedGroupIds}
+                  counts={groupCounts}
                   totalCount={allCount}
+                  activeGroup={activeGroup}
                   onSelect={selectGroup}
                   onClear={() => {
                     resetAll();
@@ -516,12 +681,14 @@ function CollectionPage() {
                   variant="sheet"
                 />
               </div>
+
               <div className="px-6 py-4 border-t border-charcoal/10">
                 <button
                   onClick={() => setSheetOpen(false)}
-                  className="w-full h-11 bg-charcoal text-white text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal/90 transition-colors"
+                  className="w-full h-12 bg-charcoal text-white text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                 >
-                  Show {visibleProducts.length} {visibleProducts.length === 1 ? "piece" : "pieces"}
+                  Show {visibleProducts.length}{" "}
+                  {visibleProducts.length === 1 ? "piece" : "pieces"}
                 </button>
               </div>
             </motion.div>
