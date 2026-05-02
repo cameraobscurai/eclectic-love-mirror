@@ -1,25 +1,28 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   getCollectionCatalog,
-  CATEGORY_DISPLAY_ORDER,
   type CollectionProduct,
-  type CategoryFacet,
   type CatalogPayload,
 } from "@/lib/phase3-catalog";
-import { CategoryPill } from "@/components/collection/CategoryPill";
+import {
+  BROWSE_GROUP_LABELS,
+  BROWSE_GROUP_ORDER,
+  type BrowseGroupId,
+  getBrowseGroupOptions,
+  getProductBrowseGroup,
+  groupProductsByBrowseGroup,
+} from "@/lib/collection-browse-groups";
+import {
+  getProductSubcategory,
+  getSubcategoryOptions,
+} from "@/lib/collection-subcategories";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
-import { CategoryOverview } from "@/components/collection/CategoryOverview";
-import { InventoryIndexRail } from "@/components/collection/InventoryIndexRail";
-import {
-  getSubcategoryOptions,
-  getProductSubcategory,
-} from "@/lib/collection-subcategories";
 
 const INITIAL_BATCH = 48;
 const BATCH_INCREMENT = 48;
@@ -28,7 +31,7 @@ const SORTS = ["type", "az", "newest", "oldest"] as const;
 type SortKey = (typeof SORTS)[number];
 
 interface CollectionSearch {
-  category: string;
+  group: string;
   sub: string;
   q: string;
   sort: SortKey;
@@ -36,12 +39,15 @@ interface CollectionSearch {
 }
 
 const searchSchema = z.object({
-  category: fallback(z.string(), "").default(""),
+  // Owner-priority browse group id (e.g. "sofas"). Empty = overview.
+  group: fallback(z.string(), "").default(""),
   sub: fallback(z.string(), "").default(""),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
   view: fallback(z.string(), "").default(""),
 });
+
+const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
@@ -69,34 +75,17 @@ export const Route = createFileRoute("/collection")({
 
 function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
-  const { products, facets, total } = data;
+  const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { category, sub, q, sort, view } = search;
+  const { group, sub, q, sort, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
-  // Overview mode: category=all (i.e. no category) AND no active search query.
-  const isOverviewMode = !category && !q.trim();
-
-  // Scroll the active primary pill into view in the top rail (works on all
-  // sizes now — desktop top bar is also a compact horizontal scroll, with the
-  // right Inventory Index Rail providing always-visible orientation).
-  const railRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const slug = category || "overview";
-    const target = rail.querySelector<HTMLElement>(
-      `[data-pill-slug="${slug}"]`,
-    );
-    if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
-    }
-  }, [category]);
+  // Validate group against the owner taxonomy. Unknown values fall back to
+  // overview — the URL stays as-is but the UI ignores it.
+  const activeGroup: BrowseGroupId | "" =
+    group && BROWSE_GROUP_SET.has(group) ? (group as BrowseGroupId) : "";
+  const isOverviewMode = !activeGroup && !q.trim();
 
   // Debounced search input
   const [qLocal, setQLocal] = useState(q);
@@ -115,32 +104,29 @@ function CollectionPage() {
   }, [qLocal]);
 
   // ====== LAYERED FILTER PIPELINE ======
-  // Each layer recomputes only when its own inputs change.
 
-  // 1. Search-filtered (most expensive when q is short → still cheap)
+  // 1. Search-filtered
   const searchFiltered = useMemo(() => {
     const query = q.trim().toLowerCase();
     if (!query) return products;
-    return products.filter((p: CollectionProduct) =>
-      p.title.toLowerCase().includes(query),
-    );
+    return products.filter((p) => p.title.toLowerCase().includes(query));
   }, [products, q]);
 
-  // 2. Category-filtered
-  const categoryFiltered = useMemo(() => {
-    if (!category) return searchFiltered;
-    return searchFiltered.filter((p) => p.categorySlug === category);
-  }, [searchFiltered, category]);
+  // 2. Browse-group filtered (owner taxonomy)
+  const groupFiltered = useMemo(() => {
+    if (!activeGroup) return searchFiltered;
+    return searchFiltered.filter((p) => getProductBrowseGroup(p) === activeGroup);
+  }, [searchFiltered, activeGroup]);
 
-  // 3. Subcategory-filtered (derived UI taxonomy — title-keyword based)
-  const subcategoryFiltered = useMemo(() => {
-    if (!sub || sub === "all") return categoryFiltered;
-    return categoryFiltered.filter((p) => getProductSubcategory(p) === sub);
-  }, [categoryFiltered, sub]);
+  // 3. Sub-pill filtered (derived display-only subcategories)
+  const subFiltered = useMemo(() => {
+    if (!sub || sub === "all") return groupFiltered;
+    return groupFiltered.filter((p) => getProductSubcategory(p) === sub);
+  }, [groupFiltered, sub]);
 
-  // 4. Sorted (final list)
+  // 4. Sorted
   const filtered = useMemo(() => {
-    const list = [...subcategoryFiltered];
+    const list = [...subFiltered];
     const query = q.trim().toLowerCase();
 
     if (query) {
@@ -166,23 +152,24 @@ function CollectionPage() {
         break;
       case "type":
       default: {
+        // Owner priority order, then A–Z within group.
         const orderIdx = new Map<string, number>(
-          CATEGORY_DISPLAY_ORDER.map((d, i) => [d, i] as const),
+          BROWSE_GROUP_ORDER.map((id, i) => [id, i] as const),
         );
-        list.sort(
-          (a, b) =>
-            (orderIdx.get(a.displayCategory) ?? 999) -
-              (orderIdx.get(b.displayCategory) ?? 999) ||
-            a.title.localeCompare(b.title),
-        );
+        list.sort((a, b) => {
+          const ga = getProductBrowseGroup(a) ?? "";
+          const gb = getProductBrowseGroup(b) ?? "";
+          return (
+            (orderIdx.get(ga) ?? 999) - (orderIdx.get(gb) ?? 999) ||
+            a.title.localeCompare(b.title)
+          );
+        });
       }
     }
     return list;
-  }, [subcategoryFiltered, sort, q]);
+  }, [subFiltered, sort, q]);
 
-  // Failed-image filter: per-session set of product ids whose primary image
-  // 404'd in-browser. They get hidden from the visible grid so we never show
-  // a broken-image icon. Data-layer count stays at 876.
+  // Failed-image filter (per-session)
   const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
   const markFailed = (id: string) =>
     setFailedIds((prev) => {
@@ -195,59 +182,59 @@ function CollectionPage() {
     () =>
       failedIds.size === 0
         ? filtered
-        : filtered.filter((p: CollectionProduct) => !failedIds.has(p.id)),
+        : filtered.filter((p) => !failedIds.has(p.id)),
     [filtered, failedIds],
   );
 
-  // Subcategory options — derived UI taxonomy from the category-filtered list.
-  // Returns [] when the selected category has no meaningful derived groups,
-  // which the UI uses to hide the sub row entirely. Includes a leading "All".
-  const subcategoryOptions = useMemo(() => {
-    if (!category) return [];
-    return getSubcategoryOptions(category, categoryFiltered);
-  }, [category, categoryFiltered]);
+  // Owner-priority browse-group options (computed from the search-filtered set
+  // so a typed query narrows the visible browse line too).
+  const browseGroupOptions = useMemo(
+    () => getBrowseGroupOptions(searchFiltered),
+    [searchFiltered],
+  );
 
-  // Self-heal: if the active sub no longer exists after category/search change,
-  // silently reset to "all" (empty in URL).
+  // Derived sub-pills from the group-filtered list. Only useful refinements
+  // surface — fewer than 3 options (incl. "All") = hide the row.
+  const subOptions = useMemo(() => {
+    if (!activeGroup) return [];
+    // The derived subcategory taxonomy is keyed off the raw catalog
+    // categorySlug. Pass the group-filtered products and let the helper
+    // bucket what makes sense per slug; if multiple slugs flow into a single
+    // browse group, the helper still groups by keywords.
+    const opts = getSubcategoryOptions(activeGroup, groupFiltered);
+    return opts.length > 2 ? opts : [];
+  }, [activeGroup, groupFiltered]);
+
+  // Self-heal: if active sub disappears, drop it.
   useEffect(() => {
     if (!sub || sub === "all") return;
-    const stillValid = subcategoryOptions.some((o) => o.id === sub);
+    const stillValid = subOptions.some((o) => o.id === sub);
     if (!stillValid) {
       navigate({
         search: (prev: CollectionSearch) => ({ ...prev, sub: "" }),
         replace: true,
       });
     }
-  }, [sub, subcategoryOptions, navigate]);
+  }, [sub, subOptions, navigate]);
 
-  // Group public-ready products by category for overview mode preview bands.
-  // Sorted by `scrapedOrder` (newest first) so overview shows fresh hero pieces.
-  const productsByCategory = useMemo(() => {
-    if (!isOverviewMode) return {} as Record<string, CollectionProduct[]>;
-    const map: Record<string, CollectionProduct[]> = {};
-    for (const p of products) {
-      (map[p.categorySlug] ??= []).push(p);
-    }
-    for (const slug of Object.keys(map)) {
-      map[slug].sort((a, b) => a.scrapedOrder - b.scrapedOrder);
-    }
-    return map;
+  // Overview bands — owner priority order, public-ready products only.
+  const overviewBuckets = useMemo(() => {
+    if (!isOverviewMode) return new Map<BrowseGroupId, CollectionProduct[]>();
+    return groupProductsByBrowseGroup(products);
   }, [products, isOverviewMode]);
 
-  // Load More — only applies to grid mode. Reset whenever the filter shape
-  // changes so a new selection always starts from the first batch.
+  // Load More
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH);
-  }, [category, sub, q, sort]);
+  }, [activeGroup, sub, q, sort]);
   const visibleBatch = useMemo(
     () => visibleProducts.slice(0, visibleCount),
     [visibleProducts, visibleCount],
   );
   const hasMore = visibleProducts.length > visibleCount;
 
-  // Quick view — URL-driven via ?view=<id|slug>. Back button closes it,
-  // direct links open the object, missing/non-public ids are ignored.
+  // Quick View — URL-driven
   const setQuickViewId = (id: string | null) => {
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
@@ -256,14 +243,11 @@ function CollectionPage() {
   };
   const quickViewIndex = useMemo(() => {
     if (!view) return -1;
-    return visibleProducts.findIndex(
-      (p: CollectionProduct) => p.id === view || p.slug === view,
-    );
+    return visibleProducts.findIndex((p) => p.id === view || p.slug === view);
   }, [visibleProducts, view]);
   const quickViewProduct: CollectionProduct | null =
     quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
-  // Body scroll lock when Quick View open
   useEffect(() => {
     if (!quickViewProduct) return undefined;
     document.body.style.overflow = "hidden";
@@ -272,14 +256,45 @@ function CollectionPage() {
     };
   }, [quickViewProduct]);
 
-  const hasActiveFilters = !!(category || sub || q);
+  const hasActiveFilters = !!(activeGroup || sub || q);
   const resetAll = () => {
     setQLocal("");
     navigate({
-      search: () => ({ category: "", sub: "", q: "", sort: "type" as SortKey, view: "" }),
+      search: () => ({
+        group: "",
+        sub: "",
+        q: "",
+        sort: "type" as SortKey,
+        view: "",
+      }),
       replace: true,
     });
   };
+
+  const selectGroup = (id: BrowseGroupId | "") => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, group: id, sub: "" }),
+      replace: true,
+    });
+  };
+
+  // ---- Result meta line text ----
+  const groupLabel = activeGroup ? BROWSE_GROUP_LABELS[activeGroup] : null;
+  const trimmedQ = q.trim();
+  let resultMeta: string;
+  if (isOverviewMode) {
+    resultMeta = `${total} pieces · browse by category`;
+  } else if (trimmedQ && !activeGroup) {
+    resultMeta = `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${trimmedQ}”`;
+  } else if (groupLabel && hasMore) {
+    resultMeta = `${groupLabel} · showing ${visibleBatch.length} of ${visibleProducts.length}`;
+  } else if (groupLabel) {
+    resultMeta = `${groupLabel} · ${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`;
+  } else if (hasMore) {
+    resultMeta = `Showing ${visibleBatch.length} of ${visibleProducts.length} pieces`;
+  } else {
+    resultMeta = `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`;
+  }
 
   return (
     <main className="min-h-screen bg-white text-charcoal pb-32">
@@ -299,13 +314,12 @@ function CollectionPage() {
         </div>
       </section>
 
-      {/* Sticky filter header */}
+      {/* Sticky browse + control header */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Primary category navigation — compact horizontal rail on all sizes.
-            Full orientation lives in the right Inventory Index Rail (desktop). */}
-        <div className="lg:hidden px-6 border-b border-charcoal/10">
+        {/* Owner-priority browse line — single primary navigation */}
+        <div className="px-6 lg:px-12 border-b border-charcoal/10">
           <div className="max-w-7xl mx-auto">
-            <LayoutGroup id="collection-primary-pills">
+            <LayoutGroup id="collection-browse-line">
               <div className="relative">
                 <div
                   aria-hidden
@@ -315,49 +329,22 @@ function CollectionPage() {
                   aria-hidden
                   className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10"
                 />
-                <div
-                  ref={railRef}
-                  className="flex gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8"
-                >
-                  <div data-pill-slug="overview" className="snap-start">
-                    <CategoryPill
-                      label="Overview"
-                      active={!category}
-                      layoutGroupId="collection-pill-active-primary"
-                      onClick={() =>
-                        navigate({
-                          search: (prev: CollectionSearch) => ({
-                            ...prev,
-                            category: "",
-                            sub: "",
-                          }),
-                          replace: true,
-                        })
-                      }
+                <div className="flex items-end gap-1 overflow-x-auto py-2 no-scrollbar snap-x scroll-px-8">
+                  <BrowsePill
+                    label="Overview"
+                    active={!activeGroup}
+                    onClick={() => selectGroup("")}
+                    reduced={reduced}
+                  />
+                  {browseGroupOptions.map((opt) => (
+                    <BrowsePill
+                      key={opt.id}
+                      label={opt.label}
+                      count={opt.count}
+                      active={activeGroup === opt.id}
+                      onClick={() => selectGroup(opt.id)}
+                      reduced={reduced}
                     />
-                  </div>
-                  {facets.map((f: CategoryFacet) => (
-                    <div
-                      key={f.slug}
-                      data-pill-slug={f.slug}
-                      className="snap-start"
-                    >
-                      <CategoryPill
-                        label={`${f.display} (${f.count})`}
-                        active={category === f.slug}
-                        layoutGroupId="collection-pill-active-primary"
-                        onClick={() =>
-                          navigate({
-                            search: (prev: CollectionSearch) => ({
-                              ...prev,
-                              category: f.slug,
-                              sub: "",
-                            }),
-                            replace: true,
-                          })
-                        }
-                      />
-                    </div>
                   ))}
                 </div>
               </div>
@@ -365,33 +352,44 @@ function CollectionPage() {
           </div>
         </div>
 
-        {/* Sub row + search/sort — sub pills hidden in overview mode */}
+        {/* Single control row: result meta · sub-pills (if useful) · search · sort · clear */}
         <div className="px-6 lg:px-12">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 py-3">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center gap-3 py-3">
+            <motion.p
+              key={`${visibleProducts.length}-${visibleBatch.length}-${isOverviewMode}-${activeGroup}`}
+              initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reduced ? 0 : 0.25 }}
+              className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 lg:flex-shrink-0"
+            >
+              {resultMeta}
+            </motion.p>
+
+            {/* Sub-pills — only when meaningfully refining (>2 options) */}
             <AnimatePresence mode="wait">
-              {!isOverviewMode && subcategoryOptions.length > 0 ? (
+              {!isOverviewMode && subOptions.length > 0 ? (
                 <motion.div
-                  key={`sub-${category}`}
-                  initial={
-                    reduced ? { opacity: 1 } : { opacity: 0, y: -4 }
-                  }
+                  key={`sub-${activeGroup}`}
+                  initial={reduced ? { opacity: 1 } : { opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={reduced ? { opacity: 0 } : { opacity: 0, y: -4 }}
                   transition={{ duration: reduced ? 0 : 0.2 }}
                   className="flex-1 min-w-0"
                 >
-                  <LayoutGroup id={`collection-sub-pills-${category}`}>
+                  <LayoutGroup id={`sub-pills-${activeGroup}`}>
                     <div className="flex gap-1 overflow-x-auto no-scrollbar snap-x">
-                      {subcategoryOptions.map((s) => {
+                      {subOptions.map((s) => {
                         const isAll = s.id === "all";
-                        const active = isAll ? !sub || sub === "all" : sub === s.id;
+                        const active = isAll
+                          ? !sub || sub === "all"
+                          : sub === s.id;
                         return (
-                          <CategoryPill
+                          <BrowsePill
                             key={s.id}
-                            label={isAll ? "All" : `${s.label} (${s.count})`}
+                            label={isAll ? "All" : s.label}
+                            count={isAll ? undefined : s.count}
                             active={active}
                             variant="sub"
-                            layoutGroupId={`collection-pill-active-sub-${category}`}
                             onClick={() =>
                               navigate({
                                 search: (prev: CollectionSearch) => ({
@@ -401,6 +399,7 @@ function CollectionPage() {
                                 replace: true,
                               })
                             }
+                            reduced={reduced}
                           />
                         );
                       })}
@@ -419,7 +418,7 @@ function CollectionPage() {
                 placeholder="Search pieces…"
                 value={qLocal}
                 onChange={(e) => setQLocal(e.target.value)}
-                className="h-9 w-full lg:w-56 bg-transparent border border-charcoal/15 px-3 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal/50 transition-colors"
+                className="h-9 w-full lg:w-56 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
               />
               <select
                 value={sort}
@@ -432,65 +431,33 @@ function CollectionPage() {
                     replace: true,
                   })
                 }
-                className="h-9 bg-transparent border border-charcoal/15 px-2 text-sm text-charcoal focus:outline-none focus:border-charcoal/50 transition-colors"
+                className="h-9 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
               >
                 <option value="type">By Type</option>
                 <option value="az">A–Z</option>
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
               </select>
+              {hasActiveFilters && (
+                <button
+                  onClick={resetAll}
+                  className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-charcoal transition-colors active:scale-95"
+                >
+                  Clear
+                </button>
+              )}
             </div>
-          </div>
-        </div>
-
-        {/* Result count */}
-        <div className="px-6 lg:px-12 border-t border-charcoal/10">
-          <div className="max-w-7xl mx-auto flex items-center justify-between py-2.5">
-            <motion.p
-              key={`${visibleProducts.length}-${visibleBatch.length}-${isOverviewMode}`}
-              initial={reduced ? { opacity: 1 } : { opacity: 0.4 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: reduced ? 0 : 0.25 }}
-              className="text-xs uppercase tracking-[0.2em] text-charcoal/60"
-            >
-              {isOverviewMode
-                ? `${total} pieces · browse by category`
-                : q.trim()
-                  ? `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"} matching “${q.trim()}”`
-                  : hasMore
-                    ? `Showing ${visibleBatch.length} of ${visibleProducts.length} pieces`
-                    : `${visibleProducts.length} ${visibleProducts.length === 1 ? "piece" : "pieces"}`}
-            </motion.p>
-            {hasActiveFilters && (
-              <button
-                onClick={resetAll}
-                className="text-xs uppercase tracking-[0.2em] text-charcoal/60 hover:text-charcoal transition-colors active:scale-95"
-              >
-                Reset all
-              </button>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Body — main content + persistent right Inventory Index Rail (desktop) */}
-      <section className="px-6 lg:px-12 pt-8">
-        <div className="max-w-7xl mx-auto flex gap-10 xl:gap-12 items-start">
-          <div className="flex-1 min-w-0">
+      {/* Body — full width, no side rail */}
+      <section className="px-6 lg:px-12 pt-10">
+        <div className="max-w-7xl mx-auto">
           {isOverviewMode ? (
-            <CategoryOverview
-              facets={facets}
-              productsByCategory={productsByCategory}
-              onSelectCategory={(slug) =>
-                navigate({
-                  search: (prev: CollectionSearch) => ({
-                    ...prev,
-                    category: slug,
-                    sub: "",
-                  }),
-                  replace: false,
-                })
-              }
+            <OverviewBands
+              buckets={overviewBuckets}
+              onSelectGroup={(id) => selectGroup(id)}
               onOpenProduct={(id) => setQuickViewId(id)}
               onImageFailed={markFailed}
             />
@@ -502,30 +469,11 @@ function CollectionPage() {
                 onClick={resetAll}
                 className="mt-6 text-xs uppercase tracking-[0.2em] underline underline-offset-4 hover:text-charcoal/70 transition-colors"
               >
-                Reset all filters
+                Clear filters
               </button>
             </div>
           ) : (
             <>
-              {category && (
-                <div className="mb-6 flex items-center justify-between gap-4">
-                  <button
-                    onClick={() =>
-                      navigate({
-                        search: (prev: CollectionSearch) => ({
-                          ...prev,
-                          category: "",
-                          sub: "",
-                        }),
-                        replace: false,
-                      })
-                    }
-                    className="text-[11px] uppercase tracking-[0.2em] text-charcoal/60 hover:text-charcoal transition-colors"
-                  >
-                    ← All categories
-                  </button>
-                </div>
-              )}
               <LayoutGroup id="collection-grid">
                 <motion.ul
                   layout
@@ -537,7 +485,7 @@ function CollectionPage() {
                   }
                 >
                   <AnimatePresence mode="popLayout" initial={false}>
-                    {visibleBatch.map((p: CollectionProduct, i: number) => (
+                    {visibleBatch.map((p, i) => (
                       <ProductTile
                         key={p.id}
                         product={p}
@@ -566,32 +514,6 @@ function CollectionPage() {
               )}
             </>
           )}
-          </div>
-          <InventoryIndexRail
-            facets={facets}
-            activeSlug={category}
-            searchMode={!!q.trim() && !category}
-            onSelectOverview={() =>
-              navigate({
-                search: (prev: CollectionSearch) => ({
-                  ...prev,
-                  category: "",
-                  sub: "",
-                }),
-                replace: false,
-              })
-            }
-            onSelectCategory={(slug) =>
-              navigate({
-                search: (prev: CollectionSearch) => ({
-                  ...prev,
-                  category: slug,
-                  sub: "",
-                }),
-                replace: false,
-              })
-            }
-          />
         </div>
       </section>
 
@@ -611,5 +533,159 @@ function CollectionPage() {
 
       <InquiryTray />
     </main>
+  );
+}
+
+// ---------- Inline subcomponents ----------
+
+interface BrowsePillProps {
+  label: string;
+  count?: number;
+  active: boolean;
+  onClick: () => void;
+  variant?: "primary" | "sub";
+  reduced: boolean | null;
+}
+
+/**
+ * Underline-only pill — no boxes, no borders, no filled chrome.
+ * Active state animates a thin charcoal underline via shared layoutId.
+ */
+function BrowsePill({
+  label,
+  count,
+  active,
+  onClick,
+  variant = "primary",
+  reduced,
+}: BrowsePillProps) {
+  const isSub = variant === "sub";
+  const layoutId = isSub ? "sub-active" : "browse-active";
+  return (
+    <button
+      onClick={onClick}
+      className={[
+        "relative whitespace-nowrap uppercase shrink-0 snap-start transition-colors",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+        isSub
+          ? "text-[10px] tracking-[0.18em] px-2 py-1.5 pb-2"
+          : "text-[11px] tracking-[0.22em] px-3 py-2.5 pb-3",
+        active ? "text-charcoal" : "text-charcoal/55 hover:text-charcoal",
+      ].join(" ")}
+    >
+      <span>{label}</span>
+      {typeof count === "number" && (
+        <span
+          className={[
+            "ml-1.5 tabular-nums",
+            isSub ? "text-[9px]" : "text-[10px]",
+            active ? "text-charcoal/55" : "text-charcoal/35",
+          ].join(" ")}
+        >
+          {count}
+        </span>
+      )}
+      {active && (
+        <motion.div
+          layoutId={layoutId}
+          className={[
+            "absolute left-2 right-2 bottom-0 bg-charcoal",
+            isSub ? "h-[1px]" : "h-[1.5px]",
+          ].join(" ")}
+          transition={
+            reduced
+              ? { duration: 0 }
+              : { type: "spring", stiffness: 500, damping: 35 }
+          }
+        />
+      )}
+    </button>
+  );
+}
+
+interface OverviewBandsProps {
+  buckets: Map<BrowseGroupId, CollectionProduct[]>;
+  onSelectGroup: (id: BrowseGroupId) => void;
+  onOpenProduct: (id: string) => void;
+  onImageFailed: (id: string) => void;
+}
+
+const OVERVIEW_PREVIEW = 4;
+
+/**
+ * Owner-priority overview bands. Each band: heading · count · 4 preview tiles
+ * · "View all" link. Pure white field, no card backgrounds, image-on-white.
+ */
+function OverviewBands({
+  buckets,
+  onSelectGroup,
+  onOpenProduct,
+  onImageFailed,
+}: OverviewBandsProps) {
+  const reduced = useReducedMotion();
+  const entries = Array.from(buckets.entries());
+
+  return (
+    <div className="space-y-16">
+      {entries.map(([id, items], sectionIdx) => {
+        const preview = items.slice(0, OVERVIEW_PREVIEW);
+        const label = BROWSE_GROUP_LABELS[id];
+        return (
+          <motion.section
+            key={id}
+            initial={reduced ? { opacity: 1 } : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduced ? 0 : 0.4,
+              delay: reduced ? 0 : Math.min(sectionIdx * 0.05, 0.3),
+            }}
+          >
+            <div className="flex items-end justify-between mb-5 gap-4">
+              <div className="min-w-0">
+                <h2 className="font-display text-2xl md:text-3xl tracking-tight">
+                  {label}
+                </h2>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                  {items.length} {items.length === 1 ? "piece" : "pieces"}
+                </p>
+              </div>
+              <button
+                onClick={() => onSelectGroup(id)}
+                className="flex-shrink-0 text-[11px] uppercase tracking-[0.2em] text-charcoal/70 hover:text-charcoal underline underline-offset-4 transition-colors"
+              >
+                View all {label.toLowerCase()} →
+              </button>
+            </div>
+
+            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 lg:gap-4">
+              {preview.map((p) => (
+                <li key={p.id}>
+                  <button
+                    onClick={() => onOpenProduct(p.id)}
+                    className="group block w-full text-left bg-white"
+                  >
+                    <div className="aspect-square bg-white overflow-hidden">
+                      {p.primaryImage ? (
+                        <img
+                          src={p.primaryImage.url}
+                          alt={p.primaryImage.altText ?? p.title}
+                          loading="lazy"
+                          decoding="async"
+                          onError={() => onImageFailed(p.id)}
+                          className="w-full h-full object-contain p-3 transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : null}
+                    </div>
+                    <p className="mt-2 text-[13px] text-charcoal/85 leading-snug line-clamp-2 group-hover:text-charcoal transition-colors">
+                      {p.title}
+                    </p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
+        );
+      })}
+    </div>
   );
 }
