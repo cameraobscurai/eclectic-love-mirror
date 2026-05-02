@@ -100,7 +100,7 @@ function AtelierPage() {
       {/* 2. THE TEAM — real staff module. Always renders, even before
           portraits exist. See src/components/atelier/team.tsx for the data
           model and the public-render gate. */}
-      <Section eyebrow="The Team">
+      <Section eyebrow="02 — The Humans">
         <AtelierTeam />
       </Section>
 
