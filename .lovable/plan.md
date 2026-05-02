@@ -1,84 +1,42 @@
-# Phase 3 Final Export Checkpoint
+## Goal
 
-Freeze the clean Phase 3A + 3B canonical staging into a downloadable, reviewable artifact set. **No inventory writes. No reconciliation. No image assignment. No raw history deletion.**
+Make `/collection` use a pure white page background and pure white product cards, so the transparent-PNG product photos sit on white instead of the current cream (`#f5f2ed`). Match the look of `eclectichive.com/inventory`.
 
-## Source of truth (already exists, read-only)
+## Scope
 
-- `public.scraped_products_final_canonical` — 877 rows, avg `final_confidence` 0.933, 876 with hero image, 18 categories, 45 LLM-repaired
-- `public.scraped_product_images_final_canonical` — 1,129 image rows
-- `public.llm_reextract_candidates_canonical` — 45 rows
-- `public.scraped_product_pages_markdown` — raw markdown (kept untouched)
+- **Only** `src/routes/collection.tsx`.
+- **Not touched:** navigation, footer, home page, other routes, design tokens in `src/styles.css` (cream stays the global brand baseline — only this page goes white).
+- **Not touched:** any data, server functions, CSVs, storage, or DB.
 
-## Outputs
+## Changes (all in `src/routes/collection.tsx`)
 
-All written to `/mnt/documents/phase3_final_exports/` and surfaced as `<lov-artifact>` tags so you can download each.
+1. **Page shell** (line 177): `bg-cream` → `bg-white`.
+2. **Sticky filter bar** (line 195): `bg-cream/95` → `bg-white/95`. Borders stay charcoal/10 for the thin divider line.
+3. **Active category pill** (line 355): keep `bg-charcoal text-cream` (the dark pill on white reads correctly — same as your reference site's "ALL" pill).
+4. **Product card** (line 389): already `bg-white` — keep. Tighten border from `border-charcoal/8` to `border-transparent` and only show a hairline border on hover (`hover:border-charcoal/15`) so cards float clean on white the way the eclectichive.com inventory page does. Image well (line 391) stays `bg-white`.
+5. **Quick View modal** (lines 458–459): `bg-cream` → `bg-white` for the panel and sticky header. Backdrop stays charcoal/70.
+6. **Quick View thumbnail wells** (line 513): already `bg-white` — keep.
+7. **Quick View "Add to Inquiry" button selected state** (line 551): `bg-cream text-charcoal border-charcoal` → `bg-white text-charcoal border-charcoal` so the "added" state reads on white.
+8. **Inquiry tray** (lines 581, 594): the floating tray stays `bg-charcoal text-cream` (it's an overlay, looks correct against any page color), but the inner "View Inquiry" button `bg-cream` → `bg-white` for consistency.
 
-### 1. `phase3_final_products.csv` (877 rows)
-From `scraped_products_final_canonical`. Columns per spec. Mappings:
-- `title` → `COALESCE(product_title_normalized, product_title_original, '(unknown)')`
-- `extraction_method` → from view (`markdown` / `markdown+llm_repair`)
-- `repaired_by_llm`, `final_confidence` → from view
-- `missing_fields` → `still_missing_fields` (post-repair)
-- `ambiguity_flags`, `warnings` → from underlying `scraped_products` joined on URL
-- `needs_manual_review` → `true` if any of: `hero_image_url IS NULL`, `final_confidence < 0.70`, `product_title_normalized IS NULL`, URL is the known 404, or `still_missing_fields` non-empty after repair
+## What stays cream
 
-### 2. `phase3_final_images.csv` (1,129 rows)
-From `scraped_product_images_final_canonical` joined to canonical products for `product_url`, `category_slug`, `product_slug`. `image_source` already on view (`markdown` / `llm_repair`).
+- Global CSS tokens in `src/styles.css` (other pages, nav, footer continue to use the cream brand baseline).
+- Charcoal text everywhere — no contrast changes.
+- The dark inquiry tray overlay.
 
-### 3. `phase3_manual_review_queue.csv`
-Union of:
-- The Broadway 32in 404 (`issue_type=source_404`)
-- `final_confidence < 0.70` (`issue_type=low_confidence`)
-- `hero_image_url IS NULL` (`issue_type=no_images`)
-- Title still null (`issue_type=missing_title`)
-- Non-empty `still_missing_fields` or warnings flagged for human (`issue_type=parse_warning`)
+## Out of scope (explicit no-ops)
 
-Deduped by URL, with one primary `issue_type` and an aggregated `issue_reason`. `recommended_action` is rule-based per issue type (e.g. "manual title entry", "exclude — source page removed", "manual image upload during reconciliation").
+- No image swaps. The Squarespace CDN URLs stay in place. The transparent PNGs will now read on white instead of cream — that's the whole point.
+- No manifest run, no storage reads, no DB writes.
+- No nav/footer color changes. If you want those white too, that's a separate decision (they appear on every page, not just `/collection`).
+- No layout, grid, sort, filter, or behavior changes.
 
-### 4. `phase3_category_summary.csv` (18 rows)
-Aggregated from `scraped_products_final_canonical` grouped by `category_slug`:
-counts for total, with/without images, with dimensions, with stocked qty, custom-order, avg confidence, manual review count.
+## Verification after applying
 
-### 5. `phase3_extraction_report.md`
-Human-readable summary covering:
-- Phase 3A markdown scrape (877/877 URLs, 989 Firecrawl credits, ~77% savings vs JSON)
-- Phase 3B LLM repair (45/45 success, model `google/gemini-3-flash-preview`)
-- Final counts (877 products, 1,129 images, 18 categories)
-- Confidence distribution (buckets: ≥0.95, 0.85–0.95, 0.70–0.85, <0.70)
-- Unresolved 404 (`/cocktail-bar/broadway-32in`)
-- "Safe to trust" vs "needs manual review" boundaries
-- Next recommended step: **reconciliation preview only** (dry-run match against `inventory_items` + RMS CSV + storage manifest, no writes)
-
-## Implementation
-
-Single Node script `scripts-tmp/phase3-final-export.mts`:
-1. Use service-role Supabase client.
-2. Pull each view in pages of 1000 (default Supabase cap) until exhausted.
-3. Build CSVs in-memory with proper quoting (commas, quotes, newlines, array → `;`-joined).
-4. Compute review queue + category summary in JS from already-fetched rows (avoids extra queries).
-5. Write all 5 files into `/mnt/documents/phase3_final_exports/`.
-6. Print final terminal summary block.
-
-Run with `bun run scripts-tmp/phase3-final-export.mts`.
-
-## Guardrails (explicit no-ops)
-
-- No `INSERT` / `UPDATE` / `DELETE` against `inventory_items`, `product_images`, storage, `reconciliation_matches`, or any final tables.
-- No new Firecrawl calls. No new LLM calls.
-- No migrations. No schema changes. Views remain as-is.
-- Raw `scraped_product_pages_markdown` preserved.
-
-## Final terminal summary (printed at end)
-
-- export path: `/mnt/documents/phase3_final_exports/`
-- product count: 877
-- image count: 1,129
-- category count: 18
-- manual review count: (computed)
-- unresolved/404 count: 1
-- average confidence: 0.933
-- inventory writes performed: 0
-
-## After approval
-
-I'll switch to default mode, write the export script, run it, verify each CSV opens cleanly (header + sample rows), emit the 5 artifact tags, and stop. **Reconciliation is the next conversation, not this one.**
+- `/collection` page background pure white.
+- Product tiles white, transparent-PNG products read clean on white (matches your `eclectichive.com/inventory` screenshot).
+- Sticky filter bar still legible, charcoal divider still visible.
+- Quick View modal opens on white.
+- Inquiry tray still readable.
+- No console errors, no layout shift.
