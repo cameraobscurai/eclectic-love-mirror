@@ -658,11 +658,12 @@ function CollectionPage() {
             (b) Category/search: 3-column cage [filter | grid | progress].
           ============================================================ */}
       {showOverview ? (
-        <section className="flex-1 min-h-0 px-3 sm:px-6 lg:px-12 py-3 sm:py-4">
+        <section className="flex-1 min-h-0 px-3 sm:px-6 lg:px-12 pb-3 sm:pb-4">
           <div
-            className="mx-auto h-full"
+            className="mx-auto h-full overflow-hidden border-x bg-white"
             style={{
               maxWidth: "var(--archive-canvas-max)",
+              borderColor: "var(--archive-rule)",
               borderTop: "1px solid var(--archive-rule)",
               borderBottom: "1px solid var(--archive-rule)",
             }}
