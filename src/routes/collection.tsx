@@ -15,6 +15,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CategoryOverview } from "@/components/collection/CategoryOverview";
+import { CategoryIndex } from "@/components/collection/CategoryIndex";
 
 const INITIAL_BATCH = 48;
 const BATCH_INCREMENT = 48;
