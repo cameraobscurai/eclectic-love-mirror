@@ -2,26 +2,27 @@
 @source "../src";
 @import "tw-animate-css";
 
-/* Saol Display — owner-supplied OTFs served from /public/fonts.
- * Same-origin, cache-friendly, no auth required. Cormorant kept as a
- * network-loaded backup in case Saol fails to load. */
+/* Saol Display — owner-supplied OTFs bundled as Vite assets from
+ * src/assets/fonts. Vite rewrites url(...) to hashed, cache-friendly URLs
+ * served same-origin (avoids the dev-preview auth-bridge redirect that
+ * intercepts /public asset requests under a CORS context). */
 @font-face {
   font-family: "Saol Display";
-  src: url("/fonts/SaolDisplay-Regular.otf") format("opentype");
+  src: url("./assets/fonts/SaolDisplay-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Saol Display";
-  src: url("/fonts/SaolDisplay-Semibold.otf") format("opentype");
+  src: url("./assets/fonts/SaolDisplay-Semibold.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Saol Display";
-  src: url("/fonts/SaolDisplay-LightItalic.otf") format("opentype");
+  src: url("./assets/fonts/SaolDisplay-LightItalic.otf") format("opentype");
   font-weight: 300;
   font-style: italic;
   font-display: swap;
