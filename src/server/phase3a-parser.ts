@@ -151,10 +151,30 @@ function dedupeKeepOrder<T>(arr: T[], keyFn: (x: T) => string): T[] {
 // Extract image URLs from markdown ![alt](url) and metadata fallbacks
 function extractImages(markdown: string, metadata: Record<string, any> | null | undefined, sourceUrl: string): ParsedImage[] {
   const out: ParsedImage[] = []
+
+  // Squarespace structural cue: the product gallery sits BETWEEN the first H1 (product title)
+  // and the next major content boundary. The Instagram-feed footer always starts with the
+  // 'Hive_Script Follow Along' banner image, so anything after that is footer chrome.
+  // Many pages also repeat the H1 a second time before the description block — when present,
+  // that second H1 is the gallery terminator.
+  let body = markdown
+  const firstH1 = body.search(/^#\s+/m)
+  if (firstH1 >= 0) {
+    body = body.slice(firstH1)
+    // Drop the first H1 line itself
+    body = body.replace(/^#\s+[^\n]*\n?/, '')
+    // Cut at second H1 if present
+    const secondH1 = body.search(/^#\s+/m)
+    if (secondH1 >= 0) body = body.slice(0, secondH1)
+  }
+  // Hard-cut at the Instagram footer banner regardless
+  const footerCut = body.search(/Hive_Script[+\s]+Follow[+\s]+Along/i)
+  if (footerCut >= 0) body = body.slice(0, footerCut)
+
   const re = /!\[([^\]]*)\]\(([^)\s]+)/g
   let m: RegExpExecArray | null
   let pos = 0
-  while ((m = re.exec(markdown)) !== null) {
+  while ((m = re.exec(body)) !== null) {
     const alt = m[1]?.trim() || null
     const rawUrl = m[2]
     if (!isProductImageUrl(rawUrl)) continue
