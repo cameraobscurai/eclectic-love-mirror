@@ -75,7 +75,7 @@ export function Footer() {
 
 interface FooterColumnProps {
   title: string;
-  links: ReadonlyArray<{ href: string; label: string }>;
+  links: ReadonlyArray<{ href: string; label: string; hash?: string }>;
   className?: string;
 }
 
@@ -87,9 +87,10 @@ function FooterColumn({ title, links, className }: FooterColumnProps) {
       </h3>
       <ul className="space-y-3">
         {links.map((l) => (
-          <li key={l.href}>
+          <li key={`${l.href}${l.hash ?? ""}`}>
             <Link
               to={l.href}
+              hash={l.hash}
               className="text-[14px] text-cream/70 hover:text-cream transition-colors"
             >
               {l.label}

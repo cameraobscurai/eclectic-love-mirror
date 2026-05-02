@@ -134,10 +134,47 @@ function GalleryPage() {
 }
 
 function ProjectEntry({ project }: { project: GalleryProject }) {
-  const Wrapper = project.href ? Link : "div";
-  const wrapperProps = project.href
-    ? { to: project.href, className: "group block" }
-    : { className: "block" };
+  const body = (
+    <>
+      <h3 className="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.05] tracking-tight">
+        {project.name}
+      </h3>
+
+      {/* Hero image */}
+      <div className="mt-8 bg-white">
+        <img
+          src={project.heroImage.src}
+          alt={project.heroImage.alt}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
+      {/* Detail strip 01–07 style */}
+      {project.detailImages.length > 0 && (
+        <div className="mt-6 grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-2">
+          {project.detailImages.slice(0, 7).map((img, i) => (
+            <div key={i} className="aspect-square bg-white overflow-hidden">
+              <img
+                src={img.src}
+                alt={img.alt}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {project.note && (
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
+          {project.note}
+        </p>
+      )}
+    </>
+  );
 
   return (
     <li>
@@ -151,46 +188,13 @@ function ProjectEntry({ project }: { project: GalleryProject }) {
         </span>
       </div>
 
-      {/* @ts-expect-error — Wrapper type union */}
-      <Wrapper {...wrapperProps}>
-        <h3 className="font-display text-[clamp(1.75rem,3.5vw,2.75rem)] leading-[1.05] tracking-tight">
-          {project.name}
-        </h3>
-
-        {/* Hero image */}
-        <div className="mt-8 bg-white">
-          <img
-            src={project.heroImage.src}
-            alt={project.heroImage.alt}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-auto object-cover"
-          />
-        </div>
-
-        {/* Detail strip 01–07 style */}
-        {project.detailImages.length > 0 && (
-          <div className="mt-6 grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-2">
-            {project.detailImages.slice(0, 7).map((img, i) => (
-              <div key={i} className="aspect-square bg-white overflow-hidden">
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {project.note && (
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            {project.note}
-          </p>
-        )}
-      </Wrapper>
+      {project.href ? (
+        <Link to={project.href} className="group block">
+          {body}
+        </Link>
+      ) : (
+        <div className="block">{body}</div>
+      )}
     </li>
   );
 }
