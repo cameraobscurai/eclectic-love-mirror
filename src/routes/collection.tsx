@@ -525,7 +525,8 @@ function CollectionPage() {
               <option value="az">A–Z</option>
             </select>
 
-            {/* Density toggle — desktop only, quieter */}
+            {/* Density toggle — desktop only. Quiet active state: thin frame
+                + charcoal glyph instead of inverted black plate. */}
             <div
               className="hidden lg:flex items-center border border-charcoal/10"
               role="group"
@@ -537,8 +538,8 @@ function CollectionPage() {
                   "h-10 w-10 inline-flex items-center justify-center transition-colors",
                   "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "comfortable"
-                    ? "bg-charcoal text-white"
-                    : "text-charcoal/45 hover:text-charcoal",
+                    ? "text-charcoal bg-charcoal/[0.04]"
+                    : "text-charcoal/40 hover:text-charcoal/80",
                 ].join(" ")}
                 aria-label="Comfortable grid"
                 aria-pressed={density === "comfortable"}
@@ -551,8 +552,8 @@ function CollectionPage() {
                   "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
                   "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "dense"
-                    ? "bg-charcoal text-white"
-                    : "text-charcoal/45 hover:text-charcoal",
+                    ? "text-charcoal bg-charcoal/[0.04]"
+                    : "text-charcoal/40 hover:text-charcoal/80",
                 ].join(" ")}
                 aria-label="Dense grid"
                 aria-pressed={density === "dense"}
