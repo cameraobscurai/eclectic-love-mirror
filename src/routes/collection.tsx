@@ -1,8 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ErrorComponent } from "@tanstack/react-router";
 import { getCollectionCatalog } from "@/server/phase3-catalog.functions";
 import {
   CATEGORY_DISPLAY_ORDER,
@@ -15,6 +14,13 @@ import { useInquiry } from "@/hooks/use-inquiry";
 
 const SORTS = ["type", "az", "newest", "oldest"] as const;
 type SortKey = (typeof SORTS)[number];
+
+interface CollectionSearch {
+  category: string;
+  sub: string;
+  q: string;
+  sort: SortKey;
+}
 
 const searchSchema = z.object({
   category: fallback(z.string(), "").default(""),
@@ -48,29 +54,31 @@ export const Route = createFileRoute("/collection")({
 });
 
 function CollectionPage() {
-  const { products, facets, total } = Route.useLoaderData();
-  const { category, sub, q, sort } = Route.useSearch();
+  const data = Route.useLoaderData() as CatalogPayload;
+  const { products, facets, total } = data;
+  const search = Route.useSearch() as CollectionSearch;
+  const { category, sub, q, sort } = search;
   const navigate = useNavigate({ from: "/collection" });
 
-  // Default category: "lounge" if available; otherwise leave empty (= All)
+  // Default category: "lounge" if available
   useEffect(() => {
-    if (!category && facets.some((f) => f.slug === "lounge")) {
+    if (!category && facets.some((f: CategoryFacet) => f.slug === "lounge")) {
       navigate({
-        search: (prev) => ({ ...prev, category: "lounge" }),
+        search: (prev: CollectionSearch) => ({ ...prev, category: "lounge" }),
         replace: true,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Debounced search box
+  // Debounced search
   const [qLocal, setQLocal] = useState(q);
   useEffect(() => setQLocal(q), [q]);
   useEffect(() => {
     const t = setTimeout(() => {
       if (qLocal !== q) {
         navigate({
-          search: (prev) => ({ ...prev, q: qLocal, sub: "" }),
+          search: (prev: CollectionSearch) => ({ ...prev, q: qLocal, sub: "" }),
           replace: true,
         });
       }
@@ -79,7 +87,7 @@ function CollectionPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qLocal]);
 
-  // Subcategory facets for the active category
+  // Subcategory facets for active category
   const subcategoryFacets = useMemo(() => {
     if (!category) return [] as { label: string; count: number }[];
     const m = new Map<string, number>();
@@ -95,19 +103,14 @@ function CollectionPage() {
   // Filter + sort
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
-
-    let list = products.filter((p) => {
+    let list = products.filter((p: CollectionProduct) => {
       if (category && p.categorySlug !== category) return false;
       if (sub && p.subcategory !== sub) return false;
-      if (query) {
-        const t = p.title.toLowerCase();
-        if (!t.includes(query)) return false;
-      }
+      if (query && !p.title.toLowerCase().includes(query)) return false;
       return true;
     });
 
     if (query) {
-      // exact > starts-with > contains
       const rank = (p: CollectionProduct) => {
         const t = p.title.toLowerCase();
         if (t === query) return 0;
@@ -146,23 +149,26 @@ function CollectionPage() {
   // Quick view
   const [quickViewId, setQuickViewId] = useState<string | null>(null);
   const quickViewIndex = useMemo(
-    () => (quickViewId ? filtered.findIndex((p) => p.id === quickViewId) : -1),
+    () => (quickViewId ? filtered.findIndex((p: CollectionProduct) => p.id === quickViewId) : -1),
     [filtered, quickViewId],
   );
-  const quickViewProduct = quickViewIndex >= 0 ? filtered[quickViewIndex] : null;
+  const quickViewProduct: CollectionProduct | null =
+    quickViewIndex >= 0 ? filtered[quickViewIndex] : null;
 
   // Body scroll lock when Quick View open
   useEffect(() => {
-    if (!quickViewProduct) return;
+    if (!quickViewProduct) return undefined;
     document.body.style.overflow = "hidden";
-    return () => document.body.style.removeProperty("overflow");
+    return () => {
+      document.body.style.removeProperty("overflow");
+    };
   }, [quickViewProduct]);
 
   const hasActiveFilters = !!(category || sub || q);
   const resetAll = () => {
     setQLocal("");
     navigate({
-      search: () => ({ category: "", sub: "", q: "", sort: "type" }),
+      search: () => ({ category: "", sub: "", q: "", sort: "type" as SortKey }),
       replace: true,
     });
   };
@@ -179,35 +185,34 @@ function CollectionPage() {
             The Collection
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            A working rental inventory of furniture, lighting, tableware, and bespoke pieces. Browse
-            by category, search by name, then add favorites to an inquiry.
+            A working rental inventory of furniture, lighting, tableware, and bespoke pieces.
+            Browse by category, search by name, then add favorites to an inquiry.
           </p>
         </div>
       </section>
 
       {/* Sticky filter header */}
       <div className="sticky top-0 z-30 bg-cream/95 backdrop-blur-sm border-y border-charcoal/10">
-        {/* Category row */}
         <div className="px-6 lg:px-12 border-b border-charcoal/10">
-          <div className="max-w-7xl mx-auto flex gap-1 overflow-x-auto py-3 -mx-6 lg:-mx-12 px-6 lg:px-12 no-scrollbar">
+          <div className="max-w-7xl mx-auto flex gap-1 overflow-x-auto py-3 no-scrollbar">
             <CategoryPill
               label={`All (${total})`}
               active={!category}
               onClick={() =>
                 navigate({
-                  search: (prev) => ({ ...prev, category: "", sub: "" }),
+                  search: (prev: CollectionSearch) => ({ ...prev, category: "", sub: "" }),
                   replace: true,
                 })
               }
             />
-            {facets.map((f) => (
+            {facets.map((f: CategoryFacet) => (
               <CategoryPill
                 key={f.slug}
                 label={`${f.display} (${f.count})`}
                 active={category === f.slug}
                 onClick={() =>
                   navigate({
-                    search: (prev) => ({ ...prev, category: f.slug, sub: "" }),
+                    search: (prev: CollectionSearch) => ({ ...prev, category: f.slug, sub: "" }),
                     replace: true,
                   })
                 }
@@ -216,10 +221,9 @@ function CollectionPage() {
           </div>
         </div>
 
-        {/* Subcategory + controls row */}
         <div className="px-6 lg:px-12">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 py-3">
-            <div className="flex gap-1 overflow-x-auto no-scrollbar -mx-6 lg:mx-0 px-6 lg:px-0">
+            <div className="flex gap-1 overflow-x-auto no-scrollbar">
               {subcategoryFacets.length > 0 && (
                 <>
                   <SubPill
@@ -227,7 +231,7 @@ function CollectionPage() {
                     active={!sub}
                     onClick={() =>
                       navigate({
-                        search: (prev) => ({ ...prev, sub: "" }),
+                        search: (prev: CollectionSearch) => ({ ...prev, sub: "" }),
                         replace: true,
                       })
                     }
@@ -239,7 +243,7 @@ function CollectionPage() {
                       active={sub === s.label}
                       onClick={() =>
                         navigate({
-                          search: (prev) => ({ ...prev, sub: s.label }),
+                          search: (prev: CollectionSearch) => ({ ...prev, sub: s.label }),
                           replace: true,
                         })
                       }
@@ -262,7 +266,10 @@ function CollectionPage() {
                 value={sort}
                 onChange={(e) =>
                   navigate({
-                    search: (prev) => ({ ...prev, sort: e.target.value as SortKey }),
+                    search: (prev: CollectionSearch) => ({
+                      ...prev,
+                      sort: e.target.value as SortKey,
+                    }),
                     replace: true,
                   })
                 }
@@ -277,7 +284,6 @@ function CollectionPage() {
           </div>
         </div>
 
-        {/* Count row */}
         <div className="px-6 lg:px-12 border-t border-charcoal/10">
           <div className="max-w-7xl mx-auto flex items-center justify-between py-2.5">
             <p className="text-xs uppercase tracking-[0.2em] text-charcoal/60">
@@ -313,7 +319,7 @@ function CollectionPage() {
             </div>
           ) : (
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4">
-              {filtered.map((p) => (
+              {filtered.map((p: CollectionProduct) => (
                 <ProductCard key={p.id} product={p} onOpen={() => setQuickViewId(p.id)} />
               ))}
             </ul>
@@ -321,7 +327,6 @@ function CollectionPage() {
         </div>
       </section>
 
-      {/* Quick View modal */}
       {quickViewProduct && (
         <QuickView
           product={quickViewProduct}
@@ -333,21 +338,14 @@ function CollectionPage() {
         />
       )}
 
-      {/* Inquiry tray */}
       <InquiryTray />
     </main>
   );
 }
 
-/* -------------------- bits -------------------- */
-
 function CategoryPill({
   label, active, onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+}: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -365,11 +363,7 @@ function CategoryPill({
 
 function SubPill({
   label, active, onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+}: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -387,10 +381,7 @@ function SubPill({
 
 function ProductCard({
   product, onOpen,
-}: {
-  product: CollectionProduct;
-  onOpen: () => void;
-}) {
+}: { product: CollectionProduct; onOpen: () => void }) {
   return (
     <li>
       <button
@@ -411,8 +402,6 @@ function ProductCard({
               No image
             </div>
           )}
-
-          {/* Hover overlay clipping up from bottom */}
           <div className="absolute inset-x-0 bottom-0 bg-charcoal/85 text-cream px-3 py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <p className="text-xs leading-snug line-clamp-2">{product.title}</p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-cream/70">
@@ -440,10 +429,8 @@ function QuickView({
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  // Reset image when product changes
   useEffect(() => setImgIdx(0), [product.id]);
 
-  // Keyboard nav
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -467,13 +454,8 @@ function QuickView({
       aria-label={product.title}
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-6"
     >
-      <div
-        className="absolute inset-0 bg-charcoal/70 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-charcoal/70 backdrop-blur-sm" onClick={onClose} aria-hidden />
       <div className="relative w-full md:max-w-5xl bg-cream text-charcoal shadow-xl max-h-[92vh] md:max-h-[85vh] overflow-auto">
-        {/* Close + nav */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-cream/95 backdrop-blur border-b border-charcoal/10">
           <p className="text-[10px] uppercase tracking-[0.25em] text-charcoal/55">
             {product.displayCategory}
@@ -507,7 +489,6 @@ function QuickView({
         </div>
 
         <div className="grid md:grid-cols-2 gap-0">
-          {/* Image gallery */}
           <div className="bg-white">
             <div className="relative aspect-square">
               {img ? (
@@ -535,18 +516,13 @@ function QuickView({
                         : "border-charcoal/10 hover:border-charcoal/40",
                     )}
                   >
-                    <img
-                      src={im.url}
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-contain p-1"
-                    />
+                    <img src={im.url} alt="" className="absolute inset-0 w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Detail */}
           <div className="p-6 lg:p-8 flex flex-col">
             <h2 className="font-display text-3xl leading-tight">{product.title}</h2>
             <p className="mt-2 text-xs uppercase tracking-[0.2em] text-charcoal/55">
@@ -555,15 +531,9 @@ function QuickView({
             </p>
 
             <dl className="mt-6 space-y-3 text-sm">
-              {product.dimensions && (
-                <Row label="Dimensions" value={product.dimensions} />
-              )}
-              {product.stockedQuantity && (
-                <Row label="Stocked" value={product.stockedQuantity} />
-              )}
-              {product.isCustomOrder && (
-                <Row label="Availability" value="Custom order" />
-              )}
+              {product.dimensions && <Row label="Dimensions" value={product.dimensions} />}
+              {product.stockedQuantity && <Row label="Stocked" value={product.stockedQuantity} />}
+              {product.isCustomOrder && <Row label="Availability" value="Custom order" />}
             </dl>
 
             {product.description && (
@@ -606,7 +576,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function InquiryTray() {
   const { ids, count, clear } = useInquiry();
   if (count === 0) return null;
-  const href = `/contact?items=${ids.join(",")}#inquiry`;
+  const href = `/contact?items=${encodeURIComponent(ids.join(","))}#inquiry`;
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-charcoal text-cream shadow-2xl">
       <div className="flex items-center gap-4 px-5 py-3">
@@ -620,12 +590,8 @@ function InquiryTray() {
           Clear
         </button>
         <Link
-          to="/contact"
-          search={{ items: ids.join(",") } as never}
-          hash="inquiry"
+          to={href as never}
           className="bg-cream text-charcoal px-4 py-2 text-xs uppercase tracking-[0.22em] hover:bg-cream/85 transition-colors"
-          // Fallback href in case search/hash isn't typed at root
-          href={href}
         >
           Review inquiry
         </Link>
