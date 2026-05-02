@@ -303,7 +303,7 @@ function CollectionPage() {
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-y border-charcoal/10">
         {/* Primary category navigation — compact horizontal rail on all sizes.
             Full orientation lives in the right Inventory Index Rail (desktop). */}
-        <div className="px-6 lg:px-12 border-b border-charcoal/10">
+        <div className="lg:hidden px-6 border-b border-charcoal/10">
           <div className="max-w-7xl mx-auto">
             <LayoutGroup id="collection-primary-pills">
               <div className="relative">
