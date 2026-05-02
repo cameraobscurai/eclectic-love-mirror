@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { MediaAperture } from "@/components/media-aperture";
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof
@@ -99,9 +100,7 @@ function GalleryPage() {
                 ))}
               </ol>
             ) : (
-              <p className="mt-12 mb-16 font-display italic text-2xl md:text-3xl text-charcoal/55">
-                Selected projects are being prepared.
-              </p>
+              <PendingProjectsLayout />
             )}
           </div>
         </div>
