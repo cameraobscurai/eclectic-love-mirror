@@ -191,7 +191,7 @@ function HomePage() {
           )}
           style={{
             transitionDelay: loaded ? "300ms" : "0ms",
-            ...(parallaxOn
+            ...(useFramerParallax
               ? { x: wmX, y: wmY, willChange: "transform" }
               : {}),
           }}
