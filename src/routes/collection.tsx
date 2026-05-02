@@ -7,6 +7,8 @@ import { getCollectionCatalog } from "@/server/phase3-catalog.functions";
 import {
   CATEGORY_DISPLAY_ORDER,
   type CollectionProduct,
+  type CategoryFacet,
+  type CatalogPayload,
 } from "@/server/phase3-catalog.server";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
@@ -39,7 +41,7 @@ export const Route = createFileRoute("/collection")({
     ],
   }),
   validateSearch: zodValidator(searchSchema),
-  loader: () => getCollectionCatalog(),
+  loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => <div className="p-12">Not found</div>,
   component: CollectionPage,
