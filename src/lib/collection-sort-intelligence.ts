@@ -22,12 +22,16 @@
 import type { CollectionProduct } from "./phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
+  OWNER_BROWSE_ORDER as OWNER_TIER_ORDER,
+  BROWSE_GROUP_TIER,
   getProductBrowseGroup,
   type BrowseGroupId,
 } from "./collection-browse-groups";
 
-// Re-exported convenience for callers that want one import.
+// Full priority order (owner first, safety-net after). Used for By Type rank
+// so safety-net items naturally tail owner items in mixed views.
 export const OWNER_BROWSE_ORDER = BROWSE_GROUP_ORDER;
+export { OWNER_TIER_ORDER, BROWSE_GROUP_TIER };
 
 /**
  * Original-site category nav order (purely informational — the public browse
