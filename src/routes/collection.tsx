@@ -408,6 +408,17 @@ function CollectionPage() {
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
+      {/* Index Strip — desktop-only right-edge orientation rail. Mirrors the
+          left filter rail so a user can switch categories without scrolling
+          back to the top. */}
+      <CollectionIndexStrip
+        groups={orderedGroupIds}
+        activeGroup={activeGroup}
+        counts={groupCounts}
+        totalCount={allCount}
+        onSelect={selectGroup}
+      />
+
       {/* Hero — quiet, archive-style */}
       <section
         className="px-6 lg:px-12"
