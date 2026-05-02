@@ -39,21 +39,82 @@ const CATEGORY_DISPLAY_ORDER = [
   "Tables", "Dining", "Cocktail & Bar", "Tableware", "Textiles", "Pillows & Throws", "Rugs",
   "Lighting", "Large Decor", "Styling", "Accents", "Storage",
 ];
+// Subcategory keyword detection per category. Order matters — first match wins.
+// 0-count subcategories are auto-hidden in the UI by faceting against the
+// public-ready set, so over-listing here is safe.
 const SUBCATEGORY_RULES = {
-  "chairs-stools1": [{ label: "Stools", match: /\bstool/i }, { label: "Chairs", match: /\bchair/i }],
-  "benches-ottomans1": [{ label: "Ottomans", match: /\bottoman|pouf/i }, { label: "Benches", match: /\bbench/i }],
+  // Lounge Seating
+  lounge: [
+    { label: "Sofas", match: /\bsofa|loveseat|settee/i },
+    { label: "Benches", match: /\bbench/i },
+    { label: "Ottomans", match: /\bottoman|pouf/i },
+    { label: "Stools", match: /\bstool/i },
+    { label: "Chairs", match: /\bchair|armchair|club|wingback|slipper/i },
+  ],
+  "sofas-loveseats1": [
+    { label: "Sofas", match: /\bsofa/i },
+    { label: "Loveseats", match: /\bloveseat|settee/i },
+  ],
+  "chairs-stools1": [
+    { label: "Stools", match: /\bstool/i },
+    { label: "Chairs", match: /\bchair/i },
+  ],
+  "benches-ottomans1": [
+    { label: "Ottomans", match: /\bottoman|pouf/i },
+    { label: "Benches", match: /\bbench/i },
+  ],
+  // Tables
+  tables1: [
+    { label: "Dining Tables", match: /\bdining/i },
+    { label: "Highboys", match: /\bhighboy|high\s*top|cocktail\s*table|pub\s*table/i },
+    { label: "Consoles", match: /\bconsole/i },
+    { label: "Side Tables", match: /\bside\b|accent\s*table/i },
+    { label: "Coffee Tables", match: /\bcoffee/i },
+  ],
+  "lounge-tables": [
+    { label: "Coffee Tables", match: /\bcoffee/i },
+    { label: "Side Tables", match: /\bside\b|accent\s*table/i },
+    { label: "Consoles", match: /\bconsole/i },
+  ],
+  // Cocktail & Bar (both legacy slugs)
+  "cocktail-bar": [
+    { label: "Back Bars", match: /\bback\s*bar/i },
+    { label: "Bar Carts", match: /\bcart/i },
+    { label: "Bar Shelving", match: /\bshel(f|ving)|hutch|étagère|etagere/i },
+    { label: "Bars", match: /\bbar\b/i },
+  ],
+  bars1: [
+    { label: "Back Bars", match: /\bback\s*bar/i },
+    { label: "Bar Carts", match: /\bcart/i },
+    { label: "Bar Shelving", match: /\bshel(f|ving)|hutch|étagère|etagere/i },
+    { label: "Bars", match: /\bbar\b/i },
+  ],
+  // Large Decor
+  "large-decor": [
+    { label: "Screens", match: /\bscreen|divider|partition/i },
+    { label: "Fireplaces", match: /\bfireplace|hearth/i },
+    { label: "Planters", match: /\bplanter|urn|jardiniere/i },
+    { label: "Mirrors", match: /\bmirror/i },
+    { label: "Structures", match: /\barch|pergola|gazebo|column|pedestal|backdrop|frame|structure/i },
+  ],
+  // Lighting
   light: [
     { label: "Floor Lamps", match: /\bfloor\b.*\blamp|\blamp\b.*\bfloor/i },
     { label: "Table Lamps", match: /\btable\b.*\blamp|\blamp\b.*\btable/i },
     { label: "Pendants", match: /\bpendant|chandelier|sconce/i },
     { label: "Candles & Holders", match: /\bcandle|votive|hurricane/i },
   ],
-  "lounge-tables": [{ label: "Coffee Tables", match: /\bcoffee/i }, { label: "Side Tables", match: /\bside\b/i }, { label: "Console", match: /\bconsole/i }],
-  tables1: [{ label: "Dining Tables", match: /\bdining/i }, { label: "Console", match: /\bconsole/i }, { label: "Side Tables", match: /\bside\b/i }],
-  textiles: [{ label: "Linens", match: /\blinen|napkin|runner|tablecloth/i }, { label: "Throws", match: /\bthrow|blanket/i }],
-  tableware: [{ label: "Glassware", match: /\bglass|coupe|flute|tumbler|goblet/i }, { label: "Plates", match: /\bplate|charger/i }, { label: "Flatware", match: /\bflatware|spoon|fork|knife/i }],
-  "cocktail-bar": [{ label: "Bars", match: /\bbar\b/i }, { label: "Bar Carts", match: /\bcart/i }],
-  bars1: [{ label: "Bars", match: /\bbar\b/i }, { label: "Bar Carts", match: /\bcart/i }],
+  // Tableware
+  tableware: [
+    { label: "Glassware", match: /\bglass|coupe|flute|tumbler|goblet/i },
+    { label: "Plates", match: /\bplate|charger/i },
+    { label: "Flatware", match: /\bflatware|spoon|fork|knife/i },
+  ],
+  // Textiles / Linens
+  textiles: [
+    { label: "Linens", match: /\blinen|napkin|runner|tablecloth/i },
+    { label: "Throws", match: /\bthrow|blanket/i },
+  ],
 };
 const KNOWN_404 = "https://www.eclectichive.com/cocktail-bar/broadway-32in";
 const nullable = v => { if (v == null) return null; const t = v.trim(); return t.length === 0 ? null : t; };
