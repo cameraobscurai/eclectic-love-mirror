@@ -1,84 +1,130 @@
-# Apply Eclectic Hive Code Notes — Implementation Plan
+## Reframe
 
-This plan executes the working rules document verbatim. No deviations, no "improvements." Each change maps 1:1 to a numbered section in the notes.
+The earlier magnetic-repulsion idea reads as *interactive demo*, not luxury. Premium brands move slowly, narrowly, and with intent. The wordmark should feel like **etched cream glass on a frosted plate** — the cursor is a light source passing over it, not a force pushing it.
 
----
-
-## What changes, in order
-
-### 1. Kill the route-level transition (`src/routes/__root.tsx`)
-Remove the `<AnimatePresence>` + `<motion.div key={pathname}>` wrapper around `<Outlet />`. Replace with a bare `<Outlet />`. Drop the now-unused `AnimatePresence` / `motion` / `useReducedMotion` imports if nothing else in the file uses them.
-
-**Why first:** every other perf fix is invisible while the route outlet is still remounting under an animated wrapper.
-
-### 2. Enable preloading at the router (`src/router.tsx`)
-- `defaultPreload: "intent"`
-- `defaultPreloadStaleTime: 30_000` (currently 0 — re-fetches on every nav)
-- Keep `scrollRestoration: true`
-
-### 3. Preload on nav links (`src/components/navigation.tsx`)
-Add `preload="intent"` to every `<Link>` in the desktop bar and the mobile drawer.
-
-### 4. Preload on home CTAs (`src/routes/index.tsx`)
-The three destination CTAs (Atelier, Collection, Gallery) get `preload="viewport"` — mobile has no hover.
-
-### 5. Add `pendingComponent` to Collection (`src/routes/collection.tsx`)
-Add a `CollectionSkeleton` matching the spec exactly:
-- Sticky utility bar placeholder at `var(--nav-h)` + `var(--archive-utility-h)`
-- Container at `var(--archive-canvas-max)`
-- 8-cell hairline grid (`grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`, `aspect-[4/3]`)
-
-Wire on the route definition: `pendingComponent`, `pendingMs: 0`, `pendingMinMs: 150`.
-
-### 6. Strip `layoutId` + per-filter stagger from `ProductTile` (`src/components/collection/ProductTile.tsx`)
-- Remove `layoutId={` + `tile-${product.id}` `}` entirely. Keep `layout`.
-- Remove the `Math.min(index * 0.045, 0.42)` stagger. Per the notes' "simpler" recommendation: drop stagger entirely. Reflow is the visual event.
-- Drop the `delay: stagger` from the transition object.
-
-### 7. Gate the Collection scroll-driven hero (`src/routes/collection.tsx`)
-- Add `useScrollIdle(150)` hook (new file: `src/hooks/useScrollIdle.ts`).
-- Apply to the hero motion.div: only set the animated `style` object when `scrollIdle && !reduced`. Otherwise pass `undefined`.
-
-### 8. Fix meta-tag debt (`src/routes/__root.tsx`)
-Delete the three Lovable-scaffold strings:
-- second `description` containing "Seamless Site Mirror replicates…"
-- `og:description` with the same string
-- `twitter:description` with the same string
-
-Keep the first real `description` ("Two parts luxe…").
+Two systems. Both quiet. Both bulletproof.
 
 ---
 
-## Files touched
+## System 1 — Pixel-perfect band alignment (non-negotiable foundation)
 
-| File | Change |
+The wordmark must sit *exactly* on the band at every viewport. No `top-[X%]` guessing. This is the same anchor approach as before — it stands regardless of which interaction we layer on top.
+
+### Files
+
+**New** `src/hooks/useObjectCoverPoint.ts`
+- Inputs: `imgRef`, `{ xRatio, yRatio }` (point in source image, 0–1).
+- Computes screen position of that point given `object-fit: cover`:
+  ```text
+  scale   = max(elW / imgW, elH / imgH)
+  drawnH  = imgH * scale
+  offsetY = (elH - drawnH) * oy   // oy parsed from object-position
+  screenY = offsetY + yRatio * drawnH
+  ```
+- Recomputes on `ResizeObserver(imgEl)`, `img.onload`, and `window` resize (catches `md:` breakpoint flip on `object-position`).
+- Returns `{ x, y } | null`. SSR-safe.
+
+**Edit** `src/routes/index.tsx`
+- Add `imgRef` to hero `<motion.img>`.
+- One tunable: `BAND_CENTER_RATIO = 0.47` (single source of truth).
+- Wordmark wrapper: inline `style={{ top: bandY ?? "50%" }}`, drop `top-[50%]` class.
+- Inner div keeps `-translate-y-1/2` to center on its own height.
+
+**Fallback:** `top: 50%` until first measurement — no layout jump.
+
+**Tuning rule:** if it sits high or low, change `BAND_CENTER_RATIO` only. Never per-breakpoint values again.
+
+---
+
+## System 2 — Premium interaction (replaces magnet idea)
+
+Three quiet behaviors layered together. Each is subtle on its own; together they read as *considered craft*.
+
+### A. Cursor-driven specular highlight (the "light catch")
+
+The cream wordmark gets a faint highlight that tracks cursor angle, like glass etching catching a single light source. **No translation.** The wordmark does not move toward or away from the cursor.
+
+```text
+angle  = atan2(cursorY - wmCenterY, cursorX - wmCenterX)
+// shadow falls opposite the light
+shadowX = -cos(angle) * 4px
+shadowY = -sin(angle) * 4px
+textShadow:
+  ${shadowX}px ${shadowY}px 18px rgba(26,26,26,0.28),     // depth shadow opposite cursor
+  ${-shadowX*0.4}px ${-shadowY*0.4}px 12px rgba(245,242,237,0.12) // faint highlight toward cursor
+```
+
+Spring-smooth the angle with `{ stiffness: 50, damping: 22, mass: 1.0 }` — heavy, slow. No jitter, no snap.
+
+### B. Breathing letter-spacing (the "etched in glass" feel)
+
+Slow, ambient `letter-spacing` oscillation independent of cursor. ±0.005em over ~9 seconds, sine wave. Imperceptible per frame, palpable over time. Like watching glass settle.
+
+```text
+letterSpacing = 0.32em + sin(t / 4500) * 0.005em
+```
+
+Disabled under `prefers-reduced-motion`.
+
+### C. Micro-counter-drift (1–2px, not 10px)
+
+Keep counter-parallax but *dramatically* reduce it. Current is `[10, -10]` / `[6, -6]` — too much. Premium amount is `[2, -2]` / `[1.5, -1.5]`. The wordmark seems to *resist* the cursor without ever visibly moving — peripheral perception only.
+
+Also slower spring: `{ stiffness: 50, damping: 28, mass: 0.8 }`.
+
+### What we explicitly do NOT do
+
+- ❌ No magnetic repulsion (reads as toy)
+- ❌ No per-letter staggered motion (reads as portfolio site)
+- ❌ No scale on hover, no glow pulse, no entrance "wow"
+- ❌ No motion > 4px on the wordmark itself
+
+---
+
+## Why this reads premium
+
+| Quality | How we earn it |
 |---|---|
-| `src/routes/__root.tsx` | Remove route transition wrapper + meta debt |
-| `src/router.tsx` | Add `defaultPreload`, bump `defaultPreloadStaleTime` |
-| `src/components/navigation.tsx` | `preload="intent"` on all `<Link>`s |
-| `src/routes/index.tsx` | `preload="viewport"` on destination CTAs |
-| `src/routes/collection.tsx` | Add `CollectionSkeleton` + wire on Route + scroll-idle gating |
-| `src/components/collection/ProductTile.tsx` | Drop `layoutId`, drop filter stagger |
-| `src/hooks/useScrollIdle.ts` | **New file** |
+| Heavy / considered | Slow springs (stiffness 50, mass 0.8–1.0), ≤2px translation |
+| Crafted material | Specular highlight tracks cursor as if the mark is etched glass |
+| Alive but quiet | Breathing letter-spacing — only noticed if you look |
+| Pixel-perfect | Anchored to band feature in artwork, not viewport % |
+
+Reference check: Prada wordmarks don't *do* anything. Casa Carta hovers shift a hairline by 1px. Aesence is pure typographic restraint. We're matching that vocabulary.
 
 ---
 
-## What this plan does NOT do
+## Implementation order (single batch)
 
-- Does **not** add new motion. The notes are subtractive — every change either removes or quiets something.
-- Does **not** touch `QuickViewModal`, `InventoryIndexRail`, `CategoryIndex`, or other components with their own `layoutId` usage that is intra-component (not cross-route shared element). Those are legitimate and stay.
-- Does **not** refactor the home parallax. It's the one place in the spec where motion-on-scroll is allowed (it's pointer-driven on a fixed 100dvh hero, not scroll-driven).
-- Does **not** retroactively add the `useReveal` reference implementation to existing pages. That's a future-component pattern, not a back-port.
+1. Create `src/hooks/useObjectCoverPoint.ts`.
+2. Edit `src/routes/index.tsx`:
+   - Add `imgRef`, `BAND_CENTER_RATIO`, hook call → drives wrapper `top`.
+   - Replace `wmX`/`wmY` ranges from `[10,-10]`/`[6,-6]` → `[2,-2]`/`[1.5,-1.5]`. Slower spring.
+   - Add cursor-angle motion values + `useTransform` → `textShadow`.
+   - Add `requestAnimationFrame` loop for breathing `letterSpacing` (cleanup on unmount, gated on `!reduced`).
+   - Apply `top: bandY` to wrapper, `textShadow` + `letterSpacing` to inner brand div.
 
----
+## Tunables (collected at top of `HomePage`)
 
-## Order of execution (single batch)
+```text
+BAND_CENTER_RATIO    = 0.47    // vertical fraction of source image
+COUNTER_DRIFT_X      = 2       // px max
+COUNTER_DRIFT_Y      = 1.5     // px max
+SPECULAR_RADIUS      = 4       // px shadow offset
+BREATH_AMPLITUDE     = 0.005   // em
+BREATH_PERIOD        = 9000    // ms
+SPRING_DRIFT         = { stiffness: 50, damping: 28, mass: 0.8 }
+SPRING_LIGHT         = { stiffness: 50, damping: 22, mass: 1.0 }
+```
 
-All 8 changes go in one pass. They're independent at the file level (only `__root.tsx` is touched twice — transition wrapper + meta — but those are different line ranges). After landing, the next user navigation between Home → Collection should:
+## Risk register
 
-1. On hover (desktop) or viewport-entry (mobile), preload the collection chunk + loader data
-2. On click, swap routes instantly (no fade)
-3. If the chunk somehow isn't ready, paint `CollectionSkeleton` immediately
-4. Hydrate the real grid in place — tiles reflow on subsequent filter changes via `layout`, no stagger, no shared-element registration cost
+- **Hook returns null on first paint** → `top: 50%` fallback, no jump.
+- **Breakpoint switch on `object-position`** → window resize listener triggers recompute.
+- **rAF loop cost** → one `motionValue.set()` per frame, GPU-composited. Negligible.
+- **Reduced motion** → entire System 2 disabled; wordmark sits perfectly anchored, completely still. Still feels premium because alignment is correct.
+- **Coarse pointer (mobile)** → System 2 disabled. Same as reduced-motion path.
 
-If anything in step 1–4 still feels glitchy after this lands, it's a different bug and we diagnose fresh — not by re-adding the things this plan removes.
+## Out of scope for v1
+
+Per-letter motion, scale-on-hover, mobile tilt. None fit the register. If we want more later, the right next layer is a *very slow* ambient color temperature shift on the wordmark (cream → cream+1° warmer) tied to time of day — still passive, still quiet.
