@@ -104,13 +104,31 @@ const LABELED_RE = (label: string) => new RegExp(`(?:^|\\n)\\s*${label}\\s*[:\\-
 
 const SQUARESPACE_IMG_HOSTS = ['images.squarespace-cdn.com', 'static1.squarespace.com']
 
+// Filenames that appear on every product page (site chrome) and must be excluded.
+const CHROME_FILENAME_PATTERNS = [
+  /^logo[_\-]?/i,
+  /^favicon/i,
+  /^sprite/i,
+  /^image-asset\./i,            // Squarespace generic placeholder
+  /^hive[_\-]?script/i,         // "Hive_Script Follow Along" footer banner
+  /follow[_\-+]?along/i,
+  /^uc$/i,                       // 1-byte placeholder
+  /^uc\./i,
+  /banner|header|footer/i,
+]
+
+function isChromeFilename(filename: string | null): boolean {
+  if (!filename) return false
+  const f = filename.replace(/\?.*$/, '')
+  return CHROME_FILENAME_PATTERNS.some((re) => re.test(f))
+}
+
 function isProductImageUrl(u: string): boolean {
   try {
     const url = new URL(u)
     if (!SQUARESPACE_IMG_HOSTS.includes(url.hostname)) return false
-    const lastSeg = (url.pathname.split('/').pop() || '').toLowerCase()
-    // Exclude logos, favicons, banners, og previews where obvious
-    if (/logo|favicon|sprite/.test(lastSeg)) return false
+    const lastSeg = decodeURIComponent(url.pathname.split('/').pop() || '').toLowerCase()
+    if (isChromeFilename(lastSeg)) return false
     return /\.(png|jpe?g|webp|gif|avif)/i.test(lastSeg) || url.searchParams.has('format')
   } catch {
     return false
