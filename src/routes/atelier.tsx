@@ -1,26 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
+import { AtelierTeam } from "@/components/atelier/team";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
 //
-// Six sections: Hero · The Team · The Creative Space · Scope + Fabrication
-// · Atelier Approach · CTA. No FAQ on this page. No fake portraits, no fake
-// roster rows, no stock studio shots. Empty arrays render text-only blocks.
+// Six sections in fixed order:
+//   1. Hero
+//   2. THE TEAM       (real staff module — names + roles + portrait apertures)
+//   3. The Creative Space
+//   4. Scope + Fabrication
+//   5. Atelier Approach (Imagined · Refined · Crafted)
+//   6. CTA
+//
+// No FAQ here. No fake portraits, no stock studio shots. Empty arrays render
+// designed apertures, not blank space.
 // ---------------------------------------------------------------------------
-
-interface TeamMember {
-  name: string;
-  role: string;
-  portraitSrc?: string;
-}
 
 interface SpaceImage {
   src: string;
   alt: string;
 }
 
-const TEAM: TeamMember[] = [];
 const SPACE_IMAGES: SpaceImage[] = [];
 
 const CAPABILITIES = [
