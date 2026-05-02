@@ -1,4 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useInquiry } from "@/hooks/use-inquiry";
+
+// ---------------------------------------------------------------------------
+// Contact — one editorial intake form (no wizard, no steppers).
+//
+// Visible sections, all in one scroll:
+//   1. YOUR INFORMATION       (name, email, phone, planner/direct client)
+//   2. EVENT DETAILS          (event type, service type, date, budget)
+//   3. VISION + SELECTED PIECES (selected from Collection, then vision)
+//
+// Data contract preserved from the prior wizard:
+//   • All fields above survive into the inquiry payload.
+//   • Selected Collection item ids come from ?items=… (Inquiry tray handoff)
+//     and from the local useInquiry store, merged + deduped.
+//   • Honeypot + simple client-side rate limit.
+//   • Backend table: public.inquiries (anon insert allowed by RLS).
+//     Structured payload is serialized into `message`, with the first
+//     selected item id stored on `item_id`.
+//   • Success state clears the inquiry store. Failure surfaces hello@…
+// ---------------------------------------------------------------------------
 
 const FAQ_ITEMS = [
   {
@@ -19,6 +41,33 @@ const FAQ_ITEMS = [
   },
 ];
 
+const PLANNER_OPTIONS = ["Direct client", "Event planner / designer"] as const;
+const EVENT_TYPES = [
+  "Wedding",
+  "Meetings + Incentive",
+  "Social",
+  "Corporate",
+  "Other",
+] as const;
+const SERVICE_TYPES = [
+  "Full-service design + production",
+  "Design + fabrication",
+  "Rental from Collection",
+  "Not sure yet",
+] as const;
+const BUDGET_RANGES = [
+  "Under $25k",
+  "$25k – $75k",
+  "$75k – $150k",
+  "$150k – $300k",
+  "$300k+",
+  "Not sure yet",
+] as const;
+
+const SUPPORT_EMAIL = "hello@eclectichive.com";
+const RATE_LIMIT_KEY = "hive.contact.lastSubmitAt.v1";
+const RATE_LIMIT_MS = 30_000;
+
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
@@ -26,47 +75,367 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Get in touch with Eclectic Hive — luxury event design, fabrication, and rental from Denver, Colorado.",
+          "Inquire about design, fabrication, and production with Eclectic Hive — Denver, Colorado.",
       },
       { property: "og:title", content: "Contact — Eclectic Hive" },
-      { property: "og:description", content: "Inquiries: hello@eclectichive.com." },
+      { property: "og:description", content: `Inquiries: ${SUPPORT_EMAIL}` },
     ],
   }),
   component: ContactPage,
 });
 
+interface SelectedPiece {
+  id: string;
+  title: string;
+  category: string | null;
+}
+
 function ContactPage() {
+  const { ids: storeIds, clear: clearInquiry } = useInquiry();
+
+  // Merge URL ?items=… with local inquiry store. URL wins for ordering.
+  const initialIds = useMemo(() => {
+    if (typeof window === "undefined") return [] as string[];
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("items") ?? "";
+    const fromUrl = raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const merged = [...fromUrl, ...storeIds.filter((id) => !fromUrl.includes(id))];
+    return merged;
+  }, [storeIds]);
+
+  const [pieces, setPieces] = useState<SelectedPiece[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    if (initialIds.length === 0) {
+      setPieces([]);
+      return;
+    }
+    (async () => {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id,title,category")
+        .in("id", initialIds);
+      if (cancelled || error || !data) return;
+      // Preserve initialIds ordering
+      const byId = new Map(data.map((d) => [d.id, d as SelectedPiece]));
+      setPieces(
+        initialIds
+          .map((id) => byId.get(id))
+          .filter((x): x is SelectedPiece => Boolean(x)),
+      );
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialIds]);
+
+  // Form state
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [plannerStatus, setPlannerStatus] = useState<string>("");
+  const [eventType, setEventType] = useState<string>("");
+  const [serviceType, setServiceType] = useState<string>("");
+  const [eventDate, setEventDate] = useState("");
+  const [budget, setBudget] = useState<string>("");
+  const [vision, setVision] = useState("");
+  const honeypotRef = useRef<HTMLInputElement>(null);
+
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  function removePiece(id: string) {
+    setPieces((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setErrorMsg(null);
+
+    // Honeypot
+    if (honeypotRef.current && honeypotRef.current.value.trim() !== "") {
+      setSuccess(true); // silent accept
+      return;
+    }
+
+    // Required fields
+    if (!name.trim() || !email.trim() || !vision.trim()) {
+      setErrorMsg("Please add your name, email, and a short note about your vision.");
+      return;
+    }
+
+    // Rate limit
+    if (typeof window !== "undefined") {
+      const last = Number(window.localStorage.getItem(RATE_LIMIT_KEY) ?? 0);
+      if (Date.now() - last < RATE_LIMIT_MS) {
+        setErrorMsg("Just received your last inquiry — please wait a moment before sending another.");
+        return;
+      }
+    }
+
+    setSubmitting(true);
+
+    const subjectParts = [
+      eventType || "Inquiry",
+      serviceType,
+      eventDate,
+    ].filter(Boolean);
+    const subject = subjectParts.join(" · ");
+
+    const messageLines = [
+      `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
+      plannerStatus ? `Capacity: ${plannerStatus}` : null,
+      "",
+      "— Event details —",
+      eventType ? `Event type: ${eventType}` : null,
+      serviceType ? `Service: ${serviceType}` : null,
+      eventDate ? `Date / timeframe: ${eventDate}` : null,
+      budget ? `Budget: ${budget}` : null,
+      "",
+      "— Vision —",
+      vision.trim(),
+      "",
+      pieces.length > 0 ? "— Selected from Collection —" : null,
+      ...pieces.map((p) => `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`),
+    ].filter((l): l is string => l !== null);
+
+    const payload = {
+      name: name.trim().slice(0, 200),
+      email: email.trim().slice(0, 320),
+      phone: phone.trim() ? phone.trim().slice(0, 50) : null,
+      subject: subject.slice(0, 250) || null,
+      message: messageLines.join("\n").slice(0, 5000),
+      item_id: pieces[0]?.id ?? null,
+    };
+
+    const { error } = await supabase.from("inquiries").insert(payload);
+    setSubmitting(false);
+
+    if (error) {
+      setErrorMsg(
+        `We couldn't send that just now. Please email ${SUPPORT_EMAIL} and we'll respond directly.`,
+      );
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+    }
+    clearInquiry();
+    setPieces([]);
+    setSuccess(true);
+  }
+
   return (
     <main className="min-h-screen bg-cream text-charcoal pt-32 pb-32">
-      <div className="max-w-3xl mx-auto px-6 lg:px-12">
-        <p className="text-xs uppercase tracking-[0.3em] text-charcoal/50">
-          CONTACT
-        </p>
-        <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
-          Let's begin.
-        </h1>
-        <p className="mt-10 text-lg leading-relaxed text-charcoal/70">
-          Tell us about your event. We'll respond within two business days.
-        </p>
-        <div className="mt-12 space-y-4 text-charcoal/80">
-          <p>
-            <span className="block text-xs uppercase tracking-[0.22em] text-charcoal/40">
-              EMAIL
-            </span>
-            <a className="editorial-link" href="mailto:hello@eclectichive.com">
-              hello@eclectichive.com
-            </a>
-          </p>
-          <p>
-            <span className="block text-xs uppercase tracking-[0.22em] text-charcoal/40">
-              STUDIO
-            </span>
-            Denver, Colorado
-          </p>
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* LEFT — editorial intro */}
+          <aside className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+              CONTACT
+            </p>
+            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] tracking-tight">
+              Let's make something unforgettable.
+            </h1>
+            <p className="mt-8 max-w-md text-[15px] leading-relaxed text-charcoal/70">
+              Tell us about your event in one place. We respond within two
+              business days with next steps and a consultation call.
+            </p>
+            <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
+              <p>
+                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                  EMAIL
+                </span>
+                <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
+                  {SUPPORT_EMAIL}
+                </a>
+              </p>
+              <p>
+                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                  STUDIO
+                </span>
+                Denver, Colorado
+              </p>
+            </div>
+          </aside>
+
+          {/* RIGHT — single form */}
+          <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
+            {success ? (
+              <SuccessPanel />
+            ) : (
+              <form onSubmit={onSubmit} noValidate className="space-y-16">
+                {/* 1. YOUR INFORMATION */}
+                <FormSection number="01" label="Your information">
+                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+                    <Field label="Name" required>
+                      <UnderlineInput
+                        value={name}
+                        onChange={setName}
+                        autoComplete="name"
+                        required
+                      />
+                    </Field>
+                    <Field label="Email" required>
+                      <UnderlineInput
+                        value={email}
+                        onChange={setEmail}
+                        type="email"
+                        autoComplete="email"
+                        required
+                      />
+                    </Field>
+                    <Field label="Phone">
+                      <UnderlineInput
+                        value={phone}
+                        onChange={setPhone}
+                        type="tel"
+                        autoComplete="tel"
+                      />
+                    </Field>
+                    <Field label="You are">
+                      <PillGroup
+                        options={[...PLANNER_OPTIONS]}
+                        value={plannerStatus}
+                        onChange={setPlannerStatus}
+                      />
+                    </Field>
+                  </div>
+
+                  {/* Honeypot — hidden from users, visible to bots. */}
+                  <div
+                    aria-hidden
+                    className="absolute opacity-0 pointer-events-none -left-[10000px] top-auto"
+                  >
+                    <label>
+                      Company
+                      <input ref={honeypotRef} type="text" tabIndex={-1} autoComplete="off" />
+                    </label>
+                  </div>
+                </FormSection>
+
+                {/* 2. EVENT DETAILS */}
+                <FormSection number="02" label="Event details">
+                  <div className="space-y-8">
+                    <Field label="Event type">
+                      <PillGroup
+                        options={[...EVENT_TYPES]}
+                        value={eventType}
+                        onChange={setEventType}
+                      />
+                    </Field>
+                    <Field label="Service">
+                      <PillGroup
+                        options={[...SERVICE_TYPES]}
+                        value={serviceType}
+                        onChange={setServiceType}
+                      />
+                    </Field>
+                    <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+                      <Field label="Date or timeframe">
+                        <UnderlineInput
+                          value={eventDate}
+                          onChange={setEventDate}
+                          placeholder="e.g. October 2026"
+                        />
+                      </Field>
+                      <Field label="Budget range">
+                        <PillGroup
+                          options={[...BUDGET_RANGES]}
+                          value={budget}
+                          onChange={setBudget}
+                        />
+                      </Field>
+                    </div>
+                  </div>
+                </FormSection>
+
+                {/* 3. VISION + SELECTED PIECES */}
+                <FormSection number="03" label="Vision + selected pieces">
+                  {pieces.length > 0 && (
+                    <div className="mb-10">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
+                        SELECTED FROM COLLECTION ({String(pieces.length).padStart(2, "0")})
+                      </p>
+                      <ul
+                        className="divide-y"
+                        style={{ borderColor: "var(--archive-rule)" }}
+                      >
+                        {pieces.map((p) => (
+                          <li
+                            key={p.id}
+                            className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
+                            style={{ borderColor: "var(--archive-rule)" }}
+                          >
+                            <div className="flex items-baseline gap-4 min-w-0">
+                              <span className="text-[13px] tracking-[0.05em] text-charcoal/85 truncate">
+                                {p.title}
+                              </span>
+                              {p.category && (
+                                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
+                                  {p.category}
+                                </span>
+                              )}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => removePiece(p.id)}
+                              className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                            >
+                              REMOVE
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <Field label="Tell us about your vision" required>
+                    <textarea
+                      value={vision}
+                      onChange={(e) => setVision(e.target.value)}
+                      rows={6}
+                      required
+                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[15px] leading-relaxed text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
+                      placeholder="Story, mood, references, venue, anything that helps us begin."
+                    />
+                  </Field>
+                </FormSection>
+
+                {/* Submit */}
+                <div className="pt-4">
+                  {errorMsg && (
+                    <p className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                      {errorMsg}
+                    </p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="text-xs uppercase tracking-[0.22em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                  >
+                    {submitting ? "SENDING…" : "SEND INQUIRY"}
+                  </button>
+                  <p className="mt-6 text-[11px] text-charcoal/45">
+                    Or email us directly at{" "}
+                    <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
+                      {SUPPORT_EMAIL}
+                    </a>
+                    .
+                  </p>
+                </div>
+              </form>
+            )}
+          </section>
         </div>
 
         {/* FAQ — anchor target for /contact#faq */}
-        <section id="faq" className="mt-24 scroll-mt-32">
+        <section id="faq" className="mt-32 scroll-mt-32">
           <div
             className="border-t pt-10"
             style={{ borderColor: "var(--archive-rule)" }}
@@ -79,7 +448,7 @@ function ContactPage() {
             </h2>
 
             <ul
-              className="mt-10 divide-y"
+              className="mt-10 divide-y max-w-3xl"
               style={{ borderColor: "var(--archive-rule)" }}
             >
               {FAQ_ITEMS.map((item) => (
@@ -111,5 +480,142 @@ function ContactPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Form primitives — quiet editorial styling, underline inputs, pill choices
+// ---------------------------------------------------------------------------
+
+function FormSection({
+  number,
+  label,
+  children,
+}: {
+  number: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className="border-t pt-10 relative"
+      style={{ borderColor: "var(--archive-rule)" }}
+    >
+      <div className="flex items-baseline gap-4 mb-10">
+        <span className="font-display text-base text-charcoal/40 tabular-nums">
+          {number}
+        </span>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/55">
+          {label}
+        </p>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
+        {label}
+        {required && <span className="text-charcoal/30"> ·</span>}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function UnderlineInput({
+  value,
+  onChange,
+  type = "text",
+  required,
+  autoComplete,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
+  placeholder?: string;
+}) {
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      required={required}
+      autoComplete={autoComplete}
+      placeholder={placeholder}
+      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[15px] text-charcoal placeholder:text-charcoal/35 transition-colors"
+    />
+  );
+}
+
+function PillGroup({
+  options,
+  value,
+  onChange,
+}: {
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const active = value === opt;
+        return (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(active ? "" : opt)}
+            aria-pressed={active}
+            className={[
+              "text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+              active
+                ? "bg-charcoal text-cream border-charcoal"
+                : "border-charcoal/25 text-charcoal/70 hover:border-charcoal/60 hover:text-charcoal",
+            ].join(" ")}
+          >
+            {opt}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function SuccessPanel() {
+  return (
+    <div
+      className="border-t pt-12"
+      style={{ borderColor: "var(--archive-rule)" }}
+    >
+      <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+        RECEIVED
+      </p>
+      <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
+        Thank you. Your inquiry is with the studio.
+      </h2>
+      <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-charcoal/70">
+        We respond within two business days. If your event is time-sensitive,
+        email us directly at{" "}
+        <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
+          {SUPPORT_EMAIL}
+        </a>
+        .
+      </p>
+    </div>
   );
 }
