@@ -1,91 +1,54 @@
+# Home — Use the reference image as the actual backdrop
+
+Pivot. We're done iterating on multi-pane glass compositions. The uploaded image already contains the full composition (triptych glass panes, sketch + swatch moodboard behind, etched ECLECTIC HIVE wordmark in a center frosted plate). We use it as a single full-bleed backdrop and layer the live CTA bar on top.
+
+## What stays from current home
+
+- `100dvh`, no scroll, `lg:overflow-hidden`
+- Three LiquidGlass CTAs (Atelier · Collection · Gallery) bottom-anchored
+- Loaded-state stagger animation on the CTAs
+- All existing route metadata in `Route.head()`
+
 ## What changes
 
-`/collection` no longer renders 876 tiles by default. The default landing is a **category gallery** — 18 large image cards, one per browse group. The product grid only ever mounts when the user picks a category (or types a search query). "All Inventory" is removed as a destination because, as you said, no one was actually using it as one.
+1. Save the uploaded reference image as the hero backdrop:
+   - Copy `user-uploads://omni-ea6d508c-93d0-4077-9e76-c9978b97dc3c.png` → `src/assets/home-hero.png`
+   - Import it as an ES6 module: `import homeHero from "@/assets/home-hero.png"`
+
+2. Remove the 4-aperture grid and `HomeAperture` component entirely from `src/routes/index.tsx`.
+
+3. Remove the duplicate live `<h1>ECLECTIC HIVE</h1>` wordmark — the wordmark is already baked into the image. Rendering a second one would double-stamp it. We keep the h1 in the DOM for SEO/accessibility but make it `sr-only` (screen-reader only).
+
+4. Render the image as a full-bleed `<img>` with `object-cover, object-center` filling the section. On wide screens this crops the edges; on narrow screens it focuses on the center plate. Add a soft bottom gradient (charcoal → transparent over the bottom 25%) so the LiquidGlass CTAs read cleanly without competing with the moodboard texture.
+
+5. Mobile (<md): same image, `object-cover` with `object-position: 50% 35%` to keep the center plate (where the wordmark lives) above the CTAs.
+
+## Layer stack
 
 ```text
-┌─ /collection (no group) ─────────────────────────────────┐
-│  THE COLLECTION                                          │
-│                                                          │
-│  BROWSE THE ARCHIVE                       18 categories  │
-│  ┌────────┐  ┌────────┐  ┌────────┐                      │
-│  │ image  │  │ image  │  │ image  │                      │
-│  │        │  │        │  │        │                      │
-│  └────────┘  └────────┘  └────────┘                      │
-│  Sofas  44   Chairs  76   Lighting  48                   │
-│  ┌────────┐  ┌────────┐  ┌────────┐                      │
-│  │ image  │  │ image  │  │ image  │                      │
-│  ...                                                     │
-└──────────────────────────────────────────────────────────┘
-
-User clicks "Sofas" → /collection?group=sofas
-
-┌─ /collection?group=sofas ────────────────────────────────┐
-│  THE COLLECTION · SOFAS · 44                             │
-│  ← All Categories                                        │
-│  [filter rail]  [44-piece sofa grid]  [progress rail]    │
-└──────────────────────────────────────────────────────────┘
+[ <img src=homeHero> full-bleed object-cover ]   ← backdrop (the whole composition)
+[ bottom gradient: transparent → charcoal/55% ]  ← legibility wash for CTAs
+[ <h1 class="sr-only">ECLECTIC HIVE</h1> ]       ← invisible, for SEO/a11y
+[ LiquidGlass CTA row, bottom-pinned ]           ← unchanged
 ```
 
-## Files
+## Files touched
 
-### New
+- **Edit** `src/routes/index.tsx` — remove `HomeAperture` + grid, remove visible h1 stagger, add full-bleed `<img>`, keep CTA section.
+- **Add** `src/assets/home-hero.png` — copied from the upload.
 
-**`src/components/collection/CategoryGalleryOverview.tsx`**
-- 18 cards in a 3-col desktop / 2-col mobile grid
-- Each card: 4:5 portrait hero (first product in the group with an image, served at `?format=800w`), category name in display type, count, and an "Archive" eyebrow on safety-net categories so the owner-tier hierarchy is still felt
-- One image request per card → 18 images total, vs the current 60+ — and they're never stuck behind layout-animated tiles
-- Capped stagger (max 360ms), no AnimatePresence, no LayoutGroup
+No data, no routes, no DB, no storage, no migrations. Only a static asset and a markup simplification.
 
-### Edited
+## Honest tradeoffs
 
-**`src/routes/collection.tsx`** — the only structural edit
-- Compute `groupBuckets`: `groupProductsByBrowseGroup(products)` once via `useMemo`, then map to `[{ id, products }]` in `BROWSE_GROUP_ORDER`
-- New branching at the grid render point:
-  - `if (!activeGroup && !q.trim())` → render `<CategoryGalleryOverview>` (no filter rail to the left, no progress rail to the right; full-width canvas — see Layout section below)
-  - else → render the product grid as today, just for the one active category or search results
-- Sticky wordmark text logic simplified: overview screen says "THE COLLECTION"; category screen keeps the existing "THE COLLECTION · SOFAS · 44" pattern
-- Initial batch / load-more constants stay the same — they only matter for the per-category grid now, where the largest bucket (Pillows, 147) is the worst case. Still trim `INITIAL_BATCH` from 60 → 36 since no category needs 60 above the fold
+- The image is a fixed composition. We won't be able to swap individual panes or rotate moods without re-shooting. That's fine — you've now seen the multi-mood version idea and chose this. Locking it as one image is faster to ship, lighter to load (one PNG vs N glass layers + sketches), and matches the reference exactly.
+- If the page is viewed on an ultrawide monitor, `object-cover` will crop the left/right edges of the moodboard. The wordmark stays centered and intact because it lives in the middle of the image.
+- We keep the file at PNG to preserve the sharp etched typography on the center glass plate. If file size becomes an issue we can re-export as a high-quality WebP, but I'd ship PNG first and only optimize if there's an actual perf hit.
 
-**`src/components/collection/CollectionFilterRail.tsx`**
-- Remove the "All Inventory" `FilterRow` at the top
-- Add a quiet "← All Categories" return link at the top of the rail (inherits the same uppercase tracking register, but in `text-charcoal/55`, no border-l). Visible only when `activeGroup` is set
-- When no group is active (overview screen), the rail isn't rendered at all (see route layout change)
+## QA after build
 
-### Untouched
-- `CategoryOverview.tsx` and `CategoryIndex.tsx` stay where they are. Not deleted in this pass — they may still be useful for the contact / search surfaces. Just not wired into the route.
-- `ProductTile`, `QuickViewModal`, scroll-spy, inquiry tray — no changes
-- `phase3_catalog.json`, browse-group rules, sort intelligence — no changes
-
-## Layout: how the canvas reflows
-
-Currently the body is a 3-column cage: `[filter rail | grid | progress rail]`. On the overview screen, the cage collapses to a single full-width column — the gallery doesn't need a filter rail (each card IS the filter) and doesn't need a progress rail (no scroll-spy section to track).
-
-Implementation: keep the same outer cage container (so the hairline frame stays consistent), but conditionally render the rails as `null` and switch the grid columns to `lg:grid-cols-1` when on the overview. The hairline cage keeps the frame intact; only the internal subdivision changes.
-
-## Hero image picking
-
-For each browse group bucket, take `products.find(p => p.primaryImage)?.primaryImage`. The catalog is already sorted by `scrapedOrder` so this is a stable, well-known piece per group. No new data, no manual curation, no risk of the wrong image appearing — it's whatever the first piece in that group is, every time.
-
-If you want to override later (say "Sofas should always lead with the Cammye loveseat"), it's a one-line override map in `CategoryGalleryOverview` — out of scope for this pass.
-
-## Performance impact
-
-- Overview screen: **18 image requests** at 800w (vs 60+ at 750w today)
-- Category screen: typically **30–80 tiles** (Sofas 44, Chairs 76, Lighting 48). Pillows 147 and Styling 60 are the only buckets that approach the old size, and both are paginated by Load More
-- No more `LayoutGroup` + `AnimatePresence` over 60 tiles on first paint
-- No more "All Inventory" sort-intelligence pass (`sortProductsForCollection` over 876 items)
-
-## Out of scope
-
-- Virtualization (option #2). Not needed once nothing renders 876 tiles
-- Search-first surface (option #3). Search still works exactly as today
-- Reordering or relabeling the 18 categories
-- New hero images — uses what's already in the catalog
-- Removing the now-unused `CategoryOverview.tsx` (defer; small risk of breaking other consumers)
-
-## What you'll see after
-
-- Land on /collection → instant clean grid of 18 categories, each with one beautiful image. No hangs, no skeletons sitting empty
-- Click a category → fast load of just that category's pieces, with the existing rail + progress UI
-- "← All Categories" in the rail to come back
-- Sticky header always knows where you are: "THE COLLECTION" on the overview, "THE COLLECTION · SOFAS · 44" inside a category
+1. No scrollbar at 1303×900.
+2. Wordmark renders sharp inside the center plate (no double-wordmark from the old h1).
+3. CTAs remain readable against the bottom of the image.
+4. Mobile view keeps the wordmark visible above the CTA stack.
+5. Image actually loads (correct asset import path).
