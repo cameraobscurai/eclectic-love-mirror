@@ -237,7 +237,6 @@ function AtelierPage() {
           <MediaAperture ratio="1/1" />
         </div>
       </Section>
-      </Section>
 
       {/* 5. ATELIER APPROACH triptych */}
       <Section eyebrow="Atelier Approach">
