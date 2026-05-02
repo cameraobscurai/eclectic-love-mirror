@@ -1,23 +1,32 @@
 /**
- * Owner-priority browse hierarchy for the Collection page.
+ * Owner-priority browse hierarchy + safety-net taxonomy for the Collection page.
  *
- * NON-DESTRUCTIVE: this file does NOT mutate phase3_catalog.json, does NOT
+ * NON-DESTRUCTIVE: this module does NOT mutate phase3_catalog.json, does NOT
  * change product records, and does NOT affect publicReady counts. It computes
  * a display-only browse-group taxonomy on top of the existing Phase 3
- * categories using keyword rules against `title` and `categorySlug`.
+ * categories using keyword + categorySlug rules.
  *
- * The owner gave a best-seller-driven priority order. That order is the
- * primary browsing spine — NOT the raw scraped category slugs. Use the
- * helpers below to render category navigation, overview bands, and grid
- * filtering.
+ * Two tiers, both surfaced publicly:
  *
- * Priority tie-break: a product that matches multiple groups is assigned to
- * the FIRST matching group in BROWSE_GROUP_ORDER.
+ *   1. OWNER tier — owner-provided best-seller hierarchy. Leads everywhere
+ *      (browse line row 1, overview band order, By Type sort).
+ *
+ *   2. SAFETY-NET tier — catches every other public-ready slug so all 876
+ *      pieces are reachable via a real browse group, never search-only.
+ *      Renders quieter than owner groups but is fully navigable.
+ *
+ * Owner groups are keyword-gated (intentional matches). Safety-net groups
+ * accept anything from their `categories` even without a keyword hit — that
+ * fallback is what makes the taxonomy shippable at <5% unassigned.
+ *
+ * Priority tie-break: a product is assigned to the FIRST matching group in
+ * BROWSE_GROUP_ORDER (owner first, then safety-net).
  */
 
 import type { CollectionProduct } from "./phase3-catalog";
 
 export type BrowseGroupId =
+  // Owner tier
   | "sofas"
   | "chairs"
   | "coffee-tables"
@@ -29,10 +38,19 @@ export type BrowseGroupId =
   | "storage"
   | "tableware"
   | "serveware"
-  | "styling";
+  | "styling"
+  // Safety-net tier
+  | "benches-ottomans"
+  | "dining"
+  | "lighting"
+  | "throws"
+  | "large-decor"
+  | "accents";
+
+export type BrowseTier = "owner" | "safety-net";
 
 /** Owner priority order — strongest seller first. */
-export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
+export const OWNER_BROWSE_ORDER: BrowseGroupId[] = [
   "sofas",
   "chairs",
   "coffee-tables",
@@ -45,6 +63,22 @@ export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
   "tableware",
   "serveware",
   "styling",
+];
+
+/** Safety-net groups — appear after owner groups, quieter visual emphasis. */
+export const SAFETY_NET_BROWSE_ORDER: BrowseGroupId[] = [
+  "benches-ottomans",
+  "dining",
+  "lighting",
+  "throws",
+  "large-decor",
+  "accents",
+];
+
+/** Combined order used by the browse line, sort intelligence, and overview. */
+export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
+  ...OWNER_BROWSE_ORDER,
+  ...SAFETY_NET_BROWSE_ORDER,
 ];
 
 export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
@@ -60,36 +94,69 @@ export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
   tableware: "Tableware",
   serveware: "Serveware",
   styling: "Styling",
+  "benches-ottomans": "Benches & Ottomans",
+  dining: "Dining",
+  lighting: "Lighting",
+  throws: "Throws",
+  "large-decor": "Large Decor",
+  accents: "Accents",
+};
+
+export const BROWSE_GROUP_TIER: Record<BrowseGroupId, BrowseTier> = {
+  sofas: "owner",
+  chairs: "owner",
+  "coffee-tables": "owner",
+  "side-tables": "owner",
+  rugs: "owner",
+  pillows: "owner",
+  bar: "owner",
+  "cocktail-tables": "owner",
+  storage: "owner",
+  tableware: "owner",
+  serveware: "owner",
+  styling: "owner",
+  "benches-ottomans": "safety-net",
+  dining: "safety-net",
+  lighting: "safety-net",
+  throws: "safety-net",
+  "large-decor": "safety-net",
+  accents: "safety-net",
 };
 
 interface BrowseRule {
   id: BrowseGroupId;
-  /** If set, product.categorySlug must be in this list. */
-  categories?: string[];
+  /** Product.categorySlug must be in this list. */
+  categories: string[];
   /** Lower-cased keyword fragments matched against product.title. */
   keywords: string[];
+  /** Owner rules require BOTH category + keyword. Safety-net rules accept
+   *  category alone (keyword is then a no-op pass). */
+  requireKeyword: boolean;
   /** Optional: titles containing any of these keywords are excluded. */
   excludeKeywords?: string[];
 }
 
-// Order matters: first match wins, in BROWSE_GROUP_ORDER order.
-// Categories listed are *constraints* — if provided the product MUST come
-// from one of those categorySlugs to match this group. Keywords then refine.
+// Order matters: first match wins. Owner rules come first so any owner
+// keyword hit beats a safety-net category fallback.
 const BROWSE_RULES: BrowseRule[] = [
+  // ===== OWNER TIER (keyword-gated) =====
   {
     id: "sofas",
     categories: ["lounge", "sofas-loveseats1"],
     keywords: ["sofa", "loveseat", "settee", "couch", "sectional"],
+    requireKeyword: true,
   },
   {
     id: "chairs",
     categories: ["lounge", "chairs-stools1"],
-    keywords: ["chair", "armchair", "lounge chair"],
+    keywords: ["chair", "armchair", "lounge chair", "stool", "barstool"],
+    requireKeyword: true,
   },
   {
     id: "coffee-tables",
     categories: ["lounge-tables", "tables1"],
     keywords: ["coffee table"],
+    requireKeyword: true,
   },
   {
     id: "side-tables",
@@ -103,52 +170,59 @@ const BROWSE_RULES: BrowseRule[] = [
       "entry table",
       "sofa table",
     ],
+    requireKeyword: true,
   },
   {
     id: "rugs",
     categories: ["rugs"],
     keywords: ["rug"],
+    requireKeyword: false, // rugs slug is mono — accept all
   },
   {
     id: "pillows",
     categories: ["pillows-throws1"],
-    keywords: ["pillow", "throw"],
+    keywords: ["pillow", "lumbar"],
+    requireKeyword: true,
   },
   {
     id: "bar",
     categories: ["bars1", "cocktail-bar"],
     keywords: ["bar", "back bar", "backbar", "bar shelving", "shelving"],
+    requireKeyword: true,
   },
-  // Cocktail Tables: source can be tables OR cocktail-bar.
   {
     id: "cocktail-tables",
     categories: ["cocktail-bar", "lounge-tables", "tables1"],
-    keywords: ["cocktail table"],
+    keywords: ["cocktail table", "community table"],
+    requireKeyword: true,
   },
   {
     id: "storage",
     categories: ["storage1"],
-    keywords: ["cabinet", "shelf", "shelving", "storage", "chest", "trunk"],
+    keywords: [],
+    requireKeyword: false, // storage1 slug is mono — accept all
   },
   {
     id: "tableware",
     categories: ["tableware"],
     keywords: [
-      "glassware",
       "dinnerware",
       "flatware",
       "plate",
       "bowl",
       "goblet",
       "glass",
+      "glassware",
       "charger",
       "napkin",
       "linen",
+      "cup",
+      "mug",
     ],
+    requireKeyword: true,
   },
   {
     id: "serveware",
-    // Catalog has no `serveware` slug — accept either.
     categories: ["tableware", "serveware"],
     keywords: [
       "tray",
@@ -158,54 +232,81 @@ const BROWSE_RULES: BrowseRule[] = [
       "decanter",
       "pitcher",
       "stand",
+      "carafe",
     ],
+    requireKeyword: true,
   },
   {
     id: "styling",
-    categories: ["styling", "accents1", "large-decor"],
-    keywords: [
-      "vase",
-      "vessel",
-      "bust",
-      "object",
-      "candle",
-      "lantern",
-      "basket",
-      "crate",
-      "game",
-      "prop",
-      "decor",
-    ],
+    categories: ["styling"],
+    keywords: [],
+    requireKeyword: false, // styling slug → all to Styling unless owner-tier matched first
+  },
+
+  // ===== SAFETY-NET TIER (category-only fallback) =====
+  {
+    id: "benches-ottomans",
+    categories: ["benches-ottomans1"],
+    keywords: [],
+    requireKeyword: false,
+  },
+  {
+    id: "dining",
+    categories: ["dining"],
+    keywords: [],
+    requireKeyword: false,
+  },
+  {
+    id: "lighting",
+    categories: ["light", "lighting"],
+    keywords: [],
+    requireKeyword: false,
+  },
+  {
+    id: "throws",
+    // Anything left in pillows-throws1 / textiles after Pillows owner-tier match
+    categories: ["pillows-throws1", "textiles"],
+    keywords: [],
+    requireKeyword: false,
+  },
+  {
+    id: "large-decor",
+    categories: ["large-decor"],
+    keywords: [],
+    requireKeyword: false,
+  },
+  {
+    id: "accents",
+    // accents1 catches everything else — vases, antlers, chalkboards, props,
+    // suitcases, bottles, faux plants, mirrors, etc.
+    categories: ["accents1"],
+    keywords: [],
+    requireKeyword: false,
   },
 ];
 
 /**
  * Returns the derived browse-group id for a product, or `null` if it doesn't
- * match any group. Display-only — never written back to the product object.
- *
- * Resolution order:
- * 1. Walk BROWSE_RULES in declaration order (which matches BROWSE_GROUP_ORDER).
- * 2. For each rule, if `categories` is set, the product's categorySlug must be
- *    in that list.
- * 3. If `keywords` is set, the title must contain at least one keyword.
- * 4. First rule that satisfies both constraints wins.
+ * match any rule. Display-only — never written back to the product object.
  */
 export function getProductBrowseGroup(
   product: CollectionProduct,
 ): BrowseGroupId | null {
   const title = product.title.toLowerCase();
   for (const rule of BROWSE_RULES) {
-    if (rule.categories && !rule.categories.includes(product.categorySlug)) {
-      continue;
-    }
+    if (!rule.categories.includes(product.categorySlug)) continue;
     if (
       rule.excludeKeywords &&
       rule.excludeKeywords.some((kw) => title.includes(kw))
     ) {
       continue;
     }
-    const matches = rule.keywords.some((kw) => title.includes(kw));
-    if (matches) return rule.id;
+    if (rule.requireKeyword) {
+      if (rule.keywords.some((kw) => title.includes(kw))) return rule.id;
+      continue;
+    }
+    // Safety-net or mono-slug: category match is sufficient.
+    return rule.id;
   }
   return null;
 }
@@ -214,11 +315,16 @@ export interface BrowseGroupOption {
   id: BrowseGroupId;
   label: string;
   count: number;
+  tier: BrowseTier;
 }
 
 /**
- * Returns owner-priority-ordered options, restricted to groups that have
- * at least one matching product in the passed list. Empty groups are hidden.
+ * Returns priority-ordered options (owner first, safety-net after), restricted
+ * to groups that have at least one matching product in the passed list. Empty
+ * groups are hidden.
+ *
+ * NOTE: callers should pass the unfiltered public-ready set so the browse
+ * line counts represent the real taxonomy, not the current search slice.
  */
 export function getBrowseGroupOptions(
   products: CollectionProduct[],
@@ -233,14 +339,19 @@ export function getBrowseGroupOptions(
   for (const id of BROWSE_GROUP_ORDER) {
     const count = counts.get(id) ?? 0;
     if (count > 0) {
-      options.push({ id, label: BROWSE_GROUP_LABELS[id], count });
+      options.push({
+        id,
+        label: BROWSE_GROUP_LABELS[id],
+        count,
+        tier: BROWSE_GROUP_TIER[id],
+      });
     }
   }
   return options;
 }
 
 /**
- * Buckets products by browse group, preserving owner priority order in the
+ * Buckets products by browse group, preserving priority order in the
  * returned Map's iteration order. Groups with zero products are omitted.
  */
 export function groupProductsByBrowseGroup(
@@ -253,7 +364,6 @@ export function groupProductsByBrowseGroup(
     if (!id) continue;
     buckets.get(id)!.push(p);
   }
-  // Drop empty groups while preserving order
   const ordered = new Map<BrowseGroupId, CollectionProduct[]>();
   for (const id of BROWSE_GROUP_ORDER) {
     const list = buckets.get(id)!;
