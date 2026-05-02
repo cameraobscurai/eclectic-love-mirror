@@ -1,0 +1,1 @@
+ALTER TYPE public.scrape_phase ADD VALUE IF NOT EXISTS 'phase3a_markdown';
