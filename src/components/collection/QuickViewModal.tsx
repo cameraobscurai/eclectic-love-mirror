@@ -84,7 +84,8 @@ export function QuickViewModal({
               onClick={onPrev}
               disabled={!hasPrev}
               aria-label="Previous piece"
-              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 hover:text-charcoal/60 transition-colors"
+              aria-keyshortcuts="ArrowLeft"
+              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
             >
               ‹ Prev
             </button>
@@ -92,7 +93,8 @@ export function QuickViewModal({
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
-              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 hover:text-charcoal/60 transition-colors"
+              aria-keyshortcuts="ArrowRight"
+              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
             >
               Next ›
             </button>
