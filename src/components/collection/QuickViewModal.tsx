@@ -13,12 +13,13 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
-// Editorial QuickView — single-screen magazine spread.
-// Layers (back → front): cream stage · oversized display-type product name ·
-// product image (object-contain, lifts off type) · top eyebrow + nav bar ·
-// thin footer with thumbs · dimensions · stocked · CTA.
+// Stage-driven QuickView.
+// The modal is a 3-row grid: [top bar] · [stage 1fr] · [footer].
+// The stage owns the composition; the image fits inside it via object-contain.
+// Image dimensions never reshape the modal — every product yields the same
+// frame, only the image inside the stage adapts.
 //
-// Charcoal/cream only. No accent color. No side panel. Hairline dividers.
+// Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
 
 export function QuickViewModal({
   product,
