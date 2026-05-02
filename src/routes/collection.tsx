@@ -333,7 +333,7 @@ function CollectionPage() {
   // Watch on visibleBatch.length re-scans bounds when the grid mutates
   // (filter / sort / Load More). Mutation observer inside the hook covers
   // the in-between cases (tiles entering via near-viewport gating).
-  const { activeId: spyActiveId, progressById, scrollToSection } =
+  const { activeId: spyActiveId } =
     useScrollSpy({ watch: visibleBatch.length });
   const spyActiveGroup = (spyActiveId as BrowseGroupId | null) ?? null;
 
