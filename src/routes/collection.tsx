@@ -284,43 +284,14 @@ function CollectionPage() {
   );
   const hasMore = visibleProducts.length > visibleCount;
 
-  // ---------- Scroll-to-results on committed filter changes ----------
+  // ---------- Results anchor ----------
+  // Anchor kept for #results-top deep links and skip-to-results affordances.
+  // We deliberately do NOT auto-scroll the page on filter / search / sort
+  // commits — every navigate() in this route opts out of router scroll
+  // restoration via `resetScroll: false`. Selecting a category should leave
+  // the user exactly where they are, just with a new product list under the
+  // sticky utility row.
   const resultsTopRef = useRef<HTMLDivElement>(null);
-  // Skip the very first effect run (initial mount) so we don't yank the
-  // landing position. Subsequent commits scroll only when the results anchor
-  // is meaningfully out of view (above the sticky utility row, or below the
-  // viewport entirely). If the user can already see results, we don't move.
-  const firstCommitRef = useRef(true);
-  useEffect(() => {
-    if (firstCommitRef.current) {
-      firstCommitRef.current = false;
-      return;
-    }
-    const target = resultsTopRef.current;
-    if (!target) return;
-    const r = requestAnimationFrame(() => {
-      // Compute sticky offset live from the same tokens the layout uses,
-      // so this stays correct if the utility row height ever changes.
-      const styles = getComputedStyle(document.documentElement);
-      const navH = parseFloat(styles.getPropertyValue("--nav-h")) || 64;
-      const utilH = parseFloat(styles.getPropertyValue("--archive-utility-h")) || 64;
-      const stickyOffset = navH + utilH;
-      const rect = target.getBoundingClientRect();
-      // Only scroll when the anchor is hidden behind the sticky row OR
-      // sits below the viewport. If it's already visible, leave the user
-      // exactly where they are — no double jump, no unwanted snap.
-      const aboveSticky = rect.top < stickyOffset;
-      const belowViewport = rect.top > window.innerHeight;
-      if (!aboveSticky && !belowViewport) return;
-      target.scrollIntoView({
-        block: "start",
-        behavior: reduced ? "auto" : "smooth",
-      });
-    });
-    return () => cancelAnimationFrame(r);
-    // Only commit-driven values: NOT visibleCount (Load More), NOT density,
-    // NOT view (Quick View), NOT qLocal (pre-debounce).
-  }, [activeGroup, q, sort, reduced]);
 
   // ---------- Quick View — URL-driven + scroll snapshot + focus return ----
   const grabbedScrollY = useRef<number | null>(null);
