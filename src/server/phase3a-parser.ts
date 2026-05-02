@@ -104,16 +104,17 @@ const LABELED_RE = (label: string) => new RegExp(`(?:^|\\n)\\s*${label}\\s*[:\\-
 
 const SQUARESPACE_IMG_HOSTS = ['images.squarespace-cdn.com', 'static1.squarespace.com']
 
-// Filenames that appear on every product page (site chrome) and must be excluded.
+// Filenames that appear on every product page as site chrome (logo, footer banner, brand asset).
+// Note: 'image-asset.*' is NOT chrome — Squarespace uses it as the default name for any
+// uploaded image without a custom name, and many real product photos have this filename.
+// Same for 'uc' (unnamed crop). We keep them and rely on position to dedupe within the page.
 const CHROME_FILENAME_PATTERNS = [
   /^logo[_\-]?/i,
+  /logo_wstrokes/i,
   /^favicon/i,
   /^sprite/i,
-  /^image-asset\./i,            // Squarespace generic placeholder
-  /^hive[_\-]?script/i,         // "Hive_Script Follow Along" footer banner
+  /^hive[_\-]?script/i,
   /follow[_\-+]?along/i,
-  /^uc$/i,                       // 1-byte placeholder
-  /^uc\./i,
   /banner|header|footer/i,
 ]
 
