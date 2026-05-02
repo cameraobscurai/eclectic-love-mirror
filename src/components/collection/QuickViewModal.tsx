@@ -212,26 +212,44 @@ export function QuickViewModal({
             </AnimatePresence>
           </div>
 
-          {/* Scale Rule — anchored to the bottom of the image envelope. Width
-              matches the image's max-w cap so the rule sits visually beneath
-              the silhouette. Hidden until toggled. */}
+          {/* Scale annotation — width along the bottom + height up the right
+              side, mirroring an architectural elevation drawing. Both fade
+              in together. Each axis renders independently if the other isn't
+              parseable. */}
           <AnimatePresence>
-            {showScale && widthInches !== null && (
-              <motion.div
-                key="scale-rule"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reduced ? 0 : 0.18 }}
-                className="absolute inset-x-0 bottom-3 md:bottom-6 z-20 px-6 md:px-16 pointer-events-none"
-              >
-                <div className="mx-auto w-[78%] md:w-[52%]">
-                  <ScaleRule widthInches={widthInches} />
-                </div>
-              </motion.div>
+            {showScale && hasScale && (
+              <>
+                {dims.width !== null && (
+                  <motion.div
+                    key="scale-width"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reduced ? 0 : 0.18 }}
+                    className="absolute inset-x-0 bottom-3 md:bottom-6 z-20 px-6 md:px-16 pointer-events-none"
+                  >
+                    <div className="mx-auto w-[78%] md:w-[52%]">
+                      <ScaleRuleWidth inches={dims.width} />
+                    </div>
+                  </motion.div>
+                )}
+                {dims.height !== null && (
+                  <motion.div
+                    key="scale-height"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reduced ? 0 : 0.22 }}
+                    className="absolute right-6 md:right-12 top-[12%] bottom-[12%] z-20 pointer-events-none flex items-center"
+                  >
+                    <ScaleRuleHeight inches={dims.height} />
+                  </motion.div>
+                )}
+              </>
             )}
           </AnimatePresence>
         </div>
+
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
         <div className="border-t border-charcoal/15 bg-cream">
