@@ -738,7 +738,6 @@ function CollectionPage() {
                     <CategoryHero
                       group={activeGroup}
                       firstProduct={heroFirstProduct}
-                      count={visibleProducts.length}
                     />
                   )}
 
