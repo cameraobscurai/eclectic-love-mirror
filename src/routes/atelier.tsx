@@ -24,15 +24,16 @@ const TEAM: TeamMember[] = [];
 const SPACE_IMAGES: SpaceImage[] = [];
 
 const CAPABILITIES = [
-  "Lounge furniture, bars + cocktail tables",
-  "Dining tables, dining chairs, benches",
-  "Tableware, glassware, flatware",
-  "Lighting + chandeliers",
-  "Rugs, pillows, throws, accents",
-  "Custom design + fabrication",
-  "Stage design, dance floor vinyl, drape",
-  "Graphics, signage, immersive installations",
-  "Production management + logistics",
+  "LOUNGE FURNITURE",
+  "BARS + COCKTAIL TABLES",
+  "LIGHTING",
+  "TABLEWARE",
+  "DINING TABLES + CHAIRS",
+  "CUSTOM DESIGN + FABRICATION",
+  "STAGE DESIGN",
+  "DRAPE",
+  "ACCENTS + STYLING",
+  "PRODUCTION MANAGEMENT",
 ];
 
 export const Route = createFileRoute("/atelier")({
