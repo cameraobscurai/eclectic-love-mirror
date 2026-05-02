@@ -165,6 +165,8 @@ function AtelierPage() {
           </div>
         </div>
 
+        {/* Wide landscape aperture + two detail apertures. Real categories
+            only — no fake captions. Labels render below each frame. */}
         {SPACE_IMAGES.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
             {SPACE_IMAGES.slice(0, 3).map((img, i) => (
@@ -182,23 +184,16 @@ function AtelierPage() {
             ))}
           </div>
         ) : (
-          // Three creative-space apertures: studio · workbench · warehouse.
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <MediaAperture ratio="4/5" />
-            <MediaAperture ratio="4/5" />
-            <MediaAperture ratio="4/5" />
-          </div>
+          <>
+            <div className="mt-12">
+              <MediaAperture ratio="16/9" label="STUDIO" />
+            </div>
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <MediaAperture ratio="4/5" label="WORKBENCH" />
+              <MediaAperture ratio="4/5" label="WAREHOUSE" />
+            </div>
+          </>
         )}
-
-        {/* Fabrication + materials media row — always rendered as designed
-            apertures until detail photography is loaded. Aspect mix matches
-            how real fabrication detail crops will sit on the page. */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-        </div>
       </Section>
 
       {/* 4. SCOPE + FABRICATION CAPABILITIES */}
