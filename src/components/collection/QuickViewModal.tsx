@@ -159,7 +159,7 @@ export function QuickViewModal({
             <h2 className="font-display text-3xl leading-tight">
               {product.title}
             </h2>
-            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-charcoal/55">
+            <p className="mt-2 text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
               {product.displayCategory}
               {product.subcategory ? ` · ${product.subcategory}` : ""}
             </p>
