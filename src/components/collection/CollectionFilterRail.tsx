@@ -60,21 +60,21 @@ export function CollectionFilterRail({
           : "sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2"
       }
     >
-      <div className="flex items-baseline justify-between mb-4">
-        <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50">
+      <div className="flex items-baseline justify-between mb-3">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
           Categories
         </p>
         {hasActiveFilters && (
           <button
             onClick={onClear}
-            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
           >
             Clear All
           </button>
         )}
       </div>
 
-      <ul className="space-y-1">
+      <ul className="space-y-0">
         <FilterRow
           label="All Inventory"
           count={totalCount}
