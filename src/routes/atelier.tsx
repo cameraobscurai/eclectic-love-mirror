@@ -24,15 +24,16 @@ const TEAM: TeamMember[] = [];
 const SPACE_IMAGES: SpaceImage[] = [];
 
 const CAPABILITIES = [
-  "Lounge furniture, bars + cocktail tables",
-  "Dining tables, dining chairs, benches",
-  "Tableware, glassware, flatware",
-  "Lighting + chandeliers",
-  "Rugs, pillows, throws, accents",
-  "Custom design + fabrication",
-  "Stage design, dance floor vinyl, drape",
-  "Graphics, signage, immersive installations",
-  "Production management + logistics",
+  "LOUNGE FURNITURE",
+  "BARS + COCKTAIL TABLES",
+  "LIGHTING",
+  "TABLEWARE",
+  "DINING TABLES + CHAIRS",
+  "CUSTOM DESIGN + FABRICATION",
+  "STAGE DESIGN",
+  "DRAPE",
+  "ACCENTS + STYLING",
+  "PRODUCTION MANAGEMENT",
 ];
 
 export const Route = createFileRoute("/atelier")({
@@ -62,7 +63,8 @@ export const Route = createFileRoute("/atelier")({
 function AtelierPage() {
   return (
     <main className="min-h-screen bg-cream text-charcoal pb-32">
-      {/* 1. HERO */}
+      {/* 1. HERO — type + spatial aperture. The aperture is a future hero
+          image slot (studio / hands / materials), not decoration. */}
       <section
         className="px-6 lg:px-12"
         style={{
@@ -70,22 +72,27 @@ function AtelierPage() {
           paddingBottom: "clamp(48px, 5vw, 80px)",
         }}
       >
-        <div className="max-w-[1400px] mx-auto">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            ATELIER BY THE HIVE
-          </p>
-          <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
-            Imagined.
-            <br />
-            Refined.
-            <br />
-            Crafted.
-          </h1>
-          <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
-            A working studio for design, fabrication, and production. Every
-            object on a guest's table — every chair, lamp, drape, and bar — is
-            chosen, made, or finished here before it leaves the warehouse.
-          </p>
+        <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end">
+          <div className="md:col-span-7">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+              ATELIER BY THE HIVE
+            </p>
+            <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
+              Imagined.
+              <br />
+              Refined.
+              <br />
+              Crafted.
+            </h1>
+            <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
+              A working studio for design, fabrication, and production. Every
+              object on a guest's table — every chair, lamp, drape, and bar — is
+              chosen, made, or finished here before it leaves the warehouse.
+            </p>
+          </div>
+          <div className="md:col-span-5">
+            <MediaAperture ratio="4/5" />
+          </div>
         </div>
       </section>
 
@@ -158,6 +165,8 @@ function AtelierPage() {
           </div>
         </div>
 
+        {/* Wide landscape aperture + two detail apertures. Real categories
+            only — no fake captions. Labels render below each frame. */}
         {SPACE_IMAGES.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
             {SPACE_IMAGES.slice(0, 3).map((img, i) => (
@@ -175,27 +184,20 @@ function AtelierPage() {
             ))}
           </div>
         ) : (
-          // Three creative-space apertures: studio · workbench · warehouse.
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <MediaAperture ratio="4/5" />
-            <MediaAperture ratio="4/5" />
-            <MediaAperture ratio="4/5" />
-          </div>
+          <>
+            <div className="mt-12">
+              <MediaAperture ratio="16/9" label="STUDIO" />
+            </div>
+            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <MediaAperture ratio="4/5" label="WORKBENCH" />
+              <MediaAperture ratio="4/5" label="WAREHOUSE" />
+            </div>
+          </>
         )}
-
-        {/* Fabrication + materials media row — always rendered as designed
-            apertures until detail photography is loaded. Aspect mix matches
-            how real fabrication detail crops will sit on the page. */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-        </div>
       </Section>
 
-      {/* 4. SCOPE + FABRICATION CAPABILITIES */}
-      <Section eyebrow="Capabilities">
+      {/* 4. SCOPE + FABRICATION — capability evidence, not a services list. */}
+      <Section eyebrow="Scope + Fabrication">
         <div className="grid md:grid-cols-12 gap-10">
           <div className="md:col-span-5 space-y-5 text-base leading-relaxed text-charcoal/70">
             <p>
@@ -212,19 +214,27 @@ function AtelierPage() {
             className="md:col-span-7 divide-y"
             style={{ borderColor: "var(--archive-rule)" }}
           >
-            {CAPABILITIES.map((item) => (
+            {CAPABILITIES.map((item, i) => (
               <li
                 key={item}
-                className="py-4 text-[15px] text-charcoal/85 flex items-baseline gap-4 border-t first:border-t-0"
+                className="py-4 text-[13px] tracking-[0.18em] uppercase text-charcoal/85 flex items-baseline gap-6 border-t first:border-t-0"
                 style={{ borderColor: "var(--archive-rule)" }}
               >
-                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
-                  ·
+                <span className="text-[10px] tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
+                  {String(i + 1).padStart(2, "0")}
                 </span>
                 <span>{item}</span>
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* Material board: fabric swatch · sketch · material detail. Designed
+            empty frames — no fake images, no captions. */}
+        <div className="mt-12 grid grid-cols-3 gap-3">
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
+          <MediaAperture ratio="1/1" />
         </div>
       </Section>
 
@@ -310,10 +320,16 @@ function ApproachStep({
 }) {
   return (
     <div>
-      <p className="font-display text-2xl text-charcoal/45 tabular-nums">
+      <MediaAperture ratio="3/4" />
+      <p
+        className="mt-6 pt-4 font-display text-2xl text-charcoal/45 tabular-nums border-t"
+        style={{ borderColor: "var(--archive-rule)" }}
+      >
         {number}
       </p>
-      <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">{label}</h3>
+      <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+        {label}
+      </h3>
       <p className="mt-4 text-[15px] leading-relaxed text-charcoal/70">
         {body}
       </p>
