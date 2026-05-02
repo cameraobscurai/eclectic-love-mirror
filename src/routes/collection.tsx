@@ -446,8 +446,8 @@ function CollectionPage() {
 
   const gridCols =
     density === "dense"
-      ? "grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7"
-      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
+      ? "grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8"
+      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
 
   const gridGapClasses =
     density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
@@ -529,7 +529,7 @@ function CollectionPage() {
             <button
               type="button"
               onClick={() => selectGroup("")}
-              className="mt-1 inline-flex items-baseline gap-2 text-charcoal/55 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              className="mt-1 inline-flex items-baseline text-charcoal/55 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
               aria-label="Back to all categories"
             >
               <span
@@ -541,12 +541,6 @@ function CollectionPage() {
                 }}
               >
                 {BROWSE_GROUP_LABELS[activeGroup]}
-              </span>
-              <span
-                aria-hidden
-                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/35"
-              >
-                · All Categories
               </span>
             </button>
           )}
