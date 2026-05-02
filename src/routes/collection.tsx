@@ -565,6 +565,32 @@ function CollectionPage() {
               )}
             </>
           )}
+          </div>
+          <InventoryIndexRail
+            facets={facets}
+            activeSlug={category}
+            searchMode={!!q.trim() && !category}
+            onSelectOverview={() =>
+              navigate({
+                search: (prev: CollectionSearch) => ({
+                  ...prev,
+                  category: "",
+                  sub: "",
+                }),
+                replace: false,
+              })
+            }
+            onSelectCategory={(slug) =>
+              navigate({
+                search: (prev: CollectionSearch) => ({
+                  ...prev,
+                  category: slug,
+                  sub: "",
+                }),
+                replace: false,
+              })
+            }
+          />
         </div>
       </section>
 
