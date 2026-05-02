@@ -420,15 +420,14 @@ function CollectionPage() {
       data-collection-main
       className="min-h-screen bg-white text-charcoal pb-32"
     >
-      {/* Index Strip — desktop-only right-edge orientation rail. Mirrors the
-          left filter rail so a user can switch categories without scrolling
-          back to the top. */}
+      {/* Right-edge segmented progress rail. One thin segment per category;
+          fills as the viewport scrolls through that category's tiles. Click
+          jumps to the first tile of that section. */}
       <CollectionIndexStrip
         groups={orderedGroupIds}
-        activeGroup={activeGroup}
-        counts={groupCounts}
-        totalCount={allCount}
-        onSelect={selectGroup}
+        progressById={progressById}
+        spyActiveGroup={spyActiveGroup}
+        onJump={(id) => scrollToSection(id)}
       />
 
       {/* Hero — quiet, archive-style */}
