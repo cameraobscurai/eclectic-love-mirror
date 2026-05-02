@@ -174,7 +174,7 @@ function CollectionPage() {
   };
 
   return (
-    <main className="min-h-screen bg-cream text-charcoal pb-32">
+    <main className="min-h-screen bg-white text-charcoal pb-32">
       {/* Hero */}
       <section className="pt-32 pb-12 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
