@@ -34,13 +34,24 @@ export function QuickViewModal({
 }: QuickViewModalProps) {
   const reduced = useReducedMotion();
   const [imgIdx, setImgIdx] = useState(0);
+  const [showScale, setShowScale] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [stageWidth, setStageWidth] = useState(0);
 
-  useEffect(() => setImgIdx(0), [product.id]);
+  // Width-only scale parse — null when not confidently parseable; the toggle
+  // button is hidden in that case (silent fallback, no "unavailable" labels).
+  const widthInches = useMemo(
+    () => parseWidthInches(product.dimensions),
+    [product.dimensions],
+  );
+
+  useEffect(() => {
+    setImgIdx(0);
+    setShowScale(false);
+  }, [product.id]);
 
   // Track stage width for Pretext fit-to-lines measurement.
   useEffect(() => {
