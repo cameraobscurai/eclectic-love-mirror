@@ -75,6 +75,32 @@ function HomePage() {
           draggable={false}
         />
 
+        {/* Wordmark — sits inside the empty horizontal glass band baked into
+            the artwork. Uses clamp() so it scales fluidly to fit the band on
+            every viewport, from 320px phones to ultra-wide desktops. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-x-0 z-10 flex justify-center pointer-events-none transition-opacity duration-1000",
+            "top-[46%] md:top-[49%]",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+          style={{ transitionDelay: loaded ? "300ms" : "0ms" }}
+        >
+          <div
+            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center"
+            style={{
+              fontWeight: 400,
+              letterSpacing: "0.32em",
+              fontSize: "clamp(1.1rem, 6.2vw, 5.25rem)",
+              lineHeight: 1,
+              textShadow: "0 1px 24px color-mix(in oklab, var(--charcoal) 35%, transparent)",
+            }}
+          >
+            Eclectic&nbsp;Hive
+          </div>
+        </div>
+
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
             against the moodboard texture without dimming the wordmark plate. */}
         <div
