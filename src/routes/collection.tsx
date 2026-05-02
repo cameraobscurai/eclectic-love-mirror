@@ -132,10 +132,10 @@ function CollectionPage() {
     return searchFiltered.filter((p) => p.categorySlug === category);
   }, [searchFiltered, category]);
 
-  // 3. Subcategory-filtered
+  // 3. Subcategory-filtered (derived UI taxonomy — title-keyword based)
   const subcategoryFiltered = useMemo(() => {
-    if (!sub) return categoryFiltered;
-    return categoryFiltered.filter((p) => p.subcategory === sub);
+    if (!sub || sub === "all") return categoryFiltered;
+    return categoryFiltered.filter((p) => getProductSubcategory(p) === sub);
   }, [categoryFiltered, sub]);
 
   // 4. Sorted (final list)
