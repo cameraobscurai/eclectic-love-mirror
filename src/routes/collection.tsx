@@ -506,9 +506,9 @@ function CollectionPage() {
         ref={headingRef}
         className="px-6 lg:px-12"
         style={{
-          paddingTop: "clamp(48px, 5vw, 80px)",
+          paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
           paddingBottom: "clamp(20px, 2vw, 32px)",
-          background: "var(--cream)",
+          background: "#ffffff",
         }}
       >
         <div
