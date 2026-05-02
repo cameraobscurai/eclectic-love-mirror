@@ -525,7 +525,8 @@ function CollectionPage() {
               <option value="az">A–Z</option>
             </select>
 
-            {/* Density toggle — desktop only, quieter */}
+            {/* Density toggle — desktop only. Quiet active state: thin frame
+                + charcoal glyph instead of inverted black plate. */}
             <div
               className="hidden lg:flex items-center border border-charcoal/10"
               role="group"
@@ -537,8 +538,8 @@ function CollectionPage() {
                   "h-10 w-10 inline-flex items-center justify-center transition-colors",
                   "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "comfortable"
-                    ? "bg-charcoal text-white"
-                    : "text-charcoal/45 hover:text-charcoal",
+                    ? "text-charcoal bg-charcoal/[0.04]"
+                    : "text-charcoal/40 hover:text-charcoal/80",
                 ].join(" ")}
                 aria-label="Comfortable grid"
                 aria-pressed={density === "comfortable"}
@@ -551,8 +552,8 @@ function CollectionPage() {
                   "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
                   "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                   density === "dense"
-                    ? "bg-charcoal text-white"
-                    : "text-charcoal/45 hover:text-charcoal",
+                    ? "text-charcoal bg-charcoal/[0.04]"
+                    : "text-charcoal/40 hover:text-charcoal/80",
                 ].join(" ")}
                 aria-label="Dense grid"
                 aria-pressed={density === "dense"}
@@ -596,12 +597,13 @@ function CollectionPage() {
             />
 
             {visibleProducts.length === 0 ? (
-              <div className="py-32 text-center">
-                <p className="font-display text-3xl">No pieces found</p>
-                <p className="mt-3 text-charcoal/60">Try adjusting your filters.</p>
+              <div className="py-32">
+                <p className="text-[15px] leading-relaxed text-charcoal/70">
+                  No pieces match the current filters.
+                </p>
                 <button
                   onClick={resetAll}
-                  className="mt-6 text-xs uppercase tracking-[0.2em] underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                  className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                 >
                   Clear All
                 </button>

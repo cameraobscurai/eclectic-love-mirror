@@ -76,7 +76,7 @@ export function QuickViewModal({
         className="relative w-full md:max-w-5xl bg-white text-charcoal shadow-2xl max-h-[92vh] md:max-h-[85vh] overflow-auto"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-white/95 backdrop-blur border-b border-charcoal/10">
-          <p className="text-[10px] uppercase tracking-[0.25em] text-charcoal/55">
+          <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
             {product.displayCategory}
           </p>
           <div className="flex items-center gap-1">
@@ -85,18 +85,18 @@ export function QuickViewModal({
               disabled={!hasPrev}
               aria-label="Previous piece"
               aria-keyshortcuts="ArrowLeft"
-              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+              className="h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
             >
-              ‹ Prev
+              ‹ PREV
             </button>
             <button
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
               aria-keyshortcuts="ArrowRight"
-              className="h-8 px-3 text-xs uppercase tracking-[0.2em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+              className="h-8 px-3 text-[10px] uppercase tracking-[0.22em] disabled:opacity-30 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
             >
-              Next ›
+              NEXT ›
             </button>
             <button
               ref={closeRef}
@@ -159,7 +159,7 @@ export function QuickViewModal({
             <h2 className="font-display text-3xl leading-tight">
               {product.title}
             </h2>
-            <p className="mt-2 text-xs uppercase tracking-[0.2em] text-charcoal/55">
+            <p className="mt-2 text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
               {product.displayCategory}
               {product.subcategory ? ` · ${product.subcategory}` : ""}
             </p>
@@ -186,13 +186,13 @@ export function QuickViewModal({
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
-                  "px-5 py-3 text-xs uppercase tracking-[0.22em] transition-all border active:scale-[0.97]",
+                  "px-5 py-3 text-[11px] uppercase tracking-[0.22em] transition-all border active:scale-[0.97]",
                   inInquiry
                     ? "bg-white text-charcoal border-charcoal"
                     : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
                 )}
               >
-                {inInquiry ? "Added to inquiry" : "Add to Inquiry"}
+                {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
             </div>
           </div>
