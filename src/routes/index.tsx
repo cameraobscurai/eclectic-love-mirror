@@ -9,7 +9,17 @@ import {
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
+import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
+
+// --- Wordmark tunables (single source of truth) ---
+const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
+const COUNTER_DRIFT_X = 2;        // px max horizontal counter-drift
+const COUNTER_DRIFT_Y = 1.5;      // px max vertical counter-drift
+const SPECULAR_RADIUS = 4;        // px shadow offset radius
+const BREATH_AMPLITUDE = 0.005;   // em
+const BREATH_PERIOD = 9000;       // ms
+const BASE_LETTER_SPACING = 0.32; // em
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,6 +53,7 @@ function HomePage() {
   const [isPointerFine, setIsPointerFine] = useState(false);
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
+  const heroImgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
@@ -58,6 +69,9 @@ function HomePage() {
     return () => mql.removeEventListener("change", update);
   }, []);
 
+  // Anchor the wordmark to the glass band feature inside the artwork.
+  const bandPoint = useObjectCoverPoint(heroImgRef, 0.5, BAND_CENTER_RATIO);
+
   // Normalized pointer offsets in range [-0.5, 0.5], local to the hero section.
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -68,13 +82,46 @@ function HomePage() {
   const bgX = useTransform(bgSpringX, [-0.5, 0.5], [-18, 18]);
   const bgY = useTransform(bgSpringY, [-0.5, 0.5], [-12, 12]);
 
-  // Wordmark — snappier, counter-moves (negative depth).
-  const wmSpringX = useSpring(mx, { stiffness: 90, damping: 18, mass: 0.5 });
-  const wmSpringY = useSpring(my, { stiffness: 90, damping: 18, mass: 0.5 });
-  const wmX = useTransform(wmSpringX, [-0.5, 0.5], [10, -10]);
-  const wmY = useTransform(wmSpringY, [-0.5, 0.5], [6, -6]);
+  // Wordmark — heavy, slow, micro counter-drift (peripheral perception only).
+  const wmSpringX = useSpring(mx, { stiffness: 50, damping: 28, mass: 0.8 });
+  const wmSpringY = useSpring(my, { stiffness: 50, damping: 28, mass: 0.8 });
+  const wmX = useTransform(wmSpringX, [-0.5, 0.5], [COUNTER_DRIFT_X, -COUNTER_DRIFT_X]);
+  const wmY = useTransform(wmSpringY, [-0.5, 0.5], [COUNTER_DRIFT_Y, -COUNTER_DRIFT_Y]);
+
+  // Specular highlight — cursor angle relative to wordmark center, smoothed.
+  // We track unit vector components separately so the spring can interpolate
+  // smoothly through (0,0) without angle wraparound jitter.
+  const lightDX = useMotionValue(0);
+  const lightDY = useMotionValue(1);
+  const lightSpringX = useSpring(lightDX, { stiffness: 50, damping: 22, mass: 1.0 });
+  const lightSpringY = useSpring(lightDY, { stiffness: 50, damping: 22, mass: 1.0 });
+  const textShadow = useTransform([lightSpringX, lightSpringY], (latest) => {
+    const [dx, dy] = latest as [number, number];
+    const sx = -dx * SPECULAR_RADIUS;
+    const sy = -dy * SPECULAR_RADIUS;
+    const hx = -sx * 0.4;
+    const hy = -sy * 0.4;
+    return `${sx}px ${sy}px 18px rgba(26,26,26,0.28), ${hx}px ${hy}px 12px rgba(245,242,237,0.12)`;
+  });
+
+  // Breathing letter-spacing — ambient, cursor-independent.
+  const letterSpacingMV = useMotionValue(`${BASE_LETTER_SPACING}em`);
 
   const parallaxOn = !reduced && isPointerFine;
+
+  useEffect(() => {
+    if (reduced) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (t: number) => {
+      const phase = ((t - start) % BREATH_PERIOD) / BREATH_PERIOD;
+      const offset = Math.sin(phase * Math.PI * 2) * BREATH_AMPLITUDE;
+      letterSpacingMV.set(`${(BASE_LETTER_SPACING + offset).toFixed(4)}em`);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduced, letterSpacingMV]);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
     if (!parallaxOn) return;
@@ -85,12 +132,23 @@ function HomePage() {
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
     mx.set(nx);
     my.set(ny);
+
+    // Specular: unit vector from wordmark center to cursor.
+    const cx = rect.width / 2;
+    const cy = bandPoint?.y ?? rect.height / 2;
+    const dx = e.clientX - rect.left - cx;
+    const dy = e.clientY - rect.top - cy;
+    const len = Math.hypot(dx, dy) || 1;
+    lightDX.set(dx / len);
+    lightDY.set(dy / len);
   };
 
   const handlePointerLeave = () => {
     if (!parallaxOn) return;
     mx.set(0);
     my.set(0);
+    lightDX.set(0);
+    lightDY.set(1);
   };
 
   return (
@@ -121,6 +179,7 @@ function HomePage() {
           inside the artwork.
         */}
         <motion.img
+          ref={heroImgRef}
           src={homeHero}
           alt=""
           aria-hidden="true"
@@ -137,35 +196,37 @@ function HomePage() {
           }
         />
 
-        {/* Wordmark — sits inside the empty horizontal glass band baked into
-            the artwork. Uses clamp() so it scales fluidly to fit the band on
-            every viewport, from 320px phones to ultra-wide desktops. */}
+        {/* Wordmark — anchored to the glass band baked into the artwork via
+            object-cover projection math (see useObjectCoverPoint). Tunable
+            from BAND_CENTER_RATIO at the top of this file. */}
         <motion.div
           aria-hidden="true"
           className={cn(
             "absolute inset-x-0 z-10 flex justify-center pointer-events-none transition-opacity duration-1000",
-            "top-[50%]",
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{
+            top: bandPoint?.y ?? "50%",
             transitionDelay: loaded ? "300ms" : "0ms",
             ...(parallaxOn
               ? { x: wmX, y: wmY, willChange: "transform" }
               : {}),
           }}
         >
-          <div
+          <motion.div
             className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
             style={{
               fontWeight: 400,
-              letterSpacing: "0.32em",
+              letterSpacing: reduced ? `${BASE_LETTER_SPACING}em` : letterSpacingMV,
               fontSize: "clamp(1rem, 6.2vw, 5.25rem)",
               lineHeight: 1,
-              textShadow: "0 1px 24px color-mix(in oklab, var(--charcoal) 35%, transparent)",
+              textShadow: parallaxOn
+                ? textShadow
+                : "0 1px 24px color-mix(in oklab, var(--charcoal) 35%, transparent)",
             }}
           >
             Eclectic&nbsp;Hive
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
