@@ -1,79 +1,121 @@
-# QuickView — diagnose why it looks broken, and fix it
+# QuickView — stage-driven layout (image fits the stage, not the other way around)
 
-You're right, the screenshot looks bad. Three independent layout bugs are stacking on top of each other. Honest diagnosis from the actual code, then the fix.
+## The real diagnosis
 
----
+Every previous QuickView pass kept treating the **image** as the load-bearing element. That's why every product reshapes the modal: a wide sofa, a tall lamp, a square rug, and a small decor piece all produce different compositions because nothing else is fixed.
 
-## What the screenshot actually shows
-
-- **Top half of the stage**: completely empty white.
-- **Sofa**: pinned to bottom-right, nearly touching the footer divider.
-- **Title "Calista Fringe Sofa"**: clipped on the left ("Calista" visible, "Fringe Sofa" mostly hidden behind the sofa, and the bottom of the glyphs is sliced off by the footer).
-- **Footer**: fine.
-
-This is not "editorial composition." It's two elements fighting for the same corner.
+The fix is a hard rule: **the stage owns the composition. The image fits inside it. The image never controls the modal layout.**
 
 ---
 
-## Why it's happening (3 stacked bugs in the code)
+## Architecture
 
-### Bug 1 — Title and image are both anchored to the bottom, with no shared structure
-The title is `absolute bottom-6 left-10 right-10` (fills the bottom band of the stage).
-The image lives in a `grid place-items-center` container that fills the same stage.
-Image has `z-[2]`, title has no z-index. Image wins. They collide because nothing relates them spatially — they're two free-floating absolutes.
+```
+QuickViewModal (fixed viewport shell)
+├── scrim (charcoal/40 + backdrop-blur)
+└── modal panel  ─ h-[100dvh] md:h-auto md:max-h-[90dvh]
+    │              md:max-w-[1280px]
+    │              grid grid-rows-[auto_minmax(0,1fr)_auto]
+    │              bg-white
+    ├── top bar     (auto height)   eyebrow + PREV/NEXT/×
+    ├── stage       (1fr, min-h-0)  ← FIXED COMPOSITION
+    │   ├── title   (absolute, bottom-left, z-0)
+    │   └── image   (absolute inset, object-contain, z-10)
+    └── footer      (auto height, glass)  thumbs · dims · stocked · CTA
+```
 
-### Bug 2 — `line-clamp-2` is silently clipping the title
-`line-clamp-2` forces `overflow: hidden` + `-webkit-box-orient: vertical`. Because the title's absolute container is only ~one display-line tall before the footer divider, the *bottom* of the glyphs (descenders on "g", baselines of "Sofa") gets sliced. That's the "…ofa" effect you see.
-
-### Bug 3 — The stage uses `flex-1`, so it stretches to fill the modal
-Modal is `md:max-h-[90vh] flex flex-col`. Stage is `flex-1 min-h-[58vh]`. After the small top bar + footer, `flex-1` blows the stage open to ~75vh. The image is `max-h-[60vh]` centered in it — leaving a giant empty band at the top. That's the dead white zone.
+The stage is a CSS Grid track with `minmax(0, 1fr)`. That gives it a deterministic height: whatever's left after the top bar and footer. It does not grow or shrink based on the image. Footer stays put. Title stays put. Image fills the remainder via `object-contain`.
 
 ---
 
-## Do I know what the issue is?
+## File: `src/components/collection/QuickViewModal.tsx`
 
-Yes. The reference composition (product sitting *on* the type) requires the image and title to share a **defined ground line**, not be two absolutes in a stretchy flex container with one of them silently clipped.
+### 1. Modal shell — grid, not flex
+```
+h-[100dvh] md:h-auto md:max-h-[90dvh]
+md:max-w-[1280px]
+grid grid-rows-[auto_minmax(0,1fr)_auto]
+bg-white text-charcoal shadow-2xl overflow-hidden
+```
+- Replaces current `flex flex-col` + `flex-1 min-h-[58vh]` (the source of the dead-space bug).
+- `minmax(0, 1fr)` is the key — it lets the stage row shrink as well as grow, so it never exceeds the available space and never collapses below it.
+- `100dvh` on mobile so the modal owns the full viewport; `max-h-[90dvh]` on desktop so it floats with breathing room.
+
+### 2. Stage — owns the composition
+```
+relative min-h-0 overflow-hidden bg-white
+```
+- `min-h-0` is required inside a grid `1fr` row so the image can `object-contain` against the row height (without it, intrinsic image height wins).
+- All children are `absolute` *inside* the stage. Stage dimensions come from the grid, not from contents.
+
+### 3. Title — flow inside the stage, behind the image
+```
+absolute left-6 bottom-6 md:left-10 md:bottom-10
+right-6 md:right-10
+z-0
+font-display text-charcoal
+leading-[0.85] tracking-[-0.01em]
+whitespace-nowrap overflow-hidden
+pointer-events-none select-none
+fontSize: clamp(2.75rem, 8vw, 8rem)
+```
+- `whitespace-nowrap overflow-hidden` — long names bleed off the right edge editorially (the Calista-reference look). No `line-clamp-2` (that was the bottom-clipping bug).
+- `bottom-6` so descenders don't crash the footer divider.
+- Sits at z-0; image always covers it.
+
+### 4. Image — fits the stage, never resizes it
+```
+wrapper:  absolute inset-0 flex items-center justify-center
+          px-8 md:px-14 py-8 md:py-12
+
+image:    max-h-full max-w-full object-contain
+          relative z-10
+          drop-shadow-[0_30px_40px_rgba(26,26,26,0.12)]
+```
+- `max-h-full max-w-full object-contain` is the contract: image always fits, never overflows, never sets dimensions.
+- The wrapper's padding is what controls the visual breathing room around the product, not the image.
+- A wide sofa fills horizontally with vertical breathing room. A tall lamp fills vertically with horizontal breathing room. Square rug centers. Composition stays identical because the **stage** is identical.
+
+### 5. Footer — auto-row, glass, never jumps
+```
+border-t border-charcoal/12
+bg-white/75 backdrop-blur-xl
+WebkitBackdropFilter: blur(20px)
+px-6 md:px-10 py-5
+grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center
+```
+- Auto-sized grid row → fixed visual position relative to viewport.
+- Three columns on desktop: thumbs · specs · CTA. Cleaner than the current 4-col grid with the spacer hack.
+- Specs use the existing `SpecCol` (DIMENSIONS · STOCKED). No duplicate spec line above.
+
+### 6. Mobile
+- Same architecture; the grid handles it. `100dvh` modal, `1fr` stage, footer pinned at the bottom.
+- Title scale floors at `2.75rem` so it stays present without overflowing.
+- Footer collapses to `grid-cols-1` — thumbs row, specs row, CTA row. CTA full-width.
 
 ---
 
-## The fix (one file: `src/components/collection/QuickViewModal.tsx`)
+## What this fixes
 
-### 1. Stage = fixed aspect, no `flex-1`
-- Replace `flex-1 min-h-[58vh] md:min-h-0` with `aspect-[16/9] max-h-[68vh]`.
-- Stage is a predictable rectangle, no more empty top half.
-
-### 2. Title = flow element at the bottom of the stage
-- Remove `absolute … bottom-6` and remove `line-clamp-2`.
-- Stage uses `flex flex-col justify-end` so title sits flush to the bottom.
-- `whitespace-nowrap overflow-hidden` — long names bleed out the right edge intentionally (that IS the Calista-reference look), short names don't get stranded. No more vertical clipping.
-
-### 3. Image = absolute inside the stage, baseline-shared with the title
-- Image container: `absolute inset-0 flex items-end justify-center pb-[14%]` — sofa base sits ~14% up from the stage bottom, on top of the title.
-- Image: `max-h-[78%] max-w-[88%] object-contain`, `z-10`.
-- Title: `z-0` (full charcoal, not /90).
-
-### 4. Title scale recalibrated
-- `clamp(3rem, 9vw, 9rem)` (bigger than current 7vw — it can be, now that it has a real baseline).
-- `leading-[0.85]` so descenders don't crash the footer.
-
-### 5. No padding between title and footer
-- Stage gets `pb-0`. Footer's top border becomes the title's baseline.
-
-### Result
-- No empty top half (defined aspect, not flex-1).
-- No clipped letters (no line-clamp, no collapsed absolute band).
-- Image and title share a ground line (Calista composition).
-- Long names bleed editorially instead of getting "…" sliced.
+| Bug | Before | After |
+|---|---|---|
+| Dead white top half | `flex-1 min-h-[58vh]` stretched the stage | `grid-rows-[auto_1fr_auto]` defines exact stage height |
+| Title vertically clipped ("…ofa") | `line-clamp-2` forced overflow:hidden in a one-line band | No line-clamp; `whitespace-nowrap` overflows horizontally instead |
+| Title + image colliding | Two free-floating absolutes with no shared structure | Both inside the same fixed stage; image always z-10 over title |
+| Layout reshapes per product | Image dimensions drove the modal | Stage drives the modal; image `object-contain`s inside |
+| Footer jumping | Footer inside the flex container | Footer is its own grid row — never moves |
 
 ---
 
 ## Out of scope
-- No new colors, tokens, palette changes.
-- No layout changes outside QuickViewModal.
-- No Collection / IA / data changes.
+- No new colors, no new tokens (white stage, charcoal type, glass footer with existing palette).
+- No layout changes outside `QuickViewModal.tsx`.
+- No Collection / IA / data / filter changes.
+- No tagline/description line above the product.
 
 ## Acceptance
-- Calista Fringe Sofa: sofa sits on the type, no dead white zone, no clipped letters.
-- Short name (Aviana): type doesn't look stranded.
-- Long name (Lindt Toffee Velvet Channel): bleeds right edge intentionally.
-- Mobile: single-screen, image above type, footer fixed at bottom.
+- Open Calista (wide sofa), Aviana (medium sofa), a tall lamp, a square rug, a small decor piece in sequence: **modal frame, stage height, title position, footer position are all identical**. Only the image inside the stage adapts.
+- No empty top half.
+- No clipped letters.
+- Long names (Lindt Toffee Velvet Channel) bleed right edge intentionally; short names (Aviana) don't look stranded.
+- Mobile: full-viewport modal, footer reachable, no horizontal overflow.
