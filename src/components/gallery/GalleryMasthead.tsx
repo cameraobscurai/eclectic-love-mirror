@@ -49,9 +49,10 @@ export function GalleryMasthead({
       <div className="max-w-[1600px] mx-auto">
         {/* Layered composition wrapper */}
         <div className="relative">
-          {/* BASE: oversized headline */}
+          {/* BASE: oversized headline. Scales with viewport; no nowrap so it
+              never clips on the right behind the floating panels. */}
           <div className="relative z-0">
-            <h1 className="font-display uppercase leading-[0.9] tracking-[-0.01em] text-cream text-[clamp(80px,14vw,240px)] font-normal whitespace-nowrap">
+            <h1 className="font-display uppercase leading-[0.88] tracking-[-0.01em] text-cream font-normal text-[clamp(72px,13vw,220px)]">
               The Gallery
             </h1>
           </div>
@@ -59,22 +60,22 @@ export function GalleryMasthead({
           {/* OVERLAY: glassmorphic panels, absolutely positioned on top.
               They start ABOVE the headline and overlap downward through it. */}
           <div
-            className="pointer-events-none absolute inset-x-0 z-10"
+            className="pointer-events-none absolute inset-x-0 z-10 hidden md:block"
             style={{
-              top: "clamp(-90px, -7vw, -60px)",
-              bottom: "clamp(-30px, -2vw, -10px)",
+              top: "clamp(-90px, -7vw, -56px)",
+              bottom: "clamp(-20px, -1.5vw, -6px)",
             }}
           >
             <div className="relative h-full w-full">
               {/* Left soft glass panel — atmospheric blur, no content */}
               <div
                 aria-hidden="true"
-                className="absolute hidden md:block"
+                className="absolute"
                 style={{
-                  left: "18%",
-                  right: "38%",
-                  top: "0",
-                  bottom: "20%",
+                  left: "16%",
+                  width: "min(36%, 520px)",
+                  top: "6%",
+                  bottom: "22%",
                 }}
               >
                 <div
@@ -90,19 +91,18 @@ export function GalleryMasthead({
                 />
               </div>
 
-              {/* Right glass panel — hosts the map. Pointer events back on. */}
+              {/* Right glass panel — hosts the map. */}
               <div
                 className="pointer-events-auto absolute"
                 style={{
                   right: "0",
-                  left: "auto",
                   width: "min(56%, 760px)",
-                  top: "clamp(8px, 1vw, 24px)",
-                  bottom: "8%",
+                  top: "0",
+                  bottom: "10%",
                 }}
               >
                 <div
-                  className="relative h-full w-full overflow-hidden border border-cream/15 p-4"
+                  className="relative h-full w-full overflow-hidden border border-cream/15 flex flex-col"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(245,242,237,0.10) 0%, rgba(245,242,237,0.04) 100%)",
@@ -112,11 +112,17 @@ export function GalleryMasthead({
                       "inset 0 1px 0 rgba(245,242,237,0.12), 0 40px 100px -20px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {mapSlot ? (
-                    <div className="h-full w-full [&_.eh-map]:!h-[calc(100%-28px)] [&_.eh-map]:border-0">
-                      {mapSlot}
-                    </div>
-                  ) : null}
+                  <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3 shrink-0">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55">
+                      Where We've Built
+                    </p>
+                    <p className="text-[10px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
+                      {visibleCount.toString().padStart(2, "0")} Locations
+                    </p>
+                  </div>
+                  <div className="flex-1 min-h-0 px-4 pb-4">
+                    {mapSlot}
+                  </div>
                 </div>
               </div>
             </div>
