@@ -236,16 +236,9 @@ export function GalleryMasthead({
 
       <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-stage">
-          {/* Counter */}
-          <p
-            id="gallery-counter"
-            data-devedit
-            data-devedit-label="Counter"
-            className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0"
-          >
-            {visibleCount.toString().padStart(2, "0")}{" "}
-            {visibleCount === 1 ? "Environment" : "Environments"}
-          </p>
+          {/* Counter intentionally removed — the pills already carry the
+              "n Environments" count, the second label was redundant. */}
+
 
           {/* Heading */}
           <h1
