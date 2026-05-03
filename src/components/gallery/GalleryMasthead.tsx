@@ -86,10 +86,11 @@ export function GalleryMasthead({
         .gallery-hero-stage {
           position: relative;
           width: 100%;
-          /* Fill the viewport below the nav. The parent <main> already adds
-             padding-top: var(--nav-h), so subtract it here for a true full
-             screen with no extra void above. */
-          min-height: calc(100svh - var(--nav-h));
+          /* Lock the stage to exactly one viewport (minus nav). Using
+             min-height let the section grow taller than the viewport,
+             which pushed everything down and created the void up top. */
+          height: calc(100svh - var(--nav-h));
+          min-height: 560px;
           padding: clamp(24px, 3vw, 44px);
           padding-bottom: clamp(20px, 2.5vw, 36px);
           overflow: hidden;
@@ -100,7 +101,7 @@ export function GalleryMasthead({
           position: absolute;
           left: clamp(24px, 3vw, 44px);
           /* Bottom = heading bottom + heading height + small gap. */
-          bottom: calc(clamp(56px, 7vh, 96px) + clamp(72px, 9.2vw, 148px) + 12px);
+          bottom: calc(28vh + clamp(72px, 9.2vw, 148px) + 12px);
           margin: 0;
           z-index: 1;
         }
@@ -110,9 +111,10 @@ export function GalleryMasthead({
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Pulled up slightly so the heading + counter sit higher and the
-             dead space above shrinks. */
-          bottom: clamp(56px, 7vh, 96px);
+          /* Anchored at ~28vh from the bottom so the heading sits in the
+             lower third and its vertical center lands near 50svh — which
+             then drives the panels (top: var(--heading-center)). */
+          bottom: 28vh;
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
