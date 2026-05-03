@@ -41,6 +41,7 @@ export function GalleryMap({
   activeIndex,
   onSelect,
   onOpen,
+  embedded = false,
 }: GalleryMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
