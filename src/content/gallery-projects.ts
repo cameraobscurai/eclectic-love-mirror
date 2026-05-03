@@ -35,6 +35,8 @@ export interface GalleryProject {
   detailImages: GalleryImage[];
   /** ~25 word description for the lightbox sidebar. Grounded in real facts. */
   summary: string;
+  /** Real venue coordinates [lng, lat] for the gallery map. */
+  coords: [number, number];
   /** Optional internal subroute, only set when one actually exists. */
   href?: string;
   /** Optional longer note. Currently unused; reserved. */
