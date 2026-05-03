@@ -181,6 +181,11 @@ const products = productRows.map((p, idx) => {
   const reviewIssue = reviewByUrl.get(url) ?? "";
   const isKnown404 = url === KNOWN_404 || reviewIssue === "source_404";
   const publicReady = !!primaryImage && !isKnown404 && !!nullable(p.product_title_normalized ?? p.product_title_original) && confidence >= 0.7;
+  // Owner-site rank: lookup by normalized title within the product's
+  // categorySlug. Null for unmatched items — they tail by keyword rank in
+  // the runtime sorter.
+  const rankMap = ownerRankByCategory.get(categorySlug);
+  const ownerSiteRank = rankMap?.get(normalizeTitle(title)) ?? null;
   return {
     id, sourceUrl: url, slug: p.product_slug ?? id, categorySlug,
     displayCategory: CATEGORY_DISPLAY_MAP[categorySlug] ?? categorySlug,
@@ -188,6 +193,7 @@ const products = productRows.map((p, idx) => {
     stockedQuantity: nullable(p.stocked_quantity), isCustomOrder: bool(p.is_custom_order_co),
     confidence, needsManualReview: bool(p.needs_manual_review), images, primaryImage,
     imageCount: images.length, publicReady, scrapedOrder: idx, subcategory: detectSub(categorySlug, title),
+    ownerSiteRank,
   };
 });
 
