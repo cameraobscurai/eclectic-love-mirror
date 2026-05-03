@@ -1,100 +1,94 @@
-# Collection Density + De-duplication Pass
+# Gallery — Honor the v0 Original
 
-Two changes. Both confined to the Collection page.
+You're right. The deployed v0 site (`v0-eclectic-hive-website.vercel.app/gallery`) has a very specific cinematic design we should match, not reinvent. I navigated it end-to-end. Here's what we restore.
 
----
+## What v0 actually is
 
-## 1. Overview grid — denser, smaller cards, less product zoom
+### Index page (`/gallery`)
+- Charcoal page, top masthead.
+- Eyebrow `THE GALLERY`, then a big serif headline showing the live count: **`{n} Environments`** (so we render `6 Environments`).
+- Right-aligned lead paragraph: "Each project represents a complete expression of design intelligence, fabrication capability, and production expertise."
+- Category filter pills under the headline: `ALL · LUXURY WEDDINGS · MEETINGS + INCENTIVE TRAVEL · SOCIAL + NON-PROFIT` with live counts. Selected pill = cream fill on charcoal text.
+- **The big move:** a horizontal track of huge environment cards, each ~50vw wide and tall. Each card has a small `01` numeral top-left, a small region tag (e.g. `Utah`), a giant cover image, and below: `### Amangiri` (serif), then `Canyon Point, Utah · Private Celebration`.
+- Below the track: a centered slot indicator (`01 — 02 …`), italic helper line **"Drag or scroll to explore"**.
+- Below that: a flat **Project Index** strip — `01 Amangiri · Private Celebration · 2024  |  02 Lynden Lane · Wedding · 2025 …` — clickable, jumps the track to that card.
+- Bottom CTA section: "Ready to add your environment to our archive?" + Start an Inquiry button.
 
-**File:** `src/components/collection/CategoryGalleryOverview.tsx`
+### Lightbox (the cinematic part)
+Clicking a card opens a full-screen split overlay (no separate route — confirmed: `/gallery/lynden-lane` is a 404 on v0, it's all in-page):
 
-You're right that square + 6-wide is overcorrected. Switch to denser columns + slightly portrait aspect so the silhouette has natural breathing room without becoming the whole tile.
-
-- Columns: `grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6`
-  - 2 / 3 / 5 / 6 — never 4 (you said 4 makes products feel too big). On very wide screens 6 holds; we don't push to 10/12 because at 6 the tile is already ~180px wide and 12 would make silhouettes thumbnail-sized.
-  - For genuinely huge monitors (2xl+, 1920px+) we add a denser fallback. Want me to push to `2xl:grid-cols-8`? Tell me yes/no after seeing the next screenshot.
-- Aspect: replace `auto-rows-fr` + `min-h-[260/280/300]` chain with `aspect-[4/5]` (gentle portrait, not the square I tried).
-- Image padding inside each card: `p-5 sm:p-6` (was `p-4 sm:p-6`). Slightly more interior margin so the silhouette doesn't visually crowd the card edge.
-- Gap stays `gap-4` (16px). The white between cards is what carries the luxe pacing.
-
-Net effect: more cards visible per row, each card a touch shorter than current portrait, silhouette ~55% of the tile (not the 40% it is now, not the 80% the square version produced).
-
----
-
-## 2. Stop repeating the category name
-
-In the screenshot, "Tableware" appears **three times** within one screen height: heading breadcrumb, utility bar meta, and CategoryHero H2. Plus the eyebrow "HIVE SIGNATURE COLLECTION" duplicates the page title "THE COLLECTION" sitting 100px above it.
-
-Resolution: **the heading owns the category label. Everything below it is silent unless the user is searching.**
-
-### a) Remove the breadcrumb under "THE COLLECTION"
-**File:** `src/routes/collection.tsx` (lines 528–546)
-
-Delete the `{activeGroup && (<button>…)}` block entirely. The rail on the left already shows the active category with its left-border indicator and Cormorant active state. We don't need a second affordance to return to overview — clicking "BROWSE BY CATEGORY" header in the rail already does that (line 86–101 of CollectionRail).
-
-### b) Remove the CategoryHero entirely
-**File:** `src/routes/collection.tsx` (wherever `<CategoryHero ... />` is rendered)
-
-Remove the import and the render. The hero is the single biggest source of redundancy:
-- "HIVE SIGNATURE COLLECTION" eyebrow → already implied by the page title
-- "Tableware" H2 → already in the rail (active state) and was in the breadcrumb we just removed
-- Description copy → soft and pretty but reads as filler when the user came here to browse
-
-If we want the description back later, it can move into a quiet hover state on the rail or a "i" affordance — not a 200px banner above the grid.
-
-### c) Utility bar meta line
-**File:** `src/routes/collection.tsx` (line 435–445)
-
-Currently: shows category name when a group is active, or N results when searching.
-
-Change: only show text when actively searching. Empty when browsing a category.
-
-```ts
-let resultMeta: string;
-if (trimmedQ) {
-  const n = visibleProducts.length;
-  resultMeta = `${n} ${n === 1 ? "result" : "results"} matching "${trimmedQ}"`;
-} else {
-  resultMeta = "";
-}
+```text
+┌────────────────────────────────────────────┬────────────────────┐
+│                                            │ ✕                  │
+│                                            │                    │
+│           full-bleed hero image            │   01 / 24          │
+│           (≈ 65% width, full height)       │                    │
+│                                            │   UTAH             │
+│                                            │   Amangiri         │
+│                                            │   ──────           │
+│                                            │   Canyon Point ·   │
+│                                            │   Private          │
+│                                            │   Celebration ·    │
+│                                            │   2024             │
+│                                            │   ──               │
+│                                            │   short copy       │
+│                                            │                    │
+│                                            │   ‹ PREV   NEXT ›  │
+├────────────────────────────────────────────┴────────────────────┤
+│ [▢][▢][▢][▢][▢][▢] … thumbnail filmstrip … 01 ──── 24            │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-The category name is in the rail. We don't need to print it again above the grid.
+- Left ~⅔: the hero plate. Big floating right-side `›` arrow (and matching left `‹`) on hover/idle to advance plates.
+- Right ~⅓ (charcoal panel): close button top-right, plate counter `01 / 24`, region eyebrow, **giant serif project name**, location · type · year, short paragraph, then **PREV PROJECT / NEXT PROJECT** controls (move between projects, not plates).
+- Bottom: horizontal **thumbnail filmstrip** across both panels with a `01 ──── 24` progress rule beneath it.
+- Mouse navigation: clickable Prev/Next plate arrows, clickable thumbnails, scroll-wheel paginates plates, keyboard `←/→` plates, `↑/↓` projects, `Esc` closes.
 
-### d) Product tile hover tooltip
-**File:** `src/components/collection/ProductTile.tsx` (lines 137–155)
+That solves the "how does a mouse user explore" problem natively.
 
-The frosted glass label that appears on hover and shows the product title — keep it. That's the actual product name, not a repeated category name, and it's the only place desktop users learn what they're looking at. Hover-only, opacity 0 at rest. Not a "tooltip-esque" repeat — it's the name itself.
+## What to build
 
-Mobile caption below the tile (lines 159–167) — also keep, it's the only label on mobile (no hover).
+### Files
 
----
+**Edit**
+- `src/routes/gallery.tsx` — rewrite to match v0 index: masthead with live `{n} Environments`, category pills, horizontal cards track, project index strip, CTA. Drop the current filmstrip + ghost scaffold.
+- `src/content/gallery-projects.ts` — extend each project with: `region` (e.g. "Utah", "Colorado", "Montana"), `kind` (e.g. "Private Celebration", "Wedding", "Welcome Party") and a `summary` paragraph (~25 words). Real data only — pulled from manifest folder names + your existing `category`. No invented copy beyond what we already have factual basis for.
 
-## What the page reads as after this
+**New components** (under `src/components/gallery/`)
+- `GalleryMasthead.tsx` — eyebrow, live `{n} Environments` headline, lead paragraph, category pills with counts.
+- `GalleryCardsTrack.tsx` — horizontal track of huge environment cards with: scroll-snap, mouse-wheel-to-horizontal translation, drag-to-scroll, visible left/right paddle buttons (cream/40, hover cream) at the track edges, slot indicator + "Drag or scroll to explore" beneath, Project Index strip below. Owns the `selectedProject` state and opens the lightbox.
+- `GalleryEnvironmentCard.tsx` — one big card. Number, region tag, hero image (lazy after first), serif name, meta line.
+- `GalleryProjectIndex.tsx` — flat index row that jumps the track to a card.
+- `GalleryLightbox.tsx` — the split overlay. Owns plate index, project navigation, scroll lock, keyboard, scroll-wheel-to-plate.
+- `GalleryLightboxRail.tsx` — bottom thumbnail filmstrip with `01 ──── n` progress rule and click-to-jump.
 
-- Wordmark: **THE COLLECTION** (always)
-- Sticky utility bar: search · sort · density. No category name. No count unless searching.
-- Left rail: `BROWSE BY CATEGORY` header, then list with one row in active state showing "Tableware" in Cormorant.
-- Right pane: just the grid of pieces. Silhouettes on white, soft shadow, no banner above.
+**Delete**
+- `src/components/gallery/GalleryFilmstrip.tsx` — replaced.
+- `src/components/gallery/GalleryEmptyFilmstrip.tsx` — we always have content.
+- `src/components/gallery/GalleryProjectPanel.tsx` — replaced by `GalleryLightbox`.
+- `src/components/gallery/GalleryThumbnailStrip.tsx` — superseded by `GalleryLightboxRail`.
 
-The category name appears exactly once on the page, in the rail, where it's also the active control. Clean.
+### Mouse-friendly navigation (the explicit ask)
+- Horizontal track listens to `wheel` events: vertical wheel delta → `scrollLeft += deltaY` (so a mouse wheel actually moves the rail). Trackpad horizontal gestures pass through unchanged.
+- Visible **paddle buttons** on the track edges, not just snap.
+- Drag-to-scroll on the track (mousedown → move).
+- Project Index entries are buttons that call `scrollIntoView({ behavior: "smooth", inline: "center" })` on the matching card.
+- Lightbox: visible `‹ ›` arrows, `wheel` paginates plates, `←/→` keys plates, `↑/↓` keys projects, click thumbnails to jump.
 
----
+### Visual / typography
+- Charcoal `#1a1a1a` background, cream type. Honors locked Gallery=cinematic role.
+- Cormorant Garamond display for project names + the masthead headline. Inter ALL CAPS for nav, eyebrows, pill labels, plate counters, PREV/NEXT, the `Drag or scroll to explore` helper kept lowercase italic per v0.
+- Tracking presets per the typography memory.
 
-## Files
+### Empty/edge cases
+- If user picks a filter with zero matches, the track shows a single quiet line "No projects in this category" — no fake placeholders.
+- All `loading="lazy" decoding="async"` except first card hero (eager).
 
-- `src/components/collection/CategoryGalleryOverview.tsx` — column count, aspect, padding
-- `src/routes/collection.tsx` — remove breadcrumb under wordmark, remove `<CategoryHero />` render and import, simplify `resultMeta`
-- `src/components/collection/CategoryHero.tsx` — left in place but unused; deleting the file too if no other route imports it (will check on entry)
+## Open question
 
-## Out of scope
+The lightbox right-side panel description on v0 reads as factual placeholder copy ("A bespoke environment crafted by Eclectic Hive…"). I'd rather generate one real ~25-word `summary` per project drawn from facts we know (region, venue type, season). Two options — pick one, or I default to **A**:
 
-Rail, ProductTile hover label, mobile caption, sticky utility bar layout, color, shadow, radius. All untouched.
+- **A. Author one factual `summary` per project** based on the manifest folder/region/year (e.g. Amangiri → "An incentive program staged inside the Amangiri landscape — long-table dinners against the sandstone, lounge moments at canyon's edge."). I'll keep them under 30 words and grounded in what's visible.
+- **B. Omit the description entirely** in the lightbox panel. Just plate counter, region, name, meta line, PREV/NEXT — let the photographs speak.
 
-## Verification
-
-After change, screenshot the Tableware-selected state and confirm:
-- "Tableware" appears exactly once (in the rail).
-- No banner / hero / eyebrow above the grid.
-- Utility bar shows search · sort · density only — no left-side label.
-- Overview grid: 5 columns at md, 6 at xl, gentle portrait cards, silhouette occupies ~55% of tile.
+Out of scope: per-project subroutes, filtering inside the lightbox, new photography. Index uses the existing `gallery-manifests.ts` paths only.
