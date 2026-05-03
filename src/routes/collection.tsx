@@ -52,6 +52,31 @@ const searchSchema = z.object({
 
 const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
+// Shared inline styles for the floating search modal's suggestion rows.
+// Kept at module scope so they're stable references and not recreated on
+// every render of the modal IIFE.
+const suggestionRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 14,
+  width: "100%",
+  textAlign: "left",
+  background: "transparent",
+  border: "none",
+  borderBottom: "1px solid rgba(26,26,26,0.06)",
+  padding: "10px 4px",
+  cursor: "pointer",
+  color: "#1a1a1a",
+};
+const suggestionGroupLabel: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: "9px",
+  letterSpacing: "0.24em",
+  textTransform: "uppercase",
+  color: "rgba(26,26,26,0.4)",
+  margin: "0 0 8px",
+};
+
 
 export const Route = createFileRoute("/collection")({
   head: () => ({
