@@ -126,6 +126,42 @@ const productRows = parse(readFileSync("src/data/phase3/phase3_final_products.cs
 const imageRows = parse(readFileSync("src/data/phase3/phase3_final_images.csv", "utf8"));
 const reviewRows = parse(readFileSync("src/data/phase3/phase3_manual_review_queue.csv", "utf8"));
 
+// ---- Owner-site order (soft hint) -----------------------------------------
+// Captured by scripts/capture-owner-site-order.mjs. Optional: if the file is
+// missing, ownerSiteRank stays null on every product and current behavior
+// holds. Title match is deterministic — no LLM. Unmatched titles are printed
+// per-category so we can spot-check.
+const normalizeTitle = (s) =>
+  String(s ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+
+let ownerOrder = null;
+try {
+  ownerOrder = JSON.parse(readFileSync("src/data/phase3/owner_site_order.json", "utf8"));
+} catch {
+  console.log("owner_site_order.json not found — skipping ownerSiteRank join.");
+}
+
+// Build lookup: internalCategorySlug → Map<normalizedTitle, rank>
+const ownerRankByCategory = new Map();
+if (ownerOrder?.liveCategories && ownerOrder?.internalToLive) {
+  for (const [internalSlug, liveKey] of Object.entries(ownerOrder.internalToLive)) {
+    const titles = ownerOrder.liveCategories[liveKey] ?? [];
+    const map = new Map();
+    titles.forEach((t, i) => {
+      const k = normalizeTitle(t);
+      if (k && !map.has(k)) map.set(k, i);
+    });
+    ownerRankByCategory.set(internalSlug, map);
+  }
+}
+
 const reviewByUrl = new Map(reviewRows.map(r => [r.url, r.issue_type ?? ""]));
 const imagesByPid = new Map();
 for (const im of imageRows) {
