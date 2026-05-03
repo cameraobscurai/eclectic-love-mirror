@@ -8,7 +8,6 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
-import { AmangiriGlassHero, type GlassVariant } from "@/components/home/AmangiriGlassHero";
 import { cn } from "@/lib/utils";
 import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
@@ -17,13 +16,9 @@ import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
 import homeHeroExploded from "@/assets/hero-exploded-glass.png";
 
-// Five hero variants. Picked at random on each page load for a quieter
+// Two hero variants. Picked at random on each page load for a quieter
 // "the site is alive" feel; visitor can flip with the corner control.
-//   moodboard / exploded — original baked-image compositions
-//   vitrine / reveal / strata — glass-first compositions over the Amangiri
-//   substrate (see AmangiriGlassHero.tsx for the actual recipes)
-type HeroVariant = "moodboard" | "exploded" | GlassVariant;
-const ALL_VARIANTS: HeroVariant[] = ["moodboard", "exploded", "vitrine", "reveal", "strata"];
+type HeroVariant = "moodboard" | "exploded";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
@@ -94,7 +89,7 @@ function HomePage() {
   // lets the visitor flip manually.
   const [variant, setVariant] = useState<HeroVariant>("moodboard");
   useEffect(() => {
-    setVariant(ALL_VARIANTS[Math.floor(Math.random() * ALL_VARIANTS.length)]);
+    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
   }, []);
 
   useEffect(() => {
@@ -220,7 +215,7 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        {variant === "moodboard" && (
+        {variant === "moodboard" ? (
           <picture key="moodboard">
             <source
               media="(max-width: 767px)"
@@ -255,8 +250,7 @@ function HomePage() {
               }
             />
           </picture>
-        )}
-        {variant === "exploded" && (
+        ) : (
           <motion.img
             key="exploded"
             ref={heroImgRef}
@@ -277,18 +271,6 @@ function HomePage() {
                 ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
                 : undefined
             }
-          />
-        )}
-        {(variant === "vitrine" || variant === "reveal" || variant === "strata") && (
-          <AmangiriGlassHero
-            key={variant}
-            variant={variant}
-            loaded={loaded}
-            imgRef={heroImgRef}
-            bandCenterPx={bandPoint?.y ?? null}
-            parallaxOn={parallaxOn}
-            bgX={bgX}
-            bgY={bgY}
           />
         )}
 
@@ -443,10 +425,10 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Variant toggle — quiet bottom-right control. Five dots,
+        {/* Variant toggle — quiet bottom-right control. Two dots,
             current variant filled. Click to flip. */}
         <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
-          {ALL_VARIANTS.map((v) => (
+          {(["moodboard", "exploded"] as const).map((v) => (
             <button
               key={v}
               type="button"
