@@ -153,6 +153,22 @@ function CollectionPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // ---------- Grid pending / transition state ----------
+  // Whenever the URL search params that drive the grid (group, q, sort)
+  // change, briefly mark the grid as "pending" so the right pane fades to a
+  // softer state for the swap. Pure CSS opacity transition — no spinners.
+  const [gridPending, setGridPending] = useState(false);
+  const gridKey = `${group}|${q}|${sort}`;
+  const lastKeyRef = useRef(gridKey);
+  useEffect(() => {
+    if (lastKeyRef.current === gridKey) return;
+    lastKeyRef.current = gridKey;
+    setGridPending(true);
+    const t = window.setTimeout(() => setGridPending(false), 220);
+    return () => window.clearTimeout(t);
+  }, [gridKey]);
+
+
   useEffect(() => {
     const t = setTimeout(() => {
       if (qLocal !== q) {
