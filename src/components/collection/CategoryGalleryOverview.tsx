@@ -78,14 +78,14 @@ export function CategoryGalleryOverview({
   const [firstRowTimedOut, setFirstRowTimedOut] = useState(false);
 
   // Arm the safety-net timeout once on mount.
-  useState(() => {
-    if (typeof window === "undefined") return undefined;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const t = window.setTimeout(
       () => setFirstRowTimedOut(true),
       FIRST_ROW_REVEAL_TIMEOUT_MS,
     );
     return () => window.clearTimeout(t);
-  });
+  }, []);
 
   const firstRowReady =
     Boolean(reduced) ||
