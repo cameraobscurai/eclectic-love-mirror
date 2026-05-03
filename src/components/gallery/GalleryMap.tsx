@@ -127,7 +127,7 @@ export function GalleryMap({
     // Fit to all pins.
     if (bounds) {
       map.fitBounds(bounds, {
-        padding: { top: 80, bottom: 60, left: 60, right: 60 },
+        padding: { top: 40, bottom: 30, left: 30, right: 30 },
         duration: 600,
         maxZoom: 6,
       });
