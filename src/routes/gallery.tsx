@@ -9,6 +9,7 @@ import {
   type GalleryCategory,
   type GalleryProject,
 } from "@/content/gallery-projects";
+import pressGlassBar from "@/assets/press-glass-bar.png";
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof, cinematic exhibition mode
@@ -141,6 +142,25 @@ function GalleryPage() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* As Featured In — glass press bar */}
+      <section aria-labelledby="press-heading" className="px-6 lg:px-12 pb-24">
+        <div className="max-w-[1600px] mx-auto">
+          <h2
+            id="press-heading"
+            className="text-[10px] uppercase tracking-[0.32em] text-cream/40 text-center mb-8"
+          >
+            As Featured In
+          </h2>
+          <img
+            src={pressGlassBar}
+            alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
+            className="w-full max-w-[1400px] mx-auto h-auto select-none"
+            loading="lazy"
+            draggable={false}
+          />
         </div>
       </section>
 
