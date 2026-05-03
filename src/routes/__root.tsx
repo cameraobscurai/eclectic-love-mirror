@@ -10,6 +10,8 @@ import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 
 import appCss from "../styles.css?url";
+import saolRegular from "../assets/fonts/SaolDisplay-Regular.otf?url";
+import saolSemibold from "../assets/fonts/SaolDisplay-Semibold.otf?url";
 
 function NotFoundComponent() {
   return (
