@@ -47,12 +47,12 @@ export function GalleryMasthead({
       <div className="max-w-[1600px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
           <div className="lg:col-span-6">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-              THE GALLERY
-            </p>
-            <h1 className="mt-4 font-display text-[clamp(2.25rem,5.5vw,4.25rem)] leading-[1] tracking-[-0.01em]">
-              {visibleCount} {visibleCount === 1 ? "Environment" : "Environments"}
+            <h1 className="font-display uppercase leading-[0.92] tracking-[-0.005em] text-cream text-[clamp(60px,8vw,120px)] font-normal">
+              The Gallery
             </h1>
+            <p className="mt-4 text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
+              {visibleCount.toString().padStart(2, "0")} {visibleCount === 1 ? "Environment" : "Environments"}
+            </p>
           </div>
           <div className="lg:col-span-6">
             {mapSlot}
