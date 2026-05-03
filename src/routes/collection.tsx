@@ -531,9 +531,14 @@ function CollectionPage() {
         className="sticky z-20"
         style={{
           top: "var(--nav-h)",
-          background: "var(--cream)",
+          background: utilityScrolled
+            ? "rgba(245,242,237,0.78)"
+            : "var(--cream)",
+          backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
+          WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           borderTop: "1px solid var(--archive-rule)",
           borderBottom: "1px solid var(--archive-rule)",
+          transition: "background 0.3s ease, backdrop-filter 0.3s ease",
         }}
       >
         <div className="px-6 lg:px-12">
