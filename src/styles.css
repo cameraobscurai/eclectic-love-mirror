@@ -361,3 +361,21 @@ button, a, [role="button"] {
     0 0 0 2px rgba(245, 242, 237, 1),
     0 0 0 9px rgba(26, 26, 26, 0.45);
 }
+
+/* ----------------------------------------------------------------------------
+   View Transitions — additive layer over framer-motion. Activates only on
+   real route navigations (where framer wasn't running). Browsers without
+   support: no change. Cross-fade is the browser default; we don't override.
+   ---------------------------------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
+
+/* Reduce-motion users get instant swap, no cross-fade. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0.01ms !important;
+  }
+}
