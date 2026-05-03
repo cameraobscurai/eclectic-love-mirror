@@ -17,7 +17,6 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as GallerySlugRouteImport } from './routes/gallery.$slug'
 
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
@@ -59,11 +58,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GallerySlugRoute = GallerySlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => GalleryRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,10 +65,9 @@ export interface FileRoutesByFullPath {
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
-  '/gallery': typeof GalleryRouteWithChildren
+  '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
-  '/gallery/$slug': typeof GallerySlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,10 +75,9 @@ export interface FileRoutesByTo {
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
-  '/gallery': typeof GalleryRouteWithChildren
+  '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
-  '/gallery/$slug': typeof GallerySlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,10 +86,9 @@ export interface FileRoutesById {
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
-  '/gallery': typeof GalleryRouteWithChildren
+  '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
-  '/gallery/$slug': typeof GallerySlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,7 +101,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
-    | '/gallery/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +111,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
-    | '/gallery/$slug'
   id:
     | '__root__'
     | '/'
@@ -132,7 +121,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
-    | '/gallery/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,7 +129,7 @@ export interface RootRouteChildren {
   CollectionRoute: typeof CollectionRoute
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
-  GalleryRoute: typeof GalleryRouteWithChildren
+  GalleryRoute: typeof GalleryRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
 }
@@ -204,26 +192,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gallery/$slug': {
-      id: '/gallery/$slug'
-      path: '/$slug'
-      fullPath: '/gallery/$slug'
-      preLoaderRoute: typeof GallerySlugRouteImport
-      parentRoute: typeof GalleryRoute
-    }
   }
 }
-
-interface GalleryRouteChildren {
-  GallerySlugRoute: typeof GallerySlugRoute
-}
-
-const GalleryRouteChildren: GalleryRouteChildren = {
-  GallerySlugRoute: GallerySlugRoute,
-}
-
-const GalleryRouteWithChildren =
-  GalleryRoute._addFileChildren(GalleryRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -231,7 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionRoute: CollectionRoute,
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
-  GalleryRoute: GalleryRouteWithChildren,
+  GalleryRoute: GalleryRoute,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
 }

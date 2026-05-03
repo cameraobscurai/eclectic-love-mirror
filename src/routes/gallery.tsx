@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
-import { GalleryGrid } from "@/components/gallery/GalleryGrid";
+import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
+import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import {
   galleryProjects,
   type GalleryCategory,
@@ -9,12 +10,12 @@ import {
 } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
-// Gallery index — editorial magazine grid
+// Gallery — selected project proof, cinematic exhibition mode
 //
-// Quiet, scannable overview of all environments. Asymmetric 12-col grid
-// (wide/tall pair, then a feature row), each card hover-cycles a few plates
-// to hint at the project's range. Clicking a card opens its dedicated
-// spread at /gallery/$slug.
+// Honors the v0 deployed design: dark masthead, "{n} Environments" headline,
+// category pills, big horizontal cards track (mouse-friendly), Project Index
+// strip, and a split-screen lightbox with thumbnail filmstrip.
+// All imagery is real, served from the storage manifest. No fakes.
 // ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/gallery")({
@@ -45,6 +46,7 @@ const ALL_CATEGORIES: GalleryCategory[] = [
 
 function GalleryPage() {
   const [filter, setFilter] = useState<CategoryFilter>("All");
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
     if (filter === "All") return galleryProjects;
@@ -59,9 +61,17 @@ function GalleryPage() {
       "Social + Non-Profit": 0,
     };
     for (const p of galleryProjects) base[p.category] += 1;
+    // Ensure all keys are populated.
     for (const c of ALL_CATEGORIES) base[c] = base[c] ?? 0;
     return base;
   }, []);
+
+  const handleOpen = (visibleIndex: number) => {
+    const project = visibleProjects[visibleIndex];
+    if (!project) return;
+    const realIndex = galleryProjects.findIndex((p) => p.number === project.number);
+    setOpenIndex(realIndex >= 0 ? realIndex : 0);
+  };
 
   return (
     <main
@@ -78,7 +88,10 @@ function GalleryPage() {
 
       <section className="px-6 lg:px-12">
         <div className="max-w-[1600px] mx-auto">
-          <GalleryGrid projects={visibleProjects} />
+          <GalleryCardsTrack
+            projects={visibleProjects}
+            onOpen={handleOpen}
+          />
         </div>
       </section>
 
@@ -106,6 +119,14 @@ function GalleryPage() {
           </div>
         </div>
       </section>
+
+      {openIndex !== null && (
+        <GalleryLightbox
+          projects={galleryProjects}
+          initialProjectIndex={openIndex}
+          onClose={() => setOpenIndex(null)}
+        />
+      )}
     </main>
   );
 }
