@@ -14,6 +14,11 @@ import homeHero from "@/assets/home-hero.webp";
 import homeHeroAvif from "@/assets/home-hero.avif";
 import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
+import homeHeroExploded from "@/assets/hero-exploded-glass.png";
+
+// Two hero variants. Picked at random on each page load for a quieter
+// "the site is alive" feel; visitor can flip with the corner control.
+type HeroVariant = "moodboard" | "exploded";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
@@ -78,6 +83,14 @@ function HomePage() {
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
   const heroImgRef = useRef<HTMLImageElement | null>(null);
+
+  // Random hero variant per page load. SSR renders "moodboard" deterministically;
+  // a client effect picks a random variant after hydration. The corner control
+  // lets the visitor flip manually.
+  const [variant, setVariant] = useState<HeroVariant>("moodboard");
+  useEffect(() => {
+    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
@@ -202,22 +215,46 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        <picture>
-          <source
-            media="(max-width: 767px)"
-            srcSet={homeHeroMobileAvif}
-            type="image/avif"
-          />
-          <source
-            media="(max-width: 767px)"
-            srcSet={homeHeroMobileWebp}
-            type="image/webp"
-          />
-          <source srcSet={homeHeroAvif} type="image/avif" />
-          <source srcSet={homeHero} type="image/webp" />
+        {variant === "moodboard" ? (
+          <picture key="moodboard">
+            <source
+              media="(max-width: 767px)"
+              srcSet={homeHeroMobileAvif}
+              type="image/avif"
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet={homeHeroMobileWebp}
+              type="image/webp"
+            />
+            <source srcSet={homeHeroAvif} type="image/avif" />
+            <source srcSet={homeHero} type="image/webp" />
+            <motion.img
+              ref={heroImgRef}
+              src={homeHero}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              fetchPriority="high"
+              loading="eager"
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+                "object-[50%_25%] md:object-[50%_38%]",
+                loaded ? "opacity-100" : "opacity-0"
+              )}
+              draggable={false}
+              style={
+                parallaxOn
+                  ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
+                  : undefined
+              }
+            />
+          </picture>
+        ) : (
           <motion.img
+            key="exploded"
             ref={heroImgRef}
-            src={homeHero}
+            src={homeHeroExploded}
             alt=""
             aria-hidden="true"
             decoding="async"
@@ -225,7 +262,7 @@ function HomePage() {
             loading="eager"
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-              "object-[50%_25%] md:object-[50%_38%]",
+              "object-[50%_50%]",
               loaded ? "opacity-100" : "opacity-0"
             )}
             draggable={false}
@@ -235,7 +272,7 @@ function HomePage() {
                 : undefined
             }
           />
-        </picture>
+        )}
 
         {/* Edge-to-edge frosted band — sits behind the wordmark to lift
             legibility against the busy moodboard. Anchored to the same
@@ -386,6 +423,26 @@ function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Variant toggle — quiet bottom-right control. Two dots,
+            current variant filled. Click to flip. */}
+        <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
+          {(["moodboard", "exploded"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setVariant(v)}
+              aria-label={`Show ${v} hero`}
+              aria-pressed={variant === v}
+              className={cn(
+                "h-1.5 w-1.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+                variant === v
+                  ? "bg-cream scale-110"
+                  : "bg-cream/30 hover:bg-cream/60"
+              )}
+            />
+          ))}
         </div>
       </section>
     </main>
