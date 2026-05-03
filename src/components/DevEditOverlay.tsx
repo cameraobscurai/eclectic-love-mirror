@@ -1117,7 +1117,11 @@ function DevEditOutline({
           onStart(target, "move", e);
         }}
         onClickCapture={(e) => {
-          if (e.shiftKey || e.metaKey) { e.stopPropagation(); onClick(e); }
+          if (e.shiftKey || e.metaKey) {
+            e.stopPropagation();
+            // Forward as a synthetic event with the modifier flags onClick needs.
+            onClick({ shiftKey: e.shiftKey, metaKey: e.metaKey, stopPropagation: () => e.stopPropagation(), preventDefault: () => e.preventDefault() } as unknown as React.PointerEvent);
+          }
         }}
         style={{
           position: "fixed",
