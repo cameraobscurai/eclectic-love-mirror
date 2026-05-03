@@ -6,14 +6,16 @@ import type { GalleryProject } from "@/content/gallery-projects";
 // ---------------------------------------------------------------------------
 // GalleryMap
 //
-// Editorial Mapbox map placed at the top of /gallery. Shows one cream pin
-// per real project at its venue coordinates. Hovering / clicking a pin
-// surfaces the project number + name; clicking jumps the cards track and
-// (optionally) opens that project in the lightbox.
+// Editorial Mapbox map for the gallery masthead. Always fills its parent —
+// the parent (the glass panel) controls all sizing via CSS Grid / clamp().
+// This component never sets explicit pixel heights.
 //
-// Reads the public Mapbox token from `import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN`.
-// Public Mapbox tokens (pk.*) are origin-restricted in the Mapbox account
-// and safe to ship in client code.
+// • Dark Mapbox style with a per-instance canvas filter applied on `load`
+//   (scoped to this map only — no global CSS rule that bleeds to other maps).
+// • Markers are inline-styled DOM elements built in JS — no external CSS
+//   dependency, no global class collisions.
+// • Popup uses a namespaced className (`eh-gallery-popup`) for any optional
+//   styling without polluting the global mapbox popup class.
 // ---------------------------------------------------------------------------
 
 interface GalleryMapProps {
@@ -21,9 +23,6 @@ interface GalleryMapProps {
   activeIndex: number;
   onSelect: (index: number) => void;
   onOpen?: (index: number) => void;
-  /** Render without the "Where We've Built" header and fill its parent height.
-   *  Used when the map is embedded inside the glass masthead panel. */
-  embedded?: boolean;
 }
 
 // Public Mapbox token. Public tokens (pk.*) are designed to ship in client
@@ -32,16 +31,14 @@ const MAPBOX_TOKEN =
   (import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN as string | undefined) ||
   "pk.eyJ1Ijoib2JzY3VyYWNyZWF0aXZlIiwiYSI6ImNtb3A4ODBvbzBrNHIycnB6cWNkNTFxYmwifQ.GyNKdyqX6pnfsV9Yyb8C2w";
 
-// Editorial light style — Mapbox light base, lifts the canvas off pitch black
-// while keeping it muted. Pins read as warm dots on warm grey.
-const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
+const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
+const CANVAS_FILTER = "brightness(0.75) contrast(1.15) saturate(0.8)";
 
 export function GalleryMap({
   projects,
   activeIndex,
   onSelect,
   onOpen,
-  embedded = false,
 }: GalleryMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -75,19 +72,20 @@ export function GalleryMap({
       new mapboxgl.AttributionControl({ compact: true }),
       "bottom-right"
     );
-    map.addControl(
-      new mapboxgl.NavigationControl({
-        showCompass: false,
-        visualizePitch: false,
-      }),
-      "top-right"
-    );
-    map.on("load", () => setReady(true));
+    map.on("load", () => {
+      // Scope the canvas filter to THIS map's canvas element only.
+      // No global CSS — won't affect any other Mapbox instance on the page.
+      const canvas = map.getCanvas();
+      canvas.style.filter = CANVAS_FILTER;
+      setReady(true);
+    });
     mapRef.current = map;
-    // Keep canvas sized to the (flex / absolute) container — mapbox needs an
-    // explicit resize call when the parent grows from 0 to its real height.
+
+    // The map's parent uses Grid + clamp() and may resolve from 0 → real
+    // height after layout. Mapbox needs an explicit resize when that happens.
     const ro = new ResizeObserver(() => map.resize());
     ro.observe(containerRef.current);
+
     return () => {
       ro.disconnect();
       map.remove();
@@ -109,26 +107,44 @@ export function GalleryMap({
       el.type = "button";
       el.setAttribute("aria-label", `${p.name}, ${p.location}`);
       el.dataset.idx = String(i);
-      el.className = "eh-map-pin";
-      el.innerHTML = `
-        <span class="eh-map-pin__dot"></span>
-        <span class="eh-map-pin__label">
-          <span class="eh-map-pin__num">${p.number}</span>
-          <span class="eh-map-pin__name">${p.name}</span>
-        </span>
+      el.style.cssText = `
+        width: 12px;
+        height: 12px;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(245,242,237,0.15);
+        border: 1.5px solid rgba(245,242,237,0.6);
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
       `;
+      el.addEventListener("mouseenter", () => {
+        el.style.transform = "scale(1.5)";
+        el.style.background = "rgba(245,242,237,0.35)";
+        setHoverIdx(i);
+      });
+      el.addEventListener("mouseleave", () => {
+        el.style.transform = "scale(1)";
+        el.style.background = "rgba(245,242,237,0.15)";
+        setHoverIdx((cur) => (cur === i ? null : cur));
+      });
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelect(i);
         if (onOpen) onOpen(i);
       });
-      el.addEventListener("mouseenter", () => setHoverIdx(i));
-      el.addEventListener("mouseleave", () =>
-        setHoverIdx((cur) => (cur === i ? null : cur))
+
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 16,
+        className: "eh-gallery-popup",
+      }).setHTML(
+        `<span style="font-family:'Inter',system-ui,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#1a1a1a;">${p.number} · ${p.name}</span>`
       );
 
-      const marker = new mapboxgl.Marker({ element: el, anchor: "bottom" })
+      const marker = new mapboxgl.Marker({ element: el, anchor: "center" })
         .setLngLat(p.coords)
+        .setPopup(popup)
         .addTo(map);
       markerRefs.current.push(marker);
     });
@@ -143,16 +159,21 @@ export function GalleryMap({
     }
   }, [projects, ready, bounds, onSelect, onOpen]);
 
-  // Highlight the active / hovered pin.
+  // Highlight the active pin (subtle ring boost).
   useEffect(() => {
     markerRefs.current.forEach((m, i) => {
       const el = m.getElement();
-      el.classList.toggle("is-active", i === activeIndex);
-      el.classList.toggle("is-hover", i === hoverIdx);
+      if (i === activeIndex) {
+        el.style.boxShadow = "0 0 0 4px rgba(245,242,237,0.18)";
+        el.style.background = "rgba(245,242,237,0.45)";
+      } else if (i !== hoverIdx) {
+        el.style.boxShadow = "none";
+        el.style.background = "rgba(245,242,237,0.15)";
+      }
     });
   }, [activeIndex, hoverIdx]);
 
-  // Pan to active pin (without zooming way in) when it changes externally.
+  // Pan to active pin when it changes externally.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
@@ -176,34 +197,13 @@ export function GalleryMap({
     );
   }
 
-  if (embedded) {
-    return (
-      <div
-        ref={containerRef}
-        className="eh-map relative w-full h-full overflow-hidden"
-        role="region"
-        aria-label="Map of Eclectic Hive project locations"
-      />
-    );
-  }
-
+  // The map ALWAYS fills its parent. The parent controls sizing.
   return (
-    <div className="w-full">
-      <div className="flex items-end justify-between gap-3 mb-2">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-          Where We've Built
-        </p>
-        <p className="text-[10px] uppercase tracking-[0.28em] text-cream/40 tabular-nums">
-          {projects.length.toString().padStart(2, "0")} Locations
-        </p>
-      </div>
-      <div
-        ref={containerRef}
-        className="eh-map relative w-full overflow-hidden border border-cream/10"
-        style={{ height: "clamp(220px, 22vw, 320px)" }}
-        role="region"
-        aria-label="Map of Eclectic Hive project locations"
-      />
-    </div>
+    <div
+      ref={containerRef}
+      className="eh-map relative w-full h-full overflow-hidden"
+      role="region"
+      aria-label="Map of Eclectic Hive project locations"
+    />
   );
 }
