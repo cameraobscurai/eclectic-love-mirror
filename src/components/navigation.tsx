@@ -211,10 +211,10 @@ export function Navigation() {
           <div className="pt-8 border-t border-cream/10">
             <p className="text-cream/40 text-sm">Denver, Colorado</p>
             <a
-              href="mailto:hello@eclectichive.com"
+              href="mailto:info@eclectichive.com"
               className="text-cream/60 text-sm hover:text-cream transition-colors"
             >
-              hello@eclectichive.com
+              info@eclectichive.com
             </a>
           </div>
         </div>
