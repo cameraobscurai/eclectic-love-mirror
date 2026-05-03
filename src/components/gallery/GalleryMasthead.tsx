@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
@@ -5,6 +6,8 @@ import type { GalleryCategory } from "@/content/gallery-projects";
 //
 // Issue header: eyebrow, live "{n} Environments" headline, lead paragraph,
 // and the category filter pills with live counts. Honors the v0 layout.
+// Optional `mapSlot` renders into the right column in place of the lead
+// paragraph — used to hoist the interactive map above the fold.
 // ---------------------------------------------------------------------------
 
 export type CategoryFilter = "All" | GalleryCategory;
@@ -15,6 +18,7 @@ interface GalleryMastheadProps {
   active: CategoryFilter;
   counts: Record<CategoryFilter, number>;
   onChange: (next: CategoryFilter) => void;
+  mapSlot?: ReactNode;
 }
 
 const FILTERS: CategoryFilter[] = [
@@ -30,30 +34,32 @@ export function GalleryMasthead({
   active,
   counts,
   onChange,
+  mapSlot,
 }: GalleryMastheadProps) {
   return (
     <section
       className="px-6 lg:px-12"
       style={{
-        paddingTop: "clamp(96px, 9vw, 144px)",
-        paddingBottom: "clamp(40px, 4vw, 64px)",
+        paddingTop: "clamp(72px, 6vw, 104px)",
+        paddingBottom: "clamp(24px, 3vw, 40px)",
       }}
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-end">
-          <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+          <div className="lg:col-span-6">
             <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
               THE GALLERY
             </p>
-            <h1 className="mt-5 font-display text-[clamp(2.75rem,7vw,5.5rem)] leading-[1] tracking-[-0.01em]">
+            <h1 className="mt-4 font-display text-[clamp(2.25rem,5.5vw,4.25rem)] leading-[1] tracking-[-0.01em]">
               {visibleCount} {visibleCount === 1 ? "Environment" : "Environments"}
             </h1>
-          </div>
-          <div className="lg:col-span-5">
-            <p className="text-[15px] leading-relaxed text-cream/70 max-w-md lg:ml-auto">
+            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-cream/60">
               Each project represents a complete expression of design intelligence,
               fabrication capability, and production expertise.
             </p>
+          </div>
+          <div className="lg:col-span-6">
+            {mapSlot}
           </div>
         </div>
 

@@ -29,8 +29,9 @@ const MAPBOX_TOKEN =
   (import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN as string | undefined) ||
   "pk.eyJ1Ijoib2JzY3VyYWNyZWF0aXZlIiwiYSI6ImNtb3A4ODBvbzBrNHIycnB6cWNkNTFxYmwifQ.GyNKdyqX6pnfsV9Yyb8C2w";
 
-// Editorial dark style — Mapbox's standard dark base, recolored via paint.
-const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
+// Editorial light style — Mapbox light base, lifts the canvas off pitch black
+// while keeping it muted. Pins read as warm dots on warm grey.
+const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 
 export function GalleryMap({
   projects,
@@ -126,7 +127,7 @@ export function GalleryMap({
     // Fit to all pins.
     if (bounds) {
       map.fitBounds(bounds, {
-        padding: { top: 80, bottom: 60, left: 60, right: 60 },
+        padding: { top: 40, bottom: 30, left: 30, right: 30 },
         duration: 600,
         maxZoom: 6,
       });
@@ -153,46 +154,36 @@ export function GalleryMap({
 
   if (!MAPBOX_TOKEN) {
     return (
-      <div className="px-6 lg:px-12">
-        <div className="max-w-[1600px] mx-auto border border-cream/15 bg-charcoal/40 px-6 py-10 text-center">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-            Reach
-          </p>
-          <p className="mt-3 text-[14px] leading-relaxed text-cream/65">
-            The interactive map is ready to load — add a Mapbox public token as{" "}
-            <code className="text-cream/85">VITE_MAPBOX_PUBLIC_TOKEN</code> to
-            see pins for every project.
-          </p>
-        </div>
+      <div className="border border-cream/15 bg-charcoal/40 px-5 py-6 text-center">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
+          Reach
+        </p>
+        <p className="mt-2 text-[13px] leading-relaxed text-cream/65">
+          Add a Mapbox public token as{" "}
+          <code className="text-cream/85">VITE_MAPBOX_PUBLIC_TOKEN</code> to
+          see pins.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="px-6 lg:px-12">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex items-end justify-between gap-6 mb-5">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-              Where We've Built
-            </p>
-            <p className="mt-2 text-[14px] italic text-cream/55">
-              Every pin, a project. Click to open.
-            </p>
-          </div>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-cream/40 tabular-nums">
-            {projects.length.toString().padStart(2, "0")} Locations
-          </p>
-        </div>
-
-        <div
-          ref={containerRef}
-          className="eh-map relative w-full overflow-hidden border border-cream/10"
-          style={{ height: "clamp(320px, 42vw, 520px)" }}
-          role="region"
-          aria-label="Map of Eclectic Hive project locations"
-        />
+    <div className="w-full">
+      <div className="flex items-end justify-between gap-3 mb-2">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
+          Where We've Built
+        </p>
+        <p className="text-[10px] uppercase tracking-[0.28em] text-cream/40 tabular-nums">
+          {projects.length.toString().padStart(2, "0")} Locations
+        </p>
       </div>
+      <div
+        ref={containerRef}
+        className="eh-map relative w-full overflow-hidden border border-cream/10"
+        style={{ height: "clamp(220px, 22vw, 320px)" }}
+        role="region"
+        aria-label="Map of Eclectic Hive project locations"
+      />
     </div>
   );
 }
