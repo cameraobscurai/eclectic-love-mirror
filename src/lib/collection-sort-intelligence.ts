@@ -255,9 +255,18 @@ export interface SortContext {
  * Composite "By Type" rank as a stable, sortable number key.
  * Lower = earlier. Encoded so JS sort comparators can subtract directly.
  *
- * Layout: ownerRank * 1e9 + siteTypeRank * 1e6 + scrapedOrder.
- * scrapedOrder fits in <1e6 for a catalog of <1M products (we have ~1.5k).
+ * Layout (highest digit = highest priority):
+ *   ownerBrowseRank * 1e12
+ *     + ownerSiteRank * 1e6      ← owner's live-site grid order (primary)
+ *     + siteTypeRank  * 1e3      ← keyword fallback (only meaningful for unmatched)
+ *     + scrapedOrder
+ *
+ * Products on the owner's live site get an `ownerSiteRank` 0..(category size).
+ * Unmatched products get UNMATCHED_OWNER_RANK so they tail matched ones,
+ * still ordered among themselves by keyword type-rank then scraped order.
  */
+const UNMATCHED_OWNER_RANK = 999_999;
+
 export function getDisplaySortRank(
   product: CollectionProduct,
   context: SortContext = { mode: "by-type" },
@@ -268,10 +277,16 @@ export function getDisplaySortRank(
     return product.scrapedOrder;
   }
   const ownerRank = context.activeGroup
-    ? 0 // single group view — collapse owner dimension
+    ? 0 // single group view — collapse browse-group dimension
     : getOwnerBrowseGroupRank(product);
+  const siteOrder = product.ownerSiteRank ?? UNMATCHED_OWNER_RANK;
   const siteRank = getOriginalSiteTypeRank(product);
-  return ownerRank * 1_000_000_000 + siteRank * 1_000_000 + product.scrapedOrder;
+  return (
+    ownerRank * 1_000_000_000_000 +
+    siteOrder * 1_000_000 +
+    siteRank * 1_000 +
+    product.scrapedOrder
+  );
 }
 
 /**
