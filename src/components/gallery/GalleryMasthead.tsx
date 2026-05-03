@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
@@ -44,6 +44,32 @@ export function GalleryMasthead({
   onChange,
   mapSlot,
 }: GalleryMastheadProps) {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const el = headingRef.current;
+    if (!el) return;
+    const stage = el.closest(".gallery-hero-stage") as HTMLElement | null;
+    if (!stage) return;
+
+    const update = () => {
+      const headingRect = el.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const center = headingRect.top - stageRect.top + headingRect.height / 2;
+      stage.style.setProperty("--heading-center", center + "px");
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    ro.observe(stage);
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   return (
     <>
       {/* Scoped styles — keep grid and responsive logic with the component. */}
@@ -70,21 +96,25 @@ export function GalleryMasthead({
           overflow: hidden;
         }
 
-        /* Counter — sits below the anchored heading and above the pills. */
+        /* Counter — sits directly above the heading, lower-left. */
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          bottom: calc(clamp(20px, 2.5vw, 36px) + clamp(42px, 6vh, 68px));
+          /* Bottom = heading bottom + heading height + small gap. */
+          bottom: calc(28vh + clamp(72px, 9.2vw, 148px) + 12px);
           margin: 0;
           z-index: 1;
         }
 
-        /* Heading — bottom anchored above the pills, full bleed allowed.
-           Panels overlap the right edge so "RY" sits behind the glass. */
+        /* Heading — lower third, one line, bleeds RIGHT toward the panels.
+           Sized so the panel's left edge kisses the tail "RY" of "GALLERY". */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          bottom: clamp(118px, 15vh, 168px);
+          /* Anchored at ~28vh from the bottom so the heading sits in the
+             lower third and its vertical center lands near 50svh — which
+             then drives the panels (top: var(--heading-center)). */
+          bottom: 28vh;
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
@@ -97,16 +127,16 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Panels group — vertically centered on the heading so the map
-           overlaps the top half of "THE GALLERY" and "RY" passes behind. */
+        /* Panels group — absolutely anchored to the right, vertically
+           centered in the stage. With the stage now equal to viewport
+           height (minus nav), top: 50% is true viewport center. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          /* Heading center ≈ pills_bottom + heading_bottom_offset + heading_height/2.
-             Position panel center on that line. */
-          bottom: calc(clamp(118px, 15vh, 168px) + clamp(72px, 9.2vw, 148px) / 2 - clamp(95px, 13.5vh, 140px));
+          top: var(--heading-center, 50%);
+          transform: translateY(-50%);
           width: clamp(420px, 46vw, 720px);
-          height: clamp(190px, 27vh, 280px);
+          height: clamp(300px, 40vh, 480px);
           z-index: 2;
         }
 
@@ -119,59 +149,40 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Map glass panel — light, frosty, cream-tinted (not dark on dark). */
+        /* Map glass panel — fills its parent (the panels group). */
         .gallery-glass-map {
           position: relative;
           width: 100%;
           height: 100%;
           display: grid;
           grid-template-rows: auto 1fr;
-          border: 1px solid rgba(245,242,237,0.18);
-          background: rgba(245,242,237,0.06);
-          backdrop-filter: blur(28px) saturate(140%);
-          -webkit-backdrop-filter: blur(28px) saturate(140%);
+          border: 1px solid rgba(255,255,255,0.09);
+          background: rgba(18,18,18,0.62);
+          backdrop-filter: blur(20px) saturate(120%);
+          -webkit-backdrop-filter: blur(20px) saturate(120%);
           box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.12),
-            0 24px 56px rgba(0,0,0,0.45);
+            inset 0 1px 0 rgba(255,255,255,0.07),
+            0 24px 56px rgba(0,0,0,0.55);
           overflow: hidden;
           z-index: 2;
         }
 
-        /* Ghost panel — light frosted sliver peeking from behind the map. */
+        /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
+           the map's left edge — only that 30px sliver peeks out. Lifted
+           opacity so it actually reads against the charcoal field. */
         .gallery-glass-ghost {
           position: absolute;
           right: calc(100% - 30px);
-          top: 8%;
+          top: 10%;
           width: clamp(140px, 14vw, 210px);
-          height: clamp(140px, 22vh, 220px);
-          background: rgba(245,242,237,0.04);
-          border: 1px solid rgba(245,242,237,0.10);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
+          height: clamp(200px, 32vh, 340px);
+          background: rgba(255,255,255,0.018);
+          border: 1px solid rgba(255,255,255,0.042);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           transform: rotate(-2.5deg);
           pointer-events: none;
           z-index: 1;
-        }
-
-        /* Wide frosted band sitting BEHIND the heading — sandwich layer. */
-        .gallery-hero-haze {
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: clamp(96px, 13vh, 148px);
-          height: clamp(180px, 22vh, 260px);
-          background: linear-gradient(
-            180deg,
-            rgba(245,242,237,0) 0%,
-            rgba(245,242,237,0.045) 45%,
-            rgba(245,242,237,0.02) 100%
-          );
-          backdrop-filter: blur(18px) saturate(120%);
-          -webkit-backdrop-filter: blur(18px) saturate(120%);
-          border-top: 1px solid rgba(245,242,237,0.06);
-          border-bottom: 1px solid rgba(245,242,237,0.04);
-          pointer-events: none;
-          z-index: 0;
         }
 
         /* ----------------------------------------------------------------
@@ -217,8 +228,7 @@ export function GalleryMasthead({
           /* Map is a desktop-only conceit. Hide both panels and ghost. */
           .gallery-hero-panels,
           .gallery-glass-map,
-          .gallery-glass-ghost,
-          .gallery-hero-haze {
+          .gallery-glass-ghost {
             display: none !important;
           }
           /* Tighten pills so 4 filters wrap to 2 lines max, never stack
@@ -236,11 +246,14 @@ export function GalleryMasthead({
 
       <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-stage">
-          {/* Frosted haze band behind the heading */}
-          <div className="gallery-hero-haze" aria-hidden="true" />
+          {/* Counter */}
+          <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
+            {visibleCount.toString().padStart(2, "0")}{" "}
+            {visibleCount === 1 ? "Environment" : "Environments"}
+          </p>
 
           {/* Heading */}
-          <h1 id="gallery-heading" className="gallery-hero-heading">
+          <h1 ref={headingRef} id="gallery-heading" className="gallery-hero-heading">
             The Gallery
           </h1>
 
