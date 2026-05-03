@@ -92,15 +92,14 @@ function GalleryPage() {
         active={filter}
         counts={counts}
         onChange={setFilter}
+        mapSlot={
+          <GalleryMap
+            projects={visibleProjects}
+            activeIndex={activeIndex}
+            onSelect={handleMapSelect}
+          />
+        }
       />
-
-      <section className="mb-16 lg:mb-24">
-        <GalleryMap
-          projects={visibleProjects}
-          activeIndex={activeIndex}
-          onSelect={handleMapSelect}
-        />
-      </section>
 
       <section className="px-6 lg:px-12">
         <div className="max-w-[1600px] mx-auto">
