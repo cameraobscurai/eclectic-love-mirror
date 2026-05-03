@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
@@ -44,6 +44,32 @@ export function GalleryMasthead({
   onChange,
   mapSlot,
 }: GalleryMastheadProps) {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const el = headingRef.current;
+    if (!el) return;
+    const stage = el.closest(".gallery-hero-stage") as HTMLElement | null;
+    if (!stage) return;
+
+    const update = () => {
+      const headingRect = el.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const center = headingRect.top - stageRect.top + headingRect.height / 2;
+      stage.style.setProperty("--heading-center", center + "px");
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    ro.observe(stage);
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   return (
     <>
       {/* Scoped styles — keep grid and responsive logic with the component. */}
@@ -105,7 +131,7 @@ export function GalleryMasthead({
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: 42%;
+          top: var(--heading-center, 50%);
           transform: translateY(-50%);
           width: clamp(420px, 46vw, 720px);
           height: clamp(300px, 40vh, 480px);
@@ -225,7 +251,7 @@ export function GalleryMasthead({
           </p>
 
           {/* Heading */}
-          <h1 id="gallery-heading" className="gallery-hero-heading">
+          <h1 ref={headingRef} id="gallery-heading" className="gallery-hero-heading">
             The Gallery
           </h1>
 
