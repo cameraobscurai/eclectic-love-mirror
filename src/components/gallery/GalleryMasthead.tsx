@@ -78,18 +78,23 @@ export function GalleryMasthead({
         }
         .gallery-hero-heading {
           grid-area: heading;
+          /* Break out of the left column — bleed across the full grid width
+             so the panels can overlap the right portion of the wordmark. */
+          grid-column: 1 / -1;
           font-family: var(--font-display);
           text-transform: uppercase;
           color: var(--cream);
           font-weight: 400;
-          line-height: 0.92;
-          letter-spacing: -0.01em;
-          /* One line, lower-left quadrant, intentionally bleeds right under the panels. */
-          font-size: clamp(44px, 5.8vw, 92px);
+          line-height: 0.88;
+          letter-spacing: -0.015em;
+          /* Big enough that the right edge of "GALLERY" lives under the panels. */
+          font-size: clamp(56px, 13vw, 220px);
           white-space: nowrap;
           margin: 0;
           align-self: end;
           padding-block: 0.02em;
+          position: relative;
+          z-index: 1;
         }
         .gallery-hero-panels {
           grid-area: panels;
@@ -100,7 +105,7 @@ export function GalleryMasthead({
           align-self: center;
           justify-self: end;
           width: 100%;
-          height: clamp(240px, 34vh, 380px);
+          height: clamp(260px, 36vh, 400px);
           z-index: 2;
         }
         .gallery-hero-pills { grid-area: pills; }
