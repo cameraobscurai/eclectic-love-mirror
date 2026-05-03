@@ -69,28 +69,26 @@ export function GalleryMasthead({
           overflow: hidden;
         }
 
-        /* Counter — sits directly above the heading, bottom-left. */
+        /* Counter — manually placed via dev-edit. Anchored top-left of the
+           stage, then translated into final position. */
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Above the heading: pills offset + heading height + breathing gap. */
-          bottom: calc(
-            clamp(20px, 2.5vw, 36px) +
-            clamp(48px, 6vh, 72px) +
-            clamp(72px, 9.5vw, 152px) +
-            14px
-          );
+          top: calc(clamp(20px, 2.5vw, 36px) + 243px);
+          transform: translateX(-43px);
+          width: 151px;
           margin: 0;
           z-index: 5;
         }
 
-        /* Heading — anchored bottom-left, directly above the pills. Sized
-           large enough that "RY" of GALLERY slides behind the panel's left
-           edge (which sits at right: clamp(24,3vw,44px) + panel width). */
+        /* Heading — manually placed via dev-edit. Anchored bottom-left, then
+           translated up so it sits centered through the ghost panel. */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          bottom: calc(clamp(20px, 2.5vw, 36px) + clamp(48px, 6vh, 72px));
+          bottom: clamp(20px, 2.5vw, 36px);
+          transform: translate(-12px, -93px);
+          width: 836px;
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
