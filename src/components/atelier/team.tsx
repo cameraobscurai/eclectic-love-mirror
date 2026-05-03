@@ -1,4 +1,5 @@
 import { MediaAperture } from "@/components/media-aperture";
+import { teamPhotoUrl } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // Atelier — THE HUMANS module
@@ -30,25 +31,37 @@ export interface TeamMember {
   image?: TeamMemberImage;
 }
 
+// Helper: build an approved portrait entry from a storage filename.
+const portrait = (filename: string, name: string): TeamMemberImage => ({
+  src: teamPhotoUrl(filename),
+  alt: `Portrait of ${name}`,
+  approvedForWeb: true,
+});
+
 /**
  * Real staff roster. Owner-curated. Portraits surface only when
  * `image.approvedForWeb === true`; until then each card shows the
  * MediaAperture frame under the real name + role.
+ *
+ * Portraits are paired by first name from the `team-photos` bucket.
+ * Members with multiple files (e.g. Jill.jpg, Jill2.jpg) currently use
+ * the primary; secondary files are reserved for hover/alt states.
+ * Regina has no portrait on file yet — her card stays as an aperture.
  */
 export const TEAM: TeamMember[] = [
-  { name: "Jill Livingston", role: "Founder · Creative Director" },
-  { name: "Annie Ohman", role: "Director of Company Operations" },
-  { name: "Amanda Ferguson", role: "Senior Designer" },
-  { name: "Erin Purnell", role: "Associate Designer" },
-  { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist" },
-  { name: "Nathan Alexander", role: "Lead Fabricator" },
-  { name: "Cat Moore", role: "Brand & Marketing" },
-  { name: "Sam Young", role: "Project Manager" },
-  { name: "Ryan Kankowski", role: "Project Manager" },
-  { name: "Stephen Proud", role: "Warehouse & Fleet Specialist" },
-  { name: "Sarah Lilly-Ray", role: "Warehouse Operations" },
+  { name: "Jill Livingston", role: "Founder · Creative Director", image: portrait("Jill.jpg", "Jill Livingston") },
+  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie.jpg", "Annie Ohman") },
+  { name: "Amanda Ferguson", role: "Senior Designer", image: portrait("Amanda.jpg", "Amanda Ferguson") },
+  { name: "Erin Purnell", role: "Associate Designer", image: portrait("Erin.jpg", "Erin Purnell") },
+  { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
+  { name: "Nathan Alexander", role: "Lead Fabricator", image: portrait("Nathan.jpg", "Nathan Alexander") },
+  { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
+  { name: "Sam Young", role: "Project Manager", image: portrait("Sam.jpg", "Sam Young") },
+  { name: "Ryan Kankowski", role: "Project Manager", image: portrait("Ryan.jpg", "Ryan Kankowski") },
+  { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
+  { name: "Sarah Lilly-Ray", role: "Warehouse Operations", image: portrait("Sarah.jpg", "Sarah Lilly-Ray") },
   { name: "Regina Mennig", role: "Accounting & Business Manager" },
-  { name: "Judy Morales", role: "Human Resources" },
+  { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
 ];
 
 export function AtelierTeam() {

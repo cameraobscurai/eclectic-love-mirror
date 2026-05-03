@@ -26,3 +26,4 @@ export function publicStorageUrl(bucket: string, path: string): string {
 }
 
 export const galleriesUrl = (path: string) => publicStorageUrl("image-galleries", path);
+export const teamPhotoUrl = (path: string) => publicStorageUrl("team-photos", path);
