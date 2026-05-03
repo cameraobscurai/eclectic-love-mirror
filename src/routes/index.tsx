@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { LiquidGlass } from "@/components/liquid-glass";
+import { AmangiriGlassHero, type GlassVariant } from "@/components/home/AmangiriGlassHero";
 import { cn } from "@/lib/utils";
 import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
@@ -16,9 +17,13 @@ import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
 import homeHeroExploded from "@/assets/hero-exploded-glass.png";
 
-// Two hero variants. Picked at random on each page load for a quieter
+// Five hero variants. Picked at random on each page load for a quieter
 // "the site is alive" feel; visitor can flip with the corner control.
-type HeroVariant = "moodboard" | "exploded";
+//   moodboard / exploded — original baked-image compositions
+//   vitrine / reveal / strata — glass-first compositions over the Amangiri
+//   substrate (see AmangiriGlassHero.tsx for the actual recipes)
+type HeroVariant = "moodboard" | "exploded" | GlassVariant;
+const ALL_VARIANTS: HeroVariant[] = ["moodboard", "exploded", "vitrine", "reveal", "strata"];
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
