@@ -81,7 +81,7 @@ export function GalleryMasthead({
             14px
           );
           margin: 0;
-          z-index: 3;
+          z-index: 2;
         }
 
         /* Heading — anchored bottom-left, directly above the pills. Sized
@@ -100,7 +100,7 @@ export function GalleryMasthead({
           letter-spacing: -0.01em;
           font-size: clamp(72px, 9.5vw, 152px);
           white-space: nowrap;
-          z-index: 3;
+          z-index: 2;
         }
 
         /* Panels group — fixed offset under the nav. NOT anchored to the
@@ -114,8 +114,8 @@ export function GalleryMasthead({
           right: clamp(24px, 3vw, 44px);
           top: clamp(20px, 3vh, 36px);
           width: clamp(460px, 52vw, 820px);
-          height: clamp(360px, 56vh, 580px);
-          z-index: 2;
+          height: clamp(460px, 72vh, 700px);
+          z-index: 4;
         }
 
         /* Pills — bottom-anchored, full-width, left-aligned. */
@@ -138,7 +138,7 @@ export function GalleryMasthead({
           display: grid;
           grid-template-rows: auto 1fr;
           border: 1px solid rgba(255,255,255,0.09);
-          background: rgba(18,18,18,0.55);
+          background: rgba(18,18,18,0.48);
           backdrop-filter: blur(20px) saturate(130%);
           -webkit-backdrop-filter: blur(20px) saturate(130%);
           box-shadow:
@@ -165,11 +165,11 @@ export function GalleryMasthead({
           /* Center-ish horizontally, biased slightly right so the map
              overlaps its right side and the heading passes through its
              middle. */
-          left: clamp(140px, 22vw, 360px);
-          top: clamp(80px, 12vh, 160px);
-          width: clamp(360px, 42vw, 640px);
-          height: clamp(320px, 50vh, 520px);
-          background: rgba(255, 255, 255, 0.035);
+          left: clamp(160px, 21.5vw, 380px);
+          top: clamp(92px, 12.5vh, 160px);
+          width: clamp(440px, 45vw, 760px);
+          height: clamp(430px, 64vh, 720px);
+          background: rgba(255, 255, 255, 0.045);
           border: 1px solid rgba(255, 255, 255, 0.07);
           backdrop-filter: blur(28px) saturate(120%);
           -webkit-backdrop-filter: blur(28px) saturate(120%);
@@ -178,7 +178,7 @@ export function GalleryMasthead({
             0 30px 80px rgba(0, 0, 0, 0.45);
           transform: rotate(-1.5deg);
           pointer-events: none;
-          z-index: 1;
+          z-index: 3;
         }
 
         /* ----------------------------------------------------------------
