@@ -52,10 +52,10 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:hello@eclectichive.com"
+                  href="mailto:info@eclectichive.com"
                   className="text-[14px] text-cream/70 hover:text-cream transition-colors"
                 >
-                  hello@eclectichive.com
+                  info@eclectichive.com
                 </a>
               </li>
               <li className="text-[14px] text-cream/55">Denver, Colorado</li>

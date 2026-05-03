@@ -56,7 +56,7 @@ const BUDGET_RANGES = [
   "Not sure yet",
 ] as const;
 
-const SUPPORT_EMAIL = "hello@eclectichive.com";
+const SUPPORT_EMAIL = "info@eclectichive.com";
 const RATE_LIMIT_KEY = "hive.contact.lastSubmitAt.v1";
 const RATE_LIMIT_MS = 30_000;
 
