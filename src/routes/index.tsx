@@ -182,12 +182,26 @@ function HomePage() {
           inside the artwork.
         */}
         <picture>
-          <source media="(max-width: 767px)" srcSet={homeHeroMobile} />
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileAvif}
+            type="image/avif"
+          />
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileWebp}
+            type="image/webp"
+          />
+          <source srcSet={homeHeroAvif} type="image/avif" />
+          <source srcSet={homeHero} type="image/webp" />
           <motion.img
             ref={heroImgRef}
             src={homeHero}
             alt=""
             aria-hidden="true"
+            decoding="async"
+            fetchPriority="high"
+            loading="eager"
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
               "object-[50%_25%] md:object-[50%_38%]",
