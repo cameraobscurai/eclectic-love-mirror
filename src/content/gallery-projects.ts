@@ -22,6 +22,8 @@ export interface GalleryProject {
   /** Two-digit slot number, e.g. "01". Drives the numbered rhythm. */
   number: string;
   name: string;
+  /** URL slug for /gallery/$slug. Derived from name, stable. */
+  slug: string;
   /** Single-word region tag for the lightbox eyebrow ("Utah", "Colorado"). */
   region: string;
   /** Short engagement type ("Wedding", "Private Celebration"). */
@@ -60,6 +62,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "01",
     name: "Amangiri",
+    slug: "amangiri",
     region: "Utah",
     kind: "Incentive Program",
     location: "Canyon Point, Utah",
@@ -73,6 +76,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "02",
     name: "Aspen Event Works",
+    slug: "aspen-event-works",
     region: "Colorado",
     kind: "Wedding",
     location: "Aspen, Colorado",
@@ -86,6 +90,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "03",
     name: "Birch Design Studio",
+    slug: "birch-design-studio",
     region: "Colorado",
     kind: "Wedding Weekend",
     location: "Caribou Club, Aspen",
@@ -99,6 +104,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "04",
     name: "Easton Events",
+    slug: "easton-events",
     region: "Montana",
     kind: "Wedding",
     location: "Big Sky, Montana",
@@ -112,6 +118,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "05",
     name: "Brooke Keegan Events",
+    slug: "brooke-keegan-events",
     region: "Colorado",
     kind: "Wedding",
     location: "Dunton Hot Springs, Colorado",
@@ -125,6 +132,7 @@ export const galleryProjects: GalleryProject[] = [
   {
     number: "06",
     name: "Lynden Lane",
+    slug: "lynden-lane",
     region: "California",
     kind: "Private Celebration",
     location: "Private Residence",
@@ -136,3 +144,7 @@ export const galleryProjects: GalleryProject[] = [
       "A private residence celebration — outdoor lounges set against modernist architecture, layered florals, and a quietly composed evening that unfolds across the property.",
   },
 ];
+
+export function getProjectBySlug(slug: string): GalleryProject | undefined {
+  return galleryProjects.find((p) => p.slug === slug);
+}
