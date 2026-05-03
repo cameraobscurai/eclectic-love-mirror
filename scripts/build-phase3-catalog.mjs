@@ -148,18 +148,61 @@ try {
   console.log("owner_site_order.json not found — skipping ownerSiteRank join.");
 }
 
-// Build lookup: internalCategorySlug → Map<normalizedTitle, rank>
-const ownerRankByCategory = new Map();
-if (ownerOrder?.liveCategories && ownerOrder?.internalToLive) {
-  for (const [internalSlug, liveKey] of Object.entries(ownerOrder.internalToLive)) {
-    const titles = ownerOrder.liveCategories[liveKey] ?? [];
+// Internal categorySlug → ordered list of liveCategory keys to search.
+// Most internal slugs have one live counterpart; sub-slugs (e.g.
+// sofas-loveseats1) fall back to the broader live page (lounge).
+// First match wins, preserving the live page's order within each fallback.
+const FALLBACK_LIVE_CATEGORIES = {
+  // Lounge family — all live on /lounge
+  "lounge": ["lounge"],
+  "sofas-loveseats1": ["lounge"],
+  "chairs-stools1": ["lounge"],
+  "benches-ottomans1": ["lounge"],
+  // Tables family — /lounge-tables (cocktail-bar holds bar/community/highboy tables too)
+  "lounge-tables": ["lounge-tables"],
+  "tables1": ["lounge-tables", "cocktail-bar", "dining"],
+  // Cocktail & Bar family
+  "cocktail-bar": ["cocktail-bar"],
+  "bars1": ["cocktail-bar"],
+  "storage1": ["cocktail-bar", "large-decor"],
+  // Textiles family — pillows & throws live on /textiles
+  "textiles": ["textiles"],
+  "pillows-throws1": ["textiles"],
+  // Styling / Accents — accents live on /styling
+  "styling": ["styling"],
+  "accents1": ["styling"],
+  // Singletons
+  "dining": ["dining"],
+  "tableware": ["tableware"],
+  "light": ["light"],
+  "rugs": ["rugs"],
+  "large-decor": ["large-decor"],
+};
+
+// Build lookup: liveCategory key → Map<normalizedTitle, rank>
+const ownerRankByLive = new Map();
+if (ownerOrder?.liveCategories) {
+  for (const [liveKey, titles] of Object.entries(ownerOrder.liveCategories)) {
     const map = new Map();
     titles.forEach((t, i) => {
       const k = normalizeTitle(t);
       if (k && !map.has(k)) map.set(k, i);
     });
-    ownerRankByCategory.set(internalSlug, map);
+    ownerRankByLive.set(liveKey, map);
   }
+}
+
+// Resolve owner rank for a (categorySlug, normalizedTitle) by walking the
+// fallback chain. Returns { rank, source } or null.
+function resolveOwnerRank(categorySlug, normTitle) {
+  const chain = FALLBACK_LIVE_CATEGORIES[categorySlug] ?? [];
+  for (const liveKey of chain) {
+    const m = ownerRankByLive.get(liveKey);
+    if (!m) continue;
+    const rank = m.get(normTitle);
+    if (rank != null) return { rank, source: liveKey };
+  }
+  return null;
 }
 
 const reviewByUrl = new Map(reviewRows.map(r => [r.url, r.issue_type ?? ""]));
