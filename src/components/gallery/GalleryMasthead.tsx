@@ -155,19 +155,28 @@ export function GalleryMasthead({
           min-height: 0;
         }
 
-        /* Ghost panel — sits BEHIND the map. Only ~30px peeks out the left
-           side. Almost invisible — a faint frosted edge, not a black box. */
+        /* Ghost panel — its own free-floating frosted glass plate, anchored
+           to the STAGE (not the map). Sits roughly center-stage, slightly
+           left of the map, larger and softer. This is the plate that
+           creates the soft frosted smear behind "THE GALLERY" in the
+           reference. The map sits on top of its right edge. */
         .gallery-glass-ghost {
           position: absolute;
-          right: calc(100% - 30px);
-          top: 10%;
-          width: clamp(140px, 14vw, 210px);
-          height: clamp(200px, 32vh, 340px);
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-          transform: rotate(-2.5deg);
+          /* Center-ish horizontally, biased slightly right so the map
+             overlaps its right side and the heading passes through its
+             middle. */
+          left: clamp(140px, 22vw, 360px);
+          top: clamp(80px, 12vh, 160px);
+          width: clamp(360px, 42vw, 640px);
+          height: clamp(320px, 50vh, 520px);
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.07);
+          backdrop-filter: blur(28px) saturate(120%);
+          -webkit-backdrop-filter: blur(28px) saturate(120%);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.06),
+            0 30px 80px rgba(0, 0, 0, 0.45);
+          transform: rotate(-1.5deg);
           pointer-events: none;
           z-index: 1;
         }
@@ -244,9 +253,12 @@ export function GalleryMasthead({
             The Gallery
           </h1>
 
-          {/* Panels area */}
+          {/* Ghost glass plate — page-anchored, sits between the heading
+              and the map. Pure decoration, hence aria-hidden. */}
+          <div className="gallery-glass-ghost" aria-hidden="true" />
+
+          {/* Panels area — the map only */}
           <div className="gallery-hero-panels">
-            <div className="gallery-glass-ghost" aria-hidden="true" />
             <div className="gallery-glass-map">
               <div className="flex items-center justify-between gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2 sm:pb-3">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55 m-0">
