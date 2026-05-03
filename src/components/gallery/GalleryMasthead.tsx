@@ -100,20 +100,20 @@ export function GalleryMasthead({
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Sits above heading: pills bottom + pills space + heading height + gap. */
+          /* Above the heading: pills offset + heading height + breathing gap. */
           bottom: calc(
             clamp(20px, 2.5vw, 36px) +
             clamp(48px, 6vh, 72px) +
-            clamp(72px, 9.2vw, 148px) +
+            clamp(72px, 9.5vw, 152px) +
             14px
           );
           margin: 0;
           z-index: 3;
         }
 
-        /* Heading — anchored bottom-left, directly above the pills with equal
-           margin to the left edge. Pills sit at bottom: clamp(20px, 2.5vw, 36px),
-           so heading bottom = that + a small breathing gap above the pills. */
+        /* Heading — anchored bottom-left, directly above the pills. Sized
+           large enough that "RY" of GALLERY slides behind the panel's left
+           edge (which sits at right: clamp(24,3vw,44px) + panel width). */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
@@ -125,18 +125,20 @@ export function GalleryMasthead({
           color: var(--cream);
           line-height: 1;
           letter-spacing: -0.01em;
-          font-size: clamp(72px, 9.2vw, 148px);
+          font-size: clamp(72px, 9.5vw, 152px);
           white-space: nowrap;
           z-index: 3;
         }
 
-        /* Panels group — pinned to the TOP, right-aligned, sitting just under
-           the nav bar with the same margin as the left-edge content. Enlarged
-           so its bottom edge overlaps the top of "THE GALLERY" heading. */
+        /* Panels group — vertically anchored to the heading center via the
+           --heading-center custom property set by the ResizeObserver. The
+           45% fallback keeps it floating mid-stage before hydration so the
+           panel never hugs the nav. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: clamp(16px, 2vw, 28px);
+          top: var(--heading-center, 45%);
+          transform: translateY(-50%);
           width: clamp(460px, 52vw, 820px);
           height: clamp(360px, 52vh, 560px);
           z-index: 2;
@@ -151,7 +153,10 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Map glass panel — fills its parent (the panels group). */
+        /* Map glass plate — backdrop-filter only composites when the element
+           does NOT clip its own painting context. overflow: hidden here kills
+           the blur in some engines, so we move clipping to the body wrapper
+           below and let the plate stay un-clipped. */
         .gallery-glass-map {
           position: relative;
           width: 100%;
@@ -159,27 +164,33 @@ export function GalleryMasthead({
           display: grid;
           grid-template-rows: auto 1fr;
           border: 1px solid rgba(255,255,255,0.09);
-          background: rgba(18,18,18,0.62);
-          backdrop-filter: blur(20px) saturate(120%);
-          -webkit-backdrop-filter: blur(20px) saturate(120%);
+          background: rgba(18,18,18,0.55);
+          backdrop-filter: blur(20px) saturate(130%);
+          -webkit-backdrop-filter: blur(20px) saturate(130%);
           box-shadow:
             inset 0 1px 0 rgba(255,255,255,0.07),
             0 24px 56px rgba(0,0,0,0.55);
-          overflow: hidden;
           z-index: 2;
         }
 
-        /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
-           the map's left edge — only that 30px sliver peeks out. Lifted
-           opacity so it actually reads against the charcoal field. */
+        /* Map body — actual clipping happens here, so the parent plate keeps
+           its working backdrop blur. */
+        .gallery-glass-map-body {
+          overflow: hidden;
+          border-radius: 0 0 10px 10px;
+          min-height: 0;
+        }
+
+        /* Ghost panel — sits BEHIND the map. Only ~30px peeks out the left
+           side. Almost invisible — a faint frosted edge, not a black box. */
         .gallery-glass-ghost {
           position: absolute;
           right: calc(100% - 30px);
           top: 10%;
           width: clamp(140px, 14vw, 210px);
           height: clamp(200px, 32vh, 340px);
-          background: rgba(255,255,255,0.018);
-          border: 1px solid rgba(255,255,255,0.042);
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.06);
           backdrop-filter: blur(4px);
           -webkit-backdrop-filter: blur(4px);
           transform: rotate(-2.5deg);
