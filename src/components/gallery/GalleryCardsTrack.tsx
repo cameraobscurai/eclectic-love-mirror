@@ -244,7 +244,10 @@ export function GalleryCardsTrack({
         {/* Track */}
         <div
           ref={railRef}
-          className="-mx-6 lg:-mx-12 px-6 lg:px-12 overflow-x-auto no-scrollbar snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none"
+          tabIndex={0}
+          role="region"
+          aria-label="Gallery projects — use arrow keys to navigate"
+          className="-mx-6 lg:-mx-12 px-6 lg:px-12 overflow-x-auto no-scrollbar snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/30 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
           style={{ scrollBehavior: "smooth" }}
         >
           <ol className="flex gap-6 lg:gap-10 pb-4">
@@ -285,15 +288,44 @@ export function GalleryCardsTrack({
         </button>
       </div>
 
-      {/* Slot indicator + progress rule */}
-      <div className="mt-8 flex items-center gap-4 max-w-md mx-auto">
+      {/* Interactive scrubber — drag or click to scrub the rail */}
+      <div className="mt-8 flex items-center gap-4 max-w-xl mx-auto">
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
           {(activeIndex + 1).toString().padStart(2, "0")}
         </span>
-        <div className="flex-1 h-px bg-cream/10 overflow-hidden">
+        <div
+          ref={scrubRef}
+          role="slider"
+          aria-label="Scrub gallery projects"
+          aria-valuemin={1}
+          aria-valuemax={projects.length}
+          aria-valuenow={activeIndex + 1}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") { e.preventDefault(); scrollToIndex(activeIndex + 1); }
+            if (e.key === "ArrowLeft")  { e.preventDefault(); scrollToIndex(activeIndex - 1); }
+          }}
+          className="group relative flex-1 h-6 flex items-center cursor-pointer select-none focus:outline-none"
+        >
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-cream/15" />
           <div
-            className="h-full bg-cream/45 transition-[width] duration-300"
-            style={{ width: `${Math.max(8, progress * 100)}%` }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] bg-cream/55 transition-[width] duration-200"
+            style={{ width: `${Math.max(2, progress * 100)}%` }}
+          />
+          {/* Tick marks per project */}
+          {projects.map((_, i) => (
+            <span
+              key={i}
+              aria-hidden
+              className="absolute top-1/2 -translate-y-1/2 w-px h-2 bg-cream/20"
+              style={{ left: `${projects.length === 1 ? 50 : (i / (projects.length - 1)) * 100}%` }}
+            />
+          ))}
+          {/* Handle */}
+          <span
+            aria-hidden
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-cream border border-charcoal shadow-[0_0_0_2px_rgba(245,242,237,0.25)] group-hover:scale-110 transition-transform"
+            style={{ left: `${progress * 100}%` }}
           />
         </div>
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/35 tabular-nums">
@@ -301,7 +333,7 @@ export function GalleryCardsTrack({
         </span>
       </div>
       <p className="mt-3 text-center text-[13px] italic text-cream/45">
-        Drag or scroll to explore
+        Drag, scroll, or use ← → to explore
       </p>
 
       <GalleryProjectIndex
