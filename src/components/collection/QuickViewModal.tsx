@@ -330,18 +330,14 @@ export function QuickViewModal({
               >
                 {product.displayCategory}
               </p>
-              <h2
-                className="font-display text-charcoal break-words"
-                style={{
-                  marginTop: 12,
-                  fontSize: "clamp(28px, 3vw, 44px)",
-                  lineHeight: 1.05,
-                  letterSpacing: "var(--tracking-display)",
-                  fontWeight: 400,
-                }}
+            {/* Top — category + description (title is overlaid on the image; rendered below) */}
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
+              <p
+                className="uppercase text-charcoal/40"
+                style={{ fontSize: 8, letterSpacing: "0.22em" }}
               >
-                {product.title}
-              </h2>
+                {product.displayCategory}
+              </p>
               {product.description && (
                 <p
                   className="text-charcoal/60"
@@ -366,8 +362,8 @@ export function QuickViewModal({
                 borderTop: "1px solid rgba(26,26,26,0.08)",
               }}
             >
-              {/* Row 1: thumbs + scale toggle */}
-              <div className="flex items-center justify-between gap-4">
+              {/* Row 1: thumbs only (scale toggle now lives on the image) */}
+              <div className="flex items-center gap-4">
                 {product.images.length > 1 ? (
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                     {product.images.map((im, i) => (
