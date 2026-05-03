@@ -140,6 +140,18 @@ function CollectionPage() {
   // ---------- Debounced search input ----------
   const [qLocal, setQLocal] = useState(q);
   useEffect(() => setQLocal(q), [q]);
+
+  // ---------- Floating search modal ----------
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [modalQuery, setModalQuery] = useState("");
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   useEffect(() => {
     const t = setTimeout(() => {
       if (qLocal !== q) {
@@ -526,14 +538,14 @@ function CollectionPage() {
       </div>
 
       {/* ============================================================
-          STICKY UTILITY BAR — sits beneath the static heading.
-          Sticks to the bottom of the global nav (`top: var(--nav-h)`).
-          Contains: result meta · search · sort · density toggle.
+          UTILITY BAR — only shown when a category is active OR the user
+          has a search query. On the overview screen it's hidden entirely
+          (the rail + category gallery IS the navigation).
+          No longer sticky — scrolls with the page as a normal block.
           ============================================================ */}
+      {(activeGroup || q.trim()) && (
       <div
-        className="sticky z-20"
         style={{
-          top: "var(--nav-h)",
           background: utilityScrolled
             ? "rgba(245,242,237,0.78)"
             : "var(--cream)",
@@ -668,6 +680,7 @@ function CollectionPage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ============================================================
           BODY — permanent two-column layout.
@@ -910,6 +923,152 @@ function CollectionPage() {
       </AnimatePresence>
 
       <InquiryTray />
+
+      {/* ============================================================
+          FLOATING SEARCH BUTTON — bottom-right, always visible.
+          Opens a full-viewport frosted search modal.
+          ============================================================ */}
+      <button
+        onClick={() => setSearchOpen(true)}
+        aria-label="Search the collection"
+        style={{
+          position: "fixed",
+          bottom: "clamp(24px, 3vh, 40px)",
+          right: "clamp(24px, 3vw, 40px)",
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          background: "rgba(26,26,26,0.92)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          zIndex: 40,
+          boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
+        }}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" />
+          <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      </button>
+
+      {searchOpen && (
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSearchOpen(false);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            background: "rgba(255,255,255,0.88)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "clamp(80px, 12vh, 140px) clamp(24px, 8vw, 120px) 40px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "640px",
+              borderBottom: "1px solid rgba(26,26,26,0.15)",
+              display: "flex",
+              alignItems: "center",
+              gap: "14px",
+              paddingBottom: "14px",
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              style={{ opacity: 0.35, flexShrink: 0 }}
+            >
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="#1a1a1a" strokeWidth="1.2" />
+              <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#1a1a1a" strokeWidth="1.2" strokeLinecap="round" />
+            </svg>
+            <input
+              autoFocus
+              value={modalQuery}
+              onChange={(e) => setModalQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && modalQuery.trim()) {
+                  // Wire into the existing search: setQLocal feeds the
+                  // debounced effect that pushes ?q= into the URL.
+                  setQLocal(modalQuery.trim());
+                  setSearchOpen(false);
+                }
+              }}
+              placeholder="Search pieces, categories..."
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(22px, 2.8vw, 36px)",
+                color: "#1a1a1a",
+                letterSpacing: "-0.01em",
+              }}
+            />
+            <button
+              onClick={() => setSearchOpen(false)}
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "9px",
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "rgba(26,26,26,0.38)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                flexShrink: 0,
+                padding: "4px",
+              }}
+            >
+              ESC
+            </button>
+          </div>
+
+          <div style={{ width: "100%", maxWidth: "640px", marginTop: "28px" }}>
+            {modalQuery.length === 0 ? (
+              <p
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "10px",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "rgba(26,26,26,0.32)",
+                  margin: 0,
+                }}
+              >
+                {total} pieces across {overviewGroups.length} categories
+              </p>
+            ) : (
+              <p
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "10px",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "rgba(26,26,26,0.32)",
+                  margin: 0,
+                }}
+              >
+                Press Enter to search
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
