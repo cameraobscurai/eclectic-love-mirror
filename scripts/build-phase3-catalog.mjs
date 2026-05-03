@@ -265,7 +265,7 @@ writeFileSync("src/data/phase3/phase3_catalog.json", JSON.stringify(out));
 console.log(`Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`);
 
 // Owner-site match report (public-ready products only).
-if (ownerRankByCategory.size > 0) {
+if (ownerRankByLive.size > 0) {
   console.log("\nOwner-site rank coverage (public-ready):");
   const byCat = new Map();
   for (const p of publicProducts) {
