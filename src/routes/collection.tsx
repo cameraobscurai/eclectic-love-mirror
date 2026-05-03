@@ -526,14 +526,14 @@ function CollectionPage() {
       </div>
 
       {/* ============================================================
-          STICKY UTILITY BAR — sits beneath the static heading.
-          Sticks to the bottom of the global nav (`top: var(--nav-h)`).
-          Contains: result meta · search · sort · density toggle.
+          UTILITY BAR — only shown when a category is active OR the user
+          has a search query. On the overview screen it's hidden entirely
+          (the rail + category gallery IS the navigation).
+          No longer sticky — scrolls with the page as a normal block.
           ============================================================ */}
+      {(activeGroup || q.trim()) && (
       <div
-        className="sticky z-20"
         style={{
-          top: "var(--nav-h)",
           background: utilityScrolled
             ? "rgba(245,242,237,0.78)"
             : "var(--cream)",
@@ -668,6 +668,7 @@ function CollectionPage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ============================================================
           BODY — permanent two-column layout.
