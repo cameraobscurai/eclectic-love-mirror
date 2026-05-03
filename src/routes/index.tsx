@@ -40,6 +40,27 @@ export const Route = createFileRoute("/")({
           "Cinematic, art-forward environments for weddings, galas, and corporate events.",
       },
     ],
+    links: [
+      // LCP image preload — separate entries per breakpoint so the browser
+      // fetches only the asset that matches the current viewport. AVIF
+      // first, fall back implicitly to <picture> sources for non-AVIF UAs.
+      {
+        rel: "preload",
+        as: "image",
+        href: homeHeroMobileAvif,
+        type: "image/avif",
+        media: "(max-width: 767px)",
+        fetchpriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: homeHeroAvif,
+        type: "image/avif",
+        media: "(min-width: 768px)",
+        fetchpriority: "high",
+      },
+    ],
   }),
   component: HomePage,
 });
