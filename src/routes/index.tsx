@@ -84,6 +84,14 @@ function HomePage() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const heroImgRef = useRef<HTMLImageElement | null>(null);
 
+  // Random hero variant per page load. SSR renders "moodboard" deterministically;
+  // a client effect picks a random variant after hydration. The corner control
+  // lets the visitor flip manually.
+  const [variant, setVariant] = useState<HeroVariant>("moodboard");
+  useEffect(() => {
+    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
+  }, []);
+
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(t);
