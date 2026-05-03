@@ -143,18 +143,92 @@ export function GalleryCardsTrack({
   const scrollToIndex = useCallback((idx: number) => {
     const rail = railRef.current;
     if (!rail) return;
-    const card = rail.querySelectorAll<HTMLElement>("[data-card]")[idx];
+    const clamped = Math.max(0, Math.min(projects.length - 1, idx));
+    const card = rail.querySelectorAll<HTMLElement>("[data-card]")[clamped];
     if (!card) return;
     // Center the card in the rail.
     const target = card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2;
     rail.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
-  }, []);
+  }, [projects.length]);
+
+  // Expose scrollToIndex to parents (e.g. the map).
+  useEffect(() => {
+    if (jumpRef) jumpRef.current = scrollToIndex;
+    return () => {
+      if (jumpRef) jumpRef.current = null;
+    };
+  }, [jumpRef, scrollToIndex]);
 
   const paddle = (dir: -1 | 1) => {
     const rail = railRef.current;
     if (!rail) return;
     rail.scrollBy({ left: dir * rail.clientWidth * 0.85, behavior: "smooth" });
   };
+
+  // Keyboard navigation when the rail (or any descendant) is focused.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        scrollToIndex(activeIndex + 1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        scrollToIndex(activeIndex - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        scrollToIndex(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        scrollToIndex(projects.length - 1);
+      } else if (e.key === "Enter" || e.key === " ") {
+        // Open the focused card if any.
+        const target = e.target as HTMLElement | null;
+        if (target && target.closest("[data-card-trigger]")) return; // let card handle
+      }
+    };
+    rail.addEventListener("keydown", onKey);
+    return () => rail.removeEventListener("keydown", onKey);
+  }, [activeIndex, projects.length, scrollToIndex]);
+
+  // Interactive scrubber — drag to scrub, click to jump.
+  useEffect(() => {
+    const scrub = scrubRef.current;
+    const rail = railRef.current;
+    if (!scrub || !rail) return;
+    let dragging = false;
+
+    const apply = (clientX: number) => {
+      const rect = scrub.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const max = rail.scrollWidth - rail.clientWidth;
+      rail.scrollTo({ left: ratio * max, behavior: "auto" });
+    };
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      scrub.setPointerCapture(e.pointerId);
+      apply(e.clientX);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      apply(e.clientX);
+    };
+    const onUp = (e: PointerEvent) => {
+      dragging = false;
+      try { scrub.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    };
+    scrub.addEventListener("pointerdown", onDown);
+    scrub.addEventListener("pointermove", onMove);
+    scrub.addEventListener("pointerup", onUp);
+    scrub.addEventListener("pointercancel", onUp);
+    return () => {
+      scrub.removeEventListener("pointerdown", onDown);
+      scrub.removeEventListener("pointermove", onMove);
+      scrub.removeEventListener("pointerup", onUp);
+      scrub.removeEventListener("pointercancel", onUp);
+    };
+  }, []);
 
   if (projects.length === 0) {
     return (
