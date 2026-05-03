@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProcessRouteImport } from './routes/process'
+import { Route as ProbeImagetoolsRouteImport } from './routes/probe-imagetools'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -21,6 +22,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
   path: '/process',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProbeImagetoolsRoute = ProbeImagetoolsRouteImport.update({
+  id: '/probe-imagetools',
+  path: '/probe-imagetools',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
+  '/probe-imagetools': typeof ProbeImagetoolsRoute
   '/process': typeof ProcessRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
+  '/probe-imagetools': typeof ProbeImagetoolsRoute
   '/process': typeof ProcessRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
+  '/probe-imagetools': typeof ProbeImagetoolsRoute
   '/process': typeof ProcessRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/privacy'
+    | '/probe-imagetools'
     | '/process'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/privacy'
+    | '/probe-imagetools'
     | '/process'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/gallery'
     | '/privacy'
+    | '/probe-imagetools'
     | '/process'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProbeImagetoolsRoute: typeof ProbeImagetoolsRoute
   ProcessRoute: typeof ProcessRoute
 }
 
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/process'
       fullPath: '/process'
       preLoaderRoute: typeof ProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/probe-imagetools': {
+      id: '/probe-imagetools'
+      path: '/probe-imagetools'
+      fullPath: '/probe-imagetools'
+      preLoaderRoute: typeof ProbeImagetoolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -203,8 +223,18 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
   PrivacyRoute: PrivacyRoute,
+  ProbeImagetoolsRoute: ProbeImagetoolsRoute,
   ProcessRoute: ProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
