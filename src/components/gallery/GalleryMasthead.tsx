@@ -155,26 +155,23 @@ export function GalleryMasthead({
         }
 
         /* Ghost panel — its own free-floating frosted glass plate, anchored
-           to the STAGE (not the map). Sits roughly center-stage, slightly
-           left of the map, larger and softer. This is the plate that
-           creates the soft frosted smear behind "THE GALLERY" in the
-           reference. The map sits on top of its right edge. */
+           to the STAGE (not the map). LIGHT-on-dark, more luminous than the
+           map plate so the heading reads as if it's passing through a
+           halo of frost. */
         .gallery-glass-ghost {
           position: absolute;
-          /* Center-ish horizontally, biased slightly right so the map
-             overlaps its right side and the heading passes through its
-             middle. */
           left: clamp(160px, 21.5vw, 380px);
           top: clamp(92px, 12.5vh, 160px);
           width: clamp(440px, 45vw, 760px);
           height: clamp(430px, 64vh, 720px);
-          background: rgba(255, 255, 255, 0.045);
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          backdrop-filter: blur(28px) saturate(120%);
-          -webkit-backdrop-filter: blur(28px) saturate(120%);
+          background: rgba(255, 255, 255, 0.09);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          backdrop-filter: blur(36px) saturate(150%);
+          -webkit-backdrop-filter: blur(36px) saturate(150%);
           box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.06),
-            0 30px 80px rgba(0, 0, 0, 0.45);
+            inset 0 1px 0 rgba(255, 255, 255, 0.20),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+            0 40px 90px rgba(0, 0, 0, 0.5);
           transform: rotate(-1.5deg);
           pointer-events: none;
           z-index: 3;
