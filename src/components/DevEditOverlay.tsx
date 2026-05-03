@@ -1104,3 +1104,13 @@ function hudBtn(disabled: boolean, primary = false): React.CSSProperties {
     opacity: disabled ? 0.4 : 1,
   };
 }
+
+const miniBtn: React.CSSProperties = {
+  padding: "4px 7px",
+  background: "transparent",
+  color: "#f5f2ed",
+  border: "1px solid rgba(255,255,255,0.2)",
+  font: "11px/1 ui-monospace, Menlo, monospace",
+  cursor: "pointer",
+  minWidth: 26,
+};
