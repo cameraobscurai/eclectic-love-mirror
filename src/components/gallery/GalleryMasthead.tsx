@@ -103,17 +103,18 @@ export function GalleryMasthead({
           z-index: 3;
         }
 
-        /* Panels group — vertically anchored to the heading center via the
-           --heading-center custom property set by the ResizeObserver. The
-           45% fallback keeps it floating mid-stage before hydration so the
-           panel never hugs the nav. */
+        /* Panels group — fixed offset under the nav. NOT anchored to the
+           heading. The heading owns the bottom-left corner; this panel owns
+           the upper-right. They overlap geometrically: the panel reaches
+           down to ~65vh, the heading reaches up from the bottom-left, and
+           the "RY" of GALLERY passes BEHIND the panel's lower-left corner.
+           That overlap is the whole composition. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: var(--heading-center, 45%);
-          transform: translateY(-50%);
+          top: clamp(20px, 3vh, 36px);
           width: clamp(460px, 52vw, 820px);
-          height: clamp(360px, 52vh, 560px);
+          height: clamp(360px, 56vh, 580px);
           z-index: 2;
         }
 
