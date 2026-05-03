@@ -154,41 +154,41 @@ function CategoryCard({
           )}
         </div>
 
-                {/* Frosted-glass label overlay — floats over the bottom of the
-                    image, inside the card frame. Name only, no count. */}
-                <div
-                  className="px-2.5 py-1.5 sm:px-3.5 sm:py-2.5"
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    background: "rgba(255, 255, 255, 0.65)",
-                    backdropFilter: "blur(12px)",
-                    WebkitBackdropFilter: "blur(12px)",
-                    borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
-                    borderRadius: "0 0 12px 12px",
-                  }}
-                >
-                  <h2
-                    className="uppercase truncate text-[9px] sm:text-[10px]"
-                    style={{
-                      fontFamily: "var(--font-sans)",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase",
-                      color: "#1a1a1a",
-                      lineHeight: 1.2,
-                      margin: 0,
-                    }}
-                  >
-                    {label}
-                  </h2>
-                </div>
-              </button>
-            </motion.li>
-          );
-        })}
-      </ul>
-    </div>
+        {/* Frosted-glass label overlay — floats over the bottom of the
+            image, inside the card frame. Name only, no count. Stays at
+            partial opacity while the hero loads, then settles to full —
+            keeps the card legible without feeling like a hard pop. */}
+        <div
+          className="px-2.5 py-1.5 sm:px-3.5 sm:py-2.5"
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(255, 255, 255, 0.65)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
+            borderRadius: "0 0 12px 12px",
+            opacity: loaded || !heroSrc ? 1 : 0.6,
+            transition: "opacity 380ms ease-out",
+          }}
+        >
+          <h2
+            className="uppercase truncate text-[9px] sm:text-[10px]"
+            style={{
+              fontFamily: "var(--font-sans)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#1a1a1a",
+              lineHeight: 1.2,
+              margin: 0,
+            }}
+          >
+            {label}
+          </h2>
+        </div>
+      </button>
+    </motion.li>
   );
 }
