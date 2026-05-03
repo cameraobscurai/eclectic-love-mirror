@@ -214,7 +214,8 @@ export function GalleryMasthead({
           /* Map is a desktop-only conceit. Hide both panels and ghost. */
           .gallery-hero-panels,
           .gallery-glass-map,
-          .gallery-glass-ghost {
+          .gallery-glass-ghost,
+          .gallery-hero-haze {
             display: none !important;
           }
           /* Tighten pills so 4 filters wrap to 2 lines max, never stack
