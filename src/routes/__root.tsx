@@ -132,12 +132,17 @@ function RootComponent() {
           chunks and data preload on intent/viewport so the swap is silent.
           AnimatePresence around <Outlet /> forces full subtree remount and
           is catastrophic on /collection (~900 tiles). */}
-      <Outlet />
-      {!hideFooter && (
-        <div className={isHome ? "lg:hidden" : undefined}>
-          <Footer />
-        </div>
-      )}
+      {/* DevEdit canvas wrapper — gets a transform applied only when dev mode
+          is active. In production rendering it is a passive div with no
+          inline styles, so layout is byte-identical. */}
+      <div id="devedit-canvas">
+        <Outlet />
+        {!hideFooter && (
+          <div className={isHome ? "lg:hidden" : undefined}>
+            <Footer />
+          </div>
+        )}
+      </div>
       <DevEditOverlay />
     </>
   );
