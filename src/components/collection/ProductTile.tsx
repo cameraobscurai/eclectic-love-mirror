@@ -166,8 +166,18 @@ export function ProductTile({
           </p>
         </button>
       ) : (
-        // Deferred shell — pure white, no shimmer plate
-        <div aria-hidden className="block w-full bg-white">
+        // Deferred shell — pure white, no shimmer plate. content-visibility
+        // lets the browser skip layout/paint entirely while off-screen, and
+        // contain-intrinsic-size reserves stable space so scrollbar position
+        // and layout don't shift when the shell hydrates.
+        <div
+          aria-hidden
+          className="block w-full bg-white"
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "var(--archive-tile-media-h, 320px)",
+          }}
+        >
           <div
             className="w-full bg-white"
             style={{ height: "var(--archive-tile-media-h)" }}
