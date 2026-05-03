@@ -78,17 +78,38 @@ export function GalleryMap({
     );
     map.on("load", () => {
       // Scope the canvas filter to THIS map's canvas element only.
-      // No global CSS — won't affect any other Mapbox instance on the page.
+      // Lifted brightness so the dark-v11 borders actually read; the
+      // previous 0.75 was crushing geography into a near-black void.
       const canvas = map.getCanvas();
-      canvas.style.filter = CANVAS_FILTER;
+      canvas.style.filter = "brightness(0.95) contrast(1.1) saturate(0.85)";
 
-      // Strip every text/icon layer — pure geography only (land, water,
-      // borders). MUST run inside the load callback; setLayoutProperty on
-      // a not-yet-loaded style silently fails.
-      const layers = map.getStyle()?.layers ?? [];
+      const style = map.getStyle();
+      const layers = style?.layers ?? [];
+
       for (const layer of layers) {
+        // Kill all text/icon layers (city names, "United States", etc.)
         if (layer.type === "symbol") {
           map.setLayoutProperty(layer.id, "visibility", "none");
+          continue;
+        }
+
+        // Tint admin boundaries so country/state borders read against
+        // the dark field. Pattern-match by id since dark-v11 uses several
+        // admin layer ids (admin-0-boundary, admin-1-boundary-bg, etc.).
+        const id = layer.id;
+        if (layer.type === "line" && id.includes("admin")) {
+          try {
+            const isCountry = id.includes("admin-0") || id.includes("country");
+            map.setPaintProperty(
+              id,
+              "line-color",
+              isCountry ? "rgba(245,242,237,0.32)" : "rgba(245,242,237,0.18)"
+            );
+            map.setPaintProperty(id, "line-width", isCountry ? 0.9 : 0.5);
+            map.setPaintProperty(id, "line-opacity", 1);
+          } catch {
+            /* layer may not support these props — safe to skip */
+          }
         }
       }
 
