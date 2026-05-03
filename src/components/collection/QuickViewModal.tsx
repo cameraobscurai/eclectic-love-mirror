@@ -178,9 +178,9 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* TWO-COLUMN BODY */}
+        {/* TWO-COLUMN BODY — overflow visible so title can bleed across the divider */}
         <div
-          className="min-h-0"
+          className="min-h-0 relative"
           style={{
             display: "grid",
             gridTemplateColumns: "55fr 45fr",
