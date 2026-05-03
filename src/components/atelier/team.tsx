@@ -50,7 +50,7 @@ const portrait = (filename: string, name: string): TeamMemberImage => ({
  */
 export const TEAM: TeamMember[] = [
   { name: "Jill Livingston", role: "Founder · Creative Director", image: portrait("Jill.jpg", "Jill Livingston") },
-  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie2.jpg", "Annie Ohman") },
+  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie.jpg", "Annie Ohman") },
   { name: "Amanda Ferguson", role: "Senior Designer", image: portrait("Amanda.jpg", "Amanda Ferguson") },
   { name: "Erin Purnell", role: "Associate Designer", image: portrait("Erin.jpg", "Erin Purnell") },
   { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
