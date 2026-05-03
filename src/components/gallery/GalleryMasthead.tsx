@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
