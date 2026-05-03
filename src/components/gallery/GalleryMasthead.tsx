@@ -232,11 +232,8 @@ export function GalleryMasthead({
 
       <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-stage">
-          {/* Counter */}
-          <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
-            {visibleCount.toString().padStart(2, "0")}{" "}
-            {visibleCount === 1 ? "Environment" : "Environments"}
-          </p>
+          {/* Frosted haze band behind the heading */}
+          <div className="gallery-hero-haze" aria-hidden="true" />
 
           {/* Heading */}
           <h1 id="gallery-heading" className="gallery-hero-heading">
