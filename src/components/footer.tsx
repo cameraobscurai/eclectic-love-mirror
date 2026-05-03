@@ -23,9 +23,14 @@ export function Footer() {
               ECLECTIC HIVE
             </h2>
             <p className="mt-6 text-cream/65 max-w-md leading-[1.7] text-[15px]">
-              Two parts luxe, one part regal, and a dash of edge. A full-service
-              design and production house creating cinematic, art-forward event
-              environments.
+              An atelier of design and production.
+            </p>
+            <p className="mt-4 text-cream/65 max-w-md leading-[1.7] text-[15px]">
+              Working across concept, fabrication, and space to create
+              immersive environments.
+            </p>
+            <p className="mt-4 text-cream/55 max-w-md leading-[1.7] text-[15px]">
+              Denver, Colorado
             </p>
           </div>
 
