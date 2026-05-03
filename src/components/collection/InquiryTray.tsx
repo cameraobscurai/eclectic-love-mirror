@@ -19,7 +19,8 @@ export function InquiryTray() {
             duration: reduced ? 0 : 0.35,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 bg-charcoal text-cream shadow-2xl"
+          className="fixed left-1/2 -translate-x-1/2 z-40 bg-charcoal text-cream shadow-2xl"
+          style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
           role="region"
           aria-label="Inquiry"
         >
