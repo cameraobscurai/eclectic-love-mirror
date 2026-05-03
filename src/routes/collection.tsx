@@ -22,6 +22,7 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { glassBand } from "@/lib/glass";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -518,12 +519,10 @@ function CollectionPage() {
           Contains: result meta · search · sort · density toggle.
           ============================================================ */}
       <div
-        className="sticky z-20 backdrop-blur-sm"
+        className="sticky z-20"
         style={{
           top: "var(--nav-h)",
-          background: "color-mix(in oklab, var(--cream) 92%, transparent)",
-          borderTop: "1px solid var(--archive-rule)",
-          borderBottom: "1px solid var(--archive-rule)",
+          ...glassBand.light,
         }}
       >
         <div className="px-6 lg:px-12">

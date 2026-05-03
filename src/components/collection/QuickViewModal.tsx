@@ -9,6 +9,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
+import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
@@ -172,19 +173,26 @@ export function QuickViewModal({
       aria-label={product.title}
       className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-6"
     >
-      {/* Frosted scrim */}
+      {/* Frosted scrim — dark glass, deeper blur for depth parity with the
+          home band. The collection grid behind ghosts through. */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: reduced ? 0 : 0.2 }}
-        className="absolute inset-0 bg-charcoal/40 backdrop-blur-md"
-        style={{ WebkitBackdropFilter: "blur(16px)" }}
+        className="absolute inset-0 bg-charcoal/40"
+        style={{
+          backdropFilter: "blur(20px) saturate(1.05) brightness(0.92)",
+          WebkitBackdropFilter: "blur(20px) saturate(1.05) brightness(0.92)",
+        }}
         onClick={onClose}
         aria-hidden
       />
 
-      {/* White stage — exhibition surface.
+      {/* White stage — exhibition surface, now a frosted plate so the archive
+          ghosts through the chrome (top bar + footer). The image inside the
+          stage's middle row sits on its own near-opaque white field, so
+          product photography reads identically.
           Mobile: drag-to-dismiss (iOS sheet pattern). Desktop: static modal. */}
       <motion.div
         initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16, scale: 0.99 }}
@@ -199,8 +207,15 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto] md:rounded-none rounded-t-2xl"
-        style={{ touchAction: canDrag ? "pan-y" : undefined }}
+        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto] md:rounded-none rounded-t-2xl"
+        style={{
+          touchAction: canDrag ? "pan-y" : undefined,
+          // Stage panel: 92% white so the grid only ghosts faintly through
+          // the chrome rows; product imagery in the middle row stays crisp.
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(14px) saturate(1.05)",
+          WebkitBackdropFilter: "blur(14px) saturate(1.05)",
+        }}
       >
         {/* Mobile drag handle pill — visual affordance for swipe-to-dismiss */}
         {canDrag && (
@@ -209,8 +224,11 @@ export function QuickViewModal({
             aria-hidden
           />
         )}
-        {/* TOP BAR — eyebrow left, nav right */}
-        <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
+        {/* TOP BAR — eyebrow left, nav right. Frosted strip with bottom hairline. */}
+        <div
+          className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7 pb-3"
+          style={glassBandLightNoTop}
+        >
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
             {product.displayCategory}
           </p>
@@ -351,8 +369,14 @@ export function QuickViewModal({
         </div>
 
 
-        {/* FOOTER — thumbs · dimensions · stocked · CTA */}
-        <div className="border-t border-charcoal/15 bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+        {/* FOOTER — thumbs · dimensions · stocked · CTA. Frosted strip with
+            top hairline; symmetric framing with the top bar. */}
+        <div
+          style={{
+            ...glassBandLightNoBottom,
+            paddingBottom: "env(safe-area-inset-bottom)",
+          }}
+        >
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs — all visible, horizontal scroll with soft fade edge,
                 quiet counter in the typographic register. */}
