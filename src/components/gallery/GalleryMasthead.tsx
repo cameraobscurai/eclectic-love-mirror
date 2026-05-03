@@ -150,26 +150,33 @@ export function GalleryMasthead({
           .gallery-hero-grid {
             grid-template-columns: 1fr;
             grid-template-rows: auto auto auto auto;
+            /* Mobile reading order: brand → wordmark → filters → map.
+               The map is supporting context, not the lede — it sits last so
+               the heading and pills land in the first viewport. */
             grid-template-areas:
               "counter"
-              "panels"
               "heading"
-              "pills";
+              "pills"
+              "panels";
             align-items: stretch;
             min-height: 0;
+            row-gap: clamp(20px, 5vw, 32px);
           }
           .gallery-hero-heading {
-            font-size: clamp(44px, 11vw, 72px);
+            font-size: clamp(56px, 16vw, 96px);
             white-space: normal;
+            line-height: 0.9;
           }
           .gallery-hero-panels {
             grid-row: auto;
             justify-self: stretch;
-            height: clamp(200px, 56vw, 320px);
+            height: clamp(220px, 60vw, 320px);
+            margin-top: clamp(8px, 3vw, 20px);
           }
+          /* Ghost panel is a desktop-only conceit — it has no purpose when
+             the panels stack in a single column. */
           .gallery-glass-ghost {
-            left: -6%;
-            width: 50%;
+            display: none;
           }
         }
       `}</style>
