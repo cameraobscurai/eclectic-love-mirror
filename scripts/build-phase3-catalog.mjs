@@ -126,6 +126,85 @@ const productRows = parse(readFileSync("src/data/phase3/phase3_final_products.cs
 const imageRows = parse(readFileSync("src/data/phase3/phase3_final_images.csv", "utf8"));
 const reviewRows = parse(readFileSync("src/data/phase3/phase3_manual_review_queue.csv", "utf8"));
 
+// ---- Owner-site order (soft hint) -----------------------------------------
+// Captured by scripts/capture-owner-site-order.mjs. Optional: if the file is
+// missing, ownerSiteRank stays null on every product and current behavior
+// holds. Title match is deterministic — no LLM. Unmatched titles are printed
+// per-category so we can spot-check.
+const normalizeTitle = (s) =>
+  String(s ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+
+let ownerOrder = null;
+try {
+  ownerOrder = JSON.parse(readFileSync("src/data/phase3/owner_site_order.json", "utf8"));
+} catch {
+  console.log("owner_site_order.json not found — skipping ownerSiteRank join.");
+}
+
+// Internal categorySlug → ordered list of liveCategory keys to search.
+// Most internal slugs have one live counterpart; sub-slugs (e.g.
+// sofas-loveseats1) fall back to the broader live page (lounge).
+// First match wins, preserving the live page's order within each fallback.
+const FALLBACK_LIVE_CATEGORIES = {
+  // Lounge family — all live on /lounge
+  "lounge": ["lounge"],
+  "sofas-loveseats1": ["lounge"],
+  "chairs-stools1": ["lounge"],
+  "benches-ottomans1": ["lounge"],
+  // Tables family — /lounge-tables (cocktail-bar holds bar/community/highboy tables too)
+  "lounge-tables": ["lounge-tables"],
+  "tables1": ["lounge-tables", "cocktail-bar", "dining"],
+  // Cocktail & Bar family
+  "cocktail-bar": ["cocktail-bar"],
+  "bars1": ["cocktail-bar"],
+  "storage1": ["cocktail-bar", "large-decor"],
+  // Textiles family — pillows & throws live on /textiles
+  "textiles": ["textiles"],
+  "pillows-throws1": ["textiles"],
+  // Styling / Accents — accents live on /styling
+  "styling": ["styling"],
+  "accents1": ["styling"],
+  // Singletons
+  "dining": ["dining"],
+  "tableware": ["tableware"],
+  "light": ["light"],
+  "rugs": ["rugs"],
+  "large-decor": ["large-decor"],
+};
+
+// Build lookup: liveCategory key → Map<normalizedTitle, rank>
+const ownerRankByLive = new Map();
+if (ownerOrder?.liveCategories) {
+  for (const [liveKey, titles] of Object.entries(ownerOrder.liveCategories)) {
+    const map = new Map();
+    titles.forEach((t, i) => {
+      const k = normalizeTitle(t);
+      if (k && !map.has(k)) map.set(k, i);
+    });
+    ownerRankByLive.set(liveKey, map);
+  }
+}
+
+// Resolve owner rank for a (categorySlug, normalizedTitle) by walking the
+// fallback chain. Returns { rank, source } or null.
+function resolveOwnerRank(categorySlug, normTitle) {
+  const chain = FALLBACK_LIVE_CATEGORIES[categorySlug] ?? [];
+  for (const liveKey of chain) {
+    const m = ownerRankByLive.get(liveKey);
+    if (!m) continue;
+    const rank = m.get(normTitle);
+    if (rank != null) return { rank, source: liveKey };
+  }
+  return null;
+}
+
 const reviewByUrl = new Map(reviewRows.map(r => [r.url, r.issue_type ?? ""]));
 const imagesByPid = new Map();
 for (const im of imageRows) {
@@ -145,6 +224,11 @@ const products = productRows.map((p, idx) => {
   const reviewIssue = reviewByUrl.get(url) ?? "";
   const isKnown404 = url === KNOWN_404 || reviewIssue === "source_404";
   const publicReady = !!primaryImage && !isKnown404 && !!nullable(p.product_title_normalized ?? p.product_title_original) && confidence >= 0.7;
+  // Owner-site rank: lookup by normalized title within the product's
+  // categorySlug. Null for unmatched items — they tail by keyword rank in
+  // the runtime sorter.
+  const resolved = resolveOwnerRank(categorySlug, normalizeTitle(title));
+  const ownerSiteRank = resolved?.rank ?? null;
   return {
     id, sourceUrl: url, slug: p.product_slug ?? id, categorySlug,
     displayCategory: CATEGORY_DISPLAY_MAP[categorySlug] ?? categorySlug,
@@ -152,6 +236,7 @@ const products = productRows.map((p, idx) => {
     stockedQuantity: nullable(p.stocked_quantity), isCustomOrder: bool(p.is_custom_order_co),
     confidence, needsManualReview: bool(p.needs_manual_review), images, primaryImage,
     imageCount: images.length, publicReady, scrapedOrder: idx, subcategory: detectSub(categorySlug, title),
+    ownerSiteRank,
   };
 });
 
@@ -178,3 +263,26 @@ const out = {
 };
 writeFileSync("src/data/phase3/phase3_catalog.json", JSON.stringify(out));
 console.log(`Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`);
+
+// Owner-site match report (public-ready products only).
+if (ownerRankByLive.size > 0) {
+  console.log("\nOwner-site rank coverage (public-ready):");
+  const byCat = new Map();
+  for (const p of publicProducts) {
+    const e = byCat.get(p.categorySlug) ?? { total: 0, matched: 0, unmatched: [] };
+    e.total++;
+    if (p.ownerSiteRank != null) e.matched++;
+    else e.unmatched.push(p.title);
+    byCat.set(p.categorySlug, e);
+  }
+  for (const [slug, e] of [...byCat.entries()].sort()) {
+    const pct = e.total ? Math.round((e.matched / e.total) * 100) : 0;
+    console.log(`  ${slug.padEnd(22)} ${String(e.matched).padStart(3)}/${String(e.total).padEnd(3)}  ${pct}%`);
+    if (e.unmatched.length && e.unmatched.length <= 8) {
+      for (const t of e.unmatched) console.log(`      · ${t}`);
+    } else if (e.unmatched.length) {
+      for (const t of e.unmatched.slice(0, 5)) console.log(`      · ${t}`);
+      console.log(`      · …and ${e.unmatched.length - 5} more`);
+    }
+  }
+}

@@ -36,6 +36,14 @@ export interface CollectionProduct {
   publicReady: boolean;
   scrapedOrder: number;
   subcategory: string | null;
+  /**
+   * Owner-curated rank within the live eclectichive.com category page.
+   * Lower = higher up in her grid. Null when the product is not on her
+   * live site (newer scrapes, retired items, or placeholder titles).
+   * Captured by scripts/capture-owner-site-order.mjs and joined at build
+   * time. Used as the primary in-category sort key.
+   */
+  ownerSiteRank: number | null;
 }
 
 export interface CategoryFacet {
