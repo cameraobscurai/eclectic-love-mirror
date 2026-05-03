@@ -41,15 +41,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-const PLANNER_OPTIONS = ["Direct client", "Event planner / designer"] as const;
-const EVENT_TYPES = [
-  "Wedding",
-  "Meetings + Incentive",
-  "Social",
-  "Corporate",
-  "Other",
-] as const;
-const SERVICE_TYPES = [
+const SCOPE_OPTIONS = [
   "Full-service design + production",
   "Design + fabrication",
   "Rental from Collection",
@@ -132,15 +124,13 @@ function ContactPage() {
     };
   }, [initialIds]);
 
-  // Form state
+  // Form state — owner-defined fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [plannerStatus, setPlannerStatus] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("");
-  const [serviceType, setServiceType] = useState<string>("");
-  const [eventDate, setEventDate] = useState("");
+  const [projectDate, setProjectDate] = useState("");
   const [budget, setBudget] = useState<string>("");
+  const [scope, setScope] = useState<string>("");
   const [vision, setVision] = useState("");
   const honeypotRef = useRef<HTMLInputElement>(null);
 
@@ -179,24 +169,18 @@ function ContactPage() {
 
     setSubmitting(true);
 
-    const subjectParts = [
-      eventType || "Inquiry",
-      serviceType,
-      eventDate,
-    ].filter(Boolean);
+    const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
     const messageLines = [
       `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
-      plannerStatus ? `Capacity: ${plannerStatus}` : null,
       "",
-      "— Event details —",
-      eventType ? `Event type: ${eventType}` : null,
-      serviceType ? `Service: ${serviceType}` : null,
-      eventDate ? `Date / timeframe: ${eventDate}` : null,
+      "— Project details —",
+      projectDate ? `Project date: ${projectDate}` : null,
       budget ? `Budget: ${budget}` : null,
+      scope ? `Scope of work: ${scope}` : null,
       "",
-      "— Vision —",
+      "— Vision / wish list —",
       vision.trim(),
       "",
       pieces.length > 0 ? "— Selected from Collection —" : null,
@@ -243,10 +227,10 @@ function ContactPage() {
               CONTACT
             </p>
             <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] tracking-tight">
-              Let's make something unforgettable.
+              Let's collaborate.
             </h1>
             <p className="mt-8 max-w-md text-[15px] leading-relaxed text-charcoal/70">
-              Tell us about your event in one place. We respond within two
+              Tell us about your project in one place. We respond within two
               business days with next steps and a consultation call.
             </p>
             <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
@@ -301,11 +285,11 @@ function ContactPage() {
                         autoComplete="tel"
                       />
                     </Field>
-                    <Field label="You are">
-                      <PillGroup
-                        options={[...PLANNER_OPTIONS]}
-                        value={plannerStatus}
-                        onChange={setPlannerStatus}
+                    <Field label="Project date">
+                      <UnderlineInput
+                        value={projectDate}
+                        onChange={setProjectDate}
+                        placeholder="e.g. October 2026"
                       />
                     </Field>
                   </div>
@@ -322,44 +306,28 @@ function ContactPage() {
                   </div>
                 </FormSection>
 
-                {/* 2. EVENT DETAILS */}
-                <FormSection number="02" label="Event details">
+                {/* 2. PROJECT DETAILS */}
+                <FormSection number="02" label="Project details">
                   <div className="space-y-8">
-                    <Field label="Event type">
+                    <Field label="Budget">
                       <PillGroup
-                        options={[...EVENT_TYPES]}
-                        value={eventType}
-                        onChange={setEventType}
+                        options={[...BUDGET_RANGES]}
+                        value={budget}
+                        onChange={setBudget}
                       />
                     </Field>
-                    <Field label="Service">
+                    <Field label="Scope of work">
                       <PillGroup
-                        options={[...SERVICE_TYPES]}
-                        value={serviceType}
-                        onChange={setServiceType}
+                        options={[...SCOPE_OPTIONS]}
+                        value={scope}
+                        onChange={setScope}
                       />
                     </Field>
-                    <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
-                      <Field label="Date or timeframe">
-                        <UnderlineInput
-                          value={eventDate}
-                          onChange={setEventDate}
-                          placeholder="e.g. October 2026"
-                        />
-                      </Field>
-                      <Field label="Budget range">
-                        <PillGroup
-                          options={[...BUDGET_RANGES]}
-                          value={budget}
-                          onChange={setBudget}
-                        />
-                      </Field>
-                    </div>
                   </div>
                 </FormSection>
 
                 {/* 3. VISION + SELECTED PIECES */}
-                <FormSection number="03" label="Vision + selected pieces">
+                <FormSection number="03" label="Vision + wish list">
                   {pieces.length > 0 && (
                     <div className="mb-10">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
@@ -398,7 +366,7 @@ function ContactPage() {
                     </div>
                   )}
 
-                  <Field label="Tell us about your vision" required>
+                  <Field label="Describe your vision or add a wish list" required>
                     <textarea
                       value={vision}
                       onChange={(e) => setVision(e.target.value)}
