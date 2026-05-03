@@ -14,6 +14,16 @@ import { imagetools } from "vite-imagetools";
 //   import hero from "@/assets/home-hero.jpg?preset=hero";
 //   // → returns { sources: { avif: "...", webp: "..." }, img: { src, w, h } }
 //
+// IMPORTANT — source resolution rules (verified empirically):
+//   - imagetools refuses to upscale. If your source is 1500px wide and the
+//     preset asks for 768/1280/1920/2560, you will get 768 and 1500 only.
+//     This is correct (fake pixels are worse than no pixels), but it means
+//     the source you upload determines the ceiling.
+//   - For a full-bleed hero, upload at ≥2400px on the long edge. JPG or PNG.
+//     Do NOT pre-compress to AVIF/WebP — that defeats the pipeline.
+//   - File size of the source doesn't matter (it's discarded after build).
+//     A 5MB JPG is fine; the emitted variants are what ship.
+//
 // Presets keep call-sites short and consistent. Add new ones here, never inline.
 export default defineConfig({
   vite: {
