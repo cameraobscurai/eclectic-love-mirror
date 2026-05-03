@@ -32,12 +32,13 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-4">
-      {/* White grid — 16px gap, no hairlines, no internal borders. Cards lift
-          off the white field via soft shadow + radius. The rail on the left
-          owns the "Browse by Category" framing — no internal header needed. */}
+    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-3 sm:p-4">
+      {/* White grid — cards lift off the white field via soft shadow + radius.
+          Mobile keeps 2 columns (silhouettes stay generous) but uses a shorter
+          aspect ratio so ~4 rows fit above the fold instead of ~2. Desktop
+          retains the portrait specimen frame. */}
       <ul
-        className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-4"
+        className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
         style={{ background: "#ffffff" }}
       >
         {groups.map((group, idx) => {
@@ -56,7 +57,7 @@ export function CategoryGalleryOverview({
           return (
             <motion.li
               key={group.id}
-              className="relative aspect-[4/5] min-w-0 bg-white"
+              className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-white"
               style={{
                 position: "relative",
                 overflow: "hidden",
@@ -77,6 +78,7 @@ export function CategoryGalleryOverview({
                 type="button"
                 onClick={() => onSelectCategory(group.id)}
                 className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
+                style={{ touchAction: "manipulation" }}
                 aria-label={label}
               >
                 {/* Image fills the card edge-to-edge with object-contain so the
@@ -87,9 +89,9 @@ export function CategoryGalleryOverview({
                     <img
                       src={heroSrc}
                       alt={heroAlt}
-                      loading={idx < 6 ? "eager" : "lazy"}
+                      loading={idx < 4 ? "eager" : "lazy"}
                       decoding="async"
-                      className="absolute inset-0 h-full w-full object-contain p-5 transition-opacity duration-300 group-hover:opacity-90 sm:p-6"
+                      className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 transition-opacity duration-300 group-hover:opacity-90"
                     />
                   ) : (
                     <div className="absolute inset-0" />
@@ -99,6 +101,7 @@ export function CategoryGalleryOverview({
                 {/* Frosted-glass label overlay — floats over the bottom of the
                     image, inside the card frame. Name only, no count. */}
                 <div
+                  className="px-2.5 py-1.5 sm:px-3.5 sm:py-2.5"
                   style={{
                     position: "absolute",
                     bottom: 0,
@@ -108,15 +111,13 @@ export function CategoryGalleryOverview({
                     backdropFilter: "blur(12px)",
                     WebkitBackdropFilter: "blur(12px)",
                     borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
-                    padding: "10px 14px",
                     borderRadius: "0 0 12px 12px",
                   }}
                 >
                   <h2
-                    className="uppercase truncate"
+                    className="uppercase truncate text-[9px] sm:text-[10px]"
                     style={{
                       fontFamily: "var(--font-sans)",
-                      fontSize: "10px",
                       letterSpacing: "0.18em",
                       textTransform: "uppercase",
                       color: "#1a1a1a",
