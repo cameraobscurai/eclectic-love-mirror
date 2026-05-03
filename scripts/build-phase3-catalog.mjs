@@ -240,7 +240,98 @@ const products = productRows.map((p, idx) => {
   };
 });
 
-const publicProducts = products.filter(p => p.publicReady);
+let publicProducts = products.filter(p => p.publicReady);
+
+// ---- Cross-category dedup (build-time) -----------------------------------
+// Jill's live site exposes legacy *1 slugs alongside her modern slugs. Many
+// items appear under both — same title, two URLs. We dedup at build time so
+// each product surfaces in exactly ONE category card. Rules below match her
+// modern nav: more-specific sub-categories win, modern slugs beat legacy *1
+// equivalents, and `bars1` is merged into `cocktail-bar` (they share the
+// same display name "Cocktail & Bar"). pillows-throws1 is intentionally
+// untouched — it shares zero titles with `textiles`, so it's not a dupe.
+//
+// Reversible: comment out the block ending at MARK-DEDUP-END and rebuild.
+{
+  // Step 1: merge bars1 → cocktail-bar (reassign categorySlug + displayCategory).
+  for (const p of publicProducts) {
+    if (p.categorySlug === "bars1") {
+      p.categorySlug = "cocktail-bar";
+      p.displayCategory = CATEGORY_DISPLAY_MAP["cocktail-bar"];
+    }
+  }
+
+  // Step 2: build "claimed by more specific slug" map for the catch-all slugs.
+  // For each loser slug, list the winner slugs whose titles displace it.
+  const LOSER_RULES = {
+    "lounge":      ["sofas-loveseats1", "chairs-stools1", "benches-ottomans1"],
+    "tables1":     ["lounge-tables", "dining", "cocktail-bar"],
+    "accents1":    ["tableware", "styling", "large-decor"],
+    "storage1":    ["cocktail-bar", "large-decor"],
+  };
+
+  const titlesBySlug = new Map();
+  for (const p of publicProducts) {
+    const k = normalizeTitle(p.title);
+    if (!titlesBySlug.has(p.categorySlug)) titlesBySlug.set(p.categorySlug, new Set());
+    titlesBySlug.get(p.categorySlug).add(k);
+  }
+
+  const dropReport = new Map(); // loserSlug → [titles]
+  const beforeCount = publicProducts.length;
+  publicProducts = publicProducts.filter(p => {
+    const winners = LOSER_RULES[p.categorySlug];
+    if (!winners) return true;
+    const k = normalizeTitle(p.title);
+    for (const w of winners) {
+      if (titlesBySlug.get(w)?.has(k)) {
+        const arr = dropReport.get(p.categorySlug) ?? [];
+        arr.push(`${p.title} → kept in ${w}`);
+        dropReport.set(p.categorySlug, arr);
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // Step 3: within cocktail-bar, dedup the bars1↔cocktail-bar overlap.
+  // Tiebreak: prefer the copy with non-null ownerSiteRank; if both null/both
+  // ranked, prefer the original cocktail-bar URL (it's the modern slug).
+  const cbByTitle = new Map();
+  for (const p of publicProducts) {
+    if (p.categorySlug !== "cocktail-bar") continue;
+    const k = normalizeTitle(p.title);
+    const existing = cbByTitle.get(k);
+    if (!existing) { cbByTitle.set(k, p); continue; }
+    // Pick winner
+    const existingIsBars1 = existing.sourceUrl.includes("/bars1/");
+    const newIsBars1 = p.sourceUrl.includes("/bars1/");
+    let keep = existing;
+    if (existing.ownerSiteRank == null && p.ownerSiteRank != null) keep = p;
+    else if (existing.ownerSiteRank != null && p.ownerSiteRank == null) keep = existing;
+    else if (existingIsBars1 && !newIsBars1) keep = p;
+    else if (!existingIsBars1 && newIsBars1) keep = existing;
+    cbByTitle.set(k, keep);
+  }
+  const cbKeepIds = new Set([...cbByTitle.values()].map(p => p.id));
+  let cbDropped = 0;
+  publicProducts = publicProducts.filter(p => {
+    if (p.categorySlug !== "cocktail-bar") return true;
+    if (cbKeepIds.has(p.id)) return true;
+    cbDropped++;
+    return false;
+  });
+
+  console.log(`\nDedup pass: ${beforeCount} → ${publicProducts.length} (-${beforeCount - publicProducts.length})`);
+  console.log(`  Cocktail & Bar (bars1↔cocktail-bar): -${cbDropped}`);
+  for (const [slug, titles] of dropReport) {
+    console.log(`  ${slug}: -${titles.length}`);
+    for (const t of titles.slice(0, 3)) console.log(`      · ${t}`);
+    if (titles.length > 3) console.log(`      · …and ${titles.length - 3} more`);
+  }
+}
+// MARK-DEDUP-END
+
 const counts = new Map();
 for (const p of publicProducts) {
   const e = counts.get(p.categorySlug) ?? { display: p.displayCategory, count: 0 };
