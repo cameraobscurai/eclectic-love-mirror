@@ -124,15 +124,13 @@ function ContactPage() {
     };
   }, [initialIds]);
 
-  // Form state
+  // Form state — owner-defined fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [plannerStatus, setPlannerStatus] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("");
-  const [serviceType, setServiceType] = useState<string>("");
-  const [eventDate, setEventDate] = useState("");
+  const [projectDate, setProjectDate] = useState("");
   const [budget, setBudget] = useState<string>("");
+  const [scope, setScope] = useState<string>("");
   const [vision, setVision] = useState("");
   const honeypotRef = useRef<HTMLInputElement>(null);
 
@@ -171,24 +169,18 @@ function ContactPage() {
 
     setSubmitting(true);
 
-    const subjectParts = [
-      eventType || "Inquiry",
-      serviceType,
-      eventDate,
-    ].filter(Boolean);
+    const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
     const messageLines = [
       `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
-      plannerStatus ? `Capacity: ${plannerStatus}` : null,
       "",
-      "— Event details —",
-      eventType ? `Event type: ${eventType}` : null,
-      serviceType ? `Service: ${serviceType}` : null,
-      eventDate ? `Date / timeframe: ${eventDate}` : null,
+      "— Project details —",
+      projectDate ? `Project date: ${projectDate}` : null,
       budget ? `Budget: ${budget}` : null,
+      scope ? `Scope of work: ${scope}` : null,
       "",
-      "— Vision —",
+      "— Vision / wish list —",
       vision.trim(),
       "",
       pieces.length > 0 ? "— Selected from Collection —" : null,
