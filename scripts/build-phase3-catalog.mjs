@@ -227,8 +227,8 @@ const products = productRows.map((p, idx) => {
   // Owner-site rank: lookup by normalized title within the product's
   // categorySlug. Null for unmatched items — they tail by keyword rank in
   // the runtime sorter.
-  const rankMap = ownerRankByCategory.get(categorySlug);
-  const ownerSiteRank = rankMap?.get(normalizeTitle(title)) ?? null;
+  const resolved = resolveOwnerRank(categorySlug, normalizeTitle(title));
+  const ownerSiteRank = resolved?.rank ?? null;
   return {
     id, sourceUrl: url, slug: p.product_slug ?? id, categorySlug,
     displayCategory: CATEGORY_DISPLAY_MAP[categorySlug] ?? categorySlug,
