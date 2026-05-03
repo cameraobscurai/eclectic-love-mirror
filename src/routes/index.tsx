@@ -11,7 +11,9 @@ import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
-import homeHeroMobile from "@/assets/home-hero-mobile.png";
+import homeHeroAvif from "@/assets/home-hero.avif";
+import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
+import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
@@ -36,6 +38,27 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content:
           "Cinematic, art-forward environments for weddings, galas, and corporate events.",
+      },
+    ],
+    links: [
+      // LCP image preload — separate entries per breakpoint so the browser
+      // fetches only the asset that matches the current viewport. AVIF
+      // first, fall back implicitly to <picture> sources for non-AVIF UAs.
+      {
+        rel: "preload",
+        as: "image",
+        href: homeHeroMobileAvif,
+        type: "image/avif",
+        media: "(max-width: 767px)",
+        fetchpriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "image",
+        href: homeHeroAvif,
+        type: "image/avif",
+        media: "(min-width: 768px)",
+        fetchpriority: "high",
       },
     ],
   }),
@@ -180,12 +203,26 @@ function HomePage() {
           inside the artwork.
         */}
         <picture>
-          <source media="(max-width: 767px)" srcSet={homeHeroMobile} />
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileAvif}
+            type="image/avif"
+          />
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileWebp}
+            type="image/webp"
+          />
+          <source srcSet={homeHeroAvif} type="image/avif" />
+          <source srcSet={homeHero} type="image/webp" />
           <motion.img
             ref={heroImgRef}
             src={homeHero}
             alt=""
             aria-hidden="true"
+            decoding="async"
+            fetchPriority="high"
+            loading="eager"
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
               "object-[50%_25%] md:object-[50%_38%]",

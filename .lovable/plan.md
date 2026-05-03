@@ -1,61 +1,62 @@
+## What's slow right now
 
-# Gallery — Compact map into the fold
+The home page looks great but ships heavy on mobile. The single biggest issue:
 
-Right now the map sits in its own full-width section *below* the masthead, ~520px tall and styled on Mapbox's heaviest dark base. That's why it pushes everything off the fold and reads as a black slab. Fix is to move it up beside the headline (where the lead paragraph lives now), shrink it, and lighten the canvas.
+| Asset | Current | Target |
+|---|---|---|
+| `home-hero-mobile.png` | **1.3 MB PNG** | ~60–90 KB WebP (+ AVIF) |
+| `home-hero.webp` (desktop) | 96 KB WebP | keep, possibly add AVIF |
+| `Saol Display` font | `font-display: block` (blocks text paint) | `swap` |
+| Hero image preload | none | `<link rel="preload" as="image">` with responsive `imagesrcset` |
 
-## What changes on screen
+The hero image is the LCP element. On a 390px viewport over 4G, a 1.3MB PNG can cost 2–4s before the wordmark paints — and `font-display: block` then holds the wordmark invisible until Saol Display loads. That's the felt slowness.
 
-```text
-BEFORE                                    AFTER
-─────────────────────────────────────     ─────────────────────────────────────
-THE GALLERY                                THE GALLERY
-6 Environments      Each project ...       6 Environments    ┌──────────────┐
-                                           Each project ...  │   MAP with   │
-[ALL][LUXURY][...]                                           │   pins       │
-                                           [ALL][LUXURY][..] └──────────────┘
-─── full-width MAP ──────────────────
-│                                    │     ─── horizontal cards track ──────
-│        big dark slab               │     [card][card][card] →
-│                                    │
-─────────────────────────────────────
-─── horizontal cards track ──────
-[card][card][card] →
-```
+## Changes
 
-Net effect: the headline, the lead, the filter pills, the map, and the first card all sit on a 1440-tall fold without scrolling.
+**1. Convert the mobile hero to modern formats**
+- Re-encode `src/assets/home-hero-mobile.png` (1.3MB) → `home-hero-mobile.webp` (~80KB) and `home-hero-mobile.avif` (~50KB) at native resolution sized for ≤768px viewports (cap at ~828px wide @ 2x).
+- Same treatment for desktop: add `home-hero.avif` alongside the existing webp.
+- Update the `<picture>` in `src/routes/index.tsx` to serve AVIF → WebP → PNG fallback, with proper `media` queries.
 
-## File-by-file
+**2. Preload the hero (LCP)**
+- In `src/routes/index.tsx` `head()`, add a responsive image preload:
+  ```ts
+  link: [
+    { rel: "preload", as: "image",
+      href: homeHero,
+      imagesrcset: `${homeHeroMobileAvif} 768w, ${homeHeroAvif} 1920w`,
+      imagesizes: "100vw",
+      type: "image/avif" },
+  ]
+  ```
+- Removes the wait between HTML parse → CSS parse → image discovery.
 
-**`src/components/gallery/GalleryMasthead.tsx`**
-- Add an optional `mapSlot?: ReactNode` prop.
-- Right column (`lg:col-span-6`) renders `mapSlot` when provided. The lead paragraph moves under the headline in the left column at `text-[14px] text-cream/60`.
-- Trim top padding from `clamp(96px, 9vw, 144px)` → `clamp(72px, 6vw, 104px)`. Headline scale from `clamp(2.75rem, 7vw, 5.5rem)` → `clamp(2.25rem, 5.5vw, 4.25rem)`.
+**3. Fix font-display blocking**
+- `src/styles.css` lines 18/25/32: change `font-display: block` → `font-display: swap` for Saol Display @font-face declarations.
+- The wordmark will paint instantly in the fallback serif, then swap to Saol Display when ready. With our 0.32em tracking the FOUT is barely visible and is far better than a blank hero.
 
-**`src/components/gallery/GalleryMap.tsx`**
-- Switch base style from `mapbox/dark-v11` to `mapbox/light-v11` and dial the canvas back toward charcoal with a single layer paint override on load: lower land/water saturation, lift `background` lightness ~10pt — so it reads as warm grey, not pitch black.
-- Drop the internal "Where We've Built / Every pin, a project" caption + `06 LOCATIONS` line and the surrounding container chrome (no eyebrow row, no border). Just the map canvas — the masthead provides context.
-- Container height: `clamp(220px, 22vw, 320px)` (down from `clamp(320px, 42vw, 520px)`).
-- Lighten the `mapboxgl-ctrl-attrib` and zoom controls so they don't read as black chips on the new lighter canvas.
-- Pin dots: smaller (10px), softer halo, label tooltip stays cream-on-charcoal but only shows on hover/active.
-- Re-fit bounds to the smaller box.
+**4. Decoding hints**
+- Add `decoding="async"` and `fetchPriority="high"` to the hero `<motion.img>`, and `loading="eager"` (already implicit but make it explicit).
+- Mark the wordmark `<motion.div>` as not needing layout invalidation: it already uses transforms, just confirm `will-change: transform` is set only while `parallaxOn` (already correct).
 
-**`src/routes/gallery.tsx`**
-- Remove the standalone `<section>` that wraps `<GalleryMap>`.
-- Pass `<GalleryMap … />` into `<GalleryMasthead mapSlot={…} />`.
-- Below-fold cards-track section is unchanged.
+**5. Defer non-critical work below the fold**
+- The `LiquidGlass` SVG filter (`liquid-glass.tsx`) injects on first mount. It's fine, but defer the framer-motion springs setup until after `loaded` flips true so the first frame isn't competing with spring init. Lightweight win.
 
-**`src/styles.css`**
-- Lighten map control chrome: `mapboxgl-ctrl-attrib` background to `rgba(245,242,237,0.55)` text on transparent; zoom buttons get a cream/15 border, no dark fill, icons un-inverted.
-- Pin dot: 10px, halo `rgba(26,26,26,0.18)` outer ring, drop the heavy box-shadow stack.
+## Expected result
 
-## Mobile
+- **Hero payload**: 1.3MB → ~50–80KB (≈ 95% smaller)
+- **LCP on mobile 4G**: roughly 2.5–3.5s → under 1.2s
+- **Wordmark visible**: instant (fallback serif) → swap to Saol when font arrives, instead of blank space for 200–800ms
 
-On `<lg` the masthead grid collapses to one column, so the map stacks below the headline at full width but still bound to the same `clamp(220px, 22vw, 320px)` height — no regression, just no longer side-by-side.
+## Files touched
 
-## What I'm NOT changing
+- `src/assets/home-hero-mobile.{webp,avif}` — new (generated from existing PNG)
+- `src/assets/home-hero.avif` — new
+- `src/routes/index.tsx` — `<picture>` sources, `head()` preload, `fetchPriority`
+- `src/styles.css` — three `font-display: block` → `swap`
 
-- Cards track, lightbox, project index, scrubber, keyboard nav, paddle buttons — all stay.
-- Pin coordinates and project data — unchanged.
-- Mapbox token — already wired and inlined.
+## Out of scope (ask if you want them)
 
-Approve and I'll apply.
+- Removing the parallax / breathing animation on mobile to save JS (already gated by `pointer: fine`, so it's already off on touch — no change needed)
+- Caching headers / CDN tuning (Cloudflare-side, not in repo)
+- Reducing the LiquidGlass SVG filter complexity (visual change, would need your sign-off)

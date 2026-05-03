@@ -12,24 +12,24 @@
   src: url("./assets/fonts/SaolDisplay-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
-  /* `block` holds rendering for ~3s waiting on Saol so display text
-   * never paints in the Cormorant fallback. After load, the swap is
-   * permanent for the session. */
-  font-display: block;
+  /* `swap` paints display text immediately in the Cormorant fallback,
+   * then swaps to Saol when it arrives. The 0.32em wordmark tracking
+   * masks the FOUT and we avoid a blank LCP. */
+  font-display: swap;
 }
 @font-face {
   font-family: "Saol Display";
   src: url("./assets/fonts/SaolDisplay-Semibold.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }
 @font-face {
   font-family: "Saol Display";
   src: url("./assets/fonts/SaolDisplay-LightItalic.otf") format("opentype");
   font-weight: 300;
   font-style: italic;
-  font-display: block;
+  font-display: swap;
 }
 
 @custom-variant dark (&:is(.dark *));
