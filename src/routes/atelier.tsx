@@ -99,11 +99,6 @@ function AtelierPage() {
               <br />
               Realized.
             </h1>
-            <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
-              We are designers, producers, and a fabrication house. The atelier
-              is where design authorship, material exploration, and fabrication
-              converge — through process and intention.
-            </p>
           </div>
           <div className="md:col-span-5">
             {/* Section-1 hero. First production use of the imagetools +
@@ -127,28 +122,12 @@ function AtelierPage() {
       {/* 2. THE HIVE — real staff module. Always renders, even before
           portraits exist. See src/components/atelier/team.tsx for the data
           model and the public-render gate. */}
-      <Section eyebrow="02 — The Hive">
+      <Section eyebrow="02 — THE HIVE">
         <AtelierTeam />
       </Section>
 
-      {/* 3. THE ARTIST'S STUDIO */}
-      <Section eyebrow="The Artist's Studio">
-        <div className="grid md:grid-cols-12 gap-10">
-          <p className="md:col-span-5 font-display italic text-2xl md:text-3xl leading-[1.2] text-charcoal/80">
-            Studio. Workbench. Warehouse.
-          </p>
-          <div className="md:col-span-7 space-y-5 text-base leading-relaxed text-charcoal/70">
-            <p>
-              The studio is a creative work hub: a design floor for sketching
-              and CAD, a fabrication bay for building, and a warehouse where
-              the inventory lives between events.
-            </p>
-            <p>
-              Material exploration happens at the table. Fabrication happens at
-              the bench. Logistics happen at the dock.
-            </p>
-          </div>
-        </div>
+      {/* 3. THE ARTIST'S STUDIO — eyebrow + apertures only until owner copy + photography land. */}
+      <Section eyebrow="THE ARTIST'S STUDIO">
 
         {/* Wide landscape aperture + two detail apertures. Real categories
             only — no fake captions. Labels render below each frame. */}
@@ -181,38 +160,27 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. THE FABRICATION — capability evidence, not a services list. */}
-      <Section eyebrow="The Fabrication">
-        <div className="grid md:grid-cols-12 gap-10">
-          <div className="md:col-span-5 space-y-5 text-base leading-relaxed text-charcoal/70">
-            <p>
-              Eclectic Hive is a full-service design and production house.
-              Clients engage the Atelier for any combination of design,
-              fabrication, inventory rental, and on-site production.
-            </p>
-            <p>
-              Custom pieces are designed in-house, built in-house, and finished
-              in-house — sketches to swatches to staging.
-            </p>
-          </div>
-          <ul
-            className="md:col-span-7 divide-y"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
-            {CAPABILITIES.map((item, i) => (
-              <li
-                key={item}
-                className="py-4 text-[13px] tracking-[0.18em] uppercase text-charcoal/85 flex items-baseline gap-6 border-t first:border-t-0"
-                style={{ borderColor: "var(--archive-rule)" }}
-              >
-                <span className="text-[10px] tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* 4. THE FABRICATION — capability evidence, not a services list.
+          Body copy stripped pending owner-sourced text; capabilities list
+          spans full width as the sole text content. */}
+      <Section eyebrow="THE FABRICATION">
+        <ul
+          className="divide-y"
+          style={{ borderColor: "var(--archive-rule)" }}
+        >
+          {CAPABILITIES.map((item, i) => (
+            <li
+              key={item}
+              className="py-4 text-[13px] tracking-[0.18em] uppercase text-charcoal/85 flex items-baseline gap-6 border-t first:border-t-0"
+              style={{ borderColor: "var(--archive-rule)" }}
+            >
+              <span className="text-[10px] tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
 
         {/* Material board: fabric swatch · sketch · material detail. Designed
             empty frames — no fake images, no captions. */}
@@ -223,24 +191,13 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 5. ATELIER APPROACH triptych */}
-      <Section eyebrow="Atelier Approach">
+      {/* 5. ATELIER APPROACH triptych — number + label only; body copy
+          deferred until owner provides voice. */}
+      <Section eyebrow="ATELIER APPROACH">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-          <ApproachStep
-            number="01"
-            label="IMAGINED"
-            body="A cinematic concept rooted in the client's story — proposed as a Style Guide before a single object is sourced."
-          />
-          <ApproachStep
-            number="02"
-            label="DESIGNED"
-            body="Material exploration, scale studies, and revisions. The proposal tightens until every detail earns its place."
-          />
-          <ApproachStep
-            number="03"
-            label="REALIZED"
-            body="Fabrication, finishing, and on-site install. The atelier stays with the project from first sketch to final strike."
-          />
+          <ApproachStep number="01" label="IMAGINED" />
+          <ApproachStep number="02" label="DESIGNED" />
+          <ApproachStep number="03" label="REALIZED" />
         </div>
       </Section>
 
@@ -254,7 +211,7 @@ function AtelierPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               BEGIN
             </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] tracking-tight max-w-2xl">
+            <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] uppercase tracking-[0.04em] max-w-2xl">
               Bring a project to the Atelier.
             </h2>
             <Link
@@ -297,11 +254,9 @@ function Section({
 function ApproachStep({
   number,
   label,
-  body,
 }: {
   number: string;
   label: string;
-  body: string;
 }) {
   return (
     <div>
@@ -315,9 +270,6 @@ function ApproachStep({
       <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
         {label}
       </h3>
-      <p className="mt-4 text-[15px] leading-relaxed text-charcoal/70">
-        {body}
-      </p>
     </div>
   );
 }

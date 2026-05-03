@@ -74,21 +74,15 @@ export function AtelierTeam() {
 
   return (
     <div>
-      {/* Section header — display title left, short tagline right.
-          Mirrors the reference: oversized serif title balanced by a
-          quiet two-line aside. */}
-      <div className="grid md:grid-cols-12 gap-x-10 gap-y-6 items-end mb-16 md:mb-24">
+      {/* Section header — display title only. Tagline removed pending
+          owner-sourced voice; better to ship the name alone than filler. */}
+      <div className="mb-16 md:mb-24">
         <h2
-          className="md:col-span-7 font-display tracking-[-0.01em] leading-[0.95] text-charcoal"
+          className="font-display uppercase tracking-[0.02em] leading-[0.95] text-charcoal"
           style={{ fontSize: "clamp(2.75rem, 7vw, 5.5rem)" }}
         >
           The Hive
         </h2>
-        <p className="md:col-span-5 md:col-start-8 text-base md:text-[17px] leading-relaxed text-charcoal/70 max-w-md">
-          Our team moves across disciplines with intention and a shared
-          approach. We are artists, designers, craftsmen.
-          <br className="hidden md:inline" /> We are the atelier.
-        </p>
       </div>
 
       {/* Portrait grid — single 4-column rhythm. Apertures hold the slot

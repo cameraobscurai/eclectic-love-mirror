@@ -1,53 +1,63 @@
 ## What this plan does
 
-Apply your Atelier notes as a copy + structure pass on `src/routes/atelier.tsx` and a small label/tagline change in `src/components/atelier/team.tsx`. Adopt the new owner-canonical triplet **IMAGINED · DESIGNED · REALIZED** across the page (hero stack + triptych). Wire the uploaded moodboard image as the section-1 hero through the `vite-imagetools` + `HeroImage` pipeline already in place — first real test of the new container.
+Two clean passes on the Atelier page:
 
-## Brand-language update (cross-page implication)
-
-The Core memory currently locks Atelier as `Imagined · Refined · Crafted`. Per owner direction in this turn, the new canonical triplet for Atelier is **Imagined · Designed · Realized**. After implementation I'll update `mem://index.md` to reflect this so future passes don't drift back. No other pages are touched in this plan.
+1. **All section display titles → ALL CAPS** (per brand typography rule — display headings, eyebrows, and labels read as caps; only body/quiet italic lines stay sentence case).
+2. **Strip mock/filler copy** that was never sourced from the owner's published material. Better to have an empty, designed waiting state than invented voice. We can re-add real copy later when the owner provides it.
 
 ## Section-by-section changes
 
+### `src/routes/atelier.tsx`
+
 1. **HERO**
-   - Eyebrow: `ATELIER BY THE HIVE` (unchanged)
-   - New stacked headline: `IMAGINED.` / `DESIGNED.` / `REALIZED.`
-   - New supporting line: "We are designers, producers, and a fabrication house. The atelier is where design authorship, material exploration, and fabrication converge — through process and intention."
-   - **Right column aperture → real hero image.** Copy the uploaded moodboard to `src/assets/atelier-hero.jpg`, import via `?preset=hero`, render with `<HeroImage>` inside a 4/5 ratio wrapper, scrim `none` (the image is already low-contrast/neutral and the layout has no overlaid text), `priority` flag set, focal point `{ x: 50, y: 45 }` to keep the figure + swatches centered. Add `heroPreloadLink(atelierHeroSource)` to the route's `head().links`.
+   - Stacked headline already ALL CAPS (`IMAGINED. / DESIGNED. / REALIZED.`) — no change.
+   - **REMOVE** the supporting paragraph: *"We are designers, producers, and a fabrication house. The atelier is where design authorship, material exploration, and fabrication converge — through process and intention."* This was synthesized from your notes, not pulled from a published source. Hero stays as eyebrow + headline + image. (If you want the one-liner back, ship it from your own words and we drop it in.)
 
-2. **THE HIVE** (was "The Humans")
-   - Section eyebrow: `02 — The Hive`
-   - In `team.tsx`: display title `The Humans` → `The Hive`; right-column tagline replaced with: "Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier."
-   - Roster unchanged (already matches your list 1:1; Regina stays commented out pending portrait).
+2. **02 — THE HIVE**
+   - Eyebrow already caps. The display title lives in `team.tsx` (handled below).
 
-3. **THE ARTIST'S STUDIO** (was "The Creative Space")
-   - Eyebrow: `The Artist's Studio`
-   - Display line: "Studio. Workbench. Warehouse."
-   - Body copy: minor tighten, keep meaning.
-   - Aperture grid (16/9 STUDIO + 4/5 WORKBENCH + 4/5 WAREHOUSE) unchanged — still owner-approved waiting state until real space photos land.
+3. **THE ARTIST'S STUDIO**
+   - Eyebrow already caps.
+   - **REMOVE** the italic display line *"Studio. Workbench. Warehouse."* — invented framing.
+   - **REMOVE** both body paragraphs ("The studio is a creative work hub…" and "Material exploration happens at the table…") — invented copy.
+   - Section becomes: eyebrow + the existing 16/9 STUDIO + 4/5 WORKBENCH + 4/5 WAREHOUSE apertures (labels already caps). Quiet, honest, waiting for real photography + real words.
 
-4. **THE FABRICATION** (was "Scope + Fabrication")
-   - Eyebrow: `The Fabrication`
-   - Capabilities list + 3× 1/1 material-board apertures unchanged.
-   - Body copy unchanged.
+4. **THE FABRICATION**
+   - Eyebrow already caps.
+   - **REMOVE** the two left-column paragraphs ("Eclectic Hive is a full-service design and production house…" and "Custom pieces are designed in-house…") — invented copy.
+   - Capabilities list stays (already ALL CAPS, owner-sourced from your notes / existing site language). Promote the list to span the full width on md+ now that the left column is empty, so it doesn't read as a hanging half-grid.
+   - 3× 1/1 material-board apertures stay.
 
-5. **ATELIER APPROACH triptych**
-   - `01 IMAGINED` — keep current body
-   - `02 DESIGNED` — body: "Material exploration, scale studies, and revisions. The proposal tightens until every detail earns its place."
-   - `03 REALIZED` — body: "Fabrication, finishing, and on-site install. The atelier stays with the project from first sketch to final strike."
+5. **ATELIER APPROACH**
+   - Eyebrow already caps. Numbered labels (`01 IMAGINED`, `02 DESIGNED`, `03 REALIZED`) already caps.
+   - **REMOVE** the three body paragraphs under each step — all three were AI-drafted. The triptych becomes: aperture + number + ALL-CAPS label only. Strong and quiet; honest until owner copy arrives.
 
-6. **CTA** — unchanged. Headline "Bring a project to the Atelier." / button "START A CONVERSATION".
+6. **CTA**
+   - "BEGIN" eyebrow already caps. Button "START A CONVERSATION" already caps.
+   - Headline *"Bring a project to the Atelier."* — this one is short, on-brand, and matches the "START A CONVERSATION" CTA you explicitly listed in your notes. **Convert to ALL CAPS** display: `BRING A PROJECT TO THE ATELIER.` Keeps the closing moment loud and intentional.
+
+### `src/components/atelier/team.tsx`
+
+- **Display title**: `The Hive` → `THE HIVE` (uppercase via class, font-display + tracking tightened slightly to suit caps at that scale, e.g. `tracking-[0.02em]`).
+- **REMOVE** the right-column tagline *"Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier."* — this was lifted from your loose notes but never appeared on a published source you showed me. Cleaner to ship the title alone over the portrait grid. Layout collapses gracefully (the col-span-7 title just sits over the grid; right column empty).
+- Roster, gating, and aperture behavior unchanged.
+
+## What stays
+
+- All structure, ordering, grid, apertures, and the new `<HeroImage>` pipeline.
+- All eyebrows (already ALL CAPS).
+- Capabilities list (sourced from your notes).
+- Team roster (owner-curated).
+- CTA button + route.
 
 ## Files touched
 
-- `src/assets/atelier-hero.jpg` — new (copy of uploaded moodboard).
-- `src/routes/atelier.tsx` — copy + label edits across all six sections; hero aperture replaced with `<HeroImage>`; preload link added.
-- `src/components/atelier/team.tsx` — title + tagline change.
-- `mem://index.md` — update Core line to reflect `Imagined · Designed · Realized`.
+- `src/routes/atelier.tsx` — copy deletions across hero + sections 3, 4, 5; CTA headline to caps; minor grid adjustment in section 4 once left column is empty.
+- `src/components/atelier/team.tsx` — title to caps, right-column tagline removed.
 
 ## Out of scope
 
-- No portrait swaps; Regina still hidden.
-- No new images beyond the uploaded hero.
-- No structural/grid rewrite.
-- No FAQ on Atelier.
-- Other pages untouched (any cross-page wording sweep is a separate pass if you want it).
+- No new copy. We are only deleting unsourced text and uppercasing display titles.
+- No image changes.
+- Other pages untouched (cross-page caps audit can be a separate pass if you want one).
+- Memory not updated — the existing `mem://design/typography-caps.md` already covers this rule; today's work is just enforcing it on Atelier.
