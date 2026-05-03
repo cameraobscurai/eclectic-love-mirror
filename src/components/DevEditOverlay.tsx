@@ -213,18 +213,22 @@ export function DevEditOverlay() {
     setTargets(next);
   }, []);
 
+  // Track whether a drag is in progress so we DON'T rescan mid-drag (that's
+  // what was causing elements to "bounce back" — the periodic rescan would
+  // re-measure with a stale rect and re-render handles in the old spot).
+  const draggingRef = useRef(false);
+
   useEffect(() => {
     if (!active) return;
     rescan();
-    const onResize = () => rescan();
-    const onScroll = () => rescan();
+    const onResize = () => { if (!draggingRef.current) rescan(); };
+    const onScroll = () => { if (!draggingRef.current) rescan(); };
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, true);
-    const interval = window.setInterval(rescan, 600);
+    // No periodic interval — it raced the drag. Rescan only on real events.
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll, true);
-      window.clearInterval(interval);
     };
   }, [active, rescan]);
 
@@ -268,6 +272,8 @@ export function DevEditOverlay() {
         origHeight: target.rect.height,
       };
 
+      draggingRef.current = true;
+
       const onMove = (ev: PointerEvent) => {
         const useSnap = snapEnabled && !ev.altKey;
         const mx = ev.clientX - startX;
@@ -306,20 +312,98 @@ export function DevEditOverlay() {
         }
 
         applyEditToEl(el, next);
-        // Commit on every frame so nothing is lost if pointerup is missed.
+        // Update ref synchronously so pointerup commits the latest. Do NOT
+        // rescan here — it caused handle positions to lag and "snap back"
+        // because React re-rendered with a stale rect from the previous frame.
         editsRef.current = { ...editsRef.current, [target.id]: next };
-        rescan();
+        // Update the live overlay handle in-place via a fast measurement.
+        const liveRect = el.getBoundingClientRect();
+        setTargets((prev) =>
+          prev.map((p) => (p.id === target.id ? { ...p, rect: liveRect } : p))
+        );
       };
 
       const onUp = () => {
         window.removeEventListener("pointermove", onMove);
         window.removeEventListener("pointerup", onUp);
+        draggingRef.current = false;
         commitEdits({ ...editsRef.current });
+        // One final clean rescan after the drag fully settles.
+        requestAnimationFrame(() => rescan());
       };
       window.addEventListener("pointermove", onMove);
       window.addEventListener("pointerup", onUp);
     },
     [rescan, snapEnabled, commitEdits]
+  );
+
+  // ----- Z-order + alignment helpers for the selected element -----
+  const bumpZ = useCallback(
+    (delta: number) => {
+      if (!selectedId) return;
+      const cur = editsRef.current[selectedId];
+      const currentZ = cur?.style?.zIndex ?? 0;
+      const el = document.getElementById(selectedId) as HTMLElement | null;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const base: Edit =
+        cur || {
+          dx: 0, dy: 0,
+          width: r.width, height: r.height,
+          origWidth: r.width, origHeight: r.height,
+        };
+      const next: Edit = { ...base, style: { ...(base.style || {}), zIndex: currentZ + delta } };
+      applyEditToEl(el, next);
+      commitEdits({ ...editsRef.current, [selectedId]: next });
+    },
+    [selectedId, commitEdits]
+  );
+
+  const alignSelected = useCallback(
+    (where: "tl" | "tr" | "bl" | "br" | "center" | "cx" | "cy") => {
+      if (!selectedId) return;
+      const el = document.getElementById(selectedId) as HTMLElement | null;
+      if (!el) return;
+      // Reset transform to read the element's natural (untranslated) rect.
+      const cur = editsRef.current[selectedId];
+      const prevTransform = el.style.transform;
+      el.style.transform = (cur?.style?.rotate ? `rotate(${cur.style.rotate}deg)` : "");
+      const natural = el.getBoundingClientRect();
+      el.style.transform = prevTransform;
+
+      const w = cur?.width ?? natural.width;
+      const h = cur?.height ?? natural.height;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      // natural rect already includes width changes via inline style, but its
+      // left/top are the *current* visual origin minus dx/dy. Recover origin:
+      const originLeft = natural.left - (cur?.dx ?? 0);
+      const originTop = natural.top - (cur?.dy ?? 0);
+
+      let targetLeft = originLeft;
+      let targetTop = originTop;
+      const PAD = 8;
+      if (where === "tl") { targetLeft = PAD; targetTop = PAD; }
+      else if (where === "tr") { targetLeft = vw - w - PAD; targetTop = PAD; }
+      else if (where === "bl") { targetLeft = PAD; targetTop = vh - h - PAD; }
+      else if (where === "br") { targetLeft = vw - w - PAD; targetTop = vh - h - PAD; }
+      else if (where === "center") { targetLeft = (vw - w) / 2; targetTop = (vh - h) / 2; }
+      else if (where === "cx") { targetLeft = (vw - w) / 2; }
+      else if (where === "cy") { targetTop = (vh - h) / 2; }
+
+      const next: Edit = {
+        ...(cur || {
+          dx: 0, dy: 0, width: w, height: h,
+          origWidth: natural.width, origHeight: natural.height,
+        }),
+        dx: Math.round(targetLeft - originLeft),
+        dy: Math.round(targetTop - originTop),
+      };
+      applyEditToEl(el, next);
+      commitEdits({ ...editsRef.current, [selectedId]: next });
+      requestAnimationFrame(() => rescan());
+    },
+    [selectedId, commitEdits, rescan]
   );
 
   // Update style edit for the currently selected element.
