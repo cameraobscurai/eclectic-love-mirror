@@ -327,7 +327,7 @@ function ContactPage() {
                 </FormSection>
 
                 {/* 3. VISION + SELECTED PIECES */}
-                <FormSection number="03" label="Vision + selected pieces">
+                <FormSection number="03" label="Vision + wish list">
                   {pieces.length > 0 && (
                     <div className="mb-10">
                       <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
