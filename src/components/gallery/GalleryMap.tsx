@@ -23,9 +23,11 @@ interface GalleryMapProps {
   onOpen?: (index: number) => void;
 }
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN as
-  | string
-  | undefined;
+// Public Mapbox token. Public tokens (pk.*) are designed to ship in client
+// code; lock down origins in the Mapbox account dashboard for protection.
+const MAPBOX_TOKEN =
+  (import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN as string | undefined) ||
+  "pk.eyJ1Ijoib2JzY3VyYWNyZWF0aXZlIiwiYSI6ImNtb3A4ODBvbzBrNHIycnB6cWNkNTFxYmwifQ.GyNKdyqX6pnfsV9Yyb8C2w";
 
 // Editorial dark style — Mapbox's standard dark base, recolored via paint.
 const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
