@@ -11,6 +11,7 @@ import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
+import homeHeroMobile from "@/assets/home-hero-mobile.png";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
@@ -178,23 +179,26 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        <motion.img
-          ref={heroImgRef}
-          src={homeHero}
-          alt=""
-          aria-hidden="true"
-          className={cn(
-            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-            "object-[50%_25%] md:object-[50%_38%]",
-            loaded ? "opacity-100" : "opacity-0"
-          )}
-          draggable={false}
-          style={
-            parallaxOn
-              ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
-              : undefined
-          }
-        />
+        <picture>
+          <source media="(max-width: 767px)" srcSet={homeHeroMobile} />
+          <motion.img
+            ref={heroImgRef}
+            src={homeHero}
+            alt=""
+            aria-hidden="true"
+            className={cn(
+              "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+              "object-[50%_25%] md:object-[50%_38%]",
+              loaded ? "opacity-100" : "opacity-0"
+            )}
+            draggable={false}
+            style={
+              parallaxOn
+                ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
+                : undefined
+            }
+          />
+        </picture>
 
         {/* Wordmark — anchored to the glass band baked into the artwork via
             object-cover projection math (see useObjectCoverPoint). Tunable
