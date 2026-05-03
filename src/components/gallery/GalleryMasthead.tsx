@@ -81,7 +81,7 @@ export function GalleryMasthead({
             14px
           );
           margin: 0;
-          z-index: 2;
+          z-index: 5;
         }
 
         /* Heading — anchored bottom-left, directly above the pills. Sized
@@ -100,21 +100,17 @@ export function GalleryMasthead({
           letter-spacing: -0.01em;
           font-size: clamp(72px, 9.5vw, 152px);
           white-space: nowrap;
-          z-index: 2;
+          z-index: 5;
         }
 
         /* Panels group — fixed offset under the nav. NOT anchored to the
-           heading. The heading owns the bottom-left corner; this panel owns
-           the upper-right. They overlap geometrically: the panel reaches
-           down to ~65vh, the heading reaches up from the bottom-left, and
-           the "RY" of GALLERY passes BEHIND the panel's lower-left corner.
-           That overlap is the whole composition. */
+           heading. Smaller, realistic map size — top-right corner only. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
           top: clamp(20px, 3vh, 36px);
-          width: clamp(460px, 52vw, 820px);
-          height: clamp(460px, 72vh, 700px);
+          width: clamp(340px, 34vw, 520px);
+          height: clamp(300px, 46vh, 460px);
           z-index: 4;
         }
 
