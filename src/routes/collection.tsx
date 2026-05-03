@@ -171,6 +171,19 @@ function CollectionPage() {
   // ---------- Floating search modal ----------
   const [searchOpen, setSearchOpen] = useState(false);
   const [modalQuery, setModalQuery] = useState("");
+  // Debounce ref for modal commits — coalesces rapid Enter-mash / fast
+  // suggestion clicks into a single navigate() so the URL (and the grid
+  // fade) don't thrash. 140ms is short enough to feel instant but long
+  // enough to absorb a typing burst.
+  const modalCommitTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (modalCommitTimerRef.current !== null) {
+        window.clearTimeout(modalCommitTimerRef.current);
+      }
+    },
+    [],
+  );
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSearchOpen(false);
@@ -180,9 +193,14 @@ function CollectionPage() {
   }, []);
 
   // ---------- Grid pending / transition state ----------
-  // Whenever the URL search params that drive the grid (group, q, sort)
-  // change, briefly mark the grid as "pending" so the right pane fades to a
-  // softer state for the swap. Pure CSS opacity transition — no spinners.
+  // Two-phase fade:
+  //   1. URL params (group / q / sort) change → mark grid pending.
+  //   2. visibleProducts memo settles to a new reference → release pending
+  //      on the next animation frame so the new tiles are already in the
+  //      DOM when opacity returns to 1. This keeps the fade timed to the
+  //      actual data swap, not to a fixed timer that can race React.
+  // A safety timeout (500ms) guarantees we never get stuck dim if a memo
+  // happens to return the same reference for back-to-back updates.
   const [gridPending, setGridPending] = useState(false);
   const gridKey = `${group}|${q}|${sort}`;
   const lastKeyRef = useRef(gridKey);
@@ -190,8 +208,6 @@ function CollectionPage() {
     if (lastKeyRef.current === gridKey) return;
     lastKeyRef.current = gridKey;
     setGridPending(true);
-    const t = window.setTimeout(() => setGridPending(false), 220);
-    return () => window.clearTimeout(t);
   }, [gridKey]);
 
 
@@ -332,6 +348,29 @@ function CollectionPage() {
         : filtered.filter((p) => !failedIds.has(p.id)),
     [filtered, failedIds],
   );
+
+  // Release the pending fade once the new product list is in hand. We wait
+  // one rAF so React has committed the new tiles, plus a 160ms minimum fade
+  // hold so even instant updates have time to read as a transition (not a
+  // flash). A 500ms safety timer guarantees we never get stuck dim.
+  useEffect(() => {
+    if (!gridPending) return undefined;
+    const start = performance.now();
+    const MIN_HOLD = 160;
+    let raf = 0;
+    const safety = window.setTimeout(() => setGridPending(false), 500);
+    raf = requestAnimationFrame(() => {
+      const elapsed = performance.now() - start;
+      const wait = Math.max(0, MIN_HOLD - elapsed);
+      window.setTimeout(() => setGridPending(false), wait);
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(safety);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleProducts]);
+
 
   // ---------- Filter rail data: stable order + responsive counts ----------
   // Counts respond to the committed search-filtered set. Powers the rail's
@@ -1024,37 +1063,57 @@ function CollectionPage() {
         // Search must always run across the WHOLE inventory, not just the
         // section the user happened to be inside. So we clear `group` at the
         // same time we set `q`. Categories explicitly set `group` instead.
+        //
+        // Both commits route through the modalCommitTimerRef debounce so a
+        // user mashing Enter or rapid-clicking suggestions only fires one
+        // navigate() — keeps the URL clean and the grid fade smooth.
+        const DEBOUNCE_MS = 140;
+        const scheduleCommit = (fn: () => void) => {
+          if (modalCommitTimerRef.current !== null) {
+            window.clearTimeout(modalCommitTimerRef.current);
+          }
+          modalCommitTimerRef.current = window.setTimeout(() => {
+            modalCommitTimerRef.current = null;
+            fn();
+          }, DEBOUNCE_MS);
+        };
         const commitQuery = (text: string) => {
           const next = text.trim();
           if (!next) return;
-          setQLocal(next);
-          navigate({
-            search: (prev: CollectionSearch) => ({
-              ...prev,
-              group: "",
-              q: next,
-              view: "",
-            }),
-            replace: true,
-            resetScroll: false,
-          });
+          // Close + clear instantly so the modal feels responsive even
+          // though the URL push is debounced.
           setSearchOpen(false);
           setModalQuery("");
+          scheduleCommit(() => {
+            setQLocal(next);
+            navigate({
+              search: (prev: CollectionSearch) => ({
+                ...prev,
+                group: "",
+                q: next,
+                view: "",
+              }),
+              replace: true,
+              resetScroll: false,
+            });
+          });
         };
         const commitCategory = (id: BrowseGroupId) => {
-          setQLocal("");
-          navigate({
-            search: (prev: CollectionSearch) => ({
-              ...prev,
-              group: id,
-              q: "",
-              view: "",
-            }),
-            replace: true,
-            resetScroll: false,
-          });
           setSearchOpen(false);
           setModalQuery("");
+          scheduleCommit(() => {
+            setQLocal("");
+            navigate({
+              search: (prev: CollectionSearch) => ({
+                ...prev,
+                group: id,
+                q: "",
+                view: "",
+              }),
+              replace: true,
+              resetScroll: false,
+            });
+          });
         };
 
         return (
@@ -1288,6 +1347,63 @@ function CollectionPage() {
                   </>
                 )}
               </div>
+            )}
+          </div>
+
+          {/* ----------------------------------------------------------------
+              Scope indicator — pinned to the bottom of the modal panel,
+              always visible. The modal's search applies to ALL inventory
+              regardless of which section the user launched from. The inline
+              utility-bar input stays section-scoped, so this label exists
+              specifically to set that expectation.
+              ---------------------------------------------------------------- */}
+          <div
+            style={{
+              marginTop: "auto",
+              paddingTop: "clamp(20px, 4vh, 32px)",
+              width: "100%",
+              maxWidth: "640px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "rgba(26,26,26,0.55)",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "9px",
+                letterSpacing: "0.24em",
+                textTransform: "uppercase",
+                color: "rgba(26,26,26,0.55)",
+                lineHeight: 1.4,
+              }}
+            >
+              Searching all {total} pieces · {overviewGroups.length} categories
+            </span>
+            {activeGroup && (
+              <span
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "9px",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "rgba(26,26,26,0.35)",
+                  marginLeft: "auto",
+                }}
+                title="The bar inside a category stays section-scoped. The modal does not."
+              >
+                Bar: {(BROWSE_GROUP_LABELS[activeGroup] || activeGroup)} only
+              </span>
             )}
           </div>
         </div>
