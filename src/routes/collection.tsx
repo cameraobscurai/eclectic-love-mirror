@@ -336,6 +336,29 @@ function CollectionPage() {
     [filtered, failedIds],
   );
 
+  // Release the pending fade once the new product list is in hand. We wait
+  // one rAF so React has committed the new tiles, plus a 160ms minimum fade
+  // hold so even instant updates have time to read as a transition (not a
+  // flash). A 500ms safety timer guarantees we never get stuck dim.
+  useEffect(() => {
+    if (!gridPending) return undefined;
+    const start = performance.now();
+    const MIN_HOLD = 160;
+    let raf = 0;
+    const safety = window.setTimeout(() => setGridPending(false), 500);
+    raf = requestAnimationFrame(() => {
+      const elapsed = performance.now() - start;
+      const wait = Math.max(0, MIN_HOLD - elapsed);
+      window.setTimeout(() => setGridPending(false), wait);
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(safety);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleProducts]);
+
+
   // ---------- Filter rail data: stable order + responsive counts ----------
   // Counts respond to the committed search-filtered set. Powers the rail's
   // per-row count badge.
