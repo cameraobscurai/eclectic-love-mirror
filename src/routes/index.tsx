@@ -215,22 +215,46 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        <picture>
-          <source
-            media="(max-width: 767px)"
-            srcSet={homeHeroMobileAvif}
-            type="image/avif"
-          />
-          <source
-            media="(max-width: 767px)"
-            srcSet={homeHeroMobileWebp}
-            type="image/webp"
-          />
-          <source srcSet={homeHeroAvif} type="image/avif" />
-          <source srcSet={homeHero} type="image/webp" />
+        {variant === "moodboard" ? (
+          <picture key="moodboard">
+            <source
+              media="(max-width: 767px)"
+              srcSet={homeHeroMobileAvif}
+              type="image/avif"
+            />
+            <source
+              media="(max-width: 767px)"
+              srcSet={homeHeroMobileWebp}
+              type="image/webp"
+            />
+            <source srcSet={homeHeroAvif} type="image/avif" />
+            <source srcSet={homeHero} type="image/webp" />
+            <motion.img
+              ref={heroImgRef}
+              src={homeHero}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              fetchPriority="high"
+              loading="eager"
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+                "object-[50%_25%] md:object-[50%_38%]",
+                loaded ? "opacity-100" : "opacity-0"
+              )}
+              draggable={false}
+              style={
+                parallaxOn
+                  ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
+                  : undefined
+              }
+            />
+          </picture>
+        ) : (
           <motion.img
+            key="exploded"
             ref={heroImgRef}
-            src={homeHero}
+            src={homeHeroExploded}
             alt=""
             aria-hidden="true"
             decoding="async"
@@ -238,7 +262,7 @@ function HomePage() {
             loading="eager"
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-              "object-[50%_25%] md:object-[50%_38%]",
+              "object-[50%_50%]",
               loaded ? "opacity-100" : "opacity-0"
             )}
             draggable={false}
@@ -248,7 +272,7 @@ function HomePage() {
                 : undefined
             }
           />
-        </picture>
+        )}
 
         {/* Edge-to-edge frosted band — sits behind the wordmark to lift
             legibility against the busy moodboard. Anchored to the same
