@@ -11,7 +11,9 @@ import { LiquidGlass } from "@/components/liquid-glass";
 import { cn } from "@/lib/utils";
 import { useObjectCoverPoint } from "@/hooks/useObjectCoverPoint";
 import homeHero from "@/assets/home-hero.webp";
-import homeHeroMobile from "@/assets/home-hero-mobile.png";
+import homeHeroAvif from "@/assets/home-hero.avif";
+import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
+import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
