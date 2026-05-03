@@ -729,14 +729,21 @@ function CollectionPage() {
               />
             </aside>
 
-            {/* ===== RIGHT: main pane ===== */}
+            {/* ===== RIGHT: main pane =====
+                The pane fades down briefly while the URL filter params
+                change, then settles back to full opacity once the new
+                grid has rendered. Subtle — no spinner, no skeleton flash. */}
             <div
               className="min-w-0"
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--cream)",
+                opacity: reduced ? 1 : gridPending ? 0.55 : 1,
+                transition: reduced ? undefined : "opacity 180ms ease-out",
+                willChange: gridPending ? "opacity" : undefined,
               }}
+              aria-busy={gridPending || undefined}
             >
               {showOverview ? (
                 <div className="bg-white">
