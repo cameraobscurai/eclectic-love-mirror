@@ -94,11 +94,21 @@ function GalleryPage() {
         onChange={setFilter}
       />
 
+      <section className="mb-16 lg:mb-24">
+        <GalleryMap
+          projects={visibleProjects}
+          activeIndex={activeIndex}
+          onSelect={handleMapSelect}
+        />
+      </section>
+
       <section className="px-6 lg:px-12">
         <div className="max-w-[1600px] mx-auto">
           <GalleryCardsTrack
             projects={visibleProjects}
             onOpen={handleOpen}
+            onActiveChange={setActiveIndex}
+            jumpRef={jumpRef}
           />
         </div>
       </section>
