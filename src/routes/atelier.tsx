@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
+import { HeroImage, heroPreloadLink } from "@/components/hero-image";
+import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -46,7 +48,7 @@ export const Route = createFileRoute("/atelier")({
       {
         name: "description",
         content:
-          "Atelier by The Hive: a design and fabrication studio for cinematic event environments. Imagined. Refined. Crafted.",
+          "Atelier by The Hive: designers, producers, and a fabrication house. Imagined. Designed. Realized.",
       },
       {
         property: "og:title",
@@ -54,9 +56,18 @@ export const Route = createFileRoute("/atelier")({
       },
       {
         property: "og:description",
-        content: "Imagined. Refined. Crafted. Design + fabrication studio.",
+        content: "Imagined. Designed. Realized. Design + fabrication studio.",
+      },
+      {
+        property: "og:image",
+        content: atelierHero.img.src,
+      },
+      {
+        name: "twitter:image",
+        content: atelierHero.img.src,
       },
     ],
+    links: [heroPreloadLink(atelierHero)],
   }),
   component: AtelierPage,
 });
