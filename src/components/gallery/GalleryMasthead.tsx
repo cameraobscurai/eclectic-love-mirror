@@ -96,24 +96,21 @@ export function GalleryMasthead({
           overflow: hidden;
         }
 
-        /* Counter — sits directly above the heading. */
+        /* Counter — sits BELOW the heading (matches reference). */
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Anchored to the heading's top edge with a small gap above. */
-          top: calc(50% - clamp(72px, 9.2vw, 148px) / 2 - 22px);
+          /* Top-anchored just below the heading: 50% + half-heading + gap. */
+          top: calc(50% + clamp(72px, 9.2vw, 148px) / 2 + 14px);
           margin: 0;
           z-index: 1;
         }
 
-        /* Heading — vertically centered in the stage. The panels overlap
-           its right edge ("RY" passes behind the glass). One line, full
-           bleed allowed. */
+        /* Heading — vertically centered in the stage, full bleed allowed.
+           Panels overlap the right edge so "RY" sits behind the glass. */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Center the heading vertically: top: 50% then pull up by half
-             its own height. line-height: 1 keeps the math honest. */
           top: 50%;
           transform: translateY(-50%);
           margin: 0;
@@ -128,16 +125,15 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Panels group — absolutely anchored to the right, vertically
-           centered in the stage. With the stage now equal to viewport
-           height (minus nav), top: 50% is true viewport center. */
+        /* Panels group — vertically centered on the heading axis. Taller
+           than the heading so it overlaps top + bottom edges. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
           top: var(--heading-center, 50%);
           transform: translateY(-50%);
           width: clamp(420px, 46vw, 720px);
-          height: clamp(300px, 40vh, 480px);
+          height: clamp(340px, 48vh, 520px);
           z-index: 2;
         }
 
