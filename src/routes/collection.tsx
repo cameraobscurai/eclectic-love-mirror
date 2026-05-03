@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
+import type React from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -11,6 +12,7 @@ import {
 } from "@/lib/phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
+  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
@@ -50,6 +52,31 @@ const searchSchema = z.object({
 });
 
 const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
+
+// Shared inline styles for the floating search modal's suggestion rows.
+// Kept at module scope so they're stable references and not recreated on
+// every render of the modal IIFE.
+const suggestionRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 14,
+  width: "100%",
+  textAlign: "left",
+  background: "transparent",
+  border: "none",
+  borderBottom: "1px solid rgba(26,26,26,0.06)",
+  padding: "10px 4px",
+  cursor: "pointer",
+  color: "#1a1a1a",
+};
+const suggestionGroupLabel: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: "9px",
+  letterSpacing: "0.24em",
+  textTransform: "uppercase",
+  color: "rgba(26,26,26,0.4)",
+  margin: "0 0 8px",
+};
 
 
 export const Route = createFileRoute("/collection")({
@@ -151,6 +178,22 @@ function CollectionPage() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // ---------- Grid pending / transition state ----------
+  // Whenever the URL search params that drive the grid (group, q, sort)
+  // change, briefly mark the grid as "pending" so the right pane fades to a
+  // softer state for the swap. Pure CSS opacity transition — no spinners.
+  const [gridPending, setGridPending] = useState(false);
+  const gridKey = `${group}|${q}|${sort}`;
+  const lastKeyRef = useRef(gridKey);
+  useEffect(() => {
+    if (lastKeyRef.current === gridKey) return;
+    lastKeyRef.current = gridKey;
+    setGridPending(true);
+    const t = window.setTimeout(() => setGridPending(false), 220);
+    return () => window.clearTimeout(t);
+  }, [gridKey]);
+
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -712,14 +755,21 @@ function CollectionPage() {
               />
             </aside>
 
-            {/* ===== RIGHT: main pane ===== */}
+            {/* ===== RIGHT: main pane =====
+                The pane fades down briefly while the URL filter params
+                change, then settles back to full opacity once the new
+                grid has rendered. Subtle — no spinner, no skeleton flash. */}
             <div
               className="min-w-0"
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--cream)",
+                opacity: reduced ? 1 : gridPending ? 0.55 : 1,
+                transition: reduced ? undefined : "opacity 180ms ease-out",
+                willChange: gridPending ? "opacity" : undefined,
               }}
+              aria-busy={gridPending || undefined}
             >
               {showOverview ? (
                 <div className="bg-white">
@@ -956,7 +1006,58 @@ function CollectionPage() {
         </svg>
       </button>
 
-      {searchOpen && (
+      {searchOpen && (() => {
+        // ---- Live suggestion engine (recomputed each render while open) ----
+        const raw = modalQuery.trim().toLowerCase();
+        const matchedCategories = raw
+          ? BROWSE_GROUP_ORDER.filter((id) => {
+              const label = (BROWSE_GROUP_LABELS[id] || id).toLowerCase();
+              return label.includes(raw);
+            }).slice(0, 4)
+          : [];
+        const matchedProducts = raw
+          ? products
+              .filter((p) => p.title.toLowerCase().includes(raw))
+              .slice(0, 8)
+          : [];
+
+        // Search must always run across the WHOLE inventory, not just the
+        // section the user happened to be inside. So we clear `group` at the
+        // same time we set `q`. Categories explicitly set `group` instead.
+        const commitQuery = (text: string) => {
+          const next = text.trim();
+          if (!next) return;
+          setQLocal(next);
+          navigate({
+            search: (prev: CollectionSearch) => ({
+              ...prev,
+              group: "",
+              q: next,
+              view: "",
+            }),
+            replace: true,
+            resetScroll: false,
+          });
+          setSearchOpen(false);
+          setModalQuery("");
+        };
+        const commitCategory = (id: BrowseGroupId) => {
+          setQLocal("");
+          navigate({
+            search: (prev: CollectionSearch) => ({
+              ...prev,
+              group: id,
+              q: "",
+              view: "",
+            }),
+            replace: true,
+            resetScroll: false,
+          });
+          setSearchOpen(false);
+          setModalQuery("");
+        };
+
+        return (
         <div
           onClick={(e) => {
             if (e.target === e.currentTarget) setSearchOpen(false);
@@ -965,13 +1066,17 @@ function CollectionPage() {
             position: "fixed",
             inset: 0,
             zIndex: 50,
-            background: "rgba(255,255,255,0.88)",
+            background: "rgba(255,255,255,0.92)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: "clamp(80px, 12vh, 140px) clamp(24px, 8vw, 120px) 40px",
+            // Tight on phones, spacious on desktop. Side padding shrinks
+            // hard on narrow screens so the input + ESC button always fit.
+            padding:
+              "clamp(56px, 10vh, 140px) clamp(14px, 6vw, 120px) clamp(20px, 4vh, 40px)",
+            overflowY: "auto",
           }}
         >
           <div
@@ -981,8 +1086,8 @@ function CollectionPage() {
               borderBottom: "1px solid rgba(26,26,26,0.15)",
               display: "flex",
               alignItems: "center",
-              gap: "14px",
-              paddingBottom: "14px",
+              gap: "clamp(8px, 2vw, 14px)",
+              paddingBottom: "12px",
             }}
           >
             <svg
@@ -1001,74 +1106,193 @@ function CollectionPage() {
               onChange={(e) => setModalQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && modalQuery.trim()) {
-                  // Wire into the existing search: setQLocal feeds the
-                  // debounced effect that pushes ?q= into the URL.
-                  setQLocal(modalQuery.trim());
-                  setSearchOpen(false);
+                  commitQuery(modalQuery);
                 }
               }}
-              placeholder="Search pieces, categories..."
+              placeholder="Search the collection"
               style={{
                 flex: 1,
+                minWidth: 0,
                 border: "none",
                 outline: "none",
                 background: "transparent",
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(22px, 2.8vw, 36px)",
+                // Smaller on phones so input + ESC fit without scaling.
+                fontSize: "clamp(18px, 5vw, 36px)",
                 color: "#1a1a1a",
                 letterSpacing: "-0.01em",
               }}
             />
             <button
               onClick={() => setSearchOpen(false)}
+              aria-label="Close search"
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "9px",
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
-                color: "rgba(26,26,26,0.38)",
+                color: "rgba(26,26,26,0.55)",
                 background: "none",
-                border: "none",
+                border: "1px solid rgba(26,26,26,0.18)",
                 cursor: "pointer",
                 flexShrink: 0,
-                padding: "4px",
+                padding: "5px 8px",
+                lineHeight: 1,
               }}
             >
               ESC
             </button>
           </div>
 
-          <div style={{ width: "100%", maxWidth: "640px", marginTop: "28px" }}>
-            {modalQuery.length === 0 ? (
-              <p
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "10px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  color: "rgba(26,26,26,0.32)",
-                  margin: 0,
-                }}
-              >
-                {total} pieces across {overviewGroups.length} categories
-              </p>
+          {/* Suggestions / footer area */}
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "640px",
+              marginTop: "clamp(18px, 3vh, 28px)",
+            }}
+          >
+            {raw.length === 0 ? (
+              <div>
+                <p
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "10px",
+                    letterSpacing: "0.22em",
+                    textTransform: "uppercase",
+                    color: "rgba(26,26,26,0.32)",
+                    margin: "0 0 14px",
+                  }}
+                >
+                  {total} pieces across {overviewGroups.length} categories
+                </p>
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                  {BROWSE_GROUP_ORDER.slice(0, 6).map((id) => {
+                    const label = BROWSE_GROUP_LABELS[id] || id;
+                    return (
+                      <li key={id}>
+                        <button
+                          type="button"
+                          onClick={() => commitCategory(id)}
+                          style={suggestionRowStyle}
+                        >
+                          <span
+                            style={{
+                              fontSize: "9px",
+                              letterSpacing: "0.22em",
+                              textTransform: "uppercase",
+                              color: "rgba(26,26,26,0.4)",
+                              minWidth: 70,
+                            }}
+                          >
+                            Category
+                          </span>
+                          <span
+                            style={{
+                              fontFamily: "var(--font-display)",
+                              fontSize: "clamp(15px, 2vw, 18px)",
+                              color: "#1a1a1a",
+                            }}
+                          >
+                            {label}
+                          </span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             ) : (
-              <p
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "10px",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  color: "rgba(26,26,26,0.32)",
-                  margin: 0,
-                }}
-              >
-                Press Enter to search
-              </p>
+              <div>
+                {matchedCategories.length === 0 && matchedProducts.length === 0 ? (
+                  <p
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "11px",
+                      color: "rgba(26,26,26,0.55)",
+                      margin: 0,
+                    }}
+                  >
+                    No matches. Press Enter to search anyway.
+                  </p>
+                ) : (
+                  <>
+                    {matchedCategories.length > 0 && (
+                      <div style={{ marginBottom: 18 }}>
+                        <p style={suggestionGroupLabel}>Categories</p>
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                          {matchedCategories.map((id) => {
+                            const label = BROWSE_GROUP_LABELS[id] || id;
+                            return (
+                              <li key={id}>
+                                <button
+                                  type="button"
+                                  onClick={() => commitCategory(id)}
+                                  style={suggestionRowStyle}
+                                >
+                                  <span
+                                    style={{
+                                      fontFamily: "var(--font-display)",
+                                      fontSize: "clamp(15px, 2vw, 18px)",
+                                      color: "#1a1a1a",
+                                    }}
+                                  >
+                                    {label}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
+                    {matchedProducts.length > 0 && (
+                      <div>
+                        <p style={suggestionGroupLabel}>Pieces</p>
+                        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                          {matchedProducts.map((p) => (
+                            <li key={p.id}>
+                              <button
+                                type="button"
+                                onClick={() => commitQuery(p.title)}
+                                style={suggestionRowStyle}
+                              >
+                                <span
+                                  style={{
+                                    fontFamily: "var(--font-display)",
+                                    fontSize: "clamp(14px, 1.8vw, 16px)",
+                                    color: "#1a1a1a",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  {p.title}
+                                </span>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <p
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: "10px",
+                        letterSpacing: "0.22em",
+                        textTransform: "uppercase",
+                        color: "rgba(26,26,26,0.32)",
+                        margin: "18px 0 0",
+                      }}
+                    >
+                      Press Enter to search all {total} pieces
+                    </p>
+                  </>
+                )}
+              </div>
             )}
           </div>
         </div>
-      )}
+        );
+      })()}
     </main>
   );
 }
