@@ -14,7 +14,10 @@ interface ProductTileProps {
   onImageFailed?: (productId: string) => void;
 }
 
-const EAGER_RENDER_COUNT = 12; // first 12: render full internals immediately
+// Eager render = first three full rows on wide desktops, two on smaller.
+// Bumping past 12 was previously risky because tiles were heavy; with
+// content-visibility:auto on the deferred shells, off-screen cost stays low.
+const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
 const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
 
