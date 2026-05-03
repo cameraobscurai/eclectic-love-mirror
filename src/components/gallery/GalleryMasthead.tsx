@@ -121,23 +121,27 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Map glass plate — backdrop-filter only composites when the element
-           does NOT clip its own painting context. overflow: hidden here kills
-           the blur in some engines, so we move clipping to the body wrapper
-           below and let the plate stay un-clipped. */
+        /* Map glass plate — LIGHT-on-dark glassmorphism. The stage is
+           charcoal, so the plates need to read as a luminous frosted
+           membrane, not a faint smudge. Brighter base tint, stronger
+           inner highlight, lighter border. backdrop-filter only composites
+           when the element does NOT clip its own painting context, so
+           clipping moves to the body wrapper below. */
         .gallery-glass-map {
           position: relative;
           width: 100%;
           height: 100%;
           display: grid;
-          grid-template-rows: auto 1fr;
-          border: 1px solid rgba(255,255,255,0.09);
-          background: rgba(18,18,18,0.48);
-          backdrop-filter: blur(20px) saturate(130%);
-          -webkit-backdrop-filter: blur(20px) saturate(130%);
+          grid-template-rows: 1fr;
+          border: 1px solid rgba(255,255,255,0.22);
+          background: rgba(255,255,255,0.10);
+          backdrop-filter: blur(28px) saturate(160%);
+          -webkit-backdrop-filter: blur(28px) saturate(160%);
           box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.07),
-            0 24px 56px rgba(0,0,0,0.55);
+            inset 0 1px 0 rgba(255,255,255,0.22),
+            inset 0 0 0 1px rgba(255,255,255,0.04),
+            0 30px 70px rgba(0,0,0,0.55);
+          border-radius: 10px;
           z-index: 2;
         }
 
