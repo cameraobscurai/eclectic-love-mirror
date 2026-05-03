@@ -112,27 +112,34 @@ function GalleryPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 lg:px-12 mt-32">
+      {/* CTA — editorial colophon */}
+      <section className="px-6 lg:px-12 mt-28 mb-24">
         <div className="max-w-[1600px] mx-auto">
-          <div className="border-t border-cream/10 pt-14">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-              YOUR PROJECT
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] tracking-[-0.005em] max-w-2xl">
-              Ready to add your environment to our archive?
-            </h2>
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-cream/65">
-              Every project in our portfolio represents a client who trusted us to
-              author something extraordinary. We welcome conversations about how
-              we can create your next environment.
-            </p>
-            <Link
-              to="/contact"
-              className="mt-8 inline-block text-[10px] uppercase tracking-[0.28em] border border-cream/60 text-cream px-6 py-3 hover:bg-cream hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
-            >
-              START AN INQUIRY
-            </Link>
+          <div className="border-t border-cream/10 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-baseline">
+            <div className="lg:col-span-2">
+              <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
+                — Next
+              </p>
+            </div>
+
+            <div className="lg:col-span-7">
+              <p className="font-display text-[clamp(1.5rem,2.4vw,2.25rem)] leading-[1.2] tracking-[-0.005em] text-cream/90 max-w-[34ch]">
+                Considering an environment of your own?
+                <span className="text-cream/45"> We take on a small number of projects each year.</span>
+              </p>
+            </div>
+
+            <div className="lg:col-span-3 lg:text-right">
+              <Link
+                to="/contact"
+                className="group inline-flex items-baseline gap-3 text-[11px] uppercase tracking-[0.3em] text-cream hover:text-cream/70 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-4 focus-visible:ring-offset-charcoal"
+              >
+                <span className="border-b border-cream/40 group-hover:border-cream/70 pb-1 transition-colors">
+                  Begin a conversation
+                </span>
+                <span aria-hidden className="translate-y-[-1px] transition-transform group-hover:translate-x-1">→</span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
