@@ -22,7 +22,6 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { glassBand } from "@/lib/glass";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -522,7 +521,9 @@ function CollectionPage() {
         className="sticky z-20"
         style={{
           top: "var(--nav-h)",
-          ...glassBand.light,
+          background: "var(--cream)",
+          borderTop: "1px solid var(--archive-rule)",
+          borderBottom: "1px solid var(--archive-rule)",
         }}
       >
         <div className="px-6 lg:px-12">
@@ -533,24 +534,29 @@ function CollectionPage() {
               minHeight: "var(--archive-utility-h)",
             }}
           >
-            {/* LEFT: mobile filters trigger + result meta */}
+            {/* LEFT: mobile filters trigger + result meta. The Filters
+                trigger is hidden on the category overview because browsing-
+                by-category IS the filter — the trigger would open a sheet
+                of the same rail that the user is already looking at. */}
             <div className="flex items-center gap-3 min-w-0">
-              <button
-                ref={filtersTriggerRef}
-                onClick={() => setSheetOpen(true)}
-                className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
-                aria-label="Open filters"
-                aria-haspopup="dialog"
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                Filters
-                {hasActiveFilters && (
-                  <span
-                    aria-hidden
-                    className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
-                  />
-                )}
-              </button>
+              {!showOverview && (
+                <button
+                  ref={filtersTriggerRef}
+                  onClick={() => setSheetOpen(true)}
+                  className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                  aria-label="Open filters"
+                  aria-haspopup="dialog"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  Filters
+                  {hasActiveFilters && (
+                    <span
+                      aria-hidden
+                      className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-current"
+                    />
+                  )}
+                </button>
+              )}
 
               <p
                 key={`${activeGroup}-${q}-${sort}`}
@@ -561,7 +567,10 @@ function CollectionPage() {
               </p>
             </div>
 
-            {/* RIGHT: search · sort · density */}
+            {/* RIGHT: search · sort · density.
+                Hidden on the category overview — these controls operate on
+                a product list that isn't shown there, so they're noise. */}
+            {!showOverview && (
             <div className="flex items-center justify-end gap-3 min-w-0">
               <label htmlFor="collection-search" className="sr-only">
                 Search pieces
@@ -637,6 +646,7 @@ function CollectionPage() {
                 </button>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>
