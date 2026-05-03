@@ -3,6 +3,7 @@ import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
+import atelierStudioWide from "@/assets/atelier-studio-wide.png";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
