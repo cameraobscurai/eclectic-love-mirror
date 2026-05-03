@@ -1,57 +1,106 @@
-## Quick honest answer first
+## Goal
 
-**You're misremembering Local Love a little, and that's actually useful.** Local Love's ProductCard does a flat `index * 0.06` motion-stagger on every tile (capped at 0.5s) — basically "every card delays a tiny bit more than the previous." It looks great when the grid is small (a few dozen sneakers) and reveals top-to-bottom as you scroll because IntersectionObserver triggers each card individually with that constant per-index offset.
+Inside every category, products should appear in the same order the owner has curated on eclectichive.com — her "stars" at the top, the rest following her years-old composition. Cross-category order (sofas before tables before lighting, etc.) is already correct via owner browse-groups; we are only fixing **within-category** order.
 
-**That doesn't translate cleanly to Eclectic Hive.** Two reasons:
+This is a soft mirror, not a lock. We capture her order, use it as the primary in-category sort key, and let unmatched products fall to the tail by current keyword rank. If her site changes later, we just re-run the capture.
 
-1. **Scale.** The Collection grid is ~876 products. A flat per-index delay would mean tile #500 has the same 0.5s cap as tile #18, but tiles around the same row would *also* fire from the same observer batch with no row awareness — which on a 6-col grid reads as "random tiles popping in," not "rows wiping in."
-2. **Brand register.** Local Love is playful sneaker culture. Eclectic Hive is Prada/Casa Carta editorial restraint. We want subtle addiction through *rhythm*, not bounce or animation theatrics.
+## Approach
 
-So we pull the **idea** (per-tile reveal stagger) and adapt it for our scale + register: **row-aware left-to-right wipe**, very short, very calm.
+```text
+eclectichive.com/{category}     →  Firecrawl scrape (markdown)
+                                       │
+                                       ▼
+                               parse titles in DOM order
+                                       │
+                                       ▼
+              src/data/phase3/owner_site_order.json  (committed)
+                                       │
+                                       ▼
+        scripts/build-phase3-catalog.mjs joins by normalized title
+                                       │
+                                       ▼
+           phase3_catalog.json gains  ownerSiteRank: number | null
+                                       │
+                                       ▼
+   sortProductsForCollection: ownerBrowseGroup → ownerSiteRank
+                              → keyword type-rank (fallback) → title
+```
 
-## What's there now
+Matched items sort by `ownerSiteRank` ascending. Unmatched items get `ownerSiteRank = null` and tail by the existing `getOriginalSiteTypeRank` keyword logic — exactly the current behavior, just demoted.
 
-- **Product grid (`ProductTile.tsx`)**: 600px IntersectionObserver per tile, eager-loads first 12 images, fetchpriority high on first 12, but **no enter animation at all.** Tiles just appear when `near` flips. That's why it feels mechanical instead of rhythmic.
-- **Category landing (`CategoryGalleryOverview.tsx`)**: Already has a stagger — but it's `idx * 0.02` flat across all cards, capped at 0.2s. On a 6-col grid the first 10 cards stagger nicely, then everything past index ~10 fires simultaneously. Reads as "first row reveals, then a clump."
+## Steps
 
-## What we change
+**1. Capture script — `scripts/capture-owner-site-order.mjs` (new)**
 
-### 1. `ProductTile.tsx` — add row-aware left-to-right reveal
+- Iterates the 10 live category URLs:
+  `/lounge`, `/lounge-tables`, `/cocktail-bar`, `/dining`, `/tableware`, `/light`, `/textiles`, `/rugs`, `/styling`, `/large-decor`
+- Calls Firecrawl `scrape` (markdown format) per URL via the connector gateway.
+- Parses headings (`# Product Title`) in document order — that's the grid order on Squarespace.
+- Writes `src/data/phase3/owner_site_order.json`:
+  ```json
+  {
+    "capturedAt": "2026-05-03T...",
+    "categories": {
+      "lounge": ["Indiwin Black Leather Sofa", "Brooklyn Plush Charcoal Sofa", ...],
+      "lounge-tables": [...],
+      ...
+    }
+  }
+  ```
+- Run on demand (not during build). Owner can ask "re-pull her order" anytime.
 
-When a tile's `near` flips true and its image loads, fade+lift it in with a delay computed from its **column position in the current breakpoint's grid**, not its absolute index. So row 4 of the desktop 5-col grid wipes left→right in ~250ms total, then row 5 starts ~80ms later, etc.
+**2. Title normalization — small, deterministic**
 
-Implementation:
-- Add an `enter` state alongside `loaded`. Tile becomes "entered" when `loaded && near`.
-- Animation: `opacity 0→1` + `translateY 4px→0` + tiny `filter: blur(2px)→0`. Duration 380ms, ease `[0.22, 1, 0.36, 1]` (same curve Local Love uses, same one we already use elsewhere).
-- Stagger delay: `(index % colsAtCurrentBreakpoint) * 60ms`, capped at 240ms. We can't read the live column count cheaply, so we compute against the **widest** breakpoint (6 cols on xl). On narrower viewports the math still produces a pleasing left-bias because column-1 tiles get 0ms, column-6 tiles get 300ms, and CSS-grid wraps them naturally.
-- First 12 tiles (above the fold) skip the delay entirely — they appear together as the page loads, no perceptible wipe. Wipe only kicks in for tiles entering via scroll.
-- Reduced motion: skip animation, set entered=true immediately. (We already check `useReducedMotion`.)
+- Lowercase, strip punctuation, collapse whitespace, drop trailing material words ("sofa", "chair") only when needed for fallback matching.
+- First pass: exact normalized match. Covers the vast majority.
+- Second pass: token-set match for minor wording differences.
+- Anything still unmatched → reported in build output, gets `ownerSiteRank: null`.
 
-This gives the "subtly addictive" feel — every scroll reveals a row that wipes in left-to-right like a curtain pull, never two rows at once, never bouncy.
+**3. Bake `ownerSiteRank` into the catalog — `scripts/build-phase3-catalog.mjs`**
 
-### 2. `CategoryGalleryOverview.tsx` — same treatment, sized for 6-col
+- Load `owner_site_order.json` if present (graceful: if missing, all items get `null` and current behavior holds).
+- For each product: find its position in the live-site list for its category, write `ownerSiteRank` (0-indexed).
+- Print summary: `lounge: 41/47 matched, 6 unmatched (titles listed)` so we can spot-check.
 
-Replace the flat `idx * 0.02` (cap 0.2s) with the same column-modulo math: `(idx % 6) * 60ms` cap 300ms. First row staggers left→right like a card spread. Subsequent rows reveal as you scroll (which on a 5-row category landing means rows 2+ get the same wipe when they enter view).
+**4. Sort wiring — `src/lib/collection-sort-intelligence.ts`**
 
-To make rows 2+ actually wait for scroll instead of all firing together on mount, gate the animation on the same `useNearViewport` hook the product grid uses (the category overview currently animates everything on mount because there's no observer). Add a 600px-margin observer to each card so the wipe fires per-row as the user scrolls.
+- Add `ownerSiteRank?: number | null` to the `CollectionProduct` interface (in `src/lib/phase3-catalog.ts` too).
+- New compositeBy-Type rank:
+  ```
+  ownerBrowseGroup * 1e12
+    + (ownerSiteRank ?? UNMATCHED_SENTINEL) * 1e6
+    + keywordTypeRank * 1e3
+    + scrapedOrder
+  ```
+  `UNMATCHED_SENTINEL` = a value larger than any real `ownerSiteRank` so unmatched items naturally tail matched ones.
+- "By Type" stays the public sort label — its meaning just becomes "as the owner has it." Keyword type-rank survives as the fallback inside the unmatched tail (so e.g. unmatched sofas still come before unmatched chairs).
 
-### 3. Don't touch image loading thresholds
+**5. Quick manual verification**
 
-EAGER_LOAD_COUNT (12), HIGH_FETCH_COUNT (12), rootMargin (600px) — all stay. Those are already tuned. We're adding **visual rhythm on top of**, not changing, the loading strategy.
+- Spot-check 2 categories in preview: Lounge and Lighting. First 6 cards on our `/collection?group=…` page should match the first 6 on her site.
 
-## What we explicitly do NOT do
+## What this does NOT change
 
-- No flat `index * 0.06` Local Love-style cascade. Wrong for 876 products.
-- No motion.layout cascade. Existing layout reflow on filter change stays as-is — that's a different visual event.
-- No new dependencies. framer-motion is already in use.
-- No bounce, no scale, no playful elasticity. Cubic-bezier `[0.22, 1, 0.36, 1]` only.
-- No change to LCP — first 12 tiles still arrive with no delay.
+- Catalog count stays 876. No items are added, removed, or hidden.
+- Owner browse-group order (Sofas first → Styling last) is untouched.
+- A-Z / Newest / Oldest sorts are untouched.
+- Category covers, image logic, reveal animation — all untouched.
+- No DB migration, no admin UI. Pure data + sort change.
 
-## Files touched
+## Tooling needs
 
-- `src/components/collection/ProductTile.tsx` — add `entered` state + motion enter animation with column-modulo delay.
-- `src/components/collection/CategoryGalleryOverview.tsx` — swap flat stagger for column-modulo, add `useNearViewport` gate so rows 2+ wipe on scroll.
+- **Firecrawl connector**: needs to be linked to the project before the capture script runs. I'll call `standard_connectors--connect` with `firecrawl` when we start. ~10 scrape calls, well under any free-tier limit.
+- No Gemini, no Perplexity, no LLM. Title matching is deterministic with a printed unmatched list — better than LLM guesses for this.
 
-## Open question (one)
+## Files changed
 
-Column count for the modulo is hard-coded to 6 (the widest breakpoint). The cheap alternative is: pass the live column count down via a CSS var or a small `useGridCols` hook reading from a ResizeObserver. **Default plan uses the hard-coded 6** — it's good enough on every breakpoint because column 1 always gets 0ms and the wipe just feels slightly faster on narrow screens. If you want true per-breakpoint accuracy, say so and I'll add the resize-observer hook (one extra render on resize, negligible cost).
+- new: `scripts/capture-owner-site-order.mjs`
+- new: `src/data/phase3/owner_site_order.json` (data, committed)
+- edited: `scripts/build-phase3-catalog.mjs` (join + bake)
+- edited: `src/data/phase3/phase3_catalog.json` (regenerated output)
+- edited: `src/lib/phase3-catalog.ts` (interface field)
+- edited: `src/lib/collection-sort-intelligence.ts` (sort key + rank composition)
+
+## Acceptance check
+
+Open `/collection?group=lounge` — first 6 tiles match the first 6 product titles on `eclectichive.com/lounge`. Same for `/cocktail-bar`, `/light`, `/styling`. Unmatched items still appear, just lower in their category. Console log from build confirms match rates per category.
