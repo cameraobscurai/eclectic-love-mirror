@@ -234,10 +234,43 @@ export function GalleryMasthead({
             gap: 6px !important;
           }
         }
+
+        /* ----------------------------------------------------------------
+           Cohesion mode — hide the desktop map + ghost flourishes and
+           let the heading sit on the same vertical rhythm as the other
+           pages (Atelier, Collection). Heading translate is neutralized
+           since it was originally tuned to thread through the ghost.
+           ---------------------------------------------------------------- */
+        .gallery-hero-stage.hide-flourishes .gallery-hero-panels,
+        .gallery-hero-stage.hide-flourishes .gallery-glass-map,
+        .gallery-hero-stage.hide-flourishes .gallery-glass-ghost {
+          display: none !important;
+        }
+        .gallery-hero-stage.hide-flourishes {
+          height: auto;
+          min-height: 0;
+          padding-top: calc(clamp(64px, 7vw, 112px));
+          padding-bottom: clamp(48px, 5vw, 80px);
+          overflow: visible;
+        }
+        .gallery-hero-stage.hide-flourishes .gallery-hero-heading {
+          position: static;
+          transform: none;
+          width: auto;
+          max-width: 100%;
+          white-space: normal;
+        }
+        .gallery-hero-stage.hide-flourishes .gallery-hero-pills {
+          position: static;
+          margin-top: clamp(32px, 4vw, 56px);
+          inset: auto;
+        }
       `}</style>
 
+      {/* Map + ghost panel temporarily hidden for site-wide cohesion pass.
+          Re-enable by removing the `hide-flourishes` modifier. */}
       <section aria-labelledby="gallery-heading">
-        <div className="gallery-hero-stage">
+        <div className="gallery-hero-stage hide-flourishes">
           {/* Counter intentionally removed — the pills already carry the
               "n Environments" count, the second label was redundant. */}
 
