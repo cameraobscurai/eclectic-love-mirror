@@ -3,6 +3,7 @@ import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
+import atelierStudioWide from "@/assets/atelier-studio-wide.png";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -156,7 +157,14 @@ function AtelierPage() {
         ) : (
           <>
             <div className="mt-12">
-              <MediaAperture ratio="16/9" label="STUDIO" />
+              <MediaAperture
+                ratio="16/9"
+                src={atelierStudioWide}
+                alt="The Atelier — interior view of the studio with the elevated container office, lounge seating, and plant-lined floor."
+                label="STUDIO"
+                lazy={false}
+                sizes="(min-width: 1024px) 1280px, 100vw"
+              />
             </div>
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
               <MediaAperture ratio="4/5" label="WORKBENCH" />
