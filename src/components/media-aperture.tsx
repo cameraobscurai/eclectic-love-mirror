@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -13,6 +14,9 @@ import { cn } from "@/lib/utils";
 //   - aspect-ratio locked via the `ratio` prop
 //   - no "image placeholder" text, no broken-image icons, no dashed boxes
 //   - feels like an empty print mount, not a developer placeholder
+//   - when a real image is provided, it cross-fades in over the stone wash
+//     instead of popping — late arrivals dissolve into the frame they
+//     already occupy, never replace a hard empty box with a hard image.
 //
 // When a real image arrives, pass `src` + `alt` and the same frame holds it.
 // ---------------------------------------------------------------------------
@@ -22,6 +26,10 @@ interface MediaApertureProps {
   ratio?: string;
   /** Real image URL, when available. */
   src?: string;
+  /** Optional `srcset` for responsive variants. */
+  srcSet?: string;
+  /** Optional `sizes` attribute paired with `srcSet`. */
+  sizes?: string;
   /** Required when `src` is provided. */
   alt?: string;
   /** Optional caption rendered below the frame. */
@@ -35,17 +43,24 @@ interface MediaApertureProps {
   className?: string;
   /** Lazy-load the inner image. Defaults to true. */
   lazy?: boolean;
+  /** Hint browser priority. Use "high" for above-the-fold portraits. */
+  fetchPriority?: "high" | "low" | "auto";
 }
 
 export function MediaAperture({
   ratio = "4/5",
   src,
+  srcSet,
+  sizes,
   alt,
   caption,
   label,
   className,
   lazy = true,
+  fetchPriority,
 }: MediaApertureProps) {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <figure className={cn("block", className)}>
       <div
@@ -60,10 +75,21 @@ export function MediaAperture({
         {src ? (
           <img
             src={src}
+            srcSet={srcSet}
+            sizes={sizes}
             alt={alt ?? ""}
             loading={lazy ? "lazy" : "eager"}
             decoding="async"
-            className="absolute inset-0 w-full h-full object-cover"
+            onLoad={() => setLoaded(true)}
+            // React types lag the spec; cast for fetchpriority.
+            {...(fetchPriority
+              ? ({ fetchpriority: fetchPriority } as Record<string, string>)
+              : {})}
+            className="absolute inset-0 w-full h-full object-cover will-change-opacity"
+            style={{
+              opacity: loaded ? 1 : 0,
+              transition: "opacity 420ms ease-out",
+            }}
           />
         ) : (
           // Inset hairline — print-mount feel. No icons, no text.
