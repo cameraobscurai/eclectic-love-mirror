@@ -84,7 +84,7 @@ function GalleryPage() {
 
   return (
     <main
-      className="min-h-screen bg-charcoal text-cream pb-32"
+      className="min-h-screen bg-charcoal text-cream"
       style={{ paddingTop: "var(--nav-h)" }}
     >
       <GalleryMasthead
@@ -114,7 +114,7 @@ function GalleryPage() {
       </section>
 
       {/* CTA — editorial colophon */}
-      <section className="px-6 lg:px-12 mt-28 mb-24">
+      <section className="px-6 lg:px-12 mt-28 mb-16">
         <div className="max-w-[1600px] mx-auto">
           <div className="border-t border-cream/10 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-baseline">
             <div className="lg:col-span-2">
@@ -146,11 +146,11 @@ function GalleryPage() {
       </section>
 
       {/* As Featured In — glass press bar */}
-      <section aria-labelledby="press-heading" className="px-6 lg:px-12 pb-24">
+      <section aria-labelledby="press-heading" className="px-6 lg:px-12 pb-10">
         <div className="max-w-[1600px] mx-auto">
           <h2
             id="press-heading"
-            className="text-[10px] uppercase tracking-[0.32em] text-cream/40 text-center mb-8"
+            className="text-[10px] uppercase tracking-[0.32em] text-cream/40 text-center mb-4"
           >
             As Featured In
           </h2>
