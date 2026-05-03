@@ -237,6 +237,33 @@ function HomePage() {
           />
         </picture>
 
+        {/* Edge-to-edge frosted band — sits behind the wordmark to lift
+            legibility against the busy moodboard. Anchored to the same
+            band point the wordmark uses, so it tracks the artwork. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "absolute inset-x-0 z-[5] pointer-events-none transition-opacity duration-1000",
+            loaded ? "opacity-100" : "opacity-0"
+          )}
+          style={{
+            top: bandPoint?.y ?? "50%",
+            height: "clamp(96px, 18vh, 180px)",
+            transform: "translateY(-50%)",
+            transitionDelay: loaded ? "200ms" : "0ms",
+            backdropFilter: "blur(14px) saturate(1.05) brightness(0.92)",
+            WebkitBackdropFilter: "blur(14px) saturate(1.05) brightness(0.92)",
+            background:
+              "linear-gradient(to bottom, rgba(26,26,26,0) 0%, rgba(26,26,26,0.18) 50%, rgba(26,26,26,0) 100%)",
+            boxShadow:
+              "inset 0 1px 0 0 rgba(245,242,237,0.06), inset 0 -1px 0 0 rgba(245,242,237,0.04)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          }}
+        />
+
         {/* Wordmark — anchored to the glass band baked into the artwork via
             object-cover projection math (see useObjectCoverPoint). Tunable
             from BAND_CENTER_RATIO at the top of this file. */}
