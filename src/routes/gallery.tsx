@@ -83,8 +83,10 @@ function GalleryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-charcoal text-cream">
-      <div style={{ height: "var(--nav-h)" }} aria-hidden="true" />
+    <main
+      className="min-h-screen bg-charcoal text-cream"
+      style={{ paddingTop: "var(--nav-h)" }}
+    >
       <GalleryMasthead
         total={galleryProjects.length}
         visibleCount={visibleProjects.length}
