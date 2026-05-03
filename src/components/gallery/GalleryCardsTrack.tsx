@@ -15,10 +15,22 @@ import { GalleryProjectIndex } from "./GalleryProjectIndex";
 interface GalleryCardsTrackProps {
   projects: GalleryProject[];
   onOpen: (index: number) => void;
+  onActiveChange?: (index: number) => void;
+  /**
+   * Imperative handle for parents (e.g. the map) to jump the rail to a card.
+   * Stable across renders.
+   */
+  jumpRef?: { current: ((index: number) => void) | null };
 }
 
-export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) {
+export function GalleryCardsTrack({
+  projects,
+  onOpen,
+  onActiveChange,
+  jumpRef,
+}: GalleryCardsTrackProps) {
   const railRef = useRef<HTMLDivElement>(null);
+  const scrubRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
@@ -45,8 +57,11 @@ export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) 
         bestIdx = i;
       }
     });
-    setActiveIndex(bestIdx);
-  }, []);
+    setActiveIndex((prev) => {
+      if (prev !== bestIdx) onActiveChange?.(bestIdx);
+      return bestIdx;
+    });
+  }, [onActiveChange]);
 
   useEffect(() => {
     const rail = railRef.current;
@@ -128,18 +143,92 @@ export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) 
   const scrollToIndex = useCallback((idx: number) => {
     const rail = railRef.current;
     if (!rail) return;
-    const card = rail.querySelectorAll<HTMLElement>("[data-card]")[idx];
+    const clamped = Math.max(0, Math.min(projects.length - 1, idx));
+    const card = rail.querySelectorAll<HTMLElement>("[data-card]")[clamped];
     if (!card) return;
     // Center the card in the rail.
     const target = card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2;
     rail.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
-  }, []);
+  }, [projects.length]);
+
+  // Expose scrollToIndex to parents (e.g. the map).
+  useEffect(() => {
+    if (jumpRef) jumpRef.current = scrollToIndex;
+    return () => {
+      if (jumpRef) jumpRef.current = null;
+    };
+  }, [jumpRef, scrollToIndex]);
 
   const paddle = (dir: -1 | 1) => {
     const rail = railRef.current;
     if (!rail) return;
     rail.scrollBy({ left: dir * rail.clientWidth * 0.85, behavior: "smooth" });
   };
+
+  // Keyboard navigation when the rail (or any descendant) is focused.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        scrollToIndex(activeIndex + 1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        scrollToIndex(activeIndex - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        scrollToIndex(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        scrollToIndex(projects.length - 1);
+      } else if (e.key === "Enter" || e.key === " ") {
+        // Open the focused card if any.
+        const target = e.target as HTMLElement | null;
+        if (target && target.closest("[data-card-trigger]")) return; // let card handle
+      }
+    };
+    rail.addEventListener("keydown", onKey);
+    return () => rail.removeEventListener("keydown", onKey);
+  }, [activeIndex, projects.length, scrollToIndex]);
+
+  // Interactive scrubber — drag to scrub, click to jump.
+  useEffect(() => {
+    const scrub = scrubRef.current;
+    const rail = railRef.current;
+    if (!scrub || !rail) return;
+    let dragging = false;
+
+    const apply = (clientX: number) => {
+      const rect = scrub.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const max = rail.scrollWidth - rail.clientWidth;
+      rail.scrollTo({ left: ratio * max, behavior: "auto" });
+    };
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      scrub.setPointerCapture(e.pointerId);
+      apply(e.clientX);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      apply(e.clientX);
+    };
+    const onUp = (e: PointerEvent) => {
+      dragging = false;
+      try { scrub.releasePointerCapture(e.pointerId); } catch { /* noop */ }
+    };
+    scrub.addEventListener("pointerdown", onDown);
+    scrub.addEventListener("pointermove", onMove);
+    scrub.addEventListener("pointerup", onUp);
+    scrub.addEventListener("pointercancel", onUp);
+    return () => {
+      scrub.removeEventListener("pointerdown", onDown);
+      scrub.removeEventListener("pointermove", onMove);
+      scrub.removeEventListener("pointerup", onUp);
+      scrub.removeEventListener("pointercancel", onUp);
+    };
+  }, []);
 
   if (projects.length === 0) {
     return (
@@ -155,7 +244,10 @@ export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) 
         {/* Track */}
         <div
           ref={railRef}
-          className="-mx-6 lg:-mx-12 px-6 lg:px-12 overflow-x-auto no-scrollbar snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none"
+          tabIndex={0}
+          role="region"
+          aria-label="Gallery projects — use arrow keys to navigate"
+          className="-mx-6 lg:-mx-12 px-6 lg:px-12 overflow-x-auto no-scrollbar snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/30 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
           style={{ scrollBehavior: "smooth" }}
         >
           <ol className="flex gap-6 lg:gap-10 pb-4">
@@ -196,15 +288,44 @@ export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) 
         </button>
       </div>
 
-      {/* Slot indicator + progress rule */}
-      <div className="mt-8 flex items-center gap-4 max-w-md mx-auto">
+      {/* Interactive scrubber — drag or click to scrub the rail */}
+      <div className="mt-8 flex items-center gap-4 max-w-xl mx-auto">
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
           {(activeIndex + 1).toString().padStart(2, "0")}
         </span>
-        <div className="flex-1 h-px bg-cream/10 overflow-hidden">
+        <div
+          ref={scrubRef}
+          role="slider"
+          aria-label="Scrub gallery projects"
+          aria-valuemin={1}
+          aria-valuemax={projects.length}
+          aria-valuenow={activeIndex + 1}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowRight") { e.preventDefault(); scrollToIndex(activeIndex + 1); }
+            if (e.key === "ArrowLeft")  { e.preventDefault(); scrollToIndex(activeIndex - 1); }
+          }}
+          className="group relative flex-1 h-6 flex items-center cursor-pointer select-none focus:outline-none"
+        >
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-cream/15" />
           <div
-            className="h-full bg-cream/45 transition-[width] duration-300"
-            style={{ width: `${Math.max(8, progress * 100)}%` }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-[2px] bg-cream/55 transition-[width] duration-200"
+            style={{ width: `${Math.max(2, progress * 100)}%` }}
+          />
+          {/* Tick marks per project */}
+          {projects.map((_, i) => (
+            <span
+              key={i}
+              aria-hidden
+              className="absolute top-1/2 -translate-y-1/2 w-px h-2 bg-cream/20"
+              style={{ left: `${projects.length === 1 ? 50 : (i / (projects.length - 1)) * 100}%` }}
+            />
+          ))}
+          {/* Handle */}
+          <span
+            aria-hidden
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-cream border border-charcoal shadow-[0_0_0_2px_rgba(245,242,237,0.25)] group-hover:scale-110 transition-transform"
+            style={{ left: `${progress * 100}%` }}
           />
         </div>
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/35 tabular-nums">
@@ -212,7 +333,7 @@ export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) 
         </span>
       </div>
       <p className="mt-3 text-center text-[13px] italic text-cream/45">
-        Drag or scroll to explore
+        Drag, scroll, or use ← → to explore
       </p>
 
       <GalleryProjectIndex

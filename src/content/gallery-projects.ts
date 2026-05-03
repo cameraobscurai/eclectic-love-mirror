@@ -35,6 +35,8 @@ export interface GalleryProject {
   detailImages: GalleryImage[];
   /** ~25 word description for the lightbox sidebar. Grounded in real facts. */
   summary: string;
+  /** Real venue coordinates [lng, lat] for the gallery map. */
+  coords: [number, number];
   /** Optional internal subroute, only set when one actually exists. */
   href?: string;
   /** Optional longer note. Currently unused; reserved. */
@@ -69,6 +71,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: amangiriGalleryImages,
     summary:
       "An incentive program staged inside the Amangiri landscape — long-table dinners against the sandstone, lounge moments at canyon's edge, quiet pedestal vignettes between courses.",
+    coords: [-111.4357, 37.0306],
   },
   {
     number: "02",
@@ -82,6 +85,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: aspenEventWorksGalleryImages,
     summary:
       "A private ranch wedding in the Aspen meadows — ceremony framed by mountain light, tented dinner under linen, and a champagne tower carrying through to the after.",
+    coords: [-106.8175, 39.1911],
   },
   {
     number: "03",
@@ -95,6 +99,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: birchDesignGalleryImages,
     summary:
       "A wedding weekend in Aspen — antler bar at the welcome, deep-green rehearsal dinner at Caribou, and a disco after-party brought from the Aspen Art Museum.",
+    coords: [-106.8231, 39.1880],
   },
   {
     number: "04",
@@ -108,6 +113,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: eastonEventsMontanaGalleryImages,
     summary:
       "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, and a long reception running late into the Montana evening.",
+    coords: [-111.3088, 45.2841],
   },
   {
     number: "05",
@@ -121,6 +127,7 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: brookeKeganDuntonGalleryImages,
     summary:
       "A multi-day wedding at Dunton Hot Springs — long meadow tables, candlelit interiors of the historic saloon, and intimate detail across every hour of the weekend.",
+    coords: [-108.0728, 37.7669],
   },
   {
     number: "06",
@@ -134,5 +141,6 @@ export const galleryProjects: GalleryProject[] = [
     detailImages: lyndenLaneGalleryImages,
     summary:
       "A private residence celebration — outdoor lounges set against modernist architecture, layered florals, and a quietly composed evening that unfolds across the property.",
+    coords: [-118.4912, 34.0259],
   },
 ];
