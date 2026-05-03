@@ -74,7 +74,7 @@ export function GalleryMasthead({
           position: absolute;
           left: clamp(24px, 3vw, 44px);
           /* Bottom = heading bottom + heading height + small gap. */
-          bottom: calc(clamp(80px, 12vh, 160px) + clamp(64px, 8.5vw, 136px) + 10px);
+          bottom: calc(clamp(56px, 7vh, 96px) + clamp(72px, 9.2vw, 148px) + 12px);
           margin: 0;
           z-index: 1;
         }
@@ -86,7 +86,7 @@ export function GalleryMasthead({
           left: clamp(24px, 3vw, 44px);
           /* Pulled up slightly so the heading + counter sit higher and the
              dead space above shrinks. */
-          bottom: clamp(80px, 12vh, 160px);
+          bottom: clamp(56px, 7vh, 96px);
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
@@ -94,7 +94,7 @@ export function GalleryMasthead({
           color: var(--cream);
           line-height: 1;
           letter-spacing: -0.01em;
-          font-size: clamp(64px, 8.5vw, 136px);
+          font-size: clamp(72px, 9.2vw, 148px);
           white-space: nowrap;
           z-index: 1;
         }
@@ -105,7 +105,7 @@ export function GalleryMasthead({
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: 50%;
+          top: 42%;
           transform: translateY(-50%);
           width: clamp(420px, 46vw, 720px);
           height: clamp(300px, 40vh, 480px);
@@ -148,10 +148,10 @@ export function GalleryMasthead({
           top: 10%;
           width: clamp(140px, 14vw, 210px);
           height: clamp(200px, 32vh, 340px);
-          background: rgba(60,60,64,0.55);
-          border: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          background: rgba(255,255,255,0.018);
+          border: 1px solid rgba(255,255,255,0.042);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           transform: rotate(-2.5deg);
           pointer-events: none;
           z-index: 1;
