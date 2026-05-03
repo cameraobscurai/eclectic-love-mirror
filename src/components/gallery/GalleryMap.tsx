@@ -77,6 +77,17 @@ export function GalleryMap({
       // No global CSS — won't affect any other Mapbox instance on the page.
       const canvas = map.getCanvas();
       canvas.style.filter = CANVAS_FILTER;
+
+      // Strip every text/icon layer — pure geography only (land, water,
+      // borders). MUST run inside the load callback; setLayoutProperty on
+      // a not-yet-loaded style silently fails.
+      const layers = map.getStyle()?.layers ?? [];
+      for (const layer of layers) {
+        if (layer.type === "symbol") {
+          map.setLayoutProperty(layer.id, "visibility", "none");
+        }
+      }
+
       setReady(true);
     });
     mapRef.current = map;
