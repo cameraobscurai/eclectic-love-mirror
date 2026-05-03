@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { useFitToLines } from "@/hooks/use-fit-to-lines";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
@@ -35,6 +36,8 @@ export function QuickViewModal({
   onClose,
 }: QuickViewModalProps) {
   const reduced = useReducedMotion();
+  const isMobile = useIsMobile();
+  const canDrag = isMobile && !reduced;
   const [imgIdx, setImgIdx] = useState(0);
   const [showScale, setShowScale] = useState(false);
   const inquiry = useInquiry();
@@ -143,6 +146,21 @@ export function QuickViewModal({
     closeRef.current?.focus();
   }, [product.id]);
 
+  // Inert + aria-hide background <main> while modal is open. `inert` is the
+  // 2023+ standard replacement for manual focus traps; aria-hidden mirrors
+  // it for older AT. Cleanup runs on unmount, so navigating between
+  // products (which keeps the modal open) doesn't flicker.
+  useEffect(() => {
+    const main = document.querySelector("main[data-collection-main]");
+    if (!main) return undefined;
+    main.setAttribute("inert", "");
+    main.setAttribute("aria-hidden", "true");
+    return () => {
+      main.removeAttribute("inert");
+      main.removeAttribute("aria-hidden");
+    };
+  }, []);
+
   const img = product.images[imgIdx] ?? product.primaryImage;
 
   if (typeof document === "undefined") return null;
@@ -166,14 +184,31 @@ export function QuickViewModal({
         aria-hidden
       />
 
-      {/* White stage — exhibition surface */}
+      {/* White stage — exhibition surface.
+          Mobile: drag-to-dismiss (iOS sheet pattern). Desktop: static modal. */}
       <motion.div
         initial={reduced ? { opacity: 1 } : { opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.99 }}
         transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto]"
+        drag={canDrag ? "y" : false}
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={canDrag ? { top: 0, bottom: 0.4 } : 0}
+        dragMomentum={false}
+        onDragEnd={(_, info) => {
+          if (!canDrag) return;
+          if (info.offset.y > 140 || info.velocity.y > 500) onClose();
+        }}
+        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] bg-white text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto] md:rounded-none rounded-t-2xl"
+        style={{ touchAction: canDrag ? "pan-y" : undefined }}
       >
+        {/* Mobile drag handle pill — visual affordance for swipe-to-dismiss */}
+        {canDrag && (
+          <div
+            className="md:hidden absolute top-2 left-1/2 -translate-x-1/2 z-10 h-1 w-10 bg-charcoal/15 rounded-full"
+            aria-hidden
+          />
+        )}
         {/* TOP BAR — eyebrow left, nav right */}
         <div className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7">
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
