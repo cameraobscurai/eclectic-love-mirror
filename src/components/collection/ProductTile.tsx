@@ -21,6 +21,18 @@ const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
 const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
 
+// Row-aware reveal — wipes left→right as each row scrolls into view.
+// Math is column-modulo against the widest breakpoint (xl: 6 cols). On
+// narrower viewports column 1 still gets 0ms, so the wipe direction reads
+// correctly even though the absolute offsets compress slightly.
+const REVEAL_COLS = 6;
+const REVEAL_STEP_MS = 60;
+const REVEAL_MAX_DELAY_MS = 240;
+// Above-the-fold tiles skip the wipe entirely — they appear together on
+// initial paint, no perceptible cascade. Wipe only kicks in for tiles that
+// enter via scroll.
+const REVEAL_SKIP_INDEX = 12;
+
 export function ProductTile({
   product,
   index,
