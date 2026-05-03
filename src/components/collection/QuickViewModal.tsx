@@ -322,15 +322,7 @@ export function QuickViewModal({
               borderLeft: "1px solid rgba(26,26,26,0.08)",
             }}
           >
-            {/* Top — category, title, description */}
-            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-              <p
-                className="uppercase text-charcoal/40"
-                style={{ fontSize: 8, letterSpacing: "0.22em" }}
-              >
-                {product.displayCategory}
-              </p>
-            {/* Top — category + description (title is overlaid on the image; rendered below) */}
+            {/* Top — category + description (title is overlaid on the image) */}
             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
               <p
                 className="uppercase text-charcoal/40"
