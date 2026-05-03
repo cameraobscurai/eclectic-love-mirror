@@ -414,6 +414,46 @@ export function QuickViewModal({
               </div>
             </div>
           </div>
+
+          {/* Title overlay — bleeds across the column divider over the image's lower edge */}
+          <div
+            className="pointer-events-none absolute z-20 hidden md:block"
+            style={{
+              left: 36,
+              right: "32%",
+              bottom: 32,
+            }}
+          >
+            <h2
+              className="font-display text-charcoal break-words"
+              style={{
+                fontSize: "clamp(28px, 3.2vw, 46px)",
+                lineHeight: 1.0,
+                letterSpacing: "var(--tracking-display)",
+                fontWeight: 400,
+                textShadow: "0 1px 24px rgba(249,248,246,0.85)",
+              }}
+            >
+              {product.title}
+            </h2>
+          </div>
+
+          {/* Mobile-only title (no overlay on small screens) */}
+          <h2
+            className="md:hidden absolute font-display text-charcoal break-words pointer-events-none z-20"
+            style={{
+              left: 24,
+              right: 24,
+              bottom: 24,
+              fontSize: "clamp(24px, 6vw, 32px)",
+              lineHeight: 1.0,
+              letterSpacing: "var(--tracking-display)",
+              fontWeight: 400,
+              textShadow: "0 1px 16px rgba(249,248,246,0.9)",
+            }}
+          >
+            {product.title}
+          </h2>
         </div>
       </motion.div>
     </div>,
