@@ -84,7 +84,12 @@ export function GalleryMap({
     );
     map.on("load", () => setReady(true));
     mapRef.current = map;
+    // Keep canvas sized to the (flex / absolute) container — mapbox needs an
+    // explicit resize call when the parent grows from 0 to its real height.
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(containerRef.current);
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
