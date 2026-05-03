@@ -97,13 +97,13 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Panels group — lifted to fill the upper field while still overlapping the heading. */
+        /* Panels group — half height, sandwiching the heading vertically. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: clamp(92px, 13vh, 132px);
+          top: clamp(96px, 14vh, 140px);
           width: clamp(420px, 46vw, 720px);
-          height: clamp(380px, 54vh, 560px);
+          height: clamp(190px, 27vh, 280px);
           z-index: 2;
         }
 
