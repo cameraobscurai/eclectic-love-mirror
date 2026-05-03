@@ -500,6 +500,22 @@ export function DevEditOverlay() {
           />
           Snap 8px
         </label>
+        {/* Alignment + z-order — only meaningful when something is selected */}
+        <div style={{ display: "flex", gap: 4, opacity: selectedId ? 1 : 0.4 }}>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("tl")} style={miniBtn} title="Snap top-left">⌜</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("tr")} style={miniBtn} title="Snap top-right">⌝</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("bl")} style={miniBtn} title="Snap bottom-left">⌞</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("br")} style={miniBtn} title="Snap bottom-right">⌟</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("cx")} style={miniBtn} title="Center horizontally">↔</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("cy")} style={miniBtn} title="Center vertically">↕</button>
+          <button type="button" disabled={!selectedId} onClick={() => alignSelected("center")} style={miniBtn} title="Center on screen">◎</button>
+        </div>
+        <div style={{ display: "flex", gap: 4, opacity: selectedId ? 1 : 0.4 }}>
+          <button type="button" disabled={!selectedId} onClick={() => bumpZ(100)} style={miniBtn} title="Bring to front">▲▲</button>
+          <button type="button" disabled={!selectedId} onClick={() => bumpZ(1)} style={miniBtn} title="Forward 1">▲</button>
+          <button type="button" disabled={!selectedId} onClick={() => bumpZ(-1)} style={miniBtn} title="Backward 1">▼</button>
+          <button type="button" disabled={!selectedId} onClick={() => bumpZ(-100)} style={miniBtn} title="Send to back">▼▼</button>
+        </div>
         <button
           type="button"
           onClick={() => setShowStyle((s) => !s)}
