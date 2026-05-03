@@ -144,18 +144,22 @@ export function GalleryMasthead({
         @media (max-width: 640px) {
           .gallery-hero-grid {
             grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto auto;
             grid-template-areas:
               "counter"
               "panels"
               "heading"
               "pills";
             align-items: stretch;
+            min-height: 0;
           }
           .gallery-hero-heading {
-            font-size: clamp(48px, 14vw, 96px);
+            font-size: clamp(44px, 11vw, 72px);
             white-space: normal;
           }
           .gallery-hero-panels {
+            grid-row: auto;
+            justify-self: stretch;
             height: clamp(200px, 56vw, 320px);
           }
           .gallery-glass-ghost {
