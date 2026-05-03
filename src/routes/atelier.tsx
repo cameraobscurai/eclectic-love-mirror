@@ -270,11 +270,9 @@ function Section({
 function ApproachStep({
   number,
   label,
-  body,
 }: {
   number: string;
   label: string;
-  body: string;
 }) {
   return (
     <div>
@@ -288,9 +286,6 @@ function ApproachStep({
       <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
         {label}
       </h3>
-      <p className="mt-4 text-[15px] leading-relaxed text-charcoal/70">
-        {body}
-      </p>
     </div>
   );
 }
