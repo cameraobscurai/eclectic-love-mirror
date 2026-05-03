@@ -173,7 +173,11 @@ function CategoryRow({
         borderLeft: isActive
           ? "2px solid var(--charcoal)"
           : "2px solid transparent",
+        background: isActive ? "rgba(26,26,26,0.03)" : "transparent",
+        backdropFilter: isActive ? "blur(6px)" : undefined,
+        WebkitBackdropFilter: isActive ? "blur(6px)" : undefined,
         minHeight: isSheet ? "44px" : undefined,
+        transition: "background 0.15s ease",
       }}
     >
       {/* Thumbnail: 28×20 explicit size so no layout shift on lazy load. */}

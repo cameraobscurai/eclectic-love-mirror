@@ -473,6 +473,16 @@ function CollectionPage() {
     };
   }, []);
 
+  // ---------- Utility bar scroll state ----------
+  // Glass-frost the sticky utility bar once the user scrolls past the static
+  // heading. White before scroll; frosted (products bleed through) when locked.
+  const [utilityScrolled, setUtilityScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setUtilityScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <main
@@ -521,9 +531,14 @@ function CollectionPage() {
         className="sticky z-20"
         style={{
           top: "var(--nav-h)",
-          background: "var(--cream)",
+          background: utilityScrolled
+            ? "rgba(245,242,237,0.78)"
+            : "var(--cream)",
+          backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
+          WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           borderTop: "1px solid var(--archive-rule)",
           borderBottom: "1px solid var(--archive-rule)",
+          transition: "background 0.3s ease, backdrop-filter 0.3s ease",
         }}
       >
         <div className="px-6 lg:px-12">
