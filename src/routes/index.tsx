@@ -14,6 +14,11 @@ import homeHero from "@/assets/home-hero.webp";
 import homeHeroAvif from "@/assets/home-hero.avif";
 import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
+import homeHeroExploded from "@/assets/hero-exploded-glass.png";
+
+// Two hero variants. Picked at random on each page load for a quieter
+// "the site is alive" feel; visitor can flip with the corner control.
+type HeroVariant = "moodboard" | "exploded";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
