@@ -41,15 +41,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-const PLANNER_OPTIONS = ["Direct client", "Event planner / designer"] as const;
-const EVENT_TYPES = [
-  "Wedding",
-  "Meetings + Incentive",
-  "Social",
-  "Corporate",
-  "Other",
-] as const;
-const SERVICE_TYPES = [
+const SCOPE_OPTIONS = [
   "Full-service design + production",
   "Design + fabrication",
   "Rental from Collection",
