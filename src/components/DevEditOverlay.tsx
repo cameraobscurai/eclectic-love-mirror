@@ -1,47 +1,51 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
 /**
- * DevEditOverlay
+ * DevEditOverlay — Design-tool fluidity build
  * ----------------------------------------------------------------------------
- * Visual layout sandbox. Toggle with Shift+D. Tag elements with `data-devedit`
- * and an `id`. Then in dev mode you can:
+ * Toggle with Shift+D. Tag elements with `data-devedit` (full edit) or
+ * `data-devedit-lock="size"` (drag-only) / `data-devedit-lock="position"`
+ * (style-only). Each tagged element needs an `id`.
  *
- *   - Click an element to select it (only the selected one shows handles).
- *   - Drag to move (snaps to 8px; hold Alt to disable snap).
- *   - Drag corner handles to resize (same snap rules).
- *   - Arrow keys nudge by 1px; Shift+Arrow nudges by 8px.
- *   - Open the Style panel to edit visual properties live:
- *       * background color + opacity
- *       * border color + width
- *       * border-radius
- *       * box-shadow preset
- *       * backdrop-filter blur (glassmorphism)
- *       * rotation (deg)
- *       * z-index
- *   - Hit Done to get a copy-pasteable CSS block of EVERY edit so you can
- *     bake the values into the component's CSS and refresh.
- *
- * Edits are stored in React state AND mirrored to localStorage so a refresh
- * doesn't lose work. The "Reset" button clears both.
+ * Capabilities:
+ *   - Multi-select: click, Shift/Cmd-click, marquee. Group drag + group resize
+ *     around the union bounding box (40px min per element).
+ *   - Smart guides: magenta alignment lines + distance pills against siblings
+ *     and viewport edges/centers. Snap radius stays a constant *visual* size
+ *     at every zoom level.
+ *   - Style panel with scrubbable numeric labels (Shift = ×10, Alt = ÷10).
+ *     Style edits target the *primary* selection only; banner makes that clear.
+ *   - Canvas pan/zoom: hold Space to pan, Cmd/Ctrl+wheel to zoom toward cursor,
+ *     `+`/`-` step zoom, `` ` `` reset, `1` fit selection.
+ *   - Lock modes:
+ *       data-devedit                       → drag + resize + style
+ *       data-devedit-lock="size"           → drag + style, no resize handles
+ *       data-devedit-lock="position"       → style only, no drag
+ *   - Z-order, alignment toolbar, glass presets, reset, Done CSS export, and
+ *     localStorage persistence all preserved.
  *
  * Production safety: short-circuits to null in production unless VITE_DEV_EDIT
- * is explicitly set. Visitors can never trigger this.
+ * is explicitly set.
  * ----------------------------------------------------------------------------
  */
 
-const SNAP = 8;
+const SNAP_GRID = 8;
+const SNAP_RADIUS = 4; // screen-space; converted to canvas units at use
+const MIN_SIZE = 40;
 const STORAGE_KEY = "lovable.devedit.edits.v2";
+
+type LockMode = "none" | "size" | "position";
 
 type StyleEdit = {
   background?: string;
-  bgOpacity?: number; // 0..1, only used when background is set as rgba assembly
+  bgOpacity?: number;
   borderColor?: string;
   borderWidth?: number;
   borderRadius?: number;
   boxShadow?: string;
-  backdropBlur?: number; // px
-  backdropSaturate?: number; // %
-  rotate?: number; // deg
+  backdropBlur?: number;
+  backdropSaturate?: number;
+  rotate?: number;
   zIndex?: number;
 };
 
@@ -58,8 +62,18 @@ type Edit = {
 type TargetMeta = {
   id: string;
   label: string;
-  rect: DOMRect;
+  rect: DOMRect;        // current screen rect (after canvas transform)
+  lockMode: LockMode;
 };
+
+type Guide = {
+  axis: "x" | "y";
+  pos: number;          // screen coordinate
+  from: number;         // span start (screen)
+  to: number;           // span end (screen)
+};
+
+type CanvasState = { scale: number; panX: number; panY: number };
 
 const isProd = import.meta.env.PROD;
 const devEditFlagOn =
@@ -67,8 +81,8 @@ const devEditFlagOn =
   import.meta.env.VITE_DEV_EDIT !== "" &&
   import.meta.env.VITE_DEV_EDIT !== "false";
 
-function snap(v: number, enabled: boolean) {
-  return enabled ? Math.round(v / SNAP) * SNAP : Math.round(v);
+function snap(v: number, step: number, enabled: boolean) {
+  return enabled ? Math.round(v / step) * step : Math.round(v);
 }
 
 function loadEdits(): Record<string, Edit> {
@@ -109,9 +123,27 @@ function applyEditToEl(el: HTMLElement, edit: Edit) {
     const sat = s.backdropSaturate ?? 100;
     const filter = `blur(${b}px) saturate(${sat}%)`;
     el.style.backdropFilter = filter;
-    (el.style as any).webkitBackdropFilter = filter;
+    (el.style as { webkitBackdropFilter?: string }).webkitBackdropFilter = filter;
   }
   if (s.zIndex !== undefined) el.style.zIndex = String(s.zIndex);
+}
+
+function getLockMode(el: HTMLElement): LockMode {
+  const v = el.getAttribute("data-devedit-lock");
+  if (v === "size" || v === "position") return v;
+  return "none";
+}
+
+function unionOfRects(rects: DOMRect[]): DOMRect | null {
+  if (rects.length === 0) return null;
+  let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+  for (const rc of rects) {
+    if (rc.left < l) l = rc.left;
+    if (rc.top < t) t = rc.top;
+    if (rc.right > r) r = rc.right;
+    if (rc.bottom > b) b = rc.bottom;
+  }
+  return new DOMRect(l, t, r - l, b - t);
 }
 
 export function DevEditOverlay() {
@@ -120,12 +152,28 @@ export function DevEditOverlay() {
   const [active, setActive] = useState(false);
   const [targets, setTargets] = useState<TargetMeta[]>([]);
   const [edits, setEdits] = useState<Record<string, Edit>>(() => loadEdits());
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showDone, setShowDone] = useState(false);
   const [showStyle, setShowStyle] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(true);
+  const [marquee, setMarquee] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [activeGuides, setActiveGuides] = useState<Guide[]>([]);
+  const [distanceLabels, setDistanceLabels] = useState<Array<{ x: number; y: number; text: string }>>([]);
+  const [canvas, setCanvas] = useState<CanvasState>({ scale: 1, panX: 0, panY: 0 });
+  const [spaceHeld, setSpaceHeld] = useState(false);
+
   const editsRef = useRef(edits);
   editsRef.current = edits;
+  const canvasRef = useRef(canvas);
+  canvasRef.current = canvas;
+  const draggingRef = useRef(false);
+  const selectedIdsRef = useRef(selectedIds);
+  selectedIdsRef.current = selectedIds;
+
+  const primarySelectedId = useMemo(() => {
+    const arr = [...selectedIds];
+    return arr[0] ?? null;
+  }, [selectedIds]);
 
   const commitEdits = useCallback((next: Record<string, Edit>) => {
     editsRef.current = next;
@@ -133,11 +181,16 @@ export function DevEditOverlay() {
     saveEdits(next);
   }, []);
 
-  // Toggle on Shift+D. Esc closes panels first, then dev mode.
+  // ---------- Coordinate helpers (canvas <-> screen) ----------
+  const screenToCanvas = useCallback((x: number, y: number) => {
+    const c = canvasRef.current;
+    return { x: (x - c.panX) / c.scale, y: (y - c.panY) / c.scale };
+  }, []);
+
+  // ---------- Toggle + escape stack ----------
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.shiftKey && (e.key === "D" || e.key === "d")) {
-        // Don't trigger on Shift+D inside text inputs.
         const t = e.target as HTMLElement | null;
         if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
         e.preventDefault();
@@ -149,52 +202,18 @@ export function DevEditOverlay() {
       if (e.key === "Escape") {
         if (showDone) return setShowDone(false);
         if (showStyle) return setShowStyle(false);
-        if (selectedId) return setSelectedId(null);
+        if (selectedIds.size > 0) return setSelectedIds(new Set());
         if (active) return setActive(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, showDone, showStyle, selectedId]);
+  }, [active, showDone, showStyle, selectedIds.size]);
 
-  // Arrow-key nudging for selected element.
-  useEffect(() => {
-    if (!active || !selectedId) return;
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
-      const arrows = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
-      if (!arrows.includes(e.key)) return;
-      e.preventDefault();
-      const step = e.shiftKey ? SNAP : 1;
-      const el = document.getElementById(selectedId) as HTMLElement | null;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const current: Edit =
-        editsRef.current[selectedId] || {
-          dx: 0,
-          dy: 0,
-          width: r.width,
-          height: r.height,
-          origWidth: r.width,
-          origHeight: r.height,
-        };
-      const next: Edit = { ...current };
-      if (e.key === "ArrowLeft") next.dx -= step;
-      if (e.key === "ArrowRight") next.dx += step;
-      if (e.key === "ArrowUp") next.dy -= step;
-      if (e.key === "ArrowDown") next.dy += step;
-      applyEditToEl(el, next);
-      commitEdits({ ...editsRef.current, [selectedId]: next });
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [active, selectedId, commitEdits]);
-
-  // Rescan tagged elements + measure rects.
+  // ---------- Rescan tagged elements ----------
   const rescan = useCallback(() => {
     const els = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-devedit]")
+      document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]")
     );
     const next: TargetMeta[] = els.map((el) => {
       if (!el.id) {
@@ -204,19 +223,13 @@ export function DevEditOverlay() {
       if (edit) applyEditToEl(el, edit);
       return {
         id: el.id,
-        label:
-          el.dataset.deveditLabel ||
-          el.tagName.toLowerCase() + "#" + el.id,
+        label: el.dataset.deveditLabel || el.tagName.toLowerCase() + "#" + el.id,
         rect: el.getBoundingClientRect(),
+        lockMode: getLockMode(el),
       };
     });
     setTargets(next);
   }, []);
-
-  // Track whether a drag is in progress so we DON'T rescan mid-drag (that's
-  // what was causing elements to "bounce back" — the periodic rescan would
-  // re-measure with a stale rect and re-render handles in the old spot).
-  const draggingRef = useRef(false);
 
   useEffect(() => {
     if (!active) return;
@@ -225,15 +238,13 @@ export function DevEditOverlay() {
     const onScroll = () => { if (!draggingRef.current) rescan(); };
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, true);
-    // No periodic interval — it raced the drag. Rescan only on real events.
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll, true);
     };
   }, [active, rescan]);
 
-  // Re-apply persisted edits even when overlay isn't open, so refreshes
-  // keep your work-in-progress visible.
+  // Re-apply persisted edits across page loads.
   useEffect(() => {
     const persisted = loadEdits();
     if (Object.keys(persisted).length === 0) return;
@@ -244,229 +255,709 @@ export function DevEditOverlay() {
       });
     };
     apply();
-    // Re-apply after a tick in case React renders async.
     const t = window.setTimeout(apply, 100);
     return () => window.clearTimeout(t);
   }, []);
 
+  // ---------- Apply canvas transform only while active ----------
+  useEffect(() => {
+    const el = document.getElementById("devedit-canvas");
+    if (!el) return;
+    if (!active) {
+      el.style.transform = "";
+      el.style.willChange = "";
+      el.style.transformOrigin = "";
+      return;
+    }
+    el.style.transformOrigin = "0 0";
+    el.style.transform = `translate(${canvas.panX}px, ${canvas.panY}px) scale(${canvas.scale})`;
+    el.style.willChange = "transform";
+    return () => {
+      el.style.transform = "";
+      el.style.willChange = "";
+      el.style.transformOrigin = "";
+    };
+  }, [active, canvas]);
+
+  // Keep targets in sync when canvas transforms (rects move on screen).
+  useEffect(() => {
+    if (!active || draggingRef.current) return;
+    rescan();
+  }, [canvas, active, rescan]);
+
+  // ---------- Space = pan mode ----------
+  useEffect(() => {
+    if (!active) return;
+    const onDown = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      if (e.code === "Space" && !spaceHeld) {
+        e.preventDefault();
+        setSpaceHeld(true);
+      }
+    };
+    const onUp = (e: KeyboardEvent) => {
+      if (e.code === "Space") setSpaceHeld(false);
+    };
+    window.addEventListener("keydown", onDown);
+    window.addEventListener("keyup", onUp);
+    return () => {
+      window.removeEventListener("keydown", onDown);
+      window.removeEventListener("keyup", onUp);
+    };
+  }, [active, spaceHeld]);
+
+  // ---------- Zoom: Cmd/Ctrl+wheel toward cursor; +/- step; ` reset; 1 fit ----------
+  useEffect(() => {
+    if (!active) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const c = canvasRef.current;
+      const dir = e.deltaY > 0 ? -1 : 1;
+      const factor = 1 + dir * 0.1;
+      const newScale = Math.max(0.2, Math.min(4, c.scale * factor));
+      // Keep point under cursor stationary.
+      const k = newScale / c.scale;
+      const panX = e.clientX - (e.clientX - c.panX) * k;
+      const panY = e.clientY - (e.clientY - c.panY) * k;
+      setCanvas({ scale: newScale, panX, panY });
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      if (e.key === "+" || e.key === "=") {
+        e.preventDefault();
+        setCanvas((c) => ({ ...c, scale: Math.min(4, c.scale * 1.1) }));
+      } else if (e.key === "-" || e.key === "_") {
+        e.preventDefault();
+        setCanvas((c) => ({ ...c, scale: Math.max(0.2, c.scale / 1.1) }));
+      } else if (e.key === "`") {
+        e.preventDefault();
+        setCanvas({ scale: 1, panX: 0, panY: 0 });
+      } else if (e.key === "1") {
+        e.preventDefault();
+        // Fit selection (or full page) into viewport with 64px padding.
+        const ids = selectedIdsRef.current;
+        const rects: DOMRect[] = [];
+        if (ids.size > 0) {
+          ids.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) rects.push(el.getBoundingClientRect());
+          });
+        } else {
+          document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]").forEach((el) => {
+            rects.push(el.getBoundingClientRect());
+          });
+        }
+        const u = unionOfRects(rects);
+        if (!u) return;
+        const c = canvasRef.current;
+        // Convert union back to canvas (pre-transform) coordinates.
+        const cx = { x: (u.left - c.panX) / c.scale, y: (u.top - c.panY) / c.scale, w: u.width / c.scale, h: u.height / c.scale };
+        const pad = 64;
+        const sx = (window.innerWidth - pad * 2) / cx.w;
+        const sy = (window.innerHeight - pad * 2) / cx.h;
+        const newScale = Math.max(0.2, Math.min(4, Math.min(sx, sy)));
+        const panX = pad - cx.x * newScale;
+        const panY = pad - cx.y * newScale;
+        setCanvas({ scale: newScale, panX, panY });
+      }
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [active]);
+
+  // ---------- Pan with Space-drag ----------
+  const startPan = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const start = canvasRef.current;
+    const onMove = (ev: PointerEvent) => {
+      setCanvas({ scale: start.scale, panX: start.panX + (ev.clientX - startX), panY: start.panY + (ev.clientY - startY) });
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  }, []);
+
+  // ---------- Arrow nudge across selected set ----------
+  useEffect(() => {
+    if (!active || selectedIds.size === 0) return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      const arrows = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+      if (!arrows.includes(e.key)) return;
+      e.preventDefault();
+      const step = e.shiftKey ? SNAP_GRID : 1;
+      const nextEdits = { ...editsRef.current };
+      selectedIds.forEach((id) => {
+        const el = document.getElementById(id) as HTMLElement | null;
+        if (!el) return;
+        if (getLockMode(el) === "position") return;
+        const r = el.getBoundingClientRect();
+        const current: Edit = nextEdits[id] || {
+          dx: 0, dy: 0,
+          width: r.width / canvasRef.current.scale,
+          height: r.height / canvasRef.current.scale,
+          origWidth: r.width / canvasRef.current.scale,
+          origHeight: r.height / canvasRef.current.scale,
+        };
+        const next: Edit = { ...current };
+        if (e.key === "ArrowLeft") next.dx -= step;
+        if (e.key === "ArrowRight") next.dx += step;
+        if (e.key === "ArrowUp") next.dy -= step;
+        if (e.key === "ArrowDown") next.dy += step;
+        applyEditToEl(el, next);
+        nextEdits[id] = next;
+      });
+      commitEdits(nextEdits);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active, selectedIds, commitEdits]);
+
+  // ---------- Selection mutators ----------
+  const selectOnly = useCallback((id: string) => setSelectedIds(new Set([id])), []);
+  const toggleSelect = useCallback((id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+  const clearSelection = useCallback(() => setSelectedIds(new Set()), []);
+
+  // ---------- Smart guide computation ----------
+  const computeGuidesFor = useCallback(
+    (activeBox: DOMRect, excludeIds: Set<string>) => {
+      const guides: Guide[] = [];
+      const radiusScreen = SNAP_RADIUS;
+      const candidatesX: Array<{ pos: number; from: number; to: number }> = [];
+      const candidatesY: Array<{ pos: number; from: number; to: number }> = [];
+
+      // Viewport edges + centers
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      candidatesX.push({ pos: 0, from: 0, to: vh }, { pos: vw, from: 0, to: vh }, { pos: vw / 2, from: 0, to: vh });
+      candidatesY.push({ pos: 0, from: 0, to: vw }, { pos: vh, from: 0, to: vw }, { pos: vh / 2, from: 0, to: vw });
+
+      // Sibling targets
+      targets.forEach((t) => {
+        if (excludeIds.has(t.id)) return;
+        const r = t.rect;
+        candidatesX.push(
+          { pos: r.left, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
+          { pos: r.right, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
+          { pos: (r.left + r.right) / 2, from: Math.min(r.top, activeBox.top), to: Math.max(r.bottom, activeBox.bottom) },
+        );
+        candidatesY.push(
+          { pos: r.top, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
+          { pos: r.bottom, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
+          { pos: (r.top + r.bottom) / 2, from: Math.min(r.left, activeBox.left), to: Math.max(r.right, activeBox.right) },
+        );
+      });
+
+      const activeXs = [activeBox.left, activeBox.right, (activeBox.left + activeBox.right) / 2];
+      const activeYs = [activeBox.top, activeBox.bottom, (activeBox.top + activeBox.bottom) / 2];
+
+      let bestDX = 0, bestDXAbs = Infinity;
+      let bestDY = 0, bestDYAbs = Infinity;
+
+      candidatesX.forEach((c) => {
+        activeXs.forEach((ax) => {
+          const d = c.pos - ax;
+          if (Math.abs(d) <= radiusScreen) {
+            guides.push({ axis: "x", pos: c.pos, from: c.from, to: c.to });
+            if (Math.abs(d) < bestDXAbs) { bestDXAbs = Math.abs(d); bestDX = d; }
+          }
+        });
+      });
+      candidatesY.forEach((c) => {
+        activeYs.forEach((ay) => {
+          const d = c.pos - ay;
+          if (Math.abs(d) <= radiusScreen) {
+            guides.push({ axis: "y", pos: c.pos, from: c.from, to: c.to });
+            if (Math.abs(d) < bestDYAbs) { bestDYAbs = Math.abs(d); bestDY = d; }
+          }
+        });
+      });
+
+      // Distance pills: nearest sibling on each side (when no overlap and no active snap).
+      const labels: Array<{ x: number; y: number; text: string }> = [];
+      const others = targets.filter((t) => !excludeIds.has(t.id));
+      const nearestRight = others
+        .filter((t) => t.rect.left >= activeBox.right)
+        .sort((a, b) => a.rect.left - b.rect.left)[0];
+      const nearestLeft = others
+        .filter((t) => t.rect.right <= activeBox.left)
+        .sort((a, b) => b.rect.right - a.rect.right)[0];
+      const nearestBelow = others
+        .filter((t) => t.rect.top >= activeBox.bottom)
+        .sort((a, b) => a.rect.top - b.rect.top)[0];
+      const nearestAbove = others
+        .filter((t) => t.rect.bottom <= activeBox.top)
+        .sort((a, b) => b.rect.bottom - a.rect.bottom)[0];
+
+      const cy = (activeBox.top + activeBox.bottom) / 2;
+      const cx = (activeBox.left + activeBox.right) / 2;
+      if (nearestRight) {
+        const d = nearestRight.rect.left - activeBox.right;
+        labels.push({ x: activeBox.right + d / 2, y: cy, text: `${Math.round(d)}px` });
+      }
+      if (nearestLeft) {
+        const d = activeBox.left - nearestLeft.rect.right;
+        labels.push({ x: activeBox.left - d / 2, y: cy, text: `${Math.round(d)}px` });
+      }
+      if (nearestBelow) {
+        const d = nearestBelow.rect.top - activeBox.bottom;
+        labels.push({ x: cx, y: activeBox.bottom + d / 2, text: `${Math.round(d)}px` });
+      }
+      if (nearestAbove) {
+        const d = activeBox.top - nearestAbove.rect.bottom;
+        labels.push({ x: cx, y: activeBox.top - d / 2, text: `${Math.round(d)}px` });
+      }
+
+      return { guides, labels, snapDX: bestDXAbs <= radiusScreen ? bestDX : 0, snapDY: bestDYAbs <= radiusScreen ? bestDY : 0 };
+    },
+    [targets]
+  );
+
+  // ---------- Group drag / resize ----------
   const startInteraction = useCallback(
     (
-      target: TargetMeta,
+      meta: TargetMeta,
       mode: "move" | "nw" | "ne" | "sw" | "se",
-      e: React.PointerEvent
+      e: React.PointerEvent,
+      groupMode: boolean
     ) => {
       e.preventDefault();
       e.stopPropagation();
-      setSelectedId(target.id);
-      const el = document.getElementById(target.id) as HTMLElement | null;
-      if (!el) return;
+      // Selection update
+      if (mode === "move" && !groupMode) selectOnly(meta.id);
 
-      const startX = e.clientX;
-      const startY = e.clientY;
-      const startEdit: Edit = editsRef.current[target.id] || {
-        dx: 0,
-        dy: 0,
-        width: target.rect.width,
-        height: target.rect.height,
-        origWidth: target.rect.width,
-        origHeight: target.rect.height,
-      };
+      const idsForOp = (() => {
+        const sel = selectedIdsRef.current;
+        if (mode === "move") {
+          // If the clicked element isn't in selection, treat as single-element move.
+          if (!sel.has(meta.id)) return new Set([meta.id]);
+          return new Set(sel);
+        }
+        // Resize handles: operate on whole selection (or just this id).
+        return sel.size > 0 ? new Set(sel) : new Set([meta.id]);
+      })();
 
+      const startScreenX = e.clientX;
+      const startScreenY = e.clientY;
+      const cStart = canvasRef.current;
+
+      // Capture starting state per id.
+      const startingEdits: Record<string, Edit> = {};
+      const elMap: Record<string, HTMLElement> = {};
+      const startingScreenRects: Record<string, DOMRect> = {};
+      idsForOp.forEach((id) => {
+        const el = document.getElementById(id) as HTMLElement | null;
+        if (!el) return;
+        elMap[id] = el;
+        const r = el.getBoundingClientRect();
+        startingScreenRects[id] = r;
+        startingEdits[id] = editsRef.current[id] || {
+          dx: 0, dy: 0,
+          width: r.width / cStart.scale,
+          height: r.height / cStart.scale,
+          origWidth: r.width / cStart.scale,
+          origHeight: r.height / cStart.scale,
+        };
+      });
+
+      const startUnion = unionOfRects(Object.values(startingScreenRects)) as DOMRect;
       draggingRef.current = true;
 
       const onMove = (ev: PointerEvent) => {
+        const c = canvasRef.current;
         const useSnap = snapEnabled && !ev.altKey;
-        const mx = ev.clientX - startX;
-        const my = ev.clientY - startY;
-        let next: Edit = { ...startEdit };
+        const deltaScreenX = ev.clientX - startScreenX;
+        const deltaScreenY = ev.clientY - startScreenY;
+        // Convert pointer delta to canvas units (so 200% zoom doesn't 2x-move).
+        let dxCanvas = deltaScreenX / c.scale;
+        let dyCanvas = deltaScreenY / c.scale;
+
+        const nextEdits: Record<string, Edit> = { ...editsRef.current };
+        let liveUnion = startUnion;
 
         if (mode === "move") {
-          next.dx = snap(startEdit.dx + mx, useSnap);
-          next.dy = snap(startEdit.dy + my, useSnap);
-        } else {
-          let dW = 0;
-          let dH = 0;
-          let dXShift = 0;
-          let dYShift = 0;
-          if (mode === "se") {
-            dW = mx;
-            dH = my;
-          } else if (mode === "ne") {
-            dW = mx;
-            dH = -my;
-            dYShift = my;
-          } else if (mode === "sw") {
-            dW = -mx;
-            dH = my;
-            dXShift = mx;
-          } else if (mode === "nw") {
-            dW = -mx;
-            dH = -my;
-            dXShift = mx;
-            dYShift = my;
+          // Smart guide snap (compute against projected union box in screen-space).
+          let projUnion = new DOMRect(
+            startUnion.left + deltaScreenX,
+            startUnion.top + deltaScreenY,
+            startUnion.width,
+            startUnion.height
+          );
+          if (useSnap && !ev.altKey) {
+            const { guides, labels, snapDX, snapDY } = computeGuidesFor(projUnion, idsForOp);
+            // Apply guide snap (screen units -> canvas units)
+            if (snapDX) dxCanvas += snapDX / c.scale;
+            if (snapDY) dyCanvas += snapDY / c.scale;
+            // Otherwise grid snap
+            if (!snapDX) dxCanvas = snap(dxCanvas, SNAP_GRID, true);
+            if (!snapDY) dyCanvas = snap(dyCanvas, SNAP_GRID, true);
+            setActiveGuides(guides);
+            setDistanceLabels(labels);
+            projUnion = new DOMRect(
+              startUnion.left + dxCanvas * c.scale,
+              startUnion.top + dyCanvas * c.scale,
+              startUnion.width,
+              startUnion.height
+            );
+          } else {
+            setActiveGuides([]);
+            setDistanceLabels([]);
           }
-          next.width = Math.max(20, snap(startEdit.width + dW, useSnap));
-          next.height = Math.max(20, snap(startEdit.height + dH, useSnap));
-          next.dx = snap(startEdit.dx + dXShift, useSnap);
-          next.dy = snap(startEdit.dy + dYShift, useSnap);
+          liveUnion = projUnion;
+
+          // Apply delta to every non-position-locked id.
+          idsForOp.forEach((id) => {
+            const el = elMap[id]; if (!el) return;
+            if (getLockMode(el) === "position") return;
+            const start = startingEdits[id];
+            const next: Edit = { ...start, dx: start.dx + dxCanvas, dy: start.dy + dyCanvas };
+            applyEditToEl(el, next);
+            nextEdits[id] = next;
+          });
+        } else {
+          // Resize: scale union proportionally from anchor opposite the dragged corner.
+          let anchorX = startUnion.left, anchorY = startUnion.top;
+          let dW = 0, dH = 0;
+          if (mode === "se") { anchorX = startUnion.left; anchorY = startUnion.top; dW = deltaScreenX; dH = deltaScreenY; }
+          else if (mode === "ne") { anchorX = startUnion.left; anchorY = startUnion.bottom; dW = deltaScreenX; dH = -deltaScreenY; }
+          else if (mode === "sw") { anchorX = startUnion.right; anchorY = startUnion.top; dW = -deltaScreenX; dH = deltaScreenY; }
+          else if (mode === "nw") { anchorX = startUnion.right; anchorY = startUnion.bottom; dW = -deltaScreenX; dH = -deltaScreenY; }
+
+          let newW = Math.max(MIN_SIZE, startUnion.width + dW);
+          let newH = Math.max(MIN_SIZE, startUnion.height + dH);
+          if (ev.shiftKey) {
+            // Lock aspect
+            const ratio = startUnion.width / startUnion.height;
+            if (newW / newH > ratio) newW = newH * ratio;
+            else newH = newW / ratio;
+          }
+          const sx = newW / startUnion.width;
+          const sy = newH / startUnion.height;
+
+          idsForOp.forEach((id) => {
+            const el = elMap[id]; if (!el) return;
+            const lock = getLockMode(el);
+            if (lock !== "none") return; // size-locked + position-locked both excluded from resize
+            const startRect = startingScreenRects[id];
+            const start = startingEdits[id];
+            // Element's current screen offset within startUnion
+            const offX = startRect.left - startUnion.left;
+            const offY = startRect.top - startUnion.top;
+            // New screen offset within union
+            const newOffX = (anchorX === startUnion.left ? offX * sx : (startUnion.width - offX - startRect.width) * sx);
+            const newOffY = (anchorY === startUnion.top ? offY * sy : (startUnion.height - offY - startRect.height) * sy);
+            // Recompose target screen position
+            const targetScreenLeft = (anchorX === startUnion.left ? startUnion.left + newOffX : startUnion.right - newOffX - startRect.width * sx);
+            const targetScreenTop = (anchorY === startUnion.top ? startUnion.top + newOffY : startUnion.bottom - newOffY - startRect.height * sy);
+            const screenDX = targetScreenLeft - startRect.left;
+            const screenDY = targetScreenTop - startRect.top;
+            const newWCanvas = Math.max(MIN_SIZE, (startRect.width * sx) / c.scale);
+            const newHCanvas = Math.max(MIN_SIZE, (startRect.height * sy) / c.scale);
+            const next: Edit = {
+              ...start,
+              width: useSnap ? snap(newWCanvas, SNAP_GRID, true) : newWCanvas,
+              height: useSnap ? snap(newHCanvas, SNAP_GRID, true) : newHCanvas,
+              dx: useSnap ? snap(start.dx + screenDX / c.scale, SNAP_GRID, true) : start.dx + screenDX / c.scale,
+              dy: useSnap ? snap(start.dy + screenDY / c.scale, SNAP_GRID, true) : start.dy + screenDY / c.scale,
+            };
+            applyEditToEl(el, next);
+            nextEdits[id] = next;
+          });
+
+          liveUnion = new DOMRect(
+            anchorX === startUnion.left ? startUnion.left : startUnion.right - newW,
+            anchorY === startUnion.top ? startUnion.top : startUnion.bottom - newH,
+            newW,
+            newH
+          );
         }
 
-        applyEditToEl(el, next);
-        // Update ref synchronously so pointerup commits the latest. Do NOT
-        // rescan here — it caused handle positions to lag and "snap back"
-        // because React re-rendered with a stale rect from the previous frame.
-        editsRef.current = { ...editsRef.current, [target.id]: next };
-        // Update the live overlay handle in-place via a fast measurement.
-        const liveRect = el.getBoundingClientRect();
+        editsRef.current = nextEdits;
+
+        // Update live target rects so handles track without rescanning everything.
         setTargets((prev) =>
-          prev.map((p) => (p.id === target.id ? { ...p, rect: liveRect } : p))
+          prev.map((p) => {
+            if (!idsForOp.has(p.id)) return p;
+            const el = elMap[p.id];
+            if (!el) return p;
+            return { ...p, rect: el.getBoundingClientRect() };
+          })
         );
+        // Suppress unused variable lint
+        void liveUnion;
       };
 
       const onUp = () => {
         window.removeEventListener("pointermove", onMove);
         window.removeEventListener("pointerup", onUp);
         draggingRef.current = false;
+        setActiveGuides([]);
+        setDistanceLabels([]);
         commitEdits({ ...editsRef.current });
-        // One final clean rescan after the drag fully settles.
         requestAnimationFrame(() => rescan());
       };
       window.addEventListener("pointermove", onMove);
       window.addEventListener("pointerup", onUp);
     },
-    [rescan, snapEnabled, commitEdits]
+    [snapEnabled, commitEdits, rescan, computeGuidesFor, selectOnly]
   );
 
-  // ----- Z-order + alignment helpers for the selected element -----
-  const bumpZ = useCallback(
-    (delta: number) => {
-      if (!selectedId) return;
-      const cur = editsRef.current[selectedId];
-      const currentZ = cur?.style?.zIndex ?? 0;
-      const el = document.getElementById(selectedId) as HTMLElement | null;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const base: Edit =
-        cur || {
-          dx: 0, dy: 0,
-          width: r.width, height: r.height,
-          origWidth: r.width, origHeight: r.height,
-        };
-      const next: Edit = { ...base, style: { ...(base.style || {}), zIndex: currentZ + delta } };
-      applyEditToEl(el, next);
-      commitEdits({ ...editsRef.current, [selectedId]: next });
-    },
-    [selectedId, commitEdits]
-  );
+  // ---------- Marquee ----------
+  const startMarquee = useCallback((e: React.PointerEvent) => {
+    if (spaceHeld) return; // Space-drag pans instead.
+    e.preventDefault();
+    const startX = e.clientX, startY = e.clientY;
+    setMarquee({ x: startX, y: startY, w: 0, h: 0 });
+    const additive = e.shiftKey || e.metaKey;
+    const onMove = (ev: PointerEvent) => {
+      const x = Math.min(startX, ev.clientX);
+      const y = Math.min(startY, ev.clientY);
+      const w = Math.abs(ev.clientX - startX);
+      const h = Math.abs(ev.clientY - startY);
+      setMarquee({ x, y, w, h });
+    };
+    const onUp = (ev: PointerEvent) => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      const x = Math.min(startX, ev.clientX);
+      const y = Math.min(startY, ev.clientY);
+      const w = Math.abs(ev.clientX - startX);
+      const h = Math.abs(ev.clientY - startY);
+      setMarquee(null);
+      if (w < 3 && h < 3) {
+        if (!additive) clearSelection();
+        return;
+      }
+      const hits = targets.filter((t) => {
+        const r = t.rect;
+        return r.right >= x && r.left <= x + w && r.bottom >= y && r.top <= y + h;
+      }).map((t) => t.id);
+      setSelectedIds((prev) => {
+        const next = additive ? new Set(prev) : new Set<string>();
+        hits.forEach((id) => next.add(id));
+        return next;
+      });
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  }, [targets, clearSelection, spaceHeld]);
 
-  const alignSelected = useCallback(
-    (where: "tl" | "tr" | "bl" | "br" | "center" | "cx" | "cy") => {
-      if (!selectedId) return;
-      const el = document.getElementById(selectedId) as HTMLElement | null;
-      if (!el) return;
-      // Reset transform to read the element's natural (untranslated) rect.
-      const cur = editsRef.current[selectedId];
-      const prevTransform = el.style.transform;
-      el.style.transform = (cur?.style?.rotate ? `rotate(${cur.style.rotate}deg)` : "");
-      const natural = el.getBoundingClientRect();
-      el.style.transform = prevTransform;
+  // ---------- Style edits target primary selection ----------
+  const updateStyle = useCallback((patch: Partial<StyleEdit>) => {
+    const id = primarySelectedId;
+    if (!id) return;
+    const el = document.getElementById(id) as HTMLElement | null;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const c = canvasRef.current;
+    const current: Edit = editsRef.current[id] || {
+      dx: 0, dy: 0,
+      width: r.width / c.scale, height: r.height / c.scale,
+      origWidth: r.width / c.scale, origHeight: r.height / c.scale,
+    };
+    const next: Edit = { ...current, style: { ...(current.style || {}), ...patch } };
+    applyEditToEl(el, next);
+    commitEdits({ ...editsRef.current, [id]: next });
+  }, [primarySelectedId, commitEdits]);
 
-      const w = cur?.width ?? natural.width;
-      const h = cur?.height ?? natural.height;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      // natural rect already includes width changes via inline style, but its
-      // left/top are the *current* visual origin minus dx/dy. Recover origin:
-      const originLeft = natural.left - (cur?.dx ?? 0);
-      const originTop = natural.top - (cur?.dy ?? 0);
+  // ---------- Z-order + alignment for primary selection ----------
+  const bumpZ = useCallback((delta: number) => {
+    const id = primarySelectedId;
+    if (!id) return;
+    const cur = editsRef.current[id];
+    const currentZ = cur?.style?.zIndex ?? 0;
+    updateStyle({ zIndex: currentZ + delta });
+  }, [primarySelectedId, updateStyle]);
 
-      let targetLeft = originLeft;
-      let targetTop = originTop;
-      const PAD = 8;
-      if (where === "tl") { targetLeft = PAD; targetTop = PAD; }
-      else if (where === "tr") { targetLeft = vw - w - PAD; targetTop = PAD; }
-      else if (where === "bl") { targetLeft = PAD; targetTop = vh - h - PAD; }
-      else if (where === "br") { targetLeft = vw - w - PAD; targetTop = vh - h - PAD; }
-      else if (where === "center") { targetLeft = (vw - w) / 2; targetTop = (vh - h) / 2; }
-      else if (where === "cx") { targetLeft = (vw - w) / 2; }
-      else if (where === "cy") { targetTop = (vh - h) / 2; }
+  const alignSelected = useCallback((where: "tl" | "tr" | "bl" | "br" | "center" | "cx" | "cy") => {
+    const id = primarySelectedId;
+    if (!id) return;
+    const el = document.getElementById(id) as HTMLElement | null;
+    if (!el) return;
+    if (getLockMode(el) === "position") return;
+    const cur = editsRef.current[id];
+    const prevTransform = el.style.transform;
+    el.style.transform = (cur?.style?.rotate ? `rotate(${cur.style.rotate}deg)` : "");
+    const natural = el.getBoundingClientRect();
+    el.style.transform = prevTransform;
 
-      const next: Edit = {
-        ...(cur || {
-          dx: 0, dy: 0, width: w, height: h,
-          origWidth: natural.width, origHeight: natural.height,
-        }),
-        dx: Math.round(targetLeft - originLeft),
-        dy: Math.round(targetTop - originTop),
-      };
-      applyEditToEl(el, next);
-      commitEdits({ ...editsRef.current, [selectedId]: next });
-      requestAnimationFrame(() => rescan());
-    },
-    [selectedId, commitEdits, rescan]
-  );
+    const c = canvasRef.current;
+    const w = (cur?.width ?? natural.width / c.scale);
+    const h = (cur?.height ?? natural.height / c.scale);
+    // natural rect is currently in screen coords; convert to canvas.
+    const naturalLeftCanvas = (natural.left - c.panX) / c.scale - (cur?.dx ?? 0);
+    const naturalTopCanvas = (natural.top - c.panY) / c.scale - (cur?.dy ?? 0);
+    const vw = window.innerWidth / c.scale;
+    const vh = window.innerHeight / c.scale;
+    const PAD = 8 / c.scale;
+    let targetLeft = naturalLeftCanvas;
+    let targetTop = naturalTopCanvas;
+    if (where === "tl") { targetLeft = PAD; targetTop = PAD; }
+    else if (where === "tr") { targetLeft = vw - w - PAD; targetTop = PAD; }
+    else if (where === "bl") { targetLeft = PAD; targetTop = vh - h - PAD; }
+    else if (where === "br") { targetLeft = vw - w - PAD; targetTop = vh - h - PAD; }
+    else if (where === "center") { targetLeft = (vw - w) / 2; targetTop = (vh - h) / 2; }
+    else if (where === "cx") { targetLeft = (vw - w) / 2; }
+    else if (where === "cy") { targetTop = (vh - h) / 2; }
 
-  // Update style edit for the currently selected element.
-  const updateStyle = useCallback(
-    (patch: Partial<StyleEdit>) => {
-      if (!selectedId) return;
-      const el = document.getElementById(selectedId) as HTMLElement | null;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const current: Edit =
-        editsRef.current[selectedId] || {
-          dx: 0,
-          dy: 0,
-          width: r.width,
-          height: r.height,
-          origWidth: r.width,
-          origHeight: r.height,
-        };
-      const next: Edit = {
-        ...current,
-        style: { ...(current.style || {}), ...patch },
-      };
-      applyEditToEl(el, next);
-      commitEdits({ ...editsRef.current, [selectedId]: next });
-    },
-    [selectedId, commitEdits]
-  );
+    const next: Edit = {
+      ...(cur || {
+        dx: 0, dy: 0, width: w, height: h,
+        origWidth: natural.width / c.scale, origHeight: natural.height / c.scale,
+      }),
+      dx: Math.round(targetLeft - naturalLeftCanvas),
+      dy: Math.round(targetTop - naturalTopCanvas),
+    };
+    applyEditToEl(el, next);
+    commitEdits({ ...editsRef.current, [id]: next });
+    requestAnimationFrame(() => rescan());
+  }, [primarySelectedId, commitEdits, rescan]);
 
   const editedIds = useMemo(() => Object.keys(edits), [edits]);
-  const selectedTarget = targets.find((t) => t.id === selectedId) || null;
-  const selectedEdit = selectedId ? edits[selectedId] : undefined;
+  const primaryTarget = useMemo(
+    () => (primarySelectedId ? targets.find((t) => t.id === primarySelectedId) ?? null : null),
+    [primarySelectedId, targets]
+  );
+  const primaryEdit = primarySelectedId ? edits[primarySelectedId] : undefined;
 
   if (!active) return null;
 
+  // Union outline for multi-select.
+  const selectionUnion = (() => {
+    if (selectedIds.size < 2) return null;
+    const rects: DOMRect[] = [];
+    selectedIds.forEach((id) => {
+      const t = targets.find((x) => x.id === id);
+      if (t) rects.push(t.rect);
+    });
+    return unionOfRects(rects);
+  })();
+
   return (
     <div
+      onPointerDown={(e) => {
+        // Empty-area pointer-down: pan if Space, else marquee.
+        if (e.target !== e.currentTarget) return;
+        if (spaceHeld) startPan(e);
+        else startMarquee(e);
+      }}
       style={{
         position: "fixed",
         inset: 0,
         zIndex: 99999,
-        pointerEvents: "none",
+        pointerEvents: "auto",
+        cursor: spaceHeld ? "grab" : "default",
+        background: "transparent",
       }}
       aria-hidden="true"
     >
-      {/* Per-target outlines (dim) + handles (only on selected). */}
+      {/* Per-target outlines + handles. */}
       {targets.map((t) => (
         <DevEditOutline
           key={t.id}
           target={t}
-          selected={t.id === selectedId}
+          selected={selectedIds.has(t.id)}
+          isPrimary={t.id === primarySelectedId}
           edited={!!edits[t.id]}
-          onSelect={() => setSelectedId(t.id)}
-          onStart={startInteraction}
+          spaceHeld={spaceHeld}
+          onClick={(e) => {
+            if (e.shiftKey || e.metaKey) toggleSelect(t.id);
+            else selectOnly(t.id);
+          }}
+          onStart={(meta, mode, e) => startInteraction(meta, mode, e, selectedIds.has(t.id) && selectedIds.size > 1)}
         />
       ))}
 
+      {/* Union bounding box + group resize handles. */}
+      {selectionUnion && (
+        <GroupBox
+          rect={selectionUnion}
+          onStart={(mode, e) => {
+            // Use the primary target as the meta carrier.
+            if (!primaryTarget) return;
+            startInteraction(primaryTarget, mode, e, true);
+          }}
+        />
+      )}
+
+      {/* Smart guides */}
+      {activeGuides.map((g, i) => (
+        <div
+          key={i}
+          style={{
+            position: "fixed",
+            background: "rgba(255,0,200,0.9)",
+            pointerEvents: "none",
+            ...(g.axis === "x"
+              ? { left: g.pos, top: g.from, width: 1, height: g.to - g.from }
+              : { top: g.pos, left: g.from, height: 1, width: g.to - g.from }),
+          }}
+        />
+      ))}
+      {distanceLabels.map((l, i) => (
+        <div
+          key={i}
+          style={{
+            position: "fixed",
+            left: l.x,
+            top: l.y,
+            transform: "translate(-50%, -50%)",
+            background: "rgba(15,15,15,0.9)",
+            color: "#ffd84d",
+            border: "1px solid rgba(255,0,200,0.9)",
+            padding: "2px 5px",
+            font: "10px/1 ui-monospace, Menlo, monospace",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {l.text}
+        </div>
+      ))}
+
+      {/* Marquee */}
+      {marquee && (
+        <div
+          style={{
+            position: "fixed",
+            left: marquee.x,
+            top: marquee.y,
+            width: marquee.w,
+            height: marquee.h,
+            border: "1px dashed rgba(255,200,0,0.9)",
+            background: "rgba(255,200,0,0.07)",
+            pointerEvents: "none",
+          }}
+        />
+      )}
+
       {/* HUD bar */}
       <div
+        onPointerDown={(e) => e.stopPropagation()}
         style={{
           position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
+          left: 0, right: 0, bottom: 0,
           padding: "10px 16px",
           background: "rgba(15,15,15,0.94)",
           color: "#f5f2ed",
@@ -477,161 +968,134 @@ export function DevEditOverlay() {
           alignItems: "center",
           gap: 14,
           borderTop: "1px solid rgba(255,200,0,0.4)",
-          pointerEvents: "auto",
           flexWrap: "wrap",
         }}
       >
         <span style={{ color: "rgba(255,200,0,0.9)" }}>● Dev Mode</span>
-        <span style={{ opacity: 0.7 }}>
-          {targets.length} tagged · {editedIds.length} edited
-        </span>
-        {selectedTarget && (
-          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)" }}>
-            ▸ {selectedTarget.label}
+        <span style={{ opacity: 0.7 }}>{targets.length} tagged · {editedIds.length} edited</span>
+        {selectedIds.size === 1 && primaryTarget && (
+          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)" }}>▸ {primaryTarget.label}</span>
+        )}
+        {selectedIds.size > 1 && (
+          <span style={{ opacity: 0.85, color: "rgba(120,220,140,0.95)", display: "flex", alignItems: "center", gap: 6 }}>
+            ▸ {selectedIds.size} selected
+            <button type="button" onClick={clearSelection} style={miniBtn}>×</button>
           </span>
         )}
         <span style={{ flex: 1 }} />
-        <label style={{ display: "flex", alignItems: "center", gap: 6, opacity: 0.85 }}>
-          <input
-            type="checkbox"
-            checked={snapEnabled}
-            onChange={(e) => setSnapEnabled(e.target.checked)}
-            style={{ accentColor: "#ffd84d" }}
-          />
-          Snap 8px
-        </label>
-        {/* Alignment + z-order — only meaningful when something is selected */}
-        <div style={{ display: "flex", gap: 4, opacity: selectedId ? 1 : 0.4 }}>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("tl")} style={miniBtn} title="Snap top-left">⌜</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("tr")} style={miniBtn} title="Snap top-right">⌝</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("bl")} style={miniBtn} title="Snap bottom-left">⌞</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("br")} style={miniBtn} title="Snap bottom-right">⌟</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("cx")} style={miniBtn} title="Center horizontally">↔</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("cy")} style={miniBtn} title="Center vertically">↕</button>
-          <button type="button" disabled={!selectedId} onClick={() => alignSelected("center")} style={miniBtn} title="Center on screen">◎</button>
-        </div>
-        <div style={{ display: "flex", gap: 4, opacity: selectedId ? 1 : 0.4 }}>
-          <button type="button" disabled={!selectedId} onClick={() => bumpZ(100)} style={miniBtn} title="Bring to front">▲▲</button>
-          <button type="button" disabled={!selectedId} onClick={() => bumpZ(1)} style={miniBtn} title="Forward 1">▲</button>
-          <button type="button" disabled={!selectedId} onClick={() => bumpZ(-1)} style={miniBtn} title="Backward 1">▼</button>
-          <button type="button" disabled={!selectedId} onClick={() => bumpZ(-100)} style={miniBtn} title="Send to back">▼▼</button>
-        </div>
         <button
           type="button"
-          onClick={() => setShowStyle((s) => !s)}
-          disabled={!selectedId}
-          style={hudBtn(!selectedId, showStyle)}
+          onClick={() => setCanvas({ scale: 1, panX: 0, panY: 0 })}
+          style={miniBtn}
+          title="Reset zoom (`)"
         >
-          Style
+          {Math.round(canvas.scale * 100)}% ⊕
         </button>
+        <label style={{ display: "flex", alignItems: "center", gap: 6, opacity: 0.85 }}>
+          <input type="checkbox" checked={snapEnabled} onChange={(e) => setSnapEnabled(e.target.checked)} style={{ accentColor: "#ffd84d" }} />
+          Snap 8px
+        </label>
+        <div style={{ display: "flex", gap: 4, opacity: primarySelectedId ? 1 : 0.4 }}>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("tl")} style={miniBtn} title="Snap top-left">⌜</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("tr")} style={miniBtn} title="Snap top-right">⌝</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("bl")} style={miniBtn} title="Snap bottom-left">⌞</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("br")} style={miniBtn} title="Snap bottom-right">⌟</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("cx")} style={miniBtn} title="Center horizontally">↔</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("cy")} style={miniBtn} title="Center vertically">↕</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => alignSelected("center")} style={miniBtn} title="Center on screen">◎</button>
+        </div>
+        <div style={{ display: "flex", gap: 4, opacity: primarySelectedId ? 1 : 0.4 }}>
+          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(100)} style={miniBtn} title="Bring to front">▲▲</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(1)} style={miniBtn} title="Forward">▲</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(-1)} style={miniBtn} title="Backward">▼</button>
+          <button type="button" disabled={!primarySelectedId} onClick={() => bumpZ(-100)} style={miniBtn} title="Send to back">▼▼</button>
+        </div>
+        <button type="button" onClick={() => setShowStyle((s) => !s)} disabled={!primarySelectedId} style={hudBtn(!primarySelectedId, showStyle)}>Style</button>
         <button
           type="button"
           onClick={() => {
             if (!confirm("Reset ALL edits? This clears localStorage too.")) return;
-            // Wipe inline styles on every tagged element.
-            document.querySelectorAll<HTMLElement>("[data-devedit]").forEach((el) => {
+            document.querySelectorAll<HTMLElement>("[data-devedit], [data-devedit-lock]").forEach((el) => {
               el.style.cssText = "";
             });
             commitEdits({});
-            setSelectedId(null);
+            clearSelection();
+            setCanvas({ scale: 1, panX: 0, panY: 0 });
           }}
           disabled={editedIds.length === 0}
           style={hudBtn(editedIds.length === 0)}
         >
           Reset
         </button>
-        <button
-          type="button"
-          onClick={() => setShowDone(true)}
-          style={hudBtn(false, true)}
-        >
-          Done ({editedIds.length})
-        </button>
-        <span style={{ opacity: 0.5 }}>Shift+D · Esc · ←↑→↓ · Alt=free</span>
+        <button type="button" onClick={() => setShowDone(true)} style={hudBtn(false, true)}>Done ({editedIds.length})</button>
+        <span style={{ opacity: 0.5, fontSize: 9 }}>Shift+D · Esc · ←↑→↓ · Space=pan · ⌘scroll=zoom · `=reset · 1=fit · Alt=free</span>
       </div>
 
-      {/* Style panel — floats above HUD when an element is selected. */}
-      {showStyle && selectedTarget && (
+      {/* Style panel */}
+      {showStyle && primaryTarget && (
         <StylePanel
-          target={selectedTarget}
-          edit={selectedEdit}
+          target={primaryTarget}
+          edit={primaryEdit}
+          extraSelectedCount={selectedIds.size - 1}
           onUpdate={updateStyle}
           onClose={() => setShowStyle(false)}
         />
       )}
 
-      {/* Done panel — copy-pasteable CSS summary */}
-      {showDone && (
-        <DonePanel edits={edits} onClose={() => setShowDone(false)} />
-      )}
+      {/* Done panel */}
+      {showDone && <DonePanel edits={edits} onClose={() => setShowDone(false)} />}
     </div>
   );
 }
 
+// --------------------------------------------------------------------------
+// Outline + handles
+// --------------------------------------------------------------------------
+
 function DevEditOutline({
-  target,
-  selected,
-  edited,
-  onSelect,
-  onStart,
+  target, selected, isPrimary, edited, spaceHeld, onClick, onStart,
 }: {
   target: TargetMeta;
   selected: boolean;
+  isPrimary: boolean;
   edited: boolean;
-  onSelect: () => void;
-  onStart: (
-    t: TargetMeta,
-    mode: "move" | "nw" | "ne" | "sw" | "se",
-    e: React.PointerEvent
-  ) => void;
+  spaceHeld: boolean;
+  onClick: (e: React.PointerEvent) => void;
+  onStart: (t: TargetMeta, mode: "move" | "nw" | "ne" | "sw" | "se", e: React.PointerEvent) => void;
 }) {
   const r = target.rect;
-  const outlineColor = selected
+  const outlineColor = isPrimary
     ? "rgba(255,200,0,0.95)"
+    : selected
+    ? "rgba(255,200,0,0.7)"
     : edited
     ? "rgba(120,220,140,0.7)"
     : "rgba(255,200,0,0.35)";
   const handleSize = 10;
+  const positionLocked = target.lockMode === "position";
+  const sizeLocked = target.lockMode === "size";
 
-  // Non-selected: thin outline + click-to-select. Selected: drag body + corners.
   if (!selected) {
     return (
       <div
         onPointerDown={(e) => {
+          if (spaceHeld) return;
           e.preventDefault();
           e.stopPropagation();
-          onSelect();
+          onClick(e);
         }}
         style={{
           position: "fixed",
-          left: r.left,
-          top: r.top,
-          width: r.width,
-          height: r.height,
+          left: r.left, top: r.top, width: r.width, height: r.height,
           outline: `1px dashed ${outlineColor}`,
           outlineOffset: -1,
           background: edited ? "rgba(120,220,140,0.04)" : "transparent",
-          cursor: "pointer",
+          cursor: positionLocked ? "default" : "pointer",
           pointerEvents: "auto",
         }}
       >
-        <span
-          style={{
-            position: "absolute",
-            left: 0,
-            top: -16,
-            font: "9px/1 ui-monospace, Menlo, monospace",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: outlineColor,
-            background: "rgba(15,15,15,0.7)",
-            padding: "2px 5px",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            opacity: 0.85,
-          }}
-        >
-          {target.label}
+        <span style={labelChip(outlineColor, false)}>
+          {target.label}{target.lockMode !== "none" ? ` · 🔒${target.lockMode}` : ""}
         </span>
       </div>
     );
@@ -647,46 +1111,40 @@ function DevEditOutline({
   return (
     <>
       <div
-        onPointerDown={(e) => onStart(target, "move", e)}
+        onPointerDown={(e) => {
+          if (spaceHeld) return;
+          if (positionLocked) return;
+          onStart(target, "move", e);
+        }}
+        onClickCapture={(e) => {
+          if (e.shiftKey || e.metaKey) {
+            e.stopPropagation();
+            // Forward as a synthetic event with the modifier flags onClick needs.
+            onClick({ shiftKey: e.shiftKey, metaKey: e.metaKey, stopPropagation: () => e.stopPropagation(), preventDefault: () => e.preventDefault() } as unknown as React.PointerEvent);
+          }
+        }}
         style={{
           position: "fixed",
-          left: r.left,
-          top: r.top,
-          width: r.width,
-          height: r.height,
+          left: r.left, top: r.top, width: r.width, height: r.height,
           outline: `2px solid ${outlineColor}`,
           outlineOffset: -1,
           background: "rgba(255,200,0,0.06)",
-          cursor: "move",
+          cursor: positionLocked ? "default" : "move",
           pointerEvents: "auto",
         }}
       >
-        <span
-          style={{
-            position: "absolute",
-            left: 0,
-            top: -20,
-            font: "10px/1 ui-monospace, Menlo, monospace",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: outlineColor,
-            background: "rgba(15,15,15,0.92)",
-            padding: "3px 7px",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
+        <span style={labelChip(outlineColor, true)}>
           {target.label} · {Math.round(r.width)}×{Math.round(r.height)}
+          {target.lockMode !== "none" ? ` · 🔒${target.lockMode}` : ""}
         </span>
       </div>
-      {corners.map(([mode, style]) => (
+      {!sizeLocked && !positionLocked && corners.map(([mode, style]) => (
         <div
           key={mode}
           onPointerDown={(e) => onStart(target, mode, e)}
           style={{
             position: "fixed",
-            width: handleSize,
-            height: handleSize,
+            width: handleSize, height: handleSize,
             background: outlineColor,
             border: "1px solid rgba(15,15,15,0.9)",
             pointerEvents: "auto",
@@ -698,8 +1156,67 @@ function DevEditOutline({
   );
 }
 
+function labelChip(color: string, primary: boolean): React.CSSProperties {
+  return {
+    position: "absolute",
+    left: 0,
+    top: primary ? -20 : -16,
+    font: `${primary ? 10 : 9}px/1 ui-monospace, Menlo, monospace`,
+    letterSpacing: primary ? "0.14em" : "0.12em",
+    textTransform: "uppercase",
+    color,
+    background: "rgba(15,15,15,0.92)",
+    padding: primary ? "3px 7px" : "2px 5px",
+    whiteSpace: "nowrap",
+    pointerEvents: "none",
+  };
+}
+
+function GroupBox({
+  rect, onStart,
+}: {
+  rect: DOMRect;
+  onStart: (mode: "nw" | "ne" | "sw" | "se", e: React.PointerEvent) => void;
+}) {
+  const handleSize = 12;
+  const corners: Array<["nw" | "ne" | "sw" | "se", React.CSSProperties]> = [
+    ["nw", { left: rect.left - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nwse-resize" }],
+    ["ne", { left: rect.right - handleSize / 2, top: rect.top - handleSize / 2, cursor: "nesw-resize" }],
+    ["sw", { left: rect.left - handleSize / 2, top: rect.bottom - handleSize / 2, cursor: "nesw-resize" }],
+    ["se", { left: rect.right - handleSize / 2, top: rect.bottom - handleSize / 2, cursor: "nwse-resize" }],
+  ];
+  return (
+    <>
+      <div
+        style={{
+          position: "fixed",
+          left: rect.left, top: rect.top, width: rect.width, height: rect.height,
+          outline: "1px solid rgba(255,200,0,0.55)",
+          outlineOffset: 4,
+          pointerEvents: "none",
+        }}
+      />
+      {corners.map(([mode, style]) => (
+        <div
+          key={mode}
+          onPointerDown={(e) => onStart(mode, e)}
+          style={{
+            position: "fixed",
+            width: handleSize, height: handleSize,
+            background: "rgba(255,200,0,0.95)",
+            border: "1px solid rgba(15,15,15,0.9)",
+            borderRadius: 2,
+            pointerEvents: "auto",
+            ...style,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 // --------------------------------------------------------------------------
-// Style panel: glass / color / border / radius / shadow / rotate / z-index
+// Style panel + scrub input
 // --------------------------------------------------------------------------
 
 const SHADOW_PRESETS: Array<{ label: string; value: string }> = [
@@ -707,111 +1224,126 @@ const SHADOW_PRESETS: Array<{ label: string; value: string }> = [
   { label: "Soft", value: "0 8px 24px rgba(0,0,0,0.18)" },
   { label: "Medium", value: "0 16px 40px rgba(0,0,0,0.32)" },
   { label: "Heavy", value: "0 30px 80px rgba(0,0,0,0.55)" },
-  {
-    label: "Glass",
-    value:
-      "inset 0 1px 0 rgba(255,255,255,0.07), 0 24px 56px rgba(0,0,0,0.45)",
-  },
+  { label: "Glass", value: "inset 0 1px 0 rgba(255,255,255,0.07), 0 24px 56px rgba(0,0,0,0.45)" },
 ];
 
 const GLASS_PRESETS: Array<{ label: string; patch: StyleEdit }> = [
-  {
-    label: "Frosted Light",
-    patch: {
-      background: "rgba(255,255,255,0.08)",
-      borderColor: "rgba(255,255,255,0.12)",
-      borderWidth: 1,
-      backdropBlur: 24,
-      backdropSaturate: 130,
-      boxShadow:
-        "inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 56px rgba(0,0,0,0.4)",
-    },
-  },
-  {
-    label: "Frosted Dark",
-    patch: {
-      background: "rgba(18,18,18,0.48)",
-      borderColor: "rgba(255,255,255,0.09)",
-      borderWidth: 1,
-      backdropBlur: 20,
-      backdropSaturate: 130,
-      boxShadow:
-        "inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 56px rgba(0,0,0,0.55)",
-    },
-  },
-  {
-    label: "Ghost",
-    patch: {
-      background: "rgba(255,255,255,0.045)",
-      borderColor: "rgba(255,255,255,0.07)",
-      borderWidth: 1,
-      backdropBlur: 28,
-      backdropSaturate: 120,
-      boxShadow:
-        "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 80px rgba(0,0,0,0.45)",
-    },
-  },
-  {
-    label: "Clear",
-    patch: {
-      background: "transparent",
-      borderColor: "transparent",
-      borderWidth: 0,
-      backdropBlur: 0,
-      backdropSaturate: 100,
-      boxShadow: "none",
-    },
-  },
+  { label: "Frosted Light", patch: { background: "rgba(255,255,255,0.08)", borderColor: "rgba(255,255,255,0.12)", borderWidth: 1, backdropBlur: 24, backdropSaturate: 130, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 24px 56px rgba(0,0,0,0.4)" } },
+  { label: "Frosted Dark",  patch: { background: "rgba(18,18,18,0.48)",   borderColor: "rgba(255,255,255,0.09)", borderWidth: 1, backdropBlur: 20, backdropSaturate: 130, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 56px rgba(0,0,0,0.55)" } },
+  { label: "Ghost",         patch: { background: "rgba(255,255,255,0.045)",borderColor: "rgba(255,255,255,0.07)", borderWidth: 1, backdropBlur: 28, backdropSaturate: 120, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 80px rgba(0,0,0,0.45)" } },
+  { label: "Clear",         patch: { background: "transparent", borderColor: "transparent", borderWidth: 0, backdropBlur: 0, backdropSaturate: 100, boxShadow: "none" } },
 ];
 
+function ScrubInput({
+  label, value, step, min, max, onChange,
+}: {
+  label: string;
+  value: number;
+  step: number;
+  min?: number;
+  max?: number;
+  onChange: (v: number) => void;
+}) {
+  const startScrub = (e: React.PointerEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startVal = value;
+    const onMove = (ev: PointerEvent) => {
+      const mult = ev.shiftKey ? 10 : ev.altKey ? 0.1 : 1;
+      let next = startVal + (ev.clientX - startX) * step * mult;
+      if (min !== undefined) next = Math.max(min, next);
+      if (max !== undefined) next = Math.min(max, next);
+      // Round to a sensible precision based on step
+      const decimals = step >= 1 ? 0 : Math.min(4, Math.ceil(-Math.log10(step)));
+      next = Number(next.toFixed(decimals));
+      onChange(next);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <span
+        onPointerDown={startScrub}
+        style={{
+          flex: 1,
+          fontSize: 10,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          opacity: 0.85,
+          cursor: "ew-resize",
+          userSelect: "none",
+        }}
+        title="Drag to scrub · Shift=×10 · Alt=÷10"
+      >
+        ↔ {label}
+      </span>
+      <input
+        type="number"
+        value={value}
+        min={min}
+        max={max}
+        step={step}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{ ...inputStyle, width: 72 }}
+      />
+    </div>
+  );
+}
+
 function StylePanel({
-  target,
-  edit,
-  onUpdate,
-  onClose,
+  target, edit, extraSelectedCount, onUpdate, onClose,
 }: {
   target: TargetMeta;
   edit: Edit | undefined;
+  extraSelectedCount: number;
   onUpdate: (patch: Partial<StyleEdit>) => void;
   onClose: () => void;
 }) {
   const s = edit?.style || {};
   return (
     <div
+      onPointerDown={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
-        right: 16,
-        bottom: 64,
-        width: 280,
-        maxHeight: "70vh",
-        overflow: "auto",
-        background: "#0f0f0f",
-        color: "#f5f2ed",
+        right: 16, bottom: 80,
+        width: 300, maxHeight: "70vh", overflow: "auto",
+        background: "#0f0f0f", color: "#f5f2ed",
         border: "1px solid rgba(255,200,0,0.4)",
         padding: 14,
         font: "11px/1.4 ui-monospace, Menlo, monospace",
         pointerEvents: "auto",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 12 }}>
-        <strong style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}>
-          Style · {target.label}
-        </strong>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+        <strong style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}>Style · {target.label}</strong>
         <span style={{ flex: 1 }} />
-        <button type="button" onClick={onClose} style={hudBtn(false)}>
-          ×
-        </button>
+        <button type="button" onClick={onClose} style={hudBtn(false)}>×</button>
       </div>
+      {extraSelectedCount > 0 && (
+        <div style={{
+          marginBottom: 10,
+          padding: "5px 8px",
+          background: "rgba(255,200,0,0.08)",
+          border: "1px solid rgba(255,200,0,0.3)",
+          color: "#f5f2ed",
+          fontSize: 10,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          opacity: 0.85,
+        }}>
+          Editing primary · {extraSelectedCount} other{extraSelectedCount > 1 ? "s" : ""} selected (style applies to primary only)
+        </div>
+      )}
 
       <Section title="Glass Presets">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           {GLASS_PRESETS.map((p) => (
-            <button
-              key={p.label}
-              type="button"
-              onClick={() => onUpdate(p.patch)}
-              style={hudBtn(false)}
-            >
+            <button key={p.label} type="button" onClick={() => onUpdate(p.patch)} style={hudBtn(false)}>
               {p.label}
             </button>
           ))}
@@ -819,93 +1351,40 @@ function StylePanel({
       </Section>
 
       <Section title="Background">
-        <input
-          type="text"
-          value={s.background ?? ""}
-          placeholder="rgba(0,0,0,0.5) or #fff"
-          onChange={(e) => onUpdate({ background: e.target.value })}
-          style={inputStyle}
-        />
+        <input type="text" value={s.background ?? ""} placeholder="rgba(0,0,0,0.5) or #fff"
+          onChange={(e) => onUpdate({ background: e.target.value })} style={inputStyle} />
       </Section>
 
-      <Section title="Backdrop Blur">
-        <Slider
-          min={0}
-          max={60}
-          value={s.backdropBlur ?? 0}
-          onChange={(v) => onUpdate({ backdropBlur: v })}
-        />
+      <Section title="Backdrop Blur (px)">
+        <ScrubInput label="blur" step={1} min={0} max={80} value={s.backdropBlur ?? 0} onChange={(v) => onUpdate({ backdropBlur: v })} />
       </Section>
-
       <Section title="Backdrop Saturate (%)">
-        <Slider
-          min={50}
-          max={200}
-          value={s.backdropSaturate ?? 100}
-          onChange={(v) => onUpdate({ backdropSaturate: v })}
-        />
+        <ScrubInput label="sat" step={1} min={0} max={300} value={s.backdropSaturate ?? 100} onChange={(v) => onUpdate({ backdropSaturate: v })} />
       </Section>
-
       <Section title="Border">
-        <div style={{ display: "flex", gap: 6 }}>
-          <input
-            type="text"
-            value={s.borderColor ?? ""}
-            placeholder="rgba(255,255,255,0.1)"
-            onChange={(e) => onUpdate({ borderColor: e.target.value })}
-            style={{ ...inputStyle, flex: 2 }}
-          />
-          <input
-            type="number"
-            min={0}
-            max={20}
-            value={s.borderWidth ?? 0}
-            onChange={(e) => onUpdate({ borderWidth: Number(e.target.value) })}
-            style={{ ...inputStyle, flex: 1 }}
-          />
+        <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+          <input type="text" value={s.borderColor ?? ""} placeholder="rgba(255,255,255,0.1)"
+            onChange={(e) => onUpdate({ borderColor: e.target.value })} style={{ ...inputStyle, flex: 2 }} />
         </div>
+        <ScrubInput label="width" step={1} min={0} max={20} value={s.borderWidth ?? 0} onChange={(v) => onUpdate({ borderWidth: v })} />
       </Section>
-
       <Section title="Border Radius">
-        <Slider
-          min={0}
-          max={60}
-          value={s.borderRadius ?? 0}
-          onChange={(v) => onUpdate({ borderRadius: v })}
-        />
+        <ScrubInput label="radius" step={1} min={0} max={120} value={s.borderRadius ?? 0} onChange={(v) => onUpdate({ borderRadius: v })} />
       </Section>
-
       <Section title="Box Shadow">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
           {SHADOW_PRESETS.map((p) => (
-            <button
-              key={p.label}
-              type="button"
-              onClick={() => onUpdate({ boxShadow: p.value })}
-              style={hudBtn(false, s.boxShadow === p.value)}
-            >
+            <button key={p.label} type="button" onClick={() => onUpdate({ boxShadow: p.value })} style={hudBtn(false, s.boxShadow === p.value)}>
               {p.label}
             </button>
           ))}
         </div>
       </Section>
-
       <Section title="Rotate (deg)">
-        <Slider
-          min={-30}
-          max={30}
-          value={s.rotate ?? 0}
-          onChange={(v) => onUpdate({ rotate: v })}
-        />
+        <ScrubInput label="rotate" step={0.5} min={-180} max={180} value={s.rotate ?? 0} onChange={(v) => onUpdate({ rotate: v })} />
       </Section>
-
       <Section title="Z-Index">
-        <input
-          type="number"
-          value={s.zIndex ?? 0}
-          onChange={(e) => onUpdate({ zIndex: Number(e.target.value) })}
-          style={inputStyle}
-        />
+        <ScrubInput label="z" step={1} value={s.zIndex ?? 0} onChange={(v) => onUpdate({ zIndex: v })} />
       </Section>
     </div>
   );
@@ -914,51 +1393,10 @@ function StylePanel({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div
-        style={{
-          fontSize: 9,
-          letterSpacing: "0.2em",
-          textTransform: "uppercase",
-          opacity: 0.55,
-          marginBottom: 5,
-        }}
-      >
+      <div style={{ fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", opacity: 0.55, marginBottom: 5 }}>
         {title}
       </div>
       {children}
-    </div>
-  );
-}
-
-function Slider({
-  min,
-  max,
-  value,
-  onChange,
-}: {
-  min: number;
-  max: number;
-  value: number;
-  onChange: (v: number) => void;
-}) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        style={{ flex: 1, accentColor: "#ffd84d" }}
-      />
-      <input
-        type="number"
-        min={min}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        style={{ ...inputStyle, width: 56 }}
-      />
     </div>
   );
 }
@@ -1010,81 +1448,49 @@ function buildCss(edits: Record<string, Edit>) {
     .join("\n\n");
 }
 
-function DonePanel({
-  edits,
-  onClose,
-}: {
-  edits: Record<string, Edit>;
-  onClose: () => void;
-}) {
+function DonePanel({ edits, onClose }: { edits: Record<string, Edit>; onClose: () => void }) {
   const entries = Object.entries(edits);
   const css = buildCss(edits);
-
+  const lockedBrief = `/* Locked layout — do NOT modify these selectors' transform/width/height/background/border/backdrop-filter. */\n${css}`;
   return (
     <div
+      onPointerDown={(e) => e.stopPropagation()}
       style={{
-        position: "fixed",
-        inset: 0,
+        position: "fixed", inset: 0,
         background: "rgba(0,0,0,0.65)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: 24,
-        pointerEvents: "auto",
-        zIndex: 1,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 24, pointerEvents: "auto",
       }}
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "min(820px, 100%)",
-          maxHeight: "80vh",
-          overflow: "auto",
-          background: "#0f0f0f",
-          color: "#f5f2ed",
+          width: "min(820px, 100%)", maxHeight: "80vh", overflow: "auto",
+          background: "#0f0f0f", color: "#f5f2ed",
           border: "1px solid rgba(255,200,0,0.4)",
           padding: 20,
           font: "12px/1.5 ui-monospace, Menlo, monospace",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", marginBottom: 14 }}>
-          <strong style={{ letterSpacing: "0.2em", textTransform: "uppercase" }}>
-            CSS Output · {entries.length} edits
-          </strong>
+          <strong style={{ letterSpacing: "0.2em", textTransform: "uppercase" }}>CSS Output · {entries.length} edits</strong>
           <span style={{ flex: 1 }} />
-          <button
-            type="button"
-            onClick={() => navigator.clipboard?.writeText(css)}
-            style={hudBtn(false, true)}
-          >
-            Copy All
-          </button>
+          <button type="button" onClick={() => navigator.clipboard?.writeText(css)} style={hudBtn(false, true)}>Copy CSS</button>
           <span style={{ width: 8 }} />
-          <button type="button" onClick={onClose} style={hudBtn(false)}>
-            Close
-          </button>
+          <button type="button" onClick={() => navigator.clipboard?.writeText(lockedBrief)} style={hudBtn(false)}>Copy Locked Brief</button>
+          <span style={{ width: 8 }} />
+          <button type="button" onClick={onClose} style={hudBtn(false)}>Close</button>
         </div>
         {entries.length === 0 ? (
-          <p style={{ opacity: 0.6 }}>
-            No edits yet. Click an element, then drag/resize or open Style.
-          </p>
+          <p style={{ opacity: 0.6 }}>No edits yet. Click an element, then drag/resize or open Style.</p>
         ) : (
-          <pre
-            style={{
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              background: "#1a1a1a",
-              padding: 14,
-              border: "1px solid rgba(255,255,255,0.08)",
-            }}
-          >
+          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: "#1a1a1a", padding: 14, border: "1px solid rgba(255,255,255,0.08)" }}>
             {css}
           </pre>
         )}
         <p style={{ opacity: 0.55, marginTop: 12 }}>
-          Paste into the matching component's CSS and refresh. Edits persist
-          in localStorage so a refresh won't lose them — use Reset to clear.
+          Paste into the matching component's CSS and refresh. Edits persist in localStorage so a refresh won't lose them — use Reset to clear.
         </p>
       </div>
     </div>
