@@ -48,141 +48,154 @@ export function GalleryMasthead({
     <>
       {/* Scoped styles — keep grid and responsive logic with the component. */}
       <style>{`
-        .gallery-hero-grid {
-          display: grid;
-          width: 100%;
-          max-width: 1600px;
-          margin: 0 auto;
-          padding-inline: clamp(16px, 4vw, 48px);
-          /* Generous breathing room above; nav-h is already applied by <main>. */
-          padding-top: clamp(24px, 4vh, 56px);
-          padding-bottom: clamp(32px, 4vh, 56px);
-          column-gap: clamp(16px, 3vw, 48px);
-          row-gap: clamp(16px, 2.5vw, 32px);
-          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          /* counter row absorbs free vertical space, pushing heading to the
-             lower-left and letting the panels float in the middle. */
-          grid-template-rows: 1fr auto auto;
-          grid-template-areas:
-            "counter panels"
-            "heading panels"
-            "pills   pills";
-          /* Vertically center the panels inside the panels row group. */
-          align-items: center;
-          /* Reactive minimum height — drives the "panels float in the middle" feel. */
-          min-height: clamp(420px, 62vh, 720px);
-        }
-        .gallery-hero-counter {
-          grid-area: counter;
-          align-self: end; /* sits just above the heading */
-        }
-        .gallery-hero-heading {
-          grid-area: heading;
-          /* Break out of the left column — bleed across the full grid width
-             so the panels can overlap the right portion of the wordmark. */
-          grid-column: 1 / -1;
-          font-family: var(--font-display);
-          text-transform: uppercase;
-          color: var(--cream);
-          font-weight: 400;
-          line-height: 0.88;
-          letter-spacing: -0.015em;
-          /* Big enough that the right edge of "GALLERY" lives under the panels. */
-          font-size: clamp(56px, 13vw, 220px);
-          white-space: nowrap;
-          margin: 0;
-          align-self: end;
-          padding-block: 0.02em;
+        /* ----------------------------------------------------------------
+           Masthead = full-viewport-ish dark stage. Heading anchors lower-
+           left, panels float vertically centered on the right edge, ghost
+           panel hides behind the map (only ~30px peeks out the left side).
+
+           Absolute positioning — NOT grid — because the composition is
+           intentionally layered, not gridded. The only overlap allowed:
+           the panel's left edge kisses the tail "RY" of "GALLERY".
+           ---------------------------------------------------------------- */
+        .gallery-hero-stage {
           position: relative;
+          width: 100%;
+          /* min-height (not height) so short viewports don't clip. */
+          min-height: clamp(520px, 78vh, 880px);
+          padding: clamp(24px, 3vw, 44px);
+          padding-bottom: clamp(20px, 2.5vw, 36px);
+          overflow: hidden;
+        }
+
+        /* Counter — sits directly above the heading, lower-left. */
+        .gallery-hero-counter {
+          position: absolute;
+          left: clamp(24px, 3vw, 44px);
+          /* Bottom = pills offset + heading height + small gap. */
+          bottom: calc(clamp(64px, 8.5vw, 136px) + clamp(72px, 10vh, 140px) + 12px);
+          margin: 0;
           z-index: 1;
         }
+
+        /* Heading — lower-left quadrant, one line, bleeds RIGHT toward the
+           panels. Sized so the panel's left edge kisses the tail "RY" of
+           "GALLERY", not the middle. zIndex: 1 — under the panels. */
+        .gallery-hero-heading {
+          position: absolute;
+          left: clamp(24px, 3vw, 44px);
+          bottom: clamp(72px, 10vh, 140px);
+          margin: 0;
+          font-family: var(--font-display);
+          font-weight: 400;
+          text-transform: uppercase;
+          color: var(--cream);
+          line-height: 1;
+          letter-spacing: -0.01em;
+          font-size: clamp(64px, 8.5vw, 136px);
+          white-space: nowrap;
+          z-index: 1;
+        }
+
+        /* Panels group — absolutely anchored to the right, vertically
+           centered in the stage. The map plate's left edge lands at roughly
+           45-50% of viewport width — exactly where "RY" of "GALLERY" lives. */
         .gallery-hero-panels {
-          grid-area: panels;
-          /* Span both the counter and heading rows so the panels float
-             vertically centered across the full upper content height. */
-          grid-row: 1 / 3;
-          position: relative;
-          align-self: center;
-          justify-self: end;
-          width: 100%;
-          height: clamp(260px, 36vh, 400px);
+          position: absolute;
+          right: clamp(24px, 3vw, 44px);
+          top: 50%;
+          transform: translateY(-50%);
+          width: clamp(420px, 46vw, 720px);
+          height: clamp(300px, 40vh, 480px);
           z-index: 2;
         }
-        .gallery-hero-pills { grid-area: pills; }
 
-        /* Map glass panel — fills its grid cell, no absolute children. */
-        .gallery-glass-map {
+        /* Pills — bottom-anchored, full-width, left-aligned. */
+        .gallery-hero-pills {
           position: absolute;
-          inset: 0;
+          left: clamp(24px, 3vw, 44px);
+          right: clamp(24px, 3vw, 44px);
+          bottom: clamp(20px, 2.5vw, 36px);
+          z-index: 1;
+        }
+
+        /* Map glass panel — fills its parent (the panels group). */
+        .gallery-glass-map {
+          position: relative;
+          width: 100%;
+          height: 100%;
           display: grid;
           grid-template-rows: auto 1fr;
-          border: 1px solid color-mix(in oklab, var(--cream) 15%, transparent);
-          background: linear-gradient(
-            135deg,
-            color-mix(in oklab, var(--cream) 10%, transparent) 0%,
-            color-mix(in oklab, var(--cream) 4%, transparent) 100%
-          );
+          border: 1px solid rgba(255,255,255,0.09);
+          background: rgba(18,18,18,0.62);
           backdrop-filter: blur(20px) saturate(120%);
           -webkit-backdrop-filter: blur(20px) saturate(120%);
           box-shadow:
-            inset 0 1px 0 color-mix(in oklab, var(--cream) 12%, transparent),
-            0 clamp(20px, 4vw, 60px) clamp(40px, 8vw, 100px) -20px rgba(0,0,0,0.6);
+            inset 0 1px 0 rgba(255,255,255,0.07),
+            0 24px 56px rgba(0,0,0,0.55);
           overflow: hidden;
           z-index: 2;
         }
 
-        /* Ghost panel — flat matte, no metallic gradient, no shadow. */
+        /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
+           the map's left edge — only that 30px sliver peeks out. Slight
+           rotation gives it a stacked-cards feel. NEVER crosses left into
+           clean letterforms. */
         .gallery-glass-ghost {
           position: absolute;
-          left: clamp(-18%, -8vw, -6%);
-          top: clamp(8%, 2vw, 14%);
-          width: 62%;
-          height: 78%;
+          right: calc(100% - 30px);
+          top: 10%;
+          width: clamp(140px, 14vw, 210px);
+          height: clamp(200px, 32vh, 340px);
+          background: rgba(20,20,20,0.32);
+          border: 1px solid rgba(255,255,255,0.04);
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
+          transform: rotate(-2.5deg);
           pointer-events: none;
-          background: rgba(22,22,22,0.40);
-          border: 1px solid rgba(255,255,255,0.05);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
           z-index: 1;
         }
 
-        @media (max-width: 640px) {
-          .gallery-hero-grid {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto auto auto;
-            /* Mobile reading order: brand → wordmark → filters → map.
-               The map is supporting context, not the lede — it sits last so
-               the heading and pills land in the first viewport. */
-            grid-template-areas:
-              "counter"
-              "heading"
-              "pills"
-              "panels";
-            align-items: stretch;
+        /* ----------------------------------------------------------------
+           Mobile (≤720px): drop absolute composition entirely. Flex column.
+           Order: counter → heading → pills → map. Ghost hidden.
+           ---------------------------------------------------------------- */
+        @media (max-width: 720px) {
+          .gallery-hero-stage {
             min-height: 0;
-            row-gap: clamp(20px, 5vw, 32px);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(20px, 5vw, 32px);
+            padding: clamp(20px, 5vw, 32px);
+            overflow: visible;
           }
+          .gallery-hero-counter,
+          .gallery-hero-heading,
+          .gallery-hero-panels,
+          .gallery-hero-pills {
+            position: static;
+            transform: none;
+            inset: auto;
+            width: 100%;
+            height: auto;
+          }
+          .gallery-hero-counter { order: 1; }
           .gallery-hero-heading {
-            font-size: clamp(56px, 16vw, 96px);
+            order: 2;
+            font-size: clamp(56px, 14vw, 92px);
             white-space: normal;
-            line-height: 0.9;
+            line-height: 0.92;
           }
+          .gallery-hero-pills { order: 3; }
           .gallery-hero-panels {
-            grid-row: auto;
-            justify-self: stretch;
-            height: clamp(220px, 60vw, 320px);
-            margin-top: clamp(8px, 3vw, 20px);
+            order: 4;
+            height: clamp(240px, 60vw, 340px);
           }
-          /* Ghost panel is a desktop-only conceit — it has no purpose when
-             the panels stack in a single column. */
-          .gallery-glass-ghost {
-            display: none;
-          }
+          .gallery-glass-ghost { display: none; }
         }
       `}</style>
 
       <section aria-labelledby="gallery-heading">
-        <div className="gallery-hero-grid">
+        <div className="gallery-hero-stage">
           {/* Counter */}
           <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
             {visibleCount.toString().padStart(2, "0")}{" "}
