@@ -185,6 +185,29 @@
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Mobile touch defaults — kill iOS tap flash, prevent double-tap zoom */
+/* on interactive elements, and standardize text-size auto-inflate.   */
+/* ------------------------------------------------------------------ */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Safe-area helpers for sheet/drawer/tray bottoms on iOS Safari. */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+.pb-safe-plus-4 {
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
 .font-brand {
   font-family: var(--font-display);
   font-weight: 400;
