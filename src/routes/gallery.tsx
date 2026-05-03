@@ -98,6 +98,7 @@ function GalleryPage() {
             projects={visibleProjects}
             activeIndex={activeIndex}
             onSelect={handleMapSelect}
+            embedded
           />
         }
       />

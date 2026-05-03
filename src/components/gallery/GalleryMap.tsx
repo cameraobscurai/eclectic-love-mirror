@@ -21,6 +21,9 @@ interface GalleryMapProps {
   activeIndex: number;
   onSelect: (index: number) => void;
   onOpen?: (index: number) => void;
+  /** Render without the "Where We've Built" header and fill its parent height.
+   *  Used when the map is embedded inside the glass masthead panel. */
+  embedded?: boolean;
 }
 
 // Public Mapbox token. Public tokens (pk.*) are designed to ship in client
@@ -38,6 +41,7 @@ export function GalleryMap({
   activeIndex,
   onSelect,
   onOpen,
+  embedded = false,
 }: GalleryMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -80,7 +84,12 @@ export function GalleryMap({
     );
     map.on("load", () => setReady(true));
     mapRef.current = map;
+    // Keep canvas sized to the (flex / absolute) container — mapbox needs an
+    // explicit resize call when the parent grows from 0 to its real height.
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(containerRef.current);
     return () => {
+      ro.disconnect();
       map.remove();
       mapRef.current = null;
     };
@@ -164,6 +173,17 @@ export function GalleryMap({
           see pins.
         </p>
       </div>
+    );
+  }
+
+  if (embedded) {
+    return (
+      <div
+        ref={containerRef}
+        className="eh-map relative w-full h-full overflow-hidden"
+        role="region"
+        aria-label="Map of Eclectic Hive project locations"
+      />
     );
   }
 
