@@ -142,10 +142,11 @@ export function GalleryMasthead({
         }
 
         /* Map body — actual clipping happens here, so the parent plate keeps
-           its working backdrop blur. */
+           its working backdrop blur. With the header row removed, the body
+           fills the plate so we round all four corners now. */
         .gallery-glass-map-body {
           overflow: hidden;
-          border-radius: 0 0 10px 10px;
+          border-radius: 10px;
           min-height: 0;
         }
 
