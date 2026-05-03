@@ -99,11 +99,6 @@ function AtelierPage() {
               <br />
               Realized.
             </h1>
-            <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
-              We are designers, producers, and a fabrication house. The atelier
-              is where design authorship, material exploration, and fabrication
-              converge — through process and intention.
-            </p>
           </div>
           <div className="md:col-span-5">
             {/* Section-1 hero. First production use of the imagetools +
