@@ -21,6 +21,9 @@ interface GalleryMapProps {
   activeIndex: number;
   onSelect: (index: number) => void;
   onOpen?: (index: number) => void;
+  /** Render without the "Where We've Built" header and fill its parent height.
+   *  Used when the map is embedded inside the glass masthead panel. */
+  embedded?: boolean;
 }
 
 // Public Mapbox token. Public tokens (pk.*) are designed to ship in client
