@@ -54,6 +54,17 @@ export function ProductTile({
   const [loaded, setLoaded] = useState(false);
   const showInternals = near; // gates image, hover label, fetch
 
+  // Row-aware reveal — fires once the tile is near the viewport AND its
+  // image has resolved (or there's no image). Tiles in the eager window
+  // skip the cascade so the first paint isn't artificially staggered.
+  const skipReveal = reduced || index < REVEAL_SKIP_INDEX;
+  const hasImage = Boolean(product.primaryImage);
+  const readyToReveal = near && (loaded || !hasImage);
+  const entered = skipReveal ? true : readyToReveal;
+  const revealDelayMs = skipReveal
+    ? 0
+    : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
+
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
@@ -83,6 +94,21 @@ export function ProductTile({
         overflow: "hidden",
       }}
     >
+      {/* Reveal wrapper — opacity/transform/blur cascade keyed off `entered`.
+          Lives inside the layout-projected <li> so motion.layout still owns
+          position transitions when filters change; this only animates the
+          one-shot enter. */}
+      <div
+        style={{
+          opacity: entered ? 1 : 0,
+          transform: entered ? "translateY(0)" : "translateY(4px)",
+          filter: entered ? "blur(0px)" : "blur(2px)",
+          transition: skipReveal
+            ? "none"
+            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+          willChange: entered ? "auto" : "opacity, transform, filter",
+        }}
+      >
       {showInternals ? (
         <button
           onClick={onOpen}
