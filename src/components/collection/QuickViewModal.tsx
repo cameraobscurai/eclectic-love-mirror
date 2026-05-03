@@ -293,6 +293,25 @@ export function QuickViewModal({
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Floating Scale pill — bottom-right of the image stage */}
+            {hasScale && (
+              <button
+                type="button"
+                onClick={() => setShowScale((s) => !s)}
+                aria-pressed={showScale}
+                className={cn(
+                  "absolute z-10 h-8 px-4 text-[10px] uppercase tracking-[0.22em] transition-all",
+                  "rounded-full backdrop-blur-sm",
+                  showScale
+                    ? "bg-charcoal text-white border border-charcoal shadow-md"
+                    : "bg-white/85 text-charcoal border border-charcoal/15 hover:bg-white hover:border-charcoal/40 shadow-sm",
+                )}
+                style={{ right: 24, bottom: 24 }}
+              >
+                {showScale ? "Hide Scale" : "Show Scale"}
+              </button>
+            )}
           </div>
 
           {/* RIGHT — metadata column */}
