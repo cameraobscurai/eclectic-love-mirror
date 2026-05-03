@@ -23,6 +23,7 @@ import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
+import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
@@ -95,6 +96,16 @@ export const Route = createFileRoute("/collection")({
           "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.",
       },
     ],
+    // Preload bundled category covers so they arrive in the same beat as
+    // the (often cache-warm) CDN-hosted fallback heroes. Without this the
+    // bundled asset reliably loses the race and the first-row reveal — which
+    // waits on ALL six images — stalls visibly on the bundled card.
+    links: Object.values(CATEGORY_COVERS).map((href) => ({
+      rel: "preload",
+      as: "image",
+      href,
+      fetchpriority: "high",
+    })),
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
