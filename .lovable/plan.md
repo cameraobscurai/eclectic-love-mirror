@@ -1,63 +1,64 @@
-## What this plan does
+## What I got wrong last pass
 
-Two clean passes on the Atelier page:
+I read your notes as "loose" and treated everything in them as filler. They're not — they're owner-sourced. The only things I should have removed were lines I made up that did NOT appear in your notes (the "studio is a creative work hub" paragraph, the "custom pieces are designed in-house" paragraph, the three Approach body paragraphs, "Studio. Workbench. Warehouse." as an italic line). Everything else came from you and should go back.
 
-1. **All section display titles → ALL CAPS** (per brand typography rule — display headings, eyebrows, and labels read as caps; only body/quiet italic lines stay sentence case).
-2. **Strip mock/filler copy** that was never sourced from the owner's published material. Better to have an empty, designed waiting state than invented voice. We can re-add real copy later when the owner provides it.
+This pass restores your words verbatim, ALL CAPS where the brand rule applies (display titles, eyebrows, brand statements), Title/sentence case for the quieter italic line under THE HIVE.
 
-## Section-by-section changes
+## Restorations from your notes
 
 ### `src/routes/atelier.tsx`
 
-1. **HERO**
-   - Stacked headline already ALL CAPS (`IMAGINED. / DESIGNED. / REALIZED.`) — no change.
-   - **REMOVE** the supporting paragraph: *"We are designers, producers, and a fabrication house. The atelier is where design authorship, material exploration, and fabrication converge — through process and intention."* This was synthesized from your notes, not pulled from a published source. Hero stays as eyebrow + headline + image. (If you want the one-liner back, ship it from your own words and we drop it in.)
+1. **HERO — restore your supporting line, in caps.**
+   Under the `IMAGINED. / DESIGNED. / REALIZED.` headline, add back:
+   > **THE ATELIER IS WHERE DESIGN AUTHORSHIP, MATERIAL EXPLORATION, AND FABRICATION CONVERGE — THROUGH PROCESS & INTENTION.**
 
-2. **02 — THE HIVE**
-   - Eyebrow already caps. The display title lives in `team.tsx` (handled below).
+   Rendered as a wide-tracked supporting line (not body paragraph): `text-xs uppercase tracking-[0.22em] text-charcoal/70`, max-w ~52ch, sits below the headline.
 
-3. **THE ARTIST'S STUDIO**
-   - Eyebrow already caps.
-   - **REMOVE** the italic display line *"Studio. Workbench. Warehouse."* — invented framing.
-   - **REMOVE** both body paragraphs ("The studio is a creative work hub…" and "Material exploration happens at the table…") — invented copy.
-   - Section becomes: eyebrow + the existing 16/9 STUDIO + 4/5 WORKBENCH + 4/5 WAREHOUSE apertures (labels already caps). Quiet, honest, waiting for real photography + real words.
+   Also add a small brand-statement eyebrow above or beside, from your notes:
+   > **WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION HOUSE.**
 
-4. **THE FABRICATION**
-   - Eyebrow already caps.
-   - **REMOVE** the two left-column paragraphs ("Eclectic Hive is a full-service design and production house…" and "Custom pieces are designed in-house…") — invented copy.
-   - Capabilities list stays (already ALL CAPS, owner-sourced from your notes / existing site language). Promote the list to span the full width on md+ now that the left column is empty, so it doesn't read as a hanging half-grid.
-   - 3× 1/1 material-board apertures stay.
+   Placement: directly under the existing `ATELIER BY THE HIVE` eyebrow, same caps treatment, slightly larger weight. (Your note reads "WE DESIGNERS…" — I'm assuming the missing "ARE"; flag if you want it literal.)
 
-5. **ATELIER APPROACH**
-   - Eyebrow already caps. Numbered labels (`01 IMAGINED`, `02 DESIGNED`, `03 REALIZED`) already caps.
-   - **REMOVE** the three body paragraphs under each step — all three were AI-drafted. The triptych becomes: aperture + number + ALL-CAPS label only. Strong and quiet; honest until owner copy arrives.
+2. **THE ARTIST'S STUDIO — keep apertures, don't add invented body.**
+   Your notes only gave the title `THE ARTIST'S STUDIO` and `STUDIO [THE ATELIER]` as a label cue. No paragraphs of yours exist for this section. Leave it as: eyebrow + STUDIO / WORKBENCH / WAREHOUSE apertures (current state). No restoration needed here — this is the one section that genuinely had no owner copy.
 
-6. **CTA**
-   - "BEGIN" eyebrow already caps. Button "START A CONVERSATION" already caps.
-   - Headline *"Bring a project to the Atelier."* — this one is short, on-brand, and matches the "START A CONVERSATION" CTA you explicitly listed in your notes. **Convert to ALL CAPS** display: `BRING A PROJECT TO THE ATELIER.` Keeps the closing moment loud and intentional.
+3. **THE FABRICATION — capabilities list stays full-width.**
+   Your notes give the section title and the `START A CONVERSATION` CTA but no body paragraph for this section either. Capabilities list (already owner-sourced) remains the sole text. No restoration needed.
+
+4. **ATELIER APPROACH — leave number + label only.**
+   Your notes give `IMAGINED. DESIGNED. REALIZED.` as the triplet, no per-step bodies. Current state is correct (number + caps label only). No restoration.
+
+5. **CTA — already correct.**
+   `BRING A PROJECT TO THE ATELIER.` + `START A CONVERSATION` button. Both match your notes.
 
 ### `src/components/atelier/team.tsx`
 
-- **Display title**: `The Hive` → `THE HIVE` (uppercase via class, font-display + tracking tightened slightly to suit caps at that scale, e.g. `tracking-[0.02em]`).
-- **REMOVE** the right-column tagline *"Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier."* — this was lifted from your loose notes but never appeared on a published source you showed me. Cleaner to ship the title alone over the portrait grid. Layout collapses gracefully (the col-span-7 title just sits over the grid; right column empty).
-- Roster, gating, and aperture behavior unchanged.
+6. **THE HIVE — restore the tagline.**
+   Your notes give it explicitly:
+   > *Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.*
 
-## What stays
+   Restore this as the right-column quiet italic line next to the `THE HIVE` display title. Keep Title/sentence case (per `mem://design/typography-caps.md` — quiet italic lines stay sentence case, only display titles + brand statements go ALL CAPS). Style: small italic, `text-charcoal/70`, leading-relaxed, sits in the right column the way it did before.
 
-- All structure, ordering, grid, apertures, and the new `<HeroImage>` pipeline.
-- All eyebrows (already ALL CAPS).
-- Capabilities list (sourced from your notes).
-- Team roster (owner-curated).
-- CTA button + route.
+7. **Title stays `THE HIVE`** — already correct from last pass.
+
+## What stays stripped (these were genuinely AI-written, not in your notes)
+
+- "The studio is a creative work hub…" paragraph (Artist's Studio).
+- "Material exploration happens at the table…" paragraph (Artist's Studio).
+- "Eclectic Hive is a full-service design and production house…" paragraph (Fabrication).
+- "Custom pieces are designed in-house…" paragraph (Fabrication).
+- The three body paragraphs under IMAGINED / DESIGNED / REALIZED (Approach).
+- "Studio. Workbench. Warehouse." italic line (Artist's Studio) — invented framing.
+
+If any of those WERE actually from notes I missed, point me at them and I'll restore.
 
 ## Files touched
 
-- `src/routes/atelier.tsx` — copy deletions across hero + sections 3, 4, 5; CTA headline to caps; minor grid adjustment in section 4 once left column is empty.
-- `src/components/atelier/team.tsx` — title to caps, right-column tagline removed.
+- `src/routes/atelier.tsx` — add brand statement eyebrow + supporting line under hero headline.
+- `src/components/atelier/team.tsx` — restore right-column italic tagline next to THE HIVE.
 
 ## Out of scope
 
-- No new copy. We are only deleting unsourced text and uppercasing display titles.
-- No image changes.
-- Other pages untouched (cross-page caps audit can be a separate pass if you want one).
-- Memory not updated — the existing `mem://design/typography-caps.md` already covers this rule; today's work is just enforcing it on Atelier.
+- No new images, no structure changes, no copy I didn't pull from your notes.
+- "RENTALS OR INVENTORY OR — DECOR —" line in your notes reads like a category-naming question for elsewhere on the site, not Atelier copy. Leaving it alone here; flag if you want it placed.
+- "HOW LONG THEY ARE ON WEBSITE" reads like an analytics question, not page copy. Leaving alone.
