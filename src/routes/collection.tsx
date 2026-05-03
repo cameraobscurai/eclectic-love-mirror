@@ -22,7 +22,6 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import { glassBand } from "@/lib/glass";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -522,7 +521,9 @@ function CollectionPage() {
         className="sticky z-20"
         style={{
           top: "var(--nav-h)",
-          ...glassBand.light,
+          background: "var(--cream)",
+          borderTop: "1px solid var(--archive-rule)",
+          borderBottom: "1px solid var(--archive-rule)",
         }}
       >
         <div className="px-6 lg:px-12">
