@@ -282,7 +282,7 @@ export function GalleryMasthead({
                   {visibleCount.toString().padStart(2, "0")} Locations
                 </p>
               </div>
-              <div className="min-h-0 px-3 sm:px-4 pb-3 sm:pb-4">
+              <div className="gallery-glass-map-body min-h-0 px-3 sm:px-4 pb-3 sm:pb-4">
                 {mapSlot}
               </div>
             </div>
