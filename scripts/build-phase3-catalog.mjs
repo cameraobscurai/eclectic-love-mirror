@@ -220,3 +220,26 @@ const out = {
 };
 writeFileSync("src/data/phase3/phase3_catalog.json", JSON.stringify(out));
 console.log(`Wrote ${publicProducts.length} public-ready / ${products.length} total. ${(JSON.stringify(out).length / 1024).toFixed(1)} KB`);
+
+// Owner-site match report (public-ready products only).
+if (ownerRankByCategory.size > 0) {
+  console.log("\nOwner-site rank coverage (public-ready):");
+  const byCat = new Map();
+  for (const p of publicProducts) {
+    const e = byCat.get(p.categorySlug) ?? { total: 0, matched: 0, unmatched: [] };
+    e.total++;
+    if (p.ownerSiteRank != null) e.matched++;
+    else e.unmatched.push(p.title);
+    byCat.set(p.categorySlug, e);
+  }
+  for (const [slug, e] of [...byCat.entries()].sort()) {
+    const pct = e.total ? Math.round((e.matched / e.total) * 100) : 0;
+    console.log(`  ${slug.padEnd(22)} ${String(e.matched).padStart(3)}/${String(e.total).padEnd(3)}  ${pct}%`);
+    if (e.unmatched.length && e.unmatched.length <= 8) {
+      for (const t of e.unmatched) console.log(`      · ${t}`);
+    } else if (e.unmatched.length) {
+      for (const t of e.unmatched.slice(0, 5)) console.log(`      · ${t}`);
+      console.log(`      · …and ${e.unmatched.length - 5} more`);
+    }
+  }
+}
