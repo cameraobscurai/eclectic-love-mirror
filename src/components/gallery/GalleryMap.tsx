@@ -29,8 +29,9 @@ const MAPBOX_TOKEN =
   (import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN as string | undefined) ||
   "pk.eyJ1Ijoib2JzY3VyYWNyZWF0aXZlIiwiYSI6ImNtb3A4ODBvbzBrNHIycnB6cWNkNTFxYmwifQ.GyNKdyqX6pnfsV9Yyb8C2w";
 
-// Editorial dark style — Mapbox's standard dark base, recolored via paint.
-const MAP_STYLE = "mapbox://styles/mapbox/dark-v11";
+// Editorial light style — Mapbox light base, lifts the canvas off pitch black
+// while keeping it muted. Pins read as warm dots on warm grey.
+const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
 
 export function GalleryMap({
   projects,
