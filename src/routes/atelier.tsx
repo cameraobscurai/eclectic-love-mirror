@@ -126,24 +126,8 @@ function AtelierPage() {
         <AtelierTeam />
       </Section>
 
-      {/* 3. THE ARTIST'S STUDIO */}
-      <Section eyebrow="The Artist's Studio">
-        <div className="grid md:grid-cols-12 gap-10">
-          <p className="md:col-span-5 font-display italic text-2xl md:text-3xl leading-[1.2] text-charcoal/80">
-            Studio. Workbench. Warehouse.
-          </p>
-          <div className="md:col-span-7 space-y-5 text-base leading-relaxed text-charcoal/70">
-            <p>
-              The studio is a creative work hub: a design floor for sketching
-              and CAD, a fabrication bay for building, and a warehouse where
-              the inventory lives between events.
-            </p>
-            <p>
-              Material exploration happens at the table. Fabrication happens at
-              the bench. Logistics happen at the dock.
-            </p>
-          </div>
-        </div>
+      {/* 3. THE ARTIST'S STUDIO — eyebrow + apertures only until owner copy + photography land. */}
+      <Section eyebrow="THE ARTIST'S STUDIO">
 
         {/* Wide landscape aperture + two detail apertures. Real categories
             only — no fake captions. Labels render below each frame. */}
