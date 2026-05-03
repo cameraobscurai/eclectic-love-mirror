@@ -220,7 +220,7 @@ function HomePage() {
           still pick up the brand name even though the visible mark lives
           inside the artwork.
         */}
-        {variant === "moodboard" ? (
+        {variant === "moodboard" && (
           <picture key="moodboard">
             <source
               media="(max-width: 767px)"
@@ -255,7 +255,8 @@ function HomePage() {
               }
             />
           </picture>
-        ) : (
+        )}
+        {variant === "exploded" && (
           <motion.img
             key="exploded"
             ref={heroImgRef}
@@ -276,6 +277,18 @@ function HomePage() {
                 ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
                 : undefined
             }
+          />
+        )}
+        {(variant === "vitrine" || variant === "reveal" || variant === "strata") && (
+          <AmangiriGlassHero
+            key={variant}
+            variant={variant}
+            loaded={loaded}
+            imgRef={heroImgRef}
+            bandCenterPx={bandPoint?.y ?? null}
+            parallaxOn={parallaxOn}
+            bgX={bgX}
+            bgY={bgY}
           />
         )}
 
