@@ -46,33 +46,6 @@ export function GalleryMasthead({
 }: GalleryMastheadProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  // Anchor the panels group's vertical center to the heading's vertical
-  // center via a CSS custom property (--heading-center). Falls back to 45%
-  // before hydration so SSR isn't a sad black box at the top.
-  useEffect(() => {
-    const el = headingRef.current;
-    if (!el) return;
-    const stage = el.closest(".gallery-hero-stage") as HTMLElement | null;
-    if (!stage) return;
-
-    const update = () => {
-      const headingRect = el.getBoundingClientRect();
-      const stageRect = stage.getBoundingClientRect();
-      const center = headingRect.top - stageRect.top + headingRect.height / 2;
-      stage.style.setProperty("--heading-center", center + "px");
-    };
-
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    ro.observe(stage);
-    window.addEventListener("resize", update, { passive: true });
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
   return (
     <>
       {/* Scoped styles — keep grid and responsive logic with the component. */}
