@@ -56,6 +56,10 @@ export function GalleryMap({
 
   // Boot the map once.
   useEffect(() => {
+    // Mobile guard: the masthead hides the map at ≤768px (display:none),
+    // so don't even initialize Mapbox there. Saves the JS bundle, the
+    // tile requests, and the token call. Pure perf win on mobile.
+    if (typeof window !== "undefined" && window.innerWidth <= 768) return;
     if (!MAPBOX_TOKEN || !containerRef.current || mapRef.current) return;
     mapboxgl.accessToken = MAPBOX_TOKEN;
     const map = new mapboxgl.Map({
