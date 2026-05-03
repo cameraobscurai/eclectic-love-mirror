@@ -95,8 +95,12 @@ export function AtelierTeam() {
       <ul
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16"
       >
-        {visibleMembers.map((member) => {
+        {visibleMembers.map((member, idx) => {
           const showImage = !!member.image && member.image.approvedForWeb;
+          // First row on widest grid (4-col) loads eagerly + high priority so
+          // the above-the-fold portraits arrive together instead of trickling
+          // in. Rows 2+ stay lazy and decode on approach.
+          const isFirstRow = idx < 4;
           return (
             <li key={member.name}>
               <MediaAperture
@@ -107,6 +111,9 @@ export function AtelierTeam() {
                     ? member.image!.alt
                     : `Portrait slot for ${member.name}`
                 }
+                sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
+                lazy={!isFirstRow}
+                fetchPriority={isFirstRow ? "high" : "auto"}
               />
               <p className="mt-5 font-display text-lg md:text-xl leading-tight text-charcoal">
                 {member.name}
