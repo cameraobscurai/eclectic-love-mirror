@@ -86,9 +86,6 @@ export function GalleryMasthead({
         .gallery-hero-stage {
           position: relative;
           width: 100%;
-          /* Lock the stage to exactly one viewport (minus nav). Using
-             min-height let the section grow taller than the viewport,
-             which pushed everything down and created the void up top. */
           height: calc(100svh - var(--nav-h));
           min-height: 560px;
           padding: clamp(24px, 3vw, 44px);
@@ -96,25 +93,28 @@ export function GalleryMasthead({
           overflow: hidden;
         }
 
-        /* Counter — sits directly above the heading, lower-left. */
+        /* Counter — sits directly above the heading, bottom-left. */
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Bottom = heading bottom + heading height + small gap. */
-          bottom: calc(28vh + clamp(72px, 9.2vw, 148px) + 12px);
+          /* Sits above heading: pills bottom + pills space + heading height + gap. */
+          bottom: calc(
+            clamp(20px, 2.5vw, 36px) +
+            clamp(48px, 6vh, 72px) +
+            clamp(72px, 9.2vw, 148px) +
+            14px
+          );
           margin: 0;
-          z-index: 1;
+          z-index: 3;
         }
 
-        /* Heading — lower third, one line, bleeds RIGHT toward the panels.
-           Sized so the panel's left edge kisses the tail "RY" of "GALLERY". */
+        /* Heading — anchored bottom-left, directly above the pills with equal
+           margin to the left edge. Pills sit at bottom: clamp(20px, 2.5vw, 36px),
+           so heading bottom = that + a small breathing gap above the pills. */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Anchored at ~28vh from the bottom so the heading sits in the
-             lower third and its vertical center lands near 50svh — which
-             then drives the panels (top: var(--heading-center)). */
-          bottom: 28vh;
+          bottom: calc(clamp(20px, 2.5vw, 36px) + clamp(48px, 6vh, 72px));
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
@@ -124,19 +124,18 @@ export function GalleryMasthead({
           letter-spacing: -0.01em;
           font-size: clamp(72px, 9.2vw, 148px);
           white-space: nowrap;
-          z-index: 1;
+          z-index: 3;
         }
 
-        /* Panels group — absolutely anchored to the right, vertically
-           centered in the stage. With the stage now equal to viewport
-           height (minus nav), top: 50% is true viewport center. */
+        /* Panels group — pinned to the TOP, right-aligned, sitting just under
+           the nav bar with the same margin as the left-edge content. Enlarged
+           so its bottom edge overlaps the top of "THE GALLERY" heading. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: var(--heading-center, 50%);
-          transform: translateY(-50%);
-          width: clamp(420px, 46vw, 720px);
-          height: clamp(300px, 40vh, 480px);
+          top: clamp(16px, 2vw, 28px);
+          width: clamp(460px, 52vw, 820px);
+          height: clamp(360px, 52vh, 560px);
           z-index: 2;
         }
 
