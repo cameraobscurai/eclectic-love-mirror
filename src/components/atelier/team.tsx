@@ -82,11 +82,12 @@ export function AtelierTeam() {
           className="md:col-span-7 font-display tracking-[-0.01em] leading-[0.95] text-charcoal"
           style={{ fontSize: "clamp(2.75rem, 7vw, 5.5rem)" }}
         >
-          The Humans
+          The Hive
         </h2>
         <p className="md:col-span-5 md:col-start-8 text-base md:text-[17px] leading-relaxed text-charcoal/70 max-w-md">
-          Professional but approachable. We love what we do
-          <br className="hidden md:inline" /> — and it shows.
+          Our team moves across disciplines with intention and a shared
+          approach. We are artists, designers, craftsmen.
+          <br className="hidden md:inline" /> We are the atelier.
         </p>
       </div>
 
