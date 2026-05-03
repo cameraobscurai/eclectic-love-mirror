@@ -48,6 +48,8 @@ const ALL_CATEGORIES: GalleryCategory[] = [
 function GalleryPage() {
   const [filter, setFilter] = useState<CategoryFilter>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const jumpRef = useRef<((index: number) => void) | null>(null);
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
     if (filter === "All") return galleryProjects;
@@ -62,7 +64,6 @@ function GalleryPage() {
       "Social + Non-Profit": 0,
     };
     for (const p of galleryProjects) base[p.category] += 1;
-    // Ensure all keys are populated.
     for (const c of ALL_CATEGORIES) base[c] = base[c] ?? 0;
     return base;
   }, []);
@@ -72,6 +73,12 @@ function GalleryPage() {
     if (!project) return;
     const realIndex = galleryProjects.findIndex((p) => p.number === project.number);
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
+  };
+
+  // Map uses the visible (filtered) list — pin index === card index.
+  const handleMapSelect = (idx: number) => {
+    setActiveIndex(idx);
+    jumpRef.current?.(idx);
   };
 
   return (
