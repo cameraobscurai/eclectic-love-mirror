@@ -473,6 +473,16 @@ function CollectionPage() {
     };
   }, []);
 
+  // ---------- Utility bar scroll state ----------
+  // Glass-frost the sticky utility bar once the user scrolls past the static
+  // heading. White before scroll; frosted (products bleed through) when locked.
+  const [utilityScrolled, setUtilityScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setUtilityScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <main
