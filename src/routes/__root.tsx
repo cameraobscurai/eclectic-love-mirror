@@ -91,11 +91,36 @@ export const Route = createRootRoute({
   notFoundComponent: NotFoundComponent,
 });
 
+// Chromium-only Speculation Rules. Tells the browser to prerender the
+// most likely next route on hover/touchstart with moderate eagerness.
+// Browsers without support silently ignore the script tag.
+// Heavy/auth/admin paths are not listed; everything else is conservative.
+const SPECULATION_RULES = JSON.stringify({
+  prerender: [
+    {
+      where: {
+        and: [
+          { href_matches: "/*" },
+          { not: { href_matches: "/admin/*" } },
+          { not: { href_matches: "/api/*" } },
+          { not: { selector_matches: "[data-no-prefetch]" } },
+        ],
+      },
+      eagerness: "moderate",
+    },
+  ],
+});
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="bg-charcoal">
       <head>
         <HeadContent />
+        <script
+          type="speculationrules"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
+        />
       </head>
       <body className="antialiased">
         {children}
