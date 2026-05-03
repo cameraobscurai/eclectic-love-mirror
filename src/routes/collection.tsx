@@ -140,6 +140,18 @@ function CollectionPage() {
   // ---------- Debounced search input ----------
   const [qLocal, setQLocal] = useState(q);
   useEffect(() => setQLocal(q), [q]);
+
+  // ---------- Floating search modal ----------
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [modalQuery, setModalQuery] = useState("");
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSearchOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   useEffect(() => {
     const t = setTimeout(() => {
       if (qLocal !== q) {
