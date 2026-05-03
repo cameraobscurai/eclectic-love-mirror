@@ -246,8 +246,8 @@ export function GalleryMasthead({
           <h1
             ref={headingRef}
             id="gallery-heading"
-            data-devedit
-            data-devedit-label="Heading"
+            data-devedit-lock="size"
+            data-devedit-label="Heading (size locked — clamp font)"
             className="gallery-hero-heading"
           >
             The Gallery
