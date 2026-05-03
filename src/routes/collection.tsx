@@ -171,6 +171,19 @@ function CollectionPage() {
   // ---------- Floating search modal ----------
   const [searchOpen, setSearchOpen] = useState(false);
   const [modalQuery, setModalQuery] = useState("");
+  // Debounce ref for modal commits — coalesces rapid Enter-mash / fast
+  // suggestion clicks into a single navigate() so the URL (and the grid
+  // fade) don't thrash. 140ms is short enough to feel instant but long
+  // enough to absorb a typing burst.
+  const modalCommitTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (modalCommitTimerRef.current !== null) {
+        window.clearTimeout(modalCommitTimerRef.current);
+      }
+    },
+    [],
+  );
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSearchOpen(false);
