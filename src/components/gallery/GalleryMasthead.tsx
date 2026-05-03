@@ -195,7 +195,7 @@ export function GalleryMasthead({
       `}</style>
 
       <section aria-labelledby="gallery-heading">
-        <div className="gallery-hero-grid">
+        <div className="gallery-hero-stage">
           {/* Counter */}
           <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
             {visibleCount.toString().padStart(2, "0")}{" "}
