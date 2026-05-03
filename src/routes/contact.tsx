@@ -227,10 +227,10 @@ function ContactPage() {
               CONTACT
             </p>
             <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] tracking-tight">
-              Let's make something unforgettable.
+              Let's collaborate.
             </h1>
             <p className="mt-8 max-w-md text-[15px] leading-relaxed text-charcoal/70">
-              Tell us about your event in one place. We respond within two
+              Tell us about your project in one place. We respond within two
               business days with next steps and a consultation call.
             </p>
             <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
