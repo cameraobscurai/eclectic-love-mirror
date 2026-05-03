@@ -4,10 +4,12 @@ import type { GalleryCategory } from "@/content/gallery-projects";
 // ---------------------------------------------------------------------------
 // GalleryMasthead
 //
-// Issue header: eyebrow, live "{n} Environments" headline, lead paragraph,
-// and the category filter pills with live counts. Honors the v0 layout.
-// Optional `mapSlot` renders into the right column in place of the lead
-// paragraph — used to hoist the interactive map above the fold.
+// Layered composition (per owner concept):
+//   • Base layer: oversized "THE GALLERY" headline + "{n} Environments" tag
+//   • Overlay layer: two glassmorphic panels floating ON TOP of the headline,
+//     overlapping the type. Left panel is a soft blurred plate (atmospheric).
+//     Right panel hosts the live map. Both extend above the headline's top.
+//   • Below: category filter pills.
 // ---------------------------------------------------------------------------
 
 export type CategoryFilter = "All" | GalleryCategory;
@@ -40,23 +42,104 @@ export function GalleryMasthead({
     <section
       className="px-6 lg:px-12"
       style={{
-        paddingTop: "clamp(72px, 6vw, 104px)",
+        paddingTop: "clamp(56px, 5vw, 88px)",
         paddingBottom: "clamp(24px, 3vw, 40px)",
       }}
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
-          <div className="lg:col-span-6">
-            <h1 className="font-display uppercase leading-[0.92] tracking-[-0.005em] text-cream text-[clamp(60px,8vw,120px)] font-normal">
+        {/* Layered composition wrapper */}
+        <div className="relative">
+          {/* BASE: oversized headline */}
+          <div className="relative z-0">
+            <h1 className="font-display uppercase leading-[0.9] tracking-[-0.01em] text-cream text-[clamp(80px,14vw,240px)] font-normal whitespace-nowrap">
               The Gallery
             </h1>
-            <p className="mt-4 text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
-              {visibleCount.toString().padStart(2, "0")} {visibleCount === 1 ? "Environment" : "Environments"}
-            </p>
           </div>
-          <div className="lg:col-span-6">
-            {mapSlot}
+
+          {/* OVERLAY: glassmorphic panels, absolutely positioned on top.
+              They start ABOVE the headline and overlap downward through it. */}
+          <div
+            className="pointer-events-none absolute inset-x-0 z-10"
+            style={{
+              top: "clamp(-90px, -7vw, -60px)",
+              bottom: "clamp(-30px, -2vw, -10px)",
+            }}
+          >
+            <div className="relative h-full w-full">
+              {/* Left soft glass panel — atmospheric blur, no content */}
+              <div
+                aria-hidden="true"
+                className="absolute hidden md:block"
+                style={{
+                  left: "18%",
+                  right: "38%",
+                  top: "0",
+                  bottom: "20%",
+                }}
+              >
+                <div
+                  className="h-full w-full border border-cream/10"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(245,242,237,0.10) 0%, rgba(245,242,237,0.04) 60%, rgba(245,242,237,0.02) 100%)",
+                    backdropFilter: "blur(28px) saturate(115%)",
+                    WebkitBackdropFilter: "blur(28px) saturate(115%)",
+                    boxShadow:
+                      "inset 0 1px 0 rgba(245,242,237,0.10), 0 30px 80px -20px rgba(0,0,0,0.55)",
+                  }}
+                />
+              </div>
+
+              {/* Right glass panel — hosts the map. Pointer events back on. */}
+              <div
+                className="pointer-events-auto absolute"
+                style={{
+                  right: "0",
+                  left: "auto",
+                  width: "min(56%, 760px)",
+                  top: "clamp(8px, 1vw, 24px)",
+                  bottom: "8%",
+                }}
+              >
+                <div
+                  className="relative h-full w-full overflow-hidden border border-cream/15"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(245,242,237,0.10) 0%, rgba(245,242,237,0.04) 100%)",
+                    backdropFilter: "blur(20px) saturate(120%)",
+                    WebkitBackdropFilter: "blur(20px) saturate(120%)",
+                    boxShadow:
+                      "inset 0 1px 0 rgba(245,242,237,0.12), 0 40px 100px -20px rgba(0,0,0,0.6)",
+                  }}
+                >
+                  {/* Header row inside glass */}
+                  <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55">
+                      Where We've Built
+                    </p>
+                    <p className="text-[10px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
+                      {visibleCount.toString().padStart(2, "0")} Locations
+                    </p>
+                  </div>
+                  {/* Map slot — fills the rest. We pass the map in and let
+                      it size to the container. */}
+                  <div className="absolute inset-x-0 bottom-0 top-[44px]">
+                    {mapSlot ? (
+                      <div className="h-full w-full [&_.eh-map]:!h-full [&_.eh-map]:border-0 [&>div>div:first-child]:hidden">
+                        {mapSlot}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Environments count — sits below the headline, base layer */}
+          <p className="relative z-0 mt-6 text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
+            {visibleCount.toString().padStart(2, "0")}{" "}
+            {visibleCount === 1 ? "Environment" : "Environments"}
+          </p>
         </div>
 
         {/* Filter pills */}
@@ -94,7 +177,7 @@ export function GalleryMasthead({
           })}
         </div>
 
-        {/* Total — quiet, right-aligned, only when filter is active */}
+        {/* Total — quiet, only when filter is active */}
         {active !== "All" && (
           <p className="mt-4 text-[10px] uppercase tracking-[0.22em] text-cream/40">
             Showing {visibleCount} of {total}
