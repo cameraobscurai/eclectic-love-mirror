@@ -7,29 +7,30 @@
  * src/assets/fonts. Vite rewrites url(...) to hashed, cache-friendly URLs
  * served same-origin (avoids the dev-preview auth-bridge redirect that
  * intercepts /public asset requests under a CORS context). */
+/* `optional` eliminates the visible swap/jump: the browser gives the font
+ * a ~100ms window; if it's not ready, this paint stays in the serif
+ * fallback and Saol is silently cached for the next navigation. No late
+ * swap, no layout shift, no "placeholder serif → Saol" flash. */
 @font-face {
   font-family: "Saol Display";
   src: url("./assets/fonts/SaolDisplay-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
-  /* `swap` paints display text immediately in the Cormorant fallback,
-   * then swaps to Saol when it arrives. The 0.32em wordmark tracking
-   * masks the FOUT and we avoid a blank LCP. */
-  font-display: swap;
+  font-display: optional;
 }
 @font-face {
   font-family: "Saol Display";
   src: url("./assets/fonts/SaolDisplay-Semibold.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 @font-face {
   font-family: "Saol Display";
   src: url("./assets/fonts/SaolDisplay-LightItalic.otf") format("opentype");
   font-weight: 300;
   font-style: italic;
-  font-display: swap;
+  font-display: optional;
 }
 
 @custom-variant dark (&:is(.dark *));
