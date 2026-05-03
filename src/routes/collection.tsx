@@ -510,6 +510,9 @@ function CollectionPage() {
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <h1
+            id="collection-heading"
+            data-devedit
+            data-devedit-label="Collection heading"
             className="font-display uppercase leading-[0.92] text-charcoal"
             style={{
               fontSize: "clamp(60px, 8vw, 120px)",
