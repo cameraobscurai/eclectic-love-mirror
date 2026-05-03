@@ -366,7 +366,7 @@ function ContactPage() {
                     </div>
                   )}
 
-                  <Field label="Tell us about your vision" required>
+                  <Field label="Describe your vision or add a wish list" required>
                     <textarea
                       value={vision}
                       onChange={(e) => setVision(e.target.value)}
