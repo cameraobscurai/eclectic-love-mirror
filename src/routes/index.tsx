@@ -66,9 +66,9 @@ export const Route = createFileRoute("/")({
 });
 
 const DESTINATIONS = [
-  { href: "/atelier", label: "Design + Fabrication", title: "Atelier" },
-  { href: "/collection", label: "Signature Inventory", title: "Collection" },
-  { href: "/gallery", label: "Selected Work", title: "Gallery" },
+  { href: "/atelier", label: "The Design House", title: "Atelier" },
+  { href: "/collection", label: "Hive Signature Collection", title: "Collection" },
+  { href: "/gallery", label: "Selected Works", title: "Gallery" },
 ] as const;
 
 function HomePage() {
