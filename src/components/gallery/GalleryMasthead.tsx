@@ -97,11 +97,14 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Panels group — half height, sandwiching the heading vertically. */
+        /* Panels group — vertically centered on the heading so the map
+           overlaps the top half of "THE GALLERY" and "RY" passes behind. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: clamp(96px, 14vh, 140px);
+          /* Heading center ≈ pills_bottom + heading_bottom_offset + heading_height/2.
+             Position panel center on that line. */
+          bottom: calc(clamp(118px, 15vh, 168px) + clamp(72px, 9.2vw, 148px) / 2 - clamp(95px, 13.5vh, 140px));
           width: clamp(420px, 46vw, 720px);
           height: clamp(190px, 27vh, 280px);
           z-index: 2;
