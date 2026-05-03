@@ -254,13 +254,11 @@ function HomePage() {
             backdropFilter: "blur(14px) saturate(1.05) brightness(0.92)",
             WebkitBackdropFilter: "blur(14px) saturate(1.05) brightness(0.92)",
             background:
-              "linear-gradient(to bottom, rgba(26,26,26,0) 0%, rgba(26,26,26,0.18) 50%, rgba(26,26,26,0) 100%)",
+              "linear-gradient(to bottom, rgba(26,26,26,0.10) 0%, rgba(26,26,26,0.20) 50%, rgba(26,26,26,0.10) 100%)",
+            borderTop: "1px solid rgba(245,242,237,0.18)",
+            borderBottom: "1px solid rgba(245,242,237,0.14)",
             boxShadow:
-              "inset 0 1px 0 0 rgba(245,242,237,0.06), inset 0 -1px 0 0 rgba(245,242,237,0.04)",
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+              "inset 0 1px 0 0 rgba(245,242,237,0.10), inset 0 -1px 0 0 rgba(245,242,237,0.06), 0 1px 0 0 rgba(0,0,0,0.20), 0 -1px 0 0 rgba(0,0,0,0.18)",
           }}
         />
 
