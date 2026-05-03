@@ -53,10 +53,6 @@ export function GalleryMasthead({
             <h1 className="mt-4 font-display text-[clamp(2.25rem,5.5vw,4.25rem)] leading-[1] tracking-[-0.01em]">
               {visibleCount} {visibleCount === 1 ? "Environment" : "Environments"}
             </h1>
-            <p className="mt-5 max-w-md text-[14px] leading-relaxed text-cream/60">
-              Each project represents a complete expression of design intelligence,
-              fabrication capability, and production expertise.
-            </p>
           </div>
           <div className="lg:col-span-6">
             {mapSlot}
