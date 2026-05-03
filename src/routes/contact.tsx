@@ -285,11 +285,11 @@ function ContactPage() {
                         autoComplete="tel"
                       />
                     </Field>
-                    <Field label="You are">
-                      <PillGroup
-                        options={[...PLANNER_OPTIONS]}
-                        value={plannerStatus}
-                        onChange={setPlannerStatus}
+                    <Field label="Project date">
+                      <UnderlineInput
+                        value={projectDate}
+                        onChange={setProjectDate}
+                        placeholder="e.g. October 2026"
                       />
                     </Field>
                   </div>
@@ -306,39 +306,23 @@ function ContactPage() {
                   </div>
                 </FormSection>
 
-                {/* 2. EVENT DETAILS */}
-                <FormSection number="02" label="Event details">
+                {/* 2. PROJECT DETAILS */}
+                <FormSection number="02" label="Project details">
                   <div className="space-y-8">
-                    <Field label="Event type">
+                    <Field label="Budget">
                       <PillGroup
-                        options={[...EVENT_TYPES]}
-                        value={eventType}
-                        onChange={setEventType}
+                        options={[...BUDGET_RANGES]}
+                        value={budget}
+                        onChange={setBudget}
                       />
                     </Field>
-                    <Field label="Service">
+                    <Field label="Scope of work">
                       <PillGroup
-                        options={[...SERVICE_TYPES]}
-                        value={serviceType}
-                        onChange={setServiceType}
+                        options={[...SCOPE_OPTIONS]}
+                        value={scope}
+                        onChange={setScope}
                       />
                     </Field>
-                    <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
-                      <Field label="Date or timeframe">
-                        <UnderlineInput
-                          value={eventDate}
-                          onChange={setEventDate}
-                          placeholder="e.g. October 2026"
-                        />
-                      </Field>
-                      <Field label="Budget range">
-                        <PillGroup
-                          options={[...BUDGET_RANGES]}
-                          value={budget}
-                          onChange={setBudget}
-                        />
-                      </Field>
-                    </div>
                   </div>
                 </FormSection>
 
