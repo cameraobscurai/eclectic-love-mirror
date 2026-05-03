@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
@@ -105,7 +105,7 @@ export function GalleryMasthead({
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: 42%;
+          top: var(--heading-center, 50%);
           transform: translateY(-50%);
           width: clamp(420px, 46vw, 720px);
           height: clamp(300px, 40vh, 480px);
