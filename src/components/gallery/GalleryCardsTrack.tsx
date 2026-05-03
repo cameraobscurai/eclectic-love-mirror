@@ -57,8 +57,11 @@ export function GalleryCardsTrack({
         bestIdx = i;
       }
     });
-    setActiveIndex(bestIdx);
-  }, []);
+    setActiveIndex((prev) => {
+      if (prev !== bestIdx) onActiveChange?.(bestIdx);
+      return bestIdx;
+    });
+  }, [onActiveChange]);
 
   useEffect(() => {
     const rail = railRef.current;
