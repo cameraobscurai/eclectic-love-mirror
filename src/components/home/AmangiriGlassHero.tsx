@@ -261,9 +261,11 @@ function Reveal({
           loaded ? "opacity-100" : "opacity-0",
         )}
         style={{
-          // 38vw × 56vh, centered at 44% / 50%
+          // 38vw × 56vh, centered at 44% horizontal / 50% vertical of stage.
+          // Vertical centered on the stage, not the band — keeps it stable
+          // across SSR and avoids needing window at render time.
           left: "calc(44% - 19vw)",
-          top: bandCenterPx ? `${bandCenterPx - (56 * window?.innerHeight) / 200}px` : "calc(50% - 28vh)",
+          top: "calc(50% - 28vh)",
           width: "38vw",
           height: "56vh",
           border: "1px solid rgba(245,242,237,0.10)",
