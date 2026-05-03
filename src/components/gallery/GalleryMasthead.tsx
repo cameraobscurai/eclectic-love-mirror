@@ -247,7 +247,7 @@ export function GalleryMasthead({
 
           {/* Pills */}
           <div className="gallery-hero-pills">
-            <div className="flex flex-wrap gap-2">
+            <div className="gallery-pill-row flex flex-wrap gap-2">
               {FILTERS.map((f) => {
                 const isActive = active === f;
                 const count = counts[f] ?? 0;
@@ -258,7 +258,7 @@ export function GalleryMasthead({
                     onClick={() => onChange(f)}
                     aria-pressed={isActive}
                     className={[
-                      "inline-flex items-center gap-2 px-4 py-2 border transition-colors",
+                      "gallery-pill inline-flex items-center gap-2 px-4 py-2 border transition-colors",
                       "text-[10px] uppercase tracking-[0.22em]",
                       "focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal",
                       isActive
