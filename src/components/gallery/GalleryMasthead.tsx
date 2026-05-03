@@ -251,7 +251,7 @@ export function GalleryMasthead({
           </p>
 
           {/* Heading */}
-          <h1 id="gallery-heading" className="gallery-hero-heading">
+          <h1 ref={headingRef} id="gallery-heading" className="gallery-hero-heading">
             The Gallery
           </h1>
 
