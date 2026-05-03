@@ -154,46 +154,36 @@ export function GalleryMap({
 
   if (!MAPBOX_TOKEN) {
     return (
-      <div className="px-6 lg:px-12">
-        <div className="max-w-[1600px] mx-auto border border-cream/15 bg-charcoal/40 px-6 py-10 text-center">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-            Reach
-          </p>
-          <p className="mt-3 text-[14px] leading-relaxed text-cream/65">
-            The interactive map is ready to load — add a Mapbox public token as{" "}
-            <code className="text-cream/85">VITE_MAPBOX_PUBLIC_TOKEN</code> to
-            see pins for every project.
-          </p>
-        </div>
+      <div className="border border-cream/15 bg-charcoal/40 px-5 py-6 text-center">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
+          Reach
+        </p>
+        <p className="mt-2 text-[13px] leading-relaxed text-cream/65">
+          Add a Mapbox public token as{" "}
+          <code className="text-cream/85">VITE_MAPBOX_PUBLIC_TOKEN</code> to
+          see pins.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="px-6 lg:px-12">
-      <div className="max-w-[1600px] mx-auto">
-        <div className="flex items-end justify-between gap-6 mb-5">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
-              Where We've Built
-            </p>
-            <p className="mt-2 text-[14px] italic text-cream/55">
-              Every pin, a project. Click to open.
-            </p>
-          </div>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-cream/40 tabular-nums">
-            {projects.length.toString().padStart(2, "0")} Locations
-          </p>
-        </div>
-
-        <div
-          ref={containerRef}
-          className="eh-map relative w-full overflow-hidden border border-cream/10"
-          style={{ height: "clamp(320px, 42vw, 520px)" }}
-          role="region"
-          aria-label="Map of Eclectic Hive project locations"
-        />
+    <div className="w-full">
+      <div className="flex items-end justify-between gap-3 mb-2">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45">
+          Where We've Built
+        </p>
+        <p className="text-[10px] uppercase tracking-[0.28em] text-cream/40 tabular-nums">
+          {projects.length.toString().padStart(2, "0")} Locations
+        </p>
       </div>
+      <div
+        ref={containerRef}
+        className="eh-map relative w-full overflow-hidden border border-cream/10"
+        style={{ height: "clamp(220px, 22vw, 320px)" }}
+        role="region"
+        aria-label="Map of Eclectic Hive project locations"
+      />
     </div>
   );
 }
