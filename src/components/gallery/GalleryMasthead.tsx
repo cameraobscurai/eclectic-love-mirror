@@ -261,7 +261,8 @@ export function GalleryMasthead({
             aria-hidden="true"
           />
 
-          {/* Panels area — the map only */}
+          {/* Panels area — the map only. Header row removed; the map
+              speaks for itself inside the frosted plate. */}
           <div
             id="gallery-panels"
             data-devedit
@@ -269,15 +270,7 @@ export function GalleryMasthead({
             className="gallery-hero-panels"
           >
             <div className="gallery-glass-map">
-              <div className="flex items-center justify-between gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2 sm:pb-3">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55 m-0">
-                  Where We've Built
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
-                  {visibleCount.toString().padStart(2, "0")} Locations
-                </p>
-              </div>
-              <div className="gallery-glass-map-body min-h-0 px-3 sm:px-4 pb-3 sm:pb-4">
+              <div className="gallery-glass-map-body min-h-0 p-3 sm:p-4">
                 {mapSlot}
               </div>
             </div>
