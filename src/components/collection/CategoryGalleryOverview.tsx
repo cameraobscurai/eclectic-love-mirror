@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
-import { withCdnWidth } from "@/lib/image-url";
+import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface CategoryGalleryOverviewProps {
@@ -45,58 +46,113 @@ export function CategoryGalleryOverview({
           const cover = CATEGORY_COVERS[group.id];
           const fallbackHero = group.products.find((p) => p.primaryImage)
             ?.primaryImage;
-          const heroSrc =
-            cover ??
-            (fallbackHero ? withCdnWidth(fallbackHero.url, 900) : null);
+          const rawHero = cover ?? fallbackHero?.url ?? null;
+          const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
+          const heroSrcSet = rawHero
+            ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
+            : undefined;
           const heroAlt = cover
             ? BROWSE_GROUP_LABELS[group.id]
             : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
           const label = BROWSE_GROUP_LABELS[group.id];
           const delay = reduced ? 0 : Math.min(idx * 0.02, 0.2);
+          // First row on the widest grid (6-col) is above-the-fold on the
+          // category landing — load + prioritize eagerly so they all arrive
+          // together rather than trickling in last.
+          const isFirstRow = idx < 6;
 
           return (
-            <motion.li
+            <CategoryCard
               key={group.id}
-              className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-white"
+              groupId={group.id}
+              heroSrc={heroSrc}
+              heroSrcSet={heroSrcSet}
+              heroAlt={heroAlt}
+              label={label}
+              isFirstRow={isFirstRow}
+              reduced={reduced}
+              delay={delay}
+              onSelectCategory={onSelectCategory}
+            />
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+interface CategoryCardProps {
+  groupId: BrowseGroupId;
+  heroSrc: string | null;
+  heroSrcSet: string | undefined;
+  heroAlt: string;
+  label: string;
+  isFirstRow: boolean;
+  reduced: boolean | null;
+  delay: number;
+  onSelectCategory: (id: BrowseGroupId) => void;
+}
+
+function CategoryCard({
+  groupId,
+  heroSrc,
+  heroSrcSet,
+  heroAlt,
+  label,
+  isFirstRow,
+  reduced,
+  delay,
+  onSelectCategory,
+}: CategoryCardProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <motion.li
+      className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-white"
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: "12px",
+        background: "#ffffff",
+        boxShadow:
+          "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
+      }}
+      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: reduced ? 0 : 0.4,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => onSelectCategory(groupId)}
+        className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
+        style={{ touchAction: "manipulation" }}
+        aria-label={label}
+      >
+        <div className="relative flex-1">
+          {heroSrc ? (
+            <img
+              src={heroSrc}
+              srcSet={heroSrcSet}
+              sizes="(min-width: 1280px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 32vw, 48vw"
+              alt={heroAlt}
+              loading={isFirstRow ? "eager" : "lazy"}
+              decoding="async"
+              {...({ fetchpriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
+              onLoad={() => setLoaded(true)}
+              className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90"
               style={{
-                position: "relative",
-                overflow: "hidden",
-                borderRadius: "12px",
-                background: "#ffffff",
-                boxShadow:
-                  "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
+                opacity: loaded ? 1 : 0,
+                transition: "opacity 380ms ease-out",
               }}
-              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduced ? 0 : 0.4,
-                delay,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => onSelectCategory(group.id)}
-                className="group relative flex h-full w-full flex-col bg-white text-left transition-colors duration-200 hover:bg-black/[0.02] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
-                style={{ touchAction: "manipulation" }}
-                aria-label={label}
-              >
-                {/* Image fills the card edge-to-edge with object-contain so the
-                    silhouette reads, while the frosted label below has actual
-                    image content to sit on top of. */}
-                <div className="relative flex-1">
-                  {heroSrc ? (
-                    <img
-                      src={heroSrc}
-                      alt={heroAlt}
-                      loading={idx < 4 ? "eager" : "lazy"}
-                      decoding="async"
-                      className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 transition-opacity duration-300 group-hover:opacity-90"
-                    />
-                  ) : (
-                    <div className="absolute inset-0" />
-                  )}
-                </div>
+            />
+          ) : (
+            <div className="absolute inset-0" />
+          )}
+        </div>
 
                 {/* Frosted-glass label overlay — floats over the bottom of the
                     image, inside the card frame. Name only, no count. */}
