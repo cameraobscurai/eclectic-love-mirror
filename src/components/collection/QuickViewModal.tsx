@@ -352,7 +352,7 @@ export function QuickViewModal({
 
 
         {/* FOOTER — thumbs · dimensions · stocked · CTA */}
-        <div className="border-t border-charcoal/15 bg-white">
+        <div className="border-t border-charcoal/15 bg-white" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
           <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
             {/* Thumbs — all visible, horizontal scroll with soft fade edge,
                 quiet counter in the typographic register. */}
