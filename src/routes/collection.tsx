@@ -1349,6 +1349,63 @@ function CollectionPage() {
               </div>
             )}
           </div>
+
+          {/* ----------------------------------------------------------------
+              Scope indicator — pinned to the bottom of the modal panel,
+              always visible. The modal's search applies to ALL inventory
+              regardless of which section the user launched from. The inline
+              utility-bar input stays section-scoped, so this label exists
+              specifically to set that expectation.
+              ---------------------------------------------------------------- */}
+          <div
+            style={{
+              marginTop: "auto",
+              paddingTop: "clamp(20px, 4vh, 32px)",
+              width: "100%",
+              maxWidth: "640px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "rgba(26,26,26,0.55)",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "9px",
+                letterSpacing: "0.24em",
+                textTransform: "uppercase",
+                color: "rgba(26,26,26,0.55)",
+                lineHeight: 1.4,
+              }}
+            >
+              Searching all {total} pieces · {overviewGroups.length} categories
+            </span>
+            {activeGroup && (
+              <span
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "9px",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "rgba(26,26,26,0.35)",
+                  marginLeft: "auto",
+                }}
+                title="The bar inside a category stays section-scoped. The modal does not."
+              >
+                Bar: {(BROWSE_GROUP_LABELS[activeGroup] || activeGroup)} only
+              </span>
+            )}
+          </div>
         </div>
         );
       })()}
