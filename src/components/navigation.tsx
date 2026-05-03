@@ -176,8 +176,12 @@ export function Navigation() {
           "fixed inset-0 z-40 bg-charcoal transition-all duration-700 ease-out",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
+        style={{ overscrollBehavior: "contain" }}
       >
-        <div className="flex flex-col h-full pt-24 px-6 pb-12">
+        <div
+          className="flex flex-col h-[100dvh] pt-24 px-6 pb-12"
+          style={{ paddingBottom: "calc(3rem + env(safe-area-inset-bottom))" }}
+        >
           <nav className="flex-1 flex flex-col justify-center">
             <Link to="/" preload="intent" className="py-4 min-h-[44px] flex items-center">
               <span className="text-cream font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light hover:text-sand transition-colors">
