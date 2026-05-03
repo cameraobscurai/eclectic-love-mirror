@@ -171,6 +171,17 @@ export function GalleryMap({
     );
   }
 
+  if (embedded) {
+    return (
+      <div
+        ref={containerRef}
+        className="eh-map relative w-full h-full overflow-hidden"
+        role="region"
+        aria-label="Map of Eclectic Hive project locations"
+      />
+    );
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-end justify-between gap-3 mb-2">
