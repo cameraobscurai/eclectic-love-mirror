@@ -96,25 +96,26 @@ export function GalleryMasthead({
           overflow: hidden;
         }
 
-        /* Counter — sits directly above the heading, lower-left. */
+        /* Counter — sits directly above the heading. */
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Bottom = heading bottom + heading height + small gap. */
-          bottom: calc(28vh + clamp(72px, 9.2vw, 148px) + 12px);
+          /* Anchored to the heading's top edge with a small gap above. */
+          top: calc(50% - clamp(72px, 9.2vw, 148px) / 2 - 22px);
           margin: 0;
           z-index: 1;
         }
 
-        /* Heading — lower third, one line, bleeds RIGHT toward the panels.
-           Sized so the panel's left edge kisses the tail "RY" of "GALLERY". */
+        /* Heading — vertically centered in the stage. The panels overlap
+           its right edge ("RY" passes behind the glass). One line, full
+           bleed allowed. */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Anchored at ~28vh from the bottom so the heading sits in the
-             lower third and its vertical center lands near 50svh — which
-             then drives the panels (top: var(--heading-center)). */
-          bottom: 28vh;
+          /* Center the heading vertically: top: 50% then pull up by half
+             its own height. line-height: 1 keeps the math honest. */
+          top: 50%;
+          transform: translateY(-50%);
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
