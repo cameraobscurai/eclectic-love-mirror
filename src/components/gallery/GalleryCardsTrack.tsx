@@ -15,10 +15,22 @@ import { GalleryProjectIndex } from "./GalleryProjectIndex";
 interface GalleryCardsTrackProps {
   projects: GalleryProject[];
   onOpen: (index: number) => void;
+  onActiveChange?: (index: number) => void;
+  /**
+   * Imperative handle for parents (e.g. the map) to jump the rail to a card.
+   * Stable across renders.
+   */
+  jumpRef?: { current: ((index: number) => void) | null };
 }
 
-export function GalleryCardsTrack({ projects, onOpen }: GalleryCardsTrackProps) {
+export function GalleryCardsTrack({
+  projects,
+  onOpen,
+  onActiveChange,
+  jumpRef,
+}: GalleryCardsTrackProps) {
   const railRef = useRef<HTMLDivElement>(null);
+  const scrubRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
