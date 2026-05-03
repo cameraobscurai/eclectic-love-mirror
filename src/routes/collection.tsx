@@ -1063,37 +1063,57 @@ function CollectionPage() {
         // Search must always run across the WHOLE inventory, not just the
         // section the user happened to be inside. So we clear `group` at the
         // same time we set `q`. Categories explicitly set `group` instead.
+        //
+        // Both commits route through the modalCommitTimerRef debounce so a
+        // user mashing Enter or rapid-clicking suggestions only fires one
+        // navigate() — keeps the URL clean and the grid fade smooth.
+        const DEBOUNCE_MS = 140;
+        const scheduleCommit = (fn: () => void) => {
+          if (modalCommitTimerRef.current !== null) {
+            window.clearTimeout(modalCommitTimerRef.current);
+          }
+          modalCommitTimerRef.current = window.setTimeout(() => {
+            modalCommitTimerRef.current = null;
+            fn();
+          }, DEBOUNCE_MS);
+        };
         const commitQuery = (text: string) => {
           const next = text.trim();
           if (!next) return;
-          setQLocal(next);
-          navigate({
-            search: (prev: CollectionSearch) => ({
-              ...prev,
-              group: "",
-              q: next,
-              view: "",
-            }),
-            replace: true,
-            resetScroll: false,
-          });
+          // Close + clear instantly so the modal feels responsive even
+          // though the URL push is debounced.
           setSearchOpen(false);
           setModalQuery("");
+          scheduleCommit(() => {
+            setQLocal(next);
+            navigate({
+              search: (prev: CollectionSearch) => ({
+                ...prev,
+                group: "",
+                q: next,
+                view: "",
+              }),
+              replace: true,
+              resetScroll: false,
+            });
+          });
         };
         const commitCategory = (id: BrowseGroupId) => {
-          setQLocal("");
-          navigate({
-            search: (prev: CollectionSearch) => ({
-              ...prev,
-              group: id,
-              q: "",
-              view: "",
-            }),
-            replace: true,
-            resetScroll: false,
-          });
           setSearchOpen(false);
           setModalQuery("");
+          scheduleCommit(() => {
+            setQLocal("");
+            navigate({
+              search: (prev: CollectionSearch) => ({
+                ...prev,
+                group: id,
+                q: "",
+                view: "",
+              }),
+              replace: true,
+              resetScroll: false,
+            });
+          });
         };
 
         return (
