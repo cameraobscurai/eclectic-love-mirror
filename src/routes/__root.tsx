@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
+import { DevEditOverlay } from "../components/DevEditOverlay";
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.otf?url";
@@ -137,6 +138,7 @@ function RootComponent() {
           <Footer />
         </div>
       )}
+      <DevEditOverlay />
     </>
   );
 }

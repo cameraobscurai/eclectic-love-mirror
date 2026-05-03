@@ -239,22 +239,44 @@ export function GalleryMasthead({
       <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-stage">
           {/* Counter */}
-          <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
+          <p
+            id="gallery-counter"
+            data-devedit
+            data-devedit-label="Counter"
+            className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0"
+          >
             {visibleCount.toString().padStart(2, "0")}{" "}
             {visibleCount === 1 ? "Environment" : "Environments"}
           </p>
 
           {/* Heading */}
-          <h1 ref={headingRef} id="gallery-heading" className="gallery-hero-heading">
+          <h1
+            ref={headingRef}
+            id="gallery-heading"
+            data-devedit
+            data-devedit-label="Heading"
+            className="gallery-hero-heading"
+          >
             The Gallery
           </h1>
 
           {/* Ghost glass plate — page-anchored, sits between the heading
               and the map. Pure decoration, hence aria-hidden. */}
-          <div className="gallery-glass-ghost" aria-hidden="true" />
+          <div
+            id="gallery-ghost"
+            data-devedit
+            data-devedit-label="Ghost panel"
+            className="gallery-glass-ghost"
+            aria-hidden="true"
+          />
 
           {/* Panels area — the map only */}
-          <div className="gallery-hero-panels">
+          <div
+            id="gallery-panels"
+            data-devedit
+            data-devedit-label="Map panel"
+            className="gallery-hero-panels"
+          >
             <div className="gallery-glass-map">
               <div className="flex items-center justify-between gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2 sm:pb-3">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55 m-0">
