@@ -831,7 +831,10 @@ function CollectionPage() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-2 py-3">
+              <div
+                className="flex-1 overflow-y-auto px-2 py-3"
+                style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" }}
+              >
                 <CollectionRail
                   products={products}
                   activeGroup={activeGroup}
@@ -848,7 +851,10 @@ function CollectionPage() {
                 />
               </div>
 
-              <div className="px-6 py-4 border-t border-charcoal/10">
+              <div
+                className="px-6 py-4 border-t border-charcoal/10"
+                style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+              >
                 <button
                   onClick={() => setSheetOpen(false)}
                   className="w-full h-12 bg-charcoal text-white text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
