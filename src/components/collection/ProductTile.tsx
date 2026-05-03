@@ -21,6 +21,18 @@ const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
 const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
 
+// Row-aware reveal — wipes left→right as each row scrolls into view.
+// Math is column-modulo against the widest breakpoint (xl: 6 cols). On
+// narrower viewports column 1 still gets 0ms, so the wipe direction reads
+// correctly even though the absolute offsets compress slightly.
+const REVEAL_COLS = 6;
+const REVEAL_STEP_MS = 60;
+const REVEAL_MAX_DELAY_MS = 240;
+// Above-the-fold tiles skip the wipe entirely — they appear together on
+// initial paint, no perceptible cascade. Wipe only kicks in for tiles that
+// enter via scroll.
+const REVEAL_SKIP_INDEX = 12;
+
 export function ProductTile({
   product,
   index,
@@ -41,6 +53,17 @@ export function ProductTile({
 
   const [loaded, setLoaded] = useState(false);
   const showInternals = near; // gates image, hover label, fetch
+
+  // Row-aware reveal — fires once the tile is near the viewport AND its
+  // image has resolved (or there's no image). Tiles in the eager window
+  // skip the cascade so the first paint isn't artificially staggered.
+  const skipReveal = reduced || index < REVEAL_SKIP_INDEX;
+  const hasImage = Boolean(product.primaryImage);
+  const readyToReveal = near && (loaded || !hasImage);
+  const entered = skipReveal ? true : readyToReveal;
+  const revealDelayMs = skipReveal
+    ? 0
+    : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
@@ -71,6 +94,21 @@ export function ProductTile({
         overflow: "hidden",
       }}
     >
+      {/* Reveal wrapper — opacity/transform/blur cascade keyed off `entered`.
+          Lives inside the layout-projected <li> so motion.layout still owns
+          position transitions when filters change; this only animates the
+          one-shot enter. */}
+      <div
+        style={{
+          opacity: entered ? 1 : 0,
+          transform: entered ? "translateY(0)" : "translateY(4px)",
+          filter: entered ? "blur(0px)" : "blur(2px)",
+          transition: skipReveal
+            ? "none"
+            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+          willChange: entered ? "auto" : "opacity, transform, filter",
+        }}
+      >
       {showInternals ? (
         <button
           onClick={onOpen}
@@ -185,8 +223,10 @@ export function ProductTile({
           {/* Caption spacer mirrors hydrated state: only present on mobile,
               where the visible caption lives below the image. */}
           <div className="md:hidden mt-3 h-[34px]" />
+          <div className="md:hidden mt-3 h-[34px]" />
         </div>
       )}
+      </div>
     </motion.li>
   );
 }

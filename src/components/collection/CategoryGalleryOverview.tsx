@@ -6,6 +6,7 @@ import {
 } from "@/lib/collection-browse-groups";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { useNearViewport } from "@/hooks/useNearViewport";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface CategoryGalleryOverviewProps {
@@ -15,6 +16,16 @@ interface CategoryGalleryOverviewProps {
   }>;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
+
+// Row-aware reveal — same column-modulo cascade used by the product grid.
+// Widest grid is xl:6 cols; on narrower breakpoints the wipe still reads
+// left→right because column 1 always gets 0ms.
+const REVEAL_COLS = 6;
+const REVEAL_STEP_MS = 60;
+const REVEAL_MAX_DELAY_MS = 300;
+// First row appears together on initial paint — no perceptible cascade for
+// above-the-fold content. Rows 2+ reveal as scroll brings them into view.
+const FIRST_ROW_COUNT = 6;
 
 /**
  * Category gallery — the "front door" to the archive.
@@ -55,11 +66,14 @@ export function CategoryGalleryOverview({
             ? BROWSE_GROUP_LABELS[group.id]
             : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
           const label = BROWSE_GROUP_LABELS[group.id];
-          const delay = reduced ? 0 : Math.min(idx * 0.02, 0.2);
-          // First row on the widest grid (6-col) is above-the-fold on the
-          // category landing — load + prioritize eagerly so they all arrive
-          // together rather than trickling in last.
-          const isFirstRow = idx < 6;
+          // First row above-the-fold: load + prioritize eagerly so they all
+          // arrive together rather than trickling in last.
+          const isFirstRow = idx < FIRST_ROW_COUNT;
+          // Column-modulo delay → row wipes left→right. First-row cards
+          // skip the delay so initial paint isn't artificially staggered.
+          const revealDelayMs = isFirstRow
+            ? 0
+            : Math.min((idx % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
           return (
             <CategoryCard
@@ -70,8 +84,8 @@ export function CategoryGalleryOverview({
               heroAlt={heroAlt}
               label={label}
               isFirstRow={isFirstRow}
-              reduced={reduced}
-              delay={delay}
+              reduced={Boolean(reduced)}
+              revealDelayMs={revealDelayMs}
               onSelectCategory={onSelectCategory}
             />
           );
@@ -88,8 +102,8 @@ interface CategoryCardProps {
   heroAlt: string;
   label: string;
   isFirstRow: boolean;
-  reduced: boolean | null;
-  delay: number;
+  reduced: boolean;
+  revealDelayMs: number;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
@@ -101,13 +115,25 @@ function CategoryCard({
   label,
   isFirstRow,
   reduced,
-  delay,
+  revealDelayMs,
   onSelectCategory,
 }: CategoryCardProps) {
   const [loaded, setLoaded] = useState(false);
 
+  // First-row cards reveal immediately on mount; later rows wait until they
+  // approach the viewport so the wipe fires per-row as the user scrolls.
+  const { ref, near } = useNearViewport<HTMLLIElement>({
+    rootMargin: "400px",
+    initial: isFirstRow,
+  });
+
+  const skipReveal = reduced || isFirstRow;
+  const readyToReveal = near && (loaded || !heroSrc);
+  const entered = skipReveal ? true : readyToReveal;
+
   return (
     <motion.li
+      ref={ref}
       className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-white"
       style={{
         position: "relative",
@@ -116,13 +142,13 @@ function CategoryCard({
         background: "#ffffff",
         boxShadow:
           "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
-      }}
-      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: reduced ? 0 : 0.4,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
+        opacity: entered ? 1 : 0,
+        transform: entered ? "translateY(0)" : "translateY(6px)",
+        filter: entered ? "blur(0px)" : "blur(2px)",
+        transition: skipReveal
+          ? "none"
+          : `opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+        willChange: entered ? "auto" : "opacity, transform, filter",
       }}
     >
       <button

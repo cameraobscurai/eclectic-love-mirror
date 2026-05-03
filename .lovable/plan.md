@@ -1,64 +1,57 @@
-## What I got wrong last pass
+## Quick honest answer first
 
-I read your notes as "loose" and treated everything in them as filler. They're not — they're owner-sourced. The only things I should have removed were lines I made up that did NOT appear in your notes (the "studio is a creative work hub" paragraph, the "custom pieces are designed in-house" paragraph, the three Approach body paragraphs, "Studio. Workbench. Warehouse." as an italic line). Everything else came from you and should go back.
+**You're misremembering Local Love a little, and that's actually useful.** Local Love's ProductCard does a flat `index * 0.06` motion-stagger on every tile (capped at 0.5s) — basically "every card delays a tiny bit more than the previous." It looks great when the grid is small (a few dozen sneakers) and reveals top-to-bottom as you scroll because IntersectionObserver triggers each card individually with that constant per-index offset.
 
-This pass restores your words verbatim, ALL CAPS where the brand rule applies (display titles, eyebrows, brand statements), Title/sentence case for the quieter italic line under THE HIVE.
+**That doesn't translate cleanly to Eclectic Hive.** Two reasons:
 
-## Restorations from your notes
+1. **Scale.** The Collection grid is ~876 products. A flat per-index delay would mean tile #500 has the same 0.5s cap as tile #18, but tiles around the same row would *also* fire from the same observer batch with no row awareness — which on a 6-col grid reads as "random tiles popping in," not "rows wiping in."
+2. **Brand register.** Local Love is playful sneaker culture. Eclectic Hive is Prada/Casa Carta editorial restraint. We want subtle addiction through *rhythm*, not bounce or animation theatrics.
 
-### `src/routes/atelier.tsx`
+So we pull the **idea** (per-tile reveal stagger) and adapt it for our scale + register: **row-aware left-to-right wipe**, very short, very calm.
 
-1. **HERO — restore your supporting line, in caps.**
-   Under the `IMAGINED. / DESIGNED. / REALIZED.` headline, add back:
-   > **THE ATELIER IS WHERE DESIGN AUTHORSHIP, MATERIAL EXPLORATION, AND FABRICATION CONVERGE — THROUGH PROCESS & INTENTION.**
+## What's there now
 
-   Rendered as a wide-tracked supporting line (not body paragraph): `text-xs uppercase tracking-[0.22em] text-charcoal/70`, max-w ~52ch, sits below the headline.
+- **Product grid (`ProductTile.tsx`)**: 600px IntersectionObserver per tile, eager-loads first 12 images, fetchpriority high on first 12, but **no enter animation at all.** Tiles just appear when `near` flips. That's why it feels mechanical instead of rhythmic.
+- **Category landing (`CategoryGalleryOverview.tsx`)**: Already has a stagger — but it's `idx * 0.02` flat across all cards, capped at 0.2s. On a 6-col grid the first 10 cards stagger nicely, then everything past index ~10 fires simultaneously. Reads as "first row reveals, then a clump."
 
-   Also add a small brand-statement eyebrow above or beside, from your notes:
-   > **WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION HOUSE.**
+## What we change
 
-   Placement: directly under the existing `ATELIER BY THE HIVE` eyebrow, same caps treatment, slightly larger weight. (Your note reads "WE DESIGNERS…" — I'm assuming the missing "ARE"; flag if you want it literal.)
+### 1. `ProductTile.tsx` — add row-aware left-to-right reveal
 
-2. **THE ARTIST'S STUDIO — keep apertures, don't add invented body.**
-   Your notes only gave the title `THE ARTIST'S STUDIO` and `STUDIO [THE ATELIER]` as a label cue. No paragraphs of yours exist for this section. Leave it as: eyebrow + STUDIO / WORKBENCH / WAREHOUSE apertures (current state). No restoration needed here — this is the one section that genuinely had no owner copy.
+When a tile's `near` flips true and its image loads, fade+lift it in with a delay computed from its **column position in the current breakpoint's grid**, not its absolute index. So row 4 of the desktop 5-col grid wipes left→right in ~250ms total, then row 5 starts ~80ms later, etc.
 
-3. **THE FABRICATION — capabilities list stays full-width.**
-   Your notes give the section title and the `START A CONVERSATION` CTA but no body paragraph for this section either. Capabilities list (already owner-sourced) remains the sole text. No restoration needed.
+Implementation:
+- Add an `enter` state alongside `loaded`. Tile becomes "entered" when `loaded && near`.
+- Animation: `opacity 0→1` + `translateY 4px→0` + tiny `filter: blur(2px)→0`. Duration 380ms, ease `[0.22, 1, 0.36, 1]` (same curve Local Love uses, same one we already use elsewhere).
+- Stagger delay: `(index % colsAtCurrentBreakpoint) * 60ms`, capped at 240ms. We can't read the live column count cheaply, so we compute against the **widest** breakpoint (6 cols on xl). On narrower viewports the math still produces a pleasing left-bias because column-1 tiles get 0ms, column-6 tiles get 300ms, and CSS-grid wraps them naturally.
+- First 12 tiles (above the fold) skip the delay entirely — they appear together as the page loads, no perceptible wipe. Wipe only kicks in for tiles entering via scroll.
+- Reduced motion: skip animation, set entered=true immediately. (We already check `useReducedMotion`.)
 
-4. **ATELIER APPROACH — leave number + label only.**
-   Your notes give `IMAGINED. DESIGNED. REALIZED.` as the triplet, no per-step bodies. Current state is correct (number + caps label only). No restoration.
+This gives the "subtly addictive" feel — every scroll reveals a row that wipes in left-to-right like a curtain pull, never two rows at once, never bouncy.
 
-5. **CTA — already correct.**
-   `BRING A PROJECT TO THE ATELIER.` + `START A CONVERSATION` button. Both match your notes.
+### 2. `CategoryGalleryOverview.tsx` — same treatment, sized for 6-col
 
-### `src/components/atelier/team.tsx`
+Replace the flat `idx * 0.02` (cap 0.2s) with the same column-modulo math: `(idx % 6) * 60ms` cap 300ms. First row staggers left→right like a card spread. Subsequent rows reveal as you scroll (which on a 5-row category landing means rows 2+ get the same wipe when they enter view).
 
-6. **THE HIVE — restore the tagline.**
-   Your notes give it explicitly:
-   > *Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.*
+To make rows 2+ actually wait for scroll instead of all firing together on mount, gate the animation on the same `useNearViewport` hook the product grid uses (the category overview currently animates everything on mount because there's no observer). Add a 600px-margin observer to each card so the wipe fires per-row as the user scrolls.
 
-   Restore this as the right-column quiet italic line next to the `THE HIVE` display title. Keep Title/sentence case (per `mem://design/typography-caps.md` — quiet italic lines stay sentence case, only display titles + brand statements go ALL CAPS). Style: small italic, `text-charcoal/70`, leading-relaxed, sits in the right column the way it did before.
+### 3. Don't touch image loading thresholds
 
-7. **Title stays `THE HIVE`** — already correct from last pass.
+EAGER_LOAD_COUNT (12), HIGH_FETCH_COUNT (12), rootMargin (600px) — all stay. Those are already tuned. We're adding **visual rhythm on top of**, not changing, the loading strategy.
 
-## What stays stripped (these were genuinely AI-written, not in your notes)
+## What we explicitly do NOT do
 
-- "The studio is a creative work hub…" paragraph (Artist's Studio).
-- "Material exploration happens at the table…" paragraph (Artist's Studio).
-- "Eclectic Hive is a full-service design and production house…" paragraph (Fabrication).
-- "Custom pieces are designed in-house…" paragraph (Fabrication).
-- The three body paragraphs under IMAGINED / DESIGNED / REALIZED (Approach).
-- "Studio. Workbench. Warehouse." italic line (Artist's Studio) — invented framing.
-
-If any of those WERE actually from notes I missed, point me at them and I'll restore.
+- No flat `index * 0.06` Local Love-style cascade. Wrong for 876 products.
+- No motion.layout cascade. Existing layout reflow on filter change stays as-is — that's a different visual event.
+- No new dependencies. framer-motion is already in use.
+- No bounce, no scale, no playful elasticity. Cubic-bezier `[0.22, 1, 0.36, 1]` only.
+- No change to LCP — first 12 tiles still arrive with no delay.
 
 ## Files touched
 
-- `src/routes/atelier.tsx` — add brand statement eyebrow + supporting line under hero headline.
-- `src/components/atelier/team.tsx` — restore right-column italic tagline next to THE HIVE.
+- `src/components/collection/ProductTile.tsx` — add `entered` state + motion enter animation with column-modulo delay.
+- `src/components/collection/CategoryGalleryOverview.tsx` — swap flat stagger for column-modulo, add `useNearViewport` gate so rows 2+ wipe on scroll.
 
-## Out of scope
+## Open question (one)
 
-- No new images, no structure changes, no copy I didn't pull from your notes.
-- "RENTALS OR INVENTORY OR — DECOR —" line in your notes reads like a category-naming question for elsewhere on the site, not Atelier copy. Leaving it alone here; flag if you want it placed.
-- "HOW LONG THEY ARE ON WEBSITE" reads like an analytics question, not page copy. Leaving alone.
+Column count for the modulo is hard-coded to 6 (the widest breakpoint). The cheap alternative is: pass the live column count down via a CSS var or a small `useGridCols` hook reading from a ResizeObserver. **Default plan uses the hard-coded 6** — it's good enough on every breakpoint because column 1 always gets 0ms and the wipe just feels slightly faster on narrow screens. If you want true per-breakpoint accuracy, say so and I'll add the resize-observer hook (one extra render on resize, negligible cost).
