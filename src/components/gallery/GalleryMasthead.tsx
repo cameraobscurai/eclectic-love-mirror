@@ -97,13 +97,13 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Panels group — lifted to fill the upper field while still overlapping the heading. */
+        /* Panels group — half height, sandwiching the heading vertically. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
-          top: clamp(92px, 13vh, 132px);
+          top: clamp(96px, 14vh, 140px);
           width: clamp(420px, 46vw, 720px);
-          height: clamp(380px, 54vh, 560px);
+          height: clamp(190px, 27vh, 280px);
           z-index: 2;
         }
 
@@ -116,40 +116,59 @@ export function GalleryMasthead({
           z-index: 1;
         }
 
-        /* Map glass panel — fills its parent (the panels group). */
+        /* Map glass panel — light, frosty, cream-tinted (not dark on dark). */
         .gallery-glass-map {
           position: relative;
           width: 100%;
           height: 100%;
           display: grid;
           grid-template-rows: auto 1fr;
-          border: 1px solid rgba(255,255,255,0.09);
-          background: rgba(18,18,18,0.62);
-          backdrop-filter: blur(20px) saturate(120%);
-          -webkit-backdrop-filter: blur(20px) saturate(120%);
+          border: 1px solid rgba(245,242,237,0.18);
+          background: rgba(245,242,237,0.06);
+          backdrop-filter: blur(28px) saturate(140%);
+          -webkit-backdrop-filter: blur(28px) saturate(140%);
           box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.07),
-            0 24px 56px rgba(0,0,0,0.55);
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 24px 56px rgba(0,0,0,0.45);
           overflow: hidden;
           z-index: 2;
         }
 
-        /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
-           the map's left edge — only that 30px sliver peeks out. Lifted
-           opacity so it actually reads against the charcoal field. */
+        /* Ghost panel — light frosted sliver peeking from behind the map. */
         .gallery-glass-ghost {
           position: absolute;
           right: calc(100% - 30px);
-          top: 10%;
+          top: 8%;
           width: clamp(140px, 14vw, 210px);
-          height: clamp(200px, 32vh, 340px);
-          background: rgba(255,255,255,0.018);
-          border: 1px solid rgba(255,255,255,0.042);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
+          height: clamp(140px, 22vh, 220px);
+          background: rgba(245,242,237,0.04);
+          border: 1px solid rgba(245,242,237,0.10);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
           transform: rotate(-2.5deg);
           pointer-events: none;
           z-index: 1;
+        }
+
+        /* Wide frosted band sitting BEHIND the heading — sandwich layer. */
+        .gallery-hero-haze {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: clamp(96px, 13vh, 148px);
+          height: clamp(180px, 22vh, 260px);
+          background: linear-gradient(
+            180deg,
+            rgba(245,242,237,0) 0%,
+            rgba(245,242,237,0.045) 45%,
+            rgba(245,242,237,0.02) 100%
+          );
+          backdrop-filter: blur(18px) saturate(120%);
+          -webkit-backdrop-filter: blur(18px) saturate(120%);
+          border-top: 1px solid rgba(245,242,237,0.06);
+          border-bottom: 1px solid rgba(245,242,237,0.04);
+          pointer-events: none;
+          z-index: 0;
         }
 
         /* ----------------------------------------------------------------
@@ -195,7 +214,8 @@ export function GalleryMasthead({
           /* Map is a desktop-only conceit. Hide both panels and ghost. */
           .gallery-hero-panels,
           .gallery-glass-map,
-          .gallery-glass-ghost {
+          .gallery-glass-ghost,
+          .gallery-hero-haze {
             display: none !important;
           }
           /* Tighten pills so 4 filters wrap to 2 lines max, never stack
@@ -213,11 +233,8 @@ export function GalleryMasthead({
 
       <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-stage">
-          {/* Counter */}
-          <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
-            {visibleCount.toString().padStart(2, "0")}{" "}
-            {visibleCount === 1 ? "Environment" : "Environments"}
-          </p>
+          {/* Frosted haze band behind the heading */}
+          <div className="gallery-hero-haze" aria-hidden="true" />
 
           {/* Heading */}
           <h1 id="gallery-heading" className="gallery-hero-heading">
