@@ -14,7 +14,10 @@ interface ProductTileProps {
   onImageFailed?: (productId: string) => void;
 }
 
-const EAGER_RENDER_COUNT = 12; // first 12: render full internals immediately
+// Eager render = first three full rows on wide desktops, two on smaller.
+// Bumping past 12 was previously risky because tiles were heavy; with
+// content-visibility:auto on the deferred shells, off-screen cost stays low.
+const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
 const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
 
@@ -109,13 +112,9 @@ export function ProductTile({
                 height={800}
                 loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
                 decoding="async"
-                ref={(el) => {
-                  if (!el) return;
-                  el.setAttribute(
-                    "fetchpriority",
-                    index < HIGH_FETCH_COUNT ? "high" : "auto",
-                  );
-                }}
+                // Inline so the preload scanner sees it before mount.
+                // Cast: React's types don't yet include fetchpriority.
+                {...({ fetchpriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
                 // No padding — the source assets already carry their own
@@ -167,8 +166,18 @@ export function ProductTile({
           </p>
         </button>
       ) : (
-        // Deferred shell — pure white, no shimmer plate
-        <div aria-hidden className="block w-full bg-white">
+        // Deferred shell — pure white, no shimmer plate. content-visibility
+        // lets the browser skip layout/paint entirely while off-screen, and
+        // contain-intrinsic-size reserves stable space so scrollbar position
+        // and layout don't shift when the shell hydrates.
+        <div
+          aria-hidden
+          className="block w-full bg-white"
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "var(--archive-tile-media-h, 320px)",
+          }}
+        >
           <div
             className="w-full bg-white"
             style={{ height: "var(--archive-tile-media-h)" }}
