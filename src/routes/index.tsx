@@ -424,6 +424,26 @@ function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* Variant toggle — quiet bottom-right control. Two dots,
+            current variant filled. Click to flip. */}
+        <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
+          {(["moodboard", "exploded"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setVariant(v)}
+              aria-label={`Show ${v} hero`}
+              aria-pressed={variant === v}
+              className={cn(
+                "h-1.5 w-1.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+                variant === v
+                  ? "bg-cream scale-110"
+                  : "bg-cream/30 hover:bg-cream/60"
+              )}
+            />
+          ))}
+        </div>
       </section>
     </main>
   );
