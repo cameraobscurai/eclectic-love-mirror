@@ -1,23 +1,6 @@
 import type { ReactNode } from "react";
 import type { GalleryCategory } from "@/content/gallery-projects";
 
-// ---------------------------------------------------------------------------
-// GalleryMasthead
-//
-// Reactive CSS Grid composition. Every position / size value uses clamp(),
-// vw, % or grid placement — never a hardcoded px offset (except 1px borders).
-//
-// Desktop grid (≥640px):
-//   ┌──────────────────────────────────────────┐
-//   │ counter (.) (.) (.) │ . │ . │ . │ . │   │
-//   │ heading heading heading heading panels  │
-//   │ heading heading heading heading panels  │
-//   │ pills   pills   pills   pills   pills   │
-//   └──────────────────────────────────────────┘
-//
-// Mobile (<640px): single column — counter, panels, heading, pills.
-// ---------------------------------------------------------------------------
-
 export type CategoryFilter = "All" | GalleryCategory;
 
 interface GalleryMastheadProps {
@@ -46,248 +29,340 @@ export function GalleryMasthead({
 }: GalleryMastheadProps) {
   return (
     <>
-      {/* Scoped styles — keep grid and responsive logic with the component. */}
       <style>{`
-        /* ----------------------------------------------------------------
-           Masthead = full-viewport-ish dark stage. Heading anchors lower-
-           left, panels float vertically centered on the right edge, ghost
-           panel hides behind the map (only ~30px peeks out the left side).
+        /*
+         * GALLERY MASTHEAD
+         * Full-viewport dark stage. Three independent absolute layers:
+         *   z:1 — heading + counter (bottom-left, bleeds right)
+         *   z:1 — ghost panel (decorative, trails behind map)
+         *   z:2 — map panel (center-right, floats at true viewport middle)
+         *   z:3 — pills (bottom, full width)
+         *
+         * The section fills 100vh. <main> has no paddingTop — a spacer div
+         * handles nav clearance so the section's coordinate space is 0,0 at
+         * the top of the viewport, making top:50% genuinely centered.
+         */
 
-           Absolute positioning — NOT grid — because the composition is
-           intentionally layered, not gridded. The only overlap allowed:
-           the panel's left edge kisses the tail "RY" of "GALLERY".
-           ---------------------------------------------------------------- */
-        .gallery-hero-stage {
+        .gmast-stage {
           position: relative;
           width: 100%;
-          /* Fill the viewport below the nav. The parent <main> already adds
-             padding-top: var(--nav-h), so subtract it here for a true full
-             screen with no extra void above. */
-          min-height: calc(100svh - var(--nav-h));
-          padding: clamp(24px, 3vw, 44px);
-          padding-bottom: clamp(20px, 2.5vw, 36px);
+          height: 100vh;
+          background: #0d0d0d;
           overflow: hidden;
         }
 
-        /* Counter — sits directly above the heading, lower-left. */
-        .gallery-hero-counter {
+        /* ── COUNTER ─────────────────────────────────────────────────── */
+        .gmast-counter {
           position: absolute;
-          left: clamp(24px, 3vw, 44px);
-          /* Bottom = heading bottom + heading height + small gap. */
-          bottom: calc(clamp(80px, 12vh, 160px) + clamp(64px, 8.5vw, 136px) + 10px);
+          left: clamp(24px, 3vw, 48px);
+          /* sits 10px above the top of the heading */
+          bottom: calc(
+            clamp(56px, 7vh, 96px) +
+            clamp(60px, 7.8vw, 124px) +
+            12px
+          );
           margin: 0;
+          font-family: var(--font-sans);
+          font-size: 10px;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: rgba(245, 242, 237, 0.42);
           z-index: 1;
+          white-space: nowrap;
         }
 
-        /* Heading — lower third, one line, bleeds RIGHT toward the panels.
-           Sized so the panel's left edge kisses the tail "RY" of "GALLERY". */
-        .gallery-hero-heading {
+        /* ── HEADING ─────────────────────────────────────────────────── */
+        /*
+         * Sits in the lower-left. "THE GALLERY" in one line.
+         * At ~1280px, font-size ≈ 100px → total width ≈ 860px.
+         * Map panel left edge is at ~44vw from right = ~56vw from left.
+         * At 1280px that's ~717px. So "RY" (last ~12% of word) passes
+         * behind the panel. At 1920px font ≈ 124px, word ≈ 1060px,
+         * panel left ≈ 875px — same overlap ratio. Intentional.
+         */
+        .gmast-heading {
           position: absolute;
-          left: clamp(24px, 3vw, 44px);
-          /* Pulled up slightly so the heading + counter sit higher and the
-             dead space above shrinks. */
-          bottom: clamp(80px, 12vh, 160px);
+          left: clamp(24px, 3vw, 48px);
+          bottom: clamp(56px, 7vh, 96px);
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
-          text-transform: uppercase;
-          color: var(--cream);
+          font-size: clamp(60px, 7.8vw, 124px);
+          letter-spacing: -0.015em;
           line-height: 1;
-          letter-spacing: -0.01em;
-          font-size: clamp(64px, 8.5vw, 136px);
+          color: rgba(245, 242, 237, 0.94);
           white-space: nowrap;
+          text-transform: uppercase;
           z-index: 1;
+          /* heading is BEHIND the map panel — panels are z:2 */
         }
 
-        /* Panels group — absolutely anchored to the right, vertically
-           centered in the stage. With the stage now equal to viewport
-           height (minus nav), top: 50% is true viewport center. */
-        .gallery-hero-panels {
+        /* ── PANELS GROUP ────────────────────────────────────────────── */
+        /*
+         * Absolutely positioned, right-aligned, vertically centered.
+         * Width ~44vw keeps the panel's left edge at ~56vw from left,
+         * which is where "RY" of "GALLERY" lands at target viewports.
+         */
+        .gmast-panels {
           position: absolute;
-          right: clamp(24px, 3vw, 44px);
+          right: clamp(24px, 3vw, 48px);
           top: 50%;
           transform: translateY(-50%);
-          width: clamp(420px, 46vw, 720px);
-          height: clamp(300px, 40vh, 480px);
+          width: clamp(400px, 44vw, 700px);
+          height: clamp(290px, 38vh, 460px);
           z-index: 2;
         }
 
-        /* Pills — bottom-anchored, full-width, left-aligned. */
-        .gallery-hero-pills {
-          position: absolute;
-          left: clamp(24px, 3vw, 44px);
-          right: clamp(24px, 3vw, 44px);
-          bottom: clamp(20px, 2.5vw, 36px);
-          z-index: 1;
-        }
-
-        /* Map glass panel — fills its parent (the panels group). */
-        .gallery-glass-map {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          display: grid;
-          grid-template-rows: auto 1fr;
-          border: 1px solid rgba(255,255,255,0.09);
-          background: rgba(18,18,18,0.62);
-          backdrop-filter: blur(20px) saturate(120%);
-          -webkit-backdrop-filter: blur(20px) saturate(120%);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.07),
-            0 24px 56px rgba(0,0,0,0.55);
-          overflow: hidden;
-          z-index: 2;
-        }
-
-        /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
-           the map's left edge — only that 30px sliver peeks out. Lifted
-           opacity so it actually reads against the charcoal field. */
-        .gallery-glass-ghost {
+        /* ── GHOST PANEL ─────────────────────────────────────────────── */
+        /*
+         * Decorative depth card. Positioned relative to .gmast-panels.
+         * right: calc(100% - 30px) means its right edge is 30px left of
+         * the map panel's left edge — only that 30px sliver is visible.
+         * Over pure #0d0d0d the blur has nothing to frost, so we keep the
+         * opacity very low and let the border edge do the work.
+         */
+        .gmast-ghost {
           position: absolute;
           right: calc(100% - 30px);
-          top: 10%;
-          width: clamp(140px, 14vw, 210px);
-          height: clamp(200px, 32vh, 340px);
-          background: rgba(60,60,64,0.55);
-          border: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          top: 8%;
+          width: clamp(130px, 13.5vw, 210px);
+          height: clamp(190px, 30vh, 320px);
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.055);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          border-radius: 10px;
           transform: rotate(-2.5deg);
           pointer-events: none;
           z-index: 1;
         }
 
-        /* ----------------------------------------------------------------
-           Mobile (≤768px): map is a desktop flourish — hide it entirely so
-           the hero is just counter + heading + pills. The project grid
-           below is what matters on mobile. Mapbox JS is also guarded at
-           runtime (see GalleryMap mobile guard) so it never even loads.
-           ---------------------------------------------------------------- */
+        /* ── MAP GLASS PANEL ─────────────────────────────────────────── */
+        .gmast-map-plate {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          grid-template-rows: auto 1fr;
+          border-radius: 10px;
+          overflow: hidden;
+          background: rgba(18, 18, 18, 0.58);
+          backdrop-filter: blur(22px) saturate(130%);
+          -webkit-backdrop-filter: blur(22px) saturate(130%);
+          border: 1px solid rgba(255, 255, 255, 0.09);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 28px 60px rgba(0, 0, 0, 0.6);
+          z-index: 2;
+        }
+
+        /* Map panel header bar */
+        .gmast-map-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 11px 18px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+          flex-shrink: 0;
+        }
+
+        .gmast-map-label {
+          font-family: var(--font-sans);
+          font-size: 9px;
+          letter-spacing: 0.30em;
+          text-transform: uppercase;
+          color: rgba(245, 242, 237, 0.50);
+          margin: 0;
+        }
+
+        .gmast-map-count {
+          font-family: var(--font-sans);
+          font-size: 9px;
+          letter-spacing: 0.28em;
+          text-transform: uppercase;
+          color: rgba(245, 242, 237, 0.32);
+          margin: 0;
+        }
+
+        /* Map slot fills remaining height */
+        .gmast-map-body {
+          min-height: 0;
+          overflow: hidden;
+        }
+
+        /* ── PILLS ───────────────────────────────────────────────────── */
+        .gmast-pills {
+          position: absolute;
+          left: clamp(24px, 3vw, 48px);
+          right: clamp(24px, 3vw, 48px);
+          bottom: clamp(18px, 2.2vw, 32px);
+          z-index: 3;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .gmast-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: clamp(7px, 0.8vh, 10px) clamp(12px, 1.2vw, 18px);
+          border: 1px solid rgba(245, 242, 237, 0.22);
+          border-radius: 2px;
+          font-family: var(--font-sans);
+          font-size: clamp(8px, 0.65vw, 10px);
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+          background: transparent;
+          color: rgba(245, 242, 237, 0.55);
+        }
+
+        .gmast-pill:hover {
+          color: rgba(245, 242, 237, 0.88);
+          border-color: rgba(245, 242, 237, 0.40);
+        }
+
+        .gmast-pill[aria-pressed="true"] {
+          background: rgba(245, 242, 237, 0.10);
+          color: rgba(245, 242, 237, 0.90);
+          border-color: rgba(245, 242, 237, 0.30);
+        }
+
+        .gmast-pill-count {
+          font-size: 8px;
+          color: rgba(245, 242, 237, 0.30);
+          letter-spacing: 0.15em;
+        }
+
+        .gmast-pill[aria-pressed="true"] .gmast-pill-count {
+          color: rgba(245, 242, 237, 0.45);
+        }
+
+        /* ── MOBILE ≤768px ───────────────────────────────────────────── */
+        /*
+         * Map is a desktop flourish. On mobile: text-only hero, max 42vh,
+         * heading wraps allowed, pills flex-wrap. Map panel hidden entirely
+         * and Mapbox never initialises (guard in GalleryMap.tsx).
+         */
         @media (max-width: 768px) {
-          .gallery-hero-stage {
+          .gmast-stage {
+            height: auto;
             min-height: 0;
-            max-height: 45vh;
+            max-height: 42vh;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            gap: clamp(14px, 4vw, 22px);
             padding: clamp(20px, 5vw, 28px);
-            padding-top: 12vh;
+            padding-top: 10vh;
             overflow: visible;
+            gap: 0;
           }
-          .gallery-hero-counter,
-          .gallery-hero-heading,
-          .gallery-hero-pills {
+
+          .gmast-counter,
+          .gmast-heading,
+          .gmast-pills {
             position: static;
             transform: none;
             inset: auto;
             width: 100%;
-            height: auto;
           }
-          .gallery-hero-counter {
-            order: 1;
+
+          .gmast-counter {
             font-size: 9px;
-            letter-spacing: 0.28em;
+            margin-bottom: 6px;
           }
-          .gallery-hero-heading {
-            order: 2;
-            font-size: clamp(48px, 12vw, 72px);
+
+          .gmast-heading {
+            font-size: clamp(46px, 12vw, 70px);
             white-space: normal;
             line-height: 0.95;
-            padding-bottom: 4px;
+            margin-bottom: 20px;
           }
-          .gallery-hero-pills { order: 3; }
-          /* Map is a desktop-only conceit. Hide both panels and ghost. */
-          .gallery-hero-panels,
-          .gallery-glass-map,
-          .gallery-glass-ghost {
+
+          .gmast-panels,
+          .gmast-ghost,
+          .gmast-map-plate {
             display: none !important;
           }
-          /* Tighten pills so 4 filters wrap to 2 lines max, never stack
-             vertically. Smaller padding + smaller text + smaller gap. */
-          .gallery-hero-pills .gallery-pill {
-            padding: 7px 12px !important;
-            font-size: 9px !important;
-            letter-spacing: 0.2em !important;
+
+          .gmast-pills {
+            position: static;
+            gap: 6px;
           }
-          .gallery-hero-pills .gallery-pill-row {
-            gap: 6px !important;
+
+          .gmast-pill {
+            padding: 7px 11px;
+            font-size: 9px;
           }
         }
       `}</style>
 
+      {/*
+       * NOTE: The parent <main> in gallery.tsx must NOT have paddingTop.
+       * Add a spacer div instead:
+       *   <div style={{ height: 'var(--nav-h)' }} aria-hidden="true" />
+       * This keeps the section's coordinate space at 0,0 so top:50%
+       * on the panels is genuinely viewport-centered.
+       */}
       <section aria-labelledby="gallery-heading">
-        <div className="gallery-hero-stage">
-          {/* Counter */}
-          <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
+        <div className="gmast-stage">
+
+          {/* Counter — above heading, lower-left */}
+          <p className="gmast-counter">
             {visibleCount.toString().padStart(2, "0")}{" "}
             {visibleCount === 1 ? "Environment" : "Environments"}
           </p>
 
-          {/* Heading */}
-          <h1 id="gallery-heading" className="gallery-hero-heading">
+          {/* Heading — one line, z:1, bleeds right into panel */}
+          <h1 id="gallery-heading" className="gmast-heading">
             The Gallery
           </h1>
 
-          {/* Panels area */}
-          <div className="gallery-hero-panels">
-            <div className="gallery-glass-ghost" aria-hidden="true" />
-            <div className="gallery-glass-map">
-              <div className="flex items-center justify-between gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2 sm:pb-3">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55 m-0">
-                  Where We've Built
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
+          {/* Panels group — z:2, floats center-right */}
+          <div className="gmast-panels" aria-hidden="false">
+
+            {/* Ghost panel — decorative depth, z:1, peeks 30px left of map */}
+            <div className="gmast-ghost" aria-hidden="true" />
+
+            {/* Map glass plate — z:2, fills panels container */}
+            <div className="gmast-map-plate">
+              <div className="gmast-map-header">
+                <p className="gmast-map-label">Where We've Built</p>
+                <p className="gmast-map-count">
                   {visibleCount.toString().padStart(2, "0")} Locations
                 </p>
               </div>
-              <div className="min-h-0 px-3 sm:px-4 pb-3 sm:pb-4">
+              <div className="gmast-map-body">
                 {mapSlot}
               </div>
             </div>
+
           </div>
 
-          {/* Pills */}
-          <div className="gallery-hero-pills">
-            <div className="gallery-pill-row flex flex-wrap gap-2">
-              {FILTERS.map((f) => {
-                const isActive = active === f;
-                const count = counts[f] ?? 0;
-                return (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => onChange(f)}
-                    aria-pressed={isActive}
-                    className={[
-                      "gallery-pill inline-flex items-center gap-2 px-4 py-2 border transition-colors",
-                      "text-[10px] uppercase tracking-[0.22em]",
-                      "focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal",
-                      isActive
-                        ? "bg-cream text-charcoal border-cream"
-                        : "bg-transparent text-cream/70 border-cream/20 hover:text-cream hover:border-cream/40",
-                    ].join(" ")}
-                  >
-                    <span>{f === "All" ? "ALL" : f.toUpperCase()}</span>
-                    <span
-                      className={
-                        isActive
-                          ? "text-charcoal/55 tabular-nums"
-                          : "text-cream/40 tabular-nums"
-                      }
-                    >
-                      {count.toString().padStart(2, "0")}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            {active !== "All" && (
-              <p className="mt-3 text-[10px] uppercase tracking-[0.22em] text-cream/40">
-                Showing {visibleCount} of {total}
-              </p>
-            )}
+          {/* Pills — z:3, bottom-anchored */}
+          <div className="gmast-pills" role="group" aria-label="Filter by category">
+            {FILTERS.map((f) => {
+              const isActive = active === f;
+              const count = counts[f] ?? 0;
+              return (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => onChange(f)}
+                  aria-pressed={isActive}
+                  className="gmast-pill"
+                >
+                  <span>{f === "All" ? "ALL" : f.toUpperCase()}</span>
+                  <span className="gmast-pill-count">
+                    {count.toString().padStart(2, "0")}
+                  </span>
+                </button>
+              );
+            })}
           </div>
+
         </div>
       </section>
     </>
