@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
 import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
+import { GalleryMap } from "@/components/gallery/GalleryMap";
 import {
   galleryProjects,
   type GalleryCategory,
