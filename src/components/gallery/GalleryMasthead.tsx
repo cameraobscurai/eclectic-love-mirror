@@ -156,10 +156,7 @@ export function GalleryMasthead({
         }
       `}</style>
 
-      <section
-        style={{ paddingTop: "var(--nav-h)" }}
-        aria-labelledby="gallery-heading"
-      >
+      <section aria-labelledby="gallery-heading">
         <div className="gallery-hero-grid">
           {/* Counter */}
           <p className="gallery-hero-counter text-[10px] sm:text-[11px] uppercase tracking-[0.28em] text-cream/45 tabular-nums m-0">
