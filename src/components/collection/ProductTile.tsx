@@ -223,8 +223,10 @@ export function ProductTile({
           {/* Caption spacer mirrors hydrated state: only present on mobile,
               where the visible caption lives below the image. */}
           <div className="md:hidden mt-3 h-[34px]" />
+          <div className="md:hidden mt-3 h-[34px]" />
         </div>
       )}
+      </div>
     </motion.li>
   );
 }
