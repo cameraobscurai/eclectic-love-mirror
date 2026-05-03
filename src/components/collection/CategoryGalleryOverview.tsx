@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   BROWSE_GROUP_LABELS,
@@ -23,9 +23,13 @@ interface CategoryGalleryOverviewProps {
 const REVEAL_COLS = 6;
 const REVEAL_STEP_MS = 60;
 const REVEAL_MAX_DELAY_MS = 300;
-// First row appears together on initial paint — no perceptible cascade for
-// above-the-fold content. Rows 2+ reveal as scroll brings them into view.
+// First row is treated as a single arrival beat — no cascade, but we hold
+// the entire row hidden until ALL six images have resolved (or a hard
+// timeout fires). This guarantees the row reads as one event regardless of
+// which source (bundled asset vs CDN) is slowest.
 const FIRST_ROW_COUNT = 6;
+// Safety net so a single broken image can't strand the row forever.
+const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
 /**
  * Category gallery — the "front door" to the archive.
@@ -33,9 +37,6 @@ const FIRST_ROW_COUNT = 6;
  * Brand-aligned with the rest of the Collection page: clinical white field,
  * 1px hairline grid, specimen-style imagery with deliberate breathing room,
  * left-aligned uppercase Cormorant labels with the count as quiet metadata.
- *
- * No gradients, no dark photographic overlays, no bouncy hover scales —
- * the same surgical/editorial register as the product grid.
  */
 export function CategoryGalleryOverview({
   groups,
@@ -43,47 +44,83 @@ export function CategoryGalleryOverview({
 }: CategoryGalleryOverviewProps) {
   const reduced = useReducedMotion();
 
+  // Resolve hero sources up-front so the parent owns first-row coordination.
+  const resolved = useMemo(
+    () =>
+      groups.map((group) => {
+        const cover = CATEGORY_COVERS[group.id];
+        const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
+        const rawHero = cover ?? fallbackHero?.url ?? null;
+        const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
+        const heroSrcSet = rawHero
+          ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
+          : undefined;
+        const heroAlt = cover
+          ? BROWSE_GROUP_LABELS[group.id]
+          : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
+        return {
+          group,
+          heroSrc,
+          heroSrcSet,
+          heroAlt,
+          label: BROWSE_GROUP_LABELS[group.id],
+        };
+      }),
+    [groups],
+  );
+
+  // Track which first-row cards have reported their image as loaded (or
+  // failed/empty — anything that means "done waiting"). Once every first-row
+  // slot is accounted for, flip `firstRowReady` and let the row reveal as a
+  // single beat. Reduced-motion users get an immediate true.
+  const firstRowSlots = Math.min(FIRST_ROW_COUNT, resolved.length);
+  const [firstRowDoneCount, setFirstRowDoneCount] = useState(0);
+  const [firstRowTimedOut, setFirstRowTimedOut] = useState(false);
+
+  // Arm the safety-net timeout once on mount.
+  useState(() => {
+    if (typeof window === "undefined") return undefined;
+    const t = window.setTimeout(
+      () => setFirstRowTimedOut(true),
+      FIRST_ROW_REVEAL_TIMEOUT_MS,
+    );
+    return () => window.clearTimeout(t);
+  });
+
+  const firstRowReady =
+    Boolean(reduced) ||
+    firstRowDoneCount >= firstRowSlots ||
+    firstRowTimedOut;
+
+  const reportFirstRowDone = useCallback(() => {
+    setFirstRowDoneCount((n) => n + 1);
+  }, []);
+
   return (
     <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-3 sm:p-4">
-      {/* White grid — cards lift off the white field via soft shadow + radius.
-          Mobile keeps 2 columns (silhouettes stay generous) but uses a shorter
-          aspect ratio so ~4 rows fit above the fold instead of ~2. Desktop
-          retains the portrait specimen frame. */}
       <ul
         className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
         style={{ background: "#ffffff" }}
       >
-        {groups.map((group, idx) => {
-          const cover = CATEGORY_COVERS[group.id];
-          const fallbackHero = group.products.find((p) => p.primaryImage)
-            ?.primaryImage;
-          const rawHero = cover ?? fallbackHero?.url ?? null;
-          const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
-          const heroSrcSet = rawHero
-            ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
-            : undefined;
-          const heroAlt = cover
-            ? BROWSE_GROUP_LABELS[group.id]
-            : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
-          const label = BROWSE_GROUP_LABELS[group.id];
-          // First row above-the-fold: load + prioritize eagerly so they all
-          // arrive together rather than trickling in last.
+        {resolved.map((item, idx) => {
           const isFirstRow = idx < FIRST_ROW_COUNT;
-          // Column-modulo delay → row wipes left→right. First-row cards
-          // skip the delay so initial paint isn't artificially staggered.
+          // First-row cards reveal as one beat → no per-card delay. Later
+          // rows keep the column-modulo wipe.
           const revealDelayMs = isFirstRow
             ? 0
             : Math.min((idx % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
           return (
             <CategoryCard
-              key={group.id}
-              groupId={group.id}
-              heroSrc={heroSrc}
-              heroSrcSet={heroSrcSet}
-              heroAlt={heroAlt}
-              label={label}
+              key={item.group.id}
+              groupId={item.group.id}
+              heroSrc={item.heroSrc}
+              heroSrcSet={item.heroSrcSet}
+              heroAlt={item.heroAlt}
+              label={item.label}
               isFirstRow={isFirstRow}
+              firstRowReady={firstRowReady}
+              onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
               reduced={Boolean(reduced)}
               revealDelayMs={revealDelayMs}
               onSelectCategory={onSelectCategory}
@@ -102,6 +139,8 @@ interface CategoryCardProps {
   heroAlt: string;
   label: string;
   isFirstRow: boolean;
+  firstRowReady: boolean;
+  onFirstRowImageDone?: () => void;
   reduced: boolean;
   revealDelayMs: number;
   onSelectCategory: (id: BrowseGroupId) => void;
@@ -114,22 +153,49 @@ function CategoryCard({
   heroAlt,
   label,
   isFirstRow,
+  firstRowReady,
+  onFirstRowImageDone,
   reduced,
   revealDelayMs,
   onSelectCategory,
 }: CategoryCardProps) {
   const [loaded, setLoaded] = useState(false);
+  const [reported, setReported] = useState(false);
 
-  // First-row cards reveal immediately on mount; later rows wait until they
-  // approach the viewport so the wipe fires per-row as the user scrolls.
+  // First-row cards are mounted immediately (initial: true) so their <img>
+  // requests start in parallel. Later rows wait until they're near.
   const { ref, near } = useNearViewport<HTMLLIElement>({
     rootMargin: "400px",
     initial: isFirstRow,
   });
 
-  const skipReveal = reduced || isFirstRow;
-  const readyToReveal = near && (loaded || !heroSrc);
-  const entered = skipReveal ? true : readyToReveal;
+  // Notify the parent exactly once when this first-row card's image is
+  // resolved (loaded, errored, or there was no image to begin with). The
+  // parent uses these signals to gate the synchronized row reveal.
+  const reportDoneOnce = useCallback(() => {
+    if (reported || !onFirstRowImageDone) return;
+    setReported(true);
+    onFirstRowImageDone();
+  }, [reported, onFirstRowImageDone]);
+
+  // No image → immediately count this slot as done.
+  if (isFirstRow && !heroSrc && !reported) {
+    reportDoneOnce();
+  }
+
+  // Reveal logic:
+  // - reduced motion: always entered.
+  // - first row: entered iff parent says the whole row is ready.
+  // - later rows: entered iff near-viewport AND own image resolved.
+  const entered = reduced
+    ? true
+    : isFirstRow
+      ? firstRowReady
+      : near && (loaded || !heroSrc);
+
+  // First-row cards skip the cascade animation — they all reveal together
+  // with no per-card delay. Later rows keep the wipe.
+  const skipReveal = reduced;
 
   return (
     <motion.li
@@ -140,8 +206,7 @@ function CategoryCard({
         overflow: "hidden",
         borderRadius: "12px",
         background: "#ffffff",
-        boxShadow:
-          "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
         opacity: entered ? 1 : 0,
         transform: entered ? "translateY(0)" : "translateY(6px)",
         filter: entered ? "blur(0px)" : "blur(2px)",
@@ -168,11 +233,23 @@ function CategoryCard({
               loading={isFirstRow ? "eager" : "lazy"}
               decoding="async"
               {...({ fetchpriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
-              onLoad={() => setLoaded(true)}
+              onLoad={() => {
+                setLoaded(true);
+                if (isFirstRow) reportDoneOnce();
+              }}
+              onError={() => {
+                // Treat as "done waiting" so one broken image doesn't
+                // strand the entire first-row reveal.
+                if (isFirstRow) reportDoneOnce();
+              }}
               className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90"
               style={{
-                opacity: loaded ? 1 : 0,
-                transition: "opacity 380ms ease-out",
+                // First-row images are revealed by the row-wide gate (parent
+                // flips `entered` once everyone's ready), so we paint them
+                // at full opacity from mount inside the hidden card. Later
+                // rows keep the per-image fade for a softer scroll arrival.
+                opacity: isFirstRow ? 1 : loaded ? 1 : 0,
+                transition: isFirstRow ? "none" : "opacity 380ms ease-out",
               }}
             />
           ) : (
@@ -180,10 +257,7 @@ function CategoryCard({
           )}
         </div>
 
-        {/* Frosted-glass label overlay — floats over the bottom of the
-            image, inside the card frame. Name only, no count. Stays at
-            partial opacity while the hero loads, then settles to full —
-            keeps the card legible without feeling like a hard pop. */}
+        {/* Frosted-glass label overlay. */}
         <div
           className="px-2.5 py-1.5 sm:px-3.5 sm:py-2.5"
           style={{
@@ -196,7 +270,7 @@ function CategoryCard({
             WebkitBackdropFilter: "blur(12px)",
             borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
             borderRadius: "0 0 12px 12px",
-            opacity: loaded || !heroSrc ? 1 : 0.6,
+            opacity: isFirstRow || loaded || !heroSrc ? 1 : 0.6,
             transition: "opacity 380ms ease-out",
           }}
         >
