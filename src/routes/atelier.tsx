@@ -95,34 +95,47 @@ function AtelierPage() {
             <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
               Imagined.
               <br />
-              Refined.
+              Designed.
               <br />
-              Crafted.
+              Realized.
             </h1>
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-charcoal/70">
-              A working studio for design, fabrication, and production. Every
-              object on a guest's table — every chair, lamp, drape, and bar — is
-              chosen, made, or finished here before it leaves the warehouse.
+              We are designers, producers, and a fabrication house. The atelier
+              is where design authorship, material exploration, and fabrication
+              converge — through process and intention.
             </p>
           </div>
           <div className="md:col-span-5">
-            <MediaAperture ratio="4/5" />
+            {/* Section-1 hero. First production use of the imagetools +
+                HeroImage pipeline — see vite.config.ts and
+                src/components/hero-image.tsx. The frame is locked to 4/5 so
+                the layout doesn't shift before decode. */}
+            <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/5" }}>
+              <HeroImage
+                source={atelierHero}
+                alt="Atelier moodboard — figure study and material swatches behind glass."
+                focalPoint={{ x: 50, y: 45 }}
+                scrim="none"
+                priority
+                sizes="(min-width: 768px) 40vw, 100vw"
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. THE TEAM — real staff module. Always renders, even before
+      {/* 2. THE HIVE — real staff module. Always renders, even before
           portraits exist. See src/components/atelier/team.tsx for the data
           model and the public-render gate. */}
-      <Section eyebrow="02 — The Humans">
+      <Section eyebrow="02 — The Hive">
         <AtelierTeam />
       </Section>
 
-      {/* 3. THE CREATIVE SPACE */}
-      <Section eyebrow="The Creative Space">
+      {/* 3. THE ARTIST'S STUDIO */}
+      <Section eyebrow="The Artist's Studio">
         <div className="grid md:grid-cols-12 gap-10">
           <p className="md:col-span-5 font-display italic text-2xl md:text-3xl leading-[1.2] text-charcoal/80">
-            Studio, workbench, warehouse.
+            Studio. Workbench. Warehouse.
           </p>
           <div className="md:col-span-7 space-y-5 text-base leading-relaxed text-charcoal/70">
             <p>
@@ -168,8 +181,8 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. SCOPE + FABRICATION — capability evidence, not a services list. */}
-      <Section eyebrow="Scope + Fabrication">
+      {/* 4. THE FABRICATION — capability evidence, not a services list. */}
+      <Section eyebrow="The Fabrication">
         <div className="grid md:grid-cols-12 gap-10">
           <div className="md:col-span-5 space-y-5 text-base leading-relaxed text-charcoal/70">
             <p>
@@ -220,13 +233,13 @@ function AtelierPage() {
           />
           <ApproachStep
             number="02"
-            label="REFINED"
+            label="DESIGNED"
             body="Material exploration, scale studies, and revisions. The proposal tightens until every detail earns its place."
           />
           <ApproachStep
             number="03"
-            label="CRAFTED"
-            body="Fabrication, finishing, and on-site install. The Atelier stays with the project from first sketch to final strike."
+            label="REALIZED"
+            body="Fabrication, finishing, and on-site install. The atelier stays with the project from first sketch to final strike."
           />
         </div>
       </Section>
