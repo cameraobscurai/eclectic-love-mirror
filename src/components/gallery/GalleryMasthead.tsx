@@ -253,9 +253,12 @@ export function GalleryMasthead({
             The Gallery
           </h1>
 
-          {/* Panels area */}
+          {/* Ghost glass plate — page-anchored, sits between the heading
+              and the map. Pure decoration, hence aria-hidden. */}
+          <div className="gallery-glass-ghost" aria-hidden="true" />
+
+          {/* Panels area — the map only */}
           <div className="gallery-hero-panels">
-            <div className="gallery-glass-ghost" aria-hidden="true" />
             <div className="gallery-glass-map">
               <div className="flex items-center justify-between gap-3 px-4 sm:px-5 pt-3 sm:pt-4 pb-2 sm:pb-3">
                 <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55 m-0">
