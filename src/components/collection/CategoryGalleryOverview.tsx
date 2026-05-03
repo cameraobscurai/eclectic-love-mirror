@@ -178,10 +178,12 @@ function CategoryCard({
     onFirstRowImageDone();
   }, [reported, onFirstRowImageDone]);
 
-  // No image → immediately count this slot as done.
-  if (isFirstRow && !heroSrc && !reported) {
-    reportDoneOnce();
-  }
+  // No image → immediately count this slot as done (post-mount).
+  useEffect(() => {
+    if (isFirstRow && !heroSrc) reportDoneOnce();
+    // reportDoneOnce is stable enough; we only want to fire on mount per card.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Reveal logic:
   // - reduced motion: always entered.
