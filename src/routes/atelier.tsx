@@ -92,13 +92,19 @@ function AtelierPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            <h1 className="mt-4 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
+            <p className="mt-3 text-[11px] uppercase tracking-[0.26em] text-charcoal/75 max-w-[44ch]">
+              WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION HOUSE.
+            </p>
+            <h1 className="mt-6 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
               Imagined.
               <br />
               Designed.
               <br />
               Realized.
             </h1>
+            <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
+              The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
+            </p>
           </div>
           <div className="md:col-span-5">
             {/* Section-1 hero. First production use of the imagetools +
