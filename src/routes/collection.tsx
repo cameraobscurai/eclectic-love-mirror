@@ -201,14 +201,7 @@ function CollectionPage() {
   //      actual data swap, not to a fixed timer that can race React.
   // A safety timeout (500ms) guarantees we never get stuck dim if a memo
   // happens to return the same reference for back-to-back updates.
-  const [gridPending, setGridPending] = useState(false);
-  const gridKey = `${group}|${q}|${sort}`;
-  const lastKeyRef = useRef(gridKey);
-  useEffect(() => {
-    if (lastKeyRef.current === gridKey) return;
-    lastKeyRef.current = gridKey;
-    setGridPending(true);
-  }, [gridKey]);
+  // Grid fade removed — caused product cards to read as greyed out.
 
 
   useEffect(() => {
@@ -349,27 +342,6 @@ function CollectionPage() {
     [filtered, failedIds],
   );
 
-  // Release the pending fade once the new product list is in hand. We wait
-  // one rAF so React has committed the new tiles, plus a 160ms minimum fade
-  // hold so even instant updates have time to read as a transition (not a
-  // flash). A 500ms safety timer guarantees we never get stuck dim.
-  useEffect(() => {
-    if (!gridPending) return undefined;
-    const start = performance.now();
-    const MIN_HOLD = 160;
-    let raf = 0;
-    const safety = window.setTimeout(() => setGridPending(false), 500);
-    raf = requestAnimationFrame(() => {
-      const elapsed = performance.now() - start;
-      const wait = Math.max(0, MIN_HOLD - elapsed);
-      window.setTimeout(() => setGridPending(false), wait);
-    });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(safety);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visibleProducts]);
 
 
   // ---------- Filter rail data: stable order + responsive counts ----------
@@ -804,11 +776,7 @@ function CollectionPage() {
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--cream)",
-                opacity: reduced ? 1 : gridPending ? 0.55 : 1,
-                transition: reduced ? undefined : "opacity 180ms ease-out",
-                willChange: gridPending ? "opacity" : undefined,
               }}
-              aria-busy={gridPending || undefined}
             >
               {showOverview ? (
                 <div className="bg-white">
