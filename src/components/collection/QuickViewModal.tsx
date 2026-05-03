@@ -178,9 +178,9 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* TWO-COLUMN BODY — overflow visible so title can bleed across the divider */}
+        {/* TWO-COLUMN BODY */}
         <div
-          className="min-h-0 relative"
+          className="min-h-0"
           style={{
             display: "grid",
             gridTemplateColumns: "55fr 45fr",
@@ -293,25 +293,6 @@ export function QuickViewModal({
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Floating Scale pill — bottom-right of the image stage */}
-            {hasScale && (
-              <button
-                type="button"
-                onClick={() => setShowScale((s) => !s)}
-                aria-pressed={showScale}
-                className={cn(
-                  "absolute z-10 h-8 px-4 text-[10px] uppercase tracking-[0.22em] transition-all",
-                  "rounded-full backdrop-blur-sm",
-                  showScale
-                    ? "bg-charcoal text-white border border-charcoal shadow-md"
-                    : "bg-white/85 text-charcoal border border-charcoal/15 hover:bg-white hover:border-charcoal/40 shadow-sm",
-                )}
-                style={{ right: 24, bottom: 24 }}
-              >
-                {showScale ? "Hide Scale" : "Show Scale"}
-              </button>
-            )}
           </div>
 
           {/* RIGHT — metadata column */}
@@ -322,7 +303,7 @@ export function QuickViewModal({
               borderLeft: "1px solid rgba(26,26,26,0.08)",
             }}
           >
-            {/* Top — category + description (title is overlaid on the image) */}
+            {/* Top — category, title, description */}
             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
               <p
                 className="uppercase text-charcoal/40"
@@ -330,6 +311,18 @@ export function QuickViewModal({
               >
                 {product.displayCategory}
               </p>
+              <h2
+                className="font-display text-charcoal break-words"
+                style={{
+                  marginTop: 12,
+                  fontSize: "clamp(28px, 3vw, 44px)",
+                  lineHeight: 1.05,
+                  letterSpacing: "var(--tracking-display)",
+                  fontWeight: 400,
+                }}
+              >
+                {product.title}
+              </h2>
               {product.description && (
                 <p
                   className="text-charcoal/60"
@@ -354,8 +347,8 @@ export function QuickViewModal({
                 borderTop: "1px solid rgba(26,26,26,0.08)",
               }}
             >
-              {/* Row 1: thumbs only (scale toggle now lives on the image) */}
-              <div className="flex items-center gap-4">
+              {/* Row 1: thumbs + scale toggle */}
+              <div className="flex items-center justify-between gap-4">
                 {product.images.length > 1 ? (
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                     {product.images.map((im, i) => (
@@ -388,7 +381,24 @@ export function QuickViewModal({
                       </button>
                     ))}
                   </div>
-                ) : null}
+                ) : (
+                  <div />
+                )}
+                {hasScale && (
+                  <button
+                    type="button"
+                    onClick={() => setShowScale((s) => !s)}
+                    aria-pressed={showScale}
+                    className={cn(
+                      "h-7 px-3 text-[10px] uppercase tracking-[0.22em] border transition-colors flex-shrink-0",
+                      showScale
+                        ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
+                        : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
+                    )}
+                  >
+                    {showScale ? "Hide Scale" : "Show Scale"}
+                  </button>
+                )}
               </div>
 
               {/* Row 2: specs + CTA */}
@@ -414,46 +424,6 @@ export function QuickViewModal({
               </div>
             </div>
           </div>
-
-          {/* Title overlay — bleeds across the column divider over the image's lower edge */}
-          <div
-            className="pointer-events-none absolute z-20 hidden md:block"
-            style={{
-              left: 36,
-              right: "32%",
-              bottom: 32,
-            }}
-          >
-            <h2
-              className="font-display text-charcoal break-words"
-              style={{
-                fontSize: "clamp(28px, 3.2vw, 46px)",
-                lineHeight: 1.0,
-                letterSpacing: "var(--tracking-display)",
-                fontWeight: 400,
-                textShadow: "0 1px 24px rgba(249,248,246,0.85)",
-              }}
-            >
-              {product.title}
-            </h2>
-          </div>
-
-          {/* Mobile-only title (no overlay on small screens) */}
-          <h2
-            className="md:hidden absolute font-display text-charcoal break-words pointer-events-none z-20"
-            style={{
-              left: 24,
-              right: 24,
-              bottom: 24,
-              fontSize: "clamp(24px, 6vw, 32px)",
-              lineHeight: 1.0,
-              letterSpacing: "var(--tracking-display)",
-              fontWeight: 400,
-              textShadow: "0 1px 16px rgba(249,248,246,0.9)",
-            }}
-          >
-            {product.title}
-          </h2>
         </div>
       </motion.div>
     </div>,
