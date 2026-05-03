@@ -10,6 +10,8 @@ import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 
 import appCss from "../styles.css?url";
+import saolRegular from "../assets/fonts/SaolDisplay-Regular.otf?url";
+import saolSemibold from "../assets/fonts/SaolDisplay-Semibold.otf?url";
 
 function NotFoundComponent() {
   return (
@@ -62,7 +64,26 @@ export const Route = createRootRoute({
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png",
       },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      // Preload Saol so it's fetched before first paint and we never
+      // flash a fallback serif. `as: "font"` + `crossOrigin: "anonymous"`
+      // are required for the browser to actually use the preload.
+      {
+        rel: "preload",
+        href: saolRegular,
+        as: "font",
+        type: "font/otf",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: saolSemibold,
+        as: "font",
+        type: "font/otf",
+        crossOrigin: "anonymous",
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
