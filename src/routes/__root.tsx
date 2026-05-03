@@ -107,6 +107,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  // Routes that should render as a single self-contained fold — no global
+  // footer, the page owns its own bottom edge. Atelier & Gallery keep the
+  // footer (long editorial scroll, footer is the natural terminus).
+  const hideFooter =
+    pathname === "/collection" ||
+    pathname.startsWith("/collection/") ||
+    pathname === "/contact" ||
+    pathname === "/faq" ||
+    pathname === "/privacy" ||
+    pathname === "/process";
 
   return (
     <>
@@ -122,9 +132,11 @@ function RootComponent() {
           AnimatePresence around <Outlet /> forces full subtree remount and
           is catastrophic on /collection (~900 tiles). */}
       <Outlet />
-      <div className={isHome ? "lg:hidden" : undefined}>
-        <Footer />
-      </div>
+      {!hideFooter && (
+        <div className={isHome ? "lg:hidden" : undefined}>
+          <Footer />
+        </div>
+      )}
     </>
   );
 }
