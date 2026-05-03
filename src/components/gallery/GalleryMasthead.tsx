@@ -60,8 +60,10 @@ export function GalleryMasthead({
         .gallery-hero-stage {
           position: relative;
           width: 100%;
-          /* min-height (not height) so short viewports don't clip. */
-          min-height: clamp(520px, 78vh, 880px);
+          /* Fill the viewport below the nav. The parent <main> already adds
+             padding-top: var(--nav-h), so subtract it here for a true full
+             screen with no extra void above. */
+          min-height: calc(100svh - var(--nav-h));
           padding: clamp(24px, 3vw, 44px);
           padding-bottom: clamp(20px, 2.5vw, 36px);
           overflow: hidden;
@@ -71,19 +73,20 @@ export function GalleryMasthead({
         .gallery-hero-counter {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          /* Bottom = pills offset + heading height + small gap. */
-          bottom: calc(clamp(64px, 8.5vw, 136px) + clamp(72px, 10vh, 140px) + 12px);
+          /* Bottom = heading bottom + heading height + small gap. */
+          bottom: calc(clamp(80px, 12vh, 160px) + clamp(64px, 8.5vw, 136px) + 10px);
           margin: 0;
           z-index: 1;
         }
 
-        /* Heading — lower-left quadrant, one line, bleeds RIGHT toward the
-           panels. Sized so the panel's left edge kisses the tail "RY" of
-           "GALLERY", not the middle. zIndex: 1 — under the panels. */
+        /* Heading — lower third, one line, bleeds RIGHT toward the panels.
+           Sized so the panel's left edge kisses the tail "RY" of "GALLERY". */
         .gallery-hero-heading {
           position: absolute;
           left: clamp(24px, 3vw, 44px);
-          bottom: clamp(72px, 10vh, 140px);
+          /* Pulled up slightly so the heading + counter sit higher and the
+             dead space above shrinks. */
+          bottom: clamp(80px, 12vh, 160px);
           margin: 0;
           font-family: var(--font-display);
           font-weight: 400;
@@ -97,8 +100,8 @@ export function GalleryMasthead({
         }
 
         /* Panels group — absolutely anchored to the right, vertically
-           centered in the stage. The map plate's left edge lands at roughly
-           45-50% of viewport width — exactly where "RY" of "GALLERY" lives. */
+           centered in the stage. With the stage now equal to viewport
+           height (minus nav), top: 50% is true viewport center. */
         .gallery-hero-panels {
           position: absolute;
           right: clamp(24px, 3vw, 44px);
@@ -137,19 +140,18 @@ export function GalleryMasthead({
         }
 
         /* Ghost panel — sits BEHIND the map. Right edge offset by 30px from
-           the map's left edge — only that 30px sliver peeks out. Slight
-           rotation gives it a stacked-cards feel. NEVER crosses left into
-           clean letterforms. */
+           the map's left edge — only that 30px sliver peeks out. Lifted
+           opacity so it actually reads against the charcoal field. */
         .gallery-glass-ghost {
           position: absolute;
           right: calc(100% - 30px);
           top: 10%;
           width: clamp(140px, 14vw, 210px);
           height: clamp(200px, 32vh, 340px);
-          background: rgba(20,20,20,0.32);
-          border: 1px solid rgba(255,255,255,0.04);
-          backdrop-filter: blur(5px);
-          -webkit-backdrop-filter: blur(5px);
+          background: rgba(60,60,64,0.55);
+          border: 1px solid rgba(255,255,255,0.08);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           transform: rotate(-2.5deg);
           pointer-events: none;
           z-index: 1;
