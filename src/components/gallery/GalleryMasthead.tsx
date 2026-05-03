@@ -156,21 +156,25 @@ export function GalleryMasthead({
         }
 
         /* ----------------------------------------------------------------
-           Mobile (≤720px): drop absolute composition entirely. Flex column.
-           Order: counter → heading → pills → map. Ghost hidden.
+           Mobile (≤768px): map is a desktop flourish — hide it entirely so
+           the hero is just counter + heading + pills. The project grid
+           below is what matters on mobile. Mapbox JS is also guarded at
+           runtime (see GalleryMap mobile guard) so it never even loads.
            ---------------------------------------------------------------- */
-        @media (max-width: 720px) {
+        @media (max-width: 768px) {
           .gallery-hero-stage {
             min-height: 0;
+            max-height: 45vh;
             display: flex;
             flex-direction: column;
-            gap: clamp(20px, 5vw, 32px);
-            padding: clamp(20px, 5vw, 32px);
+            justify-content: flex-end;
+            gap: clamp(14px, 4vw, 22px);
+            padding: clamp(20px, 5vw, 28px);
+            padding-top: 12vh;
             overflow: visible;
           }
           .gallery-hero-counter,
           .gallery-hero-heading,
-          .gallery-hero-panels,
           .gallery-hero-pills {
             position: static;
             transform: none;
@@ -178,19 +182,35 @@ export function GalleryMasthead({
             width: 100%;
             height: auto;
           }
-          .gallery-hero-counter { order: 1; }
+          .gallery-hero-counter {
+            order: 1;
+            font-size: 9px;
+            letter-spacing: 0.28em;
+          }
           .gallery-hero-heading {
             order: 2;
-            font-size: clamp(56px, 14vw, 92px);
+            font-size: clamp(48px, 12vw, 72px);
             white-space: normal;
-            line-height: 0.92;
+            line-height: 0.95;
+            padding-bottom: 4px;
           }
           .gallery-hero-pills { order: 3; }
-          .gallery-hero-panels {
-            order: 4;
-            height: clamp(240px, 60vw, 340px);
+          /* Map is a desktop-only conceit. Hide both panels and ghost. */
+          .gallery-hero-panels,
+          .gallery-glass-map,
+          .gallery-glass-ghost {
+            display: none !important;
           }
-          .gallery-glass-ghost { display: none; }
+          /* Tighten pills so 4 filters wrap to 2 lines max, never stack
+             vertically. Smaller padding + smaller text + smaller gap. */
+          .gallery-hero-pills .gallery-pill {
+            padding: 7px 12px !important;
+            font-size: 9px !important;
+            letter-spacing: 0.2em !important;
+          }
+          .gallery-hero-pills .gallery-pill-row {
+            gap: 6px !important;
+          }
         }
       `}</style>
 
