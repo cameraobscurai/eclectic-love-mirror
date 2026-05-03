@@ -102,7 +102,7 @@ export function GalleryMasthead({
                 }}
               >
                 <div
-                  className="relative h-full w-full overflow-hidden border border-cream/15"
+                  className="relative h-full w-full overflow-hidden border border-cream/15 p-4"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(245,242,237,0.10) 0%, rgba(245,242,237,0.04) 100%)",
@@ -112,24 +112,11 @@ export function GalleryMasthead({
                       "inset 0 1px 0 rgba(245,242,237,0.12), 0 40px 100px -20px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {/* Header row inside glass */}
-                  <div className="flex items-center justify-between gap-3 px-5 pt-4 pb-3">
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-cream/55">
-                      Where We've Built
-                    </p>
-                    <p className="text-[10px] uppercase tracking-[0.28em] text-cream/45 tabular-nums">
-                      {visibleCount.toString().padStart(2, "0")} Locations
-                    </p>
-                  </div>
-                  {/* Map slot — fills the rest. We pass the map in and let
-                      it size to the container. */}
-                  <div className="absolute inset-x-0 bottom-0 top-[44px]">
-                    {mapSlot ? (
-                      <div className="h-full w-full [&_.eh-map]:!h-full [&_.eh-map]:border-0 [&>div>div:first-child]:hidden">
-                        {mapSlot}
-                      </div>
-                    ) : null}
-                  </div>
+                  {mapSlot ? (
+                    <div className="h-full w-full [&_.eh-map]:!h-[calc(100%-28px)] [&_.eh-map]:border-0">
+                      {mapSlot}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
