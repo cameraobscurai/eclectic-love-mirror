@@ -87,6 +87,11 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
+  const handleMapSelect = (idx: number) => {
+    setActiveIndex(idx);
+    jumpRef.current?.(idx);
+  };
+
   return (
     <main
       className="min-h-screen bg-charcoal text-cream"
@@ -109,7 +114,15 @@ function GalleryPage() {
           <GalleryCardsTrack
             projects={visibleProjects}
             onOpen={handleOpen}
+            onActiveChange={setActiveIndex}
             jumpRef={jumpRef}
+            mapSlot={
+              <MapSlot
+                projects={visibleProjects}
+                activeIndex={activeIndex}
+                onSelect={handleMapSelect}
+              />
+            }
           />
         </div>
       </section>
