@@ -1,48 +1,55 @@
-## What we're doing
+## Atelier image placements
 
-The Gallery page masthead currently has the mapbox + ghost card hidden via `.hide-flourishes`, which leaves a flat dark band where a hero used to live. You want to bring it back as **one full-bleed photograph** with the original frosted glass overlays floating on top (counter, "{n} Environments" headline, category pills) — so Gallery feels as cinematic as Home and Atelier instead of looking like a stripped-back placeholder.
+Walked the page top-to-bottom. Only filling slots where the image is the *real subject* of that slot — not decoration. Two uploads get rejected.
 
-This is a visual restoration, not a data change. No catalog, taxonomy, routing, or storage logic is touched.
+### Section 5 — ATELIER APPROACH triptych (the strongest fit)
 
-## Which images work best for a full-bleed Gallery hero
+This triptych is literally `IMAGINED · DESIGNED · REALIZED`. Three uploads map cleanly, one per step:
 
-Criteria for a Gallery masthead hero (different from the Home hero, which is the brand moodboard):
-1. **Lands the brand promise in one frame** — sculptural, atmospheric, unmistakably an Eclectic Hive environment, not just a pretty wedding photo.
-2. **Wide / horizon-anchored composition** — fills 100vw × ~85vh without losing its subject when cropped.
-3. **Carries text** — has a quieter zone (sky, shadow, sand) where the white "Environments" headline + pills can sit legibly with a soft scrim.
-4. **Already vetted** — pulled from a real project manifest, not invented.
+- **IMAGINED** → `omni-35789c3d` (pencil tent interior sketch, single panel)
+  Hand-drawn, loose, conceptual — exactly what "Imagined" should look like.
+- **DESIGNED** → `image_21.png` (sofa wireframe / technical drawing)
+  CAD-style line drawing of an actual furniture piece — the "Designed" stage made literal.
+- **REALIZED** → `Ceremony.webp` (Aspen aisle, fall mountains)
+  A finished install standing in the world. Real, owner-produced, shareable.
 
-### Recommended top 3 (all already in storage, already wired to gallery projects)
+Net effect: the triptych stops being three empty frames and becomes a single sentence in three pictures. This is the change that matters most.
 
-| # | Image | Why it works |
-|---|---|---|
-| **A** | `AMANGIRI/ADD ON Lounge + floral.jpg` *(Project 01 — Amangiri, Utah)* | Sandstone canyon backdrop, sculptural lounge in foreground. Horizontal landscape, warm tonality, plenty of sky/canyon negative space at top for the headline. Reads as "environment" instantly. |
-| **B** | `AMANGIRI/ADD ON Welcome.jpg` *(Project 01)* | Wider vista, cinematic depth. Best "exhibition opener" feel — looks like the cover of a book. |
-| **C** | `ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Nighttime Tablescape.jpg` *(Project 02)* | Moody, candlelit, charcoal-friendly palette — would tonally rhyme with the dark masthead and the existing site palette better than the bright Amangiri shots. Strong bottom-anchored subject leaves clean upper space for type. |
+> Note on the composite triptych upload (`omni-93d6fc71...`, sketch→render→photo): tempting because it *is* the same story, but it's a stacked composite of someone else's reference workflow, not Hive-authored work. Using the three separate uploads above keeps the triptych authentically ours.
 
-**My pick as default: A (Amangiri ADD ON Lounge + floral).** It is the single most "Eclectic Hive" frame in the entire library — sculptural furniture, atmospheric light, distinct sense of place — and Amangiri is already Project 01, so it doubles as a thesis statement for the page. B is a strong alternate if you want vista over object. C if Jill prefers a darker, moodier register that matches the rest of the dark masthead.
+### Section 4 — THE FABRICATION (3-up material board, currently three empty 1/1 frames)
 
-## How it gets built
+Plan calls these "fabric swatch · sketch · material detail." Map to:
 
-1. **Remove `.hide-flourishes`** from `GalleryMasthead.tsx` (the temporary class added last turn) so the stage returns to full height.
-2. **Replace the map slot + ghost panel** with a single `<picture>` element rendering the chosen Amangiri image full-bleed (`absolute inset-0`, `object-cover`, focal point tuned per image), the same pattern used on Home.
-3. **Reapply the frosted glass overlay band** behind the heading — reuse `glassBand.dark` from `src/lib/glass.ts` (already the codified version of the Home hero's recipe), so the headline + counter sit on a tracked frosted strip rather than floating naked over the photo.
-4. **Add a bottom scrim** (`linear-gradient` charcoal 0 → 55%) so the category pills stay readable regardless of image brightness.
-5. **Preload the AVIF** in `head().links` (Gallery route) for LCP, mirroring Home's preload pattern.
-6. **Keep `mapSlot` as an optional prop** but pass `undefined` from the route — so we can re-enable the map later by flipping one prop without re-architecting.
-7. **Convert the chosen JPEG to AVIF + WebP** at hero widths (1280 / 1920 / 2560) and place under `src/assets/gallery-hero.{avif,webp}` so we get the same crisp delivery as Home (no full-resolution storage hit on first paint).
+- **Slot 1 (sketch)** → `omni-9bf259f1` (charcoal still-life: glassware + florals)
+  Reads as a real fabrication-room sketch. Tonal, archival.
+- **Slot 2 (swatch / pattern study)** → `omni-35d37f34` (watercolor foliage + birds)
+  Pattern/textile language — a material study, not decor.
+- **Slot 3 (material detail)** → `Stone_Plates.webp` (stacked stone plates, real photo)
+  Actual product, actual texture. Closes the row with a real material.
 
-## Technical notes
+This row goes from "three empty squares" to a real material board: hand → study → object.
 
-- Storage URL helper is `galleriesUrl()` in `src/lib/storage-image.ts` — usable directly, but for the hero we'll bake an optimized local AVIF/WebP into `src/assets/` to match Home's preload-LCP pattern. Storage URLs stay as-is for the lightbox / cards (lazy-loaded, no LCP cost).
-- `src/lib/glass.ts` already exports `glassBand.dark` — the exact recipe we want, so the overlay is one spread, not a one-off restyle.
-- The `mapSlot` prop on `GalleryMasthead` stays in the API — no breaking change to the route. We just stop passing the `<GalleryMap>` for now.
-- No changes to `gallery-projects.ts`, `gallery-manifests.ts`, the catalog, or any data file.
+### Section 3 — THE ARTIST'S STUDIO (WORKBENCH + WAREHOUSE apertures)
 
-## Out of scope
+**Leaving both empty.** None of the uploads are workbench or warehouse photography. Forcing the stone plates or a sketch in here would lie about what those frames are. The aperture frame already reads as intentional restraint — better than a wrong image.
 
-- Bringing the map back (deferred until post-launch per your direction).
-- The ghost "next project" peek panel (deferred — same reason).
-- Any change to the cards track, lightbox, project index, or press bar below the masthead.
+### Rejected uploads (and why)
 
-Confirm the image pick (A / B / C, or name another from the project manifests) and I'll build it.
+- **`omni-53094936` (glass moodboard collage)** — Beautiful, but it's a moodboard *of someone else's references*. Doesn't represent Hive work. Belonged briefly to the Home page concept; doesn't earn an Atelier slot.
+- **`omni-93d6fc71` (sketch→render→photo composite)** — See note above. The story is right; the artifact isn't ours. Replaced by the three separate uploads in the triptych.
+
+### Files I'd touch
+
+- `src/routes/atelier.tsx` — pass real `src` + `alt` into the 3 `ApproachStep` apertures and the 3 fabrication-board apertures. No layout changes.
+- `src/assets/atelier/` — copy in the 6 chosen uploads (renamed semantically, e.g. `imagined-tent-sketch.png`, `designed-sofa-wireframe.png`, `realized-aspen-ceremony.webp`, `fabrication-still-life.png`, `fabrication-foliage-study.png`, `fabrication-stone-plates.webp`).
+- `MediaAperture` already supports `src`/`alt`/`sizes`/`lazy` — no component changes needed.
+
+### What does *not* change
+
+- Hero section (already has `atelierHero`).
+- Studio wide aperture (already has `atelierStudioWide`).
+- Section labels, copy, ordering, capabilities list, CTA.
+- No fake captions added under any image.
+
+Approve and I'll wire it up.
