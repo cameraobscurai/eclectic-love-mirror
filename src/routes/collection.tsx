@@ -25,6 +25,7 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import signaturePlate from "@/assets/collection-signature-plate.png";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -583,14 +584,14 @@ function CollectionPage() {
         }}
       >
         <div
-          className="mx-auto"
+          className="mx-auto grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-end"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <h1
             id="collection-heading"
             data-devedit
             data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal"
+            className="font-display uppercase leading-[0.92] text-charcoal order-2 lg:order-1"
             style={{
               fontSize: "clamp(60px, 8vw, 120px)",
               fontWeight: 400,
@@ -599,6 +600,13 @@ function CollectionPage() {
           >
             The Collection
           </h1>
+          <img
+            src={signaturePlate}
+            alt="The Hive Signature Collection"
+            className="order-1 lg:order-2 w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[380px] h-auto justify-self-center lg:justify-self-end"
+            loading="eager"
+            decoding="async"
+          />
         </div>
       </div>
 
