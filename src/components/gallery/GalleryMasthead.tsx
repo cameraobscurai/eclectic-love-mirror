@@ -118,7 +118,10 @@ export function GalleryMasthead({
 
       <div
         className="max-w-[1600px] mx-auto overflow-hidden rounded-md select-none"
-        style={{ background: "#0a0908" }}
+        style={{
+          background: "#0a0908",
+          maxHeight: "calc(100vh - var(--nav-h) - 120px)",
+        }}
       >
         {/* Zone 2 — Gallery bar */}
         <div
