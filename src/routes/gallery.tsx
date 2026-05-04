@@ -1,20 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
 import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { useNearViewport } from "@/hooks/useNearViewport";
 import {
   galleryProjects,
   type GalleryProject,
 } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
-
-// Mapbox is ~210KB gz. Defer until the masthead's map slot nears the
-// viewport — most users never scroll it into view on first paint.
-const GalleryMap = lazy(() =>
-  import("@/components/gallery/GalleryMap").then((m) => ({ default: m.GalleryMap })),
-);
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof, cinematic exhibition mode
@@ -62,7 +55,6 @@ const REGION_FILTERS: CategoryFilter[] = (() => {
 function GalleryPage() {
   const [filter, setFilter] = useState<CategoryFilter>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const jumpRef = useRef<((index: number) => void) | null>(null);
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
@@ -88,12 +80,6 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
-  // Map uses the visible (filtered) list — pin index === card index.
-  const handleMapSelect = (idx: number) => {
-    setActiveIndex(idx);
-    jumpRef.current?.(idx);
-  };
-
   return (
     <main
       className="min-h-screen bg-charcoal text-cream"
@@ -106,13 +92,9 @@ function GalleryPage() {
         counts={counts}
         onChange={setFilter}
         filters={REGION_FILTERS}
-        mapSlot={
-          <MapSlot
-            projects={visibleProjects}
-            activeIndex={activeIndex}
-            onSelect={handleMapSelect}
-          />
-        }
+        projects={visibleProjects}
+        onOpen={handleOpen}
+        jumpRef={jumpRef}
       />
 
       <section className="px-6 lg:px-12">
@@ -120,7 +102,6 @@ function GalleryPage() {
           <GalleryCardsTrack
             projects={visibleProjects}
             onOpen={handleOpen}
-            onActiveChange={setActiveIndex}
             jumpRef={jumpRef}
           />
         </div>
@@ -188,32 +169,4 @@ function GalleryPage() {
   );
 }
 
-// Defers mapbox-gl until the masthead's map slot nears the viewport. Keeps
-// a stable host div so layout doesn't shift when the map mounts.
-function MapSlot({
-  projects,
-  activeIndex,
-  onSelect,
-}: {
-  projects: GalleryProject[];
-  activeIndex: number;
-  onSelect: (idx: number) => void;
-}) {
-  const { ref, near } = useNearViewport<HTMLDivElement>({
-    rootMargin: "400px",
-    initial: false,
-  });
-  return (
-    <div ref={ref} className="h-full w-full">
-      {near ? (
-        <Suspense fallback={null}>
-          <GalleryMap
-            projects={projects}
-            activeIndex={activeIndex}
-            onSelect={onSelect}
-          />
-        </Suspense>
-      ) : null}
-    </div>
-  );
-}
+// (no map slot — mapbox is retired from the gallery route)
