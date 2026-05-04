@@ -75,9 +75,9 @@ export function CollectionRail({
           ? undefined
           : {
               position: "sticky",
-              top: "calc(var(--nav-h) + var(--collection-heading-h, 0px))",
+              top: "var(--nav-h)",
               maxHeight:
-                "calc(100dvh - (var(--nav-h) + var(--collection-heading-h, 0px) + 1rem))",
+                "calc(100dvh - (var(--nav-h) + 1rem))",
               overflowY: "auto",
             }
       }
