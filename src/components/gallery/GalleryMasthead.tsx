@@ -110,7 +110,7 @@ export function GalleryMasthead({
   return (
     <section
       aria-labelledby="gallery-heading"
-      className="px-6 lg:px-12 pt-2 pb-8"
+      className="px-6 lg:px-12 pb-8"
     >
       <h1 id="gallery-heading" className="sr-only">
         The Gallery
