@@ -1,13 +1,15 @@
-// Client-safe catalog accessor. Reads a pre-baked JSON snapshot that was
-// generated from the Phase 3 CSVs by `scripts/build-phase3-catalog.mjs`.
+// Client-safe catalog accessor. Reads a pre-baked JSON snapshot generated
+// from the live `inventory_items` table (Lovable Cloud / Supabase) by
+// `scripts/bake-catalog.mjs`. The owner's Current RMS export is the source
+// of truth; this snapshot is what the Collection page renders on first paint.
 //
-// No fs, no node:path, no `?raw` CSV parsing, no server functions.
-// Safe to import from any client component, route, or hook.
+// To regenerate after a fresh inventory import:
+//   bun scripts/bake-catalog.mjs
 //
-// To regenerate the snapshot after CSV updates:
-//   bun scripts/build-phase3-catalog.mjs
+// (The legacy `phase3_catalog.json` snapshot is kept on disk for archival
+// reference but is no longer imported anywhere.)
 
-import catalog from "@/data/phase3/phase3_catalog.json";
+import catalog from "@/data/inventory/current_catalog.json";
 
 export interface CollectionImage {
   url: string;
