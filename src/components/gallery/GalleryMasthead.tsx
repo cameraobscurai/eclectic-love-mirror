@@ -548,6 +548,8 @@ export function GalleryMasthead({
             transform: translateY(0) !important;
           }
 
+          .gallery-strip::-webkit-scrollbar { display: none; }
+
           .gallery-depth-meta-open:hover {
             color: rgba(200,178,145,1) !important;
           }
