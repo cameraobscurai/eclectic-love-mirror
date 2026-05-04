@@ -284,7 +284,7 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{
-            top: bandPoint?.y ?? "50%",
+            top: "50%",
             height: "clamp(96px, 18vh, 180px)",
             transform: "translateY(-50%)",
             transitionDelay: loaded ? "200ms" : "0ms",
@@ -309,7 +309,7 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{
-            top: bandPoint?.y ?? "50%",
+            top: "50%",
             transitionDelay: loaded ? "300ms" : "0ms",
             ...(parallaxOn
               ? { x: wmX, y: wmY, willChange: "transform" }
