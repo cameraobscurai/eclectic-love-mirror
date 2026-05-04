@@ -66,6 +66,28 @@ export function GalleryMasthead({
   activeIndex: externalActiveIndex,
 }: GalleryMastheadProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const stripRef = useRef<HTMLDivElement | null>(null);
+
+  // Wheel handler: consume horizontal scroll while the strip has room, then
+  // release at boundaries so the page resumes vertical scroll. passive:false
+  // is required to call preventDefault() on the wheel event.
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) return;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+      const atLeft = el.scrollLeft <= 0;
+      const atRight = el.scrollLeft >= max - 1;
+      if ((atLeft && delta < 0) || (atRight && delta > 0)) return; // release
+      e.preventDefault();
+      el.scrollLeft += delta;
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
 
   // Reset to first card when projects ref changes (filter swap).
   useEffect(() => {
@@ -175,13 +197,25 @@ export function GalleryMasthead({
           >
             {String(projects.length).padStart(2, "0")} environments — hover to preview · click to explore
           </div>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div
+            ref={stripRef}
+            className="gallery-strip"
+            style={{
+              display: "flex",
+              gap: 3,
+              overflowX: "auto",
+              overscrollBehaviorX: "contain",
+              scrollBehavior: "smooth",
+              touchAction: "pan-x",
+              scrollbarWidth: "none",
+            }}
+          >
             {projects.map((p, i) => {
               const on = i === activeIndex;
               return (
                 <div
                   key={p.number}
-                  style={{ flex: 1, minWidth: 0 }}
+                  style={{ flex: "1 0 14%", minWidth: 140 }}
                 >
                   <button
                     type="button"
@@ -513,6 +547,8 @@ export function GalleryMasthead({
             opacity: 1 !important;
             transform: translateY(0) !important;
           }
+
+          .gallery-strip::-webkit-scrollbar { display: none; }
 
           .gallery-depth-meta-open:hover {
             color: rgba(200,178,145,1) !important;
