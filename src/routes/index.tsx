@@ -14,14 +14,11 @@ import homeHero from "@/assets/home-hero.webp";
 import homeHeroAvif from "@/assets/home-hero.avif";
 import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
-import homeHeroExploded from "@/assets/hero-exploded-glass.png";
-
-// Two hero variants. Picked at random on each page load for a quieter
-// "the site is alive" feel; visitor can flip with the corner control.
-type HeroVariant = "moodboard" | "exploded";
-
 // --- Wordmark tunables (single source of truth) ---
-const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
+// Hero is now a single full-bleed canyon photograph (Amangiri, Project 01).
+// 0.42 lands the glass band on the horizon line where canyon face meets sky —
+// the natural visual rest in the frame.
+const BAND_CENTER_RATIO = 0.42;   // vertical fraction of source image where the glass band centers
 const COUNTER_DRIFT_X = 2;        // px max horizontal counter-drift
 const COUNTER_DRIFT_Y = 1.5;      // px max vertical counter-drift
 const SPECULAR_RADIUS = 4;        // px shadow offset radius
@@ -83,14 +80,6 @@ function HomePage() {
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement | null>(null);
   const heroImgRef = useRef<HTMLImageElement | null>(null);
-
-  // Random hero variant per page load. SSR renders "moodboard" deterministically;
-  // a client effect picks a random variant after hydration. The corner control
-  // lets the visitor flip manually.
-  const [variant, setVariant] = useState<HeroVariant>("moodboard");
-  useEffect(() => {
-    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
-  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
@@ -206,55 +195,32 @@ function HomePage() {
         }}
       >
         {/*
-          Backdrop — the entire editorial composition (triptych glass plates,
-          sketch + swatch moodboard, etched ECLECTIC HIVE wordmark on the
-          center plate) is baked into a single image. We render it full-bleed
-          and let the rest of the page (CTA bar) sit on top.
+          Backdrop — single full-bleed photograph of the Amangiri canyon
+          (Project 01, Utah). The live ECLECTIC HIVE wordmark and frosted
+          glass band float on top, anchored to the canyon horizon via
+          object-cover projection (see useObjectCoverPoint). The destination
+          CTAs sit at the base of the frame on the LiquidGlass plates.
 
           A live <h1> remains in the DOM as sr-only so SEO and assistive tech
-          still pick up the brand name even though the visible mark lives
-          inside the artwork.
+          still pick up the brand name even though the visible mark is rendered
+          on top of the photograph rather than as ordinary heading flow.
         */}
-        {variant === "moodboard" ? (
-          <picture key="moodboard">
-            <source
-              media="(max-width: 767px)"
-              srcSet={homeHeroMobileAvif}
-              type="image/avif"
-            />
-            <source
-              media="(max-width: 767px)"
-              srcSet={homeHeroMobileWebp}
-              type="image/webp"
-            />
-            <source srcSet={homeHeroAvif} type="image/avif" />
-            <source srcSet={homeHero} type="image/webp" />
-            <motion.img
-              ref={heroImgRef}
-              src={homeHero}
-              alt=""
-              aria-hidden="true"
-              decoding="async"
-              fetchPriority="high"
-              loading="eager"
-              className={cn(
-                "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-                "object-[50%_25%] md:object-[50%_38%]",
-                loaded ? "opacity-100" : "opacity-0"
-              )}
-              draggable={false}
-              style={
-                parallaxOn
-                  ? { x: bgX, y: bgY, scale: 1.04, willChange: "transform" }
-                  : undefined
-              }
-            />
-          </picture>
-        ) : (
+        <picture>
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileAvif}
+            type="image/avif"
+          />
+          <source
+            media="(max-width: 767px)"
+            srcSet={homeHeroMobileWebp}
+            type="image/webp"
+          />
+          <source srcSet={homeHeroAvif} type="image/avif" />
+          <source srcSet={homeHero} type="image/webp" />
           <motion.img
-            key="exploded"
             ref={heroImgRef}
-            src={homeHeroExploded}
+            src={homeHero}
             alt=""
             aria-hidden="true"
             decoding="async"
@@ -262,7 +228,10 @@ function HomePage() {
             loading="eager"
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
-              "object-[50%_50%]",
+              // Portrait canyon photo: pin upper-center on mobile (keeps the
+              // sandstone face in frame); shift slightly down on desktop so the
+              // horizon lands near the wordmark band.
+              "object-[50%_30%] md:object-[50%_42%]",
               loaded ? "opacity-100" : "opacity-0"
             )}
             draggable={false}
@@ -272,10 +241,10 @@ function HomePage() {
                 : undefined
             }
           />
-        )}
+        </picture>
 
         {/* Edge-to-edge frosted band — sits behind the wordmark to lift
-            legibility against the busy moodboard. Anchored to the same
+            legibility against the canyon photograph. Anchored to the same
             band point the wordmark uses, so it tracks the artwork. */}
         <div
           aria-hidden="true"
@@ -333,13 +302,16 @@ function HomePage() {
         </motion.div>
 
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
-            against the moodboard texture without dimming the wordmark plate. */}
+            against the canyon photograph without dimming the wordmark plate. */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-[28%] pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-[42%] pointer-events-none"
           style={{
+            // Taller, deeper wash than the original (which assumed the dark
+            // moodboard already provided most of the contrast). The canyon
+            // photo is bright at the base, so we lean harder on the gradient.
             background:
-              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--charcoal) 55%, transparent) 100%)",
+              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--charcoal) 35%, transparent) 50%, color-mix(in oklab, var(--charcoal) 78%, transparent) 100%)",
           }}
         />
 
@@ -423,26 +395,6 @@ function HomePage() {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Variant toggle — quiet bottom-right control. Two dots,
-            current variant filled. Click to flip. */}
-        <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
-          {(["moodboard", "exploded"] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setVariant(v)}
-              aria-label={`Show ${v} hero`}
-              aria-pressed={variant === v}
-              className={cn(
-                "h-1.5 w-1.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
-                variant === v
-                  ? "bg-cream scale-110"
-                  : "bg-cream/30 hover:bg-cream/60"
-              )}
-            />
-          ))}
         </div>
       </section>
     </main>
