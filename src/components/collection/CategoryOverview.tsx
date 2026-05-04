@@ -109,7 +109,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
               alt={img!.altText ?? product.title}
               loading={eager ? "eager" : "lazy"}
               decoding="async"
-              {...({ fetchpriority: eager ? "high" : "auto" } as Record<string, string>)}
+              {...({ fetchPriority: eager ? "high" : "auto" } as Record<string, string>)}
               onLoad={() => setLoaded(true)}
               onError={onImageFailed}
               className="w-full h-full object-cover will-change-opacity group-hover:scale-[1.03]"

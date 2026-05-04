@@ -93,7 +93,7 @@ export function MediaAperture({
             onLoad={() => setLoaded(true)}
             // React types lag the spec; cast for fetchpriority.
             {...(fetchPriority
-              ? ({ fetchpriority: fetchPriority } as Record<string, string>)
+              ? ({ fetchPriority: fetchPriority } as Record<string, string>)
               : {})}
             className="absolute inset-0 w-full h-full object-cover will-change-opacity"
             style={{

@@ -152,7 +152,7 @@ export function ProductTile({
                 decoding="async"
                 // Inline so the preload scanner sees it before mount.
                 // Cast: React's types don't yet include fetchpriority.
-                {...({ fetchpriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
+                {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
                 // No padding — the source assets already carry their own

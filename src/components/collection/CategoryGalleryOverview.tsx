@@ -234,7 +234,7 @@ function CategoryCard({
               alt={heroAlt}
               loading={isFirstRow ? "eager" : "lazy"}
               decoding="async"
-              {...({ fetchpriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
+              {...({ fetchPriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
               onLoad={() => {
                 setLoaded(true);
                 if (isFirstRow) reportDoneOnce();
