@@ -264,10 +264,9 @@ export function GalleryMasthead({
         }
       `}</style>
 
-      {/* Map + ghost panel temporarily hidden for site-wide cohesion pass.
-          Re-enable by removing the `hide-flourishes` modifier. */}
+      {/* Map + ghost panel re-enabled for redesign work. */}
       <section aria-labelledby="gallery-heading">
-        <div className="gallery-hero-stage hide-flourishes">
+        <div className="gallery-hero-stage">
           {/* Counter intentionally removed — the pills already carry the
               "n Environments" count, the second label was redundant. */}
 
