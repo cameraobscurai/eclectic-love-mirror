@@ -604,7 +604,7 @@ function CollectionPage() {
             src={signaturePlate}
             alt="The Hive Signature Collection"
             className="hidden lg:block flex-shrink-0 w-auto"
-            style={{ height: "clamp(140px, 12vw, 180px)" }}
+            style={{ height: "clamp(320px, 34vw, 520px)" }}
             loading="eager"
             decoding="async"
           />
