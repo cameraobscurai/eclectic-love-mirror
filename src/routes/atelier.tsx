@@ -257,81 +257,74 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. THE FABRICATION — interactive hover reveal (Pass 3 item 1) */}
+      {/* 4. THE FABRICATION — list with hover state, then the original
+          three-image board underneath. Image swap was overengineered; the
+          three plates work better as their own quiet evidence row. */}
       <Section eyebrow="THE FABRICATION">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-start">
-          <ul
-            className="md:col-span-7"
-            style={{ borderColor: "var(--archive-rule)" }}
-            onMouseLeave={() => setFabActive(0)}
-          >
-            {CAPABILITIES.map((item, i) => {
-              const isActive = fabActive === i;
-              const onEnter = () => {
-                if (i < FABRICATION_IMAGES.length) setFabActive(i);
-                // i >= 3 → leave fabActive untouched (sticks on last match).
-              };
-              return (
-                <li
-                  key={item}
-                  onMouseEnter={onEnter}
-                  onFocus={onEnter}
-                  className="group relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
-                  style={{ borderColor: "var(--archive-rule)" }}
-                  tabIndex={0}
+        <ul style={{ borderColor: "var(--archive-rule)" }}>
+          {CAPABILITIES.map((item, i) => {
+            const isActive = fabHover === i;
+            return (
+              <li
+                key={item}
+                onMouseEnter={() => setFabHover(i)}
+                onFocus={() => setFabHover(i)}
+                onMouseLeave={() => setFabHover(null)}
+                onBlur={() => setFabHover(null)}
+                className="relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
+                style={{ borderColor: "var(--archive-rule)" }}
+                tabIndex={0}
+              >
+                {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
+                  style={{
+                    backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
+                    transform: isActive ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                />
+                <span
+                  className={
+                    "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
+                    (isActive ? "text-charcoal/85" : "text-charcoal/40")
+                  }
                 >
-                  {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
-                    style={{
-                      backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
-                      transform: isActive ? "scaleX(1)" : "scaleX(0)",
-                    }}
-                  />
-                  <span
-                    className={
-                      "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
-                      (isActive ? "text-charcoal/85" : "text-charcoal/40")
-                    }
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={
-                      "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
-                      (isActive ? "text-charcoal" : "text-charcoal/85")
-                    }
-                  >
-                    {item}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className={
+                    "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
+                    (isActive ? "text-charcoal" : "text-charcoal/85")
+                  }
+                >
+                  {item}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
 
-          {/* Stacked image panel — replaces the 3-square grid. Each image is
-              absolutely positioned; the active one fades in. */}
-          <div
-            className="md:col-span-5 relative w-full"
-            style={{ aspectRatio: "1/1" }}
-            aria-hidden="true"
-          >
-            {FABRICATION_IMAGES.map((img, i) => (
-              <img
-                key={img.src}
-                src={img.src}
-                alt={img.alt}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{
-                  opacity: fabActive === i ? 1 : 0,
-                  transition:
-                    "opacity 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                }}
-              />
-            ))}
-          </div>
+        {/* Original material board — sketch · pattern study · realized. */}
+        <div className="mt-12 grid grid-cols-3 gap-3">
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationStillLife}
+            alt="Charcoal still-life study — glassware and florals."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationFoliage}
+            alt="Watercolor pattern study — foliage and birds."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationTentTriptych}
+            alt="Sketch to render to realized photo — a tented dining install across three stages."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
         </div>
       </Section>
 
