@@ -209,13 +209,13 @@ export function GalleryMap({
     });
   }, [activeIndex, hoverIdx]);
 
-  // Pan to active pin when it changes externally.
+  // Fly to active pin when it changes externally.
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
     const p = projects[activeIndex];
     if (!p) return;
-    map.easeTo({ center: p.coords, duration: 700 });
+    map.flyTo({ center: p.coords, zoom: 5, duration: 1200, essential: true });
   }, [activeIndex, ready, projects]);
 
   if (!MAPBOX_TOKEN) {
