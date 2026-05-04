@@ -52,22 +52,8 @@ const CAPABILITIES = [
   "PRODUCTION MANAGEMENT",
 ];
 
-// Map capability index → fabrication image (indices 0–2 only; >2 keeps last
-// matched image in place per brief).
-const FABRICATION_IMAGES: { src: string; alt: string }[] = [
-  {
-    src: fabricationStillLife,
-    alt: "Charcoal still-life study — glassware and florals.",
-  },
-  {
-    src: fabricationFoliage,
-    alt: "Watercolor pattern study — foliage and birds.",
-  },
-  {
-    src: fabricationTentTriptych,
-    alt: "Sketch to render to realized photo — a tented dining install across three stages.",
-  },
-];
+// (Removed: per-capability image swap was overengineered. The original
+// three-square material board sits below the list as quiet evidence.)
 
 const APPROACH_STEPS = [
   {
