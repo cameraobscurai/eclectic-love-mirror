@@ -187,3 +187,33 @@ function GalleryPage() {
     </main>
   );
 }
+
+// Defers mapbox-gl until the masthead's map slot nears the viewport. Keeps
+// a stable host div so layout doesn't shift when the map mounts.
+function MapSlot({
+  projects,
+  activeIndex,
+  onSelect,
+}: {
+  projects: GalleryProject[];
+  activeIndex: number;
+  onSelect: (idx: number) => void;
+}) {
+  const { ref, near } = useNearViewport<HTMLDivElement>({
+    rootMargin: "400px",
+    initial: false,
+  });
+  return (
+    <div ref={ref} className="h-full w-full">
+      {near ? (
+        <Suspense fallback={null}>
+          <GalleryMap
+            projects={projects}
+            activeIndex={activeIndex}
+            onSelect={onSelect}
+          />
+        </Suspense>
+      ) : null}
+    </div>
+  );
+}
