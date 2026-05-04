@@ -244,7 +244,7 @@ function HomePage() {
         </picture>
 
         {/* Edge-to-edge frosted band — sits behind the wordmark to lift
-            legibility against the busy moodboard. Anchored to the same
+            legibility against the canyon photograph. Anchored to the same
             band point the wordmark uses, so it tracks the artwork. */}
         <div
           aria-hidden="true"
