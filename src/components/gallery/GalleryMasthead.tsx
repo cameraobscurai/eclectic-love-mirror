@@ -386,7 +386,7 @@ export function GalleryMasthead({
             margin: "0 24px 12px",
             border: "0.5px solid rgba(245,240,230,0.07)",
             borderRadius: 4,
-            height: 100,
+            height: "clamp(70px, 10vh, 110px)",
             background: "#0d0c0a",
           }}
         >
