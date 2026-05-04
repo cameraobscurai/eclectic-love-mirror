@@ -88,8 +88,6 @@ export function GalleryMasthead({
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
-          .gallery-strip::-webkit-scrollbar { display: none; }
-
 
   // Reset to first card when projects ref changes (filter swap).
   useEffect(() => {
