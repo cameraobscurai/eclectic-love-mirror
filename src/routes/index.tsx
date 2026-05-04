@@ -195,14 +195,15 @@ function HomePage() {
         }}
       >
         {/*
-          Backdrop — the entire editorial composition (triptych glass plates,
-          sketch + swatch moodboard, etched ECLECTIC HIVE wordmark on the
-          center plate) is baked into a single image. We render it full-bleed
-          and let the rest of the page (CTA bar) sit on top.
+          Backdrop — single full-bleed photograph of the Amangiri canyon
+          (Project 01, Utah). The live ECLECTIC HIVE wordmark and frosted
+          glass band float on top, anchored to the canyon horizon via
+          object-cover projection (see useObjectCoverPoint). The destination
+          CTAs sit at the base of the frame on the LiquidGlass plates.
 
           A live <h1> remains in the DOM as sr-only so SEO and assistive tech
-          still pick up the brand name even though the visible mark lives
-          inside the artwork.
+          still pick up the brand name even though the visible mark is rendered
+          on top of the photograph rather than as ordinary heading flow.
         */}
         <picture>
           <source
