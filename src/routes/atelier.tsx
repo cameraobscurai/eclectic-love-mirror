@@ -225,36 +225,39 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 5. ATELIER APPROACH triptych — number + label only; body copy
-          deferred until owner provides voice. */}
-      <Section eyebrow="ATELIER APPROACH">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-          <ApproachStep
-            number="01"
-            label="IMAGINED"
-            image={{
-              src: imaginedTent,
-              alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
-            }}
-          />
-          <ApproachStep
-            number="02"
-            label="DESIGNED"
-            image={{
-              src: designedSofa,
-              alt: "Technical line drawing of a fringed sofa — design phase rendering.",
-            }}
-          />
-          <ApproachStep
-            number="03"
-            label="REALIZED"
-            image={{
-              src: realizedCeremony,
-              alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
-            }}
-          />
-        </div>
-      </Section>
+      {/* 5. ATELIER APPROACH triptych — temporarily hidden per owner request
+          (2026-05-04). Imagined/Designed/Realized cards stay wired below for
+          when we're ready to bring them back. */}
+      {false && (
+        <Section eyebrow="ATELIER APPROACH">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
+            <ApproachStep
+              number="01"
+              label="IMAGINED"
+              image={{
+                src: imaginedTent,
+                alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
+              }}
+            />
+            <ApproachStep
+              number="02"
+              label="DESIGNED"
+              image={{
+                src: designedSofa,
+                alt: "Technical line drawing of a fringed sofa — design phase rendering.",
+              }}
+            />
+            <ApproachStep
+              number="03"
+              label="REALIZED"
+              image={{
+                src: realizedCeremony,
+                alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
+              }}
+            />
+          </div>
+        </Section>
+      )}
 
       {/* 6. CTA */}
       <section className="px-6 lg:px-12 mt-24">
