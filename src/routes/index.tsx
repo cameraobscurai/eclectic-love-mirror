@@ -302,7 +302,7 @@ function HomePage() {
         </motion.div>
 
         {/* Bottom legibility wash — keeps the LiquidGlass CTA bar readable
-            against the moodboard texture without dimming the wordmark plate. */}
+            against the canyon photograph without dimming the wordmark plate. */}
         <div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-[28%] pointer-events-none"
