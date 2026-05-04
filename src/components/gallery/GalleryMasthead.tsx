@@ -2,19 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import type { GalleryProject } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
-// GalleryMasthead — editorial entry section.
+// GalleryMasthead — compact editorial masthead.
 //
-// Five stacked zones inside one rounded panel (#0a0908):
-//   1. Header        — display title + subtitle, filter pills
-//   2. Wide cards    — horizontal row of project cards; active one widens
-//   3. Filmstrip     — drawer with project thumbnails + "Open project"
-//   4. Decorative map — fixed-position dots over a dark grid (no Mapbox)
-//   5. Meta bar      — name · location/year · type + "Open project"
+// Five zones (Zone 1 = global nav, lives in __root):
+//   2. Gallery bar    — "The Gallery" label + filter pills (utility row)
+//   3. Thumbnail strip — flex row of project thumbs, click/hover sets active
+//   4. Depth card     — stacked absolute cards, only active is visible
+//   5. Decorative map — fixed CSS dots over a tiny dark grid (no Mapbox)
 //
-// activeIndex is owned here. Card click / map dot click → setActiveIndex(i)
-// + jumpRef.current?.(i) to sync the card track below. The track's
-// onActiveChange flows back via gallery.tsx into `activeIndex` (optional
-// prop) which we mirror — no circular updates because we guard self-equal.
+// activeIndex is owned here. Thumbnail / map dot / card click → setActiveIndex
+// + jumpRef.current?.(i) to sync the cards track below the masthead.
 // ---------------------------------------------------------------------------
 
 export type CategoryFilter = string;
@@ -29,22 +26,28 @@ export interface GalleryMastheadProps {
   projects: GalleryProject[];
   onOpen: (index: number) => void;
   jumpRef: React.MutableRefObject<((index: number) => void) | null>;
-  /** Optional external active index (cards track / map). Mirrored locally. */
   activeIndex?: number;
 }
 
-// Approximate geographic positions (% of map container). Keyed by project
-// number so reordering / filtering doesn't shuffle the map.
+// Hardcoded geographic positions (% of map container). Decorative.
 const MAP_POSITIONS: Record<string, { left: string; top: string; label: string }> = {
-  "01": { left: "29%", top: "45%", label: "Utah" },
-  "02": { left: "39%", top: "54%", label: "Aspen" },
-  "03": { left: "41%", top: "57%", label: "Caribou Club" },
-  "04": { left: "37%", top: "28%", label: "Big Sky" },
-  "05": { left: "41%", top: "60%", label: "Dunton" },
-  "06": { left: "19%", top: "60%", label: "California" },
+  "01": { left: "29%", top: "48%", label: "Utah" },
+  "02": { left: "39%", top: "57%", label: "Aspen" },
+  "03": { left: "41%", top: "62%", label: "Caribou" },
+  "04": { left: "37%", top: "28%", label: "Montana" },
+  "05": { left: "41%", top: "68%", label: "Dunton" },
+  "06": { left: "19%", top: "62%", label: "California" },
 };
 
-// Warm the lightbox chunk on hover so opening feels instant.
+// Hardcoded curved connector paths (viewBox 0 0 100 100, non-uniform).
+const MAP_CONNECTORS = [
+  "M 19 62 Q 24 55 29 48",
+  "M 29 48 Q 33 38 37 28",
+  "M 29 48 Q 34 53 39 57",
+  "M 39 57 Q 40 60 41 62",
+  "M 41 62 Q 41 65 41 68",
+];
+
 let lightboxWarmed = false;
 function warmLightbox() {
   if (lightboxWarmed) return;
@@ -53,7 +56,6 @@ function warmLightbox() {
 }
 
 export function GalleryMasthead({
-  total,
   active,
   counts,
   onChange,
@@ -64,19 +66,13 @@ export function GalleryMasthead({
   activeIndex: externalActiveIndex,
 }: GalleryMastheadProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [metaVisible, setMetaVisible] = useState(true);
-  const [metaProject, setMetaProject] = useState<GalleryProject | undefined>(
-    projects[0],
-  );
-  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Reset to first card on filter / projects change.
+  // Reset to first card when projects ref changes (filter swap).
   useEffect(() => {
     setActiveIndex(0);
-    setMetaProject(projects[0]);
   }, [projects]);
 
-  // Mirror external active (map / cards track) into local state.
+  // Mirror external active index from cards track / map sync.
   useEffect(() => {
     if (externalActiveIndex == null) return;
     if (externalActiveIndex === activeIndex) return;
@@ -84,75 +80,43 @@ export function GalleryMasthead({
     setActiveIndex(externalActiveIndex);
   }, [externalActiveIndex, activeIndex, projects.length]);
 
-  // Crossfade meta bar on activeIndex change.
-  useEffect(() => {
-    if (!projects[activeIndex]) return;
-    setMetaVisible(false);
-    if (fadeTimer.current) clearTimeout(fadeTimer.current);
-    fadeTimer.current = setTimeout(() => {
-      setMetaProject(projects[activeIndex]);
-      setMetaVisible(true);
-    }, 110);
-    return () => {
-      if (fadeTimer.current) clearTimeout(fadeTimer.current);
-    };
-  }, [activeIndex, projects]);
-
   const handleSelect = (i: number) => {
     setActiveIndex(i);
     jumpRef.current?.(i);
   };
 
-  const activeProject = projects[activeIndex];
-  const drawerOpen = !!activeProject;
-
   return (
     <section
       aria-labelledby="gallery-heading"
-      className="px-6 lg:px-12 pt-6 pb-10"
+      className="px-6 lg:px-12 pt-2 pb-8"
     >
       <h1 id="gallery-heading" className="sr-only">
         The Gallery
       </h1>
 
       <div
-        className="max-w-[1600px] mx-auto overflow-hidden rounded-xl select-none"
+        className="max-w-[1600px] mx-auto overflow-hidden rounded-md select-none"
         style={{ background: "#0a0908" }}
       >
-        {/* Zone 1 — Editorial header */}
+        {/* Zone 2 — Gallery bar */}
         <div
-          className="flex items-end justify-between gap-5"
+          className="flex items-center justify-between gap-4"
           style={{
-            padding: "clamp(28px,4vw,52px) 24px clamp(20px,3vw,36px)",
+            padding: "10px 24px",
             borderBottom: "0.5px solid rgba(245,240,230,0.07)",
           }}
         >
-          <div>
-            <div
-              className="font-display"
-              style={{
-                fontSize: "clamp(40px,7vw,80px)",
-                fontWeight: 400,
-                color: "rgba(245,240,230,0.92)",
-                letterSpacing: "-0.015em",
-                lineHeight: 1,
-              }}
-            >
-              The Gallery
-            </div>
-            <div
-              className="uppercase"
-              style={{
-                fontSize: 8,
-                letterSpacing: "0.26em",
-                color: "rgba(245,240,230,0.28)",
-                marginTop: 7,
-              }}
-            >
-              {String(total).padStart(2, "0")} Environments · Denver, Colorado
-            </div>
+          <div
+            className="uppercase"
+            style={{
+              fontSize: 8,
+              letterSpacing: "0.28em",
+              color: "rgba(245,240,230,0.28)",
+              lineHeight: 1.4,
+            }}
+          >
+            The Gallery
           </div>
-
           <div className="flex flex-wrap gap-[2px] justify-end shrink-0">
             {filters.map((f) => {
               const on = f === active;
@@ -163,20 +127,20 @@ export function GalleryMasthead({
                   onClick={() => onChange(f)}
                   className="uppercase cursor-pointer transition-colors"
                   style={{
-                    fontSize: 8,
+                    fontSize: 7,
                     letterSpacing: "0.18em",
-                    padding: "5px 11px",
+                    padding: "4px 9px",
                     border: on
                       ? "0.5px solid rgba(245,240,230,0.18)"
                       : "0.5px solid transparent",
                     background: on ? "rgba(245,240,230,0.05)" : "transparent",
                     color: on
-                      ? "rgba(245,240,230,0.9)"
+                      ? "rgba(245,240,230,0.88)"
                       : "rgba(245,240,230,0.28)",
                   }}
                   onMouseEnter={(e) => {
                     if (!on)
-                      e.currentTarget.style.color = "rgba(245,240,230,0.5)";
+                      e.currentTarget.style.color = "rgba(245,240,230,0.55)";
                   }}
                   onMouseLeave={(e) => {
                     if (!on)
@@ -193,66 +157,58 @@ export function GalleryMasthead({
           </div>
         </div>
 
-        {/* Zone 2 — Wide project cards */}
-        <div style={{ padding: "16px 0 0" }}>
+        {/* Zone 3 — Thumbnail strip */}
+        <div
+          style={{
+            padding: "12px 24px 10px",
+            borderBottom: "0.5px solid rgba(245,240,230,0.07)",
+          }}
+        >
           <div
             className="uppercase"
             style={{
-              fontSize: 7,
-              letterSpacing: "0.26em",
+              fontSize: 6,
+              letterSpacing: "0.24em",
               color: "rgba(245,240,230,0.18)",
-              padding: "0 24px 10px",
+              marginBottom: 8,
             }}
           >
-            Select a project
+            {String(projects.length).padStart(2, "0")} environments — hover to preview · click to explore
           </div>
-
-          <div
-            className="gallery-cards-row"
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: "0 24px",
-              overflowX: "auto",
-              scrollbarWidth: "none",
-            }}
-          >
+          <div style={{ display: "flex", gap: 3 }}>
             {projects.map((p, i) => {
               const on = i === activeIndex;
               return (
-                <button
+                <div
                   key={p.number}
-                  type="button"
-                  onClick={() => handleSelect(i)}
-                  onMouseEnter={warmLightbox}
-                  aria-label={`View ${p.name}`}
-                  aria-pressed={on}
-                  className="gallery-wcard text-left cursor-pointer relative"
-                  data-on={on ? "true" : "false"}
-                  style={{
-                    flexShrink: 0,
-                    width: on ? 280 : 200,
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    transition:
-                      "width 0.45s cubic-bezier(0.25,0.46,0.45,0.94)",
-                  }}
+                  style={{ flex: 1, minWidth: 0 }}
                 >
-                  <div
-                    className="relative overflow-hidden"
+                  <button
+                    type="button"
+                    onMouseEnter={() => {
+                      setActiveIndex(i);
+                      warmLightbox();
+                    }}
+                    onClick={() => handleSelect(i)}
+                    aria-label={`Preview ${p.name}`}
+                    aria-pressed={on}
+                    className="gallery-thumb cursor-pointer block w-full"
+                    data-on={on ? "true" : "false"}
                     style={{
-                      width: "100%",
-                      height: 130,
-                      borderRadius: 2,
+                      position: "relative",
+                      aspectRatio: "3 / 2",
+                      overflow: "hidden",
+                      borderRadius: 1,
                       background: "#141210",
+                      border: "none",
+                      padding: 0,
                     }}
                   >
                     <img
                       src={p.heroImage.src}
                       alt={p.heroImage.alt}
                       loading={i === 0 ? "eager" : "lazy"}
-                      className="gallery-wcard-img"
+                      className="gallery-thumb-img"
                       data-on={on ? "true" : "false"}
                       style={{
                         width: "100%",
@@ -262,20 +218,12 @@ export function GalleryMasthead({
                       }}
                     />
                     <div
-                      className="absolute inset-0 pointer-events-none gallery-wcard-scrim"
-                      data-on={on ? "true" : "false"}
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(10,8,5,0.7) 0%, transparent 50%)",
-                      }}
-                    />
-                    <div
                       className="absolute uppercase pointer-events-none"
                       style={{
-                        top: 7,
-                        left: 9,
-                        fontSize: 7,
-                        letterSpacing: "0.2em",
+                        top: 4,
+                        left: 5,
+                        fontSize: 6,
+                        letterSpacing: "0.16em",
                         color: on
                           ? "rgba(200,178,145,0.8)"
                           : "rgba(245,240,230,0.32)",
@@ -284,196 +232,203 @@ export function GalleryMasthead({
                     >
                       {p.number}
                     </div>
-                    <div
-                      className="absolute left-0 right-0 pointer-events-none"
-                      style={{
-                        bottom: 0,
-                        height: "1.5px",
-                        background: on
-                          ? "rgba(200,178,145,0.7)"
-                          : "rgba(200,178,145,0)",
-                        transition: "background 0.3s",
-                      }}
-                    />
-                  </div>
-
+                  </button>
                   <div
-                    className="flex items-baseline justify-between gap-2"
-                    style={{ paddingTop: 6 }}
-                  >
-                    <div
-                      className="gallery-wcard-name"
-                      data-on={on ? "true" : "false"}
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 300,
-                        fontFamily: "Georgia, serif",
-                        color: on
-                          ? "rgba(245,240,230,0.9)"
-                          : "rgba(245,240,230,0.5)",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        transition: "color 0.25s",
-                      }}
-                    >
-                      {p.name}
-                    </div>
-                    <div
-                      className="uppercase shrink-0 whitespace-nowrap"
-                      style={{
-                        fontSize: 7,
-                        letterSpacing: "0.12em",
-                        color: "rgba(245,240,230,0.22)",
-                      }}
-                    >
-                      {p.region}
-                    </div>
-                  </div>
-                </button>
+                    style={{
+                      marginTop: 3,
+                      height: "1.5px",
+                      background: on
+                        ? "rgba(200,178,145,0.7)"
+                        : "rgba(200,178,145,0)",
+                      transition: "background 0.25s",
+                    }}
+                  />
+                </div>
               );
             })}
           </div>
         </div>
 
-        {/* Zone 3 — Filmstrip drawer */}
-        <div
-          style={{
-            margin: "12px 24px 0",
-            overflow: "hidden",
-            maxHeight: drawerOpen ? 120 : 0,
-            opacity: drawerOpen ? 1 : 0,
-            transition:
-              "max-height 0.45s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease",
-          }}
-        >
-          {activeProject && (
-            <>
+        {/* Zone 4 — Depth card stack */}
+        <div style={{ position: "relative" }}>
+          {projects.map((p, i) => {
+            const on = i === activeIndex;
+            return (
               <div
-                className="uppercase"
+                key={p.number}
+                aria-hidden={on ? undefined : true}
                 style={{
-                  fontSize: 7,
-                  letterSpacing: "0.16em",
-                  color: "rgba(245,240,230,0.22)",
-                  marginBottom: 6,
+                  position: on ? "relative" : "absolute",
+                  inset: on ? undefined : 0,
+                  top: on ? undefined : 0,
+                  left: on ? undefined : 0,
+                  right: on ? undefined : 0,
+                  opacity: on ? 1 : 0,
+                  pointerEvents: on ? "auto" : "none",
+                  transition: "opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               >
-                {activeProject.name} · {activeProject.detailImages.length} images
-              </div>
-              <div className="flex items-center">
-                <div
-                  className="gallery-drawer-strip"
-                  style={{
-                    display: "flex",
-                    gap: 4,
-                    overflowX: "auto",
-                    scrollbarWidth: "none",
-                    paddingBottom: 2,
-                    flex: 1,
-                    minWidth: 0,
-                  }}
-                >
-                  {activeProject.detailImages.map((img, j) => (
-                    <button
-                      key={j}
-                      type="button"
-                      onClick={() => onOpen(activeIndex)}
-                      onMouseEnter={warmLightbox}
-                      className="gallery-dthumb shrink-0 cursor-pointer overflow-hidden"
-                      aria-label={`Open ${activeProject.name} — image ${j + 1}`}
-                      style={{
-                        width: 88,
-                        height: 58,
-                        borderRadius: 2,
-                        border: "0.5px solid transparent",
-                        background: "#141210",
-                        padding: 0,
-                        transition:
-                          "border-color 0.2s, opacity 0.2s",
-                      }}
-                    >
-                      <img
-                        src={img.src}
-                        alt={img.alt}
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                          opacity: 0.65,
-                          transition:
-                            "transform 0.5s ease, opacity 0.3s",
-                        }}
-                      />
-                    </button>
-                  ))}
-                </div>
+                {/* Image area */}
                 <button
                   type="button"
                   onClick={() => onOpen(activeIndex)}
-                  className="uppercase whitespace-nowrap shrink-0 cursor-pointer transition-colors"
+                  onMouseEnter={warmLightbox}
+                  aria-label={`Open ${p.name}`}
+                  className="gallery-depth-img-wrap"
                   style={{
-                    fontSize: 7,
-                    letterSpacing: "0.2em",
-                    color: "rgba(200,178,145,0.6)",
-                    borderBottom: "0.5px solid rgba(200,178,145,0.3)",
-                    paddingBottom: 1,
-                    marginLeft: 8,
-                    alignSelf: "center",
-                    background: "transparent",
+                    display: "block",
+                    width: "100%",
+                    height: 240,
+                    overflow: "hidden",
+                    position: "relative",
+                    cursor: "pointer",
+                    background: "#141210",
                     border: "none",
-                    borderBottomStyle: "solid",
-                    borderBottomWidth: "0.5px",
-                    borderBottomColor: "rgba(200,178,145,0.3)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "rgba(200,178,145,1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = "rgba(200,178,145,0.6)";
+                    padding: 0,
                   }}
                 >
-                  Open project →
+                  <img
+                    src={p.heroImage.src}
+                    alt={p.heroImage.alt}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    className="gallery-depth-img"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(10,8,5,0.65) 0%, rgba(10,8,5,0.05) 50%, transparent 100%)",
+                    }}
+                  />
+                  <span
+                    className="gallery-depth-open uppercase"
+                    style={{
+                      position: "absolute",
+                      bottom: 14,
+                      right: 16,
+                      fontSize: 7,
+                      letterSpacing: "0.2em",
+                      color: "rgba(200,178,145,0.6)",
+                      borderBottom: "0.5px solid rgba(200,178,145,0.3)",
+                      paddingBottom: 1,
+                      opacity: 0,
+                      transform: "translateY(4px)",
+                      transition: "opacity 0.3s, transform 0.3s",
+                    }}
+                  >
+                    Open project →
+                  </span>
                 </button>
+
+                {/* Meta bar */}
+                <div
+                  className="grid items-baseline"
+                  style={{
+                    padding: "11px 24px 13px",
+                    gridTemplateColumns: "1fr auto 1fr",
+                    gap: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontFamily: "Georgia, serif",
+                      fontWeight: 300,
+                      letterSpacing: "-0.01em",
+                      color: "rgba(245,240,230,0.9)",
+                    }}
+                  >
+                    {p.name}
+                  </div>
+                  <div
+                    className="uppercase text-center whitespace-nowrap"
+                    style={{
+                      fontSize: 7,
+                      letterSpacing: "0.16em",
+                      color: "rgba(245,240,230,0.25)",
+                    }}
+                  >
+                    {p.location} · {p.year}
+                  </div>
+                  <div
+                    className="flex items-baseline justify-end"
+                    style={{ gap: 10 }}
+                  >
+                    <div
+                      className="uppercase whitespace-nowrap"
+                      style={{
+                        fontSize: 7,
+                        letterSpacing: "0.16em",
+                        color: "rgba(245,240,230,0.2)",
+                      }}
+                    >
+                      {p.kind}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onOpen(activeIndex)}
+                      className="gallery-depth-meta-open uppercase whitespace-nowrap cursor-pointer"
+                      style={{
+                        fontSize: 7,
+                        letterSpacing: "0.18em",
+                        color: "rgba(200,178,145,0.6)",
+                        borderBottom: "0.5px solid rgba(200,178,145,0.3)",
+                        paddingBottom: 1,
+                        background: "transparent",
+                        border: "none",
+                        borderBottomStyle: "solid",
+                        borderBottomWidth: "0.5px",
+                        borderBottomColor: "rgba(200,178,145,0.3)",
+                        transition: "color 0.2s",
+                      }}
+                    >
+                      Open →
+                    </button>
+                  </div>
+                </div>
               </div>
-            </>
-          )}
+            );
+          })}
         </div>
 
-        {/* Zone 4 — Decorative map */}
+        {/* Zone 5 — Decorative map */}
         <div
           className="relative overflow-hidden"
           style={{
-            margin: "14px 24px",
+            margin: "0 24px 12px",
             border: "0.5px solid rgba(245,240,230,0.07)",
             borderRadius: 4,
-            height: 110,
-            background: "#0e0d0b",
+            height: 100,
+            background: "#0d0c0a",
           }}
-          aria-hidden="true"
         >
           <div
-            className="absolute uppercase"
+            className="absolute uppercase pointer-events-none"
             style={{
-              top: 9,
+              top: 8,
               left: 12,
               fontSize: 7,
-              letterSpacing: "0.22em",
-              color: "rgba(245,240,230,0.32)",
+              letterSpacing: "0.2em",
+              color: "rgba(245,240,230,0.28)",
               zIndex: 2,
             }}
           >
             Where we&rsquo;ve built
           </div>
           <div
-            className="absolute uppercase"
+            className="absolute uppercase pointer-events-none"
             style={{
-              top: 9,
+              top: 8,
               right: 12,
               fontSize: 7,
               letterSpacing: "0.2em",
-              color: "rgba(245,240,230,0.2)",
+              color: "rgba(245,240,230,0.18)",
               zIndex: 2,
             }}
           >
@@ -484,12 +439,31 @@ export function GalleryMasthead({
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              opacity: 0.04,
+              opacity: 0.03,
               backgroundImage:
                 "linear-gradient(rgba(245,240,230,1) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,230,1) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
+              backgroundSize: "32px 32px",
             }}
           />
+
+          {/* Connector lines */}
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            style={{ width: "100%", height: "100%" }}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {MAP_CONNECTORS.map((d, i) => (
+              <path
+                key={i}
+                d={d}
+                stroke="rgba(200,178,145,0.08)"
+                strokeWidth={0.3}
+                fill="none"
+              />
+            ))}
+          </svg>
 
           {/* Dots */}
           <div className="absolute inset-0">
@@ -508,11 +482,13 @@ export function GalleryMasthead({
                   style={{
                     left: pos.left,
                     top: pos.top,
-                    width: 0,
-                    height: 0,
+                    transform: "translate(-50%, -50%)",
+                    width: 14,
+                    height: 14,
                     background: "transparent",
                     border: "none",
                     padding: 0,
+                    zIndex: 3,
                   }}
                 >
                   <span
@@ -520,47 +496,46 @@ export function GalleryMasthead({
                     data-on={on ? "true" : "false"}
                     style={{
                       position: "absolute",
-                      width: 6,
-                      height: 6,
+                      left: "50%",
+                      top: "50%",
+                      width: 5,
+                      height: 5,
                       borderRadius: "50%",
-                      background: "rgba(200,178,145,0.4)",
-                      left: 0,
-                      top: 0,
+                      background: "rgba(200,178,145,0.6)",
                       pointerEvents: "none",
                     }}
                   />
                   <span
-                    className="gallery-mdot-ring"
-                    data-on={on ? "true" : "false"}
                     style={{
                       position: "absolute",
-                      width: 6,
-                      height: 6,
+                      left: "50%",
+                      top: "50%",
+                      width: 5,
+                      height: 5,
                       borderRadius: "50%",
+                      transform: "translate(-50%,-50%)",
                       background: on
                         ? "rgba(200,178,145,1)"
-                        : "rgba(200,178,145,0.65)",
-                      border: "1px solid rgba(200,178,145,0.3)",
-                      transform: on
-                        ? "translate(-50%,-50%) scale(1.5)"
-                        : "translate(-50%,-50%)",
-                      transition: "all 0.3s",
-                      left: 0,
-                      top: 0,
+                        : "rgba(200,178,145,0.5)",
+                      boxShadow: on
+                        ? "0 0 0 3px rgba(200,178,145,0.12)"
+                        : "none",
+                      transition: "background 0.25s, box-shadow 0.25s",
                     }}
                   />
                   <span
-                    className="uppercase pointer-events-none whitespace-nowrap"
+                    className="gallery-mdot-label uppercase pointer-events-none whitespace-nowrap"
+                    data-on={on ? "true" : "false"}
                     style={{
                       position: "absolute",
                       top: -14,
-                      left: 0,
+                      left: "50%",
                       transform: "translateX(-50%)",
                       fontSize: 6,
                       letterSpacing: "0.1em",
                       color: on
-                        ? "rgba(200,178,145,0.85)"
-                        : "rgba(245,240,230,0.35)",
+                        ? "rgba(200,178,145,0.75)"
+                        : "rgba(245,240,230,0)",
                       transition: "color 0.2s",
                     }}
                   >
@@ -572,106 +547,39 @@ export function GalleryMasthead({
           </div>
         </div>
 
-        {/* Zone 5 — Meta bar */}
-        <div
-          className="grid items-center"
-          style={{
-            padding: "11px 24px",
-            gridTemplateColumns: "1fr auto 1fr",
-            gap: 12,
-            borderTop: "0.5px solid rgba(245,240,230,0.07)",
-            opacity: metaVisible ? 1 : 0,
-            transform: metaVisible ? "translateY(0)" : "translateY(3px)",
-            transition: "opacity 0.22s ease, transform 0.22s ease",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 15,
-              fontWeight: 300,
-              color: "rgba(245,240,230,0.88)",
-              fontFamily: "Georgia, serif",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            {metaProject?.name ?? ""}
-          </div>
-          <div
-            className="uppercase text-center whitespace-nowrap"
-            style={{
-              fontSize: 7,
-              letterSpacing: "0.18em",
-              color: "rgba(245,240,230,0.25)",
-            }}
-          >
-            {metaProject ? `${metaProject.location} · ${metaProject.year}` : ""}
-          </div>
-          <div className="flex items-center justify-end" style={{ gap: 12 }}>
-            <div
-              className="uppercase whitespace-nowrap"
-              style={{
-                fontSize: 7,
-                letterSpacing: "0.16em",
-                color: "rgba(245,240,230,0.2)",
-              }}
-            >
-              {metaProject?.kind ?? ""}
-            </div>
-            <button
-              type="button"
-              onClick={() => onOpen(activeIndex)}
-              className="uppercase whitespace-nowrap cursor-pointer transition-colors"
-              style={{
-                fontSize: 7,
-                letterSpacing: "0.2em",
-                color: "rgba(200,178,145,0.6)",
-                borderBottom: "0.5px solid rgba(200,178,145,0.3)",
-                paddingBottom: 1,
-                background: "transparent",
-                border: "none",
-                borderBottomStyle: "solid",
-                borderBottomWidth: "0.5px",
-                borderBottomColor: "rgba(200,178,145,0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "rgba(200,178,145,1)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "rgba(200,178,145,0.6)";
-              }}
-            >
-              Open project →
-            </button>
-          </div>
-        </div>
-
         <style>{`
-          .gallery-cards-row::-webkit-scrollbar,
-          .gallery-drawer-strip::-webkit-scrollbar { display: none; }
-
-          .gallery-wcard-img {
-            opacity: 0.6;
+          .gallery-thumb-img {
+            opacity: 0.45;
             transform: scale(1.02);
-            transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.35s ease;
+            transition: opacity 0.3s ease, transform 0.5s ease;
           }
-          .gallery-wcard-img[data-on="true"] {
-            opacity: 1;
+          .gallery-thumb-img[data-on="true"],
+          .gallery-thumb:hover .gallery-thumb-img {
+            opacity: 0.92;
             transform: scale(1);
           }
-          .gallery-wcard:hover .gallery-wcard-img[data-on="false"] {
-            opacity: 0.82;
-            transform: scale(1.04);
-          }
-          .gallery-wcard-scrim { opacity: 0; transition: opacity 0.3s; }
-          .gallery-wcard:hover .gallery-wcard-scrim,
-          .gallery-wcard-scrim[data-on="true"] { opacity: 1; }
 
-          .gallery-wcard:hover .gallery-wcard-name[data-on="false"] {
-            color: rgba(245,240,230,0.9) !important;
+          .gallery-depth-img {
+            transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+          }
+          .gallery-depth-img-wrap:hover .gallery-depth-img {
+            transform: scale(1.03);
+          }
+          .gallery-depth-img-wrap:hover .gallery-depth-open {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
           }
 
-          .gallery-dthumb:hover { border-color: rgba(200,178,145,0.35) !important; }
-          .gallery-dthumb:hover img { transform: scale(1.06); opacity: 1; }
+          .gallery-depth-meta-open:hover {
+            color: rgba(200,178,145,1) !important;
+          }
+
+          .gallery-mdot:hover .gallery-mdot-label {
+            color: rgba(245,240,230,0.45);
+          }
+          .gallery-mdot-label[data-on="true"] {
+            color: rgba(200,178,145,0.75) !important;
+          }
 
           @keyframes gallery-mdot-pulse {
             0% { transform: translate(-50%,-50%) scale(1); opacity: 0.5; }
@@ -679,7 +587,7 @@ export function GalleryMasthead({
           }
           .gallery-mdot-pulse {
             transform: translate(-50%,-50%) scale(1);
-            animation: none;
+            opacity: 0;
           }
           .gallery-mdot-pulse[data-on="true"] {
             animation: gallery-mdot-pulse 1.8s ease-out infinite;
@@ -687,7 +595,8 @@ export function GalleryMasthead({
 
           @media (prefers-reduced-motion: reduce) {
             .gallery-mdot-pulse[data-on="true"] { animation: none; }
-            .gallery-wcard-img { transition: none; }
+            .gallery-thumb-img,
+            .gallery-depth-img { transition: none; }
           }
         `}</style>
       </div>
