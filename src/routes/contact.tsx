@@ -383,17 +383,23 @@ function ContactPage() {
                 {/* Submit */}
                 <div className="pt-4">
                   {errorMsg && (
-                    <p className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                    <p
+                      id="inquiry-submit-error"
+                      role="alert"
+                      className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4"
+                    >
                       {errorMsg}
                     </p>
                   )}
-                  <button
+                  <EditorialButton
                     type="submit"
-                    disabled={submitting}
-                    className="text-xs uppercase tracking-[0.22em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                    variant="outline"
+                    size="lg"
+                    loading={submitting}
+                    aria-describedby={errorMsg ? "inquiry-submit-error" : undefined}
                   >
                     {submitting ? "SENDING…" : "SEND INQUIRY"}
-                  </button>
+                  </EditorialButton>
                   <p className="mt-6 text-[11px] text-charcoal/45">
                     Or email us directly at{" "}
                     <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
