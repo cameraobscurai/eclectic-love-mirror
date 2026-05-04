@@ -526,9 +526,11 @@ function ApproachScrollCard({
       className="absolute inset-0 flex flex-col"
       style={{ opacity, willChange: "opacity, transform" }}
     >
+      {/* Image fills available height; flex-1 + min-h-0 lets it shrink so
+          the caption underneath always fits inside the parent frame. */}
       <motion.div
-        className="relative w-full overflow-hidden bg-white"
-        style={{ aspectRatio: "3/4", y, willChange: "transform" }}
+        className="relative flex-1 min-h-0 w-full overflow-hidden bg-white"
+        style={{ y, willChange: "transform" }}
       >
         <img
           src={step.image.src}
