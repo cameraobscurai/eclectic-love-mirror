@@ -83,6 +83,7 @@ export function MediaAperture({
       >
         {src ? (
           <img
+            ref={imgRef}
             src={src}
             srcSet={srcSet}
             sizes={sizes}
