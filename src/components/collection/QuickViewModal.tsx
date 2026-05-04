@@ -235,30 +235,33 @@ export function QuickViewModal({
           </p>
           <div className="flex items-center gap-1 text-charcoal">
             <button
+              type="button"
               onClick={onPrev}
               disabled={!hasPrev}
               aria-label="Previous piece"
               aria-keyshortcuts="ArrowLeft"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 min-h-[44px] md:min-h-0 md:h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream transition-colors"
             >
               <span aria-hidden>←</span> PREV
             </button>
             <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
             <button
+              type="button"
               onClick={onNext}
               disabled={!hasNext}
               aria-label="Next piece"
               aria-keyshortcuts="ArrowRight"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 min-h-[44px] md:min-h-0 md:h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream transition-colors"
             >
               NEXT <span aria-hidden>→</span>
             </button>
             <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
             <button
               ref={closeRef}
+              type="button"
               onClick={onClose}
               aria-label="Close"
-              className="h-8 w-8 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              className="min-h-[44px] min-w-[44px] md:h-8 md:w-8 md:min-h-0 md:min-w-0 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
               ×
             </button>
