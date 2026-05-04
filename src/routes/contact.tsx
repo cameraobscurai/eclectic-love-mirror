@@ -354,13 +354,14 @@ function ContactPage() {
                                 </span>
                               )}
                             </div>
-                            <button
-                              type="button"
+                            <EditorialButton
+                              variant="ghost"
+                              size="sm"
                               onClick={() => removePiece(p.id)}
-                              className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              aria-label={`Remove ${p.title} from inquiry`}
                             >
                               REMOVE
-                            </button>
+                            </EditorialButton>
                           </li>
                         ))}
                       </ul>
