@@ -1,6 +1,5 @@
 {
   "detailUrls": {
-    "lounge-seating": [],
     "lounge-tables": [
       "https://www.eclectichive.com/lounge-tables/raden-distressed-metal-coffee-table",
       "https://www.eclectichive.com/lounge-tables/tierre-coffee-table",
@@ -216,7 +215,6 @@
       "https://www.eclectichive.com/tableware/vintage-silver-goblets",
       "https://www.eclectichive.com/tableware/pejra-antique-silver-cocktail-set"
     ],
-    "lighting": [],
     "textiles": [
       "https://www.eclectichive.com/textiles/beige-embroidered-pillow",
       "https://www.eclectichive.com/textiles/beige-half-leather-pillow",
@@ -7215,6 +7213,181 @@
         "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
       ],
       "scraped_at": "2026-05-04T23:56:21.898Z"
+    },
+    {
+      "category_path": "textiles",
+      "detail_url": "https://www.eclectichive.com/textiles/tassel-windmill-throw",
+      "slug": "tassel-windmill-throw",
+      "title": "Tassel Windmill Throw",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/60a0c3b5-e849-4b54-91f2-a75f12361443/WINDMILL+Black.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/60a0c3b5-e849-4b54-91f2-a75f12361443/WINDMILL+Black.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Ftextiles%2Ftassel-windmill-throw",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:23.322Z"
+    },
+    {
+      "category_path": "textiles",
+      "detail_url": "https://www.eclectichive.com/textiles/waves",
+      "slug": "waves",
+      "title": "Waves Grey Throw",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1666819279465-Z50B4DBXZ7WV58HKW7ZX/WAVES+Grey+2.PNG",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1666819279465-Z50B4DBXZ7WV58HKW7ZX/WAVES+Grey+2.PNG&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Ftextiles%2Fwaves",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:24.970Z"
+    },
+    {
+      "category_path": "textiles",
+      "detail_url": "https://www.eclectichive.com/textiles/aztec-sand",
+      "slug": "aztec-sand",
+      "title": "Woven Autumn Stripe Throw",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/3eed7b33-213f-472d-afb0-38ccf68c02af/WOVEN+Autumn+Stripe.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/3eed7b33-213f-472d-afb0-38ccf68c02af/WOVEN+Autumn+Stripe.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Ftextiles%2Faztec-sand",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:26.460Z"
+    },
+    {
+      "category_path": "textiles",
+      "detail_url": "https://www.eclectichive.com/textiles/woven-sand-aztec",
+      "slug": "woven-sand-aztec",
+      "title": "Woven Sand Aztec",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d71a0684-b85d-4d44-8cac-fb2eda65e648/WOVEN+Aztec+Sand.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d71a0684-b85d-4d44-8cac-fb2eda65e648/WOVEN+Aztec+Sand.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Ftextiles%2Fwoven-sand-aztec",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:27.938Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/atlas",
+      "slug": "atlas",
+      "title": "Atlas 8x10 Turkish Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953208374-THFBL3N13LZSPWJZBD9X/ATLAS_Rug_8x10_1.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:29.282Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/briar-9x12-jute-rug",
+      "slug": "briar-9x12-jute-rug",
+      "title": "Briar 9x12 Jute Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/e2a3e128-284c-43d0-9504-f6a8f4196ae4/BRIAR+9x12.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/e2a3e128-284c-43d0-9504-f6a8f4196ae4/BRIAR+9x12.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Frugs%2Fbriar-9x12-jute-rug",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:30.705Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/byron",
+      "slug": "byron",
+      "title": "Byron Black Hide Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953210602-0MCZL3UNGFQPGUCB6G7P/BYRON__Black_Hide_0.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:32.113Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/dayna",
+      "slug": "dayna",
+      "title": "Dayna 8x10 Grey Pattern Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953214071-30S43N1UO2GR3KOR871I/DAYNA_Rug_8x10_1.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:33.515Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/eniko",
+      "slug": "eniko",
+      "title": "Eniko Brindle Hide Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953215349-ETK8GJXVE4GPSWZK1OIA/ENIKO_6x6_Brindle_Rug_0.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:35.043Z"
+    },
+    {
+      "category_path": "rugs",
+      "detail_url": "https://www.eclectichive.com/rugs/evren",
+      "slug": "evren",
+      "title": "Evren 8x10 Kilim Rug",
+      "cdn_image_urls": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953216905-P0HF4EQFLSMT7VKAIIXX/EVREN_Rug_0.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg"
+      ],
+      "scraped_at": "2026-05-04T23:56:36.451Z"
     }
   ]
 }
