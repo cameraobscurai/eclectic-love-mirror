@@ -466,17 +466,24 @@ export function QuickViewModal({
 
             {/* CTA */}
             <div className="order-1 md:order-3 flex justify-end">
-              <button
-                onClick={() => inquiry.toggle(product.id)}
-                className={cn(
-                  "px-6 py-3 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.97]",
+              <EditorialButton
+                variant={inInquiry ? "outline" : "solid"}
+                size="md"
+                aria-pressed={inInquiry}
+                aria-label={
                   inInquiry
-                    ? "bg-cream text-charcoal border-charcoal"
-                    : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
-                )}
+                    ? `Remove ${product.title} from inquiry`
+                    : `Add ${product.title} to inquiry`
+                }
+                onClick={() => inquiry.toggle(product.id)}
+                className="active:scale-[0.97]"
               >
                 {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
-              </button>
+              </EditorialButton>
+              {/* Polite live region announces toggle for assistive tech */}
+              <span className="sr-only" aria-live="polite">
+                {inInquiry ? "Added to inquiry" : ""}
+              </span>
             </div>
           </div>
         </div>
