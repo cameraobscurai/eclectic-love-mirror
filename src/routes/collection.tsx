@@ -588,17 +588,11 @@ function CollectionPage() {
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <div className="md:col-span-7">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              THE HIVE SIGNATURE COLLECTION
-            </p>
-            <p className="mt-3 text-[11px] uppercase tracking-[0.26em] text-charcoal/75 max-w-[44ch]">
-              A LIVING ARCHIVE OF FURNITURE, LIGHTING, AND OBJECTS — DESIGNED, SOURCED, AND PRODUCED IN-HOUSE.
-            </p>
             <h1
               id="collection-heading"
               data-devedit
               data-devedit-label="Collection heading"
-              className="mt-6 font-display uppercase leading-[0.92] text-charcoal"
+              className="font-display uppercase leading-[0.92] text-charcoal"
               style={{
                 fontSize: "clamp(60px, 8vw, 120px)",
                 fontWeight: 400,
@@ -607,9 +601,6 @@ function CollectionPage() {
             >
               The Collection
             </h1>
-            <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
-              Browse by category, or search the full archive — every piece is available for rental and shipped from our Denver warehouse.
-            </p>
           </div>
           <div className="md:col-span-5">
             <div
@@ -617,8 +608,8 @@ function CollectionPage() {
               style={{ aspectRatio: "4/5", background: "var(--cream)" }}
             >
               <img
-                src={new URL("../assets/collection-hero-hive.png", import.meta.url).href}
-                alt="The Hive Signature Collection — monogram H over a sculptural chair vignette."
+                src={collectionHeroHive}
+                alt=""
                 className="w-full h-full object-contain"
                 loading="eager"
                 decoding="async"
