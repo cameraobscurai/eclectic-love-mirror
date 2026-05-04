@@ -430,7 +430,7 @@ function HomePage() {
         {/* Variant toggle — quiet bottom-right control. Two dots,
             current variant filled. Click to flip. */}
         <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
-          {(["moodboard", "exploded"] as const).map((v) => (
+          {(["moodboard", "exploded", "chair"] as const).map((v) => (
             <button
               key={v}
               type="button"
