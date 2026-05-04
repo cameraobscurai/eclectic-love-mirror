@@ -25,6 +25,7 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import signaturePlate from "@/assets/collection-signature-plate.png";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
