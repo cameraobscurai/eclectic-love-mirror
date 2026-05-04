@@ -333,7 +333,7 @@ function HomePage() {
                     "group transition-all duration-700",
                     loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                   )}
-                  style={{ transitionDelay: loaded ? `${500 + i * 100}ms` : "0ms" }}
+                  style={{ transitionDelay: loaded ? `${300 + i * 100}ms` : "0ms" }}
                   onMouseEnter={() => setHoveredIndex(i)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
