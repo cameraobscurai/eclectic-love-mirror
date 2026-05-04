@@ -1,70 +1,238 @@
-## Pass 1 — Safe performance cleanup (revised per feedback)
+Here's the revised brief with the Mapbox treatment folded in as Brief 3, and Brief 2 updated to include the full map styling implementation:
 
-Strict scope unchanged: no layout, styling, motion, copy, gallery behavior, or collection UX changes. No catalog restructuring. No View Transitions. No Web Workers. No state refactor.
+---
 
-Refinements from your review folded in inline (steps 4, 5, 6).
+## Gallery redesign — masthead + bottom-half polish + map treatment
 
-### 1. Fix React 19 preload prop casing
+Three scoped passes. Brief 1 replaces the masthead. Brief 2 handles bottom-half wiring. Brief 3 is the Mapbox visual treatment — implement only after Brief 1 and 2 typecheck clean.
 
-- `src/components/hero-image.tsx` → `heroPreloadLink()`: `imagesrcset → imageSrcSet`, `imagesizes → imageSizes`, `fetchpriority → fetchPriority`.
-- `src/routes/index.tsx` → both preload entries: `fetchpriority → fetchPriority`.
-- Inline `{...({ fetchpriority: ... })}` JSX spreads on `<img>` in `hero-image.tsx`, `media-aperture.tsx`, `CategoryOverview.tsx`, `CategoryGalleryOverview.tsx`, `ProductTile.tsx`: rename to `fetchPriority`. Keep the cast for older `@types/react` safety.
+### Brief 1 — masthead replacement
 
-Pure rename. Removes three console warnings.
+*(unchanged from your plan — correct as written)*
 
-### 2. Lazy-load `QuickViewModal`
+### Brief 2 — bottom-half refinements
 
-- `src/routes/collection.tsx` → `const QuickViewModal = lazy(() => import("@/components/collection/QuickViewModal").then(m => ({ default: m.QuickViewModal })))`.
-- Wrap the `<AnimatePresence>{quickViewProduct && <QuickViewModal …/>}</AnimatePresence>` in `<Suspense fallback={null}>`.
-- `src/components/collection/ProductTile.tsx` → add a one-shot warmer wired to `onMouseEnter` / `onFocus` on the tile button so the chunk is in cache before the click resolves.
+#### `GalleryMap.tsx` — replace `easeTo` with `flyTo`
 
-### 3. Lazy-load `GalleryMap` behind viewport proximity
+Replace the existing `easeTo({ center, duration: 700 })` on activeIndex change with:
 
-- `src/routes/gallery.tsx` → replace top-level import with `lazy(...)`.
-- Use `useNearViewport` (rootMargin 400px, initial: false) on the `mapSlot` host div. Render `<Suspense fallback={null}><GalleryMap …/></Suspense>` only once `near` flips true.
-- Slot dimensions are CSS-grid driven, so no layout shift.
+ts
 
-### 4. Move `CATEGORY_COVERS` preload into the overview branch
-
-> Acknowledged: this is a workaround. TanStack Start's `head()` is route-level, not component-level, so we can't conditionally hoist preloads from a child component into the route head without refactoring the overview-vs-category-detail split into separate routes. That's a Pass-2-or-later decision; for now we keep it imperative.
-
-- `src/routes/collection.tsx` → delete `Object.values(CATEGORY_COVERS).map(...)` from `Route.head()`.
-- `src/components/collection/CategoryGalleryOverview.tsx` → add a mount-only `useEffect` that creates `<link rel="preload" as="image" fetchPriority="high">` per cover and removes them on unmount. Documented in a code comment as "TanStack head() can't condition on a child component; revisit if overview becomes its own route."
-
-### 5. Audit and remove confirmed-unused packages
-
-Per your note, I'll do a manual second-pass check on `vaul` and `embla-carousel-react` before running `bun remove` — specifically grepping for any usage in the contact sheet, gallery lightbox, mobile filter sheet, and any modal that might wrap them indirectly. The first scan only matched `src/components/ui/{drawer,carousel}.tsx` themselves, but I'll widen the search to:
-- `rg -n "Drawer|Carousel" src/ --glob '!src/components/ui/**'`
-- `rg -n "vaul|embla" src/ package.json`
-
-If anything turns up, those two stay and the rest go. Otherwise the full removal list:
-
-`bun remove embla-carousel-react cmdk input-otp react-resizable-panels react-day-picker vaul recharts date-fns @mendable/firecrawl-js`
-
-Then delete the matching `src/components/ui/*.tsx` shells whose deps were removed.
-
-### 6. Fix `GalleryCardsTrack` setState-during-render warning (with mount guard)
-
-Per your refinement — moving the `onActiveChange` notify into an effect would fire on mount with index 0, which the current code doesn't do (it only fires when `prev !== bestIdx`). Add a `useRef` mount guard:
-
-```tsx
-const didMountRef = useRef(false);
-useEffect(() => {
-  if (!didMountRef.current) { didMountRef.current = true; return; }
-  onActiveChange?.(activeIndex);
-}, [activeIndex, onActiveChange]);
+```ts
+map.current?.flyTo({
+  center: project.coords,
+  zoom: 5,
+  duration: 1200,
+  essential: true,
+})
 ```
 
-And inside `recompute()`, replace the functional updater with a plain `setActiveIndex(bestIdx)`. Net behavior identical to the current code: parent only hears about index changes, never the initial 0.
+Same effect hook, different call. No other changes to `GalleryMap.tsx` in this pass — the full visual treatment is Brief 3.
 
-### Reporting
+#### Confirmed already correct — verify only, no changes
 
-After running, I'll list every file changed, paste short diffs for steps 4 and 6 (the subtle ones), and report whether the four target warnings are gone.
+- `GalleryCardsTrack` calls `onActiveChange(activeIndex)` and `gallery.tsx` pipes it to `GalleryProjectIndex`. If `onJump` wiring is missing add: `onJump={(i) => jumpRef.current?.(i)}`.
+- CTA grid uses `items-baseline`.
+- Press image has descriptive alt.
+- `gallery-projects.ts` has `coords: [number, number]` on every project.
 
-### Out of scope (deferred)
+### Brief 3 — Mapbox visual treatment
 
-- Catalog sharding (Pass 2)
-- Memory leak / overflow race / SWR LRU cap — flagged for a separate pass before Pass 2 catalog work
-- framer-motion / View Transitions (Pass 3)
-- Web Workers, `useReducer` consolidation (Pass 4)
-- `JSON.parse(?raw)` — skipped
+#### Context
+
+`GalleryMap.tsx` currently renders a default dark Mapbox style. The map should feel like a material — dark topographic texture that belongs on a charcoal page — not a navigation tool. No roads, no POI, no transit. Cream labels for state names only. Amber pulsing dot on the active location. Globe projection. Fog dissolve at edges.
+
+This entire brief lives inside `GalleryMap.tsx`. No other files change.
+
+#### 1. Style — runtime theming via `setStyleImportConfigProperty`
+
+After `map.on('load', ...)` fires, apply these in sequence:
+
+ts
+
+```ts
+map.setProjection({ name: 'globe' });
+
+map.setFog({
+  range: [0.5, 10],
+  color: '#0a0908',
+  'high-color': '#0e0d0b',
+  'horizon-blend': 0.08,
+  'space-color': '#0a0908',
+  'star-intensity': 0,
+});
+
+// Standard style color overrides
+map.setStyleImportConfigProperty('basemap', 'lightPreset', 'night');
+map.setStyleImportConfigProperty('basemap', 'showPointOfInterestLabels', false);
+map.setStyleImportConfigProperty('basemap', 'showTransitLabels', false);
+map.setStyleImportConfigProperty('basemap', 'showPlaceLabels', true); // state/country only
+map.setStyleImportConfigProperty('basemap', 'showRoadLabels', false);
+```
+
+Then suppress road and minor label layers directly — these are present in Mapbox Standard night and need explicit hiding:
+
+ts
+
+```ts
+const layersToHide = [
+  'road-simple', 'road-primary', 'road-secondary-tertiary',
+  'road-street', 'road-minor', 'road-path',
+  'poi-label', 'transit-label', 'airport-label',
+];
+layersToHide.forEach(id => {
+  if (map.getLayer(id)) {
+    map.setLayoutProperty(id, 'visibility', 'none');
+  }
+});
+```
+
+Use `map.getLayer(id)` guard on every call — layer IDs vary between Standard versions and a missing layer must not throw.
+
+State and country labels stay visible. Their color should be overridden to `rgba(245, 240, 230, 0.25)` via `setPaintProperty` on `'country-label'` and `'state-label'` text-color.
+
+#### 2. Project markers — GeoJSON circle layers
+
+Replace any existing marker/symbol approach with two GeoJSON circle layers: a base dot layer and a pulse layer for the active location.
+
+Add a GeoJSON source keyed `'projects'` with a Feature per project, each carrying `index` and `active: false` in properties. On `activeIndex` change, update via `map.getSource('projects').setData(...)` with `active: true` on the matching feature.
+
+**Base dot layer** `'project-dots'`**:**
+
+ts
+
+```ts
+map.addLayer({
+  id: 'project-dots',
+  type: 'circle',
+  source: 'projects',
+  paint: {
+    'circle-radius': 4,
+    'circle-color': [
+      'case', ['get', 'active'],
+      'rgba(200,178,145,1)',
+      'rgba(200,178,145,0.55)'
+    ],
+    'circle-stroke-width': 1,
+    'circle-stroke-color': [
+      'case', ['get', 'active'],
+      'rgba(200,178,145,0.4)',
+      'rgba(200,178,145,0.15)'
+    ],
+  }
+});
+```
+
+**Pulse layer** `'project-pulse'` — animated ring on active dot only:
+
+Add a separate circle layer `'project-pulse'` filtered to `['==', ['get', 'active'], true]`. Drive its `circle-radius` and `circle-opacity` with `requestAnimationFrame` using `setPaintProperty`:
+
+ts
+
+```ts
+let pulseFrame: number;
+const animatePulse = () => {
+  const t = (Date.now() % 2000) / 2000; // 0→1 over 2s
+  const radius = 4 + t * 14;            // 4px → 18px
+  const opacity = (1 - t) * 0.5;       // 0.5 → 0
+  if (map.getLayer('project-pulse')) {
+    map.setPaintProperty('project-pulse', 'circle-radius', radius);
+    map.setPaintProperty('project-pulse', 'circle-opacity', opacity);
+  }
+  pulseFrame = requestAnimationFrame(animatePulse);
+};
+animatePulse();
+```
+
+Cancel `pulseFrame` in the map `remove` cleanup and in the component's `useEffect` return.
+
+**Label layer** `'project-labels'` — small text above each dot:
+
+ts
+
+```ts
+map.addLayer({
+  id: 'project-labels',
+  type: 'symbol',
+  source: 'projects',
+  layout: {
+    'text-field': ['get', 'name'],
+    'text-size': 9,
+    'text-offset': [0, -1.2],
+    'text-anchor': 'bottom',
+    'text-font': ['DIN Pro Italic', 'Arial Unicode MS Regular'],
+  },
+  paint: {
+    'text-color': [
+      'case', ['get', 'active'],
+      'rgba(200,178,145,0.9)',
+      'rgba(245,240,230,0.35)'
+    ],
+    'text-halo-color': 'rgba(10,9,8,0.8)',
+    'text-halo-width': 1,
+  }
+});
+```
+
+#### 3. Click interaction
+
+ts
+
+```ts
+map.on('click', 'project-dots', (e) => {
+  const idx = e.features?.[0]?.properties?.index;
+  if (typeof idx === 'number') onSelect(idx);
+});
+map.on('mouseenter', 'project-dots', () => {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'project-dots', () => {
+  map.getCanvas().style.cursor = '';
+});
+```
+
+#### 4. Initial camera
+
+ts
+
+```ts
+new mapboxgl.Map({
+  ...existingOptions,
+  projection: 'globe',
+  center: [-108, 40],   // center of the project geography
+  zoom: 3.8,
+  pitch: 0,
+  bearing: 0,
+  interactive: false,   // decorative — no user pan/zoom
+})
+```
+
+`interactive: false` is deliberate. The map is an ambient geographic indicator, not a navigation tool. The `onSelect` callback still fires on dot click via the layer event above — that works independently of map interactivity.
+
+#### 5. Cleanup
+
+ts
+
+```ts
+return () => {
+  cancelAnimationFrame(pulseFrame);
+  map.current?.remove();
+  map.current = null;
+};
+```
+
+#### Verification
+
+- Typecheck passes.
+- Pulse animation does not cause React re-renders — it operates entirely via `map.setPaintProperty`, never `setState`.
+- `map.getLayer(id)` guard used on every `setLayoutProperty` / `setPaintProperty` call that targets a built-in Standard layer.
+- `interactive: false` confirmed — no scroll-hijack on the gallery page from the map.
+- Bundle: `GalleryMap` remains a lazy chunk — nothing in Brief 3 changes the import graph.
+
+### Out of scope
+
+`GalleryCardsTrack`, `GalleryLightbox`, `GalleryEnvironmentCard`, `gallery-projects.ts` data shape beyond confirming `coords` exists, press bar, footer, any other route.
+
+---
+
+Send Brief 1 first, confirm typecheck, then Brief 2, then Brief 3. Brief 3 is the most isolated — it lives entirely in one file and has no props interface changes — but it depends on the map being wired correctly from Briefs 1 and 2 before the visual treatment is worth applying.

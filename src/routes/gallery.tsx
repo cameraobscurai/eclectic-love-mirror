@@ -1,20 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
 import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { useNearViewport } from "@/hooks/useNearViewport";
 import {
   galleryProjects,
   type GalleryProject,
 } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
-
-// Mapbox is ~210KB gz. Defer until the masthead's map slot nears the
-// viewport — most users never scroll it into view on first paint.
-const GalleryMap = lazy(() =>
-  import("@/components/gallery/GalleryMap").then((m) => ({ default: m.GalleryMap })),
-);
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof, cinematic exhibition mode
