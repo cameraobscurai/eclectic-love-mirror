@@ -10,6 +10,7 @@ import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
+import { EditorialButton } from "@/components/ui/editorial-button";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
