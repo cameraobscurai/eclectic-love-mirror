@@ -254,9 +254,9 @@ function HomePage() {
           </picture>
         ) : (
           <motion.img
-            key="exploded"
+            key={variant}
             ref={heroImgRef}
-            src={homeHeroExploded}
+            src={variant === "exploded" ? homeHeroExploded : homeHeroChair}
             alt=""
             aria-hidden="true"
             decoding="async"
