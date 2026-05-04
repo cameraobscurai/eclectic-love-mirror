@@ -1,5 +1,4 @@
 import { useRef, type ReactNode } from "react";
-import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
 // GalleryMasthead

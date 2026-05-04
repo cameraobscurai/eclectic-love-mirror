@@ -6,7 +6,6 @@ import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { GalleryMap } from "@/components/gallery/GalleryMap";
 import {
   galleryProjects,
-  type GalleryCategory,
   type GalleryProject,
 } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
@@ -40,11 +39,19 @@ export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
 });
 
-const ALL_CATEGORIES: GalleryCategory[] = [
-  "Luxury Weddings",
-  "Meetings + Incentive Travel",
-  "Social + Non-Profit",
-];
+// Build a stable list of regions present in the gallery data, in the order
+// they first appear in the project list. "All" is always pinned first.
+const REGION_FILTERS: CategoryFilter[] = (() => {
+  const seen = new Set<string>();
+  const ordered: string[] = [];
+  for (const p of galleryProjects) {
+    if (!seen.has(p.region)) {
+      seen.add(p.region);
+      ordered.push(p.region);
+    }
+  }
+  return ["All", ...ordered];
+})();
 
 function GalleryPage() {
   const [filter, setFilter] = useState<CategoryFilter>("All");
@@ -54,18 +61,17 @@ function GalleryPage() {
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
     if (filter === "All") return galleryProjects;
-    return galleryProjects.filter((p) => p.category === filter);
+    return galleryProjects.filter((p) => p.region === filter);
   }, [filter]);
 
   const counts: Record<CategoryFilter, number> = useMemo(() => {
     const base: Record<CategoryFilter, number> = {
       All: galleryProjects.length,
-      "Luxury Weddings": 0,
-      "Meetings + Incentive Travel": 0,
-      "Social + Non-Profit": 0,
     };
-    for (const p of galleryProjects) base[p.category] += 1;
-    for (const c of ALL_CATEGORIES) base[c] = base[c] ?? 0;
+    for (const f of REGION_FILTERS) {
+      if (f !== "All") base[f] = 0;
+    }
+    for (const p of galleryProjects) base[p.region] = (base[p.region] ?? 0) + 1;
     return base;
   }, []);
 
@@ -93,6 +99,7 @@ function GalleryPage() {
         active={filter}
         counts={counts}
         onChange={setFilter}
+        filters={REGION_FILTERS}
         mapSlot={
           <GalleryMap
             projects={visibleProjects}
