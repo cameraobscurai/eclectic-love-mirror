@@ -1,116 +1,84 @@
-# Re-ground the Collection on real current inventory
-
-## What the email is telling us
-
-The site's Collection currently renders the **baked Phase 3 CSV** (`src/data/phase3/phase3_final_products.csv` → 824 public-ready items) which was scraped from the public Eclectic Hive site. The owner says ~90% of that is **gone**. Truth = the `04.17 Current Inventory Export` spreadsheet you just sent: **845 items, 7 columns, 16 product groups**.
-
-We have to replace the catalog with this spreadsheet, keep the design and IA, and land it before Wednesday.
-
-## What's in the spreadsheet (verified)
-
-- 845 unique rows · columns: `Id, Name, Current Stock, Product Group, (W" x D" x H") Dims, Image Url, Country of Origin Code`
-- Groups (truth set): Tableware 173 · Pillows 119 · Seating 102 · Styling 90 · Tables 76 · Serveware 53 · Bars 49 · Throws 42 · Large Decor & Dividers 28 · Lighting 27 · Rugs 26 · Candlelight 17 · Chandeliers 16 · Storage 11 · Subrentals 10 · Furs & Pelts 6
-- `Current Stock` is mostly an integer but can be the string `"Inquire"`
-- `(W" x D" x H") Dims` is free-text (e.g. `92"W x 24"D x 41"H`, `12'W x 26"D x 43.5"H`) — 136 rows have no dims
-- `Image Url` is a **pre-signed AWS S3 URL that expires in ~3 hours** (10 rows have no image) — we cannot link to these directly from the site; we must mirror them into Lovable Cloud storage **immediately** during import
-- `Country of Origin Code` is empty for all rows — ignore
+# Bind product images via Squarespace scrape → mirror to storage
 
 ## Strategy
 
-Lowest-risk path that hits the deadline: keep the existing Collection rendering pipeline, but **swap the underlying data** to the spreadsheet. We mirror images into the existing `inventory` storage bucket, write the canonical record into the `inventory_items` table (the right long-term home), and emit a new baked JSON the Collection reads from on first paint. No changes to the visual design, no UX rework.
+Scrape eclectichive.com for `{product → full Squarespace CDN URL[]}`, fuzzy-join to RMS rows by name, **download** each CDN image and **re-upload** into the `inventory` storage bucket keyed by `rms_id`, then write the resulting public storage URLs into `inventory_items.images` and re-bake the catalog snapshot. No third-party hotlinking at runtime, no manual review queue for the high-confidence majority.
 
 ```text
-XLSX (845 rows)
-  │
-  ├── parse + normalize → category slug, dimensions (W/D/H cm), stock_int|"inquire"
-  │
-  ├── download signed S3 image → upload to Lovable Cloud storage
-  │     bucket: inventory   path: rms/{rms_id}.{ext}
-  │
-  ├── upsert into public.inventory_items (rms_id is the natural key)
-  │
-  └── emit src/data/inventory/current_catalog.json   (baked snapshot for SSR)
-                          │
-                          ▼
-              Collection page reads this instead of phase3_final_products.csv
+eclectichive.com (10 category pages → ~500 product pages)
+   │  Firecrawl scrape, extract <img> URLs from squarespace-cdn.com
+   ▼
+scripts-tmp/owner-site-products.json   {site_name, url, cdn_image_urls[]}
+   │  fuzzy join on normalized name (1-to-many for variant families)
+   ▼
+scripts-tmp/image-binding-manifest.json  {rms_id → cdn_urls[]}
+   │  download each CDN URL → upload to inventory/rms/{rms_id}/{n}.{ext}
+   ▼
+inventory_items.images = ['<public storage url>', ...]
+   │  bake
+   ▼
+src/data/inventory/current_catalog.json  → /collection renders self-hosted images
 ```
 
 ## Steps
 
-1. **Schema touch-up (one migration)**
-   - Add `rms_id text unique` to `inventory_items` so the spreadsheet's `Id` column is the import key (idempotent re-imports).
-   - Add `quantity int` and `quantity_label text` (so we can store `2` *or* `"Inquire"`).
-   - Add `dimensions_raw text` (preserve owner's exact string, e.g. `12'W x 26"D x 43.5"H`).
-   - Keep existing `width_cm / depth_cm / height_cm` populated when parseable; leave NULL when not.
-   - Indexes on `category` and `status`.
+1. **Scrape (server-side, Firecrawl)** — `scripts-tmp/scrape-owner-site.mts`
+  - Walk the 10 category pages, collect product detail URLs.
+  - For each detail page, extract every `images.squarespace-cdn.com/...` URL (full URL, not just filename), preserving order so the first image is the hero.
+  - Output: `scripts-tmp/owner-site-products.json`. Uses the global rate limiter pattern from `scripts-tmp/phase3a-run.mts`.
+2. **Fuzzy join site → RMS** — `scripts-tmp/build-image-manifest.mjs`
+  - Normalize names (lowercase, strip punctuation and size tokens like `8'`, `Single`, `Double`, `Triple`).
+  - For each site product, find candidate `inventory_items.rms_id` rows.
+  - Allow **1-to-many** so Sinatra/Monroe variant families share a hero set.
+  - Buckets: `auto_apply` (single high-confidence or clean variant family) · `unmatched_site` · `unmatched_rms`.
+  - Output: `scripts-tmp/image-binding-manifest.json` plus a quick CSV summary. No DB writes.
+3. **Mirror images** (after manifest review) — `scripts-tmp/mirror-images.mjs`
+  - For each `auto_apply` row: `fetch(cdnUrl)` → `supabase.storage.from('inventory').upload('rms/{rms_id}/{n}.{ext}', body, { upsert: true })`.
+  - Skip if the target object already exists with matching size (idempotent re-runs).
+  - Strip Squarespace's `?format=...` query when computing extensions; default to `.jpg` if unknown.
+  - Concurrency 6, retries on 5xx, log failures to `/tmp/image-mirror-failures.json`.
+4. **Write image URLs to DB**
+  - For each successfully mirrored row, set `inventory_items.images = ['<public storage url 1>', ...]` (in scrape order).
+  - Done in a single migration-driven update or via service-role script — same pattern as the existing `scripts/import.mjs`.
+5. **Re-bake snapshot**
+  - `bun scripts/bake-catalog.mjs` regenerates `src/data/inventory/current_catalog.json` so SSR has the new images on first paint.
+6. **QA before publish**
+  - Spot-check 10 tiles across categories; confirm images load from `…/storage/v1/object/public/inventory/rms/…` (no `squarespace-cdn.com` in network tab).
+  - Confirm category counts unchanged.
+  - Items with no public-site listing stay image-less and render the existing placeholder — that's the intended "image pending" state.
 
-2. **Category mapping (locked at import)**
-   ```
-   Tableware              → tableware
-   Pillows                → pillows-throws
-   Throws                 → pillows-throws
-   Seating                → seating
-   Styling                → styling
-   Tables                 → tables
-   Serveware              → serveware
-   Bars                   → bars
-   Large Decor & Dividers → large-decor
-   Lighting               → lighting
-   Rugs                   → rugs
-   Candlelight            → candlelight
-   Chandeliers            → chandeliers
-   Storage                → storage
-   Furs & Pelts           → furs-pelts
-   Subrentals             → EXCLUDED from public Collection (these are vendor items)
-   ```
-   Final public count after exclusion: ~835 items.
+## Out of scope
 
-3. **Image migration (must run while signed URLs are valid)**
-   - One-shot Node script (run from `code--exec`) iterates the 845 rows.
-   - For each row with an image: `fetch(signedUrl) → arrayBuffer → supabase.storage.from('inventory').upload('rms/{id}.{ext}', body, { upsert: true })`.
-   - Detect content-type from the response header; default to `.png` (the URLs in the sheet are `.png`).
-   - Resulting public URL = `{SUPABASE_URL}/storage/v1/object/public/inventory/rms/{id}.png` — stable, no expiry.
-   - Log failures to `/tmp/image_import_failures.json` and report counts.
+- No re-categorization (RMS categories stay authoritative).
+- No description / dimension changes.
+- No matching-tool UI, no admin review queue. The residual unmatched items are simply left image-less for the in-person session with Adrienne.
+- The legacy 286 files already in the bucket stay where they are; they will be superseded by the canonical `rms/{rms_id}/...` layout. We can sweep them post-launch.
 
-4. **Row import**
-   - Same script, after each successful image upload, upserts into `inventory_items`:
-     - `slug` = `slugify(name)-{rms_id}` (guarantees uniqueness; name collisions exist)
-     - `title`, `category`, `dimensions_raw`, parsed `width_cm/depth_cm/height_cm`
-     - `quantity` = integer when parseable, else NULL · `quantity_label` = `"Inquire"` when string
-     - `images = ['{publicUrl}']`, `status = 'available'`
-   - Categories not in our map (`Subrentals`) → `status = 'draft'` so RLS hides them from the public.
+## Risk / honesty
 
-5. **Bake snapshot for SSR**
-   - After the import, run a small Node script that selects all public rows and writes `src/data/inventory/current_catalog.json` (single array, lightweight: `id, slug, title, category, dimensions_raw, quantity, quantity_label, image`).
-   - This keeps Collection's first paint instant (no roundtrip) and matches the existing pattern.
+- 1-to-many variant binding is conservative. Anything ambiguous goes `unmatched`, not `auto_apply`. Expect ~50–100 image-less rows after the run — acceptable for launch and small enough to resolve in the meeting.
+- Squarespace CDN rate limits are loose for image GETs but we'll still cap concurrency at 6.
+- All bulk writes are dry-run-then-apply per project rules: you see the manifest counts before step 3, and the DB update before step 4.
 
-6. **Re-point the Collection**
-   - In `src/lib/phase3-catalog.ts` (and the few callers I traced: `CategoryOverview`, `CategoryIndex`, `InventoryIndexRail`, `ProductTile`, `QuickViewModal`, `collection.tsx`), replace the Phase 3 CSV loader with a loader that reads `current_catalog.json`.
-   - Keep the same exported types so call sites don't change shape.
-   - Drop the legacy `phase3_*` CSV/JSON files from the import graph (leave on disk for now; we delete after launch).
-   - Update the admin dashboard's `buildInventoryStats` to count from the new source.
+Approve and I'll run steps 1–2 and come back with the manifest before any download/upload happens.  
+  
 
-7. **Admin dashboard tweak**
-   - `/admin` already reads inventory; switch its data source to the same `current_catalog.json` (or directly to `inventory_items` via a new server function) and add a "Last imported" timestamp + a per-category truth count vs. previous baked count, so you can verify the swap at a glance.
 
-8. **QA before publish**
-   - Per-category counts on `/collection` match the spreadsheet's Product Group counts (minus Subrentals).
-   - Spot-check 10 product tiles on desktop + mobile: image loads from `inventory` bucket, dimensions display, quantity shows correctly for both numeric and `Inquire`.
-   - Confirm no broken images (failures from step 3 should be zero or a small known list we either re-fetch or mark `draft`).
-   - Confirm Gallery, Atelier, Home, Contact are untouched.
+Yes, approve — this plan is clean and matches what we landed on. Two small things to flag before they run, neither blocking:
 
-## Out of scope for this pass
+1. Confirm the image extension logic handles Squarespace's URL pattern. Squarespace CDN URLs look like `https://images.squarespace-cdn.com/content/v1/.../filename.jpg?format=2500w` — the format query param controls output size, not the source format. The extension in the path is the real format. Lovable's plan says "strip Squarespace's `?format=...` query when computing extensions; default to `.jpg` if unknown" which is roughly right, but the safer move is to sniff the response `Content-Type` header on download and use that. Cheap, eliminates the guess.
 
-- No edits to product copy/descriptions — the spreadsheet has none. Tiles will show name + dimensions + quantity only, which matches current minimal styling.
-- No image retouching, alt-text generation, or CDN resizing — those can come post-launch.
-- No deletion of the legacy Phase 3 CSVs (we just stop importing them). Cleanup can happen after launch confirms parity.
+2. The `?format=2500w` query param is actually useful — keep it. Without a format param, Squarespace serves a smallish default. If you want high-res images for product tiles and detail views, append `?format=2500w` (or `1500w`) to the URL when fetching. The downloaded bytes will be the resized version, which is what you want anyway. Worth telling Lovable to fetch with an explicit format param rather than stripping it.
 
-## Risk to call out
+You can either send those as a follow-up note or just trust them to sort it out when they run. If you want to send something:
 
-The S3 image URLs expire roughly 3 hours after the export was generated. **If the export is older than ~3 hours by the time you approve this plan, I'll need a fresh export from the owner before step 3 will succeed.** Everything else (schema, parsing, page wiring) is safe to do regardless.
+Approved — run steps 1–2 and come back with the manifest. Two small notes for when you get to step 3: 1. For the extension, sniff the response `Content-Type` header rather than parsing the URL path. The path extension is usually right but sniffing is bulletproof. 2. Don't strip `?format=...` when fetching — append `?format=2500w` (or 1500w) to each CDN URL before downloading. Squarespace serves a smaller default without it; we want the higher-res version for product tiles. Strip it only when computing the storage filename.
 
-## Suggested response to the owner
+Once they come back with the manifest from steps 1-2, the thing you're looking at is:
 
-> Yes — we can rectify this before Wednesday. I'm rebuilding the Collection now against your April 17 export as the source of truth and removing the old scraped items. A short call tomorrow to confirm category mapping and which items (if any) should stay hidden vs. shown would be ideal; otherwise I'll have a preview link by end of day Tuesday for you and the girls to review.
+- Total site products scraped — should be 500-650ish based on what I saw on the bars page
+- `auto_apply` count — these go straight to mirror in step 3
+- `unmatched_site` count — products on the public site that didn't match any RMS row (means the site has stuff the spreadsheet doesn't, which is informational, low stakes)
+- `unmatched_rms` count — RMS rows that didn't match any site product (this is your real launch concern; these are the products that'll go live imageless)
 
-Approve and I'll run it end-to-end.
+If `unmatched_rms` is in the 50-100 range Lovable predicts, you're in great shape for Wednesday. If it's 200+, you'll want to know that going into the meeting with Adrienne so the conversation is grounded in actual numbers, not vibes.
