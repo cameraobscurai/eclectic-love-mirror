@@ -175,13 +175,25 @@ export function GalleryMasthead({
           >
             {String(projects.length).padStart(2, "0")} environments — hover to preview · click to explore
           </div>
-          <div style={{ display: "flex", gap: 3 }}>
+          <div
+            ref={stripRef}
+            className="gallery-strip"
+            style={{
+              display: "flex",
+              gap: 3,
+              overflowX: "auto",
+              overscrollBehaviorX: "contain",
+              scrollBehavior: "smooth",
+              touchAction: "pan-x",
+              scrollbarWidth: "none",
+            }}
+          >
             {projects.map((p, i) => {
               const on = i === activeIndex;
               return (
                 <div
                   key={p.number}
-                  style={{ flex: 1, minWidth: 0 }}
+                  style={{ flex: "1 0 14%", minWidth: 140 }}
                 >
                   <button
                     type="button"
