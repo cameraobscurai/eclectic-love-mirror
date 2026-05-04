@@ -10,6 +10,8 @@ import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp";
 import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png";
 import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png";
 import fabricationTentTriptych from "@/assets/atelier/fabrication-tent-triptych.png";
+import workbenchChairSketch from "@/assets/atelier/workbench-chair-sketch.png";
+import warehouseStudioCollage from "@/assets/atelier/studio-collage.png";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -173,8 +175,20 @@ function AtelierPage() {
               />
             </div>
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <MediaAperture ratio="4/5" label="WORKBENCH" />
-              <MediaAperture ratio="4/5" label="WAREHOUSE" />
+              <MediaAperture
+                ratio="4/5"
+                src={workbenchChairSketch}
+                alt="Pencil sketch of a chair design with measurement annotations, hung as a draped canvas in the workbench."
+                label="WORKBENCH"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
+              <MediaAperture
+                ratio="4/5"
+                src={warehouseStudioCollage}
+                alt="Black-and-white collage — studio interiors, fabrication in progress, and a finished tasseled stool."
+                label="WAREHOUSE"
+                sizes="(min-width: 768px) 50vw, 100vw"
+              />
             </div>
           </>
         )}
