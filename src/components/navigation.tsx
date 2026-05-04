@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { acquireScrollLock } from "@/lib/scroll-lock";
 
 const NAV_LINKS = [
   { href: "/atelier", label: "ATELIER BY THE HIVE" },
