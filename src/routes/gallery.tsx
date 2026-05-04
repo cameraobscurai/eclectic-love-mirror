@@ -1,19 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
 import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { useNearViewport } from "@/hooks/useNearViewport";
 import {
   galleryProjects,
   type GalleryProject,
 } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
-
-// Mapbox is ~210KB gz — defer until the map slot nears the viewport.
-const GalleryMap = lazy(() =>
-  import("@/components/gallery/GalleryMap").then((m) => ({ default: m.GalleryMap })),
-);
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof, cinematic exhibition mode
@@ -87,10 +81,6 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
-  const handleMapSelect = (idx: number) => {
-    setActiveIndex(idx);
-    jumpRef.current?.(idx);
-  };
 
   return (
     <main
@@ -117,13 +107,6 @@ function GalleryPage() {
             onOpen={handleOpen}
             onActiveChange={setActiveIndex}
             jumpRef={jumpRef}
-            mapSlot={
-              <MapSlot
-                projects={visibleProjects}
-                activeIndex={activeIndex}
-                onSelect={handleMapSelect}
-              />
-            }
           />
         </div>
       </section>
@@ -187,38 +170,5 @@ function GalleryPage() {
         />
       )}
     </main>
-  );
-}
-
-// Defers mapbox-gl until the map slot nears the viewport.
-function MapSlot({
-  projects,
-  activeIndex,
-  onSelect,
-}: {
-  projects: GalleryProject[];
-  activeIndex: number;
-  onSelect: (idx: number) => void;
-}) {
-  const { ref, near } = useNearViewport<HTMLDivElement>({
-    rootMargin: "400px",
-    initial: false,
-  });
-  return (
-    <div
-      ref={ref}
-      className="rounded-xl overflow-hidden border border-cream/10"
-      style={{ height: "clamp(280px, 38vh, 440px)", background: "#0e0d0b" }}
-    >
-      {near ? (
-        <Suspense fallback={null}>
-          <GalleryMap
-            projects={projects}
-            activeIndex={activeIndex}
-            onSelect={onSelect}
-          />
-        </Suspense>
-      ) : null}
-    </div>
   );
 }
