@@ -1,4 +1,11 @@
+import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
@@ -18,14 +25,11 @@ import warehouseStudioCollage from "@/assets/atelier/studio-collage.png";
 //
 // Six sections in fixed order:
 //   1. Hero
-//   2. THE TEAM       (real staff module — names + roles + portrait apertures)
-//   3. The Creative Space
-//   4. Scope + Fabrication
-//   5. Atelier Approach (Imagined · Refined · Crafted)
+//   2. THE HIVE       (real staff module)
+//   3. The Artist's Studio
+//   4. Scope + Fabrication (interactive hover reveal — Pass 3)
+//   5. Atelier Approach    (scroll-pinned triptych — Pass 3)
 //   6. CTA
-//
-// No FAQ here. No fake portraits, no stock studio shots. Empty arrays render
-// designed apertures, not blank space.
 // ---------------------------------------------------------------------------
 
 interface SpaceImage {
@@ -47,6 +51,50 @@ const CAPABILITIES = [
   "ACCENTS + STYLING",
   "PRODUCTION MANAGEMENT",
 ];
+
+// Map capability index → fabrication image (indices 0–2 only; >2 keeps last
+// matched image in place per brief).
+const FABRICATION_IMAGES: { src: string; alt: string }[] = [
+  {
+    src: fabricationStillLife,
+    alt: "Charcoal still-life study — glassware and florals.",
+  },
+  {
+    src: fabricationFoliage,
+    alt: "Watercolor pattern study — foliage and birds.",
+  },
+  {
+    src: fabricationTentTriptych,
+    alt: "Sketch to render to realized photo — a tented dining install across three stages.",
+  },
+];
+
+const APPROACH_STEPS = [
+  {
+    number: "01",
+    label: "IMAGINED",
+    image: {
+      src: imaginedTent,
+      alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
+    },
+  },
+  {
+    number: "02",
+    label: "DESIGNED",
+    image: {
+      src: designedSofa,
+      alt: "Technical line drawing of a fringed sofa — design phase rendering.",
+    },
+  },
+  {
+    number: "03",
+    label: "REALIZED",
+    image: {
+      src: realizedCeremony,
+      alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
+    },
+  },
+] as const;
 
 export const Route = createFileRoute("/atelier")({
   head: () => ({
@@ -82,22 +130,42 @@ export const Route = createFileRoute("/atelier")({
 });
 
 function AtelierPage() {
+  const reduced = useReducedMotion();
+
+  // --- Hero parallax (item 3) ---------------------------------------------
+  const heroRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroImageY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
+  const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "-8%"]);
+
+  // --- Fabrication hover reveal (item 1) ----------------------------------
+  // Default to 0 so the first image is visible on mount; "active" maps to
+  // FABRICATION_IMAGES when hover index is 0–2, otherwise sticks at last
+  // matched index.
+  const [fabActive, setFabActive] = useState<number>(0);
+
   return (
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{ paddingTop: "var(--nav-h)" }}
     >
-      {/* 1. HERO — type + spatial aperture. The aperture is a future hero
-          image slot (studio / hands / materials), not decoration. */}
+      {/* 1. HERO */}
       <section
-        className="px-6 lg:px-12"
+        ref={heroRef}
+        className="px-6 lg:px-12 overflow-hidden"
         style={{
           paddingTop: "clamp(64px, 7vw, 112px)",
           paddingBottom: "clamp(48px, 5vw, 80px)",
         }}
       >
         <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end">
-          <div className="md:col-span-7">
+          <motion.div
+            className="md:col-span-7"
+            style={reduced ? undefined : { y: heroTextY, willChange: "transform" }}
+          >
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
@@ -114,13 +182,16 @@ function AtelierPage() {
             <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
-          </div>
+          </motion.div>
           <div className="md:col-span-5">
-            {/* Section-1 hero. First production use of the imagetools +
-                HeroImage pipeline — see vite.config.ts and
-                src/components/hero-image.tsx. The frame is locked to 4/5 so
-                the layout doesn't shift before decode. */}
-            <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/5" }}>
+            <motion.div
+              className="relative w-full overflow-hidden"
+              style={
+                reduced
+                  ? { aspectRatio: "4/5" }
+                  : { aspectRatio: "4/5", y: heroImageY, willChange: "transform" }
+              }
+            >
               <HeroImage
                 source={atelierHero}
                 alt="Atelier moodboard — figure study and material swatches behind glass."
@@ -129,30 +200,22 @@ function AtelierPage() {
                 priority
                 sizes="(min-width: 768px) 40vw, 100vw"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 2. THE HIVE — real staff module. Always renders, even before
-          portraits exist. See src/components/atelier/team.tsx for the data
-          model and the public-render gate. */}
+      {/* 2. THE HIVE */}
       <Section eyebrow="02 — THE HIVE">
         <AtelierTeam />
       </Section>
 
-      {/* 3. THE ARTIST'S STUDIO — eyebrow + apertures only until owner copy + photography land. */}
+      {/* 3. THE ARTIST'S STUDIO */}
       <Section eyebrow="THE ARTIST'S STUDIO">
-
-        {/* Wide landscape aperture + two detail apertures. Real categories
-            only — no fake captions. Labels render below each frame. */}
         {SPACE_IMAGES.length > 0 ? (
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
             {SPACE_IMAGES.slice(0, 3).map((img, i) => (
-              <div
-                key={i}
-                className="aspect-[4/5] bg-white overflow-hidden"
-              >
+              <div key={i} className="aspect-[4/5] bg-white overflow-hidden">
                 <img
                   src={img.src}
                   alt={img.alt}
@@ -194,84 +257,101 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. THE FABRICATION — capability evidence, not a services list.
-          Body copy stripped pending owner-sourced text; capabilities list
-          spans full width as the sole text content. */}
+      {/* 4. THE FABRICATION — interactive hover reveal (Pass 3 item 1) */}
       <Section eyebrow="THE FABRICATION">
-        <ul
-          className="divide-y"
-          style={{ borderColor: "var(--archive-rule)" }}
-        >
-          {CAPABILITIES.map((item, i) => (
-            <li
-              key={item}
-              className="py-4 text-[13px] tracking-[0.18em] uppercase text-charcoal/85 flex items-baseline gap-6 border-t first:border-t-0"
-              style={{ borderColor: "var(--archive-rule)" }}
-            >
-              <span className="text-[10px] tracking-[0.22em] text-charcoal/40 tabular-nums w-8">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-start">
+          <ul
+            className="md:col-span-7"
+            style={{ borderColor: "var(--archive-rule)" }}
+            onMouseLeave={() => setFabActive(0)}
+          >
+            {CAPABILITIES.map((item, i) => {
+              const isActive = fabActive === i;
+              const onEnter = () => {
+                if (i < FABRICATION_IMAGES.length) setFabActive(i);
+                // i >= 3 → leave fabActive untouched (sticks on last match).
+              };
+              return (
+                <li
+                  key={item}
+                  onMouseEnter={onEnter}
+                  onFocus={onEnter}
+                  className="group relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
+                  style={{ borderColor: "var(--archive-rule)" }}
+                  tabIndex={0}
+                >
+                  {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
+                    style={{
+                      backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
+                      transform: isActive ? "scaleX(1)" : "scaleX(0)",
+                    }}
+                  />
+                  <span
+                    className={
+                      "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
+                      (isActive ? "text-charcoal/85" : "text-charcoal/40")
+                    }
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={
+                      "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
+                      (isActive ? "text-charcoal" : "text-charcoal/85")
+                    }
+                  >
+                    {item}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
 
-        {/* Material board: sketch · pattern study · material detail. */}
-        <div className="mt-12 grid grid-cols-3 gap-3">
-          <MediaAperture
-            ratio="1/1"
-            src={fabricationStillLife}
-            alt="Charcoal still-life study — glassware and florals."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
-          <MediaAperture
-            ratio="1/1"
-            src={fabricationFoliage}
-            alt="Watercolor pattern study — foliage and birds."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
-          <MediaAperture
-            ratio="1/1"
-            src={fabricationTentTriptych}
-            alt="Sketch to render to realized photo — a tented dining install across three stages."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
+          {/* Stacked image panel — replaces the 3-square grid. Each image is
+              absolutely positioned; the active one fades in. */}
+          <div
+            className="md:col-span-5 relative w-full"
+            style={{ aspectRatio: "1/1" }}
+            aria-hidden="true"
+          >
+            {FABRICATION_IMAGES.map((img, i) => (
+              <img
+                key={img.src}
+                src={img.src}
+                alt={img.alt}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{
+                  opacity: fabActive === i ? 1 : 0,
+                  transition:
+                    "opacity 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </Section>
 
-      {/* 5. ATELIER APPROACH triptych — temporarily hidden per owner request
-          (2026-05-04). Imagined/Designed/Realized cards stay wired below for
-          when we're ready to bring them back. */}
-      {false && (
-        <Section eyebrow="ATELIER APPROACH">
+      {/* 5. ATELIER APPROACH — scroll-pinned triptych (Pass 3 item 2) */}
+      <Section eyebrow="ATELIER APPROACH">
+        {reduced ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-            <ApproachStep
-              number="01"
-              label="IMAGINED"
-              image={{
-                src: imaginedTent,
-                alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
-              }}
-            />
-            <ApproachStep
-              number="02"
-              label="DESIGNED"
-              image={{
-                src: designedSofa,
-                alt: "Technical line drawing of a fringed sofa — design phase rendering.",
-              }}
-            />
-            <ApproachStep
-              number="03"
-              label="REALIZED"
-              image={{
-                src: realizedCeremony,
-                alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
-              }}
-            />
+            {APPROACH_STEPS.map((step) => (
+              <ApproachStep
+                key={step.number}
+                number={step.number}
+                label={step.label}
+                image={step.image}
+              />
+            ))}
           </div>
-        </Section>
-      )}
+        ) : (
+          <ApproachScrollPin steps={APPROACH_STEPS} />
+        )}
+      </Section>
 
       {/* 6. CTA */}
       <section className="px-6 lg:px-12 mt-24">
@@ -350,5 +430,130 @@ function ApproachStep({
         {label}
       </h3>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Scroll-pinned approach triptych (Pass 3 item 2)
+//
+// Outer container is 300vh tall; inner is sticky and fills the viewport
+// minus the nav. Scroll progress maps to active step (0/1/2). Each card
+// crossfades + drifts on the y-axis. Number+label stagger 120ms behind the
+// image. Reduced-motion bypasses this entirely.
+// ---------------------------------------------------------------------------
+function ApproachScrollPin({
+  steps,
+}: {
+  steps: ReadonlyArray<{
+    number: string;
+    label: string;
+    image: { src: string; alt: string };
+  }>;
+}) {
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: outerRef,
+    offset: ["start start", "end end"],
+  });
+
+  return (
+    <div ref={outerRef} className="relative" style={{ height: "300vh" }}>
+      <div
+        className="sticky flex items-center"
+        style={{
+          top: "var(--nav-h)",
+          height: "calc(100vh - var(--nav-h))",
+        }}
+      >
+        <div className="relative w-full max-w-3xl mx-auto" style={{ aspectRatio: "3/4" }}>
+          {steps.map((step, i) => (
+            <ApproachScrollCard
+              key={step.number}
+              step={step}
+              index={i}
+              total={steps.length}
+              progress={scrollYProgress}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ApproachScrollCard({
+  step,
+  index,
+  total,
+  progress,
+}: {
+  step: { number: string; label: string; image: { src: string; alt: string } };
+  index: number;
+  total: number;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+}) {
+  // Each step owns a slice of [0, 1]; window centered on its slice with
+  // crossfade ramps on either side.
+  const slice = 1 / total;
+  const center = slice * (index + 0.5);
+  const halfFade = slice * 0.6; // overlap between adjacent steps
+  const inStart = Math.max(0, center - halfFade - slice * 0.5);
+  const inEnd = center - slice * 0.5 + halfFade * 0.5;
+  const outStart = center + slice * 0.5 - halfFade * 0.5;
+  const outEnd = Math.min(1, center + halfFade + slice * 0.5);
+
+  const opacity = useTransform(
+    progress,
+    [inStart, inEnd, outStart, outEnd],
+    [0, 1, 1, 0]
+  );
+  const y = useTransform(
+    progress,
+    [inStart, inEnd, outStart, outEnd],
+    [24, 0, 0, -24]
+  );
+  // Text trails the image by ~120ms — approximated as a tighter window
+  // shifted slightly later in the slice.
+  const textOpacity = useTransform(
+    progress,
+    [inStart + 0.02, inEnd + 0.02, outStart + 0.02, outEnd + 0.02],
+    [0, 1, 1, 0]
+  );
+  const textY = useTransform(
+    progress,
+    [inStart + 0.02, inEnd + 0.02, outStart + 0.02, outEnd + 0.02],
+    [24, 0, 0, -24]
+  );
+
+  return (
+    <motion.div
+      className="absolute inset-0 flex flex-col"
+      style={{ opacity, willChange: "opacity, transform" }}
+    >
+      <motion.div
+        className="relative w-full overflow-hidden bg-white"
+        style={{ aspectRatio: "3/4", y, willChange: "transform" }}
+      >
+        <img
+          src={step.image.src}
+          alt={step.image.alt}
+          loading="lazy"
+          className="w-full h-full object-cover"
+        />
+      </motion.div>
+      <motion.div
+        style={{ opacity: textOpacity, y: textY, willChange: "opacity, transform" }}
+      >
+        <p
+          className="mt-6 pt-4 font-display text-2xl text-charcoal/45 tabular-nums border-t"
+          style={{ borderColor: "var(--archive-rule)" }}
+        >
+          {step.number}
+        </p>
+        <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+          {step.label}
+        </h3>
+      </motion.div>
+    </motion.div>
   );
 }
