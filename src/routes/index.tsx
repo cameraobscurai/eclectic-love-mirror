@@ -305,10 +305,13 @@ function HomePage() {
             against the canyon photograph without dimming the wordmark plate. */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-[28%] pointer-events-none"
+          className="absolute inset-x-0 bottom-0 h-[42%] pointer-events-none"
           style={{
+            // Taller, deeper wash than the original (which assumed the dark
+            // moodboard already provided most of the contrast). The canyon
+            // photo is bright at the base, so we lean harder on the gradient.
             background:
-              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--charcoal) 55%, transparent) 100%)",
+              "linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--charcoal) 35%, transparent) 50%, color-mix(in oklab, var(--charcoal) 78%, transparent) 100%)",
           }}
         />
 
