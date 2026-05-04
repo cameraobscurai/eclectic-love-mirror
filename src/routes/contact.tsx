@@ -502,11 +502,18 @@ function Field({
   required?: boolean;
   children: React.ReactNode;
 }) {
+  // Wrapping <label> auto-associates with the first form control inside.
+  // For non-input children (PillGroup), it's still a benign grouping element.
   return (
     <label className="block">
       <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
         {label}
-        {required && <span className="text-charcoal/30"> ·</span>}
+        {required && (
+          <>
+            <span aria-hidden className="text-charcoal/30"> ·</span>
+            <span className="sr-only"> required</span>
+          </>
+        )}
       </span>
       {children}
     </label>
@@ -519,22 +526,33 @@ function UnderlineInput({
   type = "text",
   required,
   autoComplete,
+  inputMode,
   placeholder,
+  name,
 }: {
   value: string;
   onChange: (v: string) => void;
   type?: string;
   required?: boolean;
   autoComplete?: string;
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"];
   placeholder?: string;
+  name?: string;
 }) {
+  // Derive sensible defaults so call sites don't have to pass both type + inputMode.
+  const resolvedInputMode =
+    inputMode ??
+    (type === "email" ? "email" : type === "tel" ? "tel" : undefined);
   return (
     <input
       type={type}
+      name={name}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}
+      aria-required={required || undefined}
       autoComplete={autoComplete}
+      inputMode={resolvedInputMode}
       placeholder={placeholder}
       className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[15px] text-charcoal placeholder:text-charcoal/35 transition-colors"
     />
@@ -545,13 +563,15 @@ function PillGroup({
   options,
   value,
   onChange,
+  ariaLabel,
 }: {
   options: string[];
   value: string;
   onChange: (v: string) => void;
+  ariaLabel?: string;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div role="group" aria-label={ariaLabel} className="flex flex-wrap gap-2">
       {options.map((opt) => {
         const active = value === opt;
         return (
@@ -561,7 +581,7 @@ function PillGroup({
             onClick={() => onChange(active ? "" : opt)}
             aria-pressed={active}
             className={[
-              "text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+              "min-h-[40px] text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
               active
                 ? "bg-charcoal text-cream border-charcoal"
                 : "border-charcoal/25 text-charcoal/70 hover:border-charcoal/60 hover:text-charcoal",
