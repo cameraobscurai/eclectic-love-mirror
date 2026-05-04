@@ -39,6 +39,7 @@ export function GalleryMasthead({
   active,
   counts,
   onChange,
+  filters,
   mapSlot,
 }: GalleryMastheadProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -311,7 +312,7 @@ export function GalleryMasthead({
           {/* Pills */}
           <div className="gallery-hero-pills">
             <div className="gallery-pill-row flex flex-wrap gap-2">
-              {FILTERS.map((f) => {
+              {filters.map((f) => {
                 const isActive = active === f;
                 const count = counts[f] ?? 0;
                 return (
