@@ -55,7 +55,6 @@ const REGION_FILTERS: CategoryFilter[] = (() => {
 function GalleryPage() {
   const [filter, setFilter] = useState<CategoryFilter>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const jumpRef = useRef<((index: number) => void) | null>(null);
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
@@ -103,7 +102,6 @@ function GalleryPage() {
           <GalleryCardsTrack
             projects={visibleProjects}
             onOpen={handleOpen}
-            onActiveChange={setActiveIndex}
             jumpRef={jumpRef}
           />
         </div>
