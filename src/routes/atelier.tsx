@@ -290,8 +290,10 @@ function AtelierPage() {
           })}
         </ul>
 
-        {/* Original material board — sketch · pattern study · realized. */}
-        <div className="mt-12 grid grid-cols-3 gap-3">
+        {/* Original material board — sketch · pattern study · realized.
+            Desaturated to match the page's editorial register; color reveals
+            on hover/focus to invite closer attention. */}
+        <div className="mt-12 grid grid-cols-3 gap-3 [&_img]:grayscale [&_img]:transition-[filter] [&_img]:duration-700 [&_img]:ease-out hover:[&_img]:grayscale-0 focus-within:[&_img]:grayscale-0">
           <MediaAperture
             ratio="1/1"
             src={fabricationStillLife}
