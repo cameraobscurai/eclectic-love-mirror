@@ -28,6 +28,12 @@ export interface GalleryMastheadProps {
   projects: GalleryProject[];
   onOpen: (index: number) => void;
   jumpRef: React.MutableRefObject<((index: number) => void) | null>;
+  /**
+   * Externally-driven active index (e.g. from map dot clicks or card track
+   * scroll). When provided, the masthead mirrors it into local state so the
+   * grid highlight + meta row stay in sync with the rest of the page.
+   */
+  activeIndex?: number;
 }
 
 export function GalleryMasthead({
@@ -38,8 +44,17 @@ export function GalleryMasthead({
   projects,
   onOpen,
   jumpRef,
+  activeIndex: externalActiveIndex,
 }: GalleryMastheadProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Mirror external active index (map / cards track) into local state.
+  useEffect(() => {
+    if (externalActiveIndex == null) return;
+    if (externalActiveIndex === activeIndex) return;
+    if (externalActiveIndex < 0 || externalActiveIndex >= projects.length) return;
+    setActiveIndex(externalActiveIndex);
+  }, [externalActiveIndex, activeIndex, projects.length]);
   const [metaVisible, setMetaVisible] = useState(true);
   const [metaProject, setMetaProject] = useState<GalleryProject | undefined>(
     projects[0],
