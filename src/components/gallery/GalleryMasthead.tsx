@@ -118,7 +118,10 @@ export function GalleryMasthead({
 
       <div
         className="max-w-[1600px] mx-auto overflow-hidden rounded-md select-none"
-        style={{ background: "#0a0908" }}
+        style={{
+          background: "#0a0908",
+          maxHeight: "calc(100vh - var(--nav-h) - 120px)",
+        }}
       >
         {/* Zone 2 — Gallery bar */}
         <div
@@ -231,6 +234,7 @@ export function GalleryMasthead({
                     style={{
                       position: "relative",
                       aspectRatio: "3 / 2",
+                      maxHeight: "clamp(48px, 8vh, 80px)",
                       overflow: "hidden",
                       borderRadius: 1,
                       background: "#141210",
@@ -382,7 +386,7 @@ export function GalleryMasthead({
             margin: "0 24px 12px",
             border: "0.5px solid rgba(245,240,230,0.07)",
             borderRadius: 4,
-            height: 100,
+            height: "clamp(70px, 10vh, 110px)",
             background: "#0d0c0a",
           }}
         >
