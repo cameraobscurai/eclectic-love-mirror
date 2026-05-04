@@ -248,7 +248,7 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{
-            top: "50%",
+            top: "46%",
             height: "clamp(96px, 18vh, 180px)",
             transform: "translateY(-50%)",
             transitionDelay: loaded ? "200ms" : "0ms",
