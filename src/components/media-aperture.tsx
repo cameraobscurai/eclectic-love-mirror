@@ -60,6 +60,15 @@ export function MediaAperture({
   fetchPriority,
 }: MediaApertureProps) {
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // Catch images that decoded before React attached the onLoad listener
+  // (SSR / cached / eager). Without this they stay opacity:0 forever.
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [src]);
 
   return (
     <figure className={cn("block", className)}>
