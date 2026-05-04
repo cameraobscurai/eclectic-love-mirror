@@ -401,6 +401,7 @@ export function QuickViewModal({
                     >
                       {product.images.map((im, i) => (
                         <button
+                          type="button"
                           key={im.url}
                           onClick={() => setImgIdx(i)}
                           aria-label={`View image ${i + 1} of ${product.images.length}`}
