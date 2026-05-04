@@ -99,7 +99,16 @@ export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
     ref,
   ) {
     const [loaded, setLoaded] = useState(false);
+    const localRef = useRef<HTMLImageElement | null>(null);
     const objectPosition = `${focalPoint.x}% ${focalPoint.y}%`;
+
+    // Catch images already decoded before React attached onLoad
+    // (SSR / cached / eager). Without this they stay opacity:0.
+    useEffect(() => {
+      if (localRef.current?.complete && localRef.current.naturalWidth > 0) {
+        setLoaded(true);
+      }
+    }, [source.img.src]);
 
     return (
       <>
