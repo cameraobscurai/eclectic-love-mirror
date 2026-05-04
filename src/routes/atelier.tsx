@@ -127,11 +127,10 @@ function AtelierPage() {
   const heroImageY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
   const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "-8%"]);
 
-  // --- Fabrication hover reveal (item 1) ----------------------------------
-  // Default to 0 so the first image is visible on mount; "active" maps to
-  // FABRICATION_IMAGES when hover index is 0–2, otherwise sticks at last
-  // matched index.
-  const [fabActive, setFabActive] = useState<number>(0);
+  // --- Fabrication list hover (item 1) ------------------------------------
+  // Tracks the currently-hovered/focused row so we can highlight the number,
+  // label, and slide in the bottom accent line. Null = no row engaged.
+  const [fabHover, setFabHover] = useState<number | null>(null);
 
   return (
     <main
