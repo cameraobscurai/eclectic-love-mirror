@@ -189,4 +189,35 @@ function GalleryPage() {
   );
 }
 
-// (no map slot — mapbox is retired from the gallery route)
+// Defers mapbox-gl until the map slot nears the viewport.
+function MapSlot({
+  projects,
+  activeIndex,
+  onSelect,
+}: {
+  projects: GalleryProject[];
+  activeIndex: number;
+  onSelect: (idx: number) => void;
+}) {
+  const { ref, near } = useNearViewport<HTMLDivElement>({
+    rootMargin: "400px",
+    initial: false,
+  });
+  return (
+    <div
+      ref={ref}
+      className="rounded-xl overflow-hidden border border-cream/10"
+      style={{ height: "clamp(280px, 38vh, 440px)", background: "#0e0d0b" }}
+    >
+      {near ? (
+        <Suspense fallback={null}>
+          <GalleryMap
+            projects={projects}
+            activeIndex={activeIndex}
+            onSelect={onSelect}
+          />
+        </Suspense>
+      ) : null}
+    </div>
+  );
+}
