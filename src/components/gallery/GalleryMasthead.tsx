@@ -268,63 +268,7 @@ export function GalleryMasthead({
                   transition: "opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
               >
-                {/* Image area */}
-                <button
-                  type="button"
-                  onClick={() => onOpen(activeIndex)}
-                  onMouseEnter={warmLightbox}
-                  aria-label={`Open ${p.name}`}
-                  className="gallery-depth-img-wrap"
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    height: 240,
-                    overflow: "hidden",
-                    position: "relative",
-                    cursor: "pointer",
-                    background: "#141210",
-                    border: "none",
-                    padding: 0,
-                  }}
-                >
-                  <img
-                    src={p.heroImage.src}
-                    alt={p.heroImage.alt}
-                    loading={i === 0 ? "eager" : "lazy"}
-                    className="gallery-depth-img"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background:
-                        "linear-gradient(to top, rgba(10,8,5,0.65) 0%, rgba(10,8,5,0.05) 50%, transparent 100%)",
-                    }}
-                  />
-                  <span
-                    className="gallery-depth-open uppercase"
-                    style={{
-                      position: "absolute",
-                      bottom: 14,
-                      right: 16,
-                      fontSize: 7,
-                      letterSpacing: "0.2em",
-                      color: "rgba(200,178,145,0.6)",
-                      borderBottom: "0.5px solid rgba(200,178,145,0.3)",
-                      paddingBottom: 1,
-                      opacity: 0,
-                      transform: "translateY(4px)",
-                      transition: "opacity 0.3s, transform 0.3s",
-                    }}
-                  >
-                    Open project →
-                  </span>
-                </button>
+                {/* Image area removed — thumbnail strip above is the only hero. */}
 
                 {/* Meta bar */}
                 <div
