@@ -9,7 +9,7 @@ import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp";
 import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png";
 import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png";
-import fabricationStonePlates from "@/assets/atelier/fabrication-stone-plates.webp";
+import fabricationTentTriptych from "@/assets/atelier/fabrication-tent-triptych.png";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -218,8 +218,8 @@ function AtelierPage() {
           />
           <MediaAperture
             ratio="1/1"
-            src={fabricationStonePlates}
-            alt="Stacked stone plates with driftwood and white florals."
+            src={fabricationTentTriptych}
+            alt="Sketch to render to realized photo — a tented dining install across three stages."
             sizes="(min-width: 1024px) 30vw, 33vw"
           />
         </div>
