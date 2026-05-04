@@ -18,7 +18,9 @@ import type { GalleryCategory } from "@/content/gallery-projects";
 // Mobile (<640px): single column — counter, panels, heading, pills.
 // ---------------------------------------------------------------------------
 
-export type CategoryFilter = "All" | GalleryCategory;
+// Region filter — replaces the old category filter. "All" + the set of
+// regions actually present in the gallery data (passed in via `filters`).
+export type CategoryFilter = string;
 
 interface GalleryMastheadProps {
   total: number;
@@ -26,15 +28,10 @@ interface GalleryMastheadProps {
   active: CategoryFilter;
   counts: Record<CategoryFilter, number>;
   onChange: (next: CategoryFilter) => void;
+  /** Ordered filter list, e.g. ["All", "Colorado", "Utah", ...]. */
+  filters: CategoryFilter[];
   mapSlot?: ReactNode;
 }
-
-const FILTERS: CategoryFilter[] = [
-  "All",
-  "Luxury Weddings",
-  "Meetings + Incentive Travel",
-  "Social + Non-Profit",
-];
 
 export function GalleryMasthead({
   total,
