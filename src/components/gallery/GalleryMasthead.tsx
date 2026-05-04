@@ -66,6 +66,29 @@ export function GalleryMasthead({
   activeIndex: externalActiveIndex,
 }: GalleryMastheadProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const stripRef = useRef<HTMLDivElement | null>(null);
+
+  // Wheel handler: consume horizontal scroll while the strip has room, then
+  // release at boundaries so the page resumes vertical scroll. passive:false
+  // is required to call preventDefault() on the wheel event.
+  useEffect(() => {
+    const el = stripRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) return;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+      const atLeft = el.scrollLeft <= 0;
+      const atRight = el.scrollLeft >= max - 1;
+      if ((atLeft && delta < 0) || (atRight && delta > 0)) return; // release
+      e.preventDefault();
+      el.scrollLeft += delta;
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
 
   // Reset to first card when projects ref changes (filter swap).
   useEffect(() => {
