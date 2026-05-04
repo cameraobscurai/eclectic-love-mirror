@@ -493,14 +493,24 @@ function ApproachScrollCard({
   progress: ReturnType<typeof useScroll>["scrollYProgress"];
 }) {
   // Each step owns a slice of [0, 1]; window centered on its slice with
-  // crossfade ramps on either side.
+  // crossfade ramps on either side. All offsets must stay in [0,1] AND be
+  // strictly monotonic — framer-motion's WAAPI animator throws otherwise.
+  const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
   const slice = 1 / total;
   const center = slice * (index + 0.5);
-  const halfFade = slice * 0.6; // overlap between adjacent steps
-  const inStart = Math.max(0, center - halfFade - slice * 0.5);
-  const inEnd = center - slice * 0.5 + halfFade * 0.5;
-  const outStart = center + slice * 0.5 - halfFade * 0.5;
-  const outEnd = Math.min(1, center + halfFade + slice * 0.5);
+  const halfFade = slice * 0.6;
+  const inStart = clamp01(center - halfFade - slice * 0.5);
+  const inEnd = clamp01(center - slice * 0.5 + halfFade * 0.5);
+  const outStart = clamp01(center + slice * 0.5 - halfFade * 0.5);
+  const outEnd = clamp01(center + halfFade + slice * 0.5);
+
+  // Text trails the image by ~120ms — shift each breakpoint slightly later,
+  // then clamp again so the last card's outEnd doesn't escape [0,1].
+  const SHIFT = 0.02;
+  const tInStart = clamp01(inStart + SHIFT);
+  const tInEnd = clamp01(inEnd + SHIFT);
+  const tOutStart = clamp01(outStart + SHIFT);
+  const tOutEnd = clamp01(outEnd + SHIFT);
 
   const opacity = useTransform(
     progress,
@@ -512,16 +522,14 @@ function ApproachScrollCard({
     [inStart, inEnd, outStart, outEnd],
     [24, 0, 0, -24]
   );
-  // Text trails the image by ~120ms — approximated as a tighter window
-  // shifted slightly later in the slice.
   const textOpacity = useTransform(
     progress,
-    [inStart + 0.02, inEnd + 0.02, outStart + 0.02, outEnd + 0.02],
+    [tInStart, tInEnd, tOutStart, tOutEnd],
     [0, 1, 1, 0]
   );
   const textY = useTransform(
     progress,
-    [inStart + 0.02, inEnd + 0.02, outStart + 0.02, outEnd + 0.02],
+    [tInStart, tInEnd, tOutStart, tOutEnd],
     [24, 0, 0, -24]
   );
 
