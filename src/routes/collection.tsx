@@ -578,27 +578,53 @@ function CollectionPage() {
         className="px-6 lg:px-12"
         style={{
           paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
-          paddingBottom: "clamp(20px, 2vw, 32px)",
+          paddingBottom: "clamp(32px, 4vw, 64px)",
           background: "#ffffff",
         }}
       >
         <div
-          className="mx-auto"
+          className="mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
-          <h1
-            id="collection-heading"
-            data-devedit
-            data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal"
-            style={{
-              fontSize: "clamp(60px, 8vw, 120px)",
-              fontWeight: 400,
-              letterSpacing: "-0.005em",
-            }}
-          >
-            The Collection
-          </h1>
+          <div className="md:col-span-7">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+              THE HIVE SIGNATURE COLLECTION
+            </p>
+            <p className="mt-3 text-[11px] uppercase tracking-[0.26em] text-charcoal/75 max-w-[44ch]">
+              A LIVING ARCHIVE OF FURNITURE, LIGHTING, AND OBJECTS — DESIGNED, SOURCED, AND PRODUCED IN-HOUSE.
+            </p>
+            <h1
+              id="collection-heading"
+              data-devedit
+              data-devedit-label="Collection heading"
+              className="mt-6 font-display uppercase leading-[0.92] text-charcoal"
+              style={{
+                fontSize: "clamp(60px, 8vw, 120px)",
+                fontWeight: 400,
+                letterSpacing: "-0.005em",
+              }}
+            >
+              The Collection
+            </h1>
+            <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
+              Browse by category, or search the full archive — every piece is available for rental and shipped from our Denver warehouse.
+            </p>
+          </div>
+          <div className="md:col-span-5">
+            <div
+              className="relative w-full overflow-hidden"
+              style={{ aspectRatio: "4/5", background: "var(--cream)" }}
+            >
+              <img
+                src={new URL("../assets/collection-hero-hive.png", import.meta.url).href}
+                alt="The Hive Signature Collection — monogram H over a sculptural chair vignette."
+                className="w-full h-full object-contain"
+                loading="eager"
+                decoding="async"
+                draggable={false}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
