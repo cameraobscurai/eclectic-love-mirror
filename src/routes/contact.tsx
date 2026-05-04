@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { EditorialButton } from "@/components/ui/editorial-button";
 
 // ---------------------------------------------------------------------------
 // Contact — one editorial intake form (no wizard, no steppers).
@@ -353,13 +354,14 @@ function ContactPage() {
                                 </span>
                               )}
                             </div>
-                            <button
-                              type="button"
+                            <EditorialButton
+                              variant="ghost"
+                              size="sm"
                               onClick={() => removePiece(p.id)}
-                              className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              aria-label={`Remove ${p.title} from inquiry`}
                             >
                               REMOVE
-                            </button>
+                            </EditorialButton>
                           </li>
                         ))}
                       </ul>
@@ -381,17 +383,23 @@ function ContactPage() {
                 {/* Submit */}
                 <div className="pt-4">
                   {errorMsg && (
-                    <p className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                    <p
+                      id="inquiry-submit-error"
+                      role="alert"
+                      className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4"
+                    >
                       {errorMsg}
                     </p>
                   )}
-                  <button
+                  <EditorialButton
                     type="submit"
-                    disabled={submitting}
-                    className="text-xs uppercase tracking-[0.22em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                    variant="outline"
+                    size="lg"
+                    loading={submitting}
+                    aria-describedby={errorMsg ? "inquiry-submit-error" : undefined}
                   >
                     {submitting ? "SENDING…" : "SEND INQUIRY"}
-                  </button>
+                  </EditorialButton>
                   <p className="mt-6 text-[11px] text-charcoal/45">
                     Or email us directly at{" "}
                     <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
@@ -494,11 +502,18 @@ function Field({
   required?: boolean;
   children: React.ReactNode;
 }) {
+  // Wrapping <label> auto-associates with the first form control inside.
+  // For non-input children (PillGroup), it's still a benign grouping element.
   return (
     <label className="block">
       <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
         {label}
-        {required && <span className="text-charcoal/30"> ·</span>}
+        {required && (
+          <>
+            <span aria-hidden className="text-charcoal/30"> ·</span>
+            <span className="sr-only"> required</span>
+          </>
+        )}
       </span>
       {children}
     </label>
@@ -511,22 +526,33 @@ function UnderlineInput({
   type = "text",
   required,
   autoComplete,
+  inputMode,
   placeholder,
+  name,
 }: {
   value: string;
   onChange: (v: string) => void;
   type?: string;
   required?: boolean;
   autoComplete?: string;
+  inputMode?: React.InputHTMLAttributes<HTMLInputElement>["inputMode"];
   placeholder?: string;
+  name?: string;
 }) {
+  // Derive sensible defaults so call sites don't have to pass both type + inputMode.
+  const resolvedInputMode =
+    inputMode ??
+    (type === "email" ? "email" : type === "tel" ? "tel" : undefined);
   return (
     <input
       type={type}
+      name={name}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}
+      aria-required={required || undefined}
       autoComplete={autoComplete}
+      inputMode={resolvedInputMode}
       placeholder={placeholder}
       className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[15px] text-charcoal placeholder:text-charcoal/35 transition-colors"
     />
@@ -537,13 +563,15 @@ function PillGroup({
   options,
   value,
   onChange,
+  ariaLabel,
 }: {
   options: string[];
   value: string;
   onChange: (v: string) => void;
+  ariaLabel?: string;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div role="group" aria-label={ariaLabel} className="flex flex-wrap gap-2">
       {options.map((opt) => {
         const active = value === opt;
         return (
@@ -553,7 +581,7 @@ function PillGroup({
             onClick={() => onChange(active ? "" : opt)}
             aria-pressed={active}
             className={[
-              "text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+              "min-h-[40px] text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
               active
                 ? "bg-charcoal text-cream border-charcoal"
                 : "border-charcoal/25 text-charcoal/70 hover:border-charcoal/60 hover:text-charcoal",
