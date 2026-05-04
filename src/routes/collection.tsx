@@ -24,7 +24,6 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
-import collectionHeroHive from "@/assets/collection-hero-hive.png";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
@@ -579,44 +578,27 @@ function CollectionPage() {
         className="px-6 lg:px-12"
         style={{
           paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
-          paddingBottom: "clamp(32px, 4vw, 64px)",
+          paddingBottom: "clamp(20px, 2vw, 32px)",
           background: "#ffffff",
         }}
       >
         <div
-          className="mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end"
+          className="mx-auto"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
-          <div className="md:col-span-7">
-            <h1
-              id="collection-heading"
-              data-devedit
-              data-devedit-label="Collection heading"
-              className="font-display uppercase leading-[0.92] text-charcoal"
-              style={{
-                fontSize: "clamp(60px, 8vw, 120px)",
-                fontWeight: 400,
-                letterSpacing: "-0.005em",
-              }}
-            >
-              The Collection
-            </h1>
-          </div>
-          <div className="md:col-span-5">
-            <div
-              className="relative w-full overflow-hidden"
-              style={{ aspectRatio: "4/5", background: "var(--cream)" }}
-            >
-              <img
-                src={collectionHeroHive}
-                alt=""
-                className="w-full h-full object-contain"
-                loading="eager"
-                decoding="async"
-                draggable={false}
-              />
-            </div>
-          </div>
+          <h1
+            id="collection-heading"
+            data-devedit
+            data-devedit-label="Collection heading"
+            className="font-display uppercase leading-[0.92] text-charcoal"
+            style={{
+              fontSize: "clamp(60px, 8vw, 120px)",
+              fontWeight: 400,
+              letterSpacing: "-0.005em",
+            }}
+          >
+            The Collection
+          </h1>
         </div>
       </div>
 
