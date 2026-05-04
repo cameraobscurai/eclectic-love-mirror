@@ -1,5 +1,4 @@
 import { useRef, type ReactNode } from "react";
-import type { GalleryCategory } from "@/content/gallery-projects";
 
 // ---------------------------------------------------------------------------
 // GalleryMasthead
@@ -18,7 +17,9 @@ import type { GalleryCategory } from "@/content/gallery-projects";
 // Mobile (<640px): single column — counter, panels, heading, pills.
 // ---------------------------------------------------------------------------
 
-export type CategoryFilter = "All" | GalleryCategory;
+// Region filter — replaces the old category filter. "All" + the set of
+// regions actually present in the gallery data (passed in via `filters`).
+export type CategoryFilter = string;
 
 interface GalleryMastheadProps {
   total: number;
@@ -26,15 +27,10 @@ interface GalleryMastheadProps {
   active: CategoryFilter;
   counts: Record<CategoryFilter, number>;
   onChange: (next: CategoryFilter) => void;
+  /** Ordered filter list, e.g. ["All", "Colorado", "Utah", ...]. */
+  filters: CategoryFilter[];
   mapSlot?: ReactNode;
 }
-
-const FILTERS: CategoryFilter[] = [
-  "All",
-  "Luxury Weddings",
-  "Meetings + Incentive Travel",
-  "Social + Non-Profit",
-];
 
 export function GalleryMasthead({
   total,
@@ -42,6 +38,7 @@ export function GalleryMasthead({
   active,
   counts,
   onChange,
+  filters,
   mapSlot,
 }: GalleryMastheadProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -314,7 +311,7 @@ export function GalleryMasthead({
           {/* Pills */}
           <div className="gallery-hero-pills">
             <div className="gallery-pill-row flex flex-wrap gap-2">
-              {FILTERS.map((f) => {
+              {filters.map((f) => {
                 const isActive = active === f;
                 const count = counts[f] ?? 0;
                 return (
