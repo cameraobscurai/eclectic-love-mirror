@@ -309,13 +309,20 @@ function Section({
 function ApproachStep({
   number,
   label,
+  image,
 }: {
   number: string;
   label: string;
+  image?: { src: string; alt: string };
 }) {
   return (
     <div>
-      <MediaAperture ratio="3/4" />
+      <MediaAperture
+        ratio="3/4"
+        src={image?.src}
+        alt={image?.alt}
+        sizes="(min-width: 768px) 30vw, 100vw"
+      />
       <p
         className="mt-6 pt-4 font-display text-2xl text-charcoal/45 tabular-nums border-t"
         style={{ borderColor: "var(--archive-rule)" }}
