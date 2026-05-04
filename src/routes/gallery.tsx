@@ -81,12 +81,6 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
-  // Map uses the visible (filtered) list — pin index === card index.
-  const handleMapSelect = (idx: number) => {
-    setActiveIndex(idx);
-    jumpRef.current?.(idx);
-  };
-
   return (
     <main
       className="min-h-screen bg-charcoal text-cream"
@@ -99,13 +93,9 @@ function GalleryPage() {
         counts={counts}
         onChange={setFilter}
         filters={REGION_FILTERS}
-        mapSlot={
-          <MapSlot
-            projects={visibleProjects}
-            activeIndex={activeIndex}
-            onSelect={handleMapSelect}
-          />
-        }
+        projects={visibleProjects}
+        onOpen={handleOpen}
+        jumpRef={jumpRef}
       />
 
       <section className="px-6 lg:px-12">
@@ -181,32 +171,4 @@ function GalleryPage() {
   );
 }
 
-// Defers mapbox-gl until the masthead's map slot nears the viewport. Keeps
-// a stable host div so layout doesn't shift when the map mounts.
-function MapSlot({
-  projects,
-  activeIndex,
-  onSelect,
-}: {
-  projects: GalleryProject[];
-  activeIndex: number;
-  onSelect: (idx: number) => void;
-}) {
-  const { ref, near } = useNearViewport<HTMLDivElement>({
-    rootMargin: "400px",
-    initial: false,
-  });
-  return (
-    <div ref={ref} className="h-full w-full">
-      {near ? (
-        <Suspense fallback={null}>
-          <GalleryMap
-            projects={projects}
-            activeIndex={activeIndex}
-            onSelect={onSelect}
-          />
-        </Suspense>
-      ) : null}
-    </div>
-  );
-}
+// (no map slot — mapbox is retired from the gallery route)
