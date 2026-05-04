@@ -1,4 +1,4 @@
-import { forwardRef, useState, type CSSProperties } from "react";
+import { forwardRef, useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
@@ -99,7 +99,16 @@ export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
     ref,
   ) {
     const [loaded, setLoaded] = useState(false);
+    const localRef = useRef<HTMLImageElement | null>(null);
     const objectPosition = `${focalPoint.x}% ${focalPoint.y}%`;
+
+    // Catch images already decoded before React attached onLoad
+    // (SSR / cached / eager). Without this they stay opacity:0.
+    useEffect(() => {
+      if (localRef.current?.complete && localRef.current.naturalWidth > 0) {
+        setLoaded(true);
+      }
+    }, [source.img.src]);
 
     return (
       <>
@@ -113,7 +122,11 @@ export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
             <source type="image/webp" srcSet={source.sources.webp} sizes={sizes} />
           )}
           <img
-            ref={ref}
+            ref={(el) => {
+              localRef.current = el;
+              if (typeof ref === "function") ref(el);
+              else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = el;
+            }}
             src={source.img.src}
             width={source.img.w}
             height={source.img.h}
