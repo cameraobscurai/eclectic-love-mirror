@@ -24,6 +24,7 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
+import collectionHeroHive from "@/assets/collection-hero-hive.png";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 const INITIAL_BATCH = 60;
