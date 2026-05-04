@@ -1,4 +1,4 @@
-import { forwardRef, useState, type CSSProperties } from "react";
+import { forwardRef, useEffect, useRef, useState, type CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 // ---------------------------------------------------------------------------
