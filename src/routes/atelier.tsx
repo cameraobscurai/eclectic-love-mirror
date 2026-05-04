@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { EditorialButton } from "@/components/ui/editorial-button";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
@@ -273,14 +272,12 @@ function AtelierPage() {
             <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] uppercase tracking-[0.04em] max-w-2xl">
               Bring a project to the Atelier.
             </h2>
-            <EditorialButton
-              asChild
-              variant="outline"
-              size="md"
-              className="mt-8"
+            <Link
+              to="/contact"
+              className="mt-8 inline-block text-xs uppercase tracking-[0.22em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
-              <Link to="/contact">START A CONVERSATION</Link>
-            </EditorialButton>
+              START A CONVERSATION
+            </Link>
           </div>
         </div>
       </section>

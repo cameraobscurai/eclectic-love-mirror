@@ -50,8 +50,7 @@ export function Footer() {
               <li>
                 <Link
                   to="/contact"
-                  aria-label="Start a conversation — go to the contact page"
-                  className="inline-flex items-center min-h-[32px] text-[11px] uppercase tracking-[0.22em] text-cream/70 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal"
+                  className="text-[11px] uppercase tracking-[0.22em] text-cream/70 hover:text-cream transition-colors"
                 >
                   START A CONVERSATION
                 </Link>
