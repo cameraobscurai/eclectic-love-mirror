@@ -80,9 +80,19 @@ function HomePage() {
   const heroImgRef = useRef<HTMLImageElement | null>(null);
 
 
+  // Double-rAF: guarantees the browser commits the initial opacity-0 frame
+  // before flipping to opacity-100, so CSS transitions actually run. No
+  // arbitrary timer — fires as soon as the next paint is scheduled (~16ms
+  // vs the previous 100ms).
   useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 100);
-    return () => clearTimeout(t);
+    let r2 = 0;
+    const r1 = requestAnimationFrame(() => {
+      r2 = requestAnimationFrame(() => setLoaded(true));
+    });
+    return () => {
+      cancelAnimationFrame(r1);
+      cancelAnimationFrame(r2);
+    };
   }, []);
 
   useEffect(() => {
