@@ -32,7 +32,25 @@ export function Navigation() {
   const location = useLocation();
   const pathname = location.pathname;
   const burgerRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const lastScrollY = useRef(0);
+
+  // Reactively expose the rendered nav height as `--nav-h` on :root so route
+  // <main> wrappers (and the gallery masthead height clamp) can offset
+  // correctly. The nav shrinks on scroll (py-6→py-4) so a hardcoded value
+  // would always be wrong on at least one state.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const apply = () => {
+      const h = Math.round(el.getBoundingClientRect().height);
+      if (h > 0) document.documentElement.style.setProperty("--nav-h", `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const isLightPage = LIGHT_BG_PAGES.includes(pathname);
   const isWhitePage = WHITE_BG_PAGES.includes(pathname);
