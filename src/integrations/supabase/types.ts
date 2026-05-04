@@ -64,6 +64,7 @@ export type Database = {
           created_at: string
           depth_cm: number | null
           description: string | null
+          dimensions_raw: string | null
           height_cm: number | null
           id: string
           images: string[]
@@ -73,6 +74,9 @@ export type Database = {
           og_image: string | null
           origin: string | null
           price: number | null
+          quantity: number | null
+          quantity_label: string | null
+          rms_id: string | null
           slug: string
           status: Database["public"]["Enums"]["item_status"]
           title: string
@@ -85,6 +89,7 @@ export type Database = {
           created_at?: string
           depth_cm?: number | null
           description?: string | null
+          dimensions_raw?: string | null
           height_cm?: number | null
           id?: string
           images?: string[]
@@ -94,6 +99,9 @@ export type Database = {
           og_image?: string | null
           origin?: string | null
           price?: number | null
+          quantity?: number | null
+          quantity_label?: string | null
+          rms_id?: string | null
           slug: string
           status?: Database["public"]["Enums"]["item_status"]
           title: string
@@ -106,6 +114,7 @@ export type Database = {
           created_at?: string
           depth_cm?: number | null
           description?: string | null
+          dimensions_raw?: string | null
           height_cm?: number | null
           id?: string
           images?: string[]
@@ -115,6 +124,9 @@ export type Database = {
           og_image?: string | null
           origin?: string | null
           price?: number | null
+          quantity?: number | null
+          quantity_label?: string | null
+          rms_id?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["item_status"]
           title?: string
