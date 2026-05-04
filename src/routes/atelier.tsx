@@ -4,6 +4,12 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierStudioWide from "@/assets/atelier-studio-wide.png";
+import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png";
+import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png";
+import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp";
+import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png";
+import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png";
+import fabricationStonePlates from "@/assets/atelier/fabrication-stone-plates.webp";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
@@ -196,12 +202,26 @@ function AtelierPage() {
           ))}
         </ul>
 
-        {/* Material board: fabric swatch · sketch · material detail. Designed
-            empty frames — no fake images, no captions. */}
+        {/* Material board: sketch · pattern study · material detail. */}
         <div className="mt-12 grid grid-cols-3 gap-3">
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
-          <MediaAperture ratio="1/1" />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationStillLife}
+            alt="Charcoal still-life study — glassware and florals."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationFoliage}
+            alt="Watercolor pattern study — foliage and birds."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationStonePlates}
+            alt="Stacked stone plates with driftwood and white florals."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
         </div>
       </Section>
 
@@ -209,9 +229,30 @@ function AtelierPage() {
           deferred until owner provides voice. */}
       <Section eyebrow="ATELIER APPROACH">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-          <ApproachStep number="01" label="IMAGINED" />
-          <ApproachStep number="02" label="DESIGNED" />
-          <ApproachStep number="03" label="REALIZED" />
+          <ApproachStep
+            number="01"
+            label="IMAGINED"
+            image={{
+              src: imaginedTent,
+              alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
+            }}
+          />
+          <ApproachStep
+            number="02"
+            label="DESIGNED"
+            image={{
+              src: designedSofa,
+              alt: "Technical line drawing of a fringed sofa — design phase rendering.",
+            }}
+          />
+          <ApproachStep
+            number="03"
+            label="REALIZED"
+            image={{
+              src: realizedCeremony,
+              alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
+            }}
+          />
         </div>
       </Section>
 
@@ -268,13 +309,20 @@ function Section({
 function ApproachStep({
   number,
   label,
+  image,
 }: {
   number: string;
   label: string;
+  image?: { src: string; alt: string };
 }) {
   return (
     <div>
-      <MediaAperture ratio="3/4" />
+      <MediaAperture
+        ratio="3/4"
+        src={image?.src}
+        alt={image?.alt}
+        sizes="(min-width: 768px) 30vw, 100vw"
+      />
       <p
         className="mt-6 pt-4 font-display text-2xl text-charcoal/45 tabular-nums border-t"
         style={{ borderColor: "var(--archive-rule)" }}
