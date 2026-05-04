@@ -90,7 +90,8 @@ function HomePage() {
   // lets the visitor flip manually.
   const [variant, setVariant] = useState<HeroVariant>("moodboard");
   useEffect(() => {
-    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
+    const variants: HeroVariant[] = ["moodboard", "exploded", "chair"];
+    setVariant(variants[Math.floor(Math.random() * variants.length)]);
   }, []);
 
   useEffect(() => {
