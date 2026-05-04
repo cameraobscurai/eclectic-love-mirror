@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-ro
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import type React from "react";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
@@ -18,13 +18,21 @@ import {
 } from "@/lib/collection-browse-groups";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
-import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
-import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+
+// Quick View modal is split into its own chunk — only fetched when a tile
+// is opened. ProductTile preloads on hover/focus so the chunk is already
+// warm by the time the click resolves.
+const QuickViewModal = lazy(() =>
+  import("@/components/collection/QuickViewModal").then((m) => ({
+    default: m.QuickViewModal,
+  })),
+);
+
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -976,19 +984,21 @@ function CollectionPage() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {quickViewProduct && (
-          <QuickViewModal
-            key={quickViewProduct.id}
-            product={quickViewProduct}
-            hasPrev={quickViewIndex > 0}
-            hasNext={quickViewIndex < visibleProducts.length - 1}
-            onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
-            onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
-            onClose={() => setQuickViewId(null)}
-          />
-        )}
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence>
+          {quickViewProduct && (
+            <QuickViewModal
+              key={quickViewProduct.id}
+              product={quickViewProduct}
+              hasPrev={quickViewIndex > 0}
+              hasNext={quickViewIndex < visibleProducts.length - 1}
+              onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
+              onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
+              onClose={() => setQuickViewId(null)}
+            />
+          )}
+        </AnimatePresence>
+      </Suspense>
 
       <InquiryTray />
 
