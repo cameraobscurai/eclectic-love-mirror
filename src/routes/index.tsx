@@ -273,7 +273,7 @@ function HomePage() {
             loaded ? "opacity-100" : "opacity-0"
           )}
           style={{
-            top: "50%",
+            top: "46%",
             transitionDelay: loaded ? "300ms" : "0ms",
             ...(parallaxOn
               ? { x: wmX, y: wmY, willChange: "transform" }
