@@ -52,22 +52,8 @@ const CAPABILITIES = [
   "PRODUCTION MANAGEMENT",
 ];
 
-// Map capability index → fabrication image (indices 0–2 only; >2 keeps last
-// matched image in place per brief).
-const FABRICATION_IMAGES: { src: string; alt: string }[] = [
-  {
-    src: fabricationStillLife,
-    alt: "Charcoal still-life study — glassware and florals.",
-  },
-  {
-    src: fabricationFoliage,
-    alt: "Watercolor pattern study — foliage and birds.",
-  },
-  {
-    src: fabricationTentTriptych,
-    alt: "Sketch to render to realized photo — a tented dining install across three stages.",
-  },
-];
+// (Removed: per-capability image swap was overengineered. The original
+// three-square material board sits below the list as quiet evidence.)
 
 const APPROACH_STEPS = [
   {
@@ -141,11 +127,10 @@ function AtelierPage() {
   const heroImageY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
   const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "-8%"]);
 
-  // --- Fabrication hover reveal (item 1) ----------------------------------
-  // Default to 0 so the first image is visible on mount; "active" maps to
-  // FABRICATION_IMAGES when hover index is 0–2, otherwise sticks at last
-  // matched index.
-  const [fabActive, setFabActive] = useState<number>(0);
+  // --- Fabrication list hover (item 1) ------------------------------------
+  // Tracks the currently-hovered/focused row so we can highlight the number,
+  // label, and slide in the bottom accent line. Null = no row engaged.
+  const [fabHover, setFabHover] = useState<number | null>(null);
 
   return (
     <main
@@ -257,81 +242,74 @@ function AtelierPage() {
         )}
       </Section>
 
-      {/* 4. THE FABRICATION — interactive hover reveal (Pass 3 item 1) */}
+      {/* 4. THE FABRICATION — list with hover state, then the original
+          three-image board underneath. Image swap was overengineered; the
+          three plates work better as their own quiet evidence row. */}
       <Section eyebrow="THE FABRICATION">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-start">
-          <ul
-            className="md:col-span-7"
-            style={{ borderColor: "var(--archive-rule)" }}
-            onMouseLeave={() => setFabActive(0)}
-          >
-            {CAPABILITIES.map((item, i) => {
-              const isActive = fabActive === i;
-              const onEnter = () => {
-                if (i < FABRICATION_IMAGES.length) setFabActive(i);
-                // i >= 3 → leave fabActive untouched (sticks on last match).
-              };
-              return (
-                <li
-                  key={item}
-                  onMouseEnter={onEnter}
-                  onFocus={onEnter}
-                  className="group relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
-                  style={{ borderColor: "var(--archive-rule)" }}
-                  tabIndex={0}
+        <ul style={{ borderColor: "var(--archive-rule)" }}>
+          {CAPABILITIES.map((item, i) => {
+            const isActive = fabHover === i;
+            return (
+              <li
+                key={item}
+                onMouseEnter={() => setFabHover(i)}
+                onFocus={() => setFabHover(i)}
+                onMouseLeave={() => setFabHover(null)}
+                onBlur={() => setFabHover(null)}
+                className="relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
+                style={{ borderColor: "var(--archive-rule)" }}
+                tabIndex={0}
+              >
+                {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
+                  style={{
+                    backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
+                    transform: isActive ? "scaleX(1)" : "scaleX(0)",
+                  }}
+                />
+                <span
+                  className={
+                    "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
+                    (isActive ? "text-charcoal/85" : "text-charcoal/40")
+                  }
                 >
-                  {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
-                    style={{
-                      backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
-                      transform: isActive ? "scaleX(1)" : "scaleX(0)",
-                    }}
-                  />
-                  <span
-                    className={
-                      "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
-                      (isActive ? "text-charcoal/85" : "text-charcoal/40")
-                    }
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={
-                      "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
-                      (isActive ? "text-charcoal" : "text-charcoal/85")
-                    }
-                  >
-                    {item}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className={
+                    "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
+                    (isActive ? "text-charcoal" : "text-charcoal/85")
+                  }
+                >
+                  {item}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
 
-          {/* Stacked image panel — replaces the 3-square grid. Each image is
-              absolutely positioned; the active one fades in. */}
-          <div
-            className="md:col-span-5 relative w-full"
-            style={{ aspectRatio: "1/1" }}
-            aria-hidden="true"
-          >
-            {FABRICATION_IMAGES.map((img, i) => (
-              <img
-                key={img.src}
-                src={img.src}
-                alt={img.alt}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{
-                  opacity: fabActive === i ? 1 : 0,
-                  transition:
-                    "opacity 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                }}
-              />
-            ))}
-          </div>
+        {/* Original material board — sketch · pattern study · realized. */}
+        <div className="mt-12 grid grid-cols-3 gap-3">
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationStillLife}
+            alt="Charcoal still-life study — glassware and florals."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationFoliage}
+            alt="Watercolor pattern study — foliage and birds."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
+          <MediaAperture
+            ratio="1/1"
+            src={fabricationTentTriptych}
+            alt="Sketch to render to realized photo — a tented dining install across three stages."
+            sizes="(min-width: 1024px) 30vw, 33vw"
+          />
         </div>
       </Section>
 
@@ -465,7 +443,17 @@ function ApproachScrollPin({
           height: "calc(100vh - var(--nav-h))",
         }}
       >
-        <div className="relative w-full max-w-3xl mx-auto" style={{ aspectRatio: "3/4" }}>
+        {/* Card stack — sized by viewport height so the 3/4 image plus
+            text caption never overflow the sticky frame. Width derives from
+            the height; max-w prevents overrun on ultrawide viewports. */}
+        <div
+          className="relative mx-auto"
+          style={{
+            height: "min(72vh, calc(100vh - var(--nav-h) - 6rem))",
+            aspectRatio: "3/4",
+            maxWidth: "min(90vw, 640px)",
+          }}
+        >
           {steps.map((step, i) => (
             <ApproachScrollCard
               key={step.number}
@@ -538,9 +526,11 @@ function ApproachScrollCard({
       className="absolute inset-0 flex flex-col"
       style={{ opacity, willChange: "opacity, transform" }}
     >
+      {/* Image fills available height; flex-1 + min-h-0 lets it shrink so
+          the caption underneath always fits inside the parent frame. */}
       <motion.div
-        className="relative w-full overflow-hidden bg-white"
-        style={{ aspectRatio: "3/4", y, willChange: "transform" }}
+        className="relative flex-1 min-h-0 w-full overflow-hidden bg-white"
+        style={{ y, willChange: "transform" }}
       >
         <img
           src={step.image.src}
