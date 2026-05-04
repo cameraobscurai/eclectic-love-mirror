@@ -22,6 +22,7 @@ import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
+import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
 // Quick View modal is split into its own chunk — only fetched when a tile
@@ -239,18 +240,20 @@ function CollectionPage() {
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const sheetPanelRef = useRef<HTMLDivElement>(null);
 
-  // Body scroll lock + background inert (applied to <main>, NOT to the sheet)
+  // Body scroll lock + background inert (applied to <main>, NOT to the sheet).
+  // Scroll lock goes through the shared ref-counted lock so overlapping
+  // owners (Quick View + nav menu, etc.) don't race the inline overflow style.
   useEffect(() => {
     if (!sheetOpen) return undefined;
     const main = document.querySelector("main[data-collection-main]");
-    document.body.style.overflow = "hidden";
+    const release = acquireScrollLock();
     if (main) {
       main.setAttribute("aria-hidden", "true");
       // `inert` is supported broadly now; setAttribute keeps TS happy.
       main.setAttribute("inert", "");
     }
     return () => {
-      document.body.style.removeProperty("overflow");
+      release();
       if (main) {
         main.removeAttribute("aria-hidden");
         main.removeAttribute("inert");
@@ -449,12 +452,13 @@ function CollectionPage() {
   const quickViewProduct: CollectionProduct | null =
     quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
 
-  // Body lock + scroll restore + focus return on Quick View open/close
+  // Body lock + scroll restore + focus return on Quick View open/close.
+  // Uses the shared ref-counted scroll lock (see src/lib/scroll-lock.ts).
   useEffect(() => {
     if (!quickViewProduct) return undefined;
-    document.body.style.overflow = "hidden";
+    const release = acquireScrollLock();
     return () => {
-      document.body.style.removeProperty("overflow");
+      release();
       // Restore the grid scroll position so the user lands where they left.
       const y = grabbedScrollY.current;
       grabbedScrollY.current = null;

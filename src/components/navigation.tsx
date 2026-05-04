@@ -51,12 +51,12 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll while the mobile menu is open. Goes through the shared
+  // ref-counted lock so it can't fight Quick View / lightbox locks on close.
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.removeProperty("overflow");
-    return () => {
-      document.body.style.removeProperty("overflow");
-    };
+    if (!isOpen) return undefined;
+    const release = acquireScrollLock();
+    return release;
   }, [isOpen]);
 
   useEffect(() => {

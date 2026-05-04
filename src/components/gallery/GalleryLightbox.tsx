@@ -30,13 +30,11 @@ export function GalleryLightbox({
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const plate = plates[plateIndex];
 
-  // Lock body scroll while open.
+  // Lock body scroll while open. Shared ref-counted lock; safe under
+  // overlapping owners (e.g. nav menu opening over the lightbox).
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    const release = acquireScrollLock();
+    return release;
   }, []);
 
   // Reset plate when project changes.
