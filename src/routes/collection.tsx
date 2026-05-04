@@ -104,16 +104,11 @@ export const Route = createFileRoute("/collection")({
           "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.",
       },
     ],
-    // Preload bundled category covers so they arrive in the same beat as
-    // the (often cache-warm) CDN-hosted fallback heroes. Without this the
-    // bundled asset reliably loses the race and the first-row reveal — which
-    // waits on ALL six images — stalls visibly on the bundled card.
-    links: Object.values(CATEGORY_COVERS).map((href) => ({
-      rel: "preload",
-      as: "image",
-      href,
-      fetchpriority: "high",
-    })),
+    // Note: previously we preloaded CATEGORY_COVERS here. That preload now
+    // lives inside <CategoryGalleryOverview> so it only runs when the
+    // overview branch is actually rendered (not on direct category links or
+    // the search view). TanStack Start's head() is route-level, so a
+    // child-conditional preload requires the imperative pattern.
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
