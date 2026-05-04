@@ -209,20 +209,9 @@ export function GalleryMap({
     });
   }, [activeIndex, hoverIdx]);
 
-  // Fly to active pin when it changes externally. Skip the initial mount so
-  // the fitBounds overview isn't immediately overridden by a zoomed-in flyTo.
-  const didFlyRef = useRef(false);
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !ready) return;
-    if (!didFlyRef.current) {
-      didFlyRef.current = true;
-      return;
-    }
-    const p = projects[activeIndex];
-    if (!p) return;
-    map.flyTo({ center: p.coords, zoom: 4.2, duration: 1100, essential: true });
-  }, [activeIndex, ready, projects]);
+  // NOTE: intentionally no flyTo on activeIndex change. The map stays in its
+  // fitBounds overview; the active pin is communicated via the highlight
+  // effect above. Flying around on every card scroll / dot click was jarring.
 
   if (!MAPBOX_TOKEN) {
     return (
