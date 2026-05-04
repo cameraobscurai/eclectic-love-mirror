@@ -313,22 +313,23 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 5. ATELIER APPROACH — scroll-pinned triptych (Pass 3 item 2) */}
+      {/* 5. ATELIER APPROACH — quiet text-only triplet */}
       <Section eyebrow="ATELIER APPROACH">
-        {reduced ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6">
-            {APPROACH_STEPS.map((step) => (
-              <ApproachStep
-                key={step.number}
-                number={step.number}
-                label={step.label}
-                image={step.image}
-              />
-            ))}
-          </div>
-        ) : (
-          <ApproachScrollPin steps={APPROACH_STEPS} />
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
+          {APPROACH_STEPS.map((step) => (
+            <div key={step.number}>
+              <p
+                className="font-display text-2xl text-charcoal/45 tabular-nums border-t pt-4"
+                style={{ borderColor: "var(--archive-rule)" }}
+              >
+                {step.number}
+              </p>
+              <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+                {step.label}
+              </h3>
+            </div>
+          ))}
+        </div>
       </Section>
 
       {/* 6. CTA */}
