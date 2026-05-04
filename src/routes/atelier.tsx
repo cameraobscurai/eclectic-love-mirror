@@ -443,7 +443,17 @@ function ApproachScrollPin({
           height: "calc(100vh - var(--nav-h))",
         }}
       >
-        <div className="relative w-full max-w-3xl mx-auto" style={{ aspectRatio: "3/4" }}>
+        {/* Card stack — sized by viewport height so the 3/4 image plus
+            text caption never overflow the sticky frame. Width derives from
+            the height; max-w prevents overrun on ultrawide viewports. */}
+        <div
+          className="relative mx-auto"
+          style={{
+            height: "min(72vh, calc(100vh - var(--nav-h) - 6rem))",
+            aspectRatio: "3/4",
+            maxWidth: "min(90vw, 640px)",
+          }}
+        >
           {steps.map((step, i) => (
             <ApproachScrollCard
               key={step.number}
