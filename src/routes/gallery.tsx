@@ -107,13 +107,6 @@ function GalleryPage() {
             onOpen={handleOpen}
             onActiveChange={setActiveIndex}
             jumpRef={jumpRef}
-            mapSlot={
-              <MapSlot
-                projects={visibleProjects}
-                activeIndex={activeIndex}
-                onSelect={handleMapSelect}
-              />
-            }
           />
         </div>
       </section>
