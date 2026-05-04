@@ -122,7 +122,11 @@ export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
             <source type="image/webp" srcSet={source.sources.webp} sizes={sizes} />
           )}
           <img
-            ref={ref}
+            ref={(el) => {
+              localRef.current = el;
+              if (typeof ref === "function") ref(el);
+              else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = el;
+            }}
             src={source.img.src}
             width={source.img.w}
             height={source.img.h}
