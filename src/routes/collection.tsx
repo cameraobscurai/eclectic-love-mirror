@@ -584,14 +584,14 @@ function CollectionPage() {
         }}
       >
         <div
-          className="relative mx-auto"
+          className="mx-auto flex items-center justify-between gap-8"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <h1
             id="collection-heading"
             data-devedit
             data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal"
+            className="font-display uppercase leading-[0.92] text-charcoal min-w-0 flex-1"
             style={{
               fontSize: "clamp(60px, 8vw, 120px)",
               fontWeight: 400,
@@ -603,7 +603,8 @@ function CollectionPage() {
           <img
             src={signaturePlate}
             alt="The Hive Signature Collection"
-            className="hidden lg:block absolute top-0 right-0 w-[clamp(220px,22vw,320px)] h-auto"
+            className="hidden lg:block flex-shrink-0 w-auto"
+            style={{ height: "clamp(140px, 12vw, 180px)" }}
             loading="eager"
             decoding="async"
           />
