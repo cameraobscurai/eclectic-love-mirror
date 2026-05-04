@@ -21,6 +21,11 @@ interface GalleryCardsTrackProps {
    * Stable across renders.
    */
   jumpRef?: { current: ((index: number) => void) | null };
+  /**
+   * Optional slot rendered between the helper text and the project index.
+   * Used by `gallery.tsx` to mount the lazy GalleryMap.
+   */
+  mapSlot?: React.ReactNode;
 }
 
 export function GalleryCardsTrack({
@@ -28,6 +33,7 @@ export function GalleryCardsTrack({
   onOpen,
   onActiveChange,
   jumpRef,
+  mapSlot,
 }: GalleryCardsTrackProps) {
   const railRef = useRef<HTMLDivElement>(null);
   const scrubRef = useRef<HTMLDivElement>(null);
@@ -345,6 +351,8 @@ export function GalleryCardsTrack({
       <p className="mt-3 text-center text-[13px] italic text-cream/45">
         Drag, scroll, or use ← → to explore
       </p>
+
+      {mapSlot ? <div className="mt-10">{mapSlot}</div> : null}
 
       <GalleryProjectIndex
         projects={projects}
