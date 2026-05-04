@@ -209,13 +209,19 @@ export function GalleryMap({
     });
   }, [activeIndex, hoverIdx]);
 
-  // Fly to active pin when it changes externally.
+  // Fly to active pin when it changes externally. Skip the initial mount so
+  // the fitBounds overview isn't immediately overridden by a zoomed-in flyTo.
+  const didFlyRef = useRef(false);
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !ready) return;
+    if (!didFlyRef.current) {
+      didFlyRef.current = true;
+      return;
+    }
     const p = projects[activeIndex];
     if (!p) return;
-    map.flyTo({ center: p.coords, zoom: 5, duration: 1200, essential: true });
+    map.flyTo({ center: p.coords, zoom: 4.2, duration: 1100, essential: true });
   }, [activeIndex, ready, projects]);
 
   if (!MAPBOX_TOKEN) {
