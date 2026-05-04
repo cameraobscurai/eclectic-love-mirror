@@ -57,11 +57,21 @@ export function GalleryCardsTrack({
         bestIdx = i;
       }
     });
-    setActiveIndex((prev) => {
-      if (prev !== bestIdx) onActiveChange?.(bestIdx);
-      return bestIdx;
-    });
-  }, [onActiveChange]);
+    setActiveIndex(bestIdx);
+  }, []);
+
+  // Notify parent of active index changes via effect to avoid setState-in-render
+  // (the previous functional updater triggered a "Cannot update a component while
+  // rendering" warning). Mount guard preserves prior behavior: parent only hears
+  // about transitions, never the initial 0.
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    onActiveChange?.(activeIndex);
+  }, [activeIndex, onActiveChange]);
 
   useEffect(() => {
     const rail = railRef.current;
