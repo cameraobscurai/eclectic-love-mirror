@@ -27,7 +27,7 @@ export function GalleryEnvironmentCard({
     >
       <div
         className="relative w-full overflow-hidden bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))]"
-        style={{ aspectRatio: "4 / 5" }}
+        style={{ height: "clamp(280px, 38vh, 480px)" }}
       >
         <img
           src={project.heroImage.src}
