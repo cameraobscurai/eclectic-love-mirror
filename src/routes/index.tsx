@@ -50,7 +50,7 @@ export const Route = createFileRoute("/")({
         href: homeHeroMobileAvif,
         type: "image/avif",
         media: "(max-width: 767px)",
-        fetchpriority: "high",
+        fetchPriority: "high",
       },
       {
         rel: "preload",
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/")({
         href: homeHeroAvif,
         type: "image/avif",
         media: "(min-width: 768px)",
-        fetchpriority: "high",
+        fetchPriority: "high",
       },
     ],
   }),

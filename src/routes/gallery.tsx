@@ -1,14 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useMemo, useRef, useState } from "react";
 import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
 import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { GalleryMap } from "@/components/gallery/GalleryMap";
+import { useNearViewport } from "@/hooks/useNearViewport";
 import {
   galleryProjects,
   type GalleryProject,
 } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
+
+// Mapbox is ~210KB gz. Defer until the masthead's map slot nears the
+// viewport — most users never scroll it into view on first paint.
+const GalleryMap = lazy(() =>
+  import("@/components/gallery/GalleryMap").then((m) => ({ default: m.GalleryMap })),
+);
 
 // ---------------------------------------------------------------------------
 // Gallery — selected project proof, cinematic exhibition mode
@@ -101,7 +107,7 @@ function GalleryPage() {
         onChange={setFilter}
         filters={REGION_FILTERS}
         mapSlot={
-          <GalleryMap
+          <MapSlot
             projects={visibleProjects}
             activeIndex={activeIndex}
             onSelect={handleMapSelect}
@@ -179,5 +185,35 @@ function GalleryPage() {
         />
       )}
     </main>
+  );
+}
+
+// Defers mapbox-gl until the masthead's map slot nears the viewport. Keeps
+// a stable host div so layout doesn't shift when the map mounts.
+function MapSlot({
+  projects,
+  activeIndex,
+  onSelect,
+}: {
+  projects: GalleryProject[];
+  activeIndex: number;
+  onSelect: (idx: number) => void;
+}) {
+  const { ref, near } = useNearViewport<HTMLDivElement>({
+    rootMargin: "400px",
+    initial: false,
+  });
+  return (
+    <div ref={ref} className="h-full w-full">
+      {near ? (
+        <Suspense fallback={null}>
+          <GalleryMap
+            projects={projects}
+            activeIndex={activeIndex}
+            onSelect={onSelect}
+          />
+        </Suspense>
+      ) : null}
+    </div>
   );
 }

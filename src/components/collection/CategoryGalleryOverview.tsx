@@ -87,6 +87,30 @@ export function CategoryGalleryOverview({
     return () => window.clearTimeout(t);
   }, []);
 
+  // Imperative preload of bundled category covers. Lives here (not in the
+  // route head()) because this component only mounts on the overview branch
+  // — direct category links and the search view never pay this cost. This
+  // is a workaround: TanStack Start's head() is route-level, so we can't
+  // condition a preload on which child component renders without splitting
+  // the route. Revisit if the overview becomes its own route.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const links: HTMLLinkElement[] = [];
+    for (const href of Object.values(CATEGORY_COVERS)) {
+      if (!href) continue;
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = href as string;
+      link.fetchPriority = "high";
+      document.head.appendChild(link);
+      links.push(link);
+    }
+    return () => {
+      for (const link of links) link.remove();
+    };
+  }, []);
+
   const firstRowReady =
     Boolean(reduced) ||
     firstRowDoneCount >= firstRowSlots ||
@@ -234,7 +258,7 @@ function CategoryCard({
               alt={heroAlt}
               loading={isFirstRow ? "eager" : "lazy"}
               decoding="async"
-              {...({ fetchpriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
+              {...({ fetchPriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
               onLoad={() => {
                 setLoaded(true);
                 if (isFirstRow) reportDoneOnce();

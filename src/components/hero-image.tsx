@@ -135,7 +135,7 @@ export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
             loading={priority ? "eager" : "lazy"}
             // React types lag the spec; cast for fetchpriority.
             {...(priority
-              ? ({ fetchpriority: "high" } as Record<string, string>)
+              ? ({ fetchPriority: "high" } as Record<string, string>)
               : {})}
             draggable={false}
             onLoad={() => {
@@ -241,9 +241,9 @@ export function heroPreloadLink(source: HeroImageSource) {
     as: "image" as const,
     href,
     type: source.sources.avif ? "image/avif" : undefined,
-    imagesrcset: source.sources.avif ?? source.sources.webp,
-    imagesizes: "100vw",
-    fetchpriority: "high" as const,
+    imageSrcSet: source.sources.avif ?? source.sources.webp,
+    imageSizes: "100vw",
+    fetchPriority: "high" as const,
   };
 }
 
