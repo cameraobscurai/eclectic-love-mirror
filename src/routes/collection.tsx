@@ -25,7 +25,6 @@ import { CollectionRail } from "@/components/collection/CollectionRail";
 import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
-import signaturePlate from "@/assets/collection-signature-plate.png";
 
 const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
@@ -576,7 +575,7 @@ function CollectionPage() {
           ============================================================ */}
       <div
         ref={headingRef}
-        className="px-6 lg:px-12 overflow-hidden"
+        className="px-6 lg:px-12"
         style={{
           paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
           paddingBottom: "clamp(20px, 2vw, 32px)",
@@ -584,14 +583,14 @@ function CollectionPage() {
         }}
       >
         <div
-          className="mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-end"
+          className="mx-auto"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <h1
             id="collection-heading"
             data-devedit
             data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal lg:col-span-7 min-w-0"
+            className="font-display uppercase leading-[0.92] text-charcoal"
             style={{
               fontSize: "clamp(60px, 8vw, 120px)",
               fontWeight: 400,
@@ -600,16 +599,6 @@ function CollectionPage() {
           >
             The Collection
           </h1>
-          <div className="hidden lg:block lg:col-span-5">
-            <img
-              src={signaturePlate}
-              alt="The Hive Signature Collection"
-              className="block w-full h-auto"
-              style={{ aspectRatio: "4 / 5", objectFit: "contain" }}
-              loading="eager"
-              decoding="async"
-            />
-          </div>
         </div>
       </div>
 

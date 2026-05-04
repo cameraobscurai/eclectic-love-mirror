@@ -15,11 +15,10 @@ import homeHeroAvif from "@/assets/home-hero.avif";
 import homeHeroMobileWebp from "@/assets/home-hero-mobile.webp";
 import homeHeroMobileAvif from "@/assets/home-hero-mobile.avif";
 import homeHeroExploded from "@/assets/hero-exploded-glass.png";
-import homeHeroChair from "@/assets/hero-chair-moodboard.png";
 
-// Hero variants. Picked at random on each page load for a quieter
+// Two hero variants. Picked at random on each page load for a quieter
 // "the site is alive" feel; visitor can flip with the corner control.
-type HeroVariant = "moodboard" | "exploded" | "chair";
+type HeroVariant = "moodboard" | "exploded";
 
 // --- Wordmark tunables (single source of truth) ---
 const BAND_CENTER_RATIO = 0.47;   // vertical fraction of source image where the glass band centers
@@ -90,8 +89,7 @@ function HomePage() {
   // lets the visitor flip manually.
   const [variant, setVariant] = useState<HeroVariant>("moodboard");
   useEffect(() => {
-    const variants: HeroVariant[] = ["moodboard", "exploded", "chair"];
-    setVariant(variants[Math.floor(Math.random() * variants.length)]);
+    setVariant(Math.random() < 0.5 ? "moodboard" : "exploded");
   }, []);
 
   useEffect(() => {
@@ -254,9 +252,9 @@ function HomePage() {
           </picture>
         ) : (
           <motion.img
-            key={variant}
+            key="exploded"
             ref={heroImgRef}
-            src={variant === "exploded" ? homeHeroExploded : homeHeroChair}
+            src={homeHeroExploded}
             alt=""
             aria-hidden="true"
             decoding="async"
@@ -430,7 +428,7 @@ function HomePage() {
         {/* Variant toggle — quiet bottom-right control. Two dots,
             current variant filled. Click to flip. */}
         <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2">
-          {(["moodboard", "exploded", "chair"] as const).map((v) => (
+          {(["moodboard", "exploded"] as const).map((v) => (
             <button
               key={v}
               type="button"
