@@ -81,10 +81,6 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
-  const handleMapSelect = (idx: number) => {
-    setActiveIndex(idx);
-    jumpRef.current?.(idx);
-  };
 
   return (
     <main
