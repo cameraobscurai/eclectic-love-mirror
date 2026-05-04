@@ -234,6 +234,7 @@ export function GalleryMasthead({
                     style={{
                       position: "relative",
                       aspectRatio: "3 / 2",
+                      maxHeight: "clamp(48px, 8vh, 80px)",
                       overflow: "hidden",
                       borderRadius: 1,
                       background: "#141210",
