@@ -33,6 +33,17 @@ const REVEAL_MAX_DELAY_MS = 240;
 // enter via scroll.
 const REVEAL_SKIP_INDEX = 12;
 
+// Warm the QuickViewModal chunk on first hover/focus/touch of any tile so
+// the modal is in the module cache before the click resolves. One-shot —
+// subsequent calls are no-ops because the dynamic import is memoized by the
+// loader. Safe to call from any tile.
+let quickViewWarmed = false;
+const preloadQuickView = () => {
+  if (quickViewWarmed) return;
+  quickViewWarmed = true;
+  void import("@/components/collection/QuickViewModal");
+};
+
 export function ProductTile({
   product,
   index,
@@ -112,6 +123,9 @@ export function ProductTile({
       {showInternals ? (
         <button
           onClick={onOpen}
+          onMouseEnter={preloadQuickView}
+          onFocus={preloadQuickView}
+          onTouchStart={preloadQuickView}
           aria-label={`Open ${product.title}`}
           className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
         >
