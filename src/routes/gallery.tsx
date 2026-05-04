@@ -107,6 +107,7 @@ function GalleryPage() {
         projects={visibleProjects}
         onOpen={handleOpen}
         jumpRef={jumpRef}
+        activeIndex={activeIndex}
       />
 
       <section className="px-6 lg:px-12">
