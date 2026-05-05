@@ -200,25 +200,19 @@ export function MediaAperture({
         }}
       >
         {showImg ? (
-          <img
-            ref={imgRef}
-            src={src}
-            srcSet={srcSet}
-            sizes={sizes}
-            alt={alt ?? ""}
-            loading={lazy ? "lazy" : "eager"}
-            decoding="async"
-            onLoad={() => setLoaded(true)}
-            // React types lag the spec; cast for fetchpriority.
-            {...(fetchPriority
-              ? ({ fetchPriority: fetchPriority } as Record<string, string>)
-              : {})}
-            className="absolute inset-0 w-full h-full object-cover will-change-opacity"
-            style={{
-              opacity: loaded ? 1 : 0,
-              transition: "opacity 420ms ease-out",
-            }}
-          />
+          picture ? (
+            <picture className="absolute inset-0 block w-full h-full">
+              {picture.sources.avif && (
+                <source type="image/avif" srcSet={picture.sources.avif} sizes={sizes} />
+              )}
+              {picture.sources.webp && (
+                <source type="image/webp" srcSet={picture.sources.webp} sizes={sizes} />
+              )}
+              {imgEl}
+            </picture>
+          ) : (
+            imgEl
+          )
         ) : (
           // Inset hairline — print-mount feel. No icons, no text.
           <div
