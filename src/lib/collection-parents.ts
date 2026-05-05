@@ -289,15 +289,12 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
     case "rugs":
       return "rugs";
     case "styling": {
-      if (has(t, ["crate", "basket", "bin"])) return "crates-baskets";
+      if (has(t, ["crate", "basket"])) return "crates-baskets";
       if (has(t, ["game", "chess", "domino", "backgammon", "cards", "puzzle"]))
         return "games";
-      if (
-        g === "accents" ||
-        has(t, ["mirror", "sculpture", "vase", "vessel", "object", "accent"])
-      )
-        return "accents";
-      return null;
+      // Live site lumps everything else in Styling under Accents — make it
+      // the explicit fallback rather than relying on a narrow keyword list.
+      return "accents";
     }
     case "large-decor": {
       if (has(t, ["wall", "panel", "mural", "tapestry", "art", "painting"]))
