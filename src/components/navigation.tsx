@@ -3,12 +3,28 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 
+// Brand signature per the deck: "ATELIER *by* THE HIVE" — lowercase italic
+// "by" set in Saol Display between caps. Render as JSX so the italic survives
+// the site-wide ALL-CAPS rule (CSS `text-transform: uppercase` would kill it).
 const NAV_LINKS = [
-  { href: "/atelier", label: "ATELIER BY THE HIVE" },
-  { href: "/collection", label: "HIVE SIGNATURE COLLECTION" },
-  { href: "/gallery", label: "THE GALLERY" },
-  { href: "/contact", label: "CONTACT" },
+  {
+    href: "/atelier",
+    label: "ATELIER BY THE HIVE",
+    render: (
+      <>
+        ATELIER{" "}
+        <span className="font-display italic font-light tracking-normal normal-case lowercase">
+          by
+        </span>{" "}
+        THE HIVE
+      </>
+    ),
+  },
+  { href: "/collection", label: "HIVE SIGNATURE COLLECTION", render: "HIVE SIGNATURE COLLECTION" },
+  { href: "/gallery", label: "THE GALLERY", render: "THE GALLERY" },
+  { href: "/contact", label: "CONTACT", render: "CONTACT" },
 ] as const;
+
 
 // Pages with a light hero where the nav must invert to charcoal text.
 // Collection is intentionally pure white (auction-house archive); cream-hero
@@ -148,7 +164,7 @@ export function Navigation() {
                       : "text-charcoal/70 hover:text-charcoal"
                   )}
                 >
-                  {link.label}
+                  {link.render}
                   <span
                     className={cn(
                       "absolute -bottom-1 left-0 w-full h-px origin-left transition-transform duration-300",
@@ -231,7 +247,7 @@ export function Navigation() {
                       : "text-cream/70 hover:text-cream"
                   )}
                 >
-                  {link.label}
+                  {link.render}
                 </span>
               </Link>
             ))}
