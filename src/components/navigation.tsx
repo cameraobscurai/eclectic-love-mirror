@@ -13,9 +13,9 @@ const NAV_LINKS = [
     render: (
       <>
         ATELIER{" "}
-        <i className="font-display not-italic-fallback italic font-light tracking-normal normal-case lowercase">
+        <span className="font-display italic font-light tracking-normal normal-case lowercase">
           by
-        </i>{" "}
+        </span>{" "}
         THE HIVE
       </>
     ),
