@@ -15,6 +15,15 @@ declare module "*?preset=hero" {
   export default value;
 }
 
+declare module "*?preset=editorial" {
+  /** `as=picture` shape — same as hero, smaller width set. */
+  const value: {
+    sources: Record<string, string>;
+    img: { src: string; w: number; h: number };
+  };
+  export default value;
+}
+
 declare module "*?preset=hero-lqip" {
   /**
    * `as=metadata` shape: tiny blurred placeholder. We use `src` as an inline
