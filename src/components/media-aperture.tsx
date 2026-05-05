@@ -18,7 +18,14 @@ import { cn } from "@/lib/utils";
 //     instead of popping — late arrivals dissolve into the frame they
 //     already occupy, never replace a hard empty box with a hard image.
 //
-// When a real image arrives, pass `src` + `alt` and the same frame holds it.
+// Lazy + viewport prefetch:
+//   When `lazy` is true (default) we use IntersectionObserver with a
+//   generous `prefetchMargin` (default 600px) to start the download just
+//   before the frame scrolls into view. This is a wider margin than the
+//   browser's built-in `loading="lazy"` (~150-300px), so atelier portraits
+//   and material plates resolve before they enter the screen instead of
+//   trickling in afterward. When `lazy={false}` (hero), the image loads
+//   immediately with no observer overhead.
 // ---------------------------------------------------------------------------
 
 interface MediaApertureProps {
@@ -41,8 +48,14 @@ interface MediaApertureProps {
    */
   label?: string;
   className?: string;
-  /** Lazy-load the inner image. Defaults to true. */
+  /** Lazy-load via IntersectionObserver. Defaults to true. */
   lazy?: boolean;
+  /**
+   * IntersectionObserver rootMargin for prefetch — how far outside the
+   * viewport the image starts downloading. Defaults to "600px" so frames
+   * have ~half a viewport of head start before they enter the screen.
+   */
+  prefetchMargin?: string;
   /** Hint browser priority. Use "high" for above-the-fold portraits. */
   fetchPriority?: "high" | "low" | "auto";
 }
@@ -57,10 +70,42 @@ export function MediaAperture({
   label,
   className,
   lazy = true,
+  prefetchMargin = "600px",
   fetchPriority,
 }: MediaApertureProps) {
   const [loaded, setLoaded] = useState(false);
+  // Eager renders immediately. Lazy waits for the IO to fire.
+  const [inView, setInView] = useState(!lazy);
+  const figureRef = useRef<HTMLElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+
+  // Viewport prefetch — start the download a bit before the frame enters
+  // the screen so it resolves into the aperture instead of popping in.
+  useEffect(() => {
+    if (!lazy || inView) return;
+    const node = figureRef.current;
+    if (!node) return;
+    if (typeof IntersectionObserver === "undefined") {
+      // No IO (very old browsers / SSR fallback) — load immediately rather
+      // than leaving the frame empty forever.
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setInView(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { rootMargin: prefetchMargin, threshold: 0.01 },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [lazy, inView, prefetchMargin]);
 
   // Catch images that decoded before React attached the onLoad listener
   // (SSR / cached / eager). Without this they stay opacity:0 forever.
@@ -68,10 +113,15 @@ export function MediaAperture({
     if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
       setLoaded(true);
     }
-  }, [src]);
+  }, [src, inView]);
+
+  // Render the <img> only once the frame is near the viewport. We still
+  // pass `loading="lazy"` as a belt-and-braces fallback (so the browser
+  // can also defer if the IO fires far away from layout).
+  const showImg = !!src && inView;
 
   return (
-    <figure className={cn("block", className)}>
+    <figure ref={figureRef} className={cn("block", className)}>
       <div
         className="relative w-full overflow-hidden"
         style={{
@@ -81,7 +131,7 @@ export function MediaAperture({
           backgroundColor: "color-mix(in oklab, var(--sand) 35%, var(--cream))",
         }}
       >
-        {src ? (
+        {showImg ? (
           <img
             ref={imgRef}
             src={src}
