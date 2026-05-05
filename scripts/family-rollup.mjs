@@ -16,7 +16,21 @@
 //     stats: { ... } }
 
 const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9"'.]+/g, ' ').replace(/\s+/g, ' ').trim();
-const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.length >= 3);
+// Canonicalize material/variant-noun synonyms so live "Glassware" and RMS
+// "Glass" collapse to one token. Only safe pairs — keep this list tight.
+const TOKEN_CANON = {
+  glassware: 'glass',
+  glasses: 'glass',
+  flatwares: 'flatware',
+  serveware: 'serveware',
+  dinnerware: 'dinnerware',
+  pillows: 'pillow',
+  throws: 'throw',
+  candlesticks: 'candlestick',
+  candleholders: 'candleholder',
+};
+const canonTok = t => TOKEN_CANON[t] || t;
+const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.length >= 3).map(canonTok);
 
 // Stems that signal "this RMS title is a VARIANT of family X" (not a separate
 // product that happens to start with the same word). Conservative — only
