@@ -200,6 +200,7 @@ export const TILE_TO_PARENT_SUB: Record<
   styling: { parent: "styling", sub: "all" },
   accents: { parent: "styling", sub: "accents" },
   "large-decor": { parent: "large-decor", sub: "all" },
+  "furs-pelts": { parent: "furs-pelts", sub: "all" },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
