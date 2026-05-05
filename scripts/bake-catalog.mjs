@@ -98,8 +98,10 @@ for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
     if (it.urlId && !liveSlugInfo.has(it.urlId)) liveSlugInfo.set(it.urlId, info);
     const t = norm(it.title);
     if (t && !liveTitleInfo.has(t)) liveTitleInfo.set(t, info);
-    const toks = t.split(' ');
-    for (let n = Math.min(toks.length, 4); n >= 2; n--) {
+    const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
+    if (tStripped && !liveTitleInfo.has(tStripped)) liveTitleInfo.set(tStripped, info);
+    const toks = tStripped.split(' ');
+    for (let n = Math.min(toks.length, 5); n >= 2; n--) {
       const k = toks.slice(0, n).join(' ');
       if (!liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
     }
