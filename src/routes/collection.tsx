@@ -589,7 +589,7 @@ function CollectionPage() {
       <div
         style={{
           background: utilityScrolled
-            ? "rgba(245,242,237,0.78)"
+            ? "rgba(255,255,255,0.78)"
             : "var(--paper)",
           backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
