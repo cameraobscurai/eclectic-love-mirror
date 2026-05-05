@@ -164,7 +164,7 @@ export function Navigation() {
                   to={link.href}
                   preload="intent"
                   className={cn(
-                    "relative group text-xs tracking-[0.2em] uppercase font-light transition-colors duration-300",
+                    "relative group text-[13px] xl:text-[14px] tracking-[0.28em] uppercase font-light transition-colors duration-300",
                     dark
                       ? active
                         ? "text-cream"
