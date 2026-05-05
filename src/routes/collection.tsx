@@ -575,40 +575,9 @@ function CollectionPage() {
       className="min-h-screen text-charcoal pb-32"
       style={{ background: "var(--cream)" }}
     >
-      {/* ============================================================
-          STATIC DISPLAY HEADING — "THE COLLECTION"
-          No scroll animation, no parallax, no compression. When a
-          category is active, render the category label as a clickable
-          breadcrumb beneath the wordmark.
-          ============================================================ */}
-      <div
-        ref={headingRef}
-        className="px-6 lg:px-12"
-        style={{
-          paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
-          paddingBottom: "clamp(20px, 2vw, 32px)",
-          background: "#ffffff",
-        }}
-      >
-        <div
-          className="mx-auto"
-          style={{ maxWidth: "var(--archive-canvas-max)" }}
-        >
-          <h1
-            id="collection-heading"
-            data-devedit
-            data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal"
-            style={{
-              fontSize: "clamp(60px, 8vw, 120px)",
-              fontWeight: 400,
-              letterSpacing: "-0.005em",
-            }}
-          >
-            The Collection
-          </h1>
-        </div>
-      </div>
+      {/* Heading removed — the left "the HIVE" plate IS the page title. */}
+      <div style={{ height: "var(--nav-h)" }} aria-hidden />
+
 
       {/* ============================================================
           UTILITY BAR — only shown when a category is active OR the user
@@ -760,43 +729,28 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className="px-6 lg:px-12 pt-6">
+      <section className="px-6 lg:px-12 pt-0">
         <div
           className="mx-auto"
-          style={{
-            maxWidth: "var(--archive-canvas-max)",
-            borderTop: "1px solid var(--archive-rule)",
-          }}
+          style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <div
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,38%)_minmax(0,1fr)]"
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]"
             }
           >
             {showOverview ? (
               <aside
-                className="hidden lg:block"
-                style={{
-                  borderRight: "1px solid var(--archive-rule)",
-                  background: "var(--cream)",
-                }}
+                className="hidden lg:flex items-center justify-center"
+                style={{ background: "#ffffff" }}
               >
-                <div
-                  className="sticky"
-                  style={{
-                    top: "var(--nav-h)",
-                    height: "calc(100vh - var(--nav-h))",
-                  }}
-                >
-                  <img
-                    src={hiveSignatureHero}
-                    alt="The Hive — Signature Collection"
-                    className="h-full w-full object-contain"
-                    style={{ background: "var(--cream)" }}
-                  />
-                </div>
+                <img
+                  src={hiveSignatureHero}
+                  alt="The Hive — Signature Collection"
+                  className="block max-h-full w-full h-auto object-contain"
+                />
               </aside>
             ) : (
               <aside

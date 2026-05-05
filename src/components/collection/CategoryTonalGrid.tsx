@@ -160,7 +160,7 @@ function TonalCell({
   return (
     <li
       ref={ref}
-      className="relative aspect-[5/4] min-w-0"
+      className="relative aspect-square min-w-0"
       style={{ background: tone }}
     >
       <button

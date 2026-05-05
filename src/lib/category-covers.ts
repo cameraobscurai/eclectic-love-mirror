@@ -1,18 +1,13 @@
 /**
  * Editorial cover image per browse group.
  *
- * Each cover is a single, museum-grade product shot on pure seamless white —
- * one piece, one shadow, one register across all 18. The covers live as
- * static assets so they ship with the bundle (no CDN round-trip, no failure
- * mode, perfect cache).
- *
- * Coverage is intentionally partial during the rollout. Any group without
- * an entry falls back to the "first product in the bucket" hero in
- * CategoryGalleryOverview, so the gallery is always complete.
+ * Owner-curated specimen shot per category. Covers are pulled directly from
+ * the owner's inventory storage so they update when she replaces the file.
+ * Any group without an entry falls back to the first product's primary image.
  */
 import type { BrowseGroupId } from "@/lib/collection-browse-groups";
-import sofasCover from "@/assets/category-covers/sofas.jpg";
 
 export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, string>> = {
-  sofas: sofasCover,
+  sofas:
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SEATING/SOFA/RESHMA Botanical Sofa 0.png",
 };
