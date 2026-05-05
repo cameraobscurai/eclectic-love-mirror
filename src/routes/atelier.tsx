@@ -127,20 +127,7 @@ export const Route = createFileRoute("/atelier")({
 });
 
 function AtelierPage() {
-  const reduced = useReducedMotion();
-
-  // --- Hero parallax (item 3) ---------------------------------------------
-  const heroRef = useRef<HTMLElement | null>(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroImageY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
-  const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "-8%"]);
-
-  // --- Fabrication list hover (item 1) ------------------------------------
-  // Tracks the currently-hovered/focused row so we can highlight the number,
-  // label, and slide in the bottom accent line. Null = no row engaged.
+  // --- Fabrication list hover ---------------------------------------------
   const [fabHover, setFabHover] = useState<number | null>(null);
 
   return (
@@ -148,55 +135,36 @@ function AtelierPage() {
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{ paddingTop: "var(--nav-h)" }}
     >
-      {/* 1. HERO */}
+      {/* 1. HERO — static, tightened top padding (T3) */}
       <section
-        ref={heroRef}
         className="px-6 lg:px-12 overflow-hidden"
         style={{
-          paddingTop: "clamp(64px, 7vw, 112px)",
+          paddingTop: "clamp(24px, 3vw, 48px)",
           paddingBottom: "clamp(48px, 5vw, 80px)",
         }}
       >
         <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end">
-          <motion.div
-            className="md:col-span-7"
-            style={reduced ? undefined : { y: heroTextY, willChange: "transform" }}
-          >
+          <div className="md:col-span-7">
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            <p className="mt-3 text-[11px] uppercase tracking-[0.26em] text-charcoal/75 max-w-[44ch]">
-              WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION HOUSE.
-            </p>
+            {/* T5: removed duplicated "WE ARE DESIGNERS, PRODUCERS..." eyebrow.
+                Lower instance lives under THE HIVE section. */}
+            {/* T17: literal CAPS in source so SR & visual register agree. */}
             <h1 className="mt-6 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
-              Imagined.
+              IMAGINED.
               <br />
-              Designed.
+              DESIGNED.
               <br />
-              Realized.
+              REALIZED.
             </h1>
             <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
-          </motion.div>
+          </div>
           <div className="md:col-span-5">
-            <motion.div
-              className="relative w-full overflow-hidden"
-              style={
-                reduced
-                  ? { aspectRatio: "4/5" }
-                  : { aspectRatio: "4/5", y: heroImageY, willChange: "transform" }
-              }
-            >
-              <HeroImage
-                source={atelierHero}
-                alt="Atelier moodboard — figure study and material swatches behind glass."
-                focalPoint={{ x: 50, y: 45 }}
-                scrim="none"
-                priority
-                sizes="(min-width: 768px) 40vw, 100vw"
-              />
-            </motion.div>
+            {/* T4: owner-supplied bench/tasseled-throws photo pending */}
+            <Placeholder ratio="4/5" label="ATELIER PORTRAIT" />
           </div>
         </div>
       </section>
@@ -206,55 +174,28 @@ function AtelierPage() {
         <AtelierTeam />
       </Section>
 
-      {/* 3. THE ARTIST'S STUDIO */}
-      <Section eyebrow="THE ARTIST'S STUDIO">
-        {SPACE_IMAGES.length > 0 ? (
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
-            {SPACE_IMAGES.slice(0, 3).map((img, i) => (
-              <div key={i} className="aspect-[4/5] bg-white overflow-hidden">
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="mt-12">
-              <MediaAperture
-                ratio="16/9"
-                picture={atelierStudioWide}
-                alt="The Atelier — interior view of the studio with the elevated container office, lounge seating, and plant-lined floor."
-                label="STUDIO"
-                sizes="(min-width: 1024px) 1280px, 100vw"
-              />
-            </div>
-            <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <MediaAperture
-                ratio="4/5"
-                picture={workbenchChairSketch}
-                alt="Pencil sketch of a chair design with measurement annotations, hung as a draped canvas in the workbench."
-                label="WORKBENCH"
-                sizes="(min-width: 768px) 50vw, 100vw"
-              />
-              <MediaAperture
-                ratio="4/5"
-                picture={warehouseStudioCollage}
-                alt="Black-and-white collage — studio interiors, fabrication in progress, and a finished tasseled stool."
-                label="WAREHOUSE"
-                sizes="(min-width: 768px) 50vw, 100vw"
-              />
-            </div>
-          </>
-        )}
+      {/* 3. L'ATELIER (T11) — 3-tile B&W collage of Hive exterior + interior */}
+      <Section eyebrow="L'ATELIER">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Placeholder ratio="4/5" label="STUDIO COLLAGE 1" />
+          <Placeholder ratio="4/5" label="STUDIO COLLAGE 2" />
+          <Placeholder ratio="4/5" label="STUDIO COLLAGE 3" />
+        </div>
       </Section>
 
-      {/* 4. THE FABRICATION — list with hover state, then the original
-          three-image board underneath. Image swap was overengineered; the
-          three plates work better as their own quiet evidence row. */}
+      {/* 4. DESIGN + FABRICATION (T12+T13) — DESIGN now first */}
+      <Section eyebrow="DESIGN · FABRICATION">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Placeholder ratio="4/5" label="DESIGN" />
+          </div>
+          <div>
+            <Placeholder ratio="4/5" label="FABRICATION" />
+          </div>
+        </div>
+      </Section>
+
+      {/* 5. THE FABRICATION — capabilities list (T14: explanation pending Wed) */}
       <Section eyebrow="THE FABRICATION">
         <ul style={{ borderColor: "var(--archive-rule)" }}>
           {CAPABILITIES.map((item, i) => {
@@ -270,7 +211,6 @@ function AtelierPage() {
                 style={{ borderColor: "var(--archive-rule)" }}
                 tabIndex={0}
               >
-                {/* Sliding 1px accent line — origin left, scaleX 0 → 1 */}
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
@@ -299,30 +239,7 @@ function AtelierPage() {
             );
           })}
         </ul>
-
-        {/* Original material board — sketch · pattern study · realized.
-            Desaturated to match the page's editorial register; color reveals
-            on hover/focus to invite closer attention. */}
-        <div className="mt-12 grid grid-cols-3 gap-3 [&_>*]:transition-[filter] [&_>*]:duration-700 [&_>*]:ease-out [&_>*]:[filter:grayscale(1)] hover:[&_>*:hover]:[filter:grayscale(0)] focus-within:[&_>*:focus-within]:[filter:grayscale(0)]">
-          <MediaAperture
-            ratio="1/1"
-            picture={fabricationStillLife}
-            alt="Charcoal still-life study — glassware and florals."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
-          <MediaAperture
-            ratio="1/1"
-            picture={fabricationFoliage}
-            alt="Watercolor pattern study — foliage and birds."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
-          <MediaAperture
-            ratio="1/1"
-            picture={fabricationTentTriptych}
-            alt="Sketch to render to realized photo — a tented dining install across three stages."
-            sizes="(min-width: 1024px) 30vw, 33vw"
-          />
-        </div>
+        {/* T15: Phase-2 botanical/sketch triptych removed pending future direction */}
       </Section>
 
       {/* 5. ATELIER APPROACH — quiet text-only triplet */}
