@@ -778,25 +778,22 @@ function CollectionPage() {
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
             className={
               showOverview
-                ? // items-start: H-plate column and tile-grid column each own
-                  // their own height. No more flex-1 stretching tile rows to
-                  // match the H-plate. aspect-ratio inside CategoryTonalGrid
-                  // determines tile size; H-plate has its own aspect cap below.
-                  "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-start gap-y-6 lg:gap-y-0"
+                ? // items-stretch: H-plate column dictates height, grid fills
+                  // its column with 3 equal rows. No dead space below grid.
+                  "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch gap-y-6 lg:gap-y-0"
                 : "grid grid-cols-1"
             }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:grid"
+                className="hidden lg:grid self-stretch"
                 style={{
                   background: "var(--paper)",
                   containerType: "inline-size",
                   placeItems: "center",
-                  // Aspect cap so the H-plate can't tower past its tile-grid
-                  // sibling. 3/4 = portrait, matches the editorial proportion
-                  // of the H artwork. cqi padding scales with column width.
+                  // 3/4 portrait — defines the height of the whole row.
+                  // Grid sibling stretches to match via items-stretch.
                   aspectRatio: "3 / 4",
                   padding: "clamp(16px, 4cqi, 56px)",
                 }}
