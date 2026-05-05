@@ -1,0 +1,49 @@
+# Final binding summary (READ-ONLY, no DB writes)
+
+Total RMS rows (public):  835
+Total bound (any method): 808
+  via filename_key:       482
+  via stem_match:         276
+  via squarespace only:   50
+Unbound:                  27
+
+## Unbound by category
+
+### tableware  (13)
+  2930  Bronson Brown Goblet
+  2929  Bronson Brown Rocks Glass
+  2723  Honey Coupe Glass
+  2722  Honey Red Wine Glass
+  2724  Honey  Rocks Glass
+  2721  Honey White Wine Glass
+  2948  Narin Champagne Flute
+  2946  Narin Red Wine Glass
+  2947  Narin White Wine Glass
+  2668  Thistle Coupe Glass
+  2671  Thistle Red Wine Glass
+  2669  Thistle Rocks Glass
+  2672  Thistle White Wine Glass
+
+### chandeliers  (5)
+  2472  Gideon Large Bamboo Mesh Pendant Light
+  2464  Gideon Medium Bamboo Mesh Pendant Light
+  2864  Gideon Small Bamboo Mesh Pendant
+  2808  Gideon XL Bamboo Mesh Pendant Light
+  3227  Namiah 24" Smoke Crystal Black Chandelier
+
+### pillows-throws  (4)
+  2418  Purple Pale Velvet Pillow
+  2329  Calvary Wool Charcoal Throw
+  2331  Calvary Wool Grey Throw
+  2330  Calvary Wool Olive Throw
+
+### large-decor  (2)
+  3913  Elysanda Ceremony Path + Platform
+  3905  Layne Gallery Column _ I DO NOT HAVE IMAGE
+
+### tables  (2)
+  328  Tangier Coffee Table
+  2001  Vanna Brass Side Table
+
+### styling  (1)
+  3692  Huron Snowshoe Pair - I DO NOT HAVE IMAGE
