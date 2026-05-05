@@ -1042,23 +1042,50 @@ function CollectionPage() {
               </div>
 
               <div
-                className="flex-1 overflow-y-auto px-2 py-3"
+                className="flex-1 overflow-y-auto px-4 py-3"
                 style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" }}
               >
-                <CollectionRail
-                  products={products}
-                  activeParent={activeParent}
-                  onSelect={(groupId: BrowseGroupId | "") => {
-                    // On mobile the sheet covers the entire viewport, so
-                    // selecting a category with the sheet still open feels
-                    // like nothing happened — the user can't see the grid
-                    // reflow underneath. Dismiss the sheet immediately on
-                    // select so the result of the tap is visible.
-                    selectGroup(groupId);
-                    setSheetOpen(false);
-                  }}
-                  variant="sheet"
-                />
+                <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45 px-1 pb-3">
+                  Browse by Category
+                </p>
+                <ul role="list" className="flex flex-col">
+                  {PARENT_ORDER.map((pid) => {
+                    const isActive = activeParent === pid;
+                    return (
+                      <li key={pid}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            selectParent(pid);
+                            setSheetOpen(false);
+                          }}
+                          className={[
+                            "w-full text-left px-1 py-3 text-[12px] uppercase tracking-[0.22em] border-b border-charcoal/8",
+                            isActive ? "text-charcoal" : "text-charcoal/65 hover:text-charcoal",
+                          ].join(" ")}
+                          aria-current={isActive ? "page" : undefined}
+                        >
+                          {PARENT_LABELS[pid]}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {activeParent && (
+                  <div className="pt-5">
+                    <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45 px-1 pb-3">
+                      {PARENT_LABELS[activeParent]}
+                    </p>
+                    <SubcategoryRail
+                      parent={activeParent}
+                      active={activeSubcategory}
+                      onSelect={(s) => {
+                        selectSubcategory(s);
+                        setSheetOpen(false);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div
