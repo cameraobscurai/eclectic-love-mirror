@@ -1,0 +1,86 @@
+AUDIT — DRY RUN, NO WRITES
+Generated: 2026-05-05T07:17:12.102Z
+
+Public products:                 835
+Currently imageless:             27
+Distinct hero images in use:     676
+Shared-hero groups (>=2 SKUs):   47
+  KEEP (legit variant families): 28  → 91 products
+  BREAK (false dupes to reset):  19  → 88 products
+
+BREAK breakdown by category:
+  pillows-throws     82
+  large-decor        4
+  styling            2
+
+Top 15 BREAK groups (worst offenders):
+  [13] PILLOWS/Blue Green Lumbar.png
+       Blue Light Stripe Pillow | Blue Light Velvet Pillow | Blue Native X Pillow …
+  [12] PILLOWS/Brown Grey fur.png
+       Brown Faux Mink Oversize Pillow | Brown Fur Square Oversize Pillow | Brown Leather Patchwork Lumbar Pillow …
+  [10] PILLOWS/Ivory Black Geo.png
+       Ivory Black Geo Print Pillow | Ivory Black Native Wool Pillow | Ivory Gold Textured Pillow …
+  [9] PILLOWS/Green Block Print.png
+       Green Forest Tassel Pillow | Green Olive Velvet Pillow | Green Antique Textile Pillow …
+  [8] PILLOWS/Red Zebra Lumbar.png
+       Red Slightly Darker Velvet Pillow | Red Tan Plaid Oversize Lumbar | Red White Ticking Stripe …
+  [5] PILLOWS/Orange Textile Dos.png
+       Orange Ivory Native Pillow | Orange Copper Velvet Fringe Lumbar Pillow | Orange Textile Pillow Dos …
+  [4] PILLOWS/Gold Fringe Lumbar.png
+       Gold Fleck Woven Pillow | Gold Speckled Leather Pillow | Gold Velvet Fringe Lumbar Pillow …
+  [4] PILLOWS/White Raffia.png
+       White Hide Lumbar Pillow | White Hide Stitched Lumbar Pillow | White Silver Hide Pillow …
+  [3] PILLOWS/Pink and Yellow.png
+       Pink Black Abstract Lumbar Pillow | Pink Wild Lynx Velvet Pillow | Pink Hot Velvet Pillow
+  [2] LARGE-DECOR/BELLOW 3' Partition 1.png
+       Bellow 3'H White Corrugated Partition | Bellow 8'H White Corrugated Wall
+  [2] LARGE-DECOR/HUDSON Render.png
+       Hudson Rock Wall | Hudson Rock Wall with Shelves
+  [2] PILLOWS/Black Cream Dimensional.png
+       Black Brown Plaid Pillow | Black Hide Lumbar Pillow
+  [2] PILLOWS/Black Leather Lattice.png
+       Black Leather Lattice Pillow | Black Leather Lumbar Pillow
+  [2] PILLOWS/Blue Velvet.png
+       Blue Velvet Fringe Lumbar Pillow | Blue Velvet Brocade Lumbar Pillow
+  [2] PILLOWS/Ivory Boucle.png
+       Ivory Boucle Pillow | Ivory Seamed Boucle Pillow
+
+Top 15 KEEP groups (preserved):
+  [6] TABLEWEAR/ARIAN Set.png  — set hero (filename ends in Set)
+  [6] TABLEWEAR/HESTON Set.png  — set hero (filename ends in Set)
+  [6] TABLEWEAR/NISHA Set.png  — set hero (filename ends in Set)
+  [5] STYLING/TIVOLI Mini Plinth.png  — size-variant family (plinth/banquette/column)
+  [5] _squarespace/e813c4197a_CARLISLE_Set_0.png  — brand family "carlisle" (5 variants in tableware)
+  [5] TABLEWEAR/MILLIE Set.png  — set hero (filename ends in Set)
+  [4] SEATING/SPECIAL/NIMA Banquette 1.png  — size-variant family (plinth/banquette/column)
+  [4] TABLEWEAR/ADONIS Set.png  — set hero (filename ends in Set)
+  [4] TABLES/Farrow 28.png  — brand family "farrow" (4 variants in tables)
+  [4] TABLEWEAR/MIDAS Set.png  — set hero (filename ends in Set)
+  [4] TABLEWEAR/Sage All Set.png  — set hero (filename ends in Set)
+  [4] _squarespace/38ce415cb9_LARIQUE_Set.png  — brand family "larique" (4 variants in tableware)
+  [3] CANDLELIGHT/FLORENCE Lantern Set.png  — set hero (filename ends in Set)
+  [3] TABLEWEAR/LAVANYA Set.png  — set hero (filename ends in Set)
+  [2] BARS/ARCUS - BEVIN 1.png  — brand family "arcus" (2 variants in bars)
+
+Orphan storage files (not referenced by any product): 1183
+  by folder:
+    inventory/STYLING                        220
+    inventory/TABLEWEAR                      186
+    inventory/TABLES                         132
+    inventory/SEATING/CHAIRLOUNGE            85
+    inventory/SERVEWARE                      77
+    inventory/BARS                           73
+    inventory/LIGHTING                       64
+    inventory/LARGE-DECOR                    50
+    inventory/PILLOWS                        50
+    inventory/THROWS                         39
+    inventory/SEATING/SOFA                   37
+    inventory/RUGS                           29
+    inventory/SEATING/CHAIRDINING            28
+    inventory/CANDLELIGHT                    25
+    inventory/STORAGE                        24
+
+Files written:
+  scripts-tmp/audit-keep-shared.json
+  scripts-tmp/audit-break-shared.json
+  scripts-tmp/audit-orphan-files.json

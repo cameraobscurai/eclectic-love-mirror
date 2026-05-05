@@ -1,0 +1,1271 @@
+{
+  "groups": [
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "storage_path": "PILLOWS/Blue Green Lumbar.png",
+      "member_count": 13,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3035",
+          "title": "Blue Light Stripe Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3091",
+          "title": "Blue Light Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2388",
+          "title": "Blue Native X Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3195",
+          "title": "Blue Ombre Fringe Oversize Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3098",
+          "title": "Blue Sabra Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2782",
+          "title": "Blue Denim Leather Buckle Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2484",
+          "title": "Blue Light Velvet Burnout  Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3090",
+          "title": "Blue Light Velvet Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2235",
+          "title": "Blue Native Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3196",
+          "title": "Blue Ombre Fringe Oversize Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2413",
+          "title": "Blue Red Native Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3100",
+          "title": "Blue Turquoise Sabra Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3215",
+          "title": "Blue Wild Bird Velvet Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "storage_path": "PILLOWS/Brown Grey fur.png",
+      "member_count": 12,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2244",
+          "title": "Brown Faux Mink Oversize Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2242",
+          "title": "Brown Fur Square Oversize Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2326",
+          "title": "Brown Leather Patchwork Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2291",
+          "title": "Brown Maroon Leather Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2238",
+          "title": "Brown Yellow Grey Wool Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2241",
+          "title": "Brown Fur / Mudcloth Long Oversize Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "4079",
+          "title": "Brown Grey Fur Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2243",
+          "title": "Brown Hide Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2916",
+          "title": "Brown Light Plaid Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2915",
+          "title": "Brown Plaid Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2245",
+          "title": "Brown Strip Oversize Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2240",
+          "title": "Brown Velvet Quilted Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "storage_path": "PILLOWS/Ivory Black Geo.png",
+      "member_count": 10,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "4081",
+          "title": "Ivory Black Geo Print Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2287",
+          "title": "Ivory Black Native Wool Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2284",
+          "title": "Ivory Gold Textured Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2857",
+          "title": "Ivory Black Plaid Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2592",
+          "title": "Ivory Boho Knit Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2288",
+          "title": "Ivory Brown Chain Link Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2862",
+          "title": "Ivory Brown Line Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2585",
+          "title": "Ivory Diamond Shag Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3088",
+          "title": "Ivory Linen Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3216",
+          "title": "Ivory Wild Bird Silk Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "storage_path": "PILLOWS/Green Block Print.png",
+      "member_count": 9,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2895",
+          "title": "Green Forest Tassel Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2296",
+          "title": "Green Olive Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3102",
+          "title": "Green Antique Textile Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2261",
+          "title": "Green Dark Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2435",
+          "title": "Green Olive Faux Silk Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2297",
+          "title": "Green Olive Velvet Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3099",
+          "title": "Green Sabra Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3214",
+          "title": "Green Wild Bird Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3219",
+          "title": "Green Wild Leopard Velvet Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "storage_path": "PILLOWS/Red Zebra Lumbar.png",
+      "member_count": 8,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3812",
+          "title": "Red Slightly Darker Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2917",
+          "title": "Red Tan Plaid Oversize Lumbar",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2781",
+          "title": "Red White Ticking Stripe",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "4155",
+          "title": "Red Zebra Velvet Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2313",
+          "title": "Red Velvet Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2412",
+          "title": "Red Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2785",
+          "title": "Red White Edge Ticking Stripe Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2784",
+          "title": "Red White Wide Ticking Stripe Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "storage_path": "PILLOWS/Orange Textile Dos.png",
+      "member_count": 5,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2910",
+          "title": "Orange Ivory Native Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2855",
+          "title": "Orange Copper Velvet Fringe Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "4147",
+          "title": "Orange Textile Pillow Dos",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2882",
+          "title": "Orange Textile Pillow Uno",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2304",
+          "title": "Orange Velvet Quilted Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "storage_path": "PILLOWS/Gold Fringe Lumbar.png",
+      "member_count": 4,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2257",
+          "title": "Gold Fleck Woven Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2394",
+          "title": "Gold Speckled Leather Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "4085",
+          "title": "Gold Velvet Fringe Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2593",
+          "title": "Gold Velvet Dotted Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "storage_path": "PILLOWS/White Raffia.png",
+      "member_count": 4,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2323",
+          "title": "White Hide Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2603",
+          "title": "White Hide Stitched Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2325",
+          "title": "White Silver Hide Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3194",
+          "title": "White Raffia Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Pink and Yellow.png",
+      "storage_path": "PILLOWS/Pink and Yellow.png",
+      "member_count": 3,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2419",
+          "title": "Pink Black Abstract Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "3217",
+          "title": "Pink Wild Lynx Velvet Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2894",
+          "title": "Pink Hot Velvet Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/BELLOW 3' Partition 1.png",
+      "storage_path": "LARGE-DECOR/BELLOW 3' Partition 1.png",
+      "member_count": 2,
+      "categories": [
+        "large-decor"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3925",
+          "title": "Bellow 3'H White Corrugated Partition",
+          "category": "large-decor"
+        },
+        {
+          "rms_id": "2015",
+          "title": "Bellow 8'H White Corrugated Wall",
+          "category": "large-decor"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/HUDSON Render.png",
+      "storage_path": "LARGE-DECOR/HUDSON Render.png",
+      "member_count": 2,
+      "categories": [
+        "large-decor"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3524",
+          "title": "Hudson Rock Wall",
+          "category": "large-decor"
+        },
+        {
+          "rms_id": "3611",
+          "title": "Hudson Rock Wall with Shelves",
+          "category": "large-decor"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Cream Dimensional.png",
+      "storage_path": "PILLOWS/Black Cream Dimensional.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3092",
+          "title": "Black Brown Plaid Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2393",
+          "title": "Black Hide Lumbar Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
+      "storage_path": "PILLOWS/Black Leather Lattice.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "4152",
+          "title": "Black Leather Lattice Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2230",
+          "title": "Black Leather Lumbar Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
+      "storage_path": "PILLOWS/Blue Velvet.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2856",
+          "title": "Blue Velvet Fringe Lumbar Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2427",
+          "title": "Blue Velvet Brocade Lumbar Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
+      "storage_path": "PILLOWS/Ivory Boucle.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "4082",
+          "title": "Ivory Boucle Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2847",
+          "title": "Ivory Seamed Boucle Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
+      "storage_path": "PILLOWS/Silver Leather Woven.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "3149",
+          "title": "Silver Disco Pillow",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "4157",
+          "title": "Silver Leather Woven Pillow",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Cross.png",
+      "storage_path": "THROWS/PENDLETON Grey Cross.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2362",
+          "title": "Pendleton Grey Cross Throw",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "1614",
+          "title": "Pendleton Neutral ZigZag Throw",
+          "category": "pillows-throws"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/ELGIN Bronze.png",
+      "storage_path": "STYLING/ELGIN Bronze.png",
+      "member_count": 2,
+      "categories": [
+        "styling"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2874",
+          "title": "Elgin Pony Bronze Bookend Set",
+          "category": "styling"
+        },
+        {
+          "rms_id": "2873",
+          "title": "Elgin Pony Silver Bookend Set",
+          "category": "styling"
+        }
+      ]
+    },
+    {
+      "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
+      "storage_path": "_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
+      "member_count": 2,
+      "categories": [
+        "pillows-throws"
+      ],
+      "reason": "titles diverge — likely false bind from color-token fallback",
+      "members": [
+        {
+          "rms_id": "2646",
+          "title": "Alpaca Snake Grey/Black Throw",
+          "category": "pillows-throws"
+        },
+        {
+          "rms_id": "2647",
+          "title": "Alpaca Snake Oatmeal/Black Throw",
+          "category": "pillows-throws"
+        }
+      ]
+    }
+  ],
+  "flat_products_to_reset": [
+    {
+      "rms_id": "3035",
+      "title": "Blue Light Stripe Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3091",
+      "title": "Blue Light Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2388",
+      "title": "Blue Native X Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3195",
+      "title": "Blue Ombre Fringe Oversize Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3098",
+      "title": "Blue Sabra Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2782",
+      "title": "Blue Denim Leather Buckle Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2484",
+      "title": "Blue Light Velvet Burnout  Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3090",
+      "title": "Blue Light Velvet Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2235",
+      "title": "Blue Native Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3196",
+      "title": "Blue Ombre Fringe Oversize Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2413",
+      "title": "Blue Red Native Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3100",
+      "title": "Blue Turquoise Sabra Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "3215",
+      "title": "Blue Wild Bird Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
+      "group_size": 13
+    },
+    {
+      "rms_id": "2244",
+      "title": "Brown Faux Mink Oversize Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2242",
+      "title": "Brown Fur Square Oversize Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2326",
+      "title": "Brown Leather Patchwork Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2291",
+      "title": "Brown Maroon Leather Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2238",
+      "title": "Brown Yellow Grey Wool Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2241",
+      "title": "Brown Fur / Mudcloth Long Oversize Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "4079",
+      "title": "Brown Grey Fur Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2243",
+      "title": "Brown Hide Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2916",
+      "title": "Brown Light Plaid Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2915",
+      "title": "Brown Plaid Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2245",
+      "title": "Brown Strip Oversize Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "2240",
+      "title": "Brown Velvet Quilted Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "group_size": 12
+    },
+    {
+      "rms_id": "4081",
+      "title": "Ivory Black Geo Print Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2287",
+      "title": "Ivory Black Native Wool Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2284",
+      "title": "Ivory Gold Textured Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2857",
+      "title": "Ivory Black Plaid Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2592",
+      "title": "Ivory Boho Knit Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2288",
+      "title": "Ivory Brown Chain Link Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2862",
+      "title": "Ivory Brown Line Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2585",
+      "title": "Ivory Diamond Shag Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "3088",
+      "title": "Ivory Linen Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "3216",
+      "title": "Ivory Wild Bird Silk Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "group_size": 10
+    },
+    {
+      "rms_id": "2895",
+      "title": "Green Forest Tassel Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "2296",
+      "title": "Green Olive Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "3102",
+      "title": "Green Antique Textile Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "2261",
+      "title": "Green Dark Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "2435",
+      "title": "Green Olive Faux Silk Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "2297",
+      "title": "Green Olive Velvet Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "3099",
+      "title": "Green Sabra Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "3214",
+      "title": "Green Wild Bird Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "3219",
+      "title": "Green Wild Leopard Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
+      "group_size": 9
+    },
+    {
+      "rms_id": "3812",
+      "title": "Red Slightly Darker Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2917",
+      "title": "Red Tan Plaid Oversize Lumbar",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2781",
+      "title": "Red White Ticking Stripe",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "4155",
+      "title": "Red Zebra Velvet Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2313",
+      "title": "Red Velvet Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2412",
+      "title": "Red Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2785",
+      "title": "Red White Edge Ticking Stripe Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2784",
+      "title": "Red White Wide Ticking Stripe Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
+      "group_size": 8
+    },
+    {
+      "rms_id": "2910",
+      "title": "Orange Ivory Native Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "group_size": 5
+    },
+    {
+      "rms_id": "2855",
+      "title": "Orange Copper Velvet Fringe Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "group_size": 5
+    },
+    {
+      "rms_id": "4147",
+      "title": "Orange Textile Pillow Dos",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "group_size": 5
+    },
+    {
+      "rms_id": "2882",
+      "title": "Orange Textile Pillow Uno",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "group_size": 5
+    },
+    {
+      "rms_id": "2304",
+      "title": "Orange Velvet Quilted Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
+      "group_size": 5
+    },
+    {
+      "rms_id": "2257",
+      "title": "Gold Fleck Woven Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2394",
+      "title": "Gold Speckled Leather Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "4085",
+      "title": "Gold Velvet Fringe Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2593",
+      "title": "Gold Velvet Dotted Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2323",
+      "title": "White Hide Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2603",
+      "title": "White Hide Stitched Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2325",
+      "title": "White Silver Hide Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "3194",
+      "title": "White Raffia Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "group_size": 4
+    },
+    {
+      "rms_id": "2419",
+      "title": "Pink Black Abstract Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Pink and Yellow.png",
+      "group_size": 3
+    },
+    {
+      "rms_id": "3217",
+      "title": "Pink Wild Lynx Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Pink and Yellow.png",
+      "group_size": 3
+    },
+    {
+      "rms_id": "2894",
+      "title": "Pink Hot Velvet Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Pink and Yellow.png",
+      "group_size": 3
+    },
+    {
+      "rms_id": "3925",
+      "title": "Bellow 3'H White Corrugated Partition",
+      "category": "large-decor",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/BELLOW 3' Partition 1.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2015",
+      "title": "Bellow 8'H White Corrugated Wall",
+      "category": "large-decor",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/BELLOW 3' Partition 1.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "3524",
+      "title": "Hudson Rock Wall",
+      "category": "large-decor",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/HUDSON Render.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "3611",
+      "title": "Hudson Rock Wall with Shelves",
+      "category": "large-decor",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/HUDSON Render.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "3092",
+      "title": "Black Brown Plaid Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Cream Dimensional.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2393",
+      "title": "Black Hide Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Cream Dimensional.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "4152",
+      "title": "Black Leather Lattice Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2230",
+      "title": "Black Leather Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2856",
+      "title": "Blue Velvet Fringe Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2427",
+      "title": "Blue Velvet Brocade Lumbar Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "4082",
+      "title": "Ivory Boucle Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2847",
+      "title": "Ivory Seamed Boucle Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "3149",
+      "title": "Silver Disco Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "4157",
+      "title": "Silver Leather Woven Pillow",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2362",
+      "title": "Pendleton Grey Cross Throw",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Cross.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "1614",
+      "title": "Pendleton Neutral ZigZag Throw",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Cross.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2874",
+      "title": "Elgin Pony Bronze Bookend Set",
+      "category": "styling",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/ELGIN Bronze.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2873",
+      "title": "Elgin Pony Silver Bookend Set",
+      "category": "styling",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/ELGIN Bronze.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2646",
+      "title": "Alpaca Snake Grey/Black Throw",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
+      "group_size": 2
+    },
+    {
+      "rms_id": "2647",
+      "title": "Alpaca Snake Oatmeal/Black Throw",
+      "category": "pillows-throws",
+      "current_hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
+      "group_size": 2
+    }
+  ]
+}

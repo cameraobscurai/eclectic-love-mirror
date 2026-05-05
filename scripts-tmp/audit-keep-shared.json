@@ -1,0 +1,765 @@
+[
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ARIAN Set.png",
+    "storage_path": "TABLEWEAR/ARIAN Set.png",
+    "member_count": 6,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2932",
+        "title": "Arian Dinner Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2940",
+        "title": "Arian Tea Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2931",
+        "title": "Arian/Vidal Dessert Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3119",
+        "title": "Arian/Vidal Butter Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2938",
+        "title": "Arian Dinner Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2939",
+        "title": "Arian Dinner Spoon",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/HESTON Set.png",
+    "storage_path": "TABLEWEAR/HESTON Set.png",
+    "member_count": 6,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2679",
+        "title": "Heston Dark Brown Horn Butter Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2501",
+        "title": "Heston Dark Brown Horn Dinner Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2499",
+        "title": "Heston Dark Brown Horn Dinner Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2560",
+        "title": "Heston Dark Brown Horn Salad Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2500",
+        "title": "Heston Dark Brown Horn Dinner Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2719",
+        "title": "Heston Dark Brown Horn Tea Spoon",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/NISHA Set.png",
+    "storage_path": "TABLEWEAR/NISHA Set.png",
+    "member_count": 6,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2944",
+        "title": "Nisha Matte Black Dessert/Tea Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2945",
+        "title": "Nisha Matte Black Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2943",
+        "title": "Nisha Matte Black Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2941",
+        "title": "Nisha/Vidal Dessert Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2942",
+        "title": "Nisha Matte Black Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3117",
+        "title": "Nisha/Vidal Butter Knife",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/TIVOLI Mini Plinth.png",
+    "storage_path": "STYLING/TIVOLI Mini Plinth.png",
+    "member_count": 5,
+    "categories": [
+      "styling"
+    ],
+    "reason": "size-variant family (plinth/banquette/column)",
+    "members": [
+      {
+        "rms_id": "3888",
+        "title": "Tivoli Travertine 22\" Plinth - NEED IMAGE",
+        "category": "styling"
+      },
+      {
+        "rms_id": "3889",
+        "title": "Tivoli Travertine 24\" Plinth - NEED IMAGE",
+        "category": "styling"
+      },
+      {
+        "rms_id": "3891",
+        "title": "Tivoli Travertine Small Plinth - NEED IMAGE",
+        "category": "styling"
+      },
+      {
+        "rms_id": "3892",
+        "title": "Tivoli Travertine Mini Plinth",
+        "category": "styling"
+      },
+      {
+        "rms_id": "3890",
+        "title": "Tivoli Travertine 32\" Plinth - NEED IMAGE",
+        "category": "styling"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/e813c4197a_CARLISLE_Set_0.png",
+    "storage_path": "_squarespace/e813c4197a_CARLISLE_Set_0.png",
+    "member_count": 5,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"carlisle\" (5 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "2494",
+        "title": "Carlisle Smoke White Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2667",
+        "title": "Carlisle Smoke Coupe Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2666",
+        "title": "Carlisle Smoke Red Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2981",
+        "title": "Carlisle Smoke Rocks Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2495",
+        "title": "Carlisle Smoke Stemless Glass",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MILLIE Set.png",
+    "storage_path": "TABLEWEAR/MILLIE Set.png",
+    "member_count": 5,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2979",
+        "title": "Millie Dessert/Tea Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2977",
+        "title": "Millie Dinner Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2978",
+        "title": "Millie Butter Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2976",
+        "title": "Millie Dinner Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2980",
+        "title": "Millie Salad/Dessert Fork",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/SPECIAL/NIMA Banquette 1.png",
+    "storage_path": "SEATING/SPECIAL/NIMA Banquette 1.png",
+    "member_count": 4,
+    "categories": [
+      "seating"
+    ],
+    "reason": "size-variant family (plinth/banquette/column)",
+    "members": [
+      {
+        "rms_id": "3973",
+        "title": "Nima Fabric Banquette - Double w/ Walnut Backboard",
+        "category": "seating"
+      },
+      {
+        "rms_id": "3966",
+        "title": "Nima Fabric Banquette - Single",
+        "category": "seating"
+      },
+      {
+        "rms_id": "3967",
+        "title": "Nima Fabric Banquette - Double",
+        "category": "seating"
+      },
+      {
+        "rms_id": "3972",
+        "title": "Nima Fabric Banquette - Single w/ Walnut Wood Backboard",
+        "category": "seating"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ADONIS Set.png",
+    "storage_path": "TABLEWEAR/ADONIS Set.png",
+    "member_count": 4,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2665",
+        "title": "Adonis Red Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2492",
+        "title": "Adonis Coupe Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2490",
+        "title": "Adonis Goblet",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2491",
+        "title": "Adonis White Wine Glass",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 28.png",
+    "storage_path": "TABLES/Farrow 28.png",
+    "member_count": 4,
+    "categories": [
+      "tables"
+    ],
+    "reason": "brand family \"farrow\" (4 variants in tables)",
+    "members": [
+      {
+        "rms_id": "2763",
+        "title": "Farrow 38\" Cedar Cocktail Column",
+        "category": "tables"
+      },
+      {
+        "rms_id": "2761",
+        "title": "Farrow 29\" Cedar Cocktail Column",
+        "category": "tables"
+      },
+      {
+        "rms_id": "2762",
+        "title": "Farrow 31\" Cedar Cocktail Column",
+        "category": "tables"
+      },
+      {
+        "rms_id": "2764",
+        "title": "Farrow 43\" Cedar Cocktail Column",
+        "category": "tables"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MIDAS Set.png",
+    "storage_path": "TABLEWEAR/MIDAS Set.png",
+    "member_count": 4,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2934",
+        "title": "Midas Matte Gold Dinner Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2937",
+        "title": "Midas Matte Gold Dessert/Tea Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2936",
+        "title": "Midas Matte Gold Fork",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2935",
+        "title": "Midas Matte Gold Spoon",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/Sage All Set.png",
+    "storage_path": "TABLEWEAR/Sage All Set.png",
+    "member_count": 4,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2950",
+        "title": "Sage Red Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2949",
+        "title": "Sage Coupe Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2951",
+        "title": "Sage White Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2952",
+        "title": "Sage Woven Rocks Glass",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/38ce415cb9_LARIQUE_Set.png",
+    "storage_path": "_squarespace/38ce415cb9_LARIQUE_Set.png",
+    "member_count": 4,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"larique\" (4 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "2863",
+        "title": "Larique Smoke Cut Glass Rocks Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2674",
+        "title": "Larique Smoke Cut Glass Wine",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2673",
+        "title": "Larique Smoke Cut Glass Flute",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2675",
+        "title": "Larique Smoke Cut Glass Goblet",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/CANDLELIGHT/FLORENCE Lantern Set.png",
+    "storage_path": "CANDLELIGHT/FLORENCE Lantern Set.png",
+    "member_count": 3,
+    "categories": [
+      "candlelight"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2734",
+        "title": "Florence 25\" Weathered Zinc Lantern",
+        "category": "candlelight"
+      },
+      {
+        "rms_id": "2732",
+        "title": "Florence 14\" Weathered Zinc Lantern",
+        "category": "candlelight"
+      },
+      {
+        "rms_id": "2733",
+        "title": "Florence 20\" Weathered Zinc Lantern",
+        "category": "candlelight"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAVANYA Set.png",
+    "storage_path": "TABLEWEAR/LAVANYA Set.png",
+    "member_count": 3,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2468",
+        "title": "Lavanya 12\" Riverstone Charger",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2489",
+        "title": "Lavanya 10\" Riverstone Plate",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2488",
+        "title": "Lavanya 6\" Riverstone Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - BEVIN 1.png",
+    "storage_path": "BARS/ARCUS - BEVIN 1.png",
+    "member_count": 2,
+    "categories": [
+      "bars"
+    ],
+    "reason": "brand family \"arcus\" (2 variants in bars)",
+    "members": [
+      {
+        "rms_id": "2816",
+        "title": "Arcus Bevin 12' Slatted Bar",
+        "category": "bars"
+      },
+      {
+        "rms_id": "3910",
+        "title": "Arcus Oben 12' Black Slat Tambour Bar",
+        "category": "bars"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Single 1.png",
+    "storage_path": "BARS/INOLA Single 1.png",
+    "member_count": 2,
+    "categories": [
+      "bars"
+    ],
+    "reason": "brand family \"inola\" (2 variants in bars)",
+    "members": [
+      {
+        "rms_id": "3353",
+        "title": "Inola Single Black Bar",
+        "category": "bars"
+      },
+      {
+        "rms_id": "3503",
+        "title": "Inola Single Black Bar With Gold Mirror Panels",
+        "category": "bars"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ZAHAVI Decanter Set.png",
+    "storage_path": "SERVEWARE/ZAHAVI Decanter Set.png",
+    "member_count": 2,
+    "categories": [
+      "serveware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "3018",
+        "title": "Zahavi Large Brass Top Decanter",
+        "category": "serveware"
+      },
+      {
+        "rms_id": "3019",
+        "title": "Zahavi Small Brass Top Decanter",
+        "category": "serveware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ZALENA Decanter Set.png",
+    "storage_path": "SERVEWARE/ZALENA Decanter Set.png",
+    "member_count": 2,
+    "categories": [
+      "serveware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "3021",
+        "title": "Zalena Large Silver Top Decanter",
+        "category": "serveware"
+      },
+      {
+        "rms_id": "3020",
+        "title": "Zalena Small Silver Top Decanter",
+        "category": "serveware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BULAN Set.png",
+    "storage_path": "TABLEWEAR/BULAN Set.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2712",
+        "title": "Bulan 11.75\"  Grey Speckle Plate",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2713",
+        "title": "Bulan 8.5\"  Grey Speckle Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAPIS 10in.png",
+    "storage_path": "TABLEWEAR/LAPIS 10in.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"lapis\" (2 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "3077",
+        "title": "Lapis 10.5\" Low Bowl",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3076",
+        "title": "Lapis 10\" Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MIDAS VIDAL Butter Knife.png",
+    "storage_path": "TABLEWEAR/MIDAS VIDAL Butter Knife.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"midas\" (2 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "3118",
+        "title": "Midas/Vidal Butter Knife",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2933",
+        "title": "Midas/Vidal Dessert Knife",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MONROE Black Slat Double 10'.png",
+    "storage_path": "BARS/MONROE Black Slat Double 10'.png",
+    "member_count": 2,
+    "categories": [
+      "bars"
+    ],
+    "reason": "brand family \"monroe\" (2 variants in bars)",
+    "members": [
+      {
+        "rms_id": "4118",
+        "title": "Monroe - Black Slat Tambour - Double 10'",
+        "category": "bars"
+      },
+      {
+        "rms_id": "4117",
+        "title": "Monroe - Black Slat Tambour - Double 16'",
+        "category": "bars"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MONROE Black Slat Single 5'.png",
+    "storage_path": "BARS/MONROE Black Slat Single 5'.png",
+    "member_count": 2,
+    "categories": [
+      "bars"
+    ],
+    "reason": "brand family \"monroe\" (2 variants in bars)",
+    "members": [
+      {
+        "rms_id": "4116",
+        "title": "Monroe - Black Slat Tambour - Single 5'",
+        "category": "bars"
+      },
+      {
+        "rms_id": "4108",
+        "title": "Monroe - Black Slat Tambour - Single 8'",
+        "category": "bars"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA 11.png",
+    "storage_path": "TABLEWEAR/AKOYA 11.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"akoya\" (2 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "3479",
+        "title": "Akoya 11\" Plate",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3481",
+        "title": "Akoya 7\" Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 11.png",
+    "storage_path": "TABLEWEAR/ALUMINA 11.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"alumina\" (2 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "3482",
+        "title": "Alumina 11\" Grey Plate",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3483",
+        "title": "Alumina 9\" Grey Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BELISSA 11.png",
+    "storage_path": "TABLEWEAR/BELISSA 11.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "brand family \"belissa\" (2 variants in tableware)",
+    "members": [
+      {
+        "rms_id": "3366",
+        "title": "Belissa 11\" White Plate",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3365",
+        "title": "Belissa 13\" White Charger Plate",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/DEJA Set.png",
+    "storage_path": "TABLEWEAR/DEJA Set.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "2684",
+        "title": "Deja Gold + Stainless Dinner Spoon",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "2683",
+        "title": "Deja Gold + Stainless Tea Spoon",
+        "category": "tableware"
+      }
+    ]
+  },
+  {
+    "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/KIMORA Set.png",
+    "storage_path": "TABLEWEAR/KIMORA Set.png",
+    "member_count": 2,
+    "categories": [
+      "tableware"
+    ],
+    "reason": "set hero (filename ends in Set)",
+    "members": [
+      {
+        "rms_id": "3056",
+        "title": "Kimora Gold Rim Red Wine Glass",
+        "category": "tableware"
+      },
+      {
+        "rms_id": "3057",
+        "title": "Kimora Gold Rim White Wine Glass",
+        "category": "tableware"
+      }
+    ]
+  }
+]
