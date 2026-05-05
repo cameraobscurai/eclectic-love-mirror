@@ -573,7 +573,7 @@ function CollectionPage() {
     <main
       data-collection-main
       className="min-h-screen text-charcoal pb-32"
-      style={{ background: "var(--cream)" }}
+      style={{ background: "var(--paper)" }}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
@@ -587,10 +587,12 @@ function CollectionPage() {
           ============================================================ */}
       {(activeGroup || q.trim()) && (
       <div
+        className="sticky z-30"
         style={{
+          top: "var(--nav-h)",
           background: utilityScrolled
-            ? "rgba(245,242,237,0.78)"
-            : "var(--cream)",
+            ? "rgba(255,255,255,0.78)"
+            : "var(--paper)",
           backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           borderTop: "1px solid var(--archive-rule)",
@@ -776,7 +778,7 @@ function CollectionPage() {
                 ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1"
             }
-            style={showOverview ? { height: "calc(100svh - 88px)" } : undefined}
+            style={showOverview ? { height: "calc(100svh - var(--nav-h))" } : undefined}
           >
             {showOverview && (
               <aside
@@ -797,7 +799,7 @@ function CollectionPage() {
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
-                background: "var(--cream)",
+                background: "var(--paper)",
               }}
             >
               {showOverview ? (
