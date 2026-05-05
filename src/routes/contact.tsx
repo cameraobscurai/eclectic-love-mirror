@@ -583,7 +583,7 @@ function SuccessPanel() {
         RECEIVED
       </p>
       <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
-        Thank you. Your inquiry is with the studio.
+        Thank you. Your inquiry is with the atelier.
       </h2>
       <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-charcoal/70">
         We respond within two business days. If your event is time-sensitive,
