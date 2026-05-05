@@ -252,7 +252,7 @@ function AtelierPage() {
               >
                 <details className="group">
                   <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                    <span className="font-display text-xl tracking-tight">
+                    <span className="font-display text-xl uppercase tracking-[0.06em]">
                       {item.q}
                     </span>
                     <span
