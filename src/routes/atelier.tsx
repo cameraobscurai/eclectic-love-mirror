@@ -5,7 +5,7 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
-import atelierCollage from "@/assets/atelier/atelier-collage.png?preset=editorial";
+
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierHiveTriptych from "@/assets/atelier/atelier-hive-triptych.jpeg?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
@@ -210,19 +210,15 @@ function AtelierPage() {
           sizes="100vw"
           className="mt-4"
         />
-        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <MediaAperture
-            ratio="4/5"
-            picture={atelierSketchDrape}
-            alt="Hand-drawn chair sketch on hanging drape — design phase."
-            sizes="(min-width: 768px) 45vw, 100vw"
-          />
-          <MediaAperture
-            ratio="4/5"
-            picture={atelierCollage}
-            alt="Studio collage — Hive workbench, design table, and styled bench detail."
-            sizes="(min-width: 768px) 45vw, 100vw"
-          />
+        <div className="mt-3 flex justify-center">
+          <div className="w-full md:w-1/2">
+            <MediaAperture
+              ratio="4/5"
+              picture={atelierSketchDrape}
+              alt="Hand-drawn chair sketch on hanging drape — design phase."
+              sizes="(min-width: 768px) 45vw, 100vw"
+            />
+          </div>
         </div>
       </Section>
 
