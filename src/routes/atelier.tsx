@@ -160,8 +160,12 @@ function AtelierPage() {
             </p>
           </div>
           <div className="md:col-span-5">
-            {/* T4: owner-supplied bench/tasseled-throws photo pending */}
-            <Placeholder ratio="4/5" label="ATELIER PORTRAIT" />
+            <MediaAperture
+              ratio="4/5"
+              picture={atelierReplacement}
+              alt="Styled bench with tasseled throws."
+              sizes="(min-width: 768px) 40vw, 100vw"
+            />
           </div>
         </div>
       </section>
