@@ -177,6 +177,7 @@ export const BROWSE_GROUP_TIER: Record<BrowseGroupId, BrowseTier> = {
   lighting: "safety-net",
   throws: "safety-net",
   "large-decor": "safety-net",
+  "furs-pelts": "safety-net",
   accents: "safety-net",
 };
 
