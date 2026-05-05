@@ -11,8 +11,8 @@ import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
 
 import appCss from "../styles.css?url";
-import saolRegular from "../assets/fonts/SaolDisplay-Regular.otf?url";
-import saolSemibold from "../assets/fonts/SaolDisplay-Semibold.otf?url";
+import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
+import saolSemibold from "../assets/fonts/SaolDisplay-Semibold.woff2?url";
 
 function NotFoundComponent() {
   return (
@@ -74,14 +74,14 @@ export const Route = createRootRoute({
         rel: "preload",
         href: saolRegular,
         as: "font",
-        type: "font/otf",
+        type: "font/woff2",
         crossOrigin: "anonymous",
       },
       {
         rel: "preload",
         href: saolSemibold,
         as: "font",
-        type: "font/otf",
+        type: "font/woff2",
         crossOrigin: "anonymous",
       },
     ],
