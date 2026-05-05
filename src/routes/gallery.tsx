@@ -7,7 +7,8 @@ import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
-import pressGlassBar from "@/assets/press-glass-bar.png";
+import pressGlassBar from "@/assets/press-glass-bar.jpg?preset=editorial";
+import { STORAGE_ORIGIN } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
