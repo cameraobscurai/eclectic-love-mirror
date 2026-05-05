@@ -774,10 +774,10 @@ function CollectionPage() {
             className={
               showOverview
                 ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
-                : "grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]"
+                : "grid grid-cols-1"
             }
           >
-            {showOverview ? (
+            {showOverview && (
               <aside
                 className="hidden lg:flex items-center justify-center"
                 style={{ background: "#ffffff" }}
@@ -786,21 +786,6 @@ function CollectionPage() {
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
                   className="block max-h-full w-full h-auto object-contain"
-                />
-              </aside>
-            ) : (
-              <aside
-                className="hidden lg:block"
-                style={{
-                  borderRight: "1px solid var(--archive-rule)",
-                  background: "var(--cream)",
-                }}
-              >
-                <CollectionRail
-                  products={products}
-                  activeGroup={activeGroup}
-                  spyActiveGroup={spyActiveGroup}
-                  onSelect={selectGroup}
                 />
               </aside>
             )}
