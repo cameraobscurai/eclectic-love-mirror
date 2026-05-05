@@ -729,43 +729,28 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className="px-6 lg:px-12 pt-6">
+      <section className="px-6 lg:px-12 pt-0">
         <div
           className="mx-auto"
-          style={{
-            maxWidth: "var(--archive-canvas-max)",
-            borderTop: "1px solid var(--archive-rule)",
-          }}
+          style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
           <div
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,38%)_minmax(0,1fr)]"
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]"
             }
           >
             {showOverview ? (
               <aside
-                className="hidden lg:block"
-                style={{
-                  borderRight: "1px solid var(--archive-rule)",
-                  background: "var(--cream)",
-                }}
+                className="hidden lg:flex items-center justify-center"
+                style={{ background: "#ffffff" }}
               >
-                <div
-                  className="sticky"
-                  style={{
-                    top: "var(--nav-h)",
-                    height: "calc(100vh - var(--nav-h))",
-                  }}
-                >
-                  <img
-                    src={hiveSignatureHero}
-                    alt="The Hive — Signature Collection"
-                    className="h-full w-full object-contain"
-                    style={{ background: "var(--cream)" }}
-                  />
-                </div>
+                <img
+                  src={hiveSignatureHero}
+                  alt="The Hive — Signature Collection"
+                  className="block max-h-full w-full h-auto object-contain"
+                />
               </aside>
             ) : (
               <aside
