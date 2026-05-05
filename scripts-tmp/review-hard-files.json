@@ -1,0 +1,3528 @@
+[
+  {
+    "file": "inventory/BARS/ARCUS - BEVIN 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - BEVIN 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 159480,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2816",
+      "slug": "arcus-bevin-12-slatted-bar-2816",
+      "title": "Arcus Bevin 12' Slatted Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/ARCUS - CALVIN 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - CALVIN 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 73515,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2813",
+      "slug": "arcus-calvin-12-smooth-bar-2813",
+      "title": "Arcus Calvin 12' Smooth Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/ARCUS - LEVAR 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - LEVAR 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 184597,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2814",
+      "slug": "arcus-levar-12-black-tambour-bar-2814",
+      "title": "Arcus Levar 12' Black Tambour Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/ARCUS - RYANN 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - RYANN 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 125261,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3054",
+      "slug": "arcus-ryann-12-white-tambour-bar-3054",
+      "title": "Arcus Ryann 12' White Tambour Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/ARCUS - TAVION 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - TAVION 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 138510,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2540",
+      "slug": "arcus-tavion-12-natural-tambour-bar-2540",
+      "title": "Arcus Tavion 12' Natural Tambour Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/INOLA Single 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Single 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 113444,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3353",
+      "slug": "inola-single-black-bar-3353",
+      "title": "Inola Single Black Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3503",
+        "slug": "inola-single-black-bar-with-gold-mirror-panels-3503",
+        "title": "Inola Single Black Bar With Gold Mirror Panels",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/BARS/INOLA U.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA U.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 147515,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3504",
+      "slug": "inola-u-black-bar-3504",
+      "title": "Inola U Black  Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/IRAJA U.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/IRAJA U.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 420507,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3505",
+      "slug": "iraja-u-weathered-oak-bar-3505",
+      "title": "Iraja U Weathered Oak Bar",
+      "category": "bars",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/CANDLELIGHT/NERA 4.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/CANDLELIGHT/NERA 4.png",
+    "folder": "CANDLELIGHT",
+    "mapped_category": "candlelight",
+    "file_size": 88736,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3776",
+      "slug": "nera-4-alabaster-votive-3776",
+      "title": "Nera 4\" Alabaster Votive",
+      "category": "candlelight",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/FURS-PELTS/ARWYN Sheepskin.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/ARWYN Sheepskin.png",
+    "folder": "FURS-PELTS",
+    "mapped_category": "furs-pelts",
+    "file_size": 269869,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "833",
+      "slug": "arwyn-sheepskin-fur-833",
+      "title": "Arwyn Sheepskin Fur",
+      "category": "furs-pelts",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/FURS-PELTS/KATRIN Icelandic Sheepskin.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/KATRIN Icelandic Sheepskin.png",
+    "folder": "FURS-PELTS",
+    "mapped_category": "furs-pelts",
+    "file_size": 311757,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4146",
+      "slug": "katrin-icelandic-sheepskin-fur-4146",
+      "title": "Katrin Icelandic Sheepskin Fur",
+      "category": "furs-pelts",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LARGE-DECOR/MARLOW 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MARLOW 0.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 353545,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "802",
+      "slug": "marlow-rope-wall-802",
+      "title": "Marlow Rope Wall",
+      "category": "large-decor",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LARGE-DECOR/MARLOW 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MARLOW 1.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 362864,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "802",
+      "slug": "marlow-rope-wall-802",
+      "title": "Marlow Rope Wall",
+      "category": "large-decor",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LARGE-DECOR/MERRITT.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MERRITT.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 227595,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4072",
+      "slug": "merritt-post-and-beam-structure-4072",
+      "title": "Merritt Post and Beam Structure",
+      "category": "large-decor",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LARGE-DECOR/PEMA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/PEMA 0.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 417935,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1703",
+      "slug": "pema-ancient-carved-wood-wall-1703",
+      "title": "Pema Ancient Carved Wood Wall",
+      "category": "large-decor",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LARGE-DECOR/PEMA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/PEMA 1.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 519613,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1703",
+      "slug": "pema-ancient-carved-wood-wall-1703",
+      "title": "Pema Ancient Carved Wood Wall",
+      "category": "large-decor",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LIGHTING/DARNELL.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/DARNELL.png",
+    "folder": "LIGHTING",
+    "mapped_category": "lighting",
+    "file_size": 106772,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1625",
+      "slug": "darnell-color-mixing-led-uplight-1625",
+      "title": "Darnell Color-Mixing LED  Uplight",
+      "category": "lighting",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Black Leather Lattice.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 313976,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4152",
+      "slug": "black-leather-lattice-pillow-4152",
+      "title": "Black Leather Lattice Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Black Leather Stud.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Stud.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 328122,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4150",
+      "slug": "black-leather-studded-lumbar-pillow-4150",
+      "title": "Black Leather Studded Lumbar Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Black Leather Woven.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Woven.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 313402,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4158",
+      "slug": "black-leather-woven-pillow-4158",
+      "title": "Black Leather Woven Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Black White Abstract Fur.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black White Abstract Fur.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 469355,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4156",
+      "slug": "black-white-abstract-fur-pillow-4156",
+      "title": "Black White Abstract Fur Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Blue Velvet.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 420145,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2427",
+      "slug": "blue-velvet-brocade-lumbar-pillow-2427",
+      "title": "Blue Velvet Brocade Lumbar Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2856",
+        "slug": "blue-velvet-fringe-lumbar-pillow-2856",
+        "title": "Blue Velvet Fringe Lumbar Pillow",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/PILLOWS/Brown Grey fur.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 481148,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4079",
+      "slug": "brown-grey-fur-pillow-4079",
+      "title": "Brown Grey Fur Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Gold Mustard.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Mustard.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 458458,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4009",
+      "slug": "gold-mustard-mudcloth-pillow-4009",
+      "title": "Gold Mustard Mudcloth Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Gold Zebra.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Zebra.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 431097,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4160",
+      "slug": "gold-zebra-velvet-pillow-4160",
+      "title": "Gold Zebra Velvet Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Ivory Black Geo.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 473619,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4081",
+      "slug": "ivory-black-geo-print-pillow-4081",
+      "title": "Ivory Black Geo Print Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Ivory Boucle.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 524192,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4082",
+      "slug": "ivory-boucle-pillow-4082",
+      "title": "Ivory Boucle Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 153876,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2735",
+      "slug": "ivory-mudcloth-2735",
+      "title": "Ivory Mudcloth",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2783",
+        "slug": "ivory-mudcloth-lumbar-2783",
+        "title": "Ivory Mudcloth Lumbar",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/PILLOWS/IVORY Seamed Boucle.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/IVORY Seamed Boucle.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 308786,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2847",
+      "slug": "ivory-seamed-boucle-pillow-2847",
+      "title": "Ivory Seamed Boucle Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Leather Lumbar.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Lumbar.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 352120,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2230",
+      "slug": "black-leather-lumbar-pillow-2230",
+      "title": "Black Leather Lumbar Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3457",
+        "slug": "brown-cognac-leather-lumbar-pillow-3457",
+        "title": "Brown Cognac Leather Lumbar Pillow",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/PILLOWS/Leather Stitched.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stitched.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 338383,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3458",
+      "slug": "brown-cognac-leather-stitched-3458",
+      "title": "Brown Cognac Leather Stitched",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Leather Stripe.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stripe.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 330333,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3456",
+      "slug": "ivory-leather-stripe-3456",
+      "title": "Ivory Leather Stripe",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Leopard Fur.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Fur.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 500582,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4153",
+      "slug": "leopard-fur-pillow-4153",
+      "title": "Leopard Fur Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Leopard Velvet.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Velvet.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 499819,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3219",
+      "slug": "green-wild-leopard-velvet-pillow-3219",
+      "title": "Green Wild Leopard Velvet Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "4154",
+        "slug": "leopard-velvet-pillow-4154",
+        "title": "Leopard Velvet Pillow",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/PILLOWS/Mini Tassel.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Mini Tassel.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 413506,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3455",
+      "slug": "ivory-sage-mini-tassel-3455",
+      "title": "Ivory Sage Mini Tassel",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Natural Raffia.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Natural Raffia.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 504703,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3193",
+      "slug": "natural-raffia-pillow-3193",
+      "title": "Natural Raffia Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Sage Throw.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Throw.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 313365,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3459",
+      "slug": "fringe-sage-throw-3459",
+      "title": "Fringe Sage Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Sage Velvet.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Velvet.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 206123,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3453",
+      "slug": "green-sage-velvet-3453",
+      "title": "Green Sage Velvet",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3858",
+        "slug": "green-sage-velvet-lumbar-pillow-3858",
+        "title": "Green Sage Velvet Lumbar Pillow",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/PILLOWS/Silver Leather Woven.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 308557,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4157",
+      "slug": "silver-leather-woven-pillow-4157",
+      "title": "Silver Leather Woven Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Tweed.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Tweed.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 533585,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4007",
+      "slug": "brown-tweed-pillow-4007",
+      "title": "Brown Tweed Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/White Raffia.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 167303,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3194",
+      "slug": "white-raffia-pillow-3194",
+      "title": "White Raffia Pillow",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/ATLAS 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/ATLAS 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 920978,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1630",
+      "slug": "atlas-8x10-turkish-rug-1630",
+      "title": "Atlas 8x10 Turkish Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/BRIAR 9x12.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/BRIAR 9x12.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 746010,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2793",
+      "slug": "briar-9x12-natural-braided-jute-rug-2793",
+      "title": "Briar 9x12 Natural Braided Jute Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/DAYNA 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/DAYNA 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 748734,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1825",
+      "slug": "dayna-8x10-grey-pattern-rug-1825",
+      "title": "Dayna 8x10 Grey Pattern Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/EVREN 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/EVREN 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 946734,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "707",
+      "slug": "evren-8x10kilim-rug-707",
+      "title": "Evren 8x10Kilim Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/FELINA 5x8.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/FELINA 5x8.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 544561,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2770",
+      "slug": "felina-5x8-grey-natural-tassel-jute-rug-2770",
+      "title": "Felina 5x8 Grey + Natural Tassel Jute Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/FERIDE 5x8.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/FERIDE 5x8.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 790444,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "403",
+      "slug": "feride-5x8-kilim-rug-403",
+      "title": "Feride 5x8 Kilim Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/KEITHA 9x12 Chunky.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/KEITHA 9x12 Chunky.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 785315,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2809",
+      "slug": "keitha-9x12-chunky-jute-tassels-rug-2809",
+      "title": "Keitha 9x12 Chunky Jute Tassels Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/LARKIN 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/LARKIN 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 984367,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4053",
+      "slug": "larkin-8x10-rust-grey-rug-4053",
+      "title": "Larkin 8x10 Rust + Grey Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/LEYAN 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/LEYAN 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 915126,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3364",
+      "slug": "leyan-8x10-camel-sage-rug-3364",
+      "title": "Leyan 8x10 Camel + Sage Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/OBSIDIAN 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/OBSIDIAN 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 659684,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1637",
+      "slug": "obsidian-8x10-black-rug-1637",
+      "title": "Obsidian 8x10 Black Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/SHERIDAN 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/SHERIDAN 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 377978,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1817",
+      "slug": "sheridan-8x10-olive-chenille-rug-1817",
+      "title": "Sheridan 8x10 Olive Chenille Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/SHILOH 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/SHILOH 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 409118,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1691",
+      "slug": "shiloh-8x10-grey-ivory-rug-1691",
+      "title": "Shiloh 8x10 Grey & Ivory Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/SHIMA 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/SHIMA 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 758434,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "907",
+      "slug": "shima-8x10-faded-black-rug-907",
+      "title": "Shima 8x10 Faded Black Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/SHIRAZ 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/SHIRAZ 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 714940,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "415",
+      "slug": "shiraz-8x10-ivory-grey-woven-wool-rug-415",
+      "title": "Shiraz 8x10 Ivory & Grey Woven Wool Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/TAOS 6x8.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/TAOS 6x8.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 785366,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "404",
+      "slug": "taos-6x8-pattern-rug-404",
+      "title": "Taos 6x8 Pattern Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/TRINIDAD 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/TRINIDAD 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 654800,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3853",
+      "slug": "trinidad-8x10-cream-jute-criss-cross-rug-3853",
+      "title": "Trinidad 8x10 Cream Jute Criss Cross Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/VALDIVA 8x10 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/VALDIVA 8x10 0.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 828978,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4006",
+      "slug": "valdiva-8x10-olive-rug-4006",
+      "title": "Valdiva 8x10 Olive Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/VALDIVA 8x10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/VALDIVA 8x10.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 366685,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4006",
+      "slug": "valdiva-8x10-olive-rug-4006",
+      "title": "Valdiva 8x10 Olive Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/RUGS/WEBB 5x8.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/WEBB 5x8.png",
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "file_size": 665519,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1615",
+      "slug": "webb-5x8-abstract-rug-1615",
+      "title": "Webb 5x8 Abstract Rug",
+      "category": "rugs",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/BRAYAN Dining 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/BRAYAN Dining 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 192392,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2745",
+      "slug": "brayan-dining-chair-2745",
+      "title": "Brayan Dining Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/BRAYAN Dining 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/BRAYAN Dining 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 250919,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2745",
+      "slug": "brayan-dining-chair-2745",
+      "title": "Brayan Dining Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/CAMERON 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/CAMERON 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 189158,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3827",
+      "slug": "cameron-directors-dining-chair-3827",
+      "title": "Cameron Directors Dining Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/CAMERON 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/CAMERON 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 181630,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3827",
+      "slug": "cameron-directors-dining-chair-3827",
+      "title": "Cameron Directors Dining Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/LUNA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/LUNA 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 362355,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4130",
+      "slug": "luna-arcing-dining-chair-harvest-velvet-4130",
+      "title": "Luna Arcing Dining Chair - Harvest Velvet",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "4122",
+        "slug": "luna-arcing-dining-chair-taupe-velvet-4122",
+        "title": "Luna Arcing Dining Chair - Taupe Velvet",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/ADELAIDE 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/ADELAIDE 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 203042,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2970",
+      "slug": "adelaide-antique-arm-chair-2970",
+      "title": "Adelaide Antique Arm Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/ADELAIDE 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/ADELAIDE 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 222162,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2970",
+      "slug": "adelaide-antique-arm-chair-2970",
+      "title": "Adelaide Antique Arm Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/FULTON 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/FULTON 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 138492,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3856",
+      "slug": "fulton-white-leather-butterfly-chair-3856",
+      "title": "Fulton White Leather Butterfly Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/LAGOS 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/LAGOS 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 643049,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4161",
+      "slug": "lagos-swivel-chair-4161",
+      "title": "Lagos Swivel Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/LAGOS 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/LAGOS 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 672191,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4161",
+      "slug": "lagos-swivel-chair-4161",
+      "title": "Lagos Swivel Chair",
+      "category": "seating",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/ARTAX.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ARTAX.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 146421,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3323",
+      "slug": "artax-horse-napkin-ring-3323",
+      "title": "Artax Horse Napkin Ring",
+      "category": "serveware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/HAZEL Large.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/HAZEL Large.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 251498,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3769",
+      "slug": "hazel-large-charred-terracotta-bowl-3769",
+      "title": "Hazel Large Charred Terracotta Bowl",
+      "category": "serveware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/HAZEL Small.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/HAZEL Small.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 167499,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3768",
+      "slug": "hazel-small-charred-terracotta-bowl-3768",
+      "title": "Hazel Small Charred Terracotta Bowl",
+      "category": "serveware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/BEATRICE 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/BEATRICE 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 353121,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2919",
+      "slug": "beatrice-antique-light-wood-cabinet-2919",
+      "title": "Beatrice Antique Light Wood Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/BEATRICE 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/BEATRICE 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 394878,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2919",
+      "slug": "beatrice-antique-light-wood-cabinet-2919",
+      "title": "Beatrice Antique Light Wood Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/BEATRICE 3.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/BEATRICE 3.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 372582,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2919",
+      "slug": "beatrice-antique-light-wood-cabinet-2919",
+      "title": "Beatrice Antique Light Wood Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/BERKSHIRE 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/BERKSHIRE 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 308067,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1928",
+      "slug": "berkshire-wood-shelf-1928",
+      "title": "Berkshire Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/BERKSHIRE 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/BERKSHIRE 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 197624,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1928",
+      "slug": "berkshire-wood-shelf-1928",
+      "title": "Berkshire Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/CARDEA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/CARDEA 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 138775,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "762",
+      "slug": "cardea-metal-screen-cabinet-762",
+      "title": "Cardea Metal Screen Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/CARDEA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/CARDEA 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 111100,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "762",
+      "slug": "cardea-metal-screen-cabinet-762",
+      "title": "Cardea Metal Screen Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/KALIL 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/KALIL 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 102520,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2731",
+      "slug": "kalil-black-arcing-metal-cabinet-2731",
+      "title": "Kalil Black Arcing Metal Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/KALIL 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/KALIL 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 81373,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2731",
+      "slug": "kalil-black-arcing-metal-cabinet-2731",
+      "title": "Kalil Black Arcing Metal Cabinet",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/OVALIA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/OVALIA 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 183556,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4139",
+      "slug": "ovalia-wood-brass-shelf-4139",
+      "title": "Ovalia Wood + Brass Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/OVALIA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/OVALIA 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 184566,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4139",
+      "slug": "ovalia-wood-brass-shelf-4139",
+      "title": "Ovalia Wood + Brass Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/ROSA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/ROSA 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 101754,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "709",
+      "slug": "rosa-acacia-wood-shelf-709",
+      "title": "Rosa Acacia Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/ROSA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/ROSA 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 79700,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "709",
+      "slug": "rosa-acacia-wood-shelf-709",
+      "title": "Rosa Acacia Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/SALIDA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/SALIDA 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 146534,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "148",
+      "slug": "salida-acacia-shelf-148",
+      "title": "Salida Acacia Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/SALIDA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/SALIDA 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 111198,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "148",
+      "slug": "salida-acacia-shelf-148",
+      "title": "Salida Acacia Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/THERION 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/THERION 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 231120,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3497",
+      "slug": "therion-mango-wood-shelf-3497",
+      "title": "Therion Mango Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/THERION 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/THERION 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 223754,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3497",
+      "slug": "therion-mango-wood-shelf-3497",
+      "title": "Therion Mango Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/VESPA 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/VESPA 0.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 138184,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1929",
+      "slug": "vespa-dark-wood-shelf-1929",
+      "title": "Vespa Dark Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STORAGE/VESPA 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STORAGE/VESPA 1.png",
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "file_size": 100362,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1929",
+      "slug": "vespa-dark-wood-shelf-1929",
+      "title": "Vespa Dark Wood Shelf",
+      "category": "storage",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/ADENA 7 Melting Disco.tif",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/ADENA 7 Melting Disco.tif",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 1977968,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3065",
+      "slug": "adena-7-melting-disco-ball-3065",
+      "title": "Adena 7\" Melting Disco Ball",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/Auskin Large.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/Auskin Large.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 210842,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3230",
+      "slug": "auskin-large-leather-basket-3230",
+      "title": "Auskin Large Leather Basket",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/BAMBI.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/BAMBI.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 141167,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "815",
+      "slug": "bambi-natural-antler-rack-815",
+      "title": "Bambi Natural Antler Rack",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/Black Tourmaline.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/Black Tourmaline.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 234903,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3486",
+      "slug": "black-tourmaline-with-acrylic-stand-3486",
+      "title": "Black Tourmaline with Acrylic Stand",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/CAMDEN.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/CAMDEN.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 387742,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "605",
+      "slug": "camden-creamery-crate-605",
+      "title": "Camden Creamery Crate",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/CERNUNNOS.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/CERNUNNOS.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 127745,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3221",
+      "slug": "cernunnos-elk-european-mount-3221",
+      "title": "Cernunnos Elk European Mount",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/JANNICK.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/JANNICK.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 174480,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1683",
+      "slug": "jannick-leather-saddle-1683",
+      "title": "Jannick Leather Saddle",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/JOHAN.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/JOHAN.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 128618,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2918",
+      "slug": "johan-tripod-binoculars-2918",
+      "title": "Johan Tripod Binoculars",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/JOSLIN Large.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/JOSLIN Large.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 165273,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3232",
+      "slug": "joslin-large-leather-basket-3232",
+      "title": "Joslin Large Leather Basket",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/JOSLIN Small.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/JOSLIN Small.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 130767,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3231",
+      "slug": "joslin-small-leather-basket-3231",
+      "title": "Joslin Small Leather Basket",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/RODGERS Lariat.tif",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/RODGERS Lariat.tif",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 2330516,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1542",
+      "slug": "rodgers-lariat-rope-1542",
+      "title": "Rodgers Lariat Rope",
+      "category": "styling",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLES/Farrow 28.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 28.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 99024,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2761",
+      "slug": "farrow-29-cedar-cocktail-column-2761",
+      "title": "Farrow 29\" Cedar Cocktail Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2762",
+        "slug": "farrow-31-cedar-cocktail-column-2762",
+        "title": "Farrow 31\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2763",
+        "slug": "farrow-38-cedar-cocktail-column-2763",
+        "title": "Farrow 38\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2764",
+        "slug": "farrow-43-cedar-cocktail-column-2764",
+        "title": "Farrow 43\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/Farrow 31.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 31.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 117147,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2761",
+      "slug": "farrow-29-cedar-cocktail-column-2761",
+      "title": "Farrow 29\" Cedar Cocktail Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2762",
+        "slug": "farrow-31-cedar-cocktail-column-2762",
+        "title": "Farrow 31\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2763",
+        "slug": "farrow-38-cedar-cocktail-column-2763",
+        "title": "Farrow 38\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2764",
+        "slug": "farrow-43-cedar-cocktail-column-2764",
+        "title": "Farrow 43\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/Farrow 38.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 38.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 141502,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2761",
+      "slug": "farrow-29-cedar-cocktail-column-2761",
+      "title": "Farrow 29\" Cedar Cocktail Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2762",
+        "slug": "farrow-31-cedar-cocktail-column-2762",
+        "title": "Farrow 31\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2763",
+        "slug": "farrow-38-cedar-cocktail-column-2763",
+        "title": "Farrow 38\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2764",
+        "slug": "farrow-43-cedar-cocktail-column-2764",
+        "title": "Farrow 43\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/Farrow 43.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 43.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 170627,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2761",
+      "slug": "farrow-29-cedar-cocktail-column-2761",
+      "title": "Farrow 29\" Cedar Cocktail Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2762",
+        "slug": "farrow-31-cedar-cocktail-column-2762",
+        "title": "Farrow 31\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2763",
+        "slug": "farrow-38-cedar-cocktail-column-2763",
+        "title": "Farrow 38\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2764",
+        "slug": "farrow-43-cedar-cocktail-column-2764",
+        "title": "Farrow 43\" Cedar Cocktail Column",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/NANTUCKET 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/NANTUCKET 0.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 169286,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1940",
+      "slug": "nantucket-41-oak-wood-column-1940",
+      "title": "Nantucket 41\" Oak Wood Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLES/NANTUCKET 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/NANTUCKET 1.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 155636,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "1940",
+      "slug": "nantucket-41-oak-wood-column-1940",
+      "title": "Nantucket 41\" Oak Wood Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLES/RELIC Limestone Column - Smooth Side.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/RELIC Limestone Column - Smooth Side.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 254775,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4097",
+      "slug": "relic-limestone-column-4097",
+      "title": "Relic Limestone Column",
+      "category": "tables",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/AKOYA 11.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA 11.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 95066,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3479",
+      "slug": "akoya-11-plate-3479",
+      "title": "Akoya 11\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3478",
+        "slug": "akoya-13-5-charger-3478",
+        "title": "Akoya 13.5\" Charger",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3481",
+        "slug": "akoya-7-plate-3481",
+        "title": "Akoya 7\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3480",
+        "slug": "akoya-9-5-low-bowl-3480",
+        "title": "Akoya 9.5\" Low Bowl",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/AKOYA 7.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA 7.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 71654,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3479",
+      "slug": "akoya-11-plate-3479",
+      "title": "Akoya 11\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3478",
+        "slug": "akoya-13-5-charger-3478",
+        "title": "Akoya 13.5\" Charger",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3481",
+        "slug": "akoya-7-plate-3481",
+        "title": "Akoya 7\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3480",
+        "slug": "akoya-9-5-low-bowl-3480",
+        "title": "Akoya 9.5\" Low Bowl",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/ALUMINA 11.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 11.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 317271,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3482",
+      "slug": "alumina-11-grey-plate-3482",
+      "title": "Alumina 11\" Grey Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3485",
+        "slug": "alumina-6-5-grey-plate-3485",
+        "title": "Alumina 6.5\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3484",
+        "slug": "alumina-9-cream-plate-3484",
+        "title": "Alumina 9\" Cream Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3483",
+        "slug": "alumina-9-grey-plate-3483",
+        "title": "Alumina 9\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/ALUMINA 6.5.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 6.5.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 161842,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3482",
+      "slug": "alumina-11-grey-plate-3482",
+      "title": "Alumina 11\" Grey Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3485",
+        "slug": "alumina-6-5-grey-plate-3485",
+        "title": "Alumina 6.5\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3484",
+        "slug": "alumina-9-cream-plate-3484",
+        "title": "Alumina 9\" Cream Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3483",
+        "slug": "alumina-9-grey-plate-3483",
+        "title": "Alumina 9\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/ALUMINA 9 Cream.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 9 Cream.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 230660,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3484",
+      "slug": "alumina-9-cream-plate-3484",
+      "title": "Alumina 9\" Cream Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/ALUMINA 9.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 9.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 228424,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3482",
+      "slug": "alumina-11-grey-plate-3482",
+      "title": "Alumina 11\" Grey Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3485",
+        "slug": "alumina-6-5-grey-plate-3485",
+        "title": "Alumina 6.5\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3484",
+        "slug": "alumina-9-cream-plate-3484",
+        "title": "Alumina 9\" Cream Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3483",
+        "slug": "alumina-9-grey-plate-3483",
+        "title": "Alumina 9\" Grey Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/BELISSA 11.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BELISSA 11.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 98474,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3366",
+      "slug": "belissa-11-white-plate-3366",
+      "title": "Belissa 11\" White Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3365",
+        "slug": "belissa-13-white-charger-plate-3365",
+        "title": "Belissa 13\" White Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3367",
+        "slug": "belissa-8-5-white-plate-3367",
+        "title": "Belissa 8.5\" White Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/BELISSA 13.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BELISSA 13.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 124831,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3366",
+      "slug": "belissa-11-white-plate-3366",
+      "title": "Belissa 11\" White Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3365",
+        "slug": "belissa-13-white-charger-plate-3365",
+        "title": "Belissa 13\" White Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3367",
+        "slug": "belissa-8-5-white-plate-3367",
+        "title": "Belissa 8.5\" White Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/BELISSA 8.5.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BELISSA 8.5.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 93291,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3366",
+      "slug": "belissa-11-white-plate-3366",
+      "title": "Belissa 11\" White Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3365",
+        "slug": "belissa-13-white-charger-plate-3365",
+        "title": "Belissa 13\" White Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3367",
+        "slug": "belissa-8-5-white-plate-3367",
+        "title": "Belissa 8.5\" White Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/DOVER 10.5in.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/DOVER 10.5in.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 110585,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2727",
+      "slug": "dover-10-5-matte-oyster-plate-2727",
+      "title": "Dover 10.5\" Matte Oyster Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2728",
+        "slug": "dover-8-25-matte-oyster-plate-2728",
+        "title": "Dover 8.25\" Matte Oyster Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3477",
+        "slug": "dover-8-matte-oyster-low-bowl-3477",
+        "title": "Dover 8\" Matte Oyster Low Bowl",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/DOVER 8.25in.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/DOVER 8.25in.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 92636,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2727",
+      "slug": "dover-10-5-matte-oyster-plate-2727",
+      "title": "Dover 10.5\" Matte Oyster Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2728",
+        "slug": "dover-8-25-matte-oyster-plate-2728",
+        "title": "Dover 8.25\" Matte Oyster Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3477",
+        "slug": "dover-8-matte-oyster-low-bowl-3477",
+        "title": "Dover 8\" Matte Oyster Low Bowl",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/EDEN 10.5.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/EDEN 10.5.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 414581,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3372",
+      "slug": "eden-10-5-plate-3372",
+      "title": "Eden 10.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3371",
+        "slug": "eden-13-charger-plate-3371",
+        "title": "Eden 13\" Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3374",
+        "slug": "eden-6-plate-3374",
+        "title": "Eden 6\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3373",
+        "slug": "eden-8-5-plate-3373",
+        "title": "Eden 8.5\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/EDEN 13 Charger 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/EDEN 13 Charger 0.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 543163,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3371",
+      "slug": "eden-13-charger-plate-3371",
+      "title": "Eden 13\" Charger Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/EDEN 13 Charger.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/EDEN 13 Charger.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 357740,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3371",
+      "slug": "eden-13-charger-plate-3371",
+      "title": "Eden 13\" Charger Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/EDEN 6.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/EDEN 6.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 274626,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3372",
+      "slug": "eden-10-5-plate-3372",
+      "title": "Eden 10.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3371",
+        "slug": "eden-13-charger-plate-3371",
+        "title": "Eden 13\" Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3374",
+        "slug": "eden-6-plate-3374",
+        "title": "Eden 6\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3373",
+        "slug": "eden-8-5-plate-3373",
+        "title": "Eden 8.5\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/EDEN 8.5 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/EDEN 8.5 0.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 382342,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3373",
+      "slug": "eden-8-5-plate-3373",
+      "title": "Eden 8.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/ESTELLA.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ESTELLA.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 237535,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3420",
+      "slug": "estella-copper-stainless-butter-knife-3420",
+      "title": "Estella Copper + Stainless Butter Knife",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3414",
+        "slug": "estella-copper-stainless-dinner-fork-3414",
+        "title": "Estella Copper + Stainless Dinner Fork",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3418",
+        "slug": "estella-copper-stainless-dinner-knife-3418",
+        "title": "Estella Copper + Stainless Dinner Knife",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3416",
+        "slug": "estella-copper-stainless-dinner-spoon-3416",
+        "title": "Estella Copper + Stainless Dinner Spoon",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3415",
+        "slug": "estella-copper-stainless-salad-fork-3415",
+        "title": "Estella Copper + Stainless Salad Fork",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/LAPIS 8.25in.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAPIS 8.25in.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 213506,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3077",
+      "slug": "lapis-10-5-low-bowl-3077",
+      "title": "Lapis 10.5\" Low Bowl",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3076",
+        "slug": "lapis-10-plate-3076",
+        "title": "Lapis 10\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3074",
+        "slug": "lapis-11-plate-3074",
+        "title": "Lapis 11\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3075",
+        "slug": "lapis-8-25-plate-3075",
+        "title": "Lapis 8.25\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/LAVANYA 10.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAVANYA 10.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 274150,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2489",
+      "slug": "lavanya-10-riverstone-plate-2489",
+      "title": "Lavanya 10\" Riverstone Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2468",
+        "slug": "lavanya-12-riverstone-charger-2468",
+        "title": "Lavanya 12\" Riverstone Charger",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2488",
+        "slug": "lavanya-6-riverstone-plate-2488",
+        "title": "Lavanya 6\" Riverstone Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/LAVANYA 12.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAVANYA 12.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 350232,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2489",
+      "slug": "lavanya-10-riverstone-plate-2489",
+      "title": "Lavanya 10\" Riverstone Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2468",
+        "slug": "lavanya-12-riverstone-charger-2468",
+        "title": "Lavanya 12\" Riverstone Charger",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "2488",
+        "slug": "lavanya-6-riverstone-plate-2488",
+        "title": "Lavanya 6\" Riverstone Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/MARINA 10.5.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MARINA 10.5.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 451230,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3376",
+      "slug": "marina-10-5-plate-3376",
+      "title": "Marina 10.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3375",
+        "slug": "marina-13-charger-plate-3375",
+        "title": "Marina 13\" Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3378",
+        "slug": "marina-6-plate-3378",
+        "title": "Marina 6\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3377",
+        "slug": "marina-8-5-plate-3377",
+        "title": "Marina 8.5\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/MARINA 13 Charger.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MARINA 13 Charger.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 637164,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3375",
+      "slug": "marina-13-charger-plate-3375",
+      "title": "Marina 13\" Charger Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/MARINA 6.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MARINA 6.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 276958,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3376",
+      "slug": "marina-10-5-plate-3376",
+      "title": "Marina 10.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3375",
+        "slug": "marina-13-charger-plate-3375",
+        "title": "Marina 13\" Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3378",
+        "slug": "marina-6-plate-3378",
+        "title": "Marina 6\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3377",
+        "slug": "marina-8-5-plate-3377",
+        "title": "Marina 8.5\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/MARINA 8.5.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MARINA 8.5.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 390358,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3376",
+      "slug": "marina-10-5-plate-3376",
+      "title": "Marina 10.5\" Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3375",
+        "slug": "marina-13-charger-plate-3375",
+        "title": "Marina 13\" Charger Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3378",
+        "slug": "marina-6-plate-3378",
+        "title": "Marina 6\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3377",
+        "slug": "marina-8-5-plate-3377",
+        "title": "Marina 8.5\" Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLEWEAR/SAGE Rocks.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/SAGE Rocks.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 73501,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3460",
+      "slug": "sage-rocks-glass-3460",
+      "title": "Sage Rocks Glass",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/TILLERY 8.5in.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/TILLERY 8.5in.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 84250,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2726",
+      "slug": "tillery-11-white-porcelain-black-rim-plate-2726",
+      "title": "Tillery 11\" White Porcelain Black Rim Plate",
+      "category": "tableware",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2725",
+        "slug": "tillery-8-5-white-porcelain-black-rim-plate-2725",
+        "title": "Tillery 8.5\" White Porcelain Black Rim Plate",
+        "method": "title_contains",
+        "confidence": 0.92
+      },
+      {
+        "rms_id": "3568",
+        "slug": "tillery-low-bowl-3568",
+        "title": "Tillery Low Bowl",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Black.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Black.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 157671,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3097",
+      "slug": "fringe-black-throw-3097",
+      "title": "Fringe Black Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Camel.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Camel.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 304140,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2645",
+      "slug": "fringe-camel-throw-2645",
+      "title": "Fringe Camel Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Charcoal.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Charcoal.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 342837,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3094",
+      "slug": "fringe-charcoal-throw-3094",
+      "title": "Fringe Charcoal Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Grey.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Grey.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 425749,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3095",
+      "slug": "fringe-grey-throw-3095",
+      "title": "Fringe Grey Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Ivory.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Ivory.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 289440,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3594",
+      "slug": "fringe-ivory-cashmere-throw-3594",
+      "title": "Fringe Ivory Cashmere Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2644",
+        "slug": "fringe-ivory-throw-2644",
+        "title": "Fringe Ivory Throw",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Light Blue.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Light Blue.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 356486,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2899",
+      "slug": "fringe-light-blue-throw-2899",
+      "title": "Fringe Light Blue Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Olive.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Olive.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 452042,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4005",
+      "slug": "fringe-olive-throw-4005",
+      "title": "Fringe Olive Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FRINGE Sage.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Sage.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 344300,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "3459",
+      "slug": "fringe-sage-throw-3459",
+      "title": "Fringe Sage Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Beige Mongolian.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Beige Mongolian.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 406779,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2436",
+      "slug": "fur-beige-mongolian-throw-2436",
+      "title": "Fur Beige Mongolian Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Brown Bear.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Brown Bear.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 341423,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2437",
+      "slug": "fur-brown-bear-throw-2437",
+      "title": "Fur Brown Bear Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Brown Mongolian.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Brown Mongolian.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 325457,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2898",
+      "slug": "fur-brown-mongolian-throw-2898",
+      "title": "Fur Brown Mongolian Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Brown Mudcloth Mongolian.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Brown Mudcloth Mongolian.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 441836,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2341",
+      "slug": "fur-brown-mudcloth-mongolian-throw-2341",
+      "title": "Fur Brown Mudcloth Mongolian Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Gold Feather.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Gold Feather.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 305871,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2896",
+      "slug": "fur-gold-feather-throw-2896",
+      "title": "Fur Gold Feather Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Ivory Mongolian.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Ivory Mongolian.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 375591,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2441",
+      "slug": "fur-ivory-mongolian-throw-2441",
+      "title": "Fur Ivory Mongolian Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/FUR Red Black Ombre.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FUR Red Black Ombre.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 488385,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "4164",
+      "slug": "fur-red-black-ombre-throw-4164",
+      "title": "Fur Red Black Ombre Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/PENDLETON Grey Cross.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Cross.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 312871,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2362",
+      "slug": "pendleton-grey-cross-throw-2362",
+      "title": "Pendleton Grey Cross Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/PENDLETON Grey Plaid.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Plaid.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 496692,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2991",
+      "slug": "pendleton-grey-plaid-throw-2991",
+      "title": "Pendleton Grey Plaid Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/PENDLETON Red Yellow.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Red Yellow.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 498378,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2364",
+      "slug": "pendleton-red-yellow-throw-2364",
+      "title": "Pendleton Red Yellow Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/PLAID Black White.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PLAID Black White.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 436907,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2905",
+      "slug": "plaid-black-white-throw-2905",
+      "title": "Plaid Black + White Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/PLAID Red.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PLAID Red.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 553329,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2904",
+      "slug": "plaid-red-throw-2904",
+      "title": "Plaid Red Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/WOVEN Autumn Stripe.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/WOVEN Autumn Stripe.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 278149,
+    "bucket": "REVIEW",
+    "top_match": {
+      "rms_id": "2404",
+      "slug": "woven-autumn-stripe-throw-2404",
+      "title": "Woven Autumn Stripe Throw",
+      "category": "pillows-throws",
+      "method": "title_contains",
+      "confidence": 0.92,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  }
+]

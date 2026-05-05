@@ -1,0 +1,1017 @@
+{
+  "generated_at": "2026-05-05T00:52:14.010Z",
+  "totals": {
+    "folders_scanned": 15,
+    "image_files": 1186,
+    "apply_safe": 52,
+    "review": 157,
+    "unmatched": 977,
+    "still_imageless": 672,
+    "potential_duplicates": 0,
+    "conflicts": 1,
+    "category_mismatches": 0,
+    "rms_total": 835,
+    "rms_previously_with_images": 0,
+    "rms_revised_with_images": 163,
+    "rms_revised_unresolved": 672,
+    "product_groups": 163
+  },
+  "folder_counts": [
+    {
+      "folder": "STYLING",
+      "mapped_category": "styling",
+      "category_certainty": "exact",
+      "image_count": 220,
+      "total_bytes": 238913257,
+      "examples": [
+        "Acrylic Podium 1.png",
+        "ADAGIO 12in Disco Ball 0.tif",
+        "ADAGIO 18in Disco Ball 0.tif",
+        "ADAGIO 20in Disco Ball 0.tif",
+        "ADAGIO 8in Disco Ball.tif",
+        "ADAGIO Disco Balls.tif",
+        "ADELE Melting Disco.png",
+        "ADELE Melting Disco.tif",
+        "ADENA 7 Melting Disco.tif",
+        "ADENA Melting Disco.png"
+      ]
+    },
+    {
+      "folder": "SEATING",
+      "mapped_category": "seating",
+      "category_certainty": "exact",
+      "image_count": 200,
+      "total_bytes": 50765877,
+      "examples": [
+        "ALISTAIR Bench.png",
+        "AVALON Bench 0.png",
+        "DUNE Bench 0.png",
+        "DUNE Bench 1.png",
+        "FERN Bench 0.png",
+        "GERALDINE Bench 0.png",
+        "GERALDINE Bench 1.png",
+        "JOURDAIN Bench 0.png",
+        "SPENCER Bench 0.png",
+        "SPENCER Bench 1.png"
+      ]
+    },
+    {
+      "folder": "TABLEWEAR",
+      "mapped_category": "tableware",
+      "category_certainty": "exact",
+      "image_count": 186,
+      "total_bytes": 27923904,
+      "examples": [
+        "ADONIS Set.png",
+        "AKOYA 11.png",
+        "AKOYA 7.png",
+        "AKOYA Charger.png",
+        "AKOYA Low Bowl.png",
+        "AKOYA Set.png",
+        "ALLIRA Flute.png",
+        "ALLIRA Goblet.png",
+        "ALLIRA Set.png",
+        "ALLIRA Wine.png"
+      ]
+    },
+    {
+      "folder": "TABLES",
+      "mapped_category": "tables",
+      "category_certainty": "exact",
+      "image_count": 132,
+      "total_bytes": 27946928,
+      "examples": [
+        "4 Foot Folding.png",
+        "48 Square Table.png",
+        "AARON Coffee Table 0.png",
+        "AARON Coffee Table 1.png",
+        "ABIGALE Side Table 0.png",
+        "ACELIN Side Table.png",
+        "Amedee Cocktail Table.png",
+        "BARTOLO  32 in SMALL.png",
+        "BARTOLO 38in MEDIUM.png",
+        "BARTOLO 42in LARGE.png"
+      ]
+    },
+    {
+      "folder": "SERVEWARE",
+      "mapped_category": "serveware",
+      "category_certainty": "exact",
+      "image_count": 77,
+      "total_bytes": 18298067,
+      "examples": [
+        "ADVA 5oz Ramekin.png",
+        "ALEXANDER Decanter.png",
+        "ALVINA Tray.png",
+        "AMERICANA Napkin.png",
+        "ANCA Bowl.png",
+        "ARLETTE Dispenser.png",
+        "ARTAX.png",
+        "Baracus Gold Linen.png",
+        "BAY Blue Tray.png",
+        "BAYLON Beverage Tub.png"
+      ]
+    },
+    {
+      "folder": "BARS",
+      "mapped_category": "bars",
+      "category_certainty": "exact",
+      "image_count": 75,
+      "total_bytes": 16913502,
+      "examples": [
+        "AMISA Blue Bar 1.png",
+        "AMISA Blue White Top Bar 1.png",
+        "ARCUS - BEVIN 1.png",
+        "ARCUS - BEVIN Gold Kick Plate.png",
+        "ARCUS - CALVIN 1.png",
+        "ARCUS - LEVAR 1.png",
+        "ARCUS - RYANN 1.png",
+        "ARCUS - TAVION 1.png",
+        "BARCLAY (Everly Top).png",
+        "BEAUREGARD Bar (Everly Top).png"
+      ]
+    },
+    {
+      "folder": "LIGHTING",
+      "mapped_category": "lighting",
+      "category_certainty": "exact",
+      "image_count": 64,
+      "total_bytes": 10694313,
+      "examples": [
+        "AIDA 32.8 Outdoor.png",
+        "ALFIE 16.4 Rope Light.png",
+        "AMINA 15in.png",
+        "AMITOLA.png",
+        "AMOS.png",
+        "ANNU 40in Hoop.png",
+        "APRIL Flood Light.png",
+        "ARDELIA 24in.png",
+        "ARTHEL 9.8 Rigid LED.png",
+        "BOTOND 87in Wlnut Rod.png"
+      ]
+    },
+    {
+      "folder": "LARGE-DECOR",
+      "mapped_category": "large-decor",
+      "category_certainty": "exact",
+      "image_count": 51,
+      "total_bytes": 10840003,
+      "examples": [
+        "ARIUS Stand.png",
+        "AYA Door.png",
+        "BELLOW 3' Partition 1.png",
+        "BELLOW 8' Wall 1.png",
+        "BELLOW WALLS.png",
+        "BLAZE 48 Firepit.png",
+        "BRANTLEY Chiminea 0.png",
+        "CASCADE Stage Facade Panel.png",
+        "CHATTA SET.png",
+        "CONSTANCE presto frame - Not actual size.png"
+      ]
+    },
+    {
+      "folder": "PILLOWS",
+      "mapped_category": "pillows-throws",
+      "category_certainty": "exact",
+      "image_count": 50,
+      "total_bytes": 19560369,
+      "examples": [
+        "Black Cream Dimensional.png",
+        "Black Leather Lattice.png",
+        "Black Leather Line.png",
+        "Black Leather Stud.png",
+        "Black Leather Woven.png",
+        "Black White Abstract Fur.png",
+        "Blue Green Lumbar.png",
+        "Blue Velvet.png",
+        "Brown Grey fur.png",
+        "Brown Rust Oversize.png"
+      ]
+    },
+    {
+      "folder": "THROWS",
+      "mapped_category": "pillows-throws",
+      "category_certainty": "exact",
+      "image_count": 39,
+      "total_bytes": 15811930,
+      "examples": [
+        "BABY ALPACA Throws.png",
+        "FRINGE Black.png",
+        "FRINGE Camel.png",
+        "FRINGE Cash Ivory.png",
+        "FRINGE Charcoal.png",
+        "Fringe Chen Brown.png",
+        "FRINGE Gold.png",
+        "FRINGE Grey.png",
+        "FRINGE Ivory.png",
+        "FRINGE Light Blue.png"
+      ]
+    },
+    {
+      "folder": "RUGS",
+      "mapped_category": "rugs",
+      "category_certainty": "exact",
+      "image_count": 29,
+      "total_bytes": 18530398,
+      "examples": [
+        "ATLAS 8x10.png",
+        "BRIAR 9x12.png",
+        "BYRON Black Hide.png",
+        "DAYNA 8x10.png",
+        "ENIKO Brindle Hide.png",
+        "EUNICE 4x6.png",
+        "EVREN 8x10.png",
+        "FELINA 5x8.png",
+        "FERIDE 5x8.png",
+        "GLAUCUS Faux Hide.png"
+      ]
+    },
+    {
+      "folder": "CANDLELIGHT",
+      "mapped_category": "candlelight",
+      "category_certainty": "exact",
+      "image_count": 25,
+      "total_bytes": 3773254,
+      "examples": [
+        "ALABASTER Large.png",
+        "ALABASTER Set.png",
+        "ALABASTER Small.png",
+        "AMALIA Votive 0.png",
+        "AMALIA Votive Set.png",
+        "ANGELA Luminary 0.png",
+        "ANGELA Luminary 1.png",
+        "ENNAI Oil Lamp.png",
+        "FLORENC ELantern Small.png",
+        "FLORENCE Lantern Large.png"
+      ]
+    },
+    {
+      "folder": "STORAGE",
+      "mapped_category": "storage",
+      "category_certainty": "exact",
+      "image_count": 24,
+      "total_bytes": 4438826,
+      "examples": [
+        "ANATHEMA Wood Console 0.png",
+        "ANATHEMA Wood Console 1.png",
+        "BEATRICE 0.png",
+        "BEATRICE 1.png",
+        "BEATRICE 3.png",
+        "BERKSHIRE 0.png",
+        "BERKSHIRE 1.png",
+        "CARDEA 0.png",
+        "CARDEA 1.png",
+        "DEZIK Tiered Back Bar 1.png"
+      ]
+    },
+    {
+      "folder": "COMPONENTS",
+      "mapped_category": "__review__",
+      "category_certainty": "uncertain",
+      "image_count": 7,
+      "total_bytes": 311148,
+      "examples": [
+        "Amos Connector.png",
+        "Amos Remote.png",
+        "Amos Stand.png",
+        "farquaad bulb - base.png",
+        "farquaad bulb - remote.png",
+        "farquaad bulb.png",
+        "FIREPIT KEY.png"
+      ]
+    },
+    {
+      "folder": "FURS-PELTS",
+      "mapped_category": "furs-pelts",
+      "category_certainty": "uncertain",
+      "image_count": 7,
+      "total_bytes": 1853187,
+      "examples": [
+        "ARWYN Sheepskin.png",
+        "ELIN Double Sheepskin.png",
+        "JAEL Goat Pelt (2).png",
+        "JAEL Goat Pelt.png",
+        "KAINO Beige Sheepskin.png",
+        "KATRIN Icelandic Sheepskin.png",
+        "OVIS sheepskin.png"
+      ]
+    }
+  ],
+  "product_groups": [
+    {
+      "rms_id": "2816",
+      "slug": "arcus-bevin-12-slatted-bar-2816",
+      "title": "Arcus Bevin 12' Slatted Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - BEVIN 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - BEVIN 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2813",
+      "slug": "arcus-calvin-12-smooth-bar-2813",
+      "title": "Arcus Calvin 12' Smooth Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - CALVIN 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - CALVIN 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2814",
+      "slug": "arcus-levar-12-black-tambour-bar-2814",
+      "title": "Arcus Levar 12' Black Tambour Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - LEVAR 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - LEVAR 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3054",
+      "slug": "arcus-ryann-12-white-tambour-bar-3054",
+      "title": "Arcus Ryann 12' White Tambour Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - RYANN 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - RYANN 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2540",
+      "slug": "arcus-tavion-12-natural-tambour-bar-2540",
+      "title": "Arcus Tavion 12' Natural Tambour Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - TAVION 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - TAVION 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2912",
+      "slug": "excursion-champagne-trunk-bar-2912",
+      "title": "Excursion Champagne Trunk Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/EXCURSION Champagne Bar Trunk 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/EXCURSION Champagne Bar Trunk 1.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "3504",
+      "slug": "inola-u-black-bar-3504",
+      "title": "Inola U Black  Bar",
+      "category": "bars",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Black Bar.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Black Bar.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA U.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "3353",
+      "slug": "inola-single-black-bar-3353",
+      "title": "Inola Single Black Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Single 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Single 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3505",
+      "slug": "iraja-u-weathered-oak-bar-3505",
+      "title": "Iraja U Weathered Oak Bar",
+      "category": "bars",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/IRAJA U.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/IRAJA U.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2150",
+      "slug": "malcolm-bar-cart-2150",
+      "title": "Malcolm Bar Cart",
+      "category": "bars",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MALCOLM Bar Cart 0.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MALCOLM Bar Cart 0.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MALCOLM Bar Cart 1.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "2911",
+      "slug": "voyage-black-trunk-bar-2911",
+      "title": "Voyage Black Trunk Bar",
+      "category": "bars",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Black Trunk Bar 0.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Black Trunk Bar 0.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Black Trunk Bar 1.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "2966",
+      "slug": "voyage-navy-trunk-bar-2966",
+      "title": "Voyage Navy Trunk Bar",
+      "category": "bars",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Navy Bar Trunk 1.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Navy Bar Trunk 1.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Navy Bar Trunk.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "3776",
+      "slug": "nera-4-alabaster-votive-3776",
+      "title": "Nera 4\" Alabaster Votive",
+      "category": "candlelight",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/CANDLELIGHT/NERA 4.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/CANDLELIGHT/NERA 4.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "833",
+      "slug": "arwyn-sheepskin-fur-833",
+      "title": "Arwyn Sheepskin Fur",
+      "category": "furs-pelts",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/ARWYN Sheepskin.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/ARWYN Sheepskin.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4146",
+      "slug": "katrin-icelandic-sheepskin-fur-4146",
+      "title": "Katrin Icelandic Sheepskin Fur",
+      "category": "furs-pelts",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/KATRIN Icelandic Sheepskin.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/FURS-PELTS/KATRIN Icelandic Sheepskin.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3542",
+      "slug": "jacen-indoor-firepit-3542",
+      "title": "Jacen Indoor Firepit",
+      "category": "large-decor",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/JACEN Indoor Firepit.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/JACEN Indoor Firepit.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "802",
+      "slug": "marlow-rope-wall-802",
+      "title": "Marlow Rope Wall",
+      "category": "large-decor",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MARLOW 0.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MARLOW 0.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MARLOW 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4072",
+      "slug": "merritt-post-and-beam-structure-4072",
+      "title": "Merritt Post and Beam Structure",
+      "category": "large-decor",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MERRITT.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/MERRITT.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "1703",
+      "slug": "pema-ancient-carved-wood-wall-1703",
+      "title": "Pema Ancient Carved Wood Wall",
+      "category": "large-decor",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/PEMA 0.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/PEMA 0.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/PEMA 1.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4045",
+      "slug": "concreta-wall-sconce-4045",
+      "title": "Concreta Wall Sconce",
+      "category": "lighting",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/CONCRETA Wall Sconce 0.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/CONCRETA Wall Sconce 0.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "1625",
+      "slug": "darnell-color-mixing-led-uplight-1625",
+      "title": "Darnell Color-Mixing LED  Uplight",
+      "category": "lighting",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/DARNELL.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/DARNELL.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4152",
+      "slug": "black-leather-lattice-pillow-4152",
+      "title": "Black Leather Lattice Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4150",
+      "slug": "black-leather-studded-lumbar-pillow-4150",
+      "title": "Black Leather Studded Lumbar Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Stud.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Stud.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4158",
+      "slug": "black-leather-woven-pillow-4158",
+      "title": "Black Leather Woven Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Woven.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Woven.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4156",
+      "slug": "black-white-abstract-fur-pillow-4156",
+      "title": "Black White Abstract Fur Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black White Abstract Fur.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black White Abstract Fur.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2427",
+      "slug": "blue-velvet-brocade-lumbar-pillow-2427",
+      "title": "Blue Velvet Brocade Lumbar Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4079",
+      "slug": "brown-grey-fur-pillow-4079",
+      "title": "Brown Grey Fur Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4009",
+      "slug": "gold-mustard-mudcloth-pillow-4009",
+      "title": "Gold Mustard Mudcloth Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Mustard.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Mustard.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4160",
+      "slug": "gold-zebra-velvet-pillow-4160",
+      "title": "Gold Zebra Velvet Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Zebra.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Zebra.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4004",
+      "slug": "green-natural-pillow-4004",
+      "title": "Green + Natural Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Natural Pillow.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Natural Pillow.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "4081",
+      "slug": "ivory-black-geo-print-pillow-4081",
+      "title": "Ivory Black Geo Print Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4082",
+      "slug": "ivory-boucle-pillow-4082",
+      "title": "Ivory Boucle Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2735",
+      "slug": "ivory-mudcloth-2735",
+      "title": "Ivory Mudcloth",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2783",
+      "slug": "ivory-mudcloth-lumbar-2783",
+      "title": "Ivory Mudcloth Lumbar",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar.png"
+      ],
+      "confidence": 1,
+      "review_status": "APPLY_SAFE"
+    },
+    {
+      "rms_id": "2847",
+      "slug": "ivory-seamed-boucle-pillow-2847",
+      "title": "Ivory Seamed Boucle Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/IVORY Seamed Boucle.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/IVORY Seamed Boucle.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2230",
+      "slug": "black-leather-lumbar-pillow-2230",
+      "title": "Black Leather Lumbar Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Lumbar.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Lumbar.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3458",
+      "slug": "brown-cognac-leather-stitched-3458",
+      "title": "Brown Cognac Leather Stitched",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stitched.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stitched.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3456",
+      "slug": "ivory-leather-stripe-3456",
+      "title": "Ivory Leather Stripe",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stripe.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leather Stripe.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4153",
+      "slug": "leopard-fur-pillow-4153",
+      "title": "Leopard Fur Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Fur.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Fur.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3219",
+      "slug": "green-wild-leopard-velvet-pillow-3219",
+      "title": "Green Wild Leopard Velvet Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Velvet.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Leopard Velvet.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3455",
+      "slug": "ivory-sage-mini-tassel-3455",
+      "title": "Ivory Sage Mini Tassel",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Mini Tassel.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Mini Tassel.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3193",
+      "slug": "natural-raffia-pillow-3193",
+      "title": "Natural Raffia Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Natural Raffia.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Natural Raffia.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3459",
+      "slug": "fringe-sage-throw-3459",
+      "title": "Fringe Sage Throw",
+      "category": "pillows-throws",
+      "image_count": 2,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Throw.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Throw.png",
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/FRINGE Sage.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3453",
+      "slug": "green-sage-velvet-3453",
+      "title": "Green Sage Velvet",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Velvet.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Sage Velvet.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4157",
+      "slug": "silver-leather-woven-pillow-4157",
+      "title": "Silver Leather Woven Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "4007",
+      "slug": "brown-tweed-pillow-4007",
+      "title": "Brown Tweed Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Tweed.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Tweed.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "3194",
+      "slug": "white-raffia-pillow-3194",
+      "title": "White Raffia Pillow",
+      "category": "pillows-throws",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "1630",
+      "slug": "atlas-8x10-turkish-rug-1630",
+      "title": "Atlas 8x10 Turkish Rug",
+      "category": "rugs",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/ATLAS 8x10.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/ATLAS 8x10.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "2793",
+      "slug": "briar-9x12-natural-braided-jute-rug-2793",
+      "title": "Briar 9x12 Natural Braided Jute Rug",
+      "category": "rugs",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/BRIAR 9x12.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/BRIAR 9x12.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    },
+    {
+      "rms_id": "1825",
+      "slug": "dayna-8x10-grey-pattern-rug-1825",
+      "title": "Dayna 8x10 Grey Pattern Rug",
+      "category": "rugs",
+      "image_count": 1,
+      "primary_image_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/DAYNA 8x10.png",
+      "gallery_image_urls": [
+        "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/RUGS/DAYNA 8x10.png"
+      ],
+      "confidence": 0.92,
+      "review_status": "REVIEW"
+    }
+  ],
+  "top_missing_categories": [
+    [
+      "tableware",
+      153
+    ],
+    [
+      "pillows-throws",
+      114
+    ],
+    [
+      "seating",
+      91
+    ],
+    [
+      "tables",
+      70
+    ],
+    [
+      "styling",
+      70
+    ],
+    [
+      "serveware",
+      42
+    ],
+    [
+      "bars",
+      37
+    ],
+    [
+      "lighting",
+      25
+    ],
+    [
+      "large-decor",
+      24
+    ],
+    [
+      "candlelight",
+      16
+    ],
+    [
+      "chandeliers",
+      16
+    ],
+    [
+      "rugs",
+      8
+    ],
+    [
+      "furs-pelts",
+      4
+    ],
+    [
+      "storage",
+      2
+    ]
+  ]
+}
