@@ -178,6 +178,14 @@ for (const s of unmatchedSite) {
     }
   }
 
+  // If recommended candidate is already bound, downgrade to REVIEW
+  // (we don't auto-overwrite an existing high-confidence binding).
+  const anyAlreadyBound = peers.some((p) => boundIds.has(p.r.rms_id));
+  if (action === 'APPLY_SAFE_NEAR_MISS' && anyAlreadyBound) {
+    action = 'REVIEW_NEAR_MISS';
+    reason += ` (target already bound — would replace existing images, send to review)`;
+  }
+
   if (action === 'APPLY_SAFE_NEAR_MISS') {
     for (const p of peers) usedRms.add(p.r.rms_id);
     usedSite.add(s.detail_url);
@@ -192,6 +200,8 @@ for (const s of unmatchedSite) {
       rms_product_id: p.r.rms_id,
       rms_title: p.r.title,
       rms_category: p.r.category,
+      rms_already_bound: boundIds.has(p.r.rms_id),
+      rms_existing_image_count: boundIds.has(p.r.rms_id) ? (MANIFEST.bindings[p.r.rms_id].all_images?.length ?? 0) : 0,
       match_reason: reason,
       confidence,
       image_count: imageCount,
