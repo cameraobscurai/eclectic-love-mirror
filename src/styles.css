@@ -73,7 +73,7 @@
 
 :root {
   /* Eclectic Hive — Black, Charcoal, Sand, Cream */
-  --background: #f5f2ed;                 /* editorial cream — brand baseline */
+  --background: #fafaf7;                 /* paper white — brand baseline (repaint 2026-05-05) */
   --foreground: oklch(0.18 0 0);         /* #1a1a1a charcoal */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0 0);
