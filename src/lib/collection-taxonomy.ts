@@ -106,6 +106,7 @@ export const SAFETY_NET_BROWSE_ORDER: BrowseGroupId[] = [
   "lighting",
   "throws",
   "large-decor",
+  "furs-pelts",
   "accents",
 ];
 
