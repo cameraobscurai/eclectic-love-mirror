@@ -189,6 +189,8 @@ function AtelierPage() {
               picture={atelierReplacement}
               alt="Styled bench with tasseled throws."
               sizes="(min-width: 768px) 40vw, 100vw"
+              lazy={false}
+              fetchPriority="high"
             />
           </div>
         </div>
