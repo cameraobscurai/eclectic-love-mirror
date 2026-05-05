@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
+import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.png?preset=editorial";
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
@@ -134,14 +135,14 @@ export const Route = createFileRoute("/atelier")({
       },
       {
         property: "og:image",
-        content: atelierReplacement.img.src,
+        content: atelierHero.img.src,
       },
       {
         name: "twitter:image",
-        content: atelierReplacement.img.src,
+        content: atelierHero.img.src,
       },
     ],
-    links: [heroPreloadLink(atelierReplacement)],
+    links: [heroPreloadLink(atelierHero)],
   }),
   component: AtelierPage,
 });

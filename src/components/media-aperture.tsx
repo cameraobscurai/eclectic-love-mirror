@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 //
 // Lazy + viewport prefetch:
 //   When `lazy` is true (default) we use IntersectionObserver with a
-//   generous `prefetchMargin` (default 1400px) to start the download just
+//   generous `prefetchMargin` (default 600px) to start the download just
 //   before the frame scrolls into view. This is a wider margin than the
 //   browser's built-in `loading="lazy"` (~150-300px), so atelier portraits
 //   and material plates resolve before they enter the screen instead of
@@ -65,8 +65,8 @@ interface MediaApertureProps {
   lazy?: boolean;
   /**
    * IntersectionObserver rootMargin for prefetch — how far outside the
-   * viewport the image starts downloading. Defaults to "1400px" so frames
-   * have more than a viewport of head start before they enter the screen.
+   * viewport the image starts downloading. Defaults to "600px" so frames
+   * have ~half a viewport of head start before they enter the screen.
    */
   prefetchMargin?: string;
   /** Hint browser priority. Use "high" for above-the-fold portraits. */
@@ -84,11 +84,9 @@ export function MediaAperture({
   label,
   className,
   lazy = true,
-  prefetchMargin = "1400px",
+  prefetchMargin = "600px",
   fetchPriority,
 }: MediaApertureProps) {
-  const effectiveSrc = picture?.img.src ?? src;
-  const effectiveSrcSet = picture ? undefined : srcSet;
   const [loaded, setLoaded] = useState(false);
   // Eager renders immediately. Lazy waits for the IO to fire.
   const [inView, setInView] = useState(!lazy);
@@ -103,7 +101,7 @@ export function MediaAperture({
   useEffect(() => {
     setLoaded(false);
     setInView(!lazy);
-  }, [effectiveSrc, lazy]);
+  }, [src, lazy]);
 
   // Viewport prefetch — start the download a bit before the frame enters
   // the screen so it resolves into the aperture instead of popping in.
@@ -151,7 +149,7 @@ export function MediaAperture({
     );
     io.observe(node);
     return () => io.disconnect();
-  }, [lazy, prefetchMargin, effectiveSrc]);
+  }, [lazy, prefetchMargin, src]);
 
   // Catch images that decoded before React attached the onLoad listener
   // (SSR / cached / eager). Without this they stay opacity:0 forever.
@@ -159,10 +157,13 @@ export function MediaAperture({
     if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
       setLoaded(true);
     }
-  }, [effectiveSrc, inView]);
+  }, [src, inView]);
 
-  // Once the custom prefetch gate opens, force the browser to start the
-  // request immediately; native lazy-loading here was delaying fast scrolls.
+  // Render the <img> only once the frame is near the viewport. We still
+  // pass `loading="lazy"` as a belt-and-braces fallback (so the browser
+  // can also defer if the IO fires far away from layout).
+  const effectiveSrc = picture?.img.src ?? src;
+  const effectiveSrcSet = picture ? undefined : srcSet;
   const showImg = !!effectiveSrc && inView;
   const imgEl = showImg ? (
     <img
@@ -173,7 +174,7 @@ export function MediaAperture({
       width={picture?.img.w}
       height={picture?.img.h}
       alt={alt ?? ""}
-      loading="eager"
+      loading={lazy ? "lazy" : "eager"}
       decoding="async"
       onLoad={() => setLoaded(true)}
       {...(fetchPriority
