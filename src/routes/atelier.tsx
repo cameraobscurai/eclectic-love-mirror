@@ -7,6 +7,7 @@ import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.png?preset=editorial";
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
+import atelierHiveTriptych from "@/assets/atelier/atelier-hive-triptych.jpeg?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
 import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
@@ -198,19 +199,26 @@ function AtelierPage() {
         <AtelierTeam />
       </Section>
 
-      {/* 3. L'ATELIER — collage + sketch drape side by side */}
+      {/* 3. L'ATELIER — triptych above, then collage + sketch drape side by side (swapped) */}
       <Section eyebrow="L'ATELIER">
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <MediaAperture
-            ratio="4/5"
-            picture={atelierCollage}
-            alt="Studio collage — Hive workbench, design table, and styled bench detail."
-            sizes="(min-width: 768px) 45vw, 100vw"
-          />
+        <MediaAperture
+          ratio="3/1"
+          picture={atelierHiveTriptych}
+          alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
+          sizes="100vw"
+          className="mt-4"
+        />
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <MediaAperture
             ratio="4/5"
             picture={atelierSketchDrape}
             alt="Hand-drawn chair sketch on hanging drape — design phase."
+            sizes="(min-width: 768px) 45vw, 100vw"
+          />
+          <MediaAperture
+            ratio="4/5"
+            picture={atelierCollage}
+            alt="Studio collage — Hive workbench, design table, and styled bench detail."
             sizes="(min-width: 768px) 45vw, 100vw"
           />
         </div>
