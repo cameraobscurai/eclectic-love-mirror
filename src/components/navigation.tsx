@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
+import { PARENT_ORDER, PARENT_LABELS } from "@/lib/collection-parents";
 
 // Brand signature per the deck: "ATELIER *by* THE HIVE" — lowercase italic
 // "by" set in Saol Display between caps. Render as JSX so the italic survives
