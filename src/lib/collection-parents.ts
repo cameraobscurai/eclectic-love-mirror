@@ -249,13 +249,31 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return null;
     }
     case "lighting": {
+      // Order matters: candle keywords first (most specific), then specialty
+      // (sconces / string / par / wash / battery), then chandeliers (which
+      // include pendants per live site), then lamps as the residual.
       if (
         cat === "candlelight" ||
-        has(t, ["candle", "votive", "hurricane", "taper", "candelabr"])
+        has(t, ["candle", "votive", "hurricane", "taper", "candelabr", "lantern", "luminary", "oil lamp"])
       )
         return "candlelight";
-      if (cat === "chandeliers" || has(t, ["chandelier"])) return "chandeliers";
-      if (has(t, ["lamp", "sconce"])) return "lamps";
+      if (
+        has(t, [
+          "sconce",
+          "uplight",
+          "string light",
+          "festoon",
+          "wash light",
+          "par can",
+          " par ",
+          "market light",
+          "corner light",
+          "battery",
+        ])
+      )
+        return "specialty";
+      if (cat === "chandeliers" || has(t, ["chandelier", "pendant"])) return "chandeliers";
+      if (has(t, ["lamp"])) return "lamps";
       return "specialty";
     }
     case "textiles": {
