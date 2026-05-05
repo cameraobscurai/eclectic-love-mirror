@@ -415,8 +415,8 @@ function ContactPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               FREQUENTLY ASKED
             </p>
-            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] tracking-tight">
-              Working with the studio.
+            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] uppercase tracking-[0.04em]">
+              WORKING WITH THE STUDIO
             </h2>
 
             <ul
