@@ -208,6 +208,16 @@ export const TILE_TO_PARENT_SUB: Record<
 const has = (t: string, kws: string[]) => kws.some((k) => t.includes(k));
 
 function classifySub(parent: ParentId, p: CollectionProduct): string | null {
+  // Prefer live-site subcategory when available.
+  const liveSubs = p.liveSubcategories || [];
+  if (liveSubs.length) {
+    const subList = PARENT_SUBS[parent] || [];
+    for (const ls of liveSubs) {
+      const norm = ls.toLowerCase();
+      const hit = subList.find(s => s.label.toLowerCase() === norm);
+      if (hit) return hit.id;
+    }
+  }
   const g = getProductBrowseGroup(p);
   const t = p.title.toLowerCase();
   const cat = (p.categorySlug ?? "").toLowerCase();
