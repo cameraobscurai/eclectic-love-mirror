@@ -153,8 +153,9 @@ for (const p of rolled) {
     || liveTitleInfo.get(nStripped);
   if (!info) {
     const toks = nStripped.split(' ');
-    for (let n = Math.min(toks.length, 5); n >= 2 && !info; n--) {
-      info = liveFirstWordsInfo.get(toks.slice(0, n).join(' '));
+    for (let n = Math.min(toks.length, 5); n >= 1 && !info; n--) {
+      const k = toks.slice(0, n).join(' ');
+      if (k.length >= 4) info = liveFirstWordsInfo.get(k);
     }
   }
   if (info) {
