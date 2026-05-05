@@ -227,8 +227,8 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return null;
     }
     case "dining": {
-      if (has(t, ["dining chair"])) return "dining-chairs";
-      if (has(t, ["dining table", "farm table"])) return "dining-tables";
+      if (has(t, ["dining chair", "directors dining", "banquette"])) return "dining-chairs";
+      if (has(t, ["dining table", "farm table", "feasting"])) return "dining-tables";
       if (has(t, ["console", "sideboard", "buffet"])) return "consoles";
       if (has(t, ["chair"])) return "dining-chairs";
       if (has(t, ["table"])) return "dining-tables";
