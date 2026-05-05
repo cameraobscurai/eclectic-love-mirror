@@ -5,6 +5,8 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
+import atelierCollage from "@/assets/atelier/atelier-collage.png?preset=editorial";
+import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
 import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
@@ -196,20 +198,28 @@ function AtelierPage() {
         <AtelierTeam />
       </Section>
 
-      {/* 3. L'ATELIER (T11) — 3-tile B&W collage of Hive exterior + interior */}
+      {/* 3. L'ATELIER — B&W studio collage */}
       <Section eyebrow="L'ATELIER">
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Placeholder ratio="4/5" label="STUDIO COLLAGE 1" />
-          <Placeholder ratio="4/5" label="STUDIO COLLAGE 2" />
-          <Placeholder ratio="4/5" label="STUDIO COLLAGE 3" />
+        <div className="mt-12 max-w-3xl mx-auto">
+          <MediaAperture
+            ratio="4/5"
+            picture={atelierCollage}
+            alt="Studio collage — Hive workbench, design table, and styled bench detail."
+            sizes="(min-width: 768px) 60vw, 100vw"
+          />
         </div>
       </Section>
 
-      {/* 4. DESIGN + FABRICATION (T12+T13) — DESIGN now first */}
+      {/* 4. DESIGN + FABRICATION — DESIGN first */}
       <Section eyebrow="DESIGN · FABRICATION">
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <Placeholder ratio="4/5" label="DESIGN" />
+            <MediaAperture
+              ratio="4/5"
+              picture={atelierSketchDrape}
+              alt="Hand-drawn chair sketch on hanging drape — design phase."
+              sizes="(min-width: 768px) 45vw, 100vw"
+            />
           </div>
           <div>
             <Placeholder ratio="4/5" label="FABRICATION" />
