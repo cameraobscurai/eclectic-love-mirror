@@ -24,19 +24,19 @@ import { useInquiry } from "@/hooks/use-inquiry";
 
 const FAQ_ITEMS = [
   {
-    q: "What we offer",
+    q: "WHAT WE OFFER",
     a: "Full-service design, fabrication, and production — or rental-only access to the Hive Signature Collection. Engagements include space planning + CAD, 3-D modeling, vendor management, on-site logistics, and run of show.",
   },
   {
-    q: "How to begin a proposal",
+    q: "HOW TO BEGIN A PROPOSAL",
     a: "After a consultation call we'll prepare a one to two-page Style Guide that visually summarizes the design direction. A non-refundable Creative Services Fee and signed contract secures the date and unlocks the full proposal and detailed estimate.",
   },
   {
-    q: "Travel",
+    q: "TRAVEL",
     a: "Eclectic Hive is a destination design house. Projects take us domestic and international — desert, mountains, and the Caribbean. Travel fees include accommodations, per diems, and mileage.",
   },
   {
-    q: "Minimums",
+    q: "MINIMUMS",
     a: "We don't set fixed minimums. Availability shifts with the team's existing committed work and the seasonality of inquiries. Each opportunity is reviewed together to make sure we can deliver the requested scope.",
   },
 ];
@@ -415,8 +415,8 @@ function ContactPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               FREQUENTLY ASKED
             </p>
-            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] tracking-tight">
-              Working with the studio.
+            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] uppercase tracking-[0.04em]">
+              WORKING WITH THE STUDIO
             </h2>
 
             <ul
@@ -431,7 +431,7 @@ function ContactPage() {
                 >
                   <details className="group">
                     <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                      <span className="font-display text-xl tracking-tight">
+                      <span className="font-display text-xl uppercase tracking-[0.06em]">
                         {item.q}
                       </span>
                       <span
