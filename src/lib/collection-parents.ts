@@ -349,6 +349,8 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
         return "structures";
       return "other";
     }
+    case "furs-pelts":
+      return null;
   }
 }
 
