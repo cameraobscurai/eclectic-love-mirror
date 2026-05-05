@@ -1,8 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { rollupFamilies } from './family-rollup.mjs';
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+// Live Squarespace snapshot — source of truth for family groupings.
+// Refresh with the JSON-feed harvest script when the live site changes.
+let liveSnapshot = {};
+try {
+  liveSnapshot = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-inventory-snapshot.json', 'utf8'));
+} catch {
+  console.warn('[bake] no live-inventory-snapshot.json — skipping family rollup (each variant will be its own tile)');
+}
 
 const CAT_DISPLAY = {
   'tableware':'Tableware','pillows-throws':'Pillows & Throws',
@@ -66,8 +76,12 @@ const products = visible.map((r, i) => {
   };
 });
 
+// Roll up RMS variant rows into one tile per product family
+const { products: rolled, stats } = rollupFamilies(products, liveSnapshot);
+console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
+
 const facetsMap = {};
-for (const p of products) {
+for (const p of rolled) {
   if (!facetsMap[p.categorySlug]) facetsMap[p.categorySlug] = { slug:p.categorySlug, display:p.displayCategory, count:0 };
   facetsMap[p.categorySlug].count++;
 }
@@ -76,14 +90,17 @@ const facets = ORDER.filter(s=>facetsMap[s]).map(s=>facetsMap[s]).concat(
 );
 
 const payload = {
-  products, facets, total: products.length,
+  products: rolled, facets, total: rolled.length,
   meta: {
     generatedAt: new Date().toISOString(),
-    totalRecords: products.length,
-    publicReadyCount: products.length,
+    totalRecords: rolled.length,
+    rmsRowCount: products.length,
+    rolledUpCount: stats.collapsed,
+    publicReadyCount: rolled.length,
     excludedCount: hiddenForMissingImage,
     excludedReason: 'awaiting-image',
     categoryDisplayOrder: facets.map(f=>f.display),
+    familyRollupSources: stats.sourceCounts,
   },
 };
 
