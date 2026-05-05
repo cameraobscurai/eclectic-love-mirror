@@ -1386,7 +1386,7 @@ function CollectionPage() {
                         <p style={suggestionGroupLabel}>Categories</p>
                         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                           {matchedCategories.map((id) => {
-                            const label = BROWSE_GROUP_LABELS[id] || id;
+                            const label = PARENT_LABELS[id];
                             return (
                               <li key={id}>
                                 <button
