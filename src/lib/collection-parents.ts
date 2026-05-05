@@ -120,6 +120,7 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
     { id: "walls", label: "Walls" },
     { id: "other", label: "Other" },
   ],
+  "furs-pelts": [],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
