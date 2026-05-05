@@ -60,6 +60,27 @@ const CAPABILITIES = [
   "PRODUCTION MANAGEMENT",
 ];
 
+// Mirrors the FAQ block on /contact. Owner-approved copy from contact.tsx —
+// kept duplicated for now; lift to a shared module if the lists diverge.
+const ATELIER_FAQ: ReadonlyArray<{ q: string; a: string }> = [
+  {
+    q: "What we offer",
+    a: "Full-service design, fabrication, and production — or rental-only access to the Hive Signature Collection. Engagements include space planning + CAD, 3-D modeling, vendor management, on-site logistics, and run of show.",
+  },
+  {
+    q: "How to begin a proposal",
+    a: "After a consultation call we'll prepare a one to two-page Style Guide that visually summarizes the design direction. A non-refundable Creative Services Fee and signed contract secures the date and unlocks the full proposal and detailed estimate.",
+  },
+  {
+    q: "Travel",
+    a: "Eclectic Hive is a destination design house. Projects take us domestic and international — desert, mountains, and the Caribbean. Travel fees include accommodations, per diems, and mileage.",
+  },
+  {
+    q: "Minimums",
+    a: "We don't set fixed minimums. Availability shifts with the team's existing committed work and the seasonality of inquiries. Each opportunity is reviewed together to make sure we can deliver the requested scope.",
+  },
+];
+
 // (Removed: per-capability image swap was overengineered. The original
 // three-square material board sits below the list as quiet evidence.)
 
@@ -241,6 +262,54 @@ function AtelierPage() {
           })}
         </ul>
         {/* T15: Phase-2 botanical/sketch triptych removed pending future direction */}
+
+        {/* T16: Atelier FAQ — same accordion she remembers from /contact,
+            now placed exactly where she expects it. Mirrors the four
+            entries on Contact so a single edit there keeps both in sync
+            once we lift this to a shared module. */}
+        <div className="mt-20">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            FREQUENTLY ASKED
+          </p>
+          <h3 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] tracking-tight">
+            Working with the Atelier.
+          </h3>
+          <ul
+            className="mt-8 divide-y max-w-3xl"
+            style={{ borderColor: "var(--archive-rule)" }}
+          >
+            {ATELIER_FAQ.map((item) => (
+              <li
+                key={item.q}
+                className="border-t first:border-t-0"
+                style={{ borderColor: "var(--archive-rule)" }}
+              >
+                <details className="group">
+                  <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
+                    <span className="font-display text-xl tracking-tight">
+                      {item.q}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="text-charcoal/45 text-lg transition-transform group-open:rotate-45 select-none"
+                    >
+                      +
+                    </span>
+                  </summary>
+                  <p className="pb-6 max-w-2xl text-[15px] leading-relaxed text-charcoal/75">
+                    {item.a}
+                  </p>
+                </details>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+            More questions?{" "}
+            <Link to="/contact" hash="faq" className="editorial-link">
+              See the full FAQ
+            </Link>
+          </p>
+        </div>
       </Section>
 
       {/* 5. ATELIER APPROACH — quiet text-only triplet */}
