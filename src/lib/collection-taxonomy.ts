@@ -56,6 +56,7 @@ export type BrowseGroupId =
   | "lighting"
   | "throws"
   | "large-decor"
+  | "furs-pelts"
   | "accents";
 
 export type BrowseTier = "owner" | "safety-net";
