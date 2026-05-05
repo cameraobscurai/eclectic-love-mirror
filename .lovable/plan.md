@@ -1,82 +1,66 @@
-# Collection landing — viewport-fit pass
+## What's actually wrong
 
-## What's wrong now
+Pulled live numbers from the database to confirm what you're seeing on /collection?group=pillows:
 
-The `showOverview` branch in `src/routes/collection.tsx` renders an H-plate (left, desktop only) beside `<CategoryTonalGrid />` (right). Neither container has an enforced height, so:
+- **835 public products**, **27 still imageless**, but only **676 distinct hero images** — so **47 image files are bound to 179 different products** (~21% of the catalog is sharing a hero with someone else)
+- **Pillows is the worst offender**: 161 products, 91 distinct heroes. Single examples:
+  - `PILLOWS/Blue Green Lumbar.png` → bound to **13 different blue pillows** (Denim Buckle, Light Stripe, Velvet Burnout, Native, Sabra, Wild Bird…)
+  - `PILLOWS/Brown Grey fur.png` → **12 brown pillows**
+  - `PILLOWS/Ivory Black Geo.png` → **10 ivory pillows**
+  - `PILLOWS/Green Block Print.png` → **9 green pillows**
+- **50 pillow files in storage, only 38 actually used** — 12 owner-uploaded files are sitting unbound while wrong files get reused
 
-- **Desktop**: the right column's `flex h-full flex-col` rows resolve to `h-full` of *nothing* — the parent has no defined height. Rows fall back to `min-h-[16vh]` × 4 ≈ 64vh, leaving a tall band of cream below the fold and the H-plate floats with no visual anchor. The landing fails to feel like "one screen."
-- **Mobile**: the hero PNG renders at natural aspect (`h-auto`), eating ~50svh, then 4 rows × `min-h-[16vh]` adds another ~64svh — total ~114svh, so the last row gets clipped and the page scrolls before the user even acts.
-- The 5-tile rows at ≤640px squeeze each tile to ~75px wide; labels truncate and tap targets fall under the iOS 44px guideline.
+Root cause: the earlier "final-bind" pass fell back to a first-color-token match when filename and title didn't agree, so anything starting with "Blue" got the first blue file we found. That rule was fine for true variant families (a flatware set sharing one hero is correct: Heston spoon/fork/knife → `HESTON Set.png`) but catastrophically wrong for pillows, where every SKU is unique.
 
-## The fix — three small, layered changes
+Some shared bindings are **legitimate** and must be preserved:
+- Flatware/glassware sets (HESTON Set, ARIAN Set, NISHA Set, CARLISLE Set, ADONIS Set, MIDAS Set, LARIQUE Set, Sage Set, MILLIE Set) — owner intentionally shoots one set photo
+- Banquette sizes (NIMA Banquette — single/double/walnut variants)
+- Plinth sizes (TIVOLI Mini Plinth)
+- Cocktail column heights (Farrow 28/29/31/38/43)
 
-### 1. Make the landing a single viewport box
+Categories where shared heroes are almost always **wrong**: pillows-throws, rugs, large-decor, styling, lighting, candlelight, chandeliers, seating (non-set), tables (non-size-variant).
 
-In `src/routes/collection.tsx` (around lines 773–816, the `showOverview` branch), wrap the two-column grid in a container sized to the visible viewport below the nav:
+## Plan
 
-```text
-height: calc(100svh - var(--nav-h))
-```
+Three-phase, dry-run gated. No bulk writes without you reviewing the manifest.
 
-Use `100svh` (small viewport height) so iOS chrome doesn't clip the bottom row. The utility bar is already hidden on overview (line 614 gates it on `!showOverview`), so we don't subtract it.
+### Phase A — Audit (read-only, no DB changes)
 
-The two-column wrapper becomes `h-full`; both children become `h-full min-h-0` so the flex-1 rows inside `CategoryTonalGrid` actually have a height to divide.
+New script `scripts-tmp/audit-image-dupes.mjs`:
+1. Pull every product where `images[1]` is shared by ≥2 SKUs.
+2. Classify each shared group as:
+   - **KEEP (variant family)**: filename ends in `Set.png`, contains "Plinth", "Banquette", "Column", or all sharing-titles share a leading 2-token brand prefix (e.g. "Heston Dark Brown", "Farrow N\""). Owner-intent shared hero.
+   - **BREAK (false dupe)**: anything else — especially every pillow group, where titles share only a color word.
+3. List unused storage files per category (we know there are 12 unused pillow files — those are real images waiting for their real product).
+4. Write three manifests:
+   - `audit-keep-shared.json` — confirmed legit families
+   - `audit-break-shared.json` — products to reset to imageless pending re-bind (~140-150 rows)
+   - `audit-orphan-files.json` — storage files no product points to
 
-### 2. Mobile: stack with a fixed-share hero, grid fills the rest
+Output a summary like the current `reconcile-summary.txt`. **No writes.** You review before Phase B.
 
-Inside the same container, on `<lg`:
-- Replace the natural-aspect hero `<img>` with a fixed-share band (~26svh) using `object-cover` so the H-plate reads cleanly without dominating.
-- The `<CategoryTonalGrid>` then fills the remaining ~74svh. Its rows are already `flex-1`, so they'll partition that space evenly.
-- Remove `min-h-[16vh]` from rows since the parent now has a real height; keep `min-h-0` to let flex shrink work.
+### Phase B — Reset wrong bindings + strict re-bind (gated by your approval of A)
 
-### 3. Tile-grid: collapse 5-wide rows on small screens
+1. For every product in `audit-break-shared.json`, set `images = []` so the tile shows the blank/placeholder state instead of a wrong photo. Single migration, one transaction.
+2. Strict re-binder `scripts-tmp/strict-rebind.mjs` that ONLY accepts a binding when:
+   - **Exact filename match** after normalization (Blue Green Lumbar.png → "blue green lumbar" must equal the title's normalized form, OR every distinctive token in the filename appears in the title — no fallbacks on color alone)
+   - OR **Squarespace exact title match** (case-insensitive, full title)
+   - No "first color token wins" fallback. No variant-family inheritance for pillows/rugs/lighting/decor.
+3. Output `strict-rebind-manifest.json` with three buckets: `apply_safe` (high-confidence), `still_imageless` (no honest match exists), `manual_review` (close but not certain). **No writes** — you review.
 
-In `src/components/collection/CategoryTonalGrid.tsx`, the inline `gridTemplateColumns: repeat(${row.length}, 1fr)` forces 5 columns even at 360px. Switch to a responsive rule:
+### Phase C — Apply strict bindings (gated by your approval of B)
 
-- `<sm` (≤640px): cap at 3 columns. Rows of 5 wrap to 3+2; rows of 4 wrap to 3+1. The last tile in each wrapped row spans the remaining cells via `getSpanCols`-style math (or simply: `last:col-span-full` when remainder=1, otherwise no span — chosen per row length).
-- `≥sm`: keep `repeat(${row.length}, 1fr)` as-is.
+1. Apply `strict-rebind-manifest.json` `apply_safe` rows via migration — sets `images[]` to the correct storage URL.
+2. Re-bake `src/data/inventory/current_catalog.json` via `scripts/bake-catalog.mjs` so the Collection page reflects truth on next deploy.
+3. Print final report:
+   - Imageless count before / after
+   - Duplicate-hero groups remaining (should be only the legit variant families)
+   - List of orphan storage files still not used (these need owner naming help)
 
-This keeps tap targets ≥110px wide on a 360px screen and preserves the editorial 5/5/4/4 composition on tablet+.
+## Outcome you'll see
 
-Concrete row-length → mobile span map:
-- length 5 → 3 cols, last tile spans 1 (3+2 layout, 5th tile alone in its row spans col 1)... actually simplest: `grid-cols-3` and let cells flow naturally; `nth-last-child` rule makes the trailing 2 (for 5-rows) or 1 (for 4-rows) center themselves via `col-start-*`. We'll use a small helper that computes `gridColumn` per cell when `window.innerWidth < 640` is irrelevant — instead use Tailwind `sm:` breakpoint and a CSS-only solution:
+After Phase B alone, the pillows page will instantly look honest: the ~140 mis-bound products show placeholder tiles instead of pretending to be the same blue pillow 13 times. After Phase C, the 12 unused pillow files in storage land on their real products, and the only shared heroes left are the flatware/glass sets (where owner literally shot one photo for the family).
 
-```tsx
-className="grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)] min-h-0"
-style={{ ['--row-cols' as string]: `repeat(${row.length}, minmax(0, 1fr))` }}
-```
+## What I need from you
 
-This way mobile is always 3 columns, ≥sm uses the per-row count. No span math needed; the trailing cells just sit in the next row, and because parent height is fixed and there are now potentially 5 rows on mobile (4 design rows × wrap), we drop one design row's split — simplest is to accept that mobile wraps to ~6 visual rows inside the 74svh band, each ~12svh tall, which is still tappable.
-
-If 6 wrapped rows feels too tight, the alternative is to merge `sofas/chairs/benches` into a single "Seating" tile on mobile only — but that loses the sub-category drill-down the user explicitly asked for last week, so we keep wrapping.
-
-### 4. Tone cycling stays correct after wrap
-
-`TONES[(rowIdx + colIdx) % 3]` already produces a checkerboard regardless of column count. No change.
-
-### 5. Image sizing inside cells
-
-The current `sizes` attribute on the tile `<img>` assumes 5-col desktop / 2-col mobile. Update to:
-
-```text
-sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 20vw, 32vw"
-```
-
-Matches new 3-col mobile layout — slightly larger requests on phones, no waste on desktop.
-
-## Files touched
-
-- `src/routes/collection.tsx` — wrap `showOverview` branch in viewport-height container; replace mobile hero `<img>` with fixed-share band; pass `h-full` to children.
-- `src/components/collection/CategoryTonalGrid.tsx` — swap row `gridTemplateColumns` for responsive CSS variable; drop `min-h-[16vh]`; update `sizes` attribute on tile image.
-
-## Out of scope
-
-- No new components, no new data, no changes to `CATEGORY_COVERS` or row composition.
-- No changes to the product-grid branch (`!showOverview`) — that page already scrolls.
-- The `H-plate` hero PNG itself is not re-cropped; we use `object-contain` desktop / `object-cover` mobile to fit it.
-
-## Acceptance
-
-- At 1920×1080 desktop: H-plate left, 4 tonal rows right, bottom row sits flush with viewport bottom, no scroll on the landing.
-- At 375×812 iPhone: H-plate band ~26svh on top, tonal grid below filling to bottom edge, all tiles tappable (≥100px wide), no horizontal scroll.
-- At 768×1024 tablet: keeps 5/5/4/4 row composition (sm breakpoint hits at 640px), uses full viewport height.
+Just "go" to start Phase A. Each phase ends in a manifest you review before I touch the database. Nothing destructive runs without your sign-off.
