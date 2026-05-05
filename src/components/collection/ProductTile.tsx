@@ -127,7 +127,7 @@ export function ProductTile({
           onFocus={preloadQuickView}
           onTouchStart={preloadQuickView}
           aria-label={`Open ${product.title}`}
-          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
+          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150 reveal-on-scroll"
         >
           {/* Specimen frame — fixed height, generous interior padding,
               and a shared bottom baseline so every product sits on one
