@@ -19,7 +19,8 @@ while(true){
 // Pull live harvest
 const live = JSON.parse(fs.readFileSync('scripts/audit/live-products.json','utf8'));
 const liveByTitle = new Map();
-for (const p of (live.products||live)) {
+const liveArr = Array.isArray(live) ? live : Object.values(live);
+for (const p of liveArr) {
   const k = (p.title||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
   if (k) liveByTitle.set(k, p);
 }
