@@ -10,15 +10,15 @@ import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { HeroImage, heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
-import atelierStudioWide from "@/assets/atelier-studio-wide.png";
-import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png";
-import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png";
-import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp";
-import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png";
-import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png";
-import fabricationTentTriptych from "@/assets/atelier/fabrication-tent-triptych.png";
-import workbenchChairSketch from "@/assets/atelier/workbench-chair-sketch.png";
-import warehouseStudioCollage from "@/assets/atelier/studio-collage.png";
+import atelierStudioWide from "@/assets/atelier-studio-wide.png?preset=editorial";
+import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
+import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
+import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
+import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png?preset=editorial";
+import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png?preset=editorial";
+import fabricationTentTriptych from "@/assets/atelier/fabrication-tent-triptych.png?preset=editorial";
+import workbenchChairSketch from "@/assets/atelier/workbench-chair-sketch.png?preset=editorial";
+import warehouseStudioCollage from "@/assets/atelier/studio-collage.png?preset=editorial";
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
