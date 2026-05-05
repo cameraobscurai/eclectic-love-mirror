@@ -76,8 +76,12 @@ const products = visible.map((r, i) => {
   };
 });
 
+// Roll up RMS variant rows into one tile per product family
+const { products: rolled, stats } = rollupFamilies(products, liveSnapshot);
+console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
+
 const facetsMap = {};
-for (const p of products) {
+for (const p of rolled) {
   if (!facetsMap[p.categorySlug]) facetsMap[p.categorySlug] = { slug:p.categorySlug, display:p.displayCategory, count:0 };
   facetsMap[p.categorySlug].count++;
 }
