@@ -1331,8 +1331,8 @@ function CollectionPage() {
                   {total} pieces across {overviewGroups.length} categories
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {BROWSE_GROUP_ORDER.slice(0, 6).map((id) => {
-                    const label = BROWSE_GROUP_LABELS[id] || id;
+                  {PARENT_ORDER.slice(0, 6).map((id) => {
+                    const label = PARENT_LABELS[id];
                     return (
                       <li key={id}>
                         <button
