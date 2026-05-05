@@ -227,8 +227,8 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return null;
     }
     case "dining": {
-      if (has(t, ["dining chair"])) return "dining-chairs";
-      if (has(t, ["dining table", "farm table"])) return "dining-tables";
+      if (has(t, ["dining chair", "directors dining", "banquette"])) return "dining-chairs";
+      if (has(t, ["dining table", "farm table", "feasting"])) return "dining-tables";
       if (has(t, ["console", "sideboard", "buffet"])) return "consoles";
       if (has(t, ["chair"])) return "dining-chairs";
       if (has(t, ["table"])) return "dining-tables";
@@ -249,13 +249,34 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return null;
     }
     case "lighting": {
+      // Live-site truth: sconces and pendants both belong to Chandeliers,
+      // not Specialty. "Pendant lantern" must beat the lantern→candlelight
+      // rule, so pendants/chandeliers/sconces are checked FIRST.
+      if (
+        cat === "chandeliers" ||
+        has(t, ["chandelier", "pendant", "sconce"])
+      )
+        return "chandeliers";
+      if (
+        has(t, [
+          "uplight",
+          "string light",
+          "festoon",
+          "wash light",
+          "par can",
+          " par ",
+          "market light",
+          "corner light",
+          "battery",
+        ])
+      )
+        return "specialty";
       if (
         cat === "candlelight" ||
-        has(t, ["candle", "votive", "hurricane", "taper", "candelabr"])
+        has(t, ["candle", "votive", "hurricane", "taper", "candelabr", "lantern", "luminary", "oil lamp"])
       )
         return "candlelight";
-      if (cat === "chandeliers" || has(t, ["chandelier"])) return "chandeliers";
-      if (has(t, ["lamp", "sconce"])) return "lamps";
+      if (has(t, ["lamp"])) return "lamps";
       return "specialty";
     }
     case "textiles": {
@@ -268,15 +289,12 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
     case "rugs":
       return "rugs";
     case "styling": {
-      if (has(t, ["crate", "basket", "bin"])) return "crates-baskets";
+      if (has(t, ["crate", "basket"])) return "crates-baskets";
       if (has(t, ["game", "chess", "domino", "backgammon", "cards", "puzzle"]))
         return "games";
-      if (
-        g === "accents" ||
-        has(t, ["mirror", "sculpture", "vase", "vessel", "object", "accent"])
-      )
-        return "accents";
-      return null;
+      // Live site lumps everything else in Styling under Accents — make it
+      // the explicit fallback rather than relying on a narrow keyword list.
+      return "accents";
     }
     case "large-decor": {
       if (has(t, ["wall", "panel", "mural", "tapestry", "art", "painting"]))
