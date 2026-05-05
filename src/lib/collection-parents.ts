@@ -144,7 +144,25 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   "large-decor": "large-decor",
 };
 
+// Live-site → our ParentId. When a product has a liveCategory match, this
+// trumps RMS-categorySlug-based routing (handles cases like Bartolo where
+// RMS says "tables" but the live site puts it under cocktail-bar).
+const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
+  "lounge": "lounge-seating",
+  "lounge-tables": "lounge-tables",
+  "cocktail-bar": "cocktail-bar",
+  "dining": "dining",
+  "tableware": "tableware",
+  "textiles": "textiles",
+  "rugs": "rugs",
+  "styling": "styling",
+  "large-decor": "large-decor",
+  "light": "lighting",
+};
+
 export function productParent(p: CollectionProduct): ParentId | null {
+  if (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory])
+    return LIVE_CAT_TO_PARENT[p.liveCategory];
   const g = getProductBrowseGroup(p);
   return g ? GROUP_TO_PARENT[g] : null;
 }
