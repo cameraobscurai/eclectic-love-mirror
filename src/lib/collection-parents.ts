@@ -146,6 +146,7 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   styling: "styling",
   accents: "styling",
   "large-decor": "large-decor",
+  "furs-pelts": "furs-pelts",
 };
 
 // Live-site → our ParentId. When a product has a liveCategory match, this
