@@ -88,15 +88,23 @@ export function Navigation() {
         ref={headerRef}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          // Glass frost on every state — keeps the bar legible against the
+          // home photo (which previously rendered the nav invisible) while
+          // staying consistent with the hero wordmark band.
+          "backdrop-blur-md backdrop-saturate-150",
+          "border-b",
           scrolled
-            ? "bg-charcoal/95 backdrop-blur-sm"
+            ? "bg-charcoal/70 border-cream/10"
             : isWhitePage
-            ? "bg-white/90 backdrop-blur-sm"
+            ? "bg-white/65 border-charcoal/10"
             : isLightPage
-            ? "bg-cream/80 backdrop-blur-sm"
-            : "bg-transparent",
+            ? "bg-cream/65 border-charcoal/10"
+            : "bg-charcoal/30 border-cream/15",
           hidden && !isOpen ? "-translate-y-full" : "translate-y-0"
         )}
+        style={{
+          WebkitBackdropFilter: "blur(14px) saturate(1.5)",
+        }}
       >
         <nav
           className={cn(
