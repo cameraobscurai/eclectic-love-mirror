@@ -9,7 +9,7 @@ import {
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
-import { DotCursor } from "../components/dot-cursor";
+
 import { useViewTransitions } from "../hooks/useViewTransitions";
 
 import appCss from "../styles.css?url";
@@ -174,7 +174,7 @@ function RootComponent() {
         )}
       </div>
       <DevEditOverlay />
-      <DotCursor />
+      
     </>
   );
 }
