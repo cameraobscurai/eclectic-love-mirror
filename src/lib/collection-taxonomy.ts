@@ -223,6 +223,8 @@ export const BROWSE_GROUP_DESCRIPTIONS: Record<BrowseGroupId, string> = {
     "Singular pieces — mirrors, screens, sculptural objects — that change the temperature of a room on contact.",
   "large-decor":
     "Architectural objects in scale — sculpture, vessels, and statement pieces meant to hold a room.",
+  "furs-pelts":
+    "Hides, sheepskins, and pelts — tactile layers for seating, floors, and styling.",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
