@@ -121,8 +121,8 @@ export function CategoryTonalGrid({
           }}
         >
           {row.map((item, colIdx) => {
-            // Wider contrast spread across 5 tones, no neighbour repeats.
-            const tone = TONES[(rowIdx * 2 + colIdx) % TONES.length];
+            // True checkerboard via position-based modulo across MAX_COLS.
+            const tone = TONES[(rowIdx * MAX_COLS + colIdx) % TONES.length];
             const isFirstRow = rowIdx === 0;
             const isLast = colIdx === row.length - 1;
             const finaleSpan = isLast ? MAX_COLS - row.length + 1 : 1;
