@@ -1,0 +1,23 @@
+PER-PRODUCT IMAGE REPORT
+Generated: 2026-05-05T07:20:07.838Z
+Total public products: 835
+
+By status_class:
+  UNIQUE         629
+  SHARED_KEEP    91
+  SHARED_BREAK   88
+  IMAGELESS      27
+
+By proposed_source:
+  keep_current                 720
+  none                         35
+  storage_partial              31
+  storage_exact                26
+  squarespace_exact_title      23
+
+Flags:
+  current_hero_missing_from_storage: 758
+
+Files written:
+  scripts-tmp/per-product-image-report.json
+  scripts-tmp/per-product-image-report.csv
