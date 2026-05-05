@@ -13,7 +13,17 @@ const NAV_LINKS = [
     render: (
       <>
         ATELIER{" "}
-        <span className="font-display italic font-light tracking-normal normal-case lowercase">
+        <span
+          className="font-display italic font-light normal-case lowercase"
+          style={{
+            // Saol italic needs room — bump 1.35× and pull tracking back to 0,
+            // matching the deck's signature lockup.
+            fontSize: "1.35em",
+            letterSpacing: "0",
+            margin: "0 0.08em",
+            verticalAlign: "baseline",
+          }}
+        >
           by
         </span>{" "}
         THE HIVE
@@ -154,7 +164,7 @@ export function Navigation() {
                   to={link.href}
                   preload="intent"
                   className={cn(
-                    "relative group text-xs tracking-[0.2em] uppercase font-light transition-colors duration-300",
+                    "relative group text-[13px] xl:text-[14px] tracking-[0.28em] uppercase font-light transition-colors duration-300",
                     dark
                       ? active
                         ? "text-cream"
