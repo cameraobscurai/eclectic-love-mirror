@@ -776,7 +776,7 @@ function CollectionPage() {
                 ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1"
             }
-            style={showOverview ? { height: "calc(100svh - 88px)" } : undefined}
+            style={showOverview ? { height: "calc(100svh - var(--nav-h))" } : undefined}
           >
             {showOverview && (
               <aside
