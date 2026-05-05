@@ -1,8 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { rollupFamilies } from './family-rollup.mjs';
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+// Live Squarespace snapshot — source of truth for family groupings.
+// Refresh with the JSON-feed harvest script when the live site changes.
+let liveSnapshot = {};
+try {
+  liveSnapshot = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-inventory-snapshot.json', 'utf8'));
+} catch {
+  console.warn('[bake] no live-inventory-snapshot.json — skipping family rollup (each variant will be its own tile)');
+}
 
 const CAT_DISPLAY = {
   'tableware':'Tableware','pillows-throws':'Pillows & Throws',
