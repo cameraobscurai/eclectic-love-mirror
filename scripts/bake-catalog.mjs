@@ -98,19 +98,28 @@ for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
     if (it.urlId && !liveSlugInfo.has(it.urlId)) liveSlugInfo.set(it.urlId, info);
     const t = norm(it.title);
     if (t && !liveTitleInfo.has(t)) liveTitleInfo.set(t, info);
-    const toks = t.split(' ');
-    for (let n = Math.min(toks.length, 4); n >= 2; n--) {
+    const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
+    if (tStripped && !liveTitleInfo.has(tStripped)) liveTitleInfo.set(tStripped, info);
+    const toks = tStripped.split(' ');
+    for (let n = Math.min(toks.length, 5); n >= 2; n--) {
       const k = toks.slice(0, n).join(' ');
       if (!liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
     }
   });
 }
+// Strip number/dimension tokens that appear in RMS titles but not live titles
+// (e.g. RMS "Nantucket 41 Oak Wood Column" vs live "Nantucket Oak Wood Column")
+const stripNums = s => s.split(' ').filter(t => !/^\d/.test(t) && t.length >= 2).join(' ');
 let ranked = 0;
 for (const p of rolled) {
-  let info = liveSlugInfo.get(p.slug) || liveTitleInfo.get(norm(p.title));
+  const nTitle = norm(p.title);
+  const nStripped = stripNums(nTitle);
+  let info = liveSlugInfo.get(p.slug)
+    || liveTitleInfo.get(nTitle)
+    || liveTitleInfo.get(nStripped);
   if (!info) {
-    const toks = norm(p.title).split(' ');
-    for (let n = Math.min(toks.length, 4); n >= 2 && !info; n--) {
+    const toks = nStripped.split(' ');
+    for (let n = Math.min(toks.length, 5); n >= 2 && !info; n--) {
       info = liveFirstWordsInfo.get(toks.slice(0, n).join(' '));
     }
   }
@@ -122,6 +131,7 @@ for (const p of rolled) {
   }
 }
 console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
+
 
 
 
