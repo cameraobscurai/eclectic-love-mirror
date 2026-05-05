@@ -165,22 +165,20 @@ function AtelierPage() {
           paddingBottom: "clamp(48px, 5vw, 80px)",
         }}
       >
-        <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-end">
-          <div className="md:col-span-7">
+        <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-stretch">
+          <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            {/* T5: removed duplicated "WE ARE DESIGNERS, PRODUCERS..." eyebrow.
-                Lower instance lives under THE HIVE section. */}
             {/* T17: literal CAPS in source so SR & visual register agree. */}
-            <h1 className="mt-6 font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
+            <h1 className="font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
               IMAGINED.
               <br />
               DESIGNED.
               <br />
               REALIZED.
             </h1>
-            <p className="mt-8 text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
+            <p className="text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
           </div>
