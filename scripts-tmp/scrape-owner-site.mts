@@ -9,12 +9,12 @@ import path from 'node:path'
 const fc = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY! })
 
 const CATEGORY_PATHS = [
-  'lounge-seating',
+  'lounge',          // Lounge Seating (actual slug)
   'lounge-tables',
   'cocktail-bar',
   'dining',
   'tableware',
-  'lighting',
+  'light',           // Lighting (actual slug)
   'textiles',
   'rugs',
   'styling',
