@@ -28,7 +28,8 @@ export type ParentId =
   | "textiles"
   | "rugs"
   | "styling"
-  | "large-decor";
+  | "large-decor"
+  | "furs-pelts";
 
 export const PARENT_ORDER: ParentId[] = [
   "lounge-seating",
@@ -41,6 +42,7 @@ export const PARENT_ORDER: ParentId[] = [
   "rugs",
   "styling",
   "large-decor",
+  "furs-pelts",
 ];
 
 export const PARENT_LABELS: Record<ParentId, string> = {
@@ -54,6 +56,7 @@ export const PARENT_LABELS: Record<ParentId, string> = {
   "rugs": "Rugs",
   "styling": "Styling",
   "large-decor": "Large Decor",
+  "furs-pelts": "Furs & Pelts",
 };
 
 export interface SubOption {
