@@ -1,0 +1,63 @@
+IMAGE BINDING MANIFEST — DRY RUN
+Generated: 2026-05-05T00:09:10.941Z
+
+=== THE SIX NUMBERS ===
+1. Filename-key pass (storage files): 353 of 495 bound
+   Confidence — exact: 211 · contains: 18 · token_fallback: 43
+   RMS rows bound by Pass A: 272
+
+2. Squarespace pass (site products): 708 RMS rows bound from 610 site products
+   Confidence — exact: 327 · contains: 48 · token: 190
+   Variant-family bindings (1 site product → multiple RMS rows): 122
+   Unmatched site products: 45
+
+3. COMBINED COVERAGE: 713 of 835 public RMS rows have ≥1 image
+   Without image: 122
+
+4. Conflicts (both passes low-confidence or disagreed): 21
+
+5. Unmatched RMS rows by category:
+   tableware: 66
+   pillows-throws: 17
+   styling: 13
+   large-decor: 6
+   serveware: 6
+   bars: 5
+   tables: 3
+   seating: 2
+   candlelight: 1
+   lighting: 1
+   rugs: 1
+   storage: 1
+
+6. SPOT-CHECK EXAMPLES
+--- auto_apply (5) ---
+  3146  "Amisa Midnight Bar"  source=filename+squarespace  conf=exact  imgs=10
+     primary: https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/AMISA%20Blue%20Bar%201.png
+  2816  "Arcus Bevin 12' Slatted Bar"  source=filename+squarespace  conf=exact  imgs=10
+     primary: https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/ARCUS%20-%20BEVIN%201.png
+  2813  "Arcus Calvin 12' Smooth Bar"  source=filename+squarespace  conf=exact  imgs=10
+     primary: https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/ARCUS%20-%20CALVIN%201.png
+  2814  "Arcus Levar 12' Black Tambour Bar"  source=squarespace  conf=exact  imgs=9
+     primary: https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1674254640635-7A287183I3KY5NGOXUQ4/ARCUS+-+LEVAR.png?format=2500w
+  3054  "Arcus Ryann 12' White Tambour Bar"  source=filename+squarespace  conf=exact  imgs=10
+     primary: https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/ARCUS%20-%20RYANN%201.png
+--- unmatched_rms (5) ---
+  4118  "Monroe - Black Slat Tambour - Double 10'"  cat=bars  group=Bars
+     image_url filename: Black_Slat_Astaire_Double_10_.png
+  4117  "Monroe - Black Slat Tambour - Double 16'"  cat=bars  group=Bars
+     image_url filename: Black_Slat_Astaire_Double_16_.png
+  4116  "Monroe - Black Slat Tambour - Single 5'"  cat=bars  group=Bars
+     image_url filename: Black_Slat_Astaire_Single_5_.png
+  4108  "Monroe - Black Slat Tambour - Single 8'"  cat=bars  group=Bars
+     image_url filename: Black_Slat_Astaire_Single_8_.png
+  4119  "Monroe - Black Slat Tambour - Triple 15'"  cat=bars  group=Bars
+     image_url filename: Black_Slat_Astaire_Triple_15_.png
+--- conflicts (5) ---
+  4118  "Monroe - Black Slat Tambour - Double 10'"  reason=both passes low confidence
+  4117  "Monroe - Black Slat Tambour - Double 16'"  reason=both passes low confidence
+  4116  "Monroe - Black Slat Tambour - Single 5'"  reason=both passes low confidence
+  4108  "Monroe - Black Slat Tambour - Single 8'"  reason=both passes low confidence
+  4119  "Monroe - Black Slat Tambour - Triple 15'"  reason=both passes low confidence
+
+Manifest JSON: /dev-server/scripts-tmp/image-binding-manifest.json
