@@ -56,6 +56,7 @@ export type BrowseGroupId =
   | "lighting"
   | "throws"
   | "large-decor"
+  | "furs-pelts"
   | "accents";
 
 export type BrowseTier = "owner" | "safety-net";
@@ -105,6 +106,7 @@ export const SAFETY_NET_BROWSE_ORDER: BrowseGroupId[] = [
   "lighting",
   "throws",
   "large-decor",
+  "furs-pelts",
   "accents",
 ];
 
@@ -132,6 +134,7 @@ export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
   "styling",
   "accents",
   "large-decor",
+  "furs-pelts",
 ];
 
 export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
@@ -152,6 +155,7 @@ export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
   lighting: "Lighting",
   throws: "Throws",
   "large-decor": "Large Decor",
+  "furs-pelts": "Furs & Pelts",
   accents: "Accents",
 };
 
@@ -173,6 +177,7 @@ export const BROWSE_GROUP_TIER: Record<BrowseGroupId, BrowseTier> = {
   lighting: "safety-net",
   throws: "safety-net",
   "large-decor": "safety-net",
+  "furs-pelts": "safety-net",
   accents: "safety-net",
 };
 
@@ -218,6 +223,8 @@ export const BROWSE_GROUP_DESCRIPTIONS: Record<BrowseGroupId, string> = {
     "Singular pieces — mirrors, screens, sculptural objects — that change the temperature of a room on contact.",
   "large-decor":
     "Architectural objects in scale — sculpture, vessels, and statement pieces meant to hold a room.",
+  "furs-pelts":
+    "Hides, sheepskins, and pelts — tactile layers for seating, floors, and styling.",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -597,10 +604,16 @@ const RULES: Rule[] = [
   },
 
   {
+    id: "furs-pelts",
+    reason: "furs-pelts slug",
+    score: ({ categorySlug }) => (categorySlug === "furs-pelts" ? 100 : 0),
+  },
+
+  {
     id: "large-decor",
-    reason: "large-decor/furs-pelts slug",
+    reason: "large-decor slug",
     score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["large-decor", "furs-pelts"]) ? 100 : 0,
+      categorySlug === "large-decor" ? 100 : 0,
   },
 
   {

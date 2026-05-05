@@ -28,7 +28,8 @@ export type ParentId =
   | "textiles"
   | "rugs"
   | "styling"
-  | "large-decor";
+  | "large-decor"
+  | "furs-pelts";
 
 export const PARENT_ORDER: ParentId[] = [
   "lounge-seating",
@@ -41,6 +42,7 @@ export const PARENT_ORDER: ParentId[] = [
   "rugs",
   "styling",
   "large-decor",
+  "furs-pelts",
 ];
 
 export const PARENT_LABELS: Record<ParentId, string> = {
@@ -54,6 +56,7 @@ export const PARENT_LABELS: Record<ParentId, string> = {
   "rugs": "Rugs",
   "styling": "Styling",
   "large-decor": "Large Decor",
+  "furs-pelts": "Furs & Pelts",
 };
 
 export interface SubOption {
@@ -117,6 +120,7 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
     { id: "walls", label: "Walls" },
     { id: "other", label: "Other" },
   ],
+  "furs-pelts": [],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -142,6 +146,7 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   styling: "styling",
   accents: "styling",
   "large-decor": "large-decor",
+  "furs-pelts": "furs-pelts",
 };
 
 // Live-site → our ParentId. When a product has a liveCategory match, this
@@ -195,6 +200,7 @@ export const TILE_TO_PARENT_SUB: Record<
   styling: { parent: "styling", sub: "all" },
   accents: { parent: "styling", sub: "accents" },
   "large-decor": { parent: "large-decor", sub: "all" },
+  "furs-pelts": { parent: "furs-pelts", sub: "all" },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -343,6 +349,8 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
         return "structures";
       return "other";
     }
+    case "furs-pelts":
+      return null;
   }
 }
 

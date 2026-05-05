@@ -58,6 +58,7 @@ const VARIANT_NOUN_STEMS = new Set([
   'rug','runner','mat',
   'plinth','column','pedestal','riser',
   'stoneware','riverstone',
+  'umbrella','diameter',
 ]);
 const hasVariantNoun = title => {
   for (const t of wordTokens(title)) {
