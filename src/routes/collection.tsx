@@ -778,17 +778,19 @@ function CollectionPage() {
                 ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1"
             }
-            style={showOverview ? { height: "calc(100svh - var(--nav-h))" } : undefined}
           >
             {showOverview && (
               <aside
-                className="hidden lg:flex items-stretch h-full min-h-0 self-stretch overflow-hidden"
+                className="hidden lg:block self-stretch overflow-hidden"
                 style={{ background: "#ffffff" }}
               >
+                {/* Image renders at natural aspect — its height defines the
+                    row, and the sibling grid stretches to match via
+                    items-stretch. No crop, no skew. */}
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block h-full w-full object-cover object-center"
+                  className="block w-full h-auto"
                 />
               </aside>
             )}
@@ -804,18 +806,18 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: vertical hero plate filling the band, mirrors desktop framing. */}
+                  {/* Mobile: H plate stacks on top at its natural aspect — no crop. */}
                   <div
                     className="lg:hidden shrink-0 overflow-hidden self-stretch"
-                    style={{ background: "#ffffff", height: "30svh" }}
+                    style={{ background: "#ffffff" }}
                   >
                     <img
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
-                      className="block h-full w-full object-cover object-center"
+                      className="block w-full h-auto"
                     />
                   </div>
-                  <div className="flex-1 min-h-0">
+                  <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
