@@ -14,14 +14,16 @@
     "Ivory Mud Cloth Pillow": "Ivory Mudcloth",
     "Ivory Mud Cloth Lumbar": "Ivory Mudcloth Lumbar",
     "Purple Light Velvet Pillow": "Purple Pale Velvet Pillow",
-    "White Raffia Pillow": "Natural Raffia Pillow",
     "Orange Brown Textile Pillow": "Orange Textile Pillow Uno",
-    "Breen Olive Velvet Pillow": "Green Olive Velvet Pillow",
-    "Ivory Linen Small Lumbar": "Ivory Linen Lumbar"
+    "Breen Olive Velvet Pillow": "Green Olive Velvet Pillow"
   },
   "_unresolved": {
-    "Brown Yellow Pillow": "no clear catalog match — owner confirm",
-    "Ivory Sage Stripe Pillow": "catalog has Ivory Sage Mini Tassel only — owner confirm",
-    "_orphan_catalog_orange_textile": "Orange Textile Pillow Dos / Tres exist in catalog with no live counterpart (live consolidated 3 SKUs into 1 card)"
+    "Brown Yellow Pillow": "live-only — no catalog match. Owner confirm: drop from live or add to RMS.",
+    "Ivory Sage Stripe Pillow": "live-only — catalog has 'Ivory Sage Mini Tassel'. Likely different SKU. Owner confirm.",
+    "Ivory Linen Lumbar": "live-only — catalog has 'Ivory Linen Pillow' only. Lumbar variant missing from RMS.",
+    "Ivory Linen Small Lumbar": "live-only — same as above. Small lumbar variant missing from RMS.",
+    "Red Slightly Darker Velvet Pillow": "catalog-only — orphan in RMS, no live card. Likely retired or duplicate of Red Velvet Pillow.",
+    "Woven Sand Aztec": "catalog-only — orphan in RMS, no live card.",
+    "Orange Textile Pillow Dos / Tres": "catalog-only — live consolidated 3 SKUs into 1 'Orange Brown Textile Pillow' card."
   }
 }
