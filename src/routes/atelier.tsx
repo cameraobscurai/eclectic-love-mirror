@@ -218,7 +218,7 @@ function AtelierPage() {
       </Section>
 
       {/* 5. THE FABRICATION — capabilities list hidden pending owner copy */}
-      <Section eyebrow={undefined as unknown as string}>
+      <Section>
         {/* Capabilities list temporarily hidden — keep FAQ below */}
         {/* T15: Phase-2 botanical/sketch triptych removed pending future direction */}
 
