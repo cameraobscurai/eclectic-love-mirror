@@ -174,6 +174,7 @@ function RootComponent() {
         )}
       </div>
       <DevEditOverlay />
+      <DotCursor />
     </>
   );
 }
