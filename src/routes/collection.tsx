@@ -781,16 +781,16 @@ function CollectionPage() {
           >
             {showOverview && (
               <aside
-                className="hidden lg:block self-stretch overflow-hidden"
+                className="hidden lg:flex items-center justify-center self-stretch"
                 style={{ background: "#ffffff" }}
               >
-                {/* Image renders at natural aspect — its height defines the
-                    row, and the sibling grid stretches to match via
-                    items-stretch. No crop, no skew. */}
+                {/* object-contain = whole H is always visible, never cropped.
+                    The image scales to fit the row height (set by the
+                    sibling category grid) without distortion. */}
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block w-full h-auto"
+                  className="block max-w-full max-h-full w-auto h-auto object-contain"
                 />
               </aside>
             )}
