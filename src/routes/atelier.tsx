@@ -237,8 +237,8 @@ function AtelierPage() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
             FREQUENTLY ASKED
           </p>
-          <h3 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] tracking-tight">
-            Working with the Atelier.
+          <h3 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] uppercase tracking-[0.04em]">
+            WORKING WITH THE ATELIER
           </h3>
           <ul
             className="mt-8 divide-y max-w-3xl"
