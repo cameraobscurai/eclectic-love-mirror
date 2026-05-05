@@ -1,0 +1,21 @@
+NEAR_MISS_FURNITURE_PASS — 2026-05-05T00:17:20.537Z
+
+Scope (furniture-class only):
+  site unmatched in scope: 43
+  rms unmatched in scope:  19
+  excluded: tableware, serveware, styling, pillows-throws, candlelight, chandeliers, furs-pelts
+
+Bucketed records:
+  APPLY_SAFE_NEAR_MISS: 0 site->rms records
+  REVIEW_NEAR_MISS:     5
+  REJECTED_NEAR_MISS:   41
+  new safe rms rows:    0
+  new flagged conflicts:0
+
+Revised combined totals (no DB writes performed):
+  APPLY_SAFE total:        484 -> 484
+  REVIEW_REQUIRED total:   349 -> 349
+  Imageless RMS rows:      122 -> 122
+  Remaining unmatched site (in furniture scope): 43
+
+Flagged conflicts (CSV filename disagrees with site title): 0
