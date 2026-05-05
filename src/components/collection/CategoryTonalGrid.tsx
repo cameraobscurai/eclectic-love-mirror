@@ -24,9 +24,11 @@ const ROWS: BrowseGroupId[][] = [
   ["serveware", "styling", "accents", "large-decor"],
 ];
 
-// 3-tone neutral palette. Cycled by (rowIndex + colIndex) % 3 so no two
-// adjacent cells share a tone.
-const TONES = ["#efece6", "#d9d4cb", "#c8c2b6"] as const;
+// 5-tone warm neutral palette — wider contrast spread so adjacent cells
+// read as their own units instead of blurring into one flat plane.
+// Indexed by (rowIdx * 2 + colIdx) % 5 so no two neighbours share a tone
+// horizontally or vertically.
+const TONES = ["#f2efe8", "#e8e3d8", "#ddd6c8", "#e3ded2", "#ccc4b3"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
