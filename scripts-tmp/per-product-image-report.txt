@@ -1,0 +1,36 @@
+PER-PRODUCT IMAGE REPORT (v2 — with URL repair detection)
+Generated: 2026-05-05T07:23:49.609Z
+
+Total public products:                       835
+Storage objects scanned:                     1237
+
+STATUS_CLASS (current state of hero binding)
+  UNIQUE         629
+  SHARED_KEEP    91
+  SHARED_BREAK   88
+  IMAGELESS      27
+
+REPAIR_KIND (proposed action per product)
+  url_prefix_fix               664
+  none                         83
+  rebind_to_other_storage      65
+  rebind_to_squarespace        23
+
+PROPOSED_SOURCE
+  url_prefix_fix               664
+  keep_current                 48
+  none                         35
+  storage_exact                33
+  storage_partial              32
+  squarespace_exact_title      23
+
+FLAGS
+  current_url_404: 758
+
+UNFIXABLE (no honest candidate found, will stay imageless after repair):
+  SHARED_BREAK with no proposal: 11
+  IMAGELESS with no proposal:    24
+
+Files written:
+  scripts-tmp/per-product-image-report.json
+  scripts-tmp/per-product-image-report.csv
