@@ -211,15 +211,19 @@ function AtelierPage() {
           sizes="100vw"
           className="mt-4"
         />
-        <div className="mt-3 flex justify-center">
-          <div className="w-full md:w-1/2">
-            <MediaAperture
-              ratio="4/5"
-              picture={atelierSketchDrape}
-              alt="Hand-drawn chair sketch on hanging drape — design phase."
-              sizes="(min-width: 768px) 45vw, 100vw"
-            />
-          </div>
+        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <MediaAperture
+            ratio="4/5"
+            picture={atelierSketchDrape}
+            alt="Hand-drawn chair sketch on hanging drape — design phase."
+            sizes="(min-width: 768px) 45vw, 100vw"
+          />
+          <MediaAperture
+            ratio="4/5"
+            picture={atelierCollage}
+            alt="Studio collage — fabrication, sketching, and finished detail."
+            sizes="(min-width: 768px) 45vw, 100vw"
+          />
         </div>
       </Section>
 
