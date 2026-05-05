@@ -1507,7 +1507,7 @@ function CollectionPage() {
                 }}
                 title="The bar inside a category stays section-scoped. The modal does not."
               >
-                Bar: {(BROWSE_GROUP_LABELS[activeParent] || activeParent)} only
+                Bar: {PARENT_LABELS[activeParent]} only
               </span>
             )}
           </div>
