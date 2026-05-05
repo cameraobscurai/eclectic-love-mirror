@@ -5,7 +5,7 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
-import atelierCollage from "@/assets/atelier/atelier-collage.png?preset=editorial";
+
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierHiveTriptych from "@/assets/atelier/atelier-hive-triptych.jpeg?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
