@@ -828,12 +828,12 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex flex-col md:flex-row md:h-[calc(100dvh-var(--nav-h))] md:overflow-hidden" : "grid grid-cols-1"}
+            className={showOverview ? "flex flex-col lg:flex-row lg:h-[calc(100dvh-var(--nav-h))] lg:overflow-hidden" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden md:block flex-shrink-0"
+                className="hidden lg:block flex-shrink-0"
                 style={{
                   width: "40%",
                   background: "var(--paper)",
@@ -852,7 +852,7 @@ function CollectionPage() {
             {/* ===== RIGHT: main pane ===== */}
             <motion.div
               layout={!reduced}
-              className="min-w-0 flex-1 flex flex-col md:min-h-0 md:overflow-hidden"
+              className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
               key={activeParent || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
@@ -863,7 +863,7 @@ function CollectionPage() {
                 <>
                   {/* Mobile/tablet: H plate stacks on top, full width, square-ish */}
                   <div
-                    className="md:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10"
+                    className="lg:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10"
                     style={{
                       background: "var(--paper)",
                       containerType: "inline-size",
@@ -880,7 +880,7 @@ function CollectionPage() {
                       style={{ width: "min(100%, 88cqi)", height: "auto" }}
                     />
                   </div>
-                  <div className="md:flex-1 md:min-h-0 md:overflow-hidden">
+                  <div className="lg:flex-1 lg:min-h-0 lg:overflow-hidden">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}

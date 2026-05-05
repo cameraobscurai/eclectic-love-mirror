@@ -106,7 +106,7 @@ export function CategoryTonalGrid({
           height: 100%;
           gap: 0;
         }
-        @media (max-width: 767px) {
+        @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: none;
@@ -242,7 +242,7 @@ function TonalCell({
       ) : null}
 
       <span
-        className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 uppercase text-[12px] md:text-[11px] pointer-events-none"
+        className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 uppercase text-[12px] lg:text-[11px] pointer-events-none"
         style={{
           fontFamily: "var(--font-sans)",
           letterSpacing: "0.22em",
