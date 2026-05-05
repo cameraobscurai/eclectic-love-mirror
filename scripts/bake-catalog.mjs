@@ -80,37 +80,49 @@ const products = visible.map((r, i) => {
 const { products: rolled, stats } = rollupFamilies(products, liveSnapshot);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
 
-// Assign ownerSiteRank from live-site grid order. Match by slug first, then
-// by normalized title (RMS titles often differ slightly from live titles).
+// Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
+// Match by slug first, then by normalized title (RMS titles often differ).
 const norm = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
-const liveSlugRank = new Map();
-const liveTitleRank = new Map();
-const liveFirstWordsRank = new Map(); // first 2-3 words → rank, for fuzzy
-for (const items of Object.values(liveSnapshot || {})) {
+let liveSubcatMap = {};
+try {
+  const raw = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-subcategory-map.json','utf8'));
+  liveSubcatMap = raw.byLiveSlug || {};
+} catch {}
+const liveSlugInfo = new Map(); // slug -> {rank, category, subcategories}
+const liveTitleInfo = new Map();
+const liveFirstWordsInfo = new Map();
+for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
   items.forEach((it, idx) => {
-    if (it.urlId && !liveSlugRank.has(it.urlId)) liveSlugRank.set(it.urlId, idx);
+    const meta = liveSubcatMap[it.urlId] || {};
+    const info = { rank: idx, category: meta.category || liveCat, subcategories: meta.subcategories || [] };
+    if (it.urlId && !liveSlugInfo.has(it.urlId)) liveSlugInfo.set(it.urlId, info);
     const t = norm(it.title);
-    if (t && !liveTitleRank.has(t)) liveTitleRank.set(t, idx);
+    if (t && !liveTitleInfo.has(t)) liveTitleInfo.set(t, info);
     const toks = t.split(' ');
     for (let n = Math.min(toks.length, 4); n >= 2; n--) {
       const k = toks.slice(0, n).join(' ');
-      if (!liveFirstWordsRank.has(k)) liveFirstWordsRank.set(k, idx);
+      if (!liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
     }
   });
 }
 let ranked = 0;
 for (const p of rolled) {
-  let rank = liveSlugRank.get(p.slug);
-  if (rank == null) rank = liveTitleRank.get(norm(p.title));
-  if (rank == null) {
+  let info = liveSlugInfo.get(p.slug) || liveTitleInfo.get(norm(p.title));
+  if (!info) {
     const toks = norm(p.title).split(' ');
-    for (let n = Math.min(toks.length, 4); n >= 2 && rank == null; n--) {
-      rank = liveFirstWordsRank.get(toks.slice(0, n).join(' '));
+    for (let n = Math.min(toks.length, 4); n >= 2 && !info; n--) {
+      info = liveFirstWordsInfo.get(toks.slice(0, n).join(' '));
     }
   }
-  if (rank != null) { p.ownerSiteRank = rank; ranked++; }
+  if (info) {
+    p.ownerSiteRank = info.rank;
+    p.liveCategory = info.category;
+    p.liveSubcategories = info.subcategories;
+    ranked++;
+  }
 }
-console.log(`[rank] assigned ownerSiteRank to ${ranked}/${rolled.length} tiles from live snapshot`);
+console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
+
 
 
 
