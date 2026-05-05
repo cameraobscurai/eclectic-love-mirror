@@ -1,0 +1,2 @@
+UPDATE inventory_items SET images = ARRAY['https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824615946-Z17KU2WMFU7XVUCRA0IM/Calvary_Grey_Red_0__2_.png'] WHERE rms_id = '2331';
+UPDATE inventory_items SET images = ARRAY['https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be872ab804e8328558b/1773173727724/'] WHERE rms_id = '2330';
