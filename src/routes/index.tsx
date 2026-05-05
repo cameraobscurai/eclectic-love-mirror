@@ -198,7 +198,7 @@ function HomePage() {
         ref={sectionRef}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
-        className="relative flex flex-col overflow-hidden"
+        className="relative flex flex-col overflow-hidden film-grain"
         style={{
           height: "100dvh",
           minHeight: "100dvh",
