@@ -46,6 +46,15 @@ export interface CollectionProduct {
    * time. Used as the primary in-category sort key.
    */
   ownerSiteRank: number | null;
+  /** Variant rows collapsed under this family tile (e.g. Thistle Red Wine,
+   *  Thistle Coupe…). Empty for standalone products. Populated by
+   *  scripts/family-rollup.mjs at bake time. */
+  variants?: Array<{
+    id: string;
+    title: string;
+    dimensions: string | null;
+    stockedQuantity: string | null;
+  }>;
 }
 
 export interface CategoryFacet {
