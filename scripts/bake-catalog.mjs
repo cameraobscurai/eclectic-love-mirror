@@ -35,7 +35,10 @@ while (true) {
 }
 console.log('public rows:', all.length);
 
-const products = all.map((r, i) => {
+const visible = all.filter(r => Array.isArray(r.images) && r.images.length >= 1);
+const hiddenForMissingImage = all.length - visible.length;
+console.log('hidden (no image):', hiddenForMissingImage);
+const products = visible.map((r, i) => {
   const imgs = (r.images||[]).map((u,idx) => ({
     url: restoredInventoryUrl(u), position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
   }));
