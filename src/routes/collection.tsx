@@ -587,7 +587,9 @@ function CollectionPage() {
           ============================================================ */}
       {(activeGroup || q.trim()) && (
       <div
+        className="sticky z-30"
         style={{
+          top: "var(--nav-h)",
           background: utilityScrolled
             ? "rgba(255,255,255,0.78)"
             : "var(--paper)",
