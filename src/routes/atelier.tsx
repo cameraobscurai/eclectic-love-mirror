@@ -224,20 +224,29 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 5. THE FABRICATION — capabilities list hidden pending owner copy */}
-      <Section>
-        {/* Capabilities list temporarily hidden — keep FAQ below */}
-        {/* T15: Phase-2 botanical/sketch triptych removed pending future direction */}
+      {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
+      <Section eyebrow="ATELIER APPROACH">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
+          {APPROACH_STEPS.map((step) => (
+            <div key={step.number}>
+              <p
+                className="font-display text-2xl text-charcoal/45 tabular-nums border-t pt-4"
+                style={{ borderColor: "var(--archive-rule)" }}
+              >
+                {step.number}
+              </p>
+              <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+                {step.label}
+              </h3>
+            </div>
+          ))}
+        </div>
+      </Section>
 
-        {/* T16: Atelier FAQ — same accordion she remembers from /contact,
-            now placed exactly where she expects it. Mirrors the four
-            entries on Contact so a single edit there keeps both in sync
-            once we lift this to a shared module. */}
-        <div className="mt-20">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            FREQUENTLY ASKED
-          </p>
-          <h3 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] uppercase tracking-[0.04em]">
+      {/* 5. WORKING WITH THE ATELIER — FAQ accordion */}
+      <Section>
+        <div>
+          <h3 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] uppercase tracking-[0.04em]">
             WORKING WITH THE ATELIER
           </h3>
           <ul
@@ -270,30 +279,11 @@ function AtelierPage() {
             ))}
           </ul>
           <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-            More questions?{" "}
+            MORE QUESTIONS?{" "}
             <Link to="/contact" hash="faq" className="editorial-link">
-              See the full FAQ
+              SEE THE FULL FAQ
             </Link>
           </p>
-        </div>
-      </Section>
-
-      {/* 5. ATELIER APPROACH — quiet text-only triplet */}
-      <Section eyebrow="ATELIER APPROACH">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
-          {APPROACH_STEPS.map((step) => (
-            <div key={step.number}>
-              <p
-                className="font-display text-2xl text-charcoal/45 tabular-nums border-t pt-4"
-                style={{ borderColor: "var(--archive-rule)" }}
-              >
-                {step.number}
-              </p>
-              <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
-                {step.label}
-              </h3>
-            </div>
-          ))}
         </div>
       </Section>
 
