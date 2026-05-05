@@ -149,16 +149,29 @@ export function rollupFamilies(products, liveSnapshot) {
       if (bq !== aq) return bq - aq;
       return String(a.title).localeCompare(String(b.title));
     });
-    // Pick the member whose images array is longest as the "spokes" tile;
-    // its primaryImage becomes the family hero. Title becomes the family title.
+    // Merge images from ALL variant members (dedupe by URL, preserve order:
+    // hero member's images first, then any additional ones from siblings).
     const withMostImages = [...sorted].sort((a, b) => (b.images?.length || 0) - (a.images?.length || 0))[0];
+    const seen = new Set();
+    const mergedImages = [];
+    const pushImg = (img) => {
+      if (!img) return;
+      const url = typeof img === 'string' ? img : img.url || img.src || '';
+      if (!url || seen.has(url)) return;
+      seen.add(url);
+      mergedImages.push(img);
+    };
+    for (const img of (withMostImages.images || [])) pushImg(img);
+    for (const m of sorted) {
+      if (m === withMostImages) continue;
+      for (const img of (m.images || [])) pushImg(img);
+    }
     const family = {
       ...withMostImages,
-      // Override title with the live family title (e.g. "Thistle Glassware")
       title: g.fam.familyTitle,
-      // Stable family slug — use live slug when we have one, else a synthetic one
       slug: g.fam.liveSlug || `${withMostImages.slug}-family`,
-      // Preserve all members as variants for the detail/QuickView
+      images: mergedImages,
+      primaryImage: mergedImages[0] || withMostImages.primaryImage,
       variants: sorted.map(m => ({
         id: m.id,
         title: m.title,
