@@ -142,7 +142,9 @@ function HomePage() {
   // Breathing letter-spacing — ambient, cursor-independent.
   const letterSpacingMV = useMotionValue(`${BASE_LETTER_SPACING}em`);
 
-  const parallaxOn = !reduced && isPointerFine;
+  // T1: parallax/bounce disabled per owner — static hero only.
+  const parallaxOn = false;
+  void reduced; void isPointerFine;
 
   useEffect(() => {
     if (reduced) return;

@@ -136,10 +136,9 @@ function RootComponent() {
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
   // footer (long editorial scroll, footer is the natural terminus).
+  // T18+T22: footer now renders on /contact and /collection too.
+  // Only /faq and /privacy keep the self-contained-fold treatment.
   const hideFooter =
-    pathname === "/collection" ||
-    pathname.startsWith("/collection/") ||
-    pathname === "/contact" ||
     pathname === "/faq" ||
     pathname === "/privacy" ||
     pathname === "/process";
