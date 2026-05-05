@@ -239,7 +239,10 @@ function ContactPage() {
                 <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   EMAIL
                 </span>
-                <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
+                <a
+                  className="editorial-link uppercase tracking-[0.08em]"
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                >
                   {SUPPORT_EMAIL}
                 </a>
               </p>
@@ -247,7 +250,9 @@ function ContactPage() {
                 <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   ATELIER
                 </span>
-                Denver, Colorado
+                <span className="uppercase tracking-[0.08em]">
+                  Denver, Colorado
+                </span>
               </p>
             </div>
           </aside>
@@ -578,7 +583,7 @@ function SuccessPanel() {
         RECEIVED
       </p>
       <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
-        Thank you. Your inquiry is with the studio.
+        Thank you. Your inquiry is with the atelier.
       </h2>
       <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-charcoal/70">
         We respond within two business days. If your event is time-sensitive,
