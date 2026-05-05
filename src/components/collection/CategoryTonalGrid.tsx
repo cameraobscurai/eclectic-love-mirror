@@ -96,8 +96,31 @@ export function CategoryTonalGrid({
     // grid-rows-3 lg + h-full = three equal rows that fill the parent's
     // height, sharing the H-plate's vertical real estate. No aspect-ratio
     // on individual tiles — they take their share of the row.
-    <div
-      className="grid grid-cols-3 grid-rows-6 sm:grid-cols-3 sm:grid-rows-6 lg:grid-cols-6 lg:grid-rows-3 w-full h-full min-h-0"
+    <>
+      <style>{`
+        [data-tonal-grid] {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          grid-template-rows: repeat(3, 1fr);
+          width: 100%;
+          height: 100%;
+          gap: 0;
+        }
+        @media (max-width: 1023px) {
+          [data-tonal-grid] {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+          }
+        }
+        @media (max-width: 639px) {
+          [data-tonal-grid] {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(9, 1fr);
+          }
+        }
+      `}</style>
+      <div
+      data-tonal-grid
       role="list"
       aria-label="Browse by category"
     >
@@ -131,6 +154,7 @@ export function CategoryTonalGrid({
         );
       })}
     </div>
+    </>
   );
 }
 

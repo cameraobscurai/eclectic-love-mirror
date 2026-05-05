@@ -776,40 +776,34 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={
+            className={showOverview ? "flex flex-col md:flex-row" : "grid grid-cols-1"}
+            style={
               showOverview
-                ? // items-stretch: H-plate column dictates height, grid fills
-                  // its column with N equal rows. No dead space, no inner gap.
-                  // Mobile stays stacked; tablet (md+) goes side-by-side.
-                  "grid grid-cols-1 md:grid-cols-[minmax(0,42%)_minmax(0,58%)] lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch gap-0"
-                : "grid grid-cols-1"
+                ? {
+                    height: "calc(100dvh - var(--nav-h))",
+                    overflow: "hidden",
+                  }
+                : undefined
             }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden md:grid self-stretch"
+                className="hidden md:flex items-center justify-center flex-shrink-0"
                 style={{
+                  width: "40%",
                   background: "var(--paper)",
                   containerType: "inline-size",
-                  placeItems: "center",
-                  // 3/4 portrait — defines the height of the whole row.
-                  // Grid sibling stretches to match via items-stretch.
-                  aspectRatio: "3 / 4",
-                  padding: "clamp(16px, 4cqi, 56px)",
+                  padding: "clamp(24px, 5cqi, 64px)",
                 }}
               >
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block object-contain"
+                  className="block w-full object-contain"
                   width={1200}
                   height={1600}
-                  style={{
-                    width: "min(100%, 88cqi)",
-                    maxHeight: "100%",
-                    height: "auto",
-                  }}
+                  style={{ maxHeight: "100%", height: "auto" }}
                 />
               </motion.aside>
             )}
@@ -817,22 +811,22 @@ function CollectionPage() {
             {/* ===== RIGHT: main pane ===== */}
             <motion.div
               layout={!reduced}
-              className="min-w-0"
+              className="min-w-0 flex-1 flex flex-col min-h-0"
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
+                overflow: "hidden",
               }}
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: H plate stacks on top, container-query aware. */}
+                  {/* Mobile: H plate stacks on top */}
                   <div
-                    className="md:hidden grid"
+                    className="md:hidden flex items-center justify-center flex-shrink-0"
                     style={{
                       background: "var(--paper)",
                       containerType: "inline-size",
-                      placeItems: "center",
                       aspectRatio: "4 / 3",
                       padding: "clamp(8px, 2cqi, 24px)",
                     }}
@@ -846,10 +840,12 @@ function CollectionPage() {
                       style={{ width: "min(100%, 92cqi)", height: "auto" }}
                     />
                   </div>
-                  <CategoryTonalGrid
-                    groups={overviewGroups}
-                    onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
-                  />
+                  <div className="flex-1 min-h-0 overflow-hidden">
+                    <CategoryTonalGrid
+                      groups={overviewGroups}
+                      onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
+                    />
+                  </div>
                 </>
               ) : (
                 <>
