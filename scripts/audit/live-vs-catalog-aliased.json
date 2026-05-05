@@ -1,0 +1,267 @@
+{
+  "generated_at": "2026-05-05T10:48:01.802Z",
+  "stats": {
+    "exact": 334,
+    "aliasExplicit": 2,
+    "aliasFamily": 11,
+    "contains": 39,
+    "tokenOverlap": 194,
+    "unresolved": 30
+  },
+  "unresolved": [
+    {
+      "title": "Jesamay Armchair",
+      "urlId": "jesamay-armchair",
+      "fullUrl": "/lounge/jesamay-armchair",
+      "liveCat": "lounge",
+      "slug": "jesamay-armchair",
+      "reason": "no-match"
+    },
+    {
+      "title": "Iraja 12' Wood Convertible Bar",
+      "urlId": "iraja-12-square-whitewash-bar",
+      "fullUrl": "/cocktail-bar/iraja-12-square-whitewash-bar",
+      "liveCat": "cocktail-bar",
+      "slug": "iraja-12-square-whitewash-bar",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug has -square-whitewash- variant suffix."
+    },
+    {
+      "title": "Gerwyn Grey Dining Chiar",
+      "urlId": "gerwyn-grey-dining-chiar",
+      "fullUrl": "/dining/gerwyn-grey-dining-chiar",
+      "liveCat": "dining",
+      "slug": "gerwyn-grey-dining-chiar",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "TYPO in live slug: 'chiar' not 'chair'. Preserve exactly for image binding."
+    },
+    {
+      "title": "Tove 8' Grey Dining Table",
+      "urlId": "tove-grey-wood-top-dining-table",
+      "fullUrl": "/dining/tove-grey-wood-top-dining-table",
+      "liveCat": "dining",
+      "slug": "tove-grey-wood-top-dining-table",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug has -grey-wood-top- variant."
+    },
+    {
+      "title": "Nero 5' Round Dining Table",
+      "urlId": "nero-5-round-grey-dining-table",
+      "fullUrl": "/dining/nero-5-round-grey-dining-table",
+      "liveCat": "dining",
+      "slug": "nero-5-round-grey-dining-table",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug has -grey- infix."
+    },
+    {
+      "title": "Bulan",
+      "urlId": "sila-grey-speckled-glaze",
+      "fullUrl": "/tableware/sila-grey-speckled-glaze",
+      "liveCat": "tableware",
+      "slug": "sila-grey-speckled-glaze",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Bulan→sila slug; no RMS row found. Owner: confirm."
+    },
+    {
+      "title": "Estella Mixed Metal Flatware",
+      "urlId": "estella-mixed-metal-flatware",
+      "fullUrl": "/tableware/estella-mixed-metal-flatware",
+      "liveCat": "tableware",
+      "slug": "estella-mixed-metal-flatware",
+      "reason": "no-match"
+    },
+    {
+      "title": "MILLIE Flatware",
+      "urlId": "millie-flatware",
+      "fullUrl": "/tableware/millie-flatware",
+      "liveCat": "tableware",
+      "slug": "millie-flatware",
+      "reason": "no-match"
+    },
+    {
+      "title": "Bronson Glassware",
+      "urlId": "bronson-glassware",
+      "fullUrl": "/tableware/bronson-glassware",
+      "liveCat": "tableware",
+      "slug": "bronson-glassware",
+      "reason": "no-match"
+    },
+    {
+      "title": "Sage Glassware",
+      "urlId": "sage-glassware",
+      "fullUrl": "/tableware/sage-glassware",
+      "liveCat": "tableware",
+      "slug": "sage-glassware",
+      "reason": "no-match"
+    },
+    {
+      "title": "KIMORA Glassware",
+      "urlId": "kimora",
+      "fullUrl": "/tableware/kimora",
+      "liveCat": "tableware",
+      "slug": "kimora",
+      "reason": "no-match"
+    },
+    {
+      "title": "Adonis Glassware",
+      "urlId": "adonis-glassware",
+      "fullUrl": "/tableware/adonis-glassware",
+      "liveCat": "tableware",
+      "slug": "adonis-glassware",
+      "reason": "no-match"
+    },
+    {
+      "title": "Narin Glassware",
+      "urlId": "narin-glassware",
+      "fullUrl": "/tableware/narin-glassware",
+      "liveCat": "tableware",
+      "slug": "narin-glassware",
+      "reason": "no-match"
+    },
+    {
+      "title": "Lavanya Stoneware Bowls",
+      "urlId": "lavanya-riverstone-medium-bowl",
+      "fullUrl": "/tableware/lavanya-riverstone-medium-bowl",
+      "liveCat": "tableware",
+      "slug": "lavanya-riverstone-medium-bowl",
+      "reason": "no-match"
+    },
+    {
+      "title": "Vintage Silver Goblets",
+      "urlId": "vintage-silver-goblets",
+      "fullUrl": "/tableware/vintage-silver-goblets",
+      "liveCat": "tableware",
+      "slug": "vintage-silver-goblets",
+      "reason": "no-match"
+    },
+    {
+      "title": "Leather Baskets",
+      "urlId": "leather-baskets",
+      "fullUrl": "/styling/leather-baskets",
+      "liveCat": "styling",
+      "slug": "leather-baskets",
+      "reason": "no-match"
+    },
+    {
+      "title": "Hans Vintage Brass Telescope",
+      "urlId": "hans-vintage-brass-telescope",
+      "fullUrl": "/styling/hans-vintage-brass-telescope",
+      "liveCat": "styling",
+      "slug": "hans-vintage-brass-telescope",
+      "reason": "no-match"
+    },
+    {
+      "title": "Salva Vintage Opera Glasses",
+      "urlId": "salva",
+      "fullUrl": "/styling/salva",
+      "liveCat": "styling",
+      "slug": "salva",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token. RMS 'salva' probe falsely hits 'Salvatore Marble Coffee Table' — do NOT auto-match."
+    },
+    {
+      "title": "Tafari Tumbleweed",
+      "urlId": "tafari",
+      "fullUrl": "/styling/tafari",
+      "liveCat": "styling",
+      "slug": "tafari",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token."
+    },
+    {
+      "title": "Bettie Blue Hourglass",
+      "urlId": "bettie-blue-hourglass",
+      "fullUrl": "/styling/bettie-blue-hourglass",
+      "liveCat": "styling",
+      "slug": "bettie-blue-hourglass",
+      "reason": "no-match"
+    },
+    {
+      "title": "Ruby Red Ski Lift Bench",
+      "urlId": "ruby-red-ski-lift-bench",
+      "fullUrl": "/large-decor/ruby-red-ski-lift-bench",
+      "liveCat": "large-decor",
+      "slug": "ruby-red-ski-lift-bench",
+      "reason": "no-match"
+    },
+    {
+      "title": "CHATTA 6' Diameter Umbrellas",
+      "urlId": "chatta-6-diameter-umbrellas",
+      "fullUrl": "/large-decor/chatta-6-diameter-umbrellas",
+      "liveCat": "large-decor",
+      "slug": "chatta-6-diameter-umbrellas",
+      "reason": "no-match"
+    },
+    {
+      "title": "Ryland Pallet Wall",
+      "urlId": "ryland",
+      "fullUrl": "/large-decor/ryland",
+      "liveCat": "large-decor",
+      "slug": "ryland",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token."
+    },
+    {
+      "title": "Teigan/Mahdi White Leather Barricade",
+      "urlId": "teigan",
+      "fullUrl": "/large-decor/teigan",
+      "liveCat": "large-decor",
+      "slug": "teigan",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token."
+    },
+    {
+      "title": "Erwin/Mahdi Jute Barricade",
+      "urlId": "erwin",
+      "fullUrl": "/large-decor/erwin",
+      "liveCat": "large-decor",
+      "slug": "erwin",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token."
+    },
+    {
+      "title": "Paxton 10'H Wireframe Cage with Smoke Acrylic",
+      "urlId": "paxton-10ftacrylic",
+      "fullUrl": "/large-decor/paxton-10ftacrylic",
+      "liveCat": "large-decor",
+      "slug": "paxton-10ftacrylic",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "No hyphen between 'ft' and 'acrylic' — preserve exactly."
+    },
+    {
+      "title": "Paxton 7'H Black Wireframe Cage",
+      "urlId": "paxton-7ft",
+      "fullUrl": "/large-decor/paxton-7ft",
+      "liveCat": "large-decor",
+      "slug": "paxton-7ft",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Foot-mark abbreviation in slug."
+    },
+    {
+      "title": "Paxton 10'H Black Wireframe Cage",
+      "urlId": "paxton-10ft",
+      "fullUrl": "/large-decor/paxton-10ft",
+      "liveCat": "large-decor",
+      "slug": "paxton-10ft",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Foot-mark abbreviation in slug."
+    },
+    {
+      "title": "Amitola LED Corner Light",
+      "urlId": "amitola-led-corner-light",
+      "fullUrl": "/light/amitola-led-corner-light",
+      "liveCat": "light",
+      "slug": "amitola-led-corner-light",
+      "reason": "no-match"
+    },
+    {
+      "title": "Maor Market Lighting",
+      "urlId": "maor",
+      "fullUrl": "/light/maor",
+      "liveCat": "light",
+      "slug": "maor",
+      "reason": "alias-known-unresolved",
+      "aliasNote": "Slug shortened to family token."
+    }
+  ]
+}
