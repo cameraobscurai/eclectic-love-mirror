@@ -215,7 +215,7 @@ function AtelierPage() {
             <div className="mt-12">
               <MediaAperture
                 ratio="16/9"
-                src={atelierStudioWide}
+                picture={atelierStudioWide}
                 alt="The Atelier — interior view of the studio with the elevated container office, lounge seating, and plant-lined floor."
                 label="STUDIO"
                 sizes="(min-width: 1024px) 1280px, 100vw"
@@ -224,14 +224,14 @@ function AtelierPage() {
             <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
               <MediaAperture
                 ratio="4/5"
-                src={workbenchChairSketch}
+                picture={workbenchChairSketch}
                 alt="Pencil sketch of a chair design with measurement annotations, hung as a draped canvas in the workbench."
                 label="WORKBENCH"
                 sizes="(min-width: 768px) 50vw, 100vw"
               />
               <MediaAperture
                 ratio="4/5"
-                src={warehouseStudioCollage}
+                picture={warehouseStudioCollage}
                 alt="Black-and-white collage — studio interiors, fabrication in progress, and a finished tasseled stool."
                 label="WAREHOUSE"
                 sizes="(min-width: 768px) 50vw, 100vw"
@@ -295,19 +295,19 @@ function AtelierPage() {
         <div className="mt-12 grid grid-cols-3 gap-3 [&_>*]:transition-[filter] [&_>*]:duration-700 [&_>*]:ease-out [&_>*]:[filter:grayscale(1)] hover:[&_>*:hover]:[filter:grayscale(0)] focus-within:[&_>*:focus-within]:[filter:grayscale(0)]">
           <MediaAperture
             ratio="1/1"
-            src={fabricationStillLife}
+            picture={fabricationStillLife}
             alt="Charcoal still-life study — glassware and florals."
             sizes="(min-width: 1024px) 30vw, 33vw"
           />
           <MediaAperture
             ratio="1/1"
-            src={fabricationFoliage}
+            picture={fabricationFoliage}
             alt="Watercolor pattern study — foliage and birds."
             sizes="(min-width: 1024px) 30vw, 33vw"
           />
           <MediaAperture
             ratio="1/1"
-            src={fabricationTentTriptych}
+            picture={fabricationTentTriptych}
             alt="Sketch to render to realized photo — a tented dining install across three stages."
             sizes="(min-width: 1024px) 30vw, 33vw"
           />
