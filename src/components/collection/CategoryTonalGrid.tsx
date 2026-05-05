@@ -24,9 +24,9 @@ const ROWS: BrowseGroupId[][] = [
   ["serveware", "styling", "accents", "large-decor"],
 ];
 
-// 2-tone checkerboard: cream against a 7% darker neutral. Position-based
-// modulo so the 5-col rows naturally produce a true checkerboard.
-const TONES = ["#f2efe8", "#e0ddd6"] as const;
+// 2-tone cool checkerboard — paper-white against a soft cool grey to
+// match the white H-plate sitting alongside.
+const TONES = ["#f1f2f3", "#dde0e3"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
