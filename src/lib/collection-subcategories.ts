@@ -32,7 +32,7 @@ export interface SubcategoryOption {
 // whose keywords match the title wins, so put more specific rules first.
 const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
   "lounge-seating": [
-    { id: "sofas", label: "Sofas", keywords: ["sofa", "loveseat", "settee", "couch"] },
+    { id: "sofas", label: "Sofas", keywords: ["sofa", "loveseat", "settee", "couch", "banquette"] },
     { id: "benches", label: "Benches", keywords: ["bench", "daybed"] },
     { id: "ottomans", label: "Ottomans", keywords: ["ottoman", "pouf", "footstool"] },
     { id: "stools", label: "Stools", keywords: ["barstool", "stool"] },
@@ -43,15 +43,18 @@ const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
     { id: "chairs", label: "Chairs", keywords: ["armchair", "lounge chair", "chair"] },
   ],
   tables: [
-    { id: "dining-tables", label: "Dining Tables", keywords: ["dining table", "farm table"] },
+    // Live site tags Community + Counter as Dining Tables; mirror that.
+    { id: "dining-tables", label: "Dining Tables", keywords: ["dining table", "farm table", "community table", "counter table"] },
     { id: "highboys", label: "Highboys", keywords: ["highboy"] },
     { id: "consoles", label: "Consoles", keywords: ["console", "entry table", "sofa table"] },
-    { id: "coffee-tables", label: "Coffee Tables", keywords: ["coffee table", "cocktail table"] },
+    // Live site tags columns + plinths under Cocktail Tables.
+    { id: "coffee-tables", label: "Coffee Tables", keywords: ["coffee table", "cocktail table", "column", "plinth"] },
     { id: "side-tables", label: "Side Tables", keywords: ["side table", "end table", "accent table", "drink table"] },
   ],
   "cocktail-bar": [
-    { id: "back-bars", label: "Back Bars", keywords: ["back bar", "backbar", "bar shelving", "shelving"] },
-    { id: "carts", label: "Carts", keywords: ["cart", "trolley"] },
+    // Live "Storage" tag covers shelves / cabinets / credenzas / sideboards behind bars.
+    { id: "back-bars", label: "Back Bars", keywords: ["back bar", "backbar", "bar shelving", "shelving", "shelf", "cabinet", "credenza", "sideboard", "etagere"] },
+    // Live tags ALL bar carts as "Bars", so collapse carts into bars.
     { id: "bars", label: "Bars", keywords: ["bar"] },
   ],
   "large-decor": [
@@ -59,7 +62,7 @@ const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
     { id: "fireplaces", label: "Fireplaces", keywords: ["fireplace", "firepit", "chiminea"] },
     { id: "planters", label: "Planters", keywords: ["planter", "pot", "urn"] },
     { id: "mirrors", label: "Mirrors", keywords: ["mirror"] },
-    { id: "structures", label: "Structures", keywords: ["arch", "arbor", "wall", "structure"] },
+    { id: "structures", label: "Structures", keywords: ["arch", "arbor", "wall", "structure", "canopy"] },
   ],
   lighting: [
     { id: "floor-lamps", label: "Floor Lamps", keywords: ["floor lamp", "standing lamp"] },
