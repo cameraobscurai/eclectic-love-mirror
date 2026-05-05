@@ -8,22 +8,21 @@ let items=[]; for (const k of Object.keys(cat)) if (Array.isArray(cat[k])) items
 // Mirror src/lib/collection-subcategories.ts SUBCATEGORY_RULES
 const RULES = {
   "lounge-seating": [
-    { id: "sofas", kws: ["sofa","loveseat","settee","couch"] },
+    { id: "sofas", kws: ["sofa","loveseat","settee","couch","banquette"] },
     { id: "benches", kws: ["bench","daybed"] },
     { id: "ottomans", kws: ["ottoman","pouf","footstool"] },
     { id: "stools", kws: ["barstool","stool"] },
     { id: "chairs", kws: ["armchair","lounge chair","chair"] },
   ],
   tables: [
-    { id: "dining-tables", kws: ["dining table","farm table"] },
+    { id: "dining-tables", kws: ["dining table","farm table","community table","counter table"] },
     { id: "highboys", kws: ["highboy"] },
     { id: "consoles", kws: ["console","entry table","sofa table"] },
-    { id: "coffee-tables", kws: ["coffee table","cocktail table"] },
+    { id: "coffee-tables", kws: ["coffee table","cocktail table","column","plinth"] },
     { id: "side-tables", kws: ["side table","end table","accent table","drink table"] },
   ],
   "cocktail-bar": [
-    { id: "back-bars", kws: ["back bar","backbar","bar shelving","shelving"] },
-    { id: "carts", kws: ["cart","trolley"] },
+    { id: "back-bars", kws: ["back bar","backbar","bar shelving","shelving","shelf","cabinet","credenza","sideboard","etagere"] },
     { id: "bars", kws: ["bar"] },
   ],
   "large-decor": [
@@ -31,7 +30,7 @@ const RULES = {
     { id: "fireplaces", kws: ["fireplace","firepit","chiminea"] },
     { id: "planters", kws: ["planter","pot","urn"] },
     { id: "mirrors", kws: ["mirror"] },
-    { id: "structures", kws: ["arch","arbor","wall","structure"] },
+    { id: "structures", kws: ["arch","arbor","wall","structure","canopy"] },
   ],
   lighting: [
     { id: "floor-lamps", kws: ["floor lamp","standing lamp"] },
