@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
+import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
 import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
@@ -158,8 +160,12 @@ function AtelierPage() {
             </p>
           </div>
           <div className="md:col-span-5">
-            {/* T4: owner-supplied bench/tasseled-throws photo pending */}
-            <Placeholder ratio="4/5" label="ATELIER PORTRAIT" />
+            <MediaAperture
+              ratio="4/5"
+              picture={atelierReplacement}
+              alt="Styled bench with tasseled throws."
+              sizes="(min-width: 768px) 40vw, 100vw"
+            />
           </div>
         </div>
       </section>
