@@ -1,0 +1,26 @@
+{
+  "_doc": "Manual live-title -> catalog-title aliases for pillow reconciliation. Used by classify-vs-live.mjs and title-reconciliation.mjs. Keep small; only add entries confirmed by slug or visual match.",
+  "aliases": {
+    "Blue White Stripe Pillow": "Blue Light Stripe Pillow",
+    "Brown Fur Oversize": "Brown Fur Square Oversize Pillow",
+    "Brown Fur + Mud Cloth Lumbar Oversize": "Brown Fur / Mudcloth Long Oversize Pillow",
+    "B/W Yarn Detail Lumbar Oversize": "B/W Yarn Oversize Pillow",
+    "Champagne Snake Leather Lumbar": "Champagne Snake Lumbar Pillow",
+    "Gold Fleck Pillow": "Gold Fleck Woven Pillow",
+    "Green Tassel Pillow": "Green Forest Tassel Pillow",
+    "Green Sage Lumbar": "Green Sage Tassel Lumbar Pillow",
+    "Ivory Black Native Pillow": "Ivory Black Native Wool Pillow",
+    "Ivory Brown Chain Lumbar": "Ivory Brown Chain Link Lumbar Pillow",
+    "Ivory Mud Cloth Pillow": "Ivory Mudcloth",
+    "Ivory Mud Cloth Lumbar": "Ivory Mudcloth Lumbar",
+    "Purple Light Velvet Pillow": "Purple Pale Velvet Pillow",
+    "White Raffia Pillow": "Natural Raffia Pillow",
+    "Orange Brown Textile Pillow": "Orange Textile Pillow Uno",
+    "Breen Olive Velvet Pillow": "Green Olive Velvet Pillow"
+  },
+  "_unresolved": {
+    "Brown Yellow Pillow": "no clear catalog match — owner confirm",
+    "Ivory Sage Stripe Pillow": "catalog has Ivory Sage Mini Tassel only — owner confirm",
+    "_orphan_catalog_orange_textile": "Orange Textile Pillow Dos / Tres exist in catalog with no live counterpart (live consolidated 3 SKUs into 1 card)"
+  }
+}
