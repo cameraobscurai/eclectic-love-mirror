@@ -22,6 +22,7 @@ import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
+import { HivePlate } from "@/components/collection/HivePlate";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
@@ -785,28 +786,22 @@ function CollectionPage() {
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:grid self-stretch h-plate-slot"
-                style={{
-                  background: "var(--paper)",
-                  containerType: "inline-size",
-                  placeItems: "center",
-                  // The image floats in the optical center of whatever
-                  // shape this slot ends up — wide column, narrow column,
-                  // chat-open, chat-closed. cqi units = % of the slot's
-                  // own inline size, not the viewport, so the artwork
-                  // re-composes per container, not per breakpoint.
-                  padding: "clamp(16px, 4cqi, 56px)",
-                }}
+                className="hidden lg:block self-stretch"
               >
-                <img
-                  src={hiveSignatureHero}
-                  alt="The Hive — Signature Collection"
-                  className="block object-contain"
-                  style={{
-                    width: "min(100%, 88cqi)",
-                    maxHeight: "100%",
-                    height: "auto",
-                  }}
+                <HivePlate
+                  className="h-full w-full"
+                  artifact={
+                    <img
+                      src={hiveSignatureHero}
+                      alt=""
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "contain",
+                        display: "block",
+                      }}
+                    />
+                  }
                 />
               </motion.aside>
             )}
@@ -823,21 +818,21 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: H plate stacks on top, also container-aware. */}
-                  <div
-                    className="lg:hidden shrink-0 self-stretch grid"
-                    style={{
-                      background: "var(--paper)",
-                      containerType: "inline-size",
-                      placeItems: "center",
-                      padding: "clamp(16px, 4cqi, 40px)",
-                    }}
-                  >
-                    <img
-                      src={hiveSignatureHero}
-                      alt="The Hive — Signature Collection"
-                      className="block object-contain"
-                      style={{ width: "min(100%, 92cqi)", height: "auto" }}
+                  {/* Mobile: SVG H-plate stacks on top — fluid via container queries. */}
+                  <div className="lg:hidden shrink-0 self-stretch">
+                    <HivePlate
+                      artifact={
+                        <img
+                          src={hiveSignatureHero}
+                          alt=""
+                          style={{
+                            width: "100%",
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block",
+                          }}
+                        />
+                      }
                     />
                   </div>
                   <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">

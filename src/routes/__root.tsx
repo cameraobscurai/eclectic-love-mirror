@@ -9,6 +9,8 @@ import {
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
+import { DotCursor } from "../components/dot-cursor";
+import { useViewTransitions } from "../hooks/useViewTransitions";
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
@@ -133,6 +135,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  // Wire native View Transitions API for crossfade between routes,
+  // and the brand dot cursor on fine-pointer devices. Both no-op when
+  // unsupported or when reduced-motion is requested.
+  useViewTransitions();
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
   // footer (long editorial scroll, footer is the natural terminus).
@@ -168,6 +174,7 @@ function RootComponent() {
         )}
       </div>
       <DevEditOverlay />
+      <DotCursor />
     </>
   );
 }
