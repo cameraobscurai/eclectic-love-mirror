@@ -109,13 +109,24 @@ function GalleryPage() {
           >
             As Featured In
           </h2>
-          <img
-            src={pressGlassBar}
-            alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-            className="w-full h-auto select-none"
-            loading="lazy"
-            draggable={false}
-          />
+          <picture>
+            {pressGlassBar.sources.avif && (
+              <source type="image/avif" srcSet={pressGlassBar.sources.avif} />
+            )}
+            {pressGlassBar.sources.webp && (
+              <source type="image/webp" srcSet={pressGlassBar.sources.webp} />
+            )}
+            <img
+              src={pressGlassBar.img.src}
+              width={pressGlassBar.img.w}
+              height={pressGlassBar.img.h}
+              alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
+              className="w-full h-auto select-none"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+          </picture>
         </div>
       </section>
 
