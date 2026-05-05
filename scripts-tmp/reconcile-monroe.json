@@ -1,0 +1,130 @@
+{
+  "rms_rows": [
+    {
+      "rms_id": "4118",
+      "title": "Monroe - Black Slat Tambour - Double 10'",
+      "category": "bars",
+      "csv_image_filename": "Black_Slat_Astaire_Double_10_.png"
+    },
+    {
+      "rms_id": "4117",
+      "title": "Monroe - Black Slat Tambour - Double 16'",
+      "category": "bars",
+      "csv_image_filename": "Black_Slat_Astaire_Double_16_.png"
+    },
+    {
+      "rms_id": "4116",
+      "title": "Monroe - Black Slat Tambour - Single 5'",
+      "category": "bars",
+      "csv_image_filename": "Black_Slat_Astaire_Single_5_.png"
+    },
+    {
+      "rms_id": "4108",
+      "title": "Monroe - Black Slat Tambour - Single 8'",
+      "category": "bars",
+      "csv_image_filename": "Black_Slat_Astaire_Single_8_.png"
+    },
+    {
+      "rms_id": "4119",
+      "title": "Monroe - Black Slat Tambour - Triple 15'",
+      "category": "bars",
+      "csv_image_filename": "Black_Slat_Astaire_Triple_15_.png"
+    }
+  ],
+  "astaire_or_monroe_csv_filenames": [
+    {
+      "rms_id": "4118",
+      "title": "Monroe - Black Slat Tambour - Double 10'",
+      "csv_filename": "Black_Slat_Astaire_Double_10_.png"
+    },
+    {
+      "rms_id": "4117",
+      "title": "Monroe - Black Slat Tambour - Double 16'",
+      "csv_filename": "Black_Slat_Astaire_Double_16_.png"
+    },
+    {
+      "rms_id": "4116",
+      "title": "Monroe - Black Slat Tambour - Single 5'",
+      "csv_filename": "Black_Slat_Astaire_Single_5_.png"
+    },
+    {
+      "rms_id": "4108",
+      "title": "Monroe - Black Slat Tambour - Single 8'",
+      "csv_filename": "Black_Slat_Astaire_Single_8_.png"
+    },
+    {
+      "rms_id": "4119",
+      "title": "Monroe - Black Slat Tambour - Triple 15'",
+      "csv_filename": "Black_Slat_Astaire_Triple_15_.png"
+    },
+    {
+      "rms_id": "4067",
+      "title": "Sinatra - Walnut Fluted Bar - Double (16')",
+      "csv_filename": "Walnut_Astaire_-_Double.png"
+    },
+    {
+      "rms_id": "4064",
+      "title": "Sinatra - Walnut Fluted Bar - Single (8')",
+      "csv_filename": "Walnut_Astaire_-_Single.png"
+    },
+    {
+      "rms_id": "4068",
+      "title": "Sinatra - Walnut Fluted Bar - Triple (24')",
+      "csv_filename": "Walnut_Astaire_-_Triple.png"
+    }
+  ],
+  "storage_files": [
+    "inventory/BARS/MONROE Black Slat Double 10'.png",
+    "inventory/BARS/MONROE Black Slat Double 16'.png",
+    "inventory/BARS/MONROE Black Slat Single 5'.png",
+    "inventory/BARS/MONROE Black Slat Single 8'.png",
+    "inventory/BARS/MONROE Black Slat Triple 15'.png",
+    "inventory/BARS/SINATRA Walnut Astaire - Triple 24'.png"
+  ],
+  "squarespace_products": [
+    {
+      "site_title": "Monroe Black Flat Slat Tambour Bar",
+      "slug": "monroe-black-flat-slat-tambour-bar",
+      "detail_url": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "image_count": 10,
+      "hero": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png"
+    }
+  ],
+  "recommended_bindings": [
+    {
+      "rms_id": "4118",
+      "title": "Monroe - Black Slat Tambour - Double 10'",
+      "recommended_storage": null,
+      "recommended_site_product": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "confidence": "manual"
+    },
+    {
+      "rms_id": "4117",
+      "title": "Monroe - Black Slat Tambour - Double 16'",
+      "recommended_storage": null,
+      "recommended_site_product": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "confidence": "manual"
+    },
+    {
+      "rms_id": "4116",
+      "title": "Monroe - Black Slat Tambour - Single 5'",
+      "recommended_storage": null,
+      "recommended_site_product": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "confidence": "manual"
+    },
+    {
+      "rms_id": "4108",
+      "title": "Monroe - Black Slat Tambour - Single 8'",
+      "recommended_storage": null,
+      "recommended_site_product": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "confidence": "manual"
+    },
+    {
+      "rms_id": "4119",
+      "title": "Monroe - Black Slat Tambour - Triple 15'",
+      "recommended_storage": null,
+      "recommended_site_product": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+      "confidence": "manual"
+    }
+  ]
+}

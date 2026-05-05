@@ -1,0 +1,24 @@
+[
+  {
+    "product_id": "2757",
+    "product_name": "Iraja Square Weathered Oak Bar",
+    "category": "bars",
+    "csv_original_filename": "IRJA_Bar_1.png",
+    "storage_candidate": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/IRJA%20Bar%201.png",
+    "squarespace_candidate": null,
+    "site_title": null,
+    "conflict_reason": "CSV filename \"IRJA_Bar_1.png\" normalizes to \"irja bar\" but title is \"Iraja Square Weathered Oak Bar\" (key \"iraja square weathered oak bar\") — names disagree",
+    "recommended_resolution": "manual cluster review (likely Monroe/Astaire-class rename)"
+  },
+  {
+    "product_id": "2864",
+    "product_name": "Gideon Small Bamboo Mesh Pendant",
+    "category": "chandeliers",
+    "csv_original_filename": "small_g.png",
+    "storage_candidate": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/ARCUS%20-%20BEVIN%20Gold%20Kick%20Plate.png",
+    "squarespace_candidate": null,
+    "site_title": "Gideon Bamboo Pendant Light",
+    "conflict_reason": "CSV filename \"small_g.png\" normalizes to \"g\" but title is \"Gideon Small Bamboo Mesh Pendant\" (key \"gideon bamboo mesh pendant\") — names disagree",
+    "recommended_resolution": "manual cluster review (likely Monroe/Astaire-class rename)"
+  }
+]
