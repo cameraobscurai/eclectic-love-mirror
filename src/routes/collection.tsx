@@ -12,7 +12,6 @@ import {
 } from "@/lib/phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
-  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
