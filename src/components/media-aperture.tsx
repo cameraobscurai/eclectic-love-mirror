@@ -28,6 +28,13 @@ import { cn } from "@/lib/utils";
 //   immediately with no observer overhead.
 // ---------------------------------------------------------------------------
 
+interface PictureSource {
+  /** AVIF/WebP srcset strings keyed by MIME type (from vite-imagetools `?as=picture`). */
+  sources: Record<string, string>;
+  /** Fallback <img> metadata. */
+  img: { src: string; w: number; h: number };
+}
+
 interface MediaApertureProps {
   /** CSS aspect-ratio string, e.g. "4/5", "3/2", "1/1". Defaults to "4/5". */
   ratio?: string;
@@ -37,7 +44,13 @@ interface MediaApertureProps {
   srcSet?: string;
   /** Optional `sizes` attribute paired with `srcSet`. */
   sizes?: string;
-  /** Required when `src` is provided. */
+  /**
+   * Output of `import x from "@/assets/foo.png?preset=editorial"`. When
+   * provided, renders a full <picture> with AVIF + WebP sources and uses
+   * `img.src` as the fallback. Takes precedence over `src` / `srcSet`.
+   */
+  picture?: PictureSource;
+  /** Required when `src` or `picture` is provided. */
   alt?: string;
   /** Optional caption rendered below the frame. */
   caption?: string;
@@ -65,6 +78,7 @@ export function MediaAperture({
   src,
   srcSet,
   sizes,
+  picture,
   alt,
   caption,
   label,
