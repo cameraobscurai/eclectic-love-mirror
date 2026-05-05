@@ -33,6 +33,15 @@ export const Route = createFileRoute("/gallery")({
           "Selected projects from Eclectic Hive — cinematic event environments.",
       },
     ],
+    // Preconnect to the storage CDN so the TLS handshake happens in
+    // parallel with HTML parsing — first card image starts downloading
+    // ~150-300ms sooner on cold loads.
+    links: STORAGE_ORIGIN
+      ? [
+          { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" },
+          { rel: "dns-prefetch", href: STORAGE_ORIGIN },
+        ]
+      : [],
   }),
   component: GalleryPage,
 });
