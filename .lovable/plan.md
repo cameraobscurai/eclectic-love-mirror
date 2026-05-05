@@ -1,199 +1,70 @@
-## Approved. Build this exactly.  
-  
-Before implementing, replace all placeholder values in the plan with real values, especially:  
-  
-PARENT_ORDER must be the actual 10-item ordered array:  
-lounge-seating  
-lounge-tables  
-cocktail-bar  
-dining  
-tableware  
-lighting  
-textiles  
-rugs  
-styling  
-large-decor  
-  
-GROUP_TO_PARENT must be fully explicit for all 18 BrowseGroupId values.  
-  
-Do not leave any "...10 in spec order", "{ ... }", or placeholder mapping in the code.  
-  
-Final non-negotiable checks:  
-  
-1. CategoryTonalGrid remains visual only.  
-It still emits BrowseGroupId through onSelectCategory(id).  
-collection.tsx does the TILE_TO_PARENT_SUB translation.  
-  
-2. The active product page never renders BROWSE_GROUP_[ORDER.map](http://ORDER.map)(...).  
-That array may exist for the landing grid and legacy mapping only, never for the post-click horizontal rail.  
-  
-3. SubcategoryRail must render from:  
-[{ id: "all", label: "All" }, ...PARENT_SUBS[activeParent]]  
-  
-Do not compute the visible rail from products or counts.  
-The rail is taxonomy, not inventory availability.  
-  
-4. Parent dropdown uses only the 10 parent categories.  
-No Sofas, Chairs, Pillows, Serveware, Throws, or Accents in the main dropdown.  
-  
-5. Selecting a parent from nav always resets:  
-subcategory = "all"  
-  
-6. Selecting a landing tile may set a specific subcategory through TILE_TO_PARENT_SUB.  
-  
-7. Parent All must show every product in that parent, even if it does not match a subcategory keyword.  
-  
-8. Do not touch catalog data, images, product cards, quick view, or collection-taxonomy.ts.  
-  
-After implementation, verify:  
-Click Sofas → group=lounge-seating&subcategory=sofas-loveseats  
-Rail shows only All / Benches / Chairs / Ottomans / Sofas & Loveseats  
-  
-Click Tableware from nav → group=tableware&subcategory=all  
-Rail shows only All / Dinnerware / Flatware / Glassware / Serveware  
-  
-Click Rugs from nav → group=rugs&subcategory=all  
-Rail shows All / Rugs  
-  
-The old 18-entry flattened rail must not appear anywhere after click-through.
+## What's broken on mobile
 
-### Build steps
+The Collection overview is currently forced into a single non-scrolling viewport on mobile:
 
-**1. New module `src/lib/collection-parents.ts**` (pure data, no UI)
+- The outer wrapper sets `height: calc(100dvh - var(--nav-h))` + `overflow: hidden` for **all** breakpoints (collection.tsx ~line 832-839).
+- Inside that fixed box the mobile branch stacks the H plate (locked to `aspect-ratio: 4/3`) on top of `<CategoryTonalGrid>` in `flex-1`.
+- `CategoryTonalGrid` on mobile uses `grid-template-rows: repeat(9, 1fr)` filling its parent's height. Since the parent is whatever scraps remain after the H plate eats 4/3 of the screen width, every tile becomes a squashed letterbox strip — that's the clipped "SOFAS / CHAIRS / BENCHES & OTTOMANS…" rows in the screenshot. Tile labels get cut, the search FAB overlaps the grid, and nothing scrolls.
 
-```ts
-export type ParentId =
-  | "lounge-seating" | "lounge-tables" | "cocktail-bar" | "dining"
-  | "tableware" | "lighting" | "textiles" | "rugs" | "styling" | "large-decor";
+Desktop (md+) is fine: 40/60 split, H plate left, tonal grid right, both filling the viewport. Keep that.
 
-export const PARENT_ORDER: ParentId[] = [...10 in spec order];
-export const PARENT_LABELS: Record<ParentId, string> = { ... };
+## Mobile target
 
-// "all" is implicit (always rendered first). Rugs explicitly keeps "rugs" so
-// the rail reads All / Rugs, matching the live site.
-export const PARENT_SUBS: Record<ParentId, { id: string; label: string }[]> = {
-  "lounge-seating": [
-    { id: "benches",          label: "Benches" },
-    { id: "chairs",           label: "Chairs" },
-    { id: "ottomans",         label: "Ottomans" },
-    { id: "sofas-loveseats",  label: "Sofas & Loveseats" },
-  ],
-  "lounge-tables": [
-    { id: "coffee-tables", label: "Coffee Tables" },
-    { id: "consoles",      label: "Consoles" },
-    { id: "side-tables",   label: "Side Tables" },
-  ],
-  "cocktail-bar": [
-    { id: "bars",             label: "Bars" },
-    { id: "cocktail-tables",  label: "Cocktail Tables" },
-    { id: "community-tables", label: "Community Tables" },
-    { id: "stools",           label: "Stools" },
-    { id: "storage",          label: "Storage" },
-  ],
-  "dining": [
-    { id: "consoles",      label: "Consoles" },
-    { id: "dining-chairs", label: "Dining Chairs" },
-    { id: "dining-tables", label: "Dining Tables" },
-  ],
-  "tableware": [
-    { id: "dinnerware", label: "Dinnerware" },
-    { id: "flatware",   label: "Flatware" },
-    { id: "glassware",  label: "Glassware" },
-    { id: "serveware",  label: "Serveware" },
-  ],
-  "lighting": [
-    { id: "candlelight", label: "Candlelight" },
-    { id: "chandeliers", label: "Chandeliers" },
-    { id: "lamps",       label: "Lamps" },
-    { id: "specialty",   label: "Specialty" },
-  ],
-  "textiles":    [{ id: "pillows", label: "Pillows" }, { id: "throws", label: "Throws" }],
-  "rugs":        [{ id: "rugs", label: "Rugs" }],
-  "styling":     [
-    { id: "accents",        label: "Accents" },
-    { id: "crates-baskets", label: "Crates & Baskets" },
-    { id: "games",          label: "Games" },
-  ],
-  "large-decor": [
-    { id: "structures", label: "Structures" },
-    { id: "walls",      label: "Walls" },
-    { id: "other",      label: "Other" },
-  ],
-};
+Match the editorial intent of the desktop split, but stacked and scrollable:
 
-// Pure lookup — every BrowseGroupId maps to exactly one ParentId.
-export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = { ... };
-
-export const productParent = (p) => GROUP_TO_PARENT[getProductBrowseGroup(p)];
-
-// Tile id → { parent, subcategory } mapping per your spec. Used by collection.tsx
-// when CategoryTonalGrid emits a BrowseGroupId.
-export const TILE_TO_PARENT_SUB: Record<BrowseGroupId, { parent: ParentId; sub: string }> = {
-  sofas:               { parent: "lounge-seating", sub: "sofas-loveseats" },
-  chairs:              { parent: "lounge-seating", sub: "chairs" },
-  "benches-ottomans":  { parent: "lounge-seating", sub: "all" },
-  "coffee-tables":     { parent: "lounge-tables",  sub: "coffee-tables" },
-  "side-tables":       { parent: "lounge-tables",  sub: "side-tables" },
-  "cocktail-tables":   { parent: "cocktail-bar",   sub: "cocktail-tables" },
-  dining:              { parent: "dining",         sub: "all" },
-  bar:                 { parent: "cocktail-bar",   sub: "bars" },
-  storage:             { parent: "cocktail-bar",   sub: "storage" },
-  lighting:            { parent: "lighting",       sub: "all" },
-  rugs:                { parent: "rugs",           sub: "all" },
-  pillows:             { parent: "textiles",       sub: "pillows" },
-  throws:              { parent: "textiles",       sub: "throws" },
-  tableware:           { parent: "tableware",      sub: "all" },
-  serveware:           { parent: "tableware",      sub: "serveware" },
-  styling:             { parent: "styling",        sub: "all" },
-  accents:             { parent: "styling",        sub: "accents" },
-  "large-decor":       { parent: "large-decor",    sub: "all" },
-};
-
-export function productMatchesSub(p, parent, sub) {
-  if (sub === "all") return true;
-  // Use existing collection-subcategories.ts derivation, extended with the
-  // new buckets. Pure title-keyword match, no product mutation.
-  return getProductSubId(p, parent) === sub;
-}
+```text
+┌─────────────────────────┐
+│ utility bar (sticky)    │
+├─────────────────────────┤
+│                         │
+│        ╔═══╗            │   H plate — full width,
+│        ║ H ║  (chair)   │   ~square-ish, breathing room,
+│        ╚═══╝            │   sits at top of page
+│                         │
+├─────────────────────────┤
+│ ┌─────────┬───────────┐ │
+│ │  SOFAS  │  CHAIRS   │ │   Tonal grid below,
+│ ├─────────┼───────────┤ │   2 cols × 9 rows of
+│ │ BENCHES │ COFFEE TBL│ │   square-ish tiles,
+│ ├─────────┼───────────┤ │   page scrolls naturally
+│ │   …     │    …      │ │
+│ └─────────┴───────────┘ │
+└─────────────────────────┘
 ```
 
-**2. Extend `collection-subcategories.ts**` — additive only
+## Changes
 
-Add rule tables for `dining`, `tableware`, `textiles`, `styling` parents and any missing rules in existing parent tables. Every rule is keyword-based on `title`, first-match-wins. No removals, no product mutation. Items that don't match any keyword still appear in the parent's "All" view (filtering pipeline guarantees this).
+### 1. `src/routes/collection.tsx` — overview wrapper (lines ~822-898)
 
-**3. Search params** (`src/routes/collection.tsx`)
+- Make the fixed-viewport box **desktop-only**. On mobile let the page scroll: drop `height: 100dvh - nav-h` and `overflow: hidden` below `md`.
+- Mobile H plate: drop the `aspect-ratio: 4/3` lock. Use a contained aspect closer to `1/1` with reasonable padding so the serif "H" reads at full presence and the chair silhouette isn't cropped — same proportions the desktop column achieves naturally. Add a thin charcoal hairline at the bottom to mirror the desktop split rule.
+- Remove `flex-1 min-h-0 overflow-hidden` wrapper around `<CategoryTonalGrid>` on mobile so the grid sizes from its own tile aspect ratios instead of fighting for leftover height.
 
-```ts
-group:       fallback(z.string(), "").default(""),    // semantics: ParentId | ""
-subcategory: fallback(z.string(), "all").default("all"),
-```
+### 2. `src/components/collection/CategoryTonalGrid.tsx`
 
-Local variables renamed: `activeGroup` → `activeParent`, new `activeSubcategory`. Old `?group=<BrowseGroupId>` URLs trapped at mount, mapped through `TILE_TO_PARENT_SUB` (or `GROUP_TO_PARENT` fallback), and the URL replaced. Bookmarks survive.
+The desktop grid logic (height-filling, 6×3 / 3×6) stays. Add a mobile branch that sizes from tile aspect-ratio instead of parent height:
 
-**4. Filter pipeline** — strict order
+- Below `640px`, replace `grid-template-rows: repeat(9, 1fr)` + `height: 100%` with `grid-auto-rows: 1fr` and `aspect-ratio: 2 / 9` on the grid container — OR simpler: drop `height: 100%` on mobile and give each tile `aspect-ratio: 1 / 1`. The 2-col × 9-row layout then naturally produces a tall scrollable surface of square tiles.
+- Keep the checkerboard tone math (already correct for any column count).
+- Bump label sizing slightly on mobile (`12px`, same `0.22em` tracking) so categories read at arm's length — current `10px` is undersized for touch browsing per the all-caps brand register.
+- Ensure search FAB (currently floating bottom-right) doesn't overlap the last tile row — add `padding-bottom: 80px` on the mobile grid container OR tighten the FAB offset. Cleanest: add bottom safe-area on the overview wrapper.
 
-```ts
-searchFiltered
-  .filter(p => !activeParent || productParent(p) === activeParent)
-  .filter(p => !activeParent || productMatchesSub(p, activeParent, activeSubcategory))
-```
+### 3. Tablet sanity (640–767px)
 
-"All" is the no-op for sub. No item ever disappears from parent All due to keyword miss.
+The desktop split kicks in at `md` (768px). Between 640 and 767 we currently get a 3-col × 6-row tonal grid still inside a flex-column with H on top. Apply the same "mobile is scrollable, sized by aspect" treatment up through `md`. At `md` switch to the existing desktop split.
 
-**5. UI swaps**
+### 4. Verify
 
-- `**CategoryTonalGrid**` — visual unchanged. `onSelectCategory(id)` callback unchanged. The handler in `collection.tsx` translates `id` via `TILE_TO_PARENT_SUB[id]` and pushes `{ group, subcategory }`.
-- **Active product-page rail** — new component `<SubcategoryRail parent={activeParent} active={activeSubcategory} onSelect={...} />`. Renders `[{ id: "all", label: "All" }, ...PARENT_SUBS[activeParent]]`. Quiet horizontal ALL CAPS, no thumbnails. Selecting a sub only updates `subcategory`, never `group`.
-- `**CollectionRail**` (the 18-row thumbnail rail) — removed from the active product-page state entirely. File preserved for reference / potential mobile fallback, but no `BROWSE_GROUP_ORDER.map(...)` runs in any post-click rail. It may still appear on the landing overview if it's already part of that surface today; not added anywhere new.
-- **Parent dropdown in `navigation.tsx**` — HIVE SIGNATURE COLLECTION shows exactly the 10 `PARENT_LABELS` in `PARENT_ORDER`, each linking with `{ to: "/collection", search: { group: <ParentId>, subcategory: "all" } }`. Selecting a parent always resets `subcategory` to `"all"`. No tile-level entries (no Sofas, no Pillows) in the dropdown.
-- **Floating search modal** — category suggestions switched from 18 BrowseGroupIds to the 10 parents. `commitCategory(parentId)` writes `{ group: parentId, subcategory: "all" }`. Free-text search behavior unchanged.
+After implementation, browser-test at 390×844 (iPhone 14) and 820×1180 (iPad portrait):
+- H plate readable, not letterboxed; chair silhouette intact.
+- All 18 categories visible by scrolling, labels legible, no clipping.
+- Tapping a tile still navigates into that category (existing `selectFromTile` wiring untouched).
+- Sticky utility bar + nav stay pinned during scroll.
+- Search FAB doesn't cover any tile.
+- Desktop (≥ 1024px) unchanged — split layout, full-viewport, no scroll on overview.
 
-**6. Routes** — stay on `/collection` (search params only). No new route files. og:image / head meta untouched.
+## Out of scope
 
-### Acceptance test (matches yours)
-
-- `/collection` → H plate + tiles.
-- Click Sofas tile → `?group=lounge-seating&subcategory=sofas-loveseats`. Rail: All / Benches / Chairs / Ottomans / Sofas & Loveseats.
-- Nav → Tableware → `?group=tableware&subcategory=all`. Rail: All / Dinnerware / Flatware / Glassware / Serveware.
-- Nav → Rugs → `?group=rugs&subcategory=all`. Rail: All / Rugs.
-- Nowhere on a clicked-in page does the 18-entry flattened rail appear. `BROWSE_GROUP_ORDER.map(...)` is removed from every post-click rail surface.
+- No changes to the tonal grid's tile order, category covers, or selection logic.
+- No changes to the desktop layout.
+- No catalog, taxonomy, or data changes.

@@ -828,15 +828,7 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex flex-col md:flex-row" : "grid grid-cols-1"}
-            style={
-              showOverview
-                ? {
-                    height: "calc(100dvh - var(--nav-h))",
-                    overflow: "hidden",
-                  }
-                : undefined
-            }
+            className={showOverview ? "flex flex-col md:flex-row md:h-[calc(100dvh-var(--nav-h))] md:overflow-hidden" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
@@ -860,24 +852,23 @@ function CollectionPage() {
             {/* ===== RIGHT: main pane ===== */}
             <motion.div
               layout={!reduced}
-              className="min-w-0 flex-1 flex flex-col min-h-0"
+              className="min-w-0 flex-1 flex flex-col md:min-h-0 md:overflow-hidden"
               key={activeParent || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
-                overflow: "hidden",
               }}
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: H plate stacks on top */}
+                  {/* Mobile/tablet: H plate stacks on top, full width, square-ish */}
                   <div
-                    className="md:hidden flex items-center justify-center flex-shrink-0"
+                    className="md:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10"
                     style={{
                       background: "var(--paper)",
                       containerType: "inline-size",
-                      aspectRatio: "4 / 3",
-                      padding: "clamp(8px, 2cqi, 24px)",
+                      aspectRatio: "1 / 1",
+                      padding: "clamp(16px, 6cqi, 40px)",
                     }}
                   >
                     <img
@@ -886,10 +877,10 @@ function CollectionPage() {
                       className="block object-contain"
                       width={1200}
                       height={1600}
-                      style={{ width: "min(100%, 92cqi)", height: "auto" }}
+                      style={{ width: "min(100%, 88cqi)", height: "auto" }}
                     />
                   </div>
-                  <div className="flex-1 min-h-0 overflow-hidden">
+                  <div className="md:flex-1 md:min-h-0 md:overflow-hidden">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
