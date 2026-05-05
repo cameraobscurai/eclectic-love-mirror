@@ -14,6 +14,8 @@ import { pathToFileURL } from "node:url";
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../..");
 const truth = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/live-truth.json"), "utf8"));
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "src/data/inventory/current_catalog.json"), "utf8"));
+// Manual live-title -> catalog-title aliases. See scripts/audit/pillow-aliases.json.
+const pillowAliases = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts/audit/pillow-aliases.json"), "utf8")).aliases ?? {};
 
 // Tiny shim: import the TS modules via tsx if available, otherwise via bun.
 // We expect this to be run with `bun scripts/audit/classify-vs-live.mjs`.
