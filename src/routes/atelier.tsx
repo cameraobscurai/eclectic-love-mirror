@@ -198,32 +198,21 @@ function AtelierPage() {
         <AtelierTeam />
       </Section>
 
-      {/* 3. L'ATELIER — B&W studio collage */}
+      {/* 3. L'ATELIER — collage + sketch drape side by side */}
       <Section eyebrow="L'ATELIER">
-        <div className="mt-12 max-w-3xl mx-auto">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-3">
           <MediaAperture
             ratio="4/5"
             picture={atelierCollage}
             alt="Studio collage — Hive workbench, design table, and styled bench detail."
-            sizes="(min-width: 768px) 60vw, 100vw"
+            sizes="(min-width: 768px) 45vw, 100vw"
           />
-        </div>
-      </Section>
-
-      {/* 4. DESIGN + FABRICATION — DESIGN first */}
-      <Section eyebrow="DESIGN · FABRICATION">
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <MediaAperture
-              ratio="4/5"
-              picture={atelierSketchDrape}
-              alt="Hand-drawn chair sketch on hanging drape — design phase."
-              sizes="(min-width: 768px) 45vw, 100vw"
-            />
-          </div>
-          <div>
-            <Placeholder ratio="4/5" label="FABRICATION" />
-          </div>
+          <MediaAperture
+            ratio="4/5"
+            picture={atelierSketchDrape}
+            alt="Hand-drawn chair sketch on hanging drape — design phase."
+            sizes="(min-width: 768px) 45vw, 100vw"
+          />
         </div>
       </Section>
 
