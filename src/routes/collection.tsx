@@ -773,19 +773,20 @@ function CollectionPage() {
           <div
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch h-[calc(100svh-var(--nav-h))]"
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1"
             }
+            style={showOverview ? { height: "calc(100svh - 88px)" } : undefined}
           >
             {showOverview && (
               <aside
-                className="hidden lg:flex items-stretch h-full min-h-0 self-stretch"
+                className="hidden lg:flex items-stretch h-full min-h-0 self-stretch overflow-hidden"
                 style={{ background: "#ffffff" }}
               >
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block h-full w-full object-contain"
+                  className="block h-full w-full object-cover object-center"
                 />
               </aside>
             )}
@@ -801,15 +802,15 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: fixed-share hero band so the grid below always reaches the viewport bottom. */}
+                  {/* Mobile: vertical hero plate filling the band, mirrors desktop framing. */}
                   <div
-                    className="lg:hidden shrink-0 flex items-center justify-center overflow-hidden"
-                    style={{ background: "#ffffff", height: "26svh" }}
+                    className="lg:hidden shrink-0 overflow-hidden self-stretch"
+                    style={{ background: "#ffffff", height: "30svh" }}
                   >
                     <img
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
-                      className="max-h-full w-auto object-contain"
+                      className="block h-full w-full object-cover object-center"
                     />
                   </div>
                   <div className="flex-1 min-h-0">
