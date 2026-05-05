@@ -67,19 +67,19 @@ const CAPABILITIES = [
 // kept duplicated for now; lift to a shared module if the lists diverge.
 const ATELIER_FAQ: ReadonlyArray<{ q: string; a: string }> = [
   {
-    q: "What we offer",
+    q: "WHAT WE OFFER",
     a: "Full-service design, fabrication, and production — or rental-only access to the Hive Signature Collection. Engagements include space planning + CAD, 3-D modeling, vendor management, on-site logistics, and run of show.",
   },
   {
-    q: "How to begin a proposal",
+    q: "HOW TO BEGIN A PROPOSAL",
     a: "After a consultation call we'll prepare a one to two-page Style Guide that visually summarizes the design direction. A non-refundable Creative Services Fee and signed contract secures the date and unlocks the full proposal and detailed estimate.",
   },
   {
-    q: "Travel",
+    q: "TRAVEL",
     a: "Eclectic Hive is a destination design house. Projects take us domestic and international — desert, mountains, and the Caribbean. Travel fees include accommodations, per diems, and mileage.",
   },
   {
-    q: "Minimums",
+    q: "MINIMUMS",
     a: "We don't set fixed minimums. Availability shifts with the team's existing committed work and the seasonality of inquiries. Each opportunity is reviewed together to make sure we can deliver the requested scope.",
   },
 ];
