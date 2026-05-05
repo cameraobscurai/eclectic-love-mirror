@@ -198,7 +198,7 @@ function TonalCell({
         <img
           src={heroSrc}
           srcSet={heroSrcSet}
-          sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 28vw, 48vw"
+          sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 20vw, 32vw"
           alt={heroAlt}
           loading={isFirstRow ? "eager" : "lazy"}
           decoding="async"
