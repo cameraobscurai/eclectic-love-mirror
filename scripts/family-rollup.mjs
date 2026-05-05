@@ -32,6 +32,11 @@ const TOKEN_CANON = {
   plinths: 'plinth',
   pedestals: 'pedestal',
   risers: 'riser',
+  decanters: 'decanter',
+  bowls: 'bowl',
+  trays: 'tray',
+  sets: 'set',
+  goblets: 'goblet',
 };
 const canonTok = t => TOKEN_CANON[t] || t;
 const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.length >= 3).map(canonTok);
@@ -41,7 +46,7 @@ const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.leng
 // rolls up when the suffix is clearly variant-noun material.
 const VARIANT_NOUN_STEMS = new Set([
   'glass','glassware','wine','coupe','rocks','flute','goblet','tumbler','highball','stemless','champagne',
-  'plate','charger','bowl','platter','tray',
+  'plate','charger','bowl','platter','tray','set','dispenser','decanter','cellar','tub','basket','paddle',
   'flatware','fork','knife','spoon','setting',
   'pillow','lumbar','throw',
   'lantern','sconce','pendant','chandelier','lamp',
@@ -52,6 +57,7 @@ const VARIANT_NOUN_STEMS = new Set([
   'shelf','shelving','etagere','sideboard','credenza','cabinet',
   'rug','runner','mat',
   'plinth','column','pedestal','riser',
+  'stoneware','riverstone',
 ]);
 const hasVariantNoun = title => {
   for (const t of wordTokens(title)) {
@@ -134,23 +140,20 @@ export function rollupFamilies(products, liveSnapshot) {
     return { key: 'rms:' + p.id, source: 'rms-only', familyTitle: p.title, liveSlug: null };
   }
 
+  // Group by family key + categorySlug, so a live family that spans two RMS
+  // categories (e.g. Lavanya Stoneware = Dinnerware plates AND Serveware bowls)
+  // becomes one tile per category — matching the OG site, which shows the
+  // family in both Dinnerware and Serveware sub-tabs.
   const groups = new Map();
   for (const p of products) {
     const fam = familyKeyForRms(p);
-    if (!groups.has(fam.key)) groups.set(fam.key, { fam, members: [] });
-    groups.get(fam.key).members.push(p);
+    const key = fam.key + '@' + p.categorySlug;
+    if (!groups.has(key)) groups.set(key, { fam, members: [] });
+    groups.get(key).members.push(p);
   }
 
-  // SAFETY: never collapse members that don't all share the same categorySlug
-  // (avoids cross-category rollup errors). If we ever hit one, split it back out.
   const finalProducts = [];
   for (const [key, g] of groups) {
-    const cats = new Set(g.members.map(m => m.categorySlug));
-    if (cats.size > 1) {
-      // split: emit each member as its own tile
-      for (const m of g.members) finalProducts.push({ ...m, variants: [] });
-      continue;
-    }
     if (g.members.length === 1) {
       finalProducts.push({ ...g.members[0], variants: [] });
       continue;
@@ -197,6 +200,14 @@ export function rollupFamilies(products, liveSnapshot) {
       _familySource: g.fam.source,
     };
     finalProducts.push(family);
+  }
+
+  // De-duplicate slugs (cross-category families share a liveSlug)
+  const slugSeen = new Map();
+  for (const p of finalProducts) {
+    const c = (slugSeen.get(p.slug) || 0) + 1;
+    slugSeen.set(p.slug, c);
+    if (c > 1) p.slug = `${p.slug}-${p.categorySlug}`;
   }
 
   // Stats

@@ -135,9 +135,9 @@ for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
     const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
     if (tStripped && !liveTitleInfo.has(tStripped)) liveTitleInfo.set(tStripped, info);
     const toks = tStripped.split(' ');
-    for (let n = Math.min(toks.length, 5); n >= 2; n--) {
+    for (let n = Math.min(toks.length, 5); n >= 1; n--) {
       const k = toks.slice(0, n).join(' ');
-      if (!liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
+      if (k.length >= 4 && !liveFirstWordsInfo.has(k)) liveFirstWordsInfo.set(k, info);
     }
   });
 }
@@ -153,8 +153,9 @@ for (const p of rolled) {
     || liveTitleInfo.get(nStripped);
   if (!info) {
     const toks = nStripped.split(' ');
-    for (let n = Math.min(toks.length, 5); n >= 2 && !info; n--) {
-      info = liveFirstWordsInfo.get(toks.slice(0, n).join(' '));
+    for (let n = Math.min(toks.length, 5); n >= 1 && !info; n--) {
+      const k = toks.slice(0, n).join(' ');
+      if (k.length >= 4) info = liveFirstWordsInfo.get(k);
     }
   }
   if (info) {
