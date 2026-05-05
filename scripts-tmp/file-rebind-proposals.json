@@ -1,0 +1,1291 @@
+{
+  "fixes": [
+    {
+      "file": "inventory/BARS/ARCUS - BEVIN Gold Kick Plate.png",
+      "cat": "bars",
+      "score": 2,
+      "suggest_rms": "2816",
+      "suggest_title": "Arcus Bevin 12' Slatted Bar",
+      "current_hero_path": "inventory/BARS/ARCUS - BEVIN 1.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "3910",
+          "title": "Arcus Oben 12' Black Slat Tambour Bar"
+        }
+      ]
+    },
+    {
+      "file": "inventory/BARS/EXCURSION Champagne Bar Trunk 1.png",
+      "cat": "bars",
+      "score": 3,
+      "suggest_rms": "2912",
+      "suggest_title": "Excursion Champagne Trunk Bar",
+      "current_hero_path": "inventory/BARS/EXCURSION Champagne Bar 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/EXCURSION Champagne Bucket.png",
+      "cat": "bars",
+      "score": 2,
+      "suggest_rms": "2912",
+      "suggest_title": "Excursion Champagne Trunk Bar",
+      "current_hero_path": "inventory/BARS/EXCURSION Champagne Bar 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/INOLA Gold  Single.png",
+      "cat": "bars",
+      "score": 3,
+      "suggest_rms": "3503",
+      "suggest_title": "Inola Single Black Bar With Gold Mirror Panels",
+      "current_hero_path": "inventory/BARS/INOLA Single 1.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/LUCILLE Bar Cart 1.png",
+      "cat": "bars",
+      "score": 2,
+      "suggest_rms": "2141",
+      "suggest_title": "Lucille Gold Bar Cart",
+      "current_hero_path": "inventory/BARS/LUCILLE Bar Cart 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/LUCILLE Bar Cart 2.png",
+      "cat": "bars",
+      "score": 2,
+      "suggest_rms": "2141",
+      "suggest_title": "Lucille Gold Bar Cart",
+      "current_hero_path": "inventory/BARS/LUCILLE Bar Cart 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MALCOLM Bar Cart 1.png",
+      "cat": "bars",
+      "score": 2,
+      "suggest_rms": "2150",
+      "suggest_title": "Malcolm Bar Cart",
+      "current_hero_path": "inventory/BARS/MALCOLM Bar Cart 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MONROE Black Slat Double 10.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4118",
+      "suggest_title": "Monroe - Black Slat Tambour - Double 10'",
+      "current_hero_path": "inventory/BARS/MONROE Black Slat Double 10'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MONROE Black Slat Double 16.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4117",
+      "suggest_title": "Monroe - Black Slat Tambour - Double 16'",
+      "current_hero_path": "inventory/BARS/MONROE Black Slat Double 10'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MONROE Black Slat Single 5.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4116",
+      "suggest_title": "Monroe - Black Slat Tambour - Single 5'",
+      "current_hero_path": "inventory/BARS/MONROE Black Slat Single 5'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MONROE Black Slat Single 8.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4108",
+      "suggest_title": "Monroe - Black Slat Tambour - Single 8'",
+      "current_hero_path": "inventory/BARS/MONROE Black Slat Single 5'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/MONROE Black Slat Triple 15.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4119",
+      "suggest_title": "Monroe - Black Slat Tambour - Triple 15'",
+      "current_hero_path": "inventory/BARS/MONROE Black Slat Triple 15'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/SINATRA Walnut Astaire - Triple 24.png",
+      "cat": "bars",
+      "score": 4,
+      "suggest_rms": "4068",
+      "suggest_title": "Sinatra - Walnut Fluted Bar - Triple (24')",
+      "current_hero_path": "inventory/BARS/SINATRA Walnut Astaire - Triple 24'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/SINATRA Walnut Fluted - Double 16.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4067",
+      "suggest_title": "Sinatra - Walnut Fluted Bar - Double (16')",
+      "current_hero_path": "inventory/BARS/SINATRA Walnut Fluted - Double 16'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/SINATRA Walnut Fluted - Single 8.png",
+      "cat": "bars",
+      "score": 5,
+      "suggest_rms": "4064",
+      "suggest_title": "Sinatra - Walnut Fluted Bar - Single (8')",
+      "current_hero_path": "inventory/BARS/SINATRA Walnut Fluted - Single 8'.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/VOYAGE Black Trunk Bar 1.png",
+      "cat": "bars",
+      "score": 3,
+      "suggest_rms": "2911",
+      "suggest_title": "Voyage Black Trunk Bar",
+      "current_hero_path": "inventory/BARS/VOYAGE Black Trunk Bar 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/BARS/VOYAGE Navy Bar Trunk.png",
+      "cat": "bars",
+      "score": 3,
+      "suggest_rms": "2966",
+      "suggest_title": "Voyage Navy Trunk Bar",
+      "current_hero_path": "inventory/BARS/VOYAGE Navy Bar Trunk 1.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/CANDLELIGHT/AMALIA Votive Set.png",
+      "cat": "candlelight",
+      "score": 2,
+      "suggest_rms": "2613",
+      "suggest_title": "Amalia Smoke Cut Glass Votive",
+      "current_hero_path": "inventory/CANDLELIGHT/AMALIA Votive 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/CANDLELIGHT/LACHLAN with candle Lantern.png",
+      "cat": "candlelight",
+      "score": 2,
+      "suggest_rms": "4003",
+      "suggest_title": "Lachlan 36\" Black Iron Lantern",
+      "current_hero_path": "inventory/CANDLELIGHT/LACHLAN Lantern.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/FURS-PELTS/JAEL Goat Pelt.png",
+      "cat": "furs-pelts",
+      "score": 2,
+      "suggest_rms": "1234",
+      "suggest_title": "Jael Goat Hide Pelts",
+      "current_hero_path": "inventory/FURS-PELTS/JAEL Goat Pelt (2).png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/BELLOW 3 Partition 1.png",
+      "cat": "large-decor",
+      "score": 3,
+      "suggest_rms": "3925",
+      "suggest_title": "Bellow 3'H White Corrugated Partition",
+      "current_hero_path": "inventory/LARGE-DECOR/BELLOW 3' Partition 1.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/BELLOW 8 Wall 1.png",
+      "cat": "large-decor",
+      "score": 3,
+      "suggest_rms": "2015",
+      "suggest_title": "Bellow 8'H White Corrugated Wall",
+      "current_hero_path": null,
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/DELILAH Screen 1.png",
+      "cat": "large-decor",
+      "score": 2,
+      "suggest_rms": "2155",
+      "suggest_title": "Delilah Gold Metal Screen",
+      "current_hero_path": "inventory/LARGE-DECOR/DELILAH Screen 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/KEATON Mirror 1.png",
+      "cat": "large-decor",
+      "score": 2,
+      "suggest_rms": "712",
+      "suggest_title": "Keaton Antique Floor Mirror",
+      "current_hero_path": "inventory/LARGE-DECOR/KEATON Mirror 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/SUTTON 36 Firepit.png",
+      "cat": "large-decor",
+      "score": 3,
+      "suggest_rms": "3878",
+      "suggest_title": "Sutton 36\" Black Firepit + Tank Cover",
+      "current_hero_path": "inventory/LARGE-DECOR/SUTTON Firepit and Tank Cover.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/SUTTON tank cover.png",
+      "cat": "large-decor",
+      "score": 3,
+      "suggest_rms": "3878",
+      "suggest_title": "Sutton 36\" Black Firepit + Tank Cover",
+      "current_hero_path": "inventory/LARGE-DECOR/SUTTON Firepit and Tank Cover.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/LARGE-DECOR/Washington Wall No Leather Insert.png",
+      "cat": "large-decor",
+      "score": 2,
+      "suggest_rms": "3033",
+      "suggest_title": "Washington Wall 24'W x 8'H",
+      "current_hero_path": "inventory/LARGE-DECOR/Washington Wall No Leather Insert-2.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/PILLOWS/IVORY Seamed Boucle.png",
+      "cat": "pillows-throws",
+      "score": 3,
+      "suggest_rms": "2847",
+      "suggest_title": "Ivory Seamed Boucle Pillow",
+      "current_hero_path": null,
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/PILLOWS/Ivory Tan Line.png",
+      "cat": "pillows-throws",
+      "score": 2,
+      "suggest_rms": "2862",
+      "suggest_title": "Ivory Brown Line Pillow",
+      "current_hero_path": null,
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/PILLOWS/Leopard Reversible.png",
+      "cat": "pillows-throws",
+      "score": 2,
+      "suggest_rms": "4159",
+      "suggest_title": "Leopard Print Reversible Velvet Pillow",
+      "current_hero_path": "inventory/PILLOWS/Leopard Double.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/PILLOWS/Orange Uno.png",
+      "cat": "pillows-throws",
+      "score": 2,
+      "suggest_rms": "2882",
+      "suggest_title": "Orange Textile Pillow Uno",
+      "current_hero_path": null,
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/RUGS/LARKIN 8x10 perspective.png",
+      "cat": "rugs",
+      "score": 2,
+      "suggest_rms": "4053",
+      "suggest_title": "Larkin 8x10 Rust + Grey Rug",
+      "current_hero_path": "inventory/RUGS/LARKIN 8x10.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/RUGS/TRINIDAD 8x10 Perspective.png",
+      "cat": "rugs",
+      "score": 2,
+      "suggest_rms": "3853",
+      "suggest_title": "Trinidad 8x10 Cream Jute Criss Cross Rug",
+      "current_hero_path": "inventory/RUGS/TRINIDAD 8x10.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/RUGS/VALDIVA 8x10.png",
+      "cat": "rugs",
+      "score": 2,
+      "suggest_rms": "4006",
+      "suggest_title": "Valdiva 8x10 Olive Rug",
+      "current_hero_path": "inventory/RUGS/VALDIVA 8x10 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/SERVEWARE/CALLUM 18in Tray.png",
+      "cat": "serveware",
+      "score": 2,
+      "suggest_rms": "3169",
+      "suggest_title": "Callum 14\" Round Brass Tray",
+      "current_hero_path": "inventory/SERVEWARE/CALLUM 14in Tray.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/SERVEWARE/PETITE Wood Bowl.png",
+      "cat": "serveware",
+      "score": 2,
+      "suggest_rms": "1807",
+      "suggest_title": "Ginny Whitewash Wood Bowl",
+      "current_hero_path": "inventory/SERVEWARE/GINNY Bowl.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/SERVEWARE/RITA Blue Tray.png",
+      "cat": "serveware",
+      "score": 2,
+      "suggest_rms": "3222",
+      "suggest_title": "Bay Midnight Blue Tray",
+      "current_hero_path": "inventory/SERVEWARE/BAY Blue Tray.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/SERVEWARE/TESSA Napkin RIng.png",
+      "cat": "serveware",
+      "score": 2,
+      "suggest_rms": "3323",
+      "suggest_title": "Artax Horse Napkin Ring",
+      "current_hero_path": "inventory/SERVEWARE/ARTAX.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/SERVEWARE/TITO Napkin Ring.png",
+      "cat": "serveware",
+      "score": 2,
+      "suggest_rms": "3323",
+      "suggest_title": "Artax Horse Napkin Ring",
+      "current_hero_path": "inventory/SERVEWARE/ARTAX.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STORAGE/ANATHEMA Wood Console 1.png",
+      "cat": "storage",
+      "score": 3,
+      "suggest_rms": "3983",
+      "suggest_title": "Anathema 82\"  Dark Ash Wood Console",
+      "current_hero_path": "inventory/STORAGE/ANATHEMA Wood Console 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/ADENA Melting Disco.png",
+      "cat": "styling",
+      "score": 3,
+      "suggest_rms": "3065",
+      "suggest_title": "Adena 7\" Melting Disco Ball",
+      "current_hero_path": "inventory/STYLING/ADENA 7 Melting Disco.tif",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/DELLA Bottle.png",
+      "cat": "styling",
+      "score": 2,
+      "suggest_rms": "1258",
+      "suggest_title": "Della Half-Frosted Glass Bottle",
+      "current_hero_path": "inventory/STYLING/DELLA Bottle 0.tif",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/ELGIN Silver.png",
+      "cat": "styling",
+      "score": 2,
+      "suggest_rms": "2873",
+      "suggest_title": "Elgin Pony Silver Bookend Set",
+      "current_hero_path": null,
+      "file_already_used_by_other_products": [
+        {
+          "rms": "2874",
+          "title": "Elgin Pony Bronze Bookend Set"
+        }
+      ]
+    },
+    {
+      "file": "inventory/STYLING/ROLSTON Crate.png",
+      "cat": "styling",
+      "score": 2,
+      "suggest_rms": "634",
+      "suggest_title": "Rolston Vintage Wood Crate",
+      "current_hero_path": "inventory/STYLING/ROLSTON Crate 0.tif",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/SMOKE BLUE Glass Knot.png",
+      "cat": "styling",
+      "score": 2,
+      "suggest_rms": "3302",
+      "suggest_title": "Clyde Smoke Blue Wood Chain",
+      "current_hero_path": "inventory/STYLING/CLYDE BLUE Wood Knot.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/TANNENBAUM 7.5 Slim Tree.png",
+      "cat": "styling",
+      "score": 2,
+      "suggest_rms": "4021",
+      "suggest_title": "Jina 7.5\" Black Metal Vase",
+      "current_hero_path": "inventory/STYLING/JINA Short Black Metal Vase.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/STYLING/VERNA Picnic Box.png",
+      "cat": "styling",
+      "score": 3,
+      "suggest_rms": "2967",
+      "suggest_title": "Verna Classic Wood Picnic Box",
+      "current_hero_path": "inventory/STYLING/VERNA Picnic Box 0.tif",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/AARON Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2861",
+      "suggest_title": "Aaron Matte Black Plank Coffee Table",
+      "current_hero_path": "inventory/TABLES/AARON Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/BERGHARD Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2616",
+      "suggest_title": "Berghard Trunk Side Table",
+      "current_hero_path": "inventory/TABLES/BERGHARD Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/BRIONY Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3839",
+      "suggest_title": "Briony Coffee Table",
+      "current_hero_path": "inventory/TABLES/BRIONY Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/BROADWAY Counter Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "376",
+      "suggest_title": "Broadway Concrete Counter Community Table",
+      "current_hero_path": "inventory/TABLES/BROADWAY Counter Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/CALERI Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3838",
+      "suggest_title": "Caleri Side Table",
+      "current_hero_path": "inventory/TABLES/CALERI Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/COLLIN Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "288",
+      "suggest_title": "Collin Wood-Filled Concrete Coffee Table",
+      "current_hero_path": "inventory/TABLES/COLLIN Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/CYPRESS Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "343",
+      "suggest_title": "Cypress Stump Side Table",
+      "current_hero_path": "inventory/TABLES/CYPRESS Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/DASHIELL Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2997",
+      "suggest_title": "Dashiell Oak Coffee Table",
+      "current_hero_path": "inventory/TABLES/DASHIELL Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/DUBLIN Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3084",
+      "suggest_title": "Dublin Trunk Coffee Table",
+      "current_hero_path": "inventory/TABLES/DUBLIN Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/ESTES Dining Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "351",
+      "suggest_title": "Estes Reclaimed Dining Table",
+      "current_hero_path": "inventory/TABLES/ESTES Dining Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/Farrow 31.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2762",
+      "suggest_title": "Farrow 31\" Cedar Cocktail Column",
+      "current_hero_path": "inventory/TABLES/Farrow 28.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "2763",
+          "title": "Farrow 38\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2761",
+          "title": "Farrow 29\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2764",
+          "title": "Farrow 43\" Cedar Cocktail Column"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/Farrow 38.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2763",
+      "suggest_title": "Farrow 38\" Cedar Cocktail Column",
+      "current_hero_path": "inventory/TABLES/Farrow 28.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "2761",
+          "title": "Farrow 29\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2762",
+          "title": "Farrow 31\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2764",
+          "title": "Farrow 43\" Cedar Cocktail Column"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/Farrow 43.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2764",
+      "suggest_title": "Farrow 43\" Cedar Cocktail Column",
+      "current_hero_path": "inventory/TABLES/Farrow 28.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "2763",
+          "title": "Farrow 38\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2761",
+          "title": "Farrow 29\" Cedar Cocktail Column"
+        },
+        {
+          "rms": "2762",
+          "title": "Farrow 31\" Cedar Cocktail Column"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/FRANCOISE Side Table 0.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2408",
+      "suggest_title": "Francoise Cane Side Table",
+      "current_hero_path": "inventory/TABLES/FRANCOISE Side Table 1.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/GUNNISON Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2860",
+      "suggest_title": "Gunnison Black Wood Side Table",
+      "current_hero_path": "inventory/TABLES/GUNNISON Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/HAYDEN Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "341",
+      "suggest_title": "Hayden Wood & Nickel Side Table",
+      "current_hero_path": "inventory/TABLES/HAYDEN Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/INA Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2998",
+      "suggest_title": "Ina Black Wood Side Table",
+      "current_hero_path": "inventory/TABLES/INA Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/JAIME Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3837",
+      "suggest_title": "Jaime Coffee Table",
+      "current_hero_path": "inventory/TABLES/JAIME Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/JOZI Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3836",
+      "suggest_title": "Jozi Side Table",
+      "current_hero_path": "inventory/TABLES/JOZI Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/MYRA Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "287",
+      "suggest_title": "Myra Hide Coffee Table",
+      "current_hero_path": "inventory/TABLES/MYRA Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/RADEN Rectangle Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3784",
+      "suggest_title": "Raden Distressed Metal Coffee Table",
+      "current_hero_path": "inventory/TABLES/RADEN Rectangle Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/RELIC Limestone Coffee Table 1.png",
+      "cat": "tables",
+      "score": 3,
+      "suggest_rms": "4099",
+      "suggest_title": "Relic Limestone Coffee Table",
+      "current_hero_path": "inventory/TABLES/RELIC Limestone Coffee Table 0.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "4097",
+          "title": "Relic Limestone Column"
+        },
+        {
+          "rms": "4098",
+          "title": "Relic Limestone Side Table"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/RELIC Limestone Podium Rough Side.png",
+      "cat": "tables",
+      "score": 3,
+      "suggest_rms": "4098",
+      "suggest_title": "Relic Limestone Side Table",
+      "current_hero_path": "inventory/TABLES/RELIC Limestone Side Table 0.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "4099",
+          "title": "Relic Limestone Coffee Table"
+        },
+        {
+          "rms": "4097",
+          "title": "Relic Limestone Column"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/RELIC Limestone Side Table 1.png",
+      "cat": "tables",
+      "score": 3,
+      "suggest_rms": "4098",
+      "suggest_title": "Relic Limestone Side Table",
+      "current_hero_path": "inventory/TABLES/RELIC Limestone Side Table 0.png",
+      "file_already_used_by_other_products": [
+        {
+          "rms": "4099",
+          "title": "Relic Limestone Coffee Table"
+        },
+        {
+          "rms": "4097",
+          "title": "Relic Limestone Column"
+        }
+      ]
+    },
+    {
+      "file": "inventory/TABLES/SALVATORE Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2922",
+      "suggest_title": "Salvatore Marble Coffee Table",
+      "current_hero_path": "inventory/TABLES/SALVATORE Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/SCOUT Community Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "360",
+      "suggest_title": "Scout Wood Community Table",
+      "current_hero_path": "inventory/TABLES/SCOUT Community Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/SERGIO Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2924",
+      "suggest_title": "Sergio Marble Cube Side Table",
+      "current_hero_path": "inventory/TABLES/SERGIO Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/SLADE Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "894",
+      "suggest_title": "Slade Concrete & Wood Coffee Table",
+      "current_hero_path": "inventory/TABLES/SLADE Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/STEFANO Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2923",
+      "suggest_title": "Stefano Marble Tall Side Table",
+      "current_hero_path": "inventory/TABLES/STEFANO Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/TIMON Cocktail Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "362",
+      "suggest_title": "Timon Wood Cocktail Table",
+      "current_hero_path": "inventory/TABLES/TIMON Cocktail Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/VALLA Side Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "3708",
+      "suggest_title": "Valla Patina Side Table",
+      "current_hero_path": "inventory/TABLES/VALLA Side Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/TABLES/VERSAILLES Coffee Table 1.png",
+      "cat": "tables",
+      "score": 2,
+      "suggest_rms": "2407",
+      "suggest_title": "Versailles Cane Coffee Table",
+      "current_hero_path": "inventory/TABLES/VERSAILLES Coffee Table 0.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/THROWS/FRINGE Gold.png",
+      "cat": "pillows-throws",
+      "score": 2,
+      "suggest_rms": "4085",
+      "suggest_title": "Gold Velvet Fringe Lumbar Pillow",
+      "current_hero_path": "inventory/PILLOWS/Gold Fringe Lumbar.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/THROWS/FRINGE Sage.png",
+      "cat": "pillows-throws",
+      "score": 2,
+      "suggest_rms": "3459",
+      "suggest_title": "Fringe Sage Throw",
+      "current_hero_path": "inventory/PILLOWS/Sage Throw.png",
+      "file_already_used_by_other_products": []
+    },
+    {
+      "file": "inventory/THROWS/FUR Ivory Throw.png",
+      "cat": "pillows-throws",
+      "score": 3,
+      "suggest_rms": "2441",
+      "suggest_title": "Fur Ivory Mongolian Throw",
+      "current_hero_path": "inventory/THROWS/FUR Ivory Mongolian.png",
+      "file_already_used_by_other_products": []
+    }
+  ],
+  "ties": [
+    {
+      "file": "inventory/BARS/INOLA Black Bar.png",
+      "cat": "bars",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Inola U Black  Bar",
+        "Inola Single Black Bar",
+        "Inola Single Black Bar With Gold Mirror Panels",
+        "Inola Double Black Bar",
+        "Inola Square Black  Bar"
+      ]
+    },
+    {
+      "file": "inventory/BARS/INOLA Single 1.png",
+      "cat": "bars",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Inola Single Black Bar",
+        "Inola Single Black Bar With Gold Mirror Panels"
+      ]
+    },
+    {
+      "file": "inventory/BARS/IRAJA Gold Slatted Single.png",
+      "cat": "bars",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Inola Single Black Bar With Gold Mirror Panels",
+        "Iraja Single Weathered Oak Bar"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/FLORENCE Lantern Large.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Florence 25\" Weathered Zinc Lantern",
+        "Florence 14\" Weathered Zinc Lantern",
+        "Florence 20\" Weathered Zinc Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/FLORENCE Lantern Medium.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Florence 25\" Weathered Zinc Lantern",
+        "Florence 14\" Weathered Zinc Lantern",
+        "Florence 20\" Weathered Zinc Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/FLORENCE Lantern Set.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Florence 25\" Weathered Zinc Lantern",
+        "Florence 14\" Weathered Zinc Lantern",
+        "Florence 20\" Weathered Zinc Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/FLORENCE Lantern Small.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Florence 25\" Weathered Zinc Lantern",
+        "Florence 14\" Weathered Zinc Lantern",
+        "Florence 20\" Weathered Zinc Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/LAYLA 28in Lantern.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Layla 28\" Lantern",
+        "Layla 32\" Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/LAYLA 32in Lantern.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Layla 28\" Lantern",
+        "Layla 32\" Lantern"
+      ]
+    },
+    {
+      "file": "inventory/CANDLELIGHT/LAYLA Lantern Pair.png",
+      "cat": "candlelight",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Layla 28\" Lantern",
+        "Layla 32\" Lantern"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Black Leather Stud.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Black Leather Lumbar Pillow",
+        "Black Leather Lattice Pillow",
+        "Black Leather Woven Pillow",
+        "Black Leather Silver Line Lumbar Pillow",
+        "Black Leather Studded Lumbar Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Blue Velvet.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Blue Light Velvet Pillow",
+        "Blue Velvet Brocade Lumbar Pillow",
+        "Blue Light Velvet Burnout  Pillow",
+        "Blue Light Velvet Lumbar Pillow",
+        "Blue Wild Bird Velvet Pillow",
+        "Blue Velvet Fringe Lumbar Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Green Light Sage Lumbar.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Green Sage Tassel Lumbar Pillow",
+        "Green Sage Velvet",
+        "Green Sage Velvet Lumbar Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Green Sage Fringe.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Green Sage Tassel Lumbar Pillow",
+        "Green Sage Velvet",
+        "Fringe Sage Throw",
+        "Green Sage Velvet Lumbar Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Ivory Boucle.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Ivory Seamed Boucle Pillow",
+        "Ivory Boucle Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar Mini.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Ivory Mudcloth Lumbar",
+        "Ivory Mudcloth",
+        "Ivory Sage Mini Tassel"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Ivory Mudcloth Lumbar",
+        "Ivory Mudcloth"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Leopard Velvet.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Green Wild Leopard Velvet Pillow",
+        "Leopard Print Reversible Velvet Pillow",
+        "Leopard Velvet Pillow"
+      ]
+    },
+    {
+      "file": "inventory/PILLOWS/Sage Velvet.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Green Sage Velvet",
+        "Green Sage Velvet Lumbar Pillow"
+      ]
+    },
+    {
+      "file": "inventory/RUGS/HATHOR Light Natural Hide.png",
+      "cat": "rugs",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Hathor Light Colored Hide Rug",
+        "Gopala 7x7 Natural Tan Hide Rug"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/LAVANYA Bowl Small.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Lavanya Small Riverstone Bowl",
+        "Lavanya Medium Riverstone Bowl"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/POWELL 14in Tray.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Powell 18\" Round Dark Brass Tray",
+        "Powell 14\" Round Dark Brass Tray"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/POWELL 18in Tray.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Powell 18\" Round Dark Brass Tray",
+        "Powell 14\" Round Dark Brass Tray"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/TABITHA Tray Set.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Tabitha 15\" Copper Rimed Tray",
+        "Tabitha 20\" Copper Rimmed Tray",
+        "Tabitha 17.25\" Copper Rimmed Tray",
+        "Tabitha 23\" Copper Rimmed Tray"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/ZAHAVI Decanter Set.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Zahavi Large Brass Top Decanter",
+        "Zahavi Small Brass Top Decanter"
+      ]
+    },
+    {
+      "file": "inventory/SERVEWARE/ZALENA Decanter Set.png",
+      "cat": "serveware",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Zalena Large Silver Top Decanter",
+        "Zalena Small Silver Top Decanter"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/AUSKIN Small Basket.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Auskin Small Leather Basket",
+        "Auskin Large Leather Basket"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/ELYSIA Large Marble Bowl.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 3,
+      "ties": [
+        "Elysia 10\" Ruffled Marble Bowl",
+        "Elysia 14\" Ruffled Marble Bowl"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/ELYSIA Med Marble Bowl.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 3,
+      "ties": [
+        "Elysia 10\" Ruffled Marble Bowl",
+        "Elysia 14\" Ruffled Marble Bowl"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/JINA Short Black Metal Vase.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 4,
+      "ties": [
+        "Jina 14\" Black Metal Vase",
+        "Jina 7.5\" Black Metal Vase"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/JINA Tall Black Metal Vase.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 4,
+      "ties": [
+        "Jina 14\" Black Metal Vase",
+        "Jina 7.5\" Black Metal Vase"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/MARQUINA Black Marble Bowl.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Ditmer Black Patchwork Bowl",
+        "Elysia 10\" Ruffled Marble Bowl",
+        "Elysia 14\" Ruffled Marble Bowl",
+        "Ziyan Marble Bowl + Stand",
+        "Zuri Marble Bowl + Lid",
+        "Gura Black Marble Chain"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/TIRZAH Vase Large.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Tirzah 8\" Asymmetrical Vase",
+        "Tirzah 6\" Asymmetrical Vase"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/TIRZAH Vase Small.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Tirzah 8\" Asymmetrical Vase",
+        "Tirzah 6\" Asymmetrical Vase"
+      ]
+    },
+    {
+      "file": "inventory/STYLING/ZAMORA Wood Handle Ceramic Vase.png",
+      "cat": "styling",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Evelda 7\" Ceramic Chain Vase",
+        "Evelda 9.5\" Ceramic Chain Vase"
+      ]
+    },
+    {
+      "file": "inventory/TABLES/JETT Community Table 0.png",
+      "cat": "tables",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Jett Brass & Wood Community Table",
+        "Jett Mini Brass & Wood Community Table"
+      ]
+    },
+    {
+      "file": "inventory/TABLES/JETT Community Table 1.png",
+      "cat": "tables",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Jett Brass & Wood Community Table",
+        "Jett Mini Brass & Wood Community Table"
+      ]
+    },
+    {
+      "file": "inventory/TABLES/RELIC Limestone Column - Smooth Side.png",
+      "cat": "tables",
+      "status": "TIE",
+      "best_score": 3,
+      "ties": [
+        "Relic Limestone Column",
+        "Relic Limestone Side Table"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/FRINGE Cash Ivory.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Fringe Ivory Cashmere Throw",
+        "Fringe Ivory Throw"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/FRINGE Ivory.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Fringe Ivory Cashmere Throw",
+        "Fringe Ivory Throw"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/FRINGE Light Blue.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Blue Ombre Fringe Oversize Pillow",
+        "Blue Ombre Fringe Oversize Lumbar Pillow",
+        "Blue Velvet Fringe Lumbar Pillow",
+        "Fringe Blue Smoke Throw",
+        "Fringe Light Blue Throw"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/FUR Brown Mongolian.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 3,
+      "ties": [
+        "Fur Brown Mongolian Throw",
+        "Fur Brown Mudcloth Mongolian Throw"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/PLAID Red.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Red Tan Plaid Oversize Lumbar",
+        "Plaid Red Throw",
+        "Red Blue Plaid Throw"
+      ]
+    },
+    {
+      "file": "inventory/THROWS/STRIPE Red Black.png",
+      "cat": "pillows-throws",
+      "status": "TIE",
+      "best_score": 2,
+      "ties": [
+        "Red White Edge Ticking Stripe Pillow",
+        "Red White Wide Ticking Stripe Pillow",
+        "Red White Ticking Stripe",
+        "Fur Red Black Ombre Throw"
+      ]
+    }
+  ]
+}
