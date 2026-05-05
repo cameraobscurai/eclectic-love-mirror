@@ -2,49 +2,21 @@
   "summary": {
     "totalLive": 610,
     "missing": 45,
-    "trueMismatches": 32
+    "trueMismatches": 18
   },
   "trueMismatches": [
     {
-      "title": "ROSALIND Cream Velvet Round Banquette",
-      "live": "Sofas & Loveseats",
-      "expected": "sofas",
-      "got": null,
-      "ourCat": "seating"
+      "title": "Milos Column Side Table",
+      "live": "Side Tables",
+      "expected": "side-tables",
+      "got": "coffee-tables",
+      "ourCat": "tables"
     },
     {
       "title": "Monroe Black Flat Slat Tambour Bar",
       "live": "Bars",
       "expected": "bars",
       "got": null,
-      "ourCat": "bars"
-    },
-    {
-      "title": "Malcolm Bar Cart",
-      "live": "Bars",
-      "expected": "bars",
-      "got": "carts",
-      "ourCat": "bars"
-    },
-    {
-      "title": "Lucille Gold Bar Cart",
-      "live": "Bars",
-      "expected": "bars",
-      "got": "carts",
-      "ourCat": "bars"
-    },
-    {
-      "title": "Marceline Gold Bar Cart",
-      "live": "Bars",
-      "expected": "bars",
-      "got": "carts",
-      "ourCat": "bars"
-    },
-    {
-      "title": "Evangeline Silver Bar Cart",
-      "live": "Bars",
-      "expected": "bars",
-      "got": "carts",
       "ourCat": "bars"
     },
     {
@@ -118,80 +90,17 @@
       "ourCat": "storage"
     },
     {
-      "title": "Relic Limestone Column",
-      "live": "Cocktail Tables",
-      "expected": "coffee-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Nantucket Oak Wood Column",
-      "live": "Cocktail Tables",
-      "expected": "coffee-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "FARROW Cocktail Column Tables",
-      "live": "Cocktail Tables",
-      "expected": "coffee-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Bartolo Black Tambour Columns",
-      "live": "Cocktail Tables",
-      "expected": "coffee-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Toshia Mirror Column",
-      "live": "Cocktail Tables",
-      "expected": "coffee-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Jett Mini Brass + Wood Community Table",
-      "live": "Community Tables",
-      "expected": "dining-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Jett Brass & Wood Community Table",
-      "live": "Community Tables",
-      "expected": "dining-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Scout Wood Community Table",
-      "live": "Community Tables",
-      "expected": "dining-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
-      "title": "Broadway Concrete Counter Table",
-      "live": "Community Tables",
-      "expected": "dining-tables",
-      "got": null,
-      "ourCat": "tables"
-    },
-    {
       "title": "Nima Fabric Banquette",
       "live": "Dining Chairs",
       "expected": "chairs",
-      "got": null,
+      "got": "sofas",
       "ourCat": "seating"
     },
     {
       "title": "Auset Linen Banquette",
       "live": "Dining Chairs",
       "expected": "chairs",
-      "got": null,
+      "got": "sofas",
       "ourCat": "seating"
     },
     {
@@ -220,13 +129,6 @@
       "live": "Walls",
       "expected": "structures",
       "got": "screens",
-      "ourCat": "large-decor"
-    },
-    {
-      "title": "Warren Metal Canopy",
-      "live": "Structures",
-      "expected": "structures",
-      "got": null,
       "ourCat": "large-decor"
     }
   ],
