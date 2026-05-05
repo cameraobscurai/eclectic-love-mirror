@@ -92,7 +92,8 @@ const subMisses = [];
 const notFound = [];
 
 for (const [title, info] of Object.entries(truth)) {
-  const p = byTitle.get(norm(title));
+  const aliased = pillowAliases[title] ?? title;
+  const p = byTitle.get(norm(aliased));
   if (!p) {
     notFound.push(title);
     continue;
