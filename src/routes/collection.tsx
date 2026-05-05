@@ -12,14 +12,24 @@ import {
 } from "@/lib/phase3-catalog";
 import {
   BROWSE_GROUP_ORDER,
-  BROWSE_GROUP_LABELS,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
+import {
+  PARENT_ORDER,
+  PARENT_LABELS,
+  TILE_TO_PARENT_SUB,
+  GROUP_TO_PARENT,
+  productParent,
+  productMatchesSub,
+  isParentId,
+  isLegacyTileId,
+  type ParentId,
+} from "@/lib/collection-parents";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
-import { CollectionRail } from "@/components/collection/CollectionRail";
+import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
@@ -47,7 +57,8 @@ const DENSITIES = ["comfortable", "dense"] as const;
 type Density = (typeof DENSITIES)[number];
 
 interface CollectionSearch {
-  group: string;
+  group: string; // ParentId | "" — semantics flipped from BrowseGroupId
+  subcategory: string; // sub id within parent, or "all"
   q: string;
   sort: SortKey;
   density: Density;
@@ -56,13 +67,12 @@ interface CollectionSearch {
 
 const searchSchema = z.object({
   group: fallback(z.string(), "").default(""),
+  subcategory: fallback(z.string(), "all").default("all"),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
   density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
   view: fallback(z.string(), "").default(""),
 });
-
-const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
 // Shared inline styles for the floating search modal's suggestion rows.
 // Kept at module scope so they're stable references and not recreated on
@@ -153,12 +163,35 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, q, sort, density, view } = search;
+  const { group, subcategory, q, sort, density, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
-  const activeGroup: BrowseGroupId | "" =
-    group && BROWSE_GROUP_SET.has(group) ? (group as BrowseGroupId) : "";
+  // Parent + sub derived from URL. Legacy `?group=<BrowseGroupId>` is mapped
+  // into the new shape on mount via the redirect effect below.
+  const activeParent: ParentId | "" =
+    group && isParentId(group) ? group : "";
+  const activeSubcategory = activeParent ? subcategory || "all" : "all";
+
+  // Migrate legacy URLs (?group=sofas etc.) → new (?group=lounge-seating&subcategory=sofas-loveseats).
+  useEffect(() => {
+    if (!group || isParentId(group)) return;
+    if (isLegacyTileId(group)) {
+      const { parent, sub } = TILE_TO_PARENT_SUB[group];
+      navigate({
+        search: (prev: CollectionSearch) => ({ ...prev, group: parent, subcategory: sub }),
+        replace: true,
+        resetScroll: false,
+      });
+    } else {
+      // Unknown group string — clear it.
+      navigate({
+        search: (prev: CollectionSearch) => ({ ...prev, group: "", subcategory: "all" }),
+        replace: true,
+        resetScroll: false,
+      });
+    }
+  }, [group, navigate]);
 
   // ---------- history.scrollRestoration guard ----------
   // Pin to "manual" while the route is mounted so opening/closing Quick View
@@ -317,10 +350,19 @@ function CollectionPage() {
     return products.filter((p) => p.title.toLowerCase().includes(query));
   }, [products, q]);
 
+  // Parent first, then subcategory. "All" is the no-op for sub, so a parent's
+  // All view shows every product whose productParent === activeParent — even
+  // items that fail every keyword bucket.
   const groupFiltered = useMemo(() => {
-    if (!activeGroup) return searchFiltered;
-    return searchFiltered.filter((p) => getProductBrowseGroup(p) === activeGroup);
-  }, [searchFiltered, activeGroup]);
+    if (!activeParent) return searchFiltered;
+    const parentFiltered = searchFiltered.filter(
+      (p) => productParent(p) === activeParent,
+    );
+    if (activeSubcategory === "all") return parentFiltered;
+    return parentFiltered.filter((p) =>
+      productMatchesSub(p, activeParent, activeSubcategory),
+    );
+  }, [searchFiltered, activeParent, activeSubcategory]);
 
   const filtered = useMemo(() => {
     const list = [...groupFiltered];
@@ -380,7 +422,7 @@ function CollectionPage() {
   // grid. The product grid only mounts when the user picks a category or
   // types a search query. This is the answer to "All Inventory was never a
   // useful destination" — we removed it.
-  const showOverview = !activeGroup && !q.trim();
+  const showOverview = !activeParent && !q.trim();
 
   const overviewGroups = useMemo(() => {
     // Bucket the full public-ready catalog by browse group, in display order.
@@ -402,7 +444,7 @@ function CollectionPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH);
-  }, [activeGroup, q, sort]);
+  }, [activeParent, q, sort]);
   const visibleBatch = useMemo(
     () => visibleProducts.slice(0, visibleCount),
     [visibleProducts, visibleCount],
@@ -477,12 +519,13 @@ function CollectionPage() {
     };
   }, [quickViewProduct]);
 
-  const hasActiveFilters = !!(activeGroup || q);
+  const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
     setQLocal("");
     navigate({
       search: () => ({
         group: "",
+        subcategory: "all",
         q: "",
         sort: "type" as SortKey,
         density,
@@ -494,15 +537,42 @@ function CollectionPage() {
     });
   };
 
-  const selectGroup = (id: BrowseGroupId | "") => {
+  // Selecting a parent always resets subcategory to "all".
+  const selectParent = (parent: ParentId | "") => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, group: id }),
+      search: (prev: CollectionSearch) => ({
+        ...prev,
+        group: parent,
+        subcategory: "all",
+      }),
       replace: true,
-      // Category click must NEVER scroll to top. The sticky utility row
-      // and filter rail keep their position; only the grid swaps.
       resetScroll: false,
     });
     setSheetOpen(false);
+  };
+
+  // Selecting a subcategory updates only `subcategory`, never `group`.
+  const selectSubcategory = (sub: string) => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub }),
+      replace: true,
+      resetScroll: false,
+    });
+  };
+
+  // Landing tile → translate BrowseGroupId into { parent, sub } and push both.
+  const selectFromTile = (tileId: BrowseGroupId) => {
+    const mapping = TILE_TO_PARENT_SUB[tileId];
+    if (!mapping) return;
+    navigate({
+      search: (prev: CollectionSearch) => ({
+        ...prev,
+        group: mapping.parent,
+        subcategory: mapping.sub,
+      }),
+      replace: true,
+      resetScroll: false,
+    });
   };
 
   const setDensity = (next: Density) => {
@@ -585,7 +655,7 @@ function CollectionPage() {
           (the rail + category gallery IS the navigation).
           No longer sticky — scrolls with the page as a normal block.
           ============================================================ */}
-      {(activeGroup || q.trim()) && (
+      {(activeParent || q.trim()) && (
       <div
         className="sticky z-30"
         style={{
@@ -633,7 +703,7 @@ function CollectionPage() {
               )}
 
               <p
-                key={`${activeGroup}-${q}-${sort}`}
+                key={`${activeParent}-${q}-${sort}`}
                 className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
                 aria-live="polite"
               >
@@ -723,38 +793,20 @@ function CollectionPage() {
             )}
           </div>
 
-          {/* Horizontal category rail — replaces the left sidebar when a
-              category is active. flex-wrap so it never scrolls horizontally. */}
-          {activeGroup && (
+          {/* Contextual subcategory rail — taxonomy only, never inventory.
+              Renders [All, ...PARENT_SUBS[activeParent]] for the active parent.
+              The flattened 18-row rail (BROWSE_GROUP_ORDER.map) is gone. */}
+          {activeParent && (
             <div className="px-0 pb-3">
               <div
                 className="mx-auto"
                 style={{ maxWidth: "var(--archive-canvas-max)" }}
               >
-                <nav
-                  aria-label="Browse inventory by category"
-                  className="flex flex-wrap items-center gap-x-5 gap-y-2"
-                >
-                  {BROWSE_GROUP_ORDER.map((id) => {
-                    const isActive = activeGroup === id;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => selectGroup(id)}
-                        className={[
-                          "text-[10px] uppercase tracking-[0.22em] py-1 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                          isActive
-                            ? "text-charcoal border-b border-charcoal"
-                            : "text-charcoal/55 hover:text-charcoal border-b border-transparent",
-                        ].join(" ")}
-                        aria-current={isActive ? "page" : undefined}
-                      >
-                        {BROWSE_GROUP_LABELS[id]}
-                      </button>
-                    );
-                  })}
-                </nav>
+                <SubcategoryRail
+                  parent={activeParent}
+                  active={activeSubcategory}
+                  onSelect={selectSubcategory}
+                />
               </div>
             </div>
           )}
@@ -809,7 +861,7 @@ function CollectionPage() {
             <motion.div
               layout={!reduced}
               className="min-w-0 flex-1 flex flex-col min-h-0"
-              key={activeGroup || (q.trim() ? "search" : "overview")}
+              key={activeParent || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
@@ -840,7 +892,7 @@ function CollectionPage() {
                   <div className="flex-1 min-h-0 overflow-hidden">
                     <CategoryTonalGrid
                       groups={overviewGroups}
-                      onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
+                      onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
                     />
                   </div>
                 </>
@@ -989,23 +1041,50 @@ function CollectionPage() {
               </div>
 
               <div
-                className="flex-1 overflow-y-auto px-2 py-3"
+                className="flex-1 overflow-y-auto px-4 py-3"
                 style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" }}
               >
-                <CollectionRail
-                  products={products}
-                  activeGroup={activeGroup}
-                  onSelect={(groupId: BrowseGroupId | "") => {
-                    // On mobile the sheet covers the entire viewport, so
-                    // selecting a category with the sheet still open feels
-                    // like nothing happened — the user can't see the grid
-                    // reflow underneath. Dismiss the sheet immediately on
-                    // select so the result of the tap is visible.
-                    selectGroup(groupId);
-                    setSheetOpen(false);
-                  }}
-                  variant="sheet"
-                />
+                <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45 px-1 pb-3">
+                  Browse by Category
+                </p>
+                <ul role="list" className="flex flex-col">
+                  {PARENT_ORDER.map((pid) => {
+                    const isActive = activeParent === pid;
+                    return (
+                      <li key={pid}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            selectParent(pid);
+                            setSheetOpen(false);
+                          }}
+                          className={[
+                            "w-full text-left px-1 py-3 text-[12px] uppercase tracking-[0.22em] border-b border-charcoal/8",
+                            isActive ? "text-charcoal" : "text-charcoal/65 hover:text-charcoal",
+                          ].join(" ")}
+                          aria-current={isActive ? "page" : undefined}
+                        >
+                          {PARENT_LABELS[pid]}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {activeParent && (
+                  <div className="pt-5">
+                    <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45 px-1 pb-3">
+                      {PARENT_LABELS[activeParent]}
+                    </p>
+                    <SubcategoryRail
+                      parent={activeParent}
+                      active={activeSubcategory}
+                      onSelect={(s) => {
+                        selectSubcategory(s);
+                        setSheetOpen(false);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div
@@ -1078,11 +1157,13 @@ function CollectionPage() {
       {searchOpen && (() => {
         // ---- Live suggestion engine (recomputed each render while open) ----
         const raw = modalQuery.trim().toLowerCase();
+        // Categories suggested in the modal are the 10 PARENTS, never the
+        // legacy 18 BrowseGroupIds — that would re-introduce the flattened
+        // taxonomy through the back door.
         const matchedCategories = raw
-          ? BROWSE_GROUP_ORDER.filter((id) => {
-              const label = (BROWSE_GROUP_LABELS[id] || id).toLowerCase();
-              return label.includes(raw);
-            }).slice(0, 4)
+          ? PARENT_ORDER.filter((id) =>
+              PARENT_LABELS[id].toLowerCase().includes(raw),
+            ).slice(0, 4)
           : [];
         const matchedProducts = raw
           ? products
@@ -1090,13 +1171,6 @@ function CollectionPage() {
               .slice(0, 8)
           : [];
 
-        // Search must always run across the WHOLE inventory, not just the
-        // section the user happened to be inside. So we clear `group` at the
-        // same time we set `q`. Categories explicitly set `group` instead.
-        //
-        // Both commits route through the modalCommitTimerRef debounce so a
-        // user mashing Enter or rapid-clicking suggestions only fires one
-        // navigate() — keeps the URL clean and the grid fade smooth.
         const DEBOUNCE_MS = 140;
         const scheduleCommit = (fn: () => void) => {
           if (modalCommitTimerRef.current !== null) {
@@ -1110,8 +1184,6 @@ function CollectionPage() {
         const commitQuery = (text: string) => {
           const next = text.trim();
           if (!next) return;
-          // Close + clear instantly so the modal feels responsive even
-          // though the URL push is debounced.
           setSearchOpen(false);
           setModalQuery("");
           scheduleCommit(() => {
@@ -1120,6 +1192,7 @@ function CollectionPage() {
               search: (prev: CollectionSearch) => ({
                 ...prev,
                 group: "",
+                subcategory: "all",
                 q: next,
                 view: "",
               }),
@@ -1128,7 +1201,7 @@ function CollectionPage() {
             });
           });
         };
-        const commitCategory = (id: BrowseGroupId) => {
+        const commitCategory = (id: ParentId) => {
           setSearchOpen(false);
           setModalQuery("");
           scheduleCommit(() => {
@@ -1137,6 +1210,7 @@ function CollectionPage() {
               search: (prev: CollectionSearch) => ({
                 ...prev,
                 group: id,
+                subcategory: "all",
                 q: "",
                 view: "",
               }),
@@ -1256,8 +1330,8 @@ function CollectionPage() {
                   {total} pieces across {overviewGroups.length} categories
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {BROWSE_GROUP_ORDER.slice(0, 6).map((id) => {
-                    const label = BROWSE_GROUP_LABELS[id] || id;
+                  {PARENT_ORDER.slice(0, 6).map((id) => {
+                    const label = PARENT_LABELS[id];
                     return (
                       <li key={id}>
                         <button
@@ -1311,7 +1385,7 @@ function CollectionPage() {
                         <p style={suggestionGroupLabel}>Categories</p>
                         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                           {matchedCategories.map((id) => {
-                            const label = BROWSE_GROUP_LABELS[id] || id;
+                            const label = PARENT_LABELS[id];
                             return (
                               <li key={id}>
                                 <button
@@ -1420,7 +1494,7 @@ function CollectionPage() {
             >
               Searching all {total} pieces · {overviewGroups.length} categories
             </span>
-            {activeGroup && (
+            {activeParent && (
               <span
                 style={{
                   fontFamily: "var(--font-sans)",
@@ -1432,7 +1506,7 @@ function CollectionPage() {
                 }}
                 title="The bar inside a category stays section-scoped. The modal does not."
               >
-                Bar: {(BROWSE_GROUP_LABELS[activeGroup] || activeGroup)} only
+                Bar: {PARENT_LABELS[activeParent]} only
               </span>
             )}
           </div>

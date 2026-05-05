@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
+import { PARENT_ORDER, PARENT_LABELS } from "@/lib/collection-parents";
 
 // Brand signature per the deck: "ATELIER *by* THE HIVE" — lowercase italic
 // "by" set in Saol Display between caps. Render as JSX so the italic survives
@@ -158,31 +159,57 @@ export function Navigation() {
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
               const dark = scrolled || !isLightPage;
+              const isCollection = link.href === "/collection";
               return (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  preload="intent"
-                  className={cn(
-                    "relative group text-[13px] xl:text-[14px] tracking-[0.28em] uppercase font-light transition-colors duration-300",
-                    dark
-                      ? active
-                        ? "text-cream"
-                        : "text-cream/70 hover:text-cream"
-                      : active
-                      ? "text-charcoal"
-                      : "text-charcoal/70 hover:text-charcoal"
-                  )}
-                >
-                  {link.render}
-                  <span
+                <div key={link.href} className="relative group/navitem">
+                  <Link
+                    to={link.href}
+                    preload="intent"
                     className={cn(
-                      "absolute -bottom-1 left-0 w-full h-px origin-left transition-transform duration-300",
-                      dark ? "bg-cream/50" : "bg-charcoal/50",
-                      active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      "relative group text-[13px] xl:text-[14px] tracking-[0.28em] uppercase font-light transition-colors duration-300",
+                      dark
+                        ? active
+                          ? "text-cream"
+                          : "text-cream/70 hover:text-cream"
+                        : active
+                        ? "text-charcoal"
+                        : "text-charcoal/70 hover:text-charcoal"
                     )}
-                  />
-                </Link>
+                  >
+                    {link.render}
+                    <span
+                      className={cn(
+                        "absolute -bottom-1 left-0 w-full h-px origin-left transition-transform duration-300",
+                        dark ? "bg-cream/50" : "bg-charcoal/50",
+                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                      )}
+                    />
+                  </Link>
+                  {isCollection && (
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 top-full pt-4 opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible focus-within:opacity-100 focus-within:visible transition-opacity duration-200 z-50"
+                    >
+                      <ul
+                        className="bg-white border border-charcoal/10 shadow-xl py-2 min-w-[220px]"
+                        role="menu"
+                      >
+                        {PARENT_ORDER.map((pid) => (
+                          <li key={pid} role="none">
+                            <Link
+                              to="/collection"
+                              search={{ group: pid, subcategory: "all", q: "", sort: "type", density: "comfortable", view: "" }}
+                              preload="intent"
+                              role="menuitem"
+                              className="block px-5 py-2 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap"
+                            >
+                              {PARENT_LABELS[pid]}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
