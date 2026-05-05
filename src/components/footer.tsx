@@ -22,15 +22,15 @@ export function Footer() {
             <h2 className="font-brand text-[1.3rem] lg:text-[1.5rem] tracking-[0.18em] uppercase font-light">
               ECLECTIC HIVE
             </h2>
-            <p className="mt-6 text-cream/65 max-w-md leading-[1.7] text-[15px]">
-              An atelier of design and production.
+            <p className="mt-6 text-cream/65 max-w-md leading-[1.7] text-[13px] uppercase tracking-[0.18em]">
+              AN ATELIER OF DESIGN AND PRODUCTION.
             </p>
-            <p className="mt-4 text-cream/65 max-w-md leading-[1.7] text-[15px]">
-              Working across concept, fabrication, and space to create
-              immersive environments.
+            <p className="mt-4 text-cream/65 max-w-md leading-[1.7] text-[13px] uppercase tracking-[0.18em]">
+              WORKING ACROSS CONCEPT, FABRICATION, AND SPACE TO CREATE
+              IMMERSIVE ENVIRONMENTS.
             </p>
-            <p className="mt-4 text-cream/55 max-w-md leading-[1.7] text-[15px]">
-              Denver, Colorado
+            <p className="mt-4 text-cream/55 max-w-md leading-[1.7] text-[13px] uppercase tracking-[0.18em]">
+              DENVER, COLORADO
             </p>
           </div>
 
@@ -58,12 +58,14 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:info@eclectichive.com"
-                  className="text-[14px] text-cream/70 hover:text-cream transition-colors"
+                  className="text-[12px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors"
                 >
-                  info@eclectichive.com
+                  INFO@ECLECTICHIVE.COM
                 </a>
               </li>
-              <li className="text-[14px] text-cream/55">Denver, Colorado</li>
+              <li className="text-[12px] uppercase tracking-[0.18em] text-cream/55">
+                DENVER, COLORADO
+              </li>
             </ul>
           </div>
         </div>
