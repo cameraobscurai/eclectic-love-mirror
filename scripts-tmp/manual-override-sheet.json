@@ -1,0 +1,249 @@
+{
+  "generated_at": "2026-05-05T00:19:42.151Z",
+  "monroe_cluster": {
+    "site_product_url": "https://www.eclectichive.com/cocktail-bar/monroe-black-flat-slat-tambour-bar",
+    "site_image_count": 10,
+    "storage_filename_count": 5,
+    "rows": [
+      {
+        "product_id": "4118",
+        "rms_title": "Monroe - Black Slat Tambour - Double 10'",
+        "rms_category": "bars",
+        "csv_image_filename": "Black_Slat_Astaire_Double_10_.png",
+        "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Double%2010'.png",
+        "squarespace_candidate_urls": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "recommended_primary_image": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Double%2010'.png",
+        "recommended_gallery_images": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "confidence": "medium (storage size match only)",
+        "notes": "CSV labels filenames as \"Astaire\" but RMS title is \"Monroe — Black Slat Tambour\". Storage filenames already use correct \"MONROE\" naming. Visual review required: confirm size labels (5'/8'/10'/16'/15') match physical bar."
+      },
+      {
+        "product_id": "4117",
+        "rms_title": "Monroe - Black Slat Tambour - Double 16'",
+        "rms_category": "bars",
+        "csv_image_filename": "Black_Slat_Astaire_Double_16_.png",
+        "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Double%2016'.png",
+        "squarespace_candidate_urls": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "recommended_primary_image": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Double%2016'.png",
+        "recommended_gallery_images": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "confidence": "medium (storage size match only)",
+        "notes": "CSV labels filenames as \"Astaire\" but RMS title is \"Monroe — Black Slat Tambour\". Storage filenames already use correct \"MONROE\" naming. Visual review required: confirm size labels (5'/8'/10'/16'/15') match physical bar."
+      },
+      {
+        "product_id": "4116",
+        "rms_title": "Monroe - Black Slat Tambour - Single 5'",
+        "rms_category": "bars",
+        "csv_image_filename": "Black_Slat_Astaire_Single_5_.png",
+        "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Single%205'.png",
+        "squarespace_candidate_urls": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "recommended_primary_image": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Single%205'.png",
+        "recommended_gallery_images": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "confidence": "medium (storage size match only)",
+        "notes": "CSV labels filenames as \"Astaire\" but RMS title is \"Monroe — Black Slat Tambour\". Storage filenames already use correct \"MONROE\" naming. Visual review required: confirm size labels (5'/8'/10'/16'/15') match physical bar."
+      },
+      {
+        "product_id": "4108",
+        "rms_title": "Monroe - Black Slat Tambour - Single 8'",
+        "rms_category": "bars",
+        "csv_image_filename": "Black_Slat_Astaire_Single_8_.png",
+        "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Single%208'.png",
+        "squarespace_candidate_urls": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "recommended_primary_image": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Single%208'.png",
+        "recommended_gallery_images": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "confidence": "medium (storage size match only)",
+        "notes": "CSV labels filenames as \"Astaire\" but RMS title is \"Monroe — Black Slat Tambour\". Storage filenames already use correct \"MONROE\" naming. Visual review required: confirm size labels (5'/8'/10'/16'/15') match physical bar."
+      },
+      {
+        "product_id": "4119",
+        "rms_title": "Monroe - Black Slat Tambour - Triple 15'",
+        "rms_category": "bars",
+        "csv_image_filename": "Black_Slat_Astaire_Triple_15_.png",
+        "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Triple%2015'.png",
+        "squarespace_candidate_urls": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "recommended_primary_image": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/MONROE%20Black%20Slat%20Triple%2015'.png",
+        "recommended_gallery_images": [
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29b74214-e181-46a7-aa9d-7ed5a1a37d98/MONROE+Black+Slat+Double+16%27.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/d2bc2b67-0491-4d0e-808f-0f43f08e06ce/MONROE+Black+Slat+Single+8%27.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Fmonroe-black-flat-slat-tambour-bar?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+          "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+        ],
+        "confidence": "medium (storage size match only)",
+        "notes": "CSV labels filenames as \"Astaire\" but RMS title is \"Monroe — Black Slat Tambour\". Storage filenames already use correct \"MONROE\" naming. Visual review required: confirm size labels (5'/8'/10'/16'/15') match physical bar."
+      }
+    ]
+  },
+  "conflicts": [
+    {
+      "product_id": "2757",
+      "rms_title": "Iraja Square Weathered Oak Bar",
+      "rms_category": "bars",
+      "csv_image_filename": "IRJA_Bar_1.png",
+      "csv_filename_concern": "CSV filename \"IRJA_Bar_1.png\" normalizes to \"irja bar\" but title is \"Iraja Square Weathered Oak Bar\" (key \"iraja square weathered oak bar\") — names disagree",
+      "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/IRJA%20Bar%201.png",
+      "squarespace_candidates": [
+        {
+          "site_title": "Iraja 12' Wood Convertible Bar",
+          "detail_url": "https://www.eclectichive.com/cocktail-bar/iraja-12-square-whitewash-bar",
+          "first_image": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/71b04d4f-cfe0-49eb-a1c7-fa6f9dd5f4df/IRJA+Bar+1.png?format=2500w",
+          "image_count": 14
+        }
+      ],
+      "recommended_primary_image": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/71b04d4f-cfe0-49eb-a1c7-fa6f9dd5f4df/IRJA+Bar+1.png?format=2500w",
+      "recommended_gallery_images": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/f5c4889e-0fb4-4708-9cb2-cca7386872a3/IRAJA+U.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/6acd7fc1-fbda-425c-8f6e-41c42c401578/IRAJA+Single+Bar+1.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/323637eb-cf0c-4740-84d0-3cfb51272f33/IRAJA+Double+Bar+1.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/71b04d4f-cfe0-49eb-a1c7-fa6f9dd5f4df/IRJA+Bar+1.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;800x600,100w,300w,500w,750w&quot;,&quot;originalSize&quot;:&quot;800x600&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:0},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;Single&quot;},&quot;optionValues&quot;:[{&quot;optionName&quot;:&quot;Style&quot;,&quot;value&quot;:&quot;Single&quot;}],&quot;id&quot;:&quot;3593610e-a008-4ab2-ad3c-59c177134481&quot;,&quot;sku&quot;:&quot;SQ7443228&quot;,&quot;price&quot;:0,&quot;salePrice&quot;:0,&quot;priceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;salePriceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;onSale&quot;:false,&quot;unlimited&quot;:false,&quot;qtyInStock&quot;:1,&quot;width&quot;:0.0,&quot;height&quot;:0.0,&quot;weight&quot;:0.0,&quot;imageIds&quot;:[],&quot;mainImageId&quot;:&quot;6709662b66ce3b1552e3f85d&quot;,&quot;images&quot;:[],&quot;mainImage&quot;:{&quot;id&quot;:&quot;6709662b66ce3b1552e3f85d&quot;,&quot;assetUrl&quot;:&quot;https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/6acd7fc1-fbda-425c-8f6e-41c42c401578/IRAJA+Single+Bar+1.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;800x600,100w,300w,500w,750w&quot;,&quot;originalSize&quot;:&quot;800x600&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:2},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;U?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/f5c4889e-0fb4-4708-9cb2-cca7386872a3/IRAJA+U.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;800x600,100w,300w,500w,750w&quot;,&quot;originalSize&quot;:&quot;800x600&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:1},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;Double&quot;},&quot;optionValues&quot;:[{&quot;optionName&quot;:&quot;Style&quot;,&quot;value&quot;:&quot;Double&quot;}],&quot;id&quot;:&quot;49abc0bd-de55-4f1d-aaf1-c88e7e037414&quot;,&quot;sku&quot;:&quot;SQ2467979&quot;,&quot;price&quot;:0,&quot;salePrice&quot;:0,&quot;priceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;salePriceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;onSale&quot;:false,&quot;unlimited&quot;:false,&quot;qtyInStock&quot;:1,&quot;width&quot;:0.0,&quot;height&quot;:0.0,&quot;weight&quot;:0.0,&quot;imageIds&quot;:[],&quot;mainImageId&quot;:&quot;6709662b40d99b34cb303bdb&quot;,&quot;images&quot;:[],&quot;mainImage&quot;:{&quot;id&quot;:&quot;6709662b40d99b34cb303bdb&quot;,&quot;assetUrl&quot;:&quot;https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/323637eb-cf0c-4740-84d0-3cfb51272f33/IRAJA+Double+Bar+1.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;800x600,100w,300w,500w,750w&quot;,&quot;originalSize&quot;:&quot;800x600&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:3},&quot;len&quot;:0.0}]?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/71b04d4f-cfe0-49eb-a1c7-fa6f9dd5f4df/IRJA+Bar+1.png&amp;url=https%3A%2F%2Fwww.eclectichive.com%2Fcocktail-bar%2Firaja-12-square-whitewash-bar?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+      ],
+      "confidence": "medium — IRJA filename almost certainly = Iraja; verify storage image is the same physical bar as the site listing.",
+      "notes": "Visual review required by Adrienne/Darian before binding."
+    },
+    {
+      "product_id": "2864",
+      "rms_title": "Gideon Small Bamboo Mesh Pendant",
+      "rms_category": "chandeliers",
+      "csv_image_filename": "small_g.png",
+      "csv_filename_concern": "CSV filename \"small_g.png\" normalizes to \"g\" but title is \"Gideon Small Bamboo Mesh Pendant\" (key \"gideon bamboo mesh pendant\") — names disagree",
+      "storage_candidate_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/BARS/ARCUS%20-%20BEVIN%20Gold%20Kick%20Plate.png",
+      "squarespace_candidates": [
+        {
+          "site_title": "Gideon Bamboo Pendant Light",
+          "detail_url": "https://www.eclectichive.com/light/gideon-bamboo-pendant-light",
+          "first_image": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png?format=2500w",
+          "image_count": 13
+        }
+      ],
+      "recommended_primary_image": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png?format=2500w",
+      "recommended_gallery_images": [
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032239397-6KG0L6J0VW8ZB1T8FQ30/GIDEON+3+Bamboo+Pendant+0.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032380954-939I433SAV578J2R30DH/GIDEON+Bamboo+Pendant+0.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032278515-BQBXNENP1JFSI9ORE1WD/GIDEON+4+Bamboo+Pendant+0.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032380954-939I433SAV578J2R30DH/GIDEON+Bamboo+Pendant+0.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;400x300,100w,300w&quot;,&quot;originalSize&quot;:&quot;400x300&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:2},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;Medium&quot;},&quot;optionValues&quot;:[{&quot;optionName&quot;:&quot;Style&quot;,&quot;value&quot;:&quot;Medium&quot;}],&quot;id&quot;:&quot;bf4e7514-fabd-4b13-b517-0903f01b764f&quot;,&quot;sku&quot;:&quot;SQ4366152&quot;,&quot;price&quot;:0,&quot;salePrice&quot;:0,&quot;priceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;salePriceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;onSale&quot;:false,&quot;unlimited&quot;:false,&quot;qtyInStock&quot;:1,&quot;width&quot;:0.0,&quot;height&quot;:0.0,&quot;weight&quot;:0.0,&quot;imageIds&quot;:[],&quot;mainImageId&quot;:&quot;60342d6f23972403c3e39079&quot;,&quot;images&quot;:[],&quot;mainImage&quot;:{&quot;id&quot;:&quot;60342d6f23972403c3e39079&quot;,&quot;assetUrl&quot;:&quot;https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032239397-6KG0L6J0VW8ZB1T8FQ30/GIDEON+3+Bamboo+Pendant+0.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;400x300,100w,300w&quot;,&quot;originalSize&quot;:&quot;400x300&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:1},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;Large&quot;},&quot;optionValues&quot;:[{&quot;optionName&quot;:&quot;Style&quot;,&quot;value&quot;:&quot;Large&quot;}],&quot;id&quot;:&quot;391cb3d6-1794-4755-880c-64106a019cc4&quot;,&quot;sku&quot;:&quot;SQ9715624&quot;,&quot;price&quot;:0,&quot;salePrice&quot;:0,&quot;priceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;salePriceMoney&quot;:{&quot;currency&quot;:&quot;USD&quot;,&quot;value&quot;:&quot;0.00&quot;},&quot;onSale&quot;:false,&quot;unlimited&quot;:false,&quot;qtyInStock&quot;:1,&quot;width&quot;:0.0,&quot;height&quot;:0.0,&quot;weight&quot;:0.0,&quot;imageIds&quot;:[],&quot;mainImageId&quot;:&quot;60342cce89bf915e58b97a11&quot;,&quot;images&quot;:[],&quot;mainImage&quot;:{&quot;id&quot;:&quot;60342cce89bf915e58b97a11&quot;,&quot;assetUrl&quot;:&quot;https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;400x300,100w,300w&quot;,&quot;originalSize&quot;:&quot;400x300&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:0},&quot;len&quot;:0.0},{&quot;attributes&quot;:{&quot;Style&quot;:&quot;Extra?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032278515-BQBXNENP1JFSI9ORE1WD/GIDEON+4+Bamboo+Pendant+0.png&quot;,&quot;systemDataSourceType&quot;:&quot;PNG&quot;,&quot;systemDataVariants&quot;:&quot;400x300,100w,300w&quot;,&quot;originalSize&quot;:&quot;400x300&quot;,&quot;mediaFocalPoint&quot;:{&quot;x&quot;:0.5,&quot;y&quot;:0.5,&quot;source&quot;:3},&quot;title&quot;:&quot;&quot;,&quot;displayIndex&quot;:3},&quot;len&quot;:0.0}]?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1582582243443-OTIRC9SFBS6P04E2T4C0/Hive_Script+Follow+Along.png?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777917191369-RDDCBYMC3HXJEO9R4L7Y/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777867026070-JV80QVKO5ZVR8POC5LU9/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777832468676-00NJLHBJ3880I61GFSZP/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1777750185983-31UIYTJ0IIZG8M93NKI7/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776736232693-O5CN67HEPUO6APH5VAIG/image-asset.jpeg?format=2500w",
+        "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1776269913766-JX21K5TQR1KHBJTJ6SCX/image-asset.jpeg?format=2500w"
+      ],
+      "confidence": "low — storage candidate URL is a totally unrelated bar image (BARS/ARCUS-BEVIN…); do NOT use storage. Site product \"Gideon Bamboo Pendant Light\" looks like the correct visual binding but verify before applying.",
+      "notes": "Visual review required by Adrienne/Darian before binding."
+    }
+  ]
+}
