@@ -272,11 +272,18 @@ const oneOf = (slug: string, slugs: string[]) => slugs.includes(slug);
 const RULES: Rule[] = [
   // ===== OWNER TIER =====
 
+  // NOTE: rules accept BOTH the new RMS catalog slugs (seating, tables, bars,
+  // pillows-throws, storage, lighting, chandeliers, candlelight, furs-pelts)
+  // AND the legacy phase3 slugs (lounge, tables1, lounge-tables, bars1,
+  // cocktail-bar, pillows-throws1, textiles, storage1, light, accents1,
+  // sofas-loveseats1, chairs-stools1, benches-ottomans1) so historical data
+  // continues to classify cleanly.
+
   {
     id: "sofas",
-    reason: "lounge/sofa slug + sofa keyword",
+    reason: "seating slug + sofa keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["lounge", "sofas-loveseats1"])) return 0;
+      if (!oneOf(categorySlug, ["seating", "lounge", "sofas-loveseats1"])) return 0;
       const hit = includesAny(title, [
         "sofa",
         "loveseat",
@@ -291,11 +298,11 @@ const RULES: Rule[] = [
 
   {
     id: "chairs",
-    reason: "lounge/chairs slug + chair keyword",
+    reason: "seating slug + chair keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["lounge", "chairs-stools1"])) return 0;
+      if (!oneOf(categorySlug, ["seating", "lounge", "chairs-stools1"])) return 0;
       // Exclude bench/ottoman/daybed — those route to benches-ottomans.
-      if (includesAny(title, ["bench", "ottoman", "daybed", "pouf", "footstool"])) {
+      if (includesAny(title, ["bench", "ottoman", "daybed", "pouf", "footstool", "banquette"])) {
         return 0;
       }
       const hit = includesAny(title, [
@@ -312,9 +319,9 @@ const RULES: Rule[] = [
 
   {
     id: "coffee-tables",
-    reason: "table slug + 'coffee table' phrase",
+    reason: "tables slug + 'coffee table' phrase",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["lounge-tables", "tables1"])) return 0;
+      if (!oneOf(categorySlug, ["tables", "lounge-tables", "tables1"])) return 0;
       if (title.includes("coffee table")) return 320;
       return 0;
     },
@@ -322,9 +329,9 @@ const RULES: Rule[] = [
 
   {
     id: "side-tables",
-    reason: "table slug + side/end/console keyword",
+    reason: "tables slug + side/end/console keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["lounge-tables", "tables1"])) return 0;
+      if (!oneOf(categorySlug, ["tables", "lounge-tables", "tables1"])) return 0;
       const phrases = [
         "side table",
         "end table",
@@ -342,9 +349,9 @@ const RULES: Rule[] = [
 
   {
     id: "cocktail-tables",
-    reason: "cocktail/lounge slug + cocktail/community keyword",
+    reason: "tables/bars slug + cocktail/community keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["cocktail-bar", "lounge-tables", "tables1"])) return 0;
+      if (!oneOf(categorySlug, ["tables", "bars", "cocktail-bar", "lounge-tables", "tables1"])) return 0;
       if (
         includesAny(title, [
           "cocktail table",
@@ -366,9 +373,9 @@ const RULES: Rule[] = [
 
   {
     id: "pillows",
-    reason: "textile/pillow slug + pillow keyword",
+    reason: "pillows-throws slug + pillow keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["pillows-throws1", "textiles"])) return 0;
+      if (!oneOf(categorySlug, ["pillows-throws", "pillows-throws1", "textiles"])) return 0;
       if (includesAny(title, ["pillow", "lumbar"])) return 240;
       return 0;
     },
@@ -376,9 +383,9 @@ const RULES: Rule[] = [
 
   {
     id: "bar",
-    reason: "bar slug + bar keyword",
+    reason: "bars slug + bar keyword",
     score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["bars1", "cocktail-bar"])) return 0;
+      if (!oneOf(categorySlug, ["bars", "bars1", "cocktail-bar"])) return 0;
       const phrases = [
         "back bar",
         "backbar",
@@ -386,6 +393,8 @@ const RULES: Rule[] = [
         "counter stool",
       ];
       if (includesAny(title, phrases)) return 290;
+      // Mono fallback: any product in the bars slug is a Bar piece.
+      if (categorySlug === "bars") return 150;
       if (includesAny(title, ["bar", "shelving", "shelf", "counter"])) {
         return 210;
       }
@@ -397,7 +406,7 @@ const RULES: Rule[] = [
     id: "storage",
     reason: "storage slug (mono) or cabinet keyword",
     score: ({ title, categorySlug }) => {
-      if (categorySlug === "storage1") return 200;
+      if (oneOf(categorySlug, ["storage", "storage1"])) return 200;
       if (
         categorySlug === "cocktail-bar" &&
         includesAny(title, ["cabinet", "credenza", "trunk", "chest", "armoire"])
@@ -433,6 +442,10 @@ const RULES: Rule[] = [
         "pepper",
         "cocktail set",
         "paddle",
+        "fork",
+        "knife",
+        "spoon",
+        "flute",
       ];
       if (includesAny(title, kws)) return 230;
       return 0;
@@ -444,6 +457,9 @@ const RULES: Rule[] = [
     reason: "tableware/serveware slug + serving keyword",
     score: ({ title, categorySlug }) => {
       if (!oneOf(categorySlug, ["tableware", "serveware"])) return 0;
+      // Mono fallback for serveware slug — every item in the dedicated
+      // serveware category should land here unless tableware claimed it.
+      if (categorySlug === "serveware") return 150;
       const kws = [
         "tray",
         "platter",
@@ -466,18 +482,19 @@ const RULES: Rule[] = [
 
   {
     id: "styling",
-    reason: "styling slug (mono)",
-    score: ({ categorySlug }) => (categorySlug === "styling" ? 100 : 0),
+    reason: "styling/candlelight slug (mono)",
+    score: ({ categorySlug }) =>
+      oneOf(categorySlug, ["styling", "candlelight"]) ? 100 : 0,
   },
 
   // ===== SAFETY-NET TIER =====
 
   {
     id: "benches-ottomans",
-    reason: "benches slug or seating keyword",
+    reason: "seating slug + bench/ottoman keyword",
     score: ({ title, categorySlug }) => {
       if (categorySlug === "benches-ottomans1") return 150;
-      if (categorySlug === "lounge") {
+      if (oneOf(categorySlug, ["seating", "lounge"])) {
         if (
           includesAny(title, [
             "bench",
@@ -497,10 +514,10 @@ const RULES: Rule[] = [
 
   {
     id: "dining",
-    reason: "dining slug or dining-table keyword",
+    reason: "tables slug + dining-table keyword",
     score: ({ title, categorySlug }) => {
       if (categorySlug === "dining") return 150;
-      if (categorySlug === "tables1") {
+      if (oneOf(categorySlug, ["tables", "tables1"])) {
         const phrases = [
           "dining table",
           "farm table",
@@ -521,32 +538,34 @@ const RULES: Rule[] = [
 
   {
     id: "lighting",
-    reason: "lighting slug",
+    reason: "lighting/chandelier slug",
     score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["light", "lighting"]) ? 100 : 0,
+      oneOf(categorySlug, ["lighting", "chandeliers", "light"]) ? 100 : 0,
   },
 
   {
     id: "throws",
-    reason: "textile/pillow slug fallback (no pillow keyword)",
-    score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["pillows-throws1", "textiles"]) ? 50 : 0,
+    reason: "pillows-throws slug fallback (no pillow keyword)",
+    score: ({ title, categorySlug }) => {
+      if (!oneOf(categorySlug, ["pillows-throws", "pillows-throws1", "textiles"])) return 0;
+      // Don't hijack pillow rows — those land in `pillows`.
+      if (includesAny(title, ["pillow", "lumbar"])) return 0;
+      return 80;
+    },
   },
 
   {
     id: "large-decor",
-    reason: "large-decor slug",
-    score: ({ categorySlug }) => (categorySlug === "large-decor" ? 100 : 0),
+    reason: "large-decor/furs-pelts slug",
+    score: ({ categorySlug }) =>
+      oneOf(categorySlug, ["large-decor", "furs-pelts"]) ? 100 : 0,
   },
 
   {
     id: "accents",
-    reason: "accents slug or unmatched-table fallback",
+    reason: "accents slug or unmatched fallback",
     score: ({ categorySlug }) => {
       if (categorySlug === "accents1") return 100;
-      // Catch-all for cocktail-bar/tableware/sofas-loveseats1/tables1 stragglers
-      // that nothing else claimed. Lowest meaningful score so any real owner
-      // rule beats it.
       if (
         oneOf(categorySlug, [
           "cocktail-bar",
