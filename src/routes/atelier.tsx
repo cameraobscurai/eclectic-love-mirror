@@ -1,24 +1,35 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
-import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
-import { HeroImage, heroPreloadLink } from "@/components/hero-image";
+import { heroPreloadLink } from "@/components/hero-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
-import atelierStudioWide from "@/assets/atelier-studio-wide.png?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
 import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
-import fabricationStillLife from "@/assets/atelier/fabrication-still-life.png?preset=editorial";
-import fabricationFoliage from "@/assets/atelier/fabrication-foliage-study.png?preset=editorial";
-import fabricationTentTriptych from "@/assets/atelier/fabrication-tent-triptych.png?preset=editorial";
-import workbenchChairSketch from "@/assets/atelier/workbench-chair-sketch.png?preset=editorial";
-import warehouseStudioCollage from "@/assets/atelier/studio-collage.png?preset=editorial";
+
+// Owner-supplied photos pending — render quiet, intentional waiting state.
+function Placeholder({
+  ratio,
+  label,
+}: {
+  ratio: string;
+  label: string;
+}) {
+  return (
+    <div
+      className="w-full flex items-center justify-center border border-dashed text-[10px] tracking-[0.28em] uppercase text-charcoal/45"
+      style={{
+        aspectRatio: ratio,
+        backgroundColor: "color-mix(in oklab, var(--charcoal) 4%, transparent)",
+        borderColor: "color-mix(in oklab, var(--charcoal) 25%, transparent)",
+      }}
+      role="img"
+      aria-label={`Placeholder — ${label}`}
+    >
+      [{label}]
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Atelier by The Hive — operational proof page
