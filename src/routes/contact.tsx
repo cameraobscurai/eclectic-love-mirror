@@ -230,8 +230,9 @@ function ContactPage() {
               Let's collaborate.
             </h1>
             <p className="mt-8 max-w-md text-[15px] leading-relaxed text-charcoal/70">
-              Tell us about your project in one place. We respond within two
-              business days with next steps and a consultation call.
+              We would love to hear about your project and how we can support
+              your needs. Every inquiry is personally reviewed and will be
+              answered within 24 hours. Thank you for reaching out to us!
             </p>
             <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
               <p>
@@ -244,7 +245,7 @@ function ContactPage() {
               </p>
               <p>
                 <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
-                  STUDIO
+                  ATELIER
                 </span>
                 Denver, Colorado
               </p>
@@ -373,7 +374,7 @@ function ContactPage() {
                       rows={6}
                       required
                       className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[15px] leading-relaxed text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
-                      placeholder="Story, mood, references, venue, anything that helps us begin."
+                      placeholder="Colorway, materials, inventory references, and venue details are all great places to start."
                     />
                   </Field>
                 </FormSection>
