@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { GalleryImage } from "@/content/gallery-projects";
+import { renderUrl } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // GalleryLightboxRail
