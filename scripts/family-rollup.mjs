@@ -185,7 +185,7 @@ export function rollupFamilies(products, liveSnapshot) {
     const family = {
       ...withMostImages,
       title: g.fam.familyTitle,
-      slug: g.fam.liveSlug ? `${g.fam.liveSlug}-${g.members[0].categorySlug}` : `${withMostImages.slug}-family`,
+      slug: g.fam.liveSlug || `${withMostImages.slug}-family`,
       images: mergedImages,
       primaryImage: mergedImages[0] || withMostImages.primaryImage,
       variants: sorted.map(m => ({
