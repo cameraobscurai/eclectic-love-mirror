@@ -18,6 +18,7 @@ import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
@@ -64,10 +65,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminImageQaRoute = AdminImageQaRouteImport.update({
+  id: '/image-qa',
+  path: '/image-qa',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
@@ -75,10 +81,11 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
@@ -86,11 +93,12 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/collection': typeof CollectionRoute
   '/contact': typeof ContactRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/image-qa'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/image-qa'
   id:
     | '__root__'
     | '/'
@@ -133,11 +144,12 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/image-qa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AtelierRoute: typeof AtelierRoute
   CollectionRoute: typeof CollectionRoute
   ContactRoute: typeof ContactRoute
@@ -212,12 +224,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/image-qa': {
+      id: '/admin/image-qa'
+      path: '/image-qa'
+      fullPath: '/admin/image-qa'
+      preLoaderRoute: typeof AdminImageQaRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminImageQaRoute: typeof AdminImageQaRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminImageQaRoute: AdminImageQaRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AtelierRoute: AtelierRoute,
   CollectionRoute: CollectionRoute,
   ContactRoute: ContactRoute,
