@@ -43,10 +43,13 @@ export function GalleryProjectCard({
           ].join(" ")}
         >
           <img
-            src={project.heroImage.src}
+            src={renderUrl(project.heroImage.src, { width: 1200, quality: 72 })}
+            srcSet={renderSrcSet(project.heroImage.src, [800, 1200, 1600], 72)}
+            sizes="(min-width: 1280px) 40vw, (min-width: 1024px) 45vw, (min-width: 768px) 60vw, 85vw"
             alt={project.heroImage.alt}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
+            {...(index === 0 ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             draggable={false}
           />
