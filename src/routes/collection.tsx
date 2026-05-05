@@ -352,9 +352,9 @@ function CollectionPage() {
   }, [products, q]);
 
   const groupFiltered = useMemo(() => {
-    if (!activeGroup) return searchFiltered;
-    return searchFiltered.filter((p) => getProductBrowseGroup(p) === activeGroup);
-  }, [searchFiltered, activeGroup]);
+    if (!activeParent) return searchFiltered;
+    return searchFiltered.filter((p) => getProductBrowseGroup(p) === activeParent);
+  }, [searchFiltered, activeParent]);
 
   const filtered = useMemo(() => {
     const list = [...groupFiltered];
@@ -414,7 +414,7 @@ function CollectionPage() {
   // grid. The product grid only mounts when the user picks a category or
   // types a search query. This is the answer to "All Inventory was never a
   // useful destination" — we removed it.
-  const showOverview = !activeGroup && !q.trim();
+  const showOverview = !activeParent && !q.trim();
 
   const overviewGroups = useMemo(() => {
     // Bucket the full public-ready catalog by browse group, in display order.
@@ -436,7 +436,7 @@ function CollectionPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH);
-  }, [activeGroup, q, sort]);
+  }, [activeParent, q, sort]);
   const visibleBatch = useMemo(
     () => visibleProducts.slice(0, visibleCount),
     [visibleProducts, visibleCount],
@@ -511,7 +511,7 @@ function CollectionPage() {
     };
   }, [quickViewProduct]);
 
-  const hasActiveFilters = !!(activeGroup || q);
+  const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
     setQLocal("");
     navigate({
@@ -619,7 +619,7 @@ function CollectionPage() {
           (the rail + category gallery IS the navigation).
           No longer sticky — scrolls with the page as a normal block.
           ============================================================ */}
-      {(activeGroup || q.trim()) && (
+      {(activeParent || q.trim()) && (
       <div
         className="sticky z-30"
         style={{
@@ -667,7 +667,7 @@ function CollectionPage() {
               )}
 
               <p
-                key={`${activeGroup}-${q}-${sort}`}
+                key={`${activeParent}-${q}-${sort}`}
                 className="text-[11px] uppercase tracking-[0.22em] text-charcoal/60 hidden sm:flex items-center h-10 truncate"
                 aria-live="polite"
               >
@@ -759,7 +759,7 @@ function CollectionPage() {
 
           {/* Horizontal category rail — replaces the left sidebar when a
               category is active. flex-wrap so it never scrolls horizontally. */}
-          {activeGroup && (
+          {activeParent && (
             <div className="px-0 pb-3">
               <div
                 className="mx-auto"
@@ -770,7 +770,7 @@ function CollectionPage() {
                   className="flex flex-wrap items-center gap-x-5 gap-y-2"
                 >
                   {BROWSE_GROUP_ORDER.map((id) => {
-                    const isActive = activeGroup === id;
+                    const isActive = activeParent === id;
                     return (
                       <button
                         key={id}
@@ -843,7 +843,7 @@ function CollectionPage() {
             <motion.div
               layout={!reduced}
               className="min-w-0 flex-1 flex flex-col min-h-0"
-              key={activeGroup || (q.trim() ? "search" : "overview")}
+              key={activeParent || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
@@ -1028,7 +1028,7 @@ function CollectionPage() {
               >
                 <CollectionRail
                   products={products}
-                  activeGroup={activeGroup}
+                  activeParent={activeParent}
                   onSelect={(groupId: BrowseGroupId | "") => {
                     // On mobile the sheet covers the entire viewport, so
                     // selecting a category with the sheet still open feels
@@ -1454,7 +1454,7 @@ function CollectionPage() {
             >
               Searching all {total} pieces · {overviewGroups.length} categories
             </span>
-            {activeGroup && (
+            {activeParent && (
               <span
                 style={{
                   fontFamily: "var(--font-sans)",
@@ -1466,7 +1466,7 @@ function CollectionPage() {
                 }}
                 title="The bar inside a category stays section-scoped. The modal does not."
               >
-                Bar: {(BROWSE_GROUP_LABELS[activeGroup] || activeGroup)} only
+                Bar: {(BROWSE_GROUP_LABELS[activeParent] || activeParent)} only
               </span>
             )}
           </div>
