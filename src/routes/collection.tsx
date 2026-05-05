@@ -526,6 +526,7 @@ function CollectionPage() {
     navigate({
       search: () => ({
         group: "",
+        subcategory: "all",
         q: "",
         sort: "type" as SortKey,
         density,
@@ -537,15 +538,42 @@ function CollectionPage() {
     });
   };
 
-  const selectGroup = (id: BrowseGroupId | "") => {
+  // Selecting a parent always resets subcategory to "all".
+  const selectParent = (parent: ParentId | "") => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, group: id }),
+      search: (prev: CollectionSearch) => ({
+        ...prev,
+        group: parent,
+        subcategory: "all",
+      }),
       replace: true,
-      // Category click must NEVER scroll to top. The sticky utility row
-      // and filter rail keep their position; only the grid swaps.
       resetScroll: false,
     });
     setSheetOpen(false);
+  };
+
+  // Selecting a subcategory updates only `subcategory`, never `group`.
+  const selectSubcategory = (sub: string) => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub }),
+      replace: true,
+      resetScroll: false,
+    });
+  };
+
+  // Landing tile → translate BrowseGroupId into { parent, sub } and push both.
+  const selectFromTile = (tileId: BrowseGroupId) => {
+    const mapping = TILE_TO_PARENT_SUB[tileId];
+    if (!mapping) return;
+    navigate({
+      search: (prev: CollectionSearch) => ({
+        ...prev,
+        group: mapping.parent,
+        subcategory: mapping.sub,
+      }),
+      replace: true,
+      resetScroll: false,
+    });
   };
 
   const setDensity = (next: Density) => {
