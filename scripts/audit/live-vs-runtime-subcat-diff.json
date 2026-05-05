@@ -1,0 +1,538 @@
+{
+  "summary": {
+    "totalLive": 610,
+    "missing": 45,
+    "trueMismatches": 18
+  },
+  "trueMismatches": [
+    {
+      "title": "Milos Column Side Table",
+      "live": "Side Tables",
+      "expected": "side-tables",
+      "got": "coffee-tables",
+      "ourCat": "tables"
+    },
+    {
+      "title": "Monroe Black Flat Slat Tambour Bar",
+      "live": "Bars",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "bars"
+    },
+    {
+      "title": "Anathema 82\" Dark Ash Console",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Kalil Black Arcing Metal Cabinet",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Cardea Metal Screen Cabinet",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Rosa Acacia Dark Wood Shelf",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Vespa Dark Wood Shelf",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Beatrice Antique Light Wood Cabinet",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Berkshire Wood Shelf",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Therion Mango Wood Shelf",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Salida Acacia Shelf",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Dezik 48\" Square Tiered Back Bar Shelving",
+      "live": "Storage",
+      "expected": "bars",
+      "got": null,
+      "ourCat": "storage"
+    },
+    {
+      "title": "Nima Fabric Banquette",
+      "live": "Dining Chairs",
+      "expected": "chairs",
+      "got": "sofas",
+      "ourCat": "seating"
+    },
+    {
+      "title": "Auset Linen Banquette",
+      "live": "Dining Chairs",
+      "expected": "chairs",
+      "got": "sofas",
+      "ourCat": "seating"
+    },
+    {
+      "title": "Na'eem Wood Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null,
+      "ourCat": "tables"
+    },
+    {
+      "title": "Keaton Antique Floor Mirror",
+      "live": "Walls",
+      "expected": "structures",
+      "got": "mirrors",
+      "ourCat": "large-decor"
+    },
+    {
+      "title": "Bellow White Corrugated Walls",
+      "live": "Walls",
+      "expected": "structures",
+      "got": "screens",
+      "ourCat": "large-decor"
+    },
+    {
+      "title": "Delilah Gold Metal Screen",
+      "live": "Walls",
+      "expected": "structures",
+      "got": "screens",
+      "ourCat": "large-decor"
+    }
+  ],
+  "missing": [
+    {
+      "liveSlug": "jesamay-armchair",
+      "liveTitle": "Jesamay Armchair",
+      "liveSubs": [
+        "Chairs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "zeki",
+      "liveTitle": "Zeki Kilim Arm Chair",
+      "liveSubs": [
+        "Chairs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "iraja-12-square-whitewash-bar",
+      "liveTitle": "Iraja 12' Wood Convertible Bar",
+      "liveSubs": [
+        "Bars"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "inola-gold-slatted-bar",
+      "liveTitle": "Gold Acrylic Slatted Bar",
+      "liveSubs": [
+        "Bars"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "vespa-shelf-antique-mirror-back",
+      "liveTitle": "Vespa Shelf + Antique Mirror Back",
+      "liveSubs": [
+        "Storage"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "vixxen-black-bar-stool",
+      "liveTitle": "Vixxen Black Bar Stool",
+      "liveSubs": [
+        "Stools"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "moxxi-black-dining-chair",
+      "liveTitle": "Moxxi Black Dining Chair",
+      "liveSubs": [
+        "Dining Chairs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "zoe-bleached-oak-dining-chair",
+      "liveTitle": "Zoe Bleached Oak Dining Chair",
+      "liveSubs": [
+        "Dining Chairs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "gerwyn-grey-dining-chiar",
+      "liveTitle": "Gerwyn Grey Dining Chiar",
+      "liveSubs": [
+        "Dining Chairs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "tove-grey-wood-top-dining-table",
+      "liveTitle": "Tove 8' Grey Dining Table",
+      "liveSubs": [
+        "Dining Tables"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "nero-5-round-grey-dining-table",
+      "liveTitle": "Nero 5' Round Dining Table",
+      "liveSubs": [
+        "Dining Tables"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "kohl-5-round-dining-table",
+      "liveTitle": "Kohl 5' Round Dining Table",
+      "liveSubs": [],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "lavanya-stoneware-collection",
+      "liveTitle": "Lavanya Stoneware",
+      "liveSubs": [
+        "Dinnerware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "olive-green-leather-cahrger",
+      "liveTitle": "Olive Green Leather Cahrger",
+      "liveSubs": [
+        "Dinnerware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "astrid-rose-quartz-flatware",
+      "liveTitle": "Astrid Rose Quartz Flatware",
+      "liveSubs": [
+        "Flatware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "estella-mixed-metal-flatware",
+      "liveTitle": "Estella Mixed Metal Flatware",
+      "liveSubs": [
+        "Flatware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "midas-antique-gold-flatware",
+      "liveTitle": "Midas Antique Gold Flatware",
+      "liveSubs": [
+        "Flatware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "arian-antique-silver-flatware",
+      "liveTitle": "Arian Antique Silver Flatware",
+      "liveSubs": [
+        "Flatware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "zahavi-gold-top-decanters",
+      "liveTitle": "Zahavi Gold Top Decanters",
+      "liveSubs": [
+        "Serveware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "lavanya-riverstone-medium-bowl",
+      "liveTitle": "Lavanya Stoneware Bowls",
+      "liveSubs": [
+        "Serveware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "vintage-silver-goblets",
+      "liveTitle": "Vintage Silver Goblets",
+      "liveSubs": [
+        "Serveware"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "brown-fur-mud-cloth-lumbar-oversize",
+      "liveTitle": "Brown Fur + Mud Cloth Lumbar Oversize",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "bw-yarn-detail-lumbar-oversize",
+      "liveTitle": "B/W Yarn Detail Lumbar Oversize",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ivory-linen-small-lumbar",
+      "liveTitle": "Ivory Linen Small Lumbar",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ivory-mud-cloth-pillow",
+      "liveTitle": "Ivory Mud Cloth Pillow",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ivory-mud-cloth-lumbar",
+      "liveTitle": "Ivory Mud Cloth Lumbar",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ivory-sage-stripe-pillow",
+      "liveTitle": "Ivory Sage Stripe Pillow",
+      "liveSubs": [
+        "Pillows"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "pendleton-zig-zag-throw",
+      "liveTitle": "PENDLETON Zig Zag Throw",
+      "liveSubs": [
+        "Throws"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "evren",
+      "liveTitle": "Evren 8x10 Kilim Rug",
+      "liveSubs": [
+        "Rugs"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "agatha-rustic-mini-vases",
+      "liveTitle": "Agatha Rustic Mini Vases",
+      "liveSubs": [
+        "Accents"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "leather-baskets",
+      "liveTitle": "Leather Baskets",
+      "liveSubs": [
+        "Crates & Baskets"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "hans-vintage-brass-telescope",
+      "liveTitle": "Hans Vintage Brass Telescope",
+      "liveSubs": [
+        "Accents"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "salva",
+      "liveTitle": "Salva Vintage Opera Glasses",
+      "liveSubs": [
+        "Accents"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "tafari",
+      "liveTitle": "Tafari Tumbleweed",
+      "liveSubs": [
+        "Accents"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "bettie-blue-hourglass",
+      "liveTitle": "Bettie Blue Hourglass",
+      "liveSubs": [
+        "Accents"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ruby-red-ski-lift-bench",
+      "liveTitle": "Ruby Red Ski Lift Bench",
+      "liveSubs": [],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "chatta-6-diameter-umbrellas",
+      "liveTitle": "CHATTA 6' Diameter Umbrellas",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "ryland",
+      "liveTitle": "Ryland Pallet Wall",
+      "liveSubs": [
+        "Walls"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "teigan",
+      "liveTitle": "Teigan/Mahdi White Leather Barricade",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "erwin",
+      "liveTitle": "Erwin/Mahdi Jute Barricade",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "paxton-10ftacrylic",
+      "liveTitle": "Paxton 10'H Wireframe Cage with Smoke Acrylic",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "paxton-7ft",
+      "liveTitle": "Paxton 7'H Black Wireframe Cage",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "paxton-10ft",
+      "liveTitle": "Paxton 10'H Black Wireframe Cage",
+      "liveSubs": [
+        "Other"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "amitola-led-corner-light",
+      "liveTitle": "Amitola LED Corner Light",
+      "liveSubs": [
+        "Specialty"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    },
+    {
+      "liveSlug": "maor",
+      "liveTitle": "Maor Market Lighting",
+      "liveSubs": [
+        "Specialty"
+      ],
+      "derivedSub": null,
+      "how": "slug"
+    }
+  ]
+}
