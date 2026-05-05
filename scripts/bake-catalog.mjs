@@ -81,7 +81,8 @@ const payload = {
     generatedAt: new Date().toISOString(),
     totalRecords: products.length,
     publicReadyCount: products.length,
-    excludedCount: 0,
+    excludedCount: hiddenForMissingImage,
+    excludedReason: 'awaiting-image',
     categoryDisplayOrder: facets.map(f=>f.display),
   },
 };
