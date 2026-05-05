@@ -110,9 +110,9 @@ export function CategoryTonalGrid({
       {resolvedRows.map((row, rowIdx) => (
         <div
           key={rowIdx}
-          className="flex-1 grid min-h-[16vh] lg:min-h-0"
+          className="flex-1 min-h-0 grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)]"
           style={{
-            gridTemplateColumns: `repeat(${row.length}, minmax(0, 1fr))`,
+            ["--row-cols" as string]: `repeat(${row.length}, minmax(0, 1fr))`,
           }}
         >
           {row.map((item, colIdx) => {
