@@ -43,12 +43,9 @@ function Placeholder({
 //   6. CTA
 // ---------------------------------------------------------------------------
 
-interface SpaceImage {
-  src: string;
-  alt: string;
-}
+const CAPABILITIES_HIDDEN_NOTE = "Capabilities list — see below";
 
-const SPACE_IMAGES: SpaceImage[] = [];
+
 
 const CAPABILITIES = [
   "LOUNGE FURNITURE",
