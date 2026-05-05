@@ -403,3 +403,155 @@ button, a, [role="button"] {
     letter-spacing: 0.14em;
   }
 }
+
+/* ============================================================
+   AAA polish layer (2026-05-05)
+   View Transitions, Ken Burns, film grain, scroll-driven reveals,
+   custom cursor, clip-path image reveals.
+   ============================================================ */
+
+/* ---- View Transitions API ----
+   Quiet crossfade between routes. Honour reduced-motion. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 360ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-old(root) {
+    animation-name: vt-fade-out;
+  }
+  ::view-transition-new(root) {
+    animation-name: vt-fade-in;
+  }
+  @keyframes vt-fade-out {
+    to { opacity: 0; }
+  }
+  @keyframes vt-fade-in {
+    from { opacity: 0; }
+  }
+}
+
+/* ---- Ken Burns ambient motion ----
+   30s, 1.00 → 1.04, ease-in-out alternate. Imperceptible per frame,
+   hypnotic over time. Aman/Aesop move. */
+@keyframes ken-burns {
+  0%   { transform: scale(1) translate3d(0, 0, 0); }
+  100% { transform: scale(1.04) translate3d(-1%, -0.5%, 0); }
+}
+.ambient-ken-burns {
+  animation: ken-burns 30s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-ken-burns { animation: none; }
+}
+
+/* ---- Film grain overlay ----
+   Inline SVG noise tiled at 200×200 @ 4% opacity. Turns "stock photo"
+   into "shot on film." Pointer-events:none so it never blocks interaction. */
+.film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 200px 200px;
+}
+
+/* ---- Wordmark stagger reveal (home hero) ---- */
+@keyframes wordmark-letter-in {
+  from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+}
+.wordmark-stagger > span {
+  display: inline-block;
+  opacity: 0;
+  animation: wordmark-letter-in 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wordmark-stagger > span {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+/* ---- Scroll-driven tile reveal ----
+   Native CSS scroll-timeline. No JS, no IntersectionObserver overhead.
+   Falls back to opacity:1 in browsers without view() support. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-on-scroll {
+      animation: reveal-fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 18%;
+    }
+    @keyframes reveal-fade-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  }
+}
+
+/* ---- Clip-path image reveal ----
+   Wraps any image. Draws in from a horizontal sliver to full frame on mount. */
+@keyframes clip-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+.clip-reveal {
+  animation: clip-reveal 900ms cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .clip-reveal { animation: none; }
+}
+
+/* ---- Custom dot cursor ----
+   8px charcoal dot, scales to 32px ring on interactive elements.
+   Only on devices with a fine pointer; touch devices keep native. */
+@media (pointer: fine) {
+  html.has-dot-cursor,
+  html.has-dot-cursor body,
+  html.has-dot-cursor * {
+    cursor: none !important;
+  }
+  .dot-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--charcoal);
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                height 200ms cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 200ms ease,
+                border-color 200ms ease,
+                opacity 200ms ease;
+    mix-blend-mode: difference;
+    background: #f5f5f5;
+  }
+  .dot-cursor[data-state="hover"] {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 1px solid #f5f5f5;
+  }
+  .dot-cursor[data-state="hidden"] {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.has-dot-cursor,
+  html.has-dot-cursor body,
+  html.has-dot-cursor * {
+    cursor: auto !important;
+  }
+  .dot-cursor { display: none; }
+}
