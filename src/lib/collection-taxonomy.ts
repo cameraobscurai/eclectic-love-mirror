@@ -271,6 +271,48 @@ const oneOf = (slug: string, slugs: string[]) => slugs.includes(slug);
 
 const RULES: Rule[] = [
   // ===== OWNER TIER =====
+  //
+  // SLUG-AGNOSTIC TITLE OVERRIDES (high score, declared first).
+  // Live Eclectic Hive site organizes inventory semantically — RMS slugs are
+  // not authoritative for several known cross-slug families. These rules let
+  // a high-confidence title phrase outrank the slug fallback. Keep the phrase
+  // list narrow and unambiguous; vague single words must NOT live here or
+  // they will whack-a-mole the rest of the table.
+
+  {
+    id: "bar",
+    reason: "title: barstool/counter stool (slug-agnostic)",
+    score: ({ title }) => {
+      if (includesAny(title, ["barstool", "bar stool", "counter stool"])) return 360;
+      return 0;
+    },
+  },
+  {
+    id: "bar",
+    reason: "title: community table (slug-agnostic)",
+    score: ({ title }) => (title.includes("community table") ? 360 : 0),
+  },
+  {
+    id: "dining",
+    reason: "title: dining chair / directors dining (slug-agnostic)",
+    score: ({ title }) => {
+      if (includesAny(title, ["dining chair", "directors dining"])) return 360;
+      return 0;
+    },
+  },
+  {
+    id: "dining",
+    reason: "title: banquette (slug-agnostic)",
+    score: ({ title }) => (title.includes("banquette") ? 350 : 0),
+  },
+  {
+    id: "dining",
+    reason: "title: dining table / farm table (slug-agnostic)",
+    score: ({ title }) => {
+      if (includesAny(title, ["dining table", "farm table", "feasting"])) return 360;
+      return 0;
+    },
+  },
 
   // NOTE: rules accept BOTH the new RMS catalog slugs (seating, tables, bars,
   // pillows-throws, storage, lighting, chandeliers, candlelight, furs-pelts)
