@@ -249,17 +249,16 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return null;
     }
     case "lighting": {
-      // Order matters: candle keywords first (most specific), then specialty
-      // (sconces / string / par / wash / battery), then chandeliers (which
-      // include pendants per live site), then lamps as the residual.
+      // Live-site truth: sconces and pendants both belong to Chandeliers,
+      // not Specialty. "Pendant lantern" must beat the lantern→candlelight
+      // rule, so pendants/chandeliers/sconces are checked FIRST.
       if (
-        cat === "candlelight" ||
-        has(t, ["candle", "votive", "hurricane", "taper", "candelabr", "lantern", "luminary", "oil lamp"])
+        cat === "chandeliers" ||
+        has(t, ["chandelier", "pendant", "sconce"])
       )
-        return "candlelight";
+        return "chandeliers";
       if (
         has(t, [
-          "sconce",
           "uplight",
           "string light",
           "festoon",
@@ -272,7 +271,11 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
         ])
       )
         return "specialty";
-      if (cat === "chandeliers" || has(t, ["chandelier", "pendant"])) return "chandeliers";
+      if (
+        cat === "candlelight" ||
+        has(t, ["candle", "votive", "hurricane", "taper", "candelabr", "lantern", "luminary", "oil lamp"])
+      )
+        return "candlelight";
       if (has(t, ["lamp"])) return "lamps";
       return "specialty";
     }
