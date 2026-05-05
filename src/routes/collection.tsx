@@ -773,13 +773,13 @@ function CollectionPage() {
           <div
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch h-[calc(100svh-var(--nav-h))]"
                 : "grid grid-cols-1"
             }
           >
             {showOverview && (
               <aside
-                className="hidden lg:flex items-center justify-center"
+                className="hidden lg:flex items-center justify-center h-full min-h-0"
                 style={{ background: "#ffffff" }}
               >
                 <img
@@ -792,7 +792,7 @@ function CollectionPage() {
 
             {/* ===== RIGHT: main pane ===== */}
             <div
-              className="min-w-0"
+              className={`min-w-0 ${showOverview ? "h-full min-h-0 flex flex-col" : ""}`}
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
@@ -801,18 +801,23 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: show the hero plate above the grid. */}
-                  <div className="lg:hidden" style={{ background: "var(--cream)" }}>
+                  {/* Mobile: fixed-share hero band so the grid below always reaches the viewport bottom. */}
+                  <div
+                    className="lg:hidden shrink-0 flex items-center justify-center overflow-hidden"
+                    style={{ background: "#ffffff", height: "26svh" }}
+                  >
                     <img
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
-                      className="w-full h-auto object-contain"
+                      className="max-h-full w-auto object-contain"
                     />
                   </div>
-                  <CategoryTonalGrid
-                    groups={overviewGroups}
-                    onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
-                  />
+                  <div className="flex-1 min-h-0">
+                    <CategoryTonalGrid
+                      groups={overviewGroups}
+                      onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
+                    />
+                  </div>
                 </>
               ) : (
                 <>
