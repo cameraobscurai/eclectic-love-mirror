@@ -226,10 +226,10 @@ function ContactPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               CONTACT
             </p>
-            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] tracking-tight">
-              Let's collaborate.
+            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] uppercase tracking-[0.04em]">
+              LET'S COLLABORATE
             </h1>
-            <p className="mt-8 max-w-md text-[15px] leading-relaxed text-charcoal/70">
+            <p className="mt-8 max-w-md text-[13px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/70">
               We would love to hear about your project and how we can support
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
