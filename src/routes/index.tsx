@@ -293,7 +293,7 @@ function HomePage() {
           }}
         >
           <motion.div
-            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
+            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2 wordmark-stagger"
             style={{
               fontWeight: 400,
               letterSpacing: reduced ? `${BASE_LETTER_SPACING}em` : letterSpacingMV,
@@ -304,7 +304,14 @@ function HomePage() {
                 : "0 1px 24px color-mix(in oklab, var(--charcoal) 35%, transparent)",
             }}
           >
-            Eclectic&nbsp;Hive
+            {"Eclectic\u00a0Hive".split("").map((ch, i) => (
+              <span
+                key={i}
+                style={{ animationDelay: `${600 + i * 55}ms` }}
+              >
+                {ch === " " ? "\u00a0" : ch}
+              </span>
+            ))}
           </motion.div>
         </motion.div>
 
