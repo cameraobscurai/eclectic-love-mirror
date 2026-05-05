@@ -204,14 +204,12 @@ function TonalCell({
 
   const showImg = isFirstRow ? firstRowReady : near && (loaded || !heroSrc);
 
-  // Mobile uses col-span-2 (covers full 2-col width when hanging) while
-  // desktop ≥sm uses an arbitrary grid-column rule to absorb the finale
-  // remainder. Pure Tailwind so it survives a refresh / SSR.
-  const mobileSpanClass = mobileSpanCols > 1 ? "col-span-2" : "";
-  const desktopSpanClass =
-    spanCols > 1
-      ? `sm:[grid-column:span_${spanCols}] sm:col-span-1`
-      : "sm:col-span-1";
+  // Pure Tailwind classes so they survive purge.
+  // Mobile (2-col): hanging odd cell takes full width.
+  // Desktop ≥sm: short-row finale absorbs remainder (max span = 2 in this
+  // composition, so we hardcode the class).
+  const mobileSpanClass = mobileSpanCols > 1 ? "col-span-2 sm:col-auto" : "";
+  const desktopSpanClass = spanCols > 1 ? "sm:[grid-column:span_2]" : "";
 
   return (
     <button
@@ -220,10 +218,7 @@ function TonalCell({
       onClick={() => onSelectCategory(id)}
       aria-label={label}
       className={`group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0 ${mobileSpanClass} ${desktopSpanClass}`}
-      style={{
-        background: tone,
-        touchAction: "manipulation",
-      }}
+      style={{ background: tone, touchAction: "manipulation" }}
     >
       {heroSrc ? (
         <img
