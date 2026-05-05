@@ -90,14 +90,17 @@ const facets = ORDER.filter(s=>facetsMap[s]).map(s=>facetsMap[s]).concat(
 );
 
 const payload = {
-  products, facets, total: products.length,
+  products: rolled, facets, total: rolled.length,
   meta: {
     generatedAt: new Date().toISOString(),
-    totalRecords: products.length,
-    publicReadyCount: products.length,
+    totalRecords: rolled.length,
+    rmsRowCount: products.length,
+    rolledUpCount: stats.collapsed,
+    publicReadyCount: rolled.length,
     excludedCount: hiddenForMissingImage,
     excludedReason: 'awaiting-image',
     categoryDisplayOrder: facets.map(f=>f.display),
+    familyRollupSources: stats.sourceCounts,
   },
 };
 
