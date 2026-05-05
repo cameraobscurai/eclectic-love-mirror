@@ -217,50 +217,9 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 5. THE FABRICATION — capabilities list (T14: explanation pending Wed) */}
+      {/* 5. THE FABRICATION — capabilities list hidden pending owner copy */}
       <Section eyebrow="THE FABRICATION">
-        <ul style={{ borderColor: "var(--archive-rule)" }}>
-          {CAPABILITIES.map((item, i) => {
-            const isActive = fabHover === i;
-            return (
-              <li
-                key={item}
-                onMouseEnter={() => setFabHover(i)}
-                onFocus={() => setFabHover(i)}
-                onMouseLeave={() => setFabHover(null)}
-                onBlur={() => setFabHover(null)}
-                className="relative py-4 flex items-baseline gap-6 border-t first:border-t-0 cursor-default transition-colors duration-300"
-                style={{ borderColor: "var(--archive-rule)" }}
-                tabIndex={0}
-              >
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute left-0 right-0 bottom-0 h-px origin-left transition-transform duration-300 ease-out"
-                  style={{
-                    backgroundColor: "color-mix(in oklab, var(--charcoal) 20%, transparent)",
-                    transform: isActive ? "scaleX(1)" : "scaleX(0)",
-                  }}
-                />
-                <span
-                  className={
-                    "text-[10px] tracking-[0.22em] tabular-nums w-8 transition-colors duration-300 " +
-                    (isActive ? "text-charcoal/85" : "text-charcoal/40")
-                  }
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className={
-                    "text-[13px] tracking-[0.18em] uppercase transition-colors duration-300 " +
-                    (isActive ? "text-charcoal" : "text-charcoal/85")
-                  }
-                >
-                  {item}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+        {/* Capabilities list temporarily hidden — keep FAQ below */}
         {/* T15: Phase-2 botanical/sketch triptych removed pending future direction */}
 
         {/* T16: Atelier FAQ — same accordion she remembers from /contact,
