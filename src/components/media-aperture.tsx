@@ -28,6 +28,13 @@ import { cn } from "@/lib/utils";
 //   immediately with no observer overhead.
 // ---------------------------------------------------------------------------
 
+interface PictureSource {
+  /** AVIF/WebP srcset strings keyed by MIME type (from vite-imagetools `?as=picture`). */
+  sources: Record<string, string>;
+  /** Fallback <img> metadata. */
+  img: { src: string; w: number; h: number };
+}
+
 interface MediaApertureProps {
   /** CSS aspect-ratio string, e.g. "4/5", "3/2", "1/1". Defaults to "4/5". */
   ratio?: string;
@@ -37,7 +44,13 @@ interface MediaApertureProps {
   srcSet?: string;
   /** Optional `sizes` attribute paired with `srcSet`. */
   sizes?: string;
-  /** Required when `src` is provided. */
+  /**
+   * Output of `import x from "@/assets/foo.png?preset=editorial"`. When
+   * provided, renders a full <picture> with AVIF + WebP sources and uses
+   * `img.src` as the fallback. Takes precedence over `src` / `srcSet`.
+   */
+  picture?: PictureSource;
+  /** Required when `src` or `picture` is provided. */
   alt?: string;
   /** Optional caption rendered below the frame. */
   caption?: string;
@@ -65,6 +78,7 @@ export function MediaAperture({
   src,
   srcSet,
   sizes,
+  picture,
   alt,
   caption,
   label,
@@ -148,7 +162,31 @@ export function MediaAperture({
   // Render the <img> only once the frame is near the viewport. We still
   // pass `loading="lazy"` as a belt-and-braces fallback (so the browser
   // can also defer if the IO fires far away from layout).
-  const showImg = !!src && inView;
+  const effectiveSrc = picture?.img.src ?? src;
+  const effectiveSrcSet = picture ? undefined : srcSet;
+  const showImg = !!effectiveSrc && inView;
+  const imgEl = showImg ? (
+    <img
+      ref={imgRef}
+      src={effectiveSrc}
+      srcSet={effectiveSrcSet}
+      sizes={sizes}
+      width={picture?.img.w}
+      height={picture?.img.h}
+      alt={alt ?? ""}
+      loading={lazy ? "lazy" : "eager"}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      {...(fetchPriority
+        ? ({ fetchPriority: fetchPriority } as Record<string, string>)
+        : {})}
+      className="absolute inset-0 w-full h-full object-cover will-change-opacity"
+      style={{
+        opacity: loaded ? 1 : 0,
+        transition: "opacity 420ms ease-out",
+      }}
+    />
+  ) : null;
 
   return (
     <figure ref={figureRef} className={cn("block", className)}>
@@ -162,25 +200,19 @@ export function MediaAperture({
         }}
       >
         {showImg ? (
-          <img
-            ref={imgRef}
-            src={src}
-            srcSet={srcSet}
-            sizes={sizes}
-            alt={alt ?? ""}
-            loading={lazy ? "lazy" : "eager"}
-            decoding="async"
-            onLoad={() => setLoaded(true)}
-            // React types lag the spec; cast for fetchpriority.
-            {...(fetchPriority
-              ? ({ fetchPriority: fetchPriority } as Record<string, string>)
-              : {})}
-            className="absolute inset-0 w-full h-full object-cover will-change-opacity"
-            style={{
-              opacity: loaded ? 1 : 0,
-              transition: "opacity 420ms ease-out",
-            }}
-          />
+          picture ? (
+            <picture className="absolute inset-0 block w-full h-full">
+              {picture.sources.avif && (
+                <source type="image/avif" srcSet={picture.sources.avif} sizes={sizes} />
+              )}
+              {picture.sources.webp && (
+                <source type="image/webp" srcSet={picture.sources.webp} sizes={sizes} />
+              )}
+              {imgEl}
+            </picture>
+          ) : (
+            imgEl
+          )
         ) : (
           // Inset hairline — print-mount feel. No icons, no text.
           <div

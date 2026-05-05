@@ -40,6 +40,14 @@ export default defineConfig({
             params.set("as", "picture");
             // High visual quality; the format step still compresses heavily.
             params.set("quality", "78");
+          } else if (preset === "editorial") {
+            // Editorial / atelier frames: 768/1280/1920 widths, AVIF + WebP.
+            // Quality 72 — slightly lower than hero, since these never go
+            // edge-to-edge and most ship as 4/5 or 1/1 thumbnails.
+            params.set("w", "768;1280;1920");
+            params.set("format", "avif;webp");
+            params.set("as", "picture");
+            params.set("quality", "72");
           } else if (preset === "hero-lqip") {
             // Tiny blurred placeholder — inlined as base64 data URL.
             params.set("w", "24");
