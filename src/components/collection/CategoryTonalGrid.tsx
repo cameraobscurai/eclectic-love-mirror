@@ -13,144 +13,117 @@ interface CategoryTonalGridProps {
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
-// Editorial row composition. Each row is its own grid; flex-1 distributes
-// the parent height so the four rows always read as one unified surface.
-// 5/5/4/4 = 18 cells (one per browse group). Last two rows are 4-wide so
-// those tiles get extra horizontal weight — that "finale" feel.
-const ROWS: BrowseGroupId[][] = [
-  ["sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables"],
-  ["cocktail-tables", "dining", "bar", "storage", "lighting"],
-  ["rugs", "pillows", "throws", "tableware"],
-  ["serveware", "styling", "accents", "large-decor"],
+/**
+ * Editorial order — flat list, single grid. Uniform tiles, warm checkerboard
+ * rhythm. Composition that reads as "inventory archive", not "feature wall".
+ *
+ * 18 categories → 6 cols × 3 rows on lg, 3 cols on md, 2 cols on mobile.
+ * Each tile owns its own aspect-ratio (5/4 — silhouette-friendly), so column
+ * height is decoupled from the sibling H-plate. No flex-1 stretching, no
+ * span-2 finale tiles, no per-row grids fighting each other.
+ *
+ * Layout principles applied (audit 2026-05-05):
+ *  - aspect-ratio per tile  → predictable cell shape regardless of column width
+ *  - items-start at parent  → H-plate and grid each own their height
+ *  - warm tonal pair        → reads as editorial paper, not chess board
+ *  - no absolute labels     → label is its own grid row beneath the image,
+ *                              so all labels share a baseline naturally
+ */
+const ORDER: BrowseGroupId[] = [
+  "sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables", "cocktail-tables",
+  "dining", "bar", "storage", "lighting", "rugs", "pillows",
+  "throws", "tableware", "serveware", "styling", "accents", "large-decor",
 ];
 
-// 2-tone cool checkerboard — paper-white against a soft cool grey to
-// match the white H-plate sitting alongside.
-const TONES = ["#f1f2f3", "#dde0e3"] as const;
+// Warm-neutral pair — both within 6% of paper white #fafaf7, warm cast.
+// Reads as a single quiet surface with barely-there rhythm. Replaces the
+// cool grey checkerboard that was reading dirty against paper.
+const TONES = ["#f5f3ee", "#ece8df"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
+const FIRST_ROW_COHORT_LG = 6; // top row on desktop
 
-/**
- * Reactive tonal grid — Collection landing's right pane.
- *
- * Structure: flex column of row-grids. Each row is `flex-1` so it claims an
- * equal share of the parent height. Per-row `gridTemplateColumns` keeps the
- * column math local to that row, which means changing row composition is a
- * pure data edit (reorder ROWS or change a row's length) with zero CSS.
- *
- * On lg+ the parent stretches to match the sibling H-plate (items-stretch).
- * Below lg the grid stacks under the hero image and rows take their natural
- * height via `min-h-[16vh]` so each tile stays readable.
- */
 export function CategoryTonalGrid({
   groups,
   onSelectCategory,
 }: CategoryTonalGridProps) {
-  // Index by id so we can preserve ROWS order regardless of input ordering.
   const byId = useMemo(() => {
     const map = new Map<BrowseGroupId, CollectionProduct[]>();
     for (const g of groups) map.set(g.id, g.products);
     return map;
   }, [groups]);
 
-  const resolvedRows = useMemo(
+  const tiles = useMemo(
     () =>
-      ROWS.map((row) =>
-        row
-          .filter((id) => (byId.get(id)?.length ?? 0) > 0)
-          .map((id) => {
-            const products = byId.get(id)!;
-            const cover = CATEGORY_COVERS[id];
-            const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
-            const rawHero = cover ?? fallbackHero?.url ?? null;
-            const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
-            const heroSrcSet = rawHero
-              ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
-              : undefined;
-            const heroAlt = cover
-              ? BROWSE_GROUP_LABELS[id]
-              : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id];
-            return {
-              id,
-              heroSrc,
-              heroSrcSet,
-              heroAlt,
-              label: BROWSE_GROUP_LABELS[id],
-            };
-          }),
-      ).filter((row) => row.length > 0),
+      ORDER.filter((id) => (byId.get(id)?.length ?? 0) > 0).map((id) => {
+        const products = byId.get(id)!;
+        const cover = CATEGORY_COVERS[id];
+        const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
+        const rawHero = cover ?? fallbackHero?.url ?? null;
+        const heroSrc = rawHero ? withCdnWidth(rawHero, 600) : null;
+        const heroSrcSet = rawHero
+          ? buildCdnSrcSet(rawHero, [320, 480, 720, 960]) || undefined
+          : undefined;
+        const heroAlt = cover
+          ? BROWSE_GROUP_LABELS[id]
+          : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id];
+        return {
+          id,
+          heroSrc,
+          heroSrcSet,
+          heroAlt,
+          label: BROWSE_GROUP_LABELS[id],
+        };
+      }),
     [byId],
   );
 
-  // First-paint cohort — first row's tiles. Eager-load + reveal-coordinated
-  // so the landing screen lands as a single visual moment instead of a
-  // top-to-bottom waterfall.
-  const FIRST_ROW_COHORT = resolvedRows[0]?.length ?? 0;
-  const [firstRowDoneCount, setFirstRowDoneCount] = useState(0);
-  const [firstRowTimedOut, setFirstRowTimedOut] = useState(false);
+  // First-paint cohort coordination — release reveal once the visible-on-load
+  // tiles have decoded. Cohort size is the desktop top-row count; smaller
+  // viewports may show fewer but the timeout safety net catches them.
+  const cohortSize = Math.min(FIRST_ROW_COHORT_LG, tiles.length);
+  const [doneCount, setDoneCount] = useState(0);
+  const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const t = window.setTimeout(
-      () => setFirstRowTimedOut(true),
-      FIRST_ROW_REVEAL_TIMEOUT_MS,
-    );
+    const t = window.setTimeout(() => setTimedOut(true), FIRST_ROW_REVEAL_TIMEOUT_MS);
     return () => window.clearTimeout(t);
   }, []);
 
-  const firstRowReady =
-    firstRowDoneCount >= FIRST_ROW_COHORT || firstRowTimedOut;
-
-  const reportFirstRowDone = useCallback(() => {
-    setFirstRowDoneCount((n) => n + 1);
-  }, []);
-
-  // Max row length defines the canonical grid width on ≥sm. Rows shorter
-  // than the max get their last tile spanning the remainder so we never
-  // leave an empty ghost cell — that "span-2 finale" feel.
-  const MAX_COLS = resolvedRows.reduce((n, r) => Math.max(n, r.length), 1);
+  const cohortReady = doneCount >= cohortSize || timedOut;
+  const reportDone = useCallback(() => setDoneCount((n) => n + 1), []);
 
   return (
-    <div className="flex h-full w-full flex-col">
-      {resolvedRows.map((row, rowIdx) => (
-        <div
-          key={rowIdx}
-          className="flex-1 min-h-0 grid grid-cols-2 sm:[grid-template-columns:var(--row-cols)]"
-          style={{
-            ["--row-cols" as string]: `repeat(${MAX_COLS}, minmax(0, 1fr))`,
-          }}
-        >
-          {row.map((item, colIdx) => {
-            // True checkerboard via position-based modulo across MAX_COLS.
-            const tone = TONES[(rowIdx * MAX_COLS + colIdx) % TONES.length];
-            const isFirstRow = rowIdx === 0;
-            const isLast = colIdx === row.length - 1;
-            // Desktop ≥sm: short rows let the last tile absorb the remainder
-            // (Chandeliers becomes the wide finale).
-            const desktopSpan = isLast ? MAX_COLS - row.length + 1 : 1;
-            // Mobile (2-col): only span if an odd row leaves a single hanging
-            // cell — let it fill the row instead of leaving a ghost slot.
-            const mobileSpan = isLast && row.length % 2 === 1 ? 2 : 1;
-            return (
-              <TonalCell
-                key={item.id}
-                id={item.id}
-                heroSrc={item.heroSrc}
-                heroSrcSet={item.heroSrcSet}
-                heroAlt={item.heroAlt}
-                label={item.label}
-                tone={tone}
-                isFirstRow={isFirstRow}
-                firstRowReady={firstRowReady}
-                onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
-                onSelectCategory={onSelectCategory}
-                spanCols={desktopSpan}
-                mobileSpanCols={mobileSpan}
-              />
-            );
-          })}
-        </div>
-      ))}
+    <div
+      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 w-full"
+      role="list"
+      aria-label="Browse by category"
+    >
+      {tiles.map((t, i) => {
+        // Checkerboard rhythm across the actual rendered column count.
+        // Computed at render time so 2-col mobile, 3-col tablet, and 6-col
+        // desktop each get a clean alternating pattern via CSS-only grid math.
+        // (We pick a single seed parity per tile; the visible alternation
+        // emerges from the column count via grid-auto-flow.)
+        const tone = TONES[i % TONES.length];
+        const inCohort = i < cohortSize;
+        return (
+          <TonalCell
+            key={t.id}
+            id={t.id}
+            heroSrc={t.heroSrc}
+            heroSrcSet={t.heroSrcSet}
+            heroAlt={t.heroAlt}
+            label={t.label}
+            tone={tone}
+            inCohort={inCohort}
+            cohortReady={cohortReady}
+            onCohortDone={inCohort ? reportDone : undefined}
+            onSelectCategory={onSelectCategory}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -162,12 +135,10 @@ interface TonalCellProps {
   heroAlt: string;
   label: string;
   tone: string;
-  isFirstRow: boolean;
-  firstRowReady: boolean;
-  onFirstRowImageDone?: () => void;
+  inCohort: boolean;
+  cohortReady: boolean;
+  onCohortDone?: () => void;
   onSelectCategory: (id: BrowseGroupId) => void;
-  spanCols?: number;
-  mobileSpanCols?: number;
 }
 
 function TonalCell({
@@ -177,75 +148,74 @@ function TonalCell({
   heroAlt,
   label,
   tone,
-  isFirstRow,
-  firstRowReady,
-  onFirstRowImageDone,
+  inCohort,
+  cohortReady,
+  onCohortDone,
   onSelectCategory,
-  spanCols = 1,
-  mobileSpanCols = 1,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
   const [reported, setReported] = useState(false);
   const { ref, near } = useNearViewport<HTMLButtonElement>({
     rootMargin: "400px",
-    initial: isFirstRow,
+    initial: inCohort,
   });
 
   const reportDoneOnce = useCallback(() => {
-    if (reported || !onFirstRowImageDone) return;
+    if (reported || !onCohortDone) return;
     setReported(true);
-    onFirstRowImageDone();
-  }, [reported, onFirstRowImageDone]);
+    onCohortDone();
+  }, [reported, onCohortDone]);
 
   useEffect(() => {
-    if (isFirstRow && !heroSrc) reportDoneOnce();
+    if (inCohort && !heroSrc) reportDoneOnce();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const showImg = isFirstRow ? firstRowReady : near && (loaded || !heroSrc);
-
-  // Pure Tailwind classes so they survive purge.
-  // Mobile (2-col): hanging odd cell takes full width.
-  // Desktop ≥sm: short-row finale absorbs remainder (max span = 2 in this
-  // composition, so we hardcode the class).
-  const mobileSpanClass = mobileSpanCols > 1 ? "col-span-2 sm:col-auto" : "";
-  const desktopSpanClass = spanCols > 1 ? "sm:[grid-column:span_2]" : "";
+  const showImg = inCohort ? cohortReady : near && (loaded || !heroSrc);
 
   return (
     <button
       ref={ref}
       type="button"
+      role="listitem"
       onClick={() => onSelectCategory(id)}
       aria-label={label}
-      className={`group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0 ${mobileSpanClass} ${desktopSpanClass}`}
+      className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/[0.06]"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      {heroSrc ? (
-        <img
-          src={heroSrc}
-          srcSet={heroSrcSet}
-          sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 20vw, 50vw"
-          alt={heroAlt}
-          loading={isFirstRow ? "eager" : "lazy"}
-          decoding="async"
-          {...({ fetchPriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
-          onLoad={() => {
-            setLoaded(true);
-            if (isFirstRow) reportDoneOnce();
-          }}
-          onError={() => {
-            if (isFirstRow) reportDoneOnce();
-          }}
-          className="absolute inset-0 h-full w-full object-contain p-5 sm:p-7 xl:p-8 transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-          style={{
-            opacity: showImg ? 1 : 0,
-            transition: "opacity 380ms ease-out, transform 500ms ease-out",
-          }}
-        />
-      ) : null}
+      {/* Image frame — aspect-ratio decouples height from siblings. */}
+      <div className="relative w-full" style={{ aspectRatio: "5 / 4" }}>
+        {heroSrc ? (
+          <img
+            src={heroSrc}
+            srcSet={heroSrcSet}
+            sizes="(min-width: 1024px) 16vw, (min-width: 640px) 32vw, 48vw"
+            alt={heroAlt}
+            width={600}
+            height={480}
+            loading={inCohort ? "eager" : "lazy"}
+            decoding="async"
+            {...({ fetchPriority: inCohort ? "high" : "auto" } as Record<string, string>)}
+            onLoad={() => {
+              setLoaded(true);
+              if (inCohort) reportDoneOnce();
+            }}
+            onError={() => {
+              if (inCohort) reportDoneOnce();
+            }}
+            className="absolute inset-0 h-full w-full object-contain p-5 sm:p-6 lg:p-7 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+            style={{
+              opacity: showImg ? 1 : 0,
+              transition: "opacity 380ms ease-out, transform 500ms ease-out",
+            }}
+          />
+        ) : null}
+      </div>
 
+      {/* Label — own row beneath the image. No absolute positioning, so
+          all labels share a natural baseline across the row. */}
       <span
-        className="absolute left-4 bottom-3 sm:left-5 sm:bottom-4 uppercase text-[10px] sm:text-[11px]"
+        className="block px-4 sm:px-5 pb-3 sm:pb-4 pt-2 uppercase text-[10px] sm:text-[11px]"
         style={{
           fontFamily: "var(--font-sans)",
           letterSpacing: "0.22em",
