@@ -320,7 +320,7 @@ function Section({
   eyebrow,
   children,
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -330,9 +330,11 @@ function Section({
           className="border-t pt-10"
           style={{ borderColor: "var(--archive-rule)" }}
         >
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50 mb-10">
-            {eyebrow}
-          </p>
+          {eyebrow ? (
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50 mb-10">
+              {eyebrow}
+            </p>
+          ) : null}
           {children}
         </div>
       </div>
