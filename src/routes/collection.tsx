@@ -779,8 +779,9 @@ function CollectionPage() {
             className={
               showOverview
                 ? // items-stretch: H-plate column dictates height, grid fills
-                  // its column with 3 equal rows. No dead space below grid.
-                  "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch gap-y-6 lg:gap-y-0"
+                  // its column with N equal rows. No dead space, no inner gap.
+                  // Mobile stays stacked; tablet (md+) goes side-by-side.
+                  "grid grid-cols-1 md:grid-cols-[minmax(0,42%)_minmax(0,58%)] lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch gap-0"
                 : "grid grid-cols-1"
             }
           >
