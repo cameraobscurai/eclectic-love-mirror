@@ -1,0 +1,1152 @@
+[
+  {
+    "file": "inventory/BARS/EXCURSION Champagne Bar Trunk 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/EXCURSION Champagne Bar Trunk 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 139137,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2912",
+      "slug": "excursion-champagne-trunk-bar-2912",
+      "title": "Excursion Champagne Trunk Bar",
+      "category": "bars",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/INOLA Black Bar.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Black Bar.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 83598,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3504",
+      "slug": "inola-u-black-bar-3504",
+      "title": "Inola U Black  Bar",
+      "category": "bars",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3674",
+        "slug": "inola-double-black-bar-3674",
+        "title": "Inola Double Black Bar",
+        "method": "token_overlap_strong",
+        "confidence": 0.75
+      },
+      {
+        "rms_id": "3353",
+        "slug": "inola-single-black-bar-3353",
+        "title": "Inola Single Black Bar",
+        "method": "token_overlap_strong",
+        "confidence": 0.75
+      },
+      {
+        "rms_id": "2756",
+        "slug": "inola-square-black-bar-2756",
+        "title": "Inola Square Black  Bar",
+        "method": "token_overlap_strong",
+        "confidence": 0.75
+      }
+    ]
+  },
+  {
+    "file": "inventory/BARS/MALCOLM Bar Cart 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MALCOLM Bar Cart 0.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 153324,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2150",
+      "slug": "malcolm-bar-cart-2150",
+      "title": "Malcolm Bar Cart",
+      "category": "bars",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/MALCOLM Bar Cart 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MALCOLM Bar Cart 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 143425,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2150",
+      "slug": "malcolm-bar-cart-2150",
+      "title": "Malcolm Bar Cart",
+      "category": "bars",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/BARS/VOYAGE Black Trunk Bar 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Black Trunk Bar 0.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 320590,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2911",
+      "slug": "voyage-black-trunk-bar-2911",
+      "title": "Voyage Black Trunk Bar",
+      "category": "bars",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2966",
+        "slug": "voyage-navy-trunk-bar-2966",
+        "title": "Voyage Navy Trunk Bar",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/BARS/VOYAGE Black Trunk Bar 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Black Trunk Bar 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 152857,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2911",
+      "slug": "voyage-black-trunk-bar-2911",
+      "title": "Voyage Black Trunk Bar",
+      "category": "bars",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2966",
+        "slug": "voyage-navy-trunk-bar-2966",
+        "title": "Voyage Navy Trunk Bar",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/BARS/VOYAGE Navy Bar Trunk 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Navy Bar Trunk 1.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 149957,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2966",
+      "slug": "voyage-navy-trunk-bar-2966",
+      "title": "Voyage Navy Trunk Bar",
+      "category": "bars",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2911",
+        "slug": "voyage-black-trunk-bar-2911",
+        "title": "Voyage Black Trunk Bar",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/BARS/VOYAGE Navy Bar Trunk.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/VOYAGE Navy Bar Trunk.png",
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "file_size": 331181,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2966",
+      "slug": "voyage-navy-trunk-bar-2966",
+      "title": "Voyage Navy Trunk Bar",
+      "category": "bars",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2911",
+        "slug": "voyage-black-trunk-bar-2911",
+        "title": "Voyage Black Trunk Bar",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/LARGE-DECOR/JACEN Indoor Firepit.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/JACEN Indoor Firepit.png",
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "file_size": 91999,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3542",
+      "slug": "jacen-indoor-firepit-3542",
+      "title": "Jacen Indoor Firepit",
+      "category": "large-decor",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/LIGHTING/CONCRETA Wall Sconce 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LIGHTING/CONCRETA Wall Sconce 0.png",
+    "folder": "LIGHTING",
+    "mapped_category": "lighting",
+    "file_size": 238407,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4045",
+      "slug": "concreta-wall-sconce-4045",
+      "title": "Concreta Wall Sconce",
+      "category": "lighting",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Green Natural Pillow.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Natural Pillow.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 457747,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4004",
+      "slug": "green-natural-pillow-4004",
+      "title": "Green + Natural Pillow",
+      "category": "pillows-throws",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/PILLOWS/Ivory Mudcloth Lumbar.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Mudcloth Lumbar.png",
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 178087,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2783",
+      "slug": "ivory-mudcloth-lumbar-2783",
+      "title": "Ivory Mudcloth Lumbar",
+      "category": "pillows-throws",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "2735",
+        "slug": "ivory-mudcloth-2735",
+        "title": "Ivory Mudcloth",
+        "method": "title_contains",
+        "confidence": 0.92
+      }
+    ]
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/SANARA Brown Tweed Dining Chair 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/SANARA Brown Tweed Dining Chair 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 261503,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4121",
+      "slug": "sanara-dining-chair-brown-tweed-4121",
+      "title": "Sanara Dining Chair - Brown Tweed",
+      "category": "seating",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRDINING/SANARA Taupe Velvet Dining Chair 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRDINING/SANARA Taupe Velvet Dining Chair 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 172276,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4133",
+      "slug": "sanara-dining-chair-taupe-velvet-4133",
+      "title": "Sanara Dining Chair - Taupe Velvet",
+      "category": "seating",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "4122",
+        "slug": "luna-arcing-dining-chair-taupe-velvet-4122",
+        "title": "Luna Arcing Dining Chair - Taupe Velvet",
+        "method": "token_overlap_medium",
+        "confidence": 0.571
+      }
+    ]
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/ARTESIA Chair 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/ARTESIA Chair 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 322442,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3822",
+      "slug": "artesia-chair-3822",
+      "title": "Artesia Chair",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/ARTESIA Chair 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/ARTESIA Chair 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 314505,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3822",
+      "slug": "artesia-chair-3822",
+      "title": "Artesia Chair",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 277387,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3835",
+      "slug": "jesamay-chair-3835",
+      "title": "Jesamay Chair",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 293533,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3835",
+      "slug": "jesamay-chair-3835",
+      "title": "Jesamay Chair",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 3.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/CHAIRLOUNGE/JESAMAY Chair 3.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 329912,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3835",
+      "slug": "jesamay-chair-3835",
+      "title": "Jesamay Chair",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/SOFA/CALISTA Fringe Sofa 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/SOFA/CALISTA Fringe Sofa 0.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 102150,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3713",
+      "slug": "calista-fringe-sofa-3713",
+      "title": "Calista Fringe Sofa",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SEATING/SOFA/CALISTA Fringe Sofa 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/SOFA/CALISTA Fringe Sofa 1.png",
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "file_size": 111414,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3713",
+      "slug": "calista-fringe-sofa-3713",
+      "title": "Calista Fringe Sofa",
+      "category": "seating",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/ALEXANDER Decanter.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ALEXANDER Decanter.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 98084,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "590",
+      "slug": "alexander-decanter-590",
+      "title": "Alexander Decanter",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/BRECKEN Lidded Basket.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/BRECKEN Lidded Basket.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 510082,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3732",
+      "slug": "brecken-lidded-basket-3732",
+      "title": "Brecken Lidded Basket",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/HONEY Decanter.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/HONEY Decanter.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 106647,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3036",
+      "slug": "honey-decanter-3036",
+      "title": "Honey Decanter",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/Ritika 33 Brass Tray.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/Ritika 33 Brass Tray.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 139949,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3121",
+      "slug": "ritika-33-brass-tray-3121",
+      "title": "Ritika 33\" Brass Tray",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/SARSEN Stone Tray.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/SARSEN Stone Tray.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 416755,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3735",
+      "slug": "sarsen-stone-tray-3735",
+      "title": "Sarsen Stone Tray",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/SHETANI 21 Dark Brass Tray.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/SHETANI 21 Dark Brass Tray.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 46027,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3122",
+      "slug": "shetani-21-dark-brass-tray-3122",
+      "title": "Shetani 21\" Dark Brass Tray",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3123",
+        "slug": "shetani-33-dark-brass-tray-3123",
+        "title": "Shetani 33\" Dark Brass Tray",
+        "method": "token_overlap_strong",
+        "confidence": 1
+      }
+    ]
+  },
+  {
+    "file": "inventory/SERVEWARE/SHETANI 33 Dark Brass Tray.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/SHETANI 33 Dark Brass Tray.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 183134,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3122",
+      "slug": "shetani-21-dark-brass-tray-3122",
+      "title": "Shetani 21\" Dark Brass Tray",
+      "category": "serveware",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3123",
+        "slug": "shetani-33-dark-brass-tray-3123",
+        "title": "Shetani 33\" Dark Brass Tray",
+        "method": "exact_filename_eq_title",
+        "confidence": 1
+      }
+    ]
+  },
+  {
+    "file": "inventory/SERVEWARE/TIBUR Travertine Tray.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/TIBUR Travertine Tray.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 353708,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3734",
+      "slug": "tibur-travertine-tray-3734",
+      "title": "Tibur Travertine Tray",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/SERVEWARE/WELLS Decanter.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/WELLS Decanter.png",
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "file_size": 87652,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "645",
+      "slug": "wells-decanter-645",
+      "title": "Wells Decanter",
+      "category": "serveware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/BEREN Black Books.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/BEREN Black Books.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 288640,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3445",
+      "slug": "beren-black-books-3445",
+      "title": "Beren Black Books",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/BEREN Blue Books.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/BEREN Blue Books.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 286410,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3308",
+      "slug": "beren-blue-books-3308",
+      "title": "Beren Blue Books",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/BEREN Red Books.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/BEREN Red Books.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 310799,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "1733",
+      "slug": "beren-red-books-1733",
+      "title": "Beren Red Books",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/BEREN White Books.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/BEREN White Books.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 224891,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3352",
+      "slug": "beren-white-books-3352",
+      "title": "Beren White Books",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/CERA Petrified Wood Bookends.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/CERA Petrified Wood Bookends.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 394019,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3469",
+      "slug": "cera-petrified-wood-bookends-3469",
+      "title": "Cera Petrified Wood Bookends",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/GARRY Wagon Wheel.tif",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/GARRY Wagon Wheel.tif",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 1908156,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "1682",
+      "slug": "garry-wagon-wheel-1682",
+      "title": "Garry Wagon Wheel",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/GURA Black Marble Chain.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/GURA Black Marble Chain.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 143582,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3533",
+      "slug": "gura-black-marble-chain-3533",
+      "title": "Gura Black Marble Chain",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/KETTE Marble Chain.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/KETTE Marble Chain.png",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 116112,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3470",
+      "slug": "kette-marble-chain-3470",
+      "title": "Kette Marble Chain",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/STYLING/MINNITH Olive Basket 0.tif",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/MINNITH Olive Basket 0.tif",
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "file_size": 1875776,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "1476",
+      "slug": "minnith-olive-basket-1476",
+      "title": "Minnith Olive Basket",
+      "category": "styling",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLES/BRIONY Coffee Table 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/BRIONY Coffee Table 0.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 243779,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3839",
+      "slug": "briony-coffee-table-3839",
+      "title": "Briony Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3837",
+        "slug": "jaime-coffee-table-3837",
+        "title": "Jaime Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      },
+      {
+        "rms_id": "328",
+        "slug": "tangier-coffee-table-328",
+        "title": "Tangier Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/BRIONY Coffee Table 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/BRIONY Coffee Table 1.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 191233,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3839",
+      "slug": "briony-coffee-table-3839",
+      "title": "Briony Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3837",
+        "slug": "jaime-coffee-table-3837",
+        "title": "Jaime Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      },
+      {
+        "rms_id": "328",
+        "slug": "tangier-coffee-table-328",
+        "title": "Tangier Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/JAIME Coffee Table 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/JAIME Coffee Table 0.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 113817,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3837",
+      "slug": "jaime-coffee-table-3837",
+      "title": "Jaime Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3839",
+        "slug": "briony-coffee-table-3839",
+        "title": "Briony Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      },
+      {
+        "rms_id": "328",
+        "slug": "tangier-coffee-table-328",
+        "title": "Tangier Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/JAIME Coffee Table 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/JAIME Coffee Table 1.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 102020,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3837",
+      "slug": "jaime-coffee-table-3837",
+      "title": "Jaime Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "3839",
+        "slug": "briony-coffee-table-3839",
+        "title": "Briony Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      },
+      {
+        "rms_id": "328",
+        "slug": "tangier-coffee-table-328",
+        "title": "Tangier Coffee Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.5
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/RELIC Limestone Coffee Table 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/RELIC Limestone Coffee Table 0.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 471357,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4099",
+      "slug": "relic-limestone-coffee-table-4099",
+      "title": "Relic Limestone Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "4098",
+        "slug": "relic-limestone-side-table-4098",
+        "title": "Relic Limestone Side Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/RELIC Limestone Coffee Table 1.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/RELIC Limestone Coffee Table 1.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 501328,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4099",
+      "slug": "relic-limestone-coffee-table-4099",
+      "title": "Relic Limestone Coffee Table",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": [
+      {
+        "rms_id": "4098",
+        "slug": "relic-limestone-side-table-4098",
+        "title": "Relic Limestone Side Table",
+        "method": "token_overlap_medium",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "file": "inventory/TABLES/RELIC Limestone Column 0.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/RELIC Limestone Column 0.png",
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "file_size": 309737,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "4097",
+      "slug": "relic-limestone-column-4097",
+      "title": "Relic Limestone Column",
+      "category": "tables",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/AKOYA Charger.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA Charger.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 102377,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3478",
+      "slug": "akoya-13-5-charger-3478",
+      "title": "Akoya 13.5\" Charger",
+      "category": "tableware",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/AKOYA Low Bowl.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA Low Bowl.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 78290,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3480",
+      "slug": "akoya-9-5-low-bowl-3480",
+      "title": "Akoya 9.5\" Low Bowl",
+      "category": "tableware",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/MIDAS VIDAL Butter Knife.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MIDAS VIDAL Butter Knife.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 26119,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3118",
+      "slug": "midas-vidal-butter-knife-3118",
+      "title": "Midas/Vidal Butter Knife",
+      "category": "tableware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/OLIVE Leather Charger.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/OLIVE Leather Charger.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 255526,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3982",
+      "slug": "olive-13-leather-charger-3982",
+      "title": "Olive 13\" Leather Charger",
+      "category": "tableware",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/TABLEWEAR/TILLERY Low Bowl.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/TILLERY Low Bowl.png",
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "file_size": 63546,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "3568",
+      "slug": "tillery-low-bowl-3568",
+      "title": "Tillery Low Bowl",
+      "category": "tableware",
+      "method": "exact_filename_eq_title",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  },
+  {
+    "file": "inventory/THROWS/WOVEN Aztec Sand.png",
+    "public_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/WOVEN Aztec Sand.png",
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "file_size": 354062,
+    "bucket": "APPLY_SAFE",
+    "top_match": {
+      "rms_id": "2902",
+      "slug": "woven-sand-aztec-2902",
+      "title": "Woven Sand Aztec",
+      "category": "pillows-throws",
+      "method": "token_overlap_strong",
+      "confidence": 1,
+      "already_has_image": false,
+      "category_match": true
+    },
+    "other_candidates": []
+  }
+]

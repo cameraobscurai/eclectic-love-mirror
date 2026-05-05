@@ -1,0 +1,21 @@
+# Storage filetree manifest
+
+Total images: 1186
+Total folders: 15
+
+FOLDER	IMAGES	BYTES	MAPPED_CATEGORY	CERTAINTY
+STYLING	220	238913257	styling	exact
+SEATING	200	50765877	seating	exact
+TABLEWEAR	186	27923904	tableware	exact
+TABLES	132	27946928	tables	exact
+SERVEWARE	77	18298067	serveware	exact
+BARS	75	16913502	bars	exact
+LIGHTING	64	10694313	lighting	exact
+LARGE-DECOR	51	10840003	large-decor	exact
+PILLOWS	50	19560369	pillows-throws	exact
+THROWS	39	15811930	pillows-throws	exact
+RUGS	29	18530398	rugs	exact
+CANDLELIGHT	25	3773254	candlelight	exact
+STORAGE	24	4438826	storage	exact
+COMPONENTS	7	311148	__review__	uncertain
+FURS-PELTS	7	1853187	furs-pelts	uncertain

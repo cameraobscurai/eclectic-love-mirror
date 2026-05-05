@@ -1,0 +1,281 @@
+[
+  {
+    "folder": "STYLING",
+    "mapped_category": "styling",
+    "category_certainty": "exact",
+    "image_count": 220,
+    "total_bytes": 238913257,
+    "examples": [
+      "Acrylic Podium 1.png",
+      "ADAGIO 12in Disco Ball 0.tif",
+      "ADAGIO 18in Disco Ball 0.tif",
+      "ADAGIO 20in Disco Ball 0.tif",
+      "ADAGIO 8in Disco Ball.tif",
+      "ADAGIO Disco Balls.tif",
+      "ADELE Melting Disco.png",
+      "ADELE Melting Disco.tif",
+      "ADENA 7 Melting Disco.tif",
+      "ADENA Melting Disco.png"
+    ]
+  },
+  {
+    "folder": "SEATING",
+    "mapped_category": "seating",
+    "category_certainty": "exact",
+    "image_count": 200,
+    "total_bytes": 50765877,
+    "examples": [
+      "ALISTAIR Bench.png",
+      "AVALON Bench 0.png",
+      "DUNE Bench 0.png",
+      "DUNE Bench 1.png",
+      "FERN Bench 0.png",
+      "GERALDINE Bench 0.png",
+      "GERALDINE Bench 1.png",
+      "JOURDAIN Bench 0.png",
+      "SPENCER Bench 0.png",
+      "SPENCER Bench 1.png"
+    ]
+  },
+  {
+    "folder": "TABLEWEAR",
+    "mapped_category": "tableware",
+    "category_certainty": "exact",
+    "image_count": 186,
+    "total_bytes": 27923904,
+    "examples": [
+      "ADONIS Set.png",
+      "AKOYA 11.png",
+      "AKOYA 7.png",
+      "AKOYA Charger.png",
+      "AKOYA Low Bowl.png",
+      "AKOYA Set.png",
+      "ALLIRA Flute.png",
+      "ALLIRA Goblet.png",
+      "ALLIRA Set.png",
+      "ALLIRA Wine.png"
+    ]
+  },
+  {
+    "folder": "TABLES",
+    "mapped_category": "tables",
+    "category_certainty": "exact",
+    "image_count": 132,
+    "total_bytes": 27946928,
+    "examples": [
+      "4 Foot Folding.png",
+      "48 Square Table.png",
+      "AARON Coffee Table 0.png",
+      "AARON Coffee Table 1.png",
+      "ABIGALE Side Table 0.png",
+      "ACELIN Side Table.png",
+      "Amedee Cocktail Table.png",
+      "BARTOLO  32 in SMALL.png",
+      "BARTOLO 38in MEDIUM.png",
+      "BARTOLO 42in LARGE.png"
+    ]
+  },
+  {
+    "folder": "SERVEWARE",
+    "mapped_category": "serveware",
+    "category_certainty": "exact",
+    "image_count": 77,
+    "total_bytes": 18298067,
+    "examples": [
+      "ADVA 5oz Ramekin.png",
+      "ALEXANDER Decanter.png",
+      "ALVINA Tray.png",
+      "AMERICANA Napkin.png",
+      "ANCA Bowl.png",
+      "ARLETTE Dispenser.png",
+      "ARTAX.png",
+      "Baracus Gold Linen.png",
+      "BAY Blue Tray.png",
+      "BAYLON Beverage Tub.png"
+    ]
+  },
+  {
+    "folder": "BARS",
+    "mapped_category": "bars",
+    "category_certainty": "exact",
+    "image_count": 75,
+    "total_bytes": 16913502,
+    "examples": [
+      "AMISA Blue Bar 1.png",
+      "AMISA Blue White Top Bar 1.png",
+      "ARCUS - BEVIN 1.png",
+      "ARCUS - BEVIN Gold Kick Plate.png",
+      "ARCUS - CALVIN 1.png",
+      "ARCUS - LEVAR 1.png",
+      "ARCUS - RYANN 1.png",
+      "ARCUS - TAVION 1.png",
+      "BARCLAY (Everly Top).png",
+      "BEAUREGARD Bar (Everly Top).png"
+    ]
+  },
+  {
+    "folder": "LIGHTING",
+    "mapped_category": "lighting",
+    "category_certainty": "exact",
+    "image_count": 64,
+    "total_bytes": 10694313,
+    "examples": [
+      "AIDA 32.8 Outdoor.png",
+      "ALFIE 16.4 Rope Light.png",
+      "AMINA 15in.png",
+      "AMITOLA.png",
+      "AMOS.png",
+      "ANNU 40in Hoop.png",
+      "APRIL Flood Light.png",
+      "ARDELIA 24in.png",
+      "ARTHEL 9.8 Rigid LED.png",
+      "BOTOND 87in Wlnut Rod.png"
+    ]
+  },
+  {
+    "folder": "LARGE-DECOR",
+    "mapped_category": "large-decor",
+    "category_certainty": "exact",
+    "image_count": 51,
+    "total_bytes": 10840003,
+    "examples": [
+      "ARIUS Stand.png",
+      "AYA Door.png",
+      "BELLOW 3' Partition 1.png",
+      "BELLOW 8' Wall 1.png",
+      "BELLOW WALLS.png",
+      "BLAZE 48 Firepit.png",
+      "BRANTLEY Chiminea 0.png",
+      "CASCADE Stage Facade Panel.png",
+      "CHATTA SET.png",
+      "CONSTANCE presto frame - Not actual size.png"
+    ]
+  },
+  {
+    "folder": "PILLOWS",
+    "mapped_category": "pillows-throws",
+    "category_certainty": "exact",
+    "image_count": 50,
+    "total_bytes": 19560369,
+    "examples": [
+      "Black Cream Dimensional.png",
+      "Black Leather Lattice.png",
+      "Black Leather Line.png",
+      "Black Leather Stud.png",
+      "Black Leather Woven.png",
+      "Black White Abstract Fur.png",
+      "Blue Green Lumbar.png",
+      "Blue Velvet.png",
+      "Brown Grey fur.png",
+      "Brown Rust Oversize.png"
+    ]
+  },
+  {
+    "folder": "THROWS",
+    "mapped_category": "pillows-throws",
+    "category_certainty": "exact",
+    "image_count": 39,
+    "total_bytes": 15811930,
+    "examples": [
+      "BABY ALPACA Throws.png",
+      "FRINGE Black.png",
+      "FRINGE Camel.png",
+      "FRINGE Cash Ivory.png",
+      "FRINGE Charcoal.png",
+      "Fringe Chen Brown.png",
+      "FRINGE Gold.png",
+      "FRINGE Grey.png",
+      "FRINGE Ivory.png",
+      "FRINGE Light Blue.png"
+    ]
+  },
+  {
+    "folder": "RUGS",
+    "mapped_category": "rugs",
+    "category_certainty": "exact",
+    "image_count": 29,
+    "total_bytes": 18530398,
+    "examples": [
+      "ATLAS 8x10.png",
+      "BRIAR 9x12.png",
+      "BYRON Black Hide.png",
+      "DAYNA 8x10.png",
+      "ENIKO Brindle Hide.png",
+      "EUNICE 4x6.png",
+      "EVREN 8x10.png",
+      "FELINA 5x8.png",
+      "FERIDE 5x8.png",
+      "GLAUCUS Faux Hide.png"
+    ]
+  },
+  {
+    "folder": "CANDLELIGHT",
+    "mapped_category": "candlelight",
+    "category_certainty": "exact",
+    "image_count": 25,
+    "total_bytes": 3773254,
+    "examples": [
+      "ALABASTER Large.png",
+      "ALABASTER Set.png",
+      "ALABASTER Small.png",
+      "AMALIA Votive 0.png",
+      "AMALIA Votive Set.png",
+      "ANGELA Luminary 0.png",
+      "ANGELA Luminary 1.png",
+      "ENNAI Oil Lamp.png",
+      "FLORENC ELantern Small.png",
+      "FLORENCE Lantern Large.png"
+    ]
+  },
+  {
+    "folder": "STORAGE",
+    "mapped_category": "storage",
+    "category_certainty": "exact",
+    "image_count": 24,
+    "total_bytes": 4438826,
+    "examples": [
+      "ANATHEMA Wood Console 0.png",
+      "ANATHEMA Wood Console 1.png",
+      "BEATRICE 0.png",
+      "BEATRICE 1.png",
+      "BEATRICE 3.png",
+      "BERKSHIRE 0.png",
+      "BERKSHIRE 1.png",
+      "CARDEA 0.png",
+      "CARDEA 1.png",
+      "DEZIK Tiered Back Bar 1.png"
+    ]
+  },
+  {
+    "folder": "COMPONENTS",
+    "mapped_category": "__review__",
+    "category_certainty": "uncertain",
+    "image_count": 7,
+    "total_bytes": 311148,
+    "examples": [
+      "Amos Connector.png",
+      "Amos Remote.png",
+      "Amos Stand.png",
+      "farquaad bulb - base.png",
+      "farquaad bulb - remote.png",
+      "farquaad bulb.png",
+      "FIREPIT KEY.png"
+    ]
+  },
+  {
+    "folder": "FURS-PELTS",
+    "mapped_category": "furs-pelts",
+    "category_certainty": "uncertain",
+    "image_count": 7,
+    "total_bytes": 1853187,
+    "examples": [
+      "ARWYN Sheepskin.png",
+      "ELIN Double Sheepskin.png",
+      "JAEL Goat Pelt (2).png",
+      "JAEL Goat Pelt.png",
+      "KAINO Beige Sheepskin.png",
+      "KATRIN Icelandic Sheepskin.png",
+      "OVIS sheepskin.png"
+    ]
+  }
+]

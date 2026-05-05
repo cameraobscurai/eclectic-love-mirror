@@ -1,0 +1,73 @@
+# Hard-file reconciliation summary  (READ-ONLY)
+Generated: 2026-05-05T00:52:14.015Z
+
+## STEP 1 — Storage manifest
+Total folders scanned: 15
+Total image files:     1186
+
+Folder counts (mapped category, certainty):
+  STYLING         220  →  styling          [exact]   238.9 MB
+  SEATING         200  →  seating          [exact]   50.8 MB
+  TABLEWEAR       186  →  tableware        [exact]   27.9 MB
+  TABLES          132  →  tables           [exact]   27.9 MB
+  SERVEWARE        77  →  serveware        [exact]   18.3 MB
+  BARS             75  →  bars             [exact]   16.9 MB
+  LIGHTING         64  →  lighting         [exact]   10.7 MB
+  LARGE-DECOR      51  →  large-decor      [exact]   10.8 MB
+  PILLOWS          50  →  pillows-throws   [exact]   19.6 MB
+  THROWS           39  →  pillows-throws   [exact]   15.8 MB
+  RUGS             29  →  rugs             [exact]   18.5 MB
+  CANDLELIGHT      25  →  candlelight      [exact]   3.8 MB
+  STORAGE          24  →  storage          [exact]   4.4 MB
+  COMPONENTS        7  →  __review__       [uncertain]   0.3 MB
+  FURS-PELTS        7  →  furs-pelts       [uncertain]   1.9 MB
+
+## STEP 5 — Result buckets
+APPLY_SAFE_HARD_FILES:       52
+REVIEW_HARD_FILES:           157
+UNMATCHED_HARD_FILES:        977
+STILL_IMAGELESS:             672
+POTENTIAL_DUPLICATES:        0
+CONFLICTS:                   1
+CATEGORY_MISMATCHES:         0
+
+## RMS coverage (revised)
+RMS rows total:                            835
+RMS rows previously with images:           0
+RMS rows newly resolvable (this pass):     163
+RMS rows revised WITH images:              163
+RMS rows still UNRESOLVED:                 672
+
+## Top remaining missing categories
+  tableware            153
+  pillows-throws       114
+  seating              91
+  tables               70
+  styling              70
+  serveware            42
+  bars                 37
+  lighting             25
+  large-decor          24
+  candlelight          16
+  chandeliers          16
+  rugs                 8
+  furs-pelts           4
+  storage              2
+
+## Files written
+  scripts-tmp/storage-filetree-manifest.json
+  scripts-tmp/storage-filetree-manifest.txt
+  scripts-tmp/storage-folder-counts.json
+  scripts-tmp/storage-folder-counts.txt
+  scripts-tmp/reconcile-hard-files.json
+  scripts-tmp/reconcile-hard-files-summary.txt  (this file)
+  scripts-tmp/apply-safe-hard-files.json
+  scripts-tmp/review-hard-files.json
+  scripts-tmp/unmatched-hard-files.json
+  scripts-tmp/still-imageless-after-hard-files.json
+  scripts-tmp/potential-duplicates-hard-files.json
+  scripts-tmp/category-mismatches-hard-files.json
+
+NOTE: nothing has been written to the database, no images mirrored, no
+bindings overwritten, no rebake performed. Review APPLY_SAFE before
+any apply pass.
