@@ -28,6 +28,10 @@ const TOKEN_CANON = {
   throws: 'throw',
   candlesticks: 'candlestick',
   candleholders: 'candleholder',
+  columns: 'column',
+  plinths: 'plinth',
+  pedestals: 'pedestal',
+  risers: 'riser',
 };
 const canonTok = t => TOKEN_CANON[t] || t;
 const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.length >= 3).map(canonTok);
