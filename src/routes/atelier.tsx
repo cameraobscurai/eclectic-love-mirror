@@ -202,13 +202,16 @@ function AtelierPage() {
 
       {/* 3. L'ATELIER — triptych above, then collage + sketch drape side by side (swapped) */}
       <Section eyebrow="L'ATELIER">
-        <MediaAperture
-          ratio="3/1"
-          picture={atelierHiveTriptych}
-          alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
-          sizes="100vw"
-          className="mt-4"
-        />
+        {/* Triptych is a 3:1 horizontal — readable on tablet+. Below sm we
+            relax to 5:3 so the three sub-frames are tall enough to read. */}
+        <div className="mt-4 [&_figure]:!aspect-[5/3] sm:[&_figure]:!aspect-[3/1]">
+          <MediaAperture
+            ratio="3/1"
+            picture={atelierHiveTriptych}
+            alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
+            sizes="100vw"
+          />
+        </div>
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <MediaAperture
             ratio="4/5"
