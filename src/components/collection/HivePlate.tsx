@@ -91,16 +91,22 @@ export function HivePlate({
           </tspan>
         </text>
 
-        {/* The H — drawn as a single shape so stroke/fill stay coherent.
-            Proportions: stem-width 60, crossbar-thickness 24, set with
-            classical serif terminals (the small flares at top/bottom). */}
+        {/* The H — geometric construction with subtle serif terminals.
+            Stems 70px wide, crossbar 38px tall, capped with thin flares
+            top and bottom for editorial character without serif fragility. */}
         <g fill="var(--charcoal)">
-          {/* Left stem with serif caps */}
-          <path d="M 100 200 L 100 690 L 75 700 L 75 720 L 175 720 L 175 700 L 150 690 L 150 480 L 250 480 L 250 690 L 225 700 L 225 720 L 325 720 L 325 700 L 300 690 L 300 480 L 300 440 L 150 440 L 150 230 L 175 220 L 175 200 Z" />
-          {/* Right stem with serif caps */}
-          <path d="M 350 200 L 350 690 L 325 700 L 325 720 L 425 720 L 425 700 L 400 690 L 400 480 L 500 480 L 500 690 L 475 700 L 475 720 L 575 720 L 575 700 L 550 690 L 550 230 L 575 220 L 575 200 L 475 200 L 475 220 L 500 230 L 500 440 L 400 440 L 400 230 L 425 220 L 425 200 Z" />
+          {/* Left stem */}
+          <rect x="105" y="200" width="70" height="520" />
+          {/* Right stem */}
+          <rect x="425" y="200" width="70" height="520" />
           {/* Crossbar */}
-          <rect x="150" y="440" width="350" height="40" />
+          <rect x="175" y="455" width="250" height="38" />
+          {/* Top serif flares */}
+          <rect x="85" y="200" width="110" height="14" />
+          <rect x="405" y="200" width="110" height="14" />
+          {/* Bottom serif flares */}
+          <rect x="85" y="706" width="110" height="14" />
+          <rect x="405" y="706" width="110" height="14" />
         </g>
 
         {/* Artifact slot — only when provided. Positioned in the lower
