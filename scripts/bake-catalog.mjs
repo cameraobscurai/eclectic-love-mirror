@@ -166,6 +166,28 @@ for (const p of rolled) {
 }
 console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
 
+// Overlay live-site description + gallery onto rolled family tiles using
+// the family title (e.g. "Anastasia Antique Silver Flatware") which often
+// only matches at the family level, not at the RMS variant level.
+let descAdded = 0, galleryMerged = 0;
+for (const p of rolled) {
+  const lp = findLiveProduct(p.slug, p.title);
+  if (!lp) continue;
+  if (!p.description && lp.body) { p.description = lp.body; descAdded++; }
+  if (!p.sourceUrl && lp.fullUrl) p.sourceUrl = `https://www.eclectichive.com${lp.fullUrl}`;
+  // If DB had no images, seed from live gallery; otherwise leave owner images alone.
+  if ((p.imageCount === 0) && lp.gallery && lp.gallery.length) {
+    const imgs = lp.gallery.map((u, idx) => ({
+      url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: p.title,
+    }));
+    p.images = imgs;
+    p.primaryImage = imgs[0];
+    p.imageCount = imgs.length;
+    galleryMerged++;
+  }
+}
+console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}`);
+
 
 
 
