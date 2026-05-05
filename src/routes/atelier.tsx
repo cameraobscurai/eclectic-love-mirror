@@ -204,7 +204,7 @@ function AtelierPage() {
       <Section eyebrow="L'ATELIER">
         {/* Triptych is a 3:1 horizontal — readable on tablet+. Below sm we
             relax to 5:3 so the three sub-frames are tall enough to read. */}
-        <div className="mt-4 [&_figure]:!aspect-[5/3] sm:[&_figure]:!aspect-[3/1]">
+        <div className="mt-4 [&_figure]:[aspect-ratio:5/3_!important] sm:[&_figure]:[aspect-ratio:3/1_!important]">
           <MediaAperture
             ratio="3/1"
             picture={atelierHiveTriptych}
