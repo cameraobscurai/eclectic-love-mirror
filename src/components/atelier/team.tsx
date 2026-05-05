@@ -1,5 +1,5 @@
 import { MediaAperture } from "@/components/media-aperture";
-import { teamPhotoUrl } from "@/lib/storage-image";
+import { teamPhotoOptimizedUrl, teamPhotoSrcSet } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // Atelier — THE HUMANS module
@@ -19,6 +19,7 @@ import { teamPhotoUrl } from "@/lib/storage-image";
 
 export interface TeamMemberImage {
   src: string;
+  srcSet?: string;
   alt: string;
   credit?: string;
   /** Owner-approved for public web. False/undefined → portrait aperture only. */
@@ -39,7 +40,8 @@ export interface TeamMember {
 
 // Helper: build an approved portrait entry from a storage filename.
 const portrait = (filename: string, name: string): TeamMemberImage => ({
-  src: teamPhotoUrl(filename),
+  src: teamPhotoOptimizedUrl(filename),
+  srcSet: teamPhotoSrcSet(filename),
   alt: `Portrait of ${name}`,
   approvedForWeb: true,
 });
@@ -112,6 +114,7 @@ export function AtelierTeam() {
               <MediaAperture
                 ratio="4/5"
                 src={showImage ? member.image!.src : undefined}
+                srcSet={showImage ? member.image!.srcSet : undefined}
                 alt={
                   showImage
                     ? member.image!.alt
