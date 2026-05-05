@@ -778,23 +778,26 @@ function CollectionPage() {
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
+                ? // items-start: H-plate column and tile-grid column each own
+                  // their own height. No more flex-1 stretching tile rows to
+                  // match the H-plate. aspect-ratio inside CategoryTonalGrid
+                  // determines tile size; H-plate has its own aspect cap below.
+                  "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-start gap-y-6 lg:gap-y-0"
                 : "grid grid-cols-1"
             }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:grid self-stretch h-plate-slot"
+                className="hidden lg:grid"
                 style={{
                   background: "var(--paper)",
                   containerType: "inline-size",
                   placeItems: "center",
-                  // The image floats in the optical center of whatever
-                  // shape this slot ends up — wide column, narrow column,
-                  // chat-open, chat-closed. cqi units = % of the slot's
-                  // own inline size, not the viewport, so the artwork
-                  // re-composes per container, not per breakpoint.
+                  // Aspect cap so the H-plate can't tower past its tile-grid
+                  // sibling. 3/4 = portrait, matches the editorial proportion
+                  // of the H artwork. cqi padding scales with column width.
+                  aspectRatio: "3 / 4",
                   padding: "clamp(16px, 4cqi, 56px)",
                 }}
               >
@@ -802,6 +805,8 @@ function CollectionPage() {
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
                   className="block object-contain"
+                  width={1200}
+                  height={1600}
                   style={{
                     width: "min(100%, 88cqi)",
                     maxHeight: "100%",
@@ -814,7 +819,7 @@ function CollectionPage() {
             {/* ===== RIGHT: main pane ===== */}
             <motion.div
               layout={!reduced}
-              className={`min-w-0 ${showOverview ? "h-full min-h-0 flex flex-col" : ""}`}
+              className="min-w-0"
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
@@ -823,13 +828,14 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: H plate stacks on top, also container-aware. */}
+                  {/* Mobile: H plate stacks on top, container-query aware. */}
                   <div
-                    className="lg:hidden shrink-0 self-stretch grid"
+                    className="lg:hidden grid"
                     style={{
                       background: "var(--paper)",
                       containerType: "inline-size",
                       placeItems: "center",
+                      aspectRatio: "4 / 3",
                       padding: "clamp(16px, 4cqi, 40px)",
                     }}
                   >
@@ -837,15 +843,15 @@ function CollectionPage() {
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
                       className="block object-contain"
+                      width={1200}
+                      height={1600}
                       style={{ width: "min(100%, 92cqi)", height: "auto" }}
                     />
                   </div>
-                  <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">
-                    <CategoryTonalGrid
-                      groups={overviewGroups}
-                      onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
-                    />
-                  </div>
+                  <CategoryTonalGrid
+                    groups={overviewGroups}
+                    onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
+                  />
                 </>
               ) : (
                 <>
