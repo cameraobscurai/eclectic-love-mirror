@@ -573,7 +573,7 @@ function CollectionPage() {
     <main
       data-collection-main
       className="min-h-screen text-charcoal pb-32"
-      style={{ background: "#ffffff" }}
+      style={{ background: "var(--paper)" }}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
