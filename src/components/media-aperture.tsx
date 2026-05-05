@@ -162,7 +162,31 @@ export function MediaAperture({
   // Render the <img> only once the frame is near the viewport. We still
   // pass `loading="lazy"` as a belt-and-braces fallback (so the browser
   // can also defer if the IO fires far away from layout).
-  const showImg = !!src && inView;
+  const effectiveSrc = picture?.img.src ?? src;
+  const effectiveSrcSet = picture ? undefined : srcSet;
+  const showImg = !!effectiveSrc && inView;
+  const imgEl = showImg ? (
+    <img
+      ref={imgRef}
+      src={effectiveSrc}
+      srcSet={effectiveSrcSet}
+      sizes={sizes}
+      width={picture?.img.w}
+      height={picture?.img.h}
+      alt={alt ?? ""}
+      loading={lazy ? "lazy" : "eager"}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      {...(fetchPriority
+        ? ({ fetchPriority: fetchPriority } as Record<string, string>)
+        : {})}
+      className="absolute inset-0 w-full h-full object-cover will-change-opacity"
+      style={{
+        opacity: loaded ? 1 : 0,
+        transition: "opacity 420ms ease-out",
+      }}
+    />
+  ) : null;
 
   return (
     <figure ref={figureRef} className={cn("block", className)}>
