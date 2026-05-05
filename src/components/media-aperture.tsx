@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 //
 // Lazy + viewport prefetch:
 //   When `lazy` is true (default) we use IntersectionObserver with a
-//   generous `prefetchMargin` (default 600px) to start the download just
+//   generous `prefetchMargin` (default 1400px) to start the download just
 //   before the frame scrolls into view. This is a wider margin than the
 //   browser's built-in `loading="lazy"` (~150-300px), so atelier portraits
 //   and material plates resolve before they enter the screen instead of
@@ -65,8 +65,8 @@ interface MediaApertureProps {
   lazy?: boolean;
   /**
    * IntersectionObserver rootMargin for prefetch — how far outside the
-   * viewport the image starts downloading. Defaults to "600px" so frames
-   * have ~half a viewport of head start before they enter the screen.
+   * viewport the image starts downloading. Defaults to "1400px" so frames
+   * have more than a viewport of head start before they enter the screen.
    */
   prefetchMargin?: string;
   /** Hint browser priority. Use "high" for above-the-fold portraits. */
@@ -84,9 +84,11 @@ export function MediaAperture({
   label,
   className,
   lazy = true,
-  prefetchMargin = "600px",
+  prefetchMargin = "1400px",
   fetchPriority,
 }: MediaApertureProps) {
+  const effectiveSrc = picture?.img.src ?? src;
+  const effectiveSrcSet = picture ? undefined : srcSet;
   const [loaded, setLoaded] = useState(false);
   // Eager renders immediately. Lazy waits for the IO to fire.
   const [inView, setInView] = useState(!lazy);
