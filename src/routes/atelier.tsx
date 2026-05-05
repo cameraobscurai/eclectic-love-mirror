@@ -218,7 +218,6 @@ function AtelierPage() {
                 src={atelierStudioWide}
                 alt="The Atelier — interior view of the studio with the elevated container office, lounge seating, and plant-lined floor."
                 label="STUDIO"
-                lazy={false}
                 sizes="(min-width: 1024px) 1280px, 100vw"
               />
             </div>
