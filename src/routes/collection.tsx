@@ -16,10 +16,21 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
+import {
+  PARENT_ORDER,
+  PARENT_LABELS,
+  TILE_TO_PARENT_SUB,
+  GROUP_TO_PARENT,
+  productParent,
+  productMatchesSub,
+  isParentId,
+  isLegacyTileId,
+  type ParentId,
+} from "@/lib/collection-parents";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
-import { CollectionRail } from "@/components/collection/CollectionRail";
+import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
