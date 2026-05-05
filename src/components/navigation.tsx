@@ -164,7 +164,7 @@ export function Navigation() {
                       : "text-charcoal/70 hover:text-charcoal"
                   )}
                 >
-                  {link.label}
+                  {link.render}
                   <span
                     className={cn(
                       "absolute -bottom-1 left-0 w-full h-px origin-left transition-transform duration-300",
@@ -247,7 +247,7 @@ export function Navigation() {
                       : "text-cream/70 hover:text-cream"
                   )}
                 >
-                  {link.label}
+                  {link.render}
                 </span>
               </Link>
             ))}
