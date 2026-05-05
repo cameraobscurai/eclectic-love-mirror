@@ -167,6 +167,7 @@ interface TonalCellProps {
   onFirstRowImageDone?: () => void;
   onSelectCategory: (id: BrowseGroupId) => void;
   spanCols?: number;
+  mobileSpanCols?: number;
 }
 
 function TonalCell({
@@ -181,6 +182,7 @@ function TonalCell({
   onFirstRowImageDone,
   onSelectCategory,
   spanCols = 1,
+  mobileSpanCols = 1,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
   const [reported, setReported] = useState(false);
@@ -202,17 +204,22 @@ function TonalCell({
 
   const showImg = isFirstRow ? firstRowReady : near && (loaded || !heroSrc);
 
+  // Mobile uses col-span-2 (covers full 2-col width when hanging) while
+  // desktop ≥sm reads the inline grid-column to absorb finale remainders.
+  const mobileSpanClass = mobileSpanCols > 1 ? "col-span-2 sm:col-span-1" : "";
+
   return (
     <button
       ref={ref}
       type="button"
       onClick={() => onSelectCategory(id)}
       aria-label={label}
-      className="group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0"
+      className={`group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0 ${mobileSpanClass}`}
       style={{
         background: tone,
         touchAction: "manipulation",
-        gridColumn: spanCols > 1 ? `span ${spanCols}` : undefined,
+        ["--sm-span" as string]: spanCols > 1 ? String(spanCols) : undefined,
+        gridColumn: spanCols > 1 ? `var(--sm-span-mq, ${mobileSpanCols > 1 ? `span ${mobileSpanCols}` : "auto"})` : undefined,
       }}
     >
       {heroSrc ? (
