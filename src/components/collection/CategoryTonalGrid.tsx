@@ -24,9 +24,11 @@ const ROWS: BrowseGroupId[][] = [
   ["serveware", "styling", "accents", "large-decor"],
 ];
 
-// 3-tone neutral palette. Cycled by (rowIndex + colIndex) % 3 so no two
-// adjacent cells share a tone.
-const TONES = ["#efece6", "#d9d4cb", "#c8c2b6"] as const;
+// 5-tone warm neutral palette — wider contrast spread so adjacent cells
+// read as their own units instead of blurring into one flat plane.
+// Indexed by (rowIdx * 2 + colIdx) % 5 so no two neighbours share a tone
+// horizontally or vertically.
+const TONES = ["#f2efe8", "#e8e3d8", "#ddd6c8", "#e3ded2", "#ccc4b3"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
@@ -105,6 +107,11 @@ export function CategoryTonalGrid({
     setFirstRowDoneCount((n) => n + 1);
   }, []);
 
+  // Max row length defines the canonical grid width on ≥sm. Rows shorter
+  // than the max get their last tile spanning the remainder so we never
+  // leave an empty ghost cell — that "span-2 finale" feel.
+  const MAX_COLS = resolvedRows.reduce((n, r) => Math.max(n, r.length), 1);
+
   return (
     <div className="flex h-full w-full flex-col">
       {resolvedRows.map((row, rowIdx) => (
@@ -112,12 +119,15 @@ export function CategoryTonalGrid({
           key={rowIdx}
           className="flex-1 min-h-0 grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)]"
           style={{
-            ["--row-cols" as string]: `repeat(${row.length}, minmax(0, 1fr))`,
+            ["--row-cols" as string]: `repeat(${MAX_COLS}, minmax(0, 1fr))`,
           }}
         >
           {row.map((item, colIdx) => {
-            const tone = TONES[(rowIdx + colIdx) % TONES.length];
+            // Wider contrast spread across 5 tones, no neighbour repeats.
+            const tone = TONES[(rowIdx * 2 + colIdx) % TONES.length];
             const isFirstRow = rowIdx === 0;
+            const isLast = colIdx === row.length - 1;
+            const finaleSpan = isLast ? MAX_COLS - row.length + 1 : 1;
             return (
               <TonalCell
                 key={item.id}
@@ -131,6 +141,7 @@ export function CategoryTonalGrid({
                 firstRowReady={firstRowReady}
                 onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
                 onSelectCategory={onSelectCategory}
+                spanCols={finaleSpan}
               />
             );
           })}
@@ -151,6 +162,7 @@ interface TonalCellProps {
   firstRowReady: boolean;
   onFirstRowImageDone?: () => void;
   onSelectCategory: (id: BrowseGroupId) => void;
+  spanCols?: number;
 }
 
 function TonalCell({
@@ -164,6 +176,7 @@ function TonalCell({
   firstRowReady,
   onFirstRowImageDone,
   onSelectCategory,
+  spanCols = 1,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
   const [reported, setReported] = useState(false);
@@ -192,7 +205,11 @@ function TonalCell({
       onClick={() => onSelectCategory(id)}
       aria-label={label}
       className="group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0"
-      style={{ background: tone, touchAction: "manipulation" }}
+      style={{
+        background: tone,
+        touchAction: "manipulation",
+        gridColumn: spanCols > 1 ? `span ${spanCols}` : undefined,
+      }}
     >
       {heroSrc ? (
         <img
