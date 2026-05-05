@@ -97,9 +97,9 @@
   --sand: oklch(0.85 0.012 75);          /* #d4cdc4 */
   --warm-gray: oklch(0.6 0 0);           /* #8a8a8a */
   --charcoal: oklch(0.18 0 0);           /* #1a1a1a */
-  --cream: #fafaf7;                      /* paper white — brand baseline. Old #fafaf7 cream deprecated 2026-05-05; token kept so all consumers (text on charcoal, footer, etc.) repaint together. Reintroduce as accent via --cream-accent if needed. */
-  --cream-accent: #fafaf7;               /* deprecated cream, retained one release as optional warm accent */
-  --paper: #fafaf7;                      /* paper white surface — alias of --cream during transition */
+  --cream: #ffffff;                      /* flat white — brand baseline (flattened 2026-05-05 from paper white #fafaf7 so cutout product photos blend seamlessly). */
+  --cream-accent: #fafaf7;               /* retired warm paper-white, kept one release as optional accent */
+  --paper: #ffffff;                      /* flat white surface — alias of --cream */
   --black: oklch(0 0 0);
 
   /* Typography tracking presets */
