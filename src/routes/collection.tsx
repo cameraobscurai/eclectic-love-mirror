@@ -794,38 +794,20 @@ function CollectionPage() {
             )}
           </div>
 
-          {/* Horizontal category rail — replaces the left sidebar when a
-              category is active. flex-wrap so it never scrolls horizontally. */}
+          {/* Contextual subcategory rail — taxonomy only, never inventory.
+              Renders [All, ...PARENT_SUBS[activeParent]] for the active parent.
+              The flattened 18-row rail (BROWSE_GROUP_ORDER.map) is gone. */}
           {activeParent && (
             <div className="px-0 pb-3">
               <div
                 className="mx-auto"
                 style={{ maxWidth: "var(--archive-canvas-max)" }}
               >
-                <nav
-                  aria-label="Browse inventory by category"
-                  className="flex flex-wrap items-center gap-x-5 gap-y-2"
-                >
-                  {BROWSE_GROUP_ORDER.map((id) => {
-                    const isActive = activeParent === id;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        onClick={() => selectGroup(id)}
-                        className={[
-                          "text-[10px] uppercase tracking-[0.22em] py-1 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                          isActive
-                            ? "text-charcoal border-b border-charcoal"
-                            : "text-charcoal/55 hover:text-charcoal border-b border-transparent",
-                        ].join(" ")}
-                        aria-current={isActive ? "page" : undefined}
-                      >
-                        {BROWSE_GROUP_LABELS[id]}
-                      </button>
-                    );
-                  })}
-                </nav>
+                <SubcategoryRail
+                  parent={activeParent}
+                  active={activeSubcategory}
+                  onSelect={selectSubcategory}
+                />
               </div>
             </div>
           )}
