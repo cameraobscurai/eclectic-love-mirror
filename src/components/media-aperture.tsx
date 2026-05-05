@@ -79,10 +79,22 @@ export function MediaAperture({
   const figureRef = useRef<HTMLElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
+  // Reset gate state when `src` changes (e.g. on remount after route
+  // navigation, or when the parent swaps the image URL). Without this, an
+  // unrelated previous load could leave `loaded=true` and skip the
+  // crossfade — or, worse, leave `inView=true` from a prior mount and
+  // bypass the prefetch margin entirely on the new src.
+  useEffect(() => {
+    setLoaded(false);
+    setInView(!lazy);
+  }, [src, lazy]);
+
   // Viewport prefetch — start the download a bit before the frame enters
   // the screen so it resolves into the aperture instead of popping in.
+  // Re-runs on every mount (so returning to a route re-arms the observer)
+  // and whenever `src`/`lazy`/`prefetchMargin` change.
   useEffect(() => {
-    if (!lazy || inView) return;
+    if (!lazy) return;
     const node = figureRef.current;
     if (!node) return;
     if (typeof IntersectionObserver === "undefined") {
@@ -91,6 +103,24 @@ export function MediaAperture({
       setInView(true);
       return;
     }
+
+    // Synchronous initial check: if the frame is already inside the
+    // prefetch zone on mount (common when re-entering a route mid-scroll),
+    // fire immediately so we don't wait a frame for IO to schedule.
+    const marginPx = parseInt(prefetchMargin, 10) || 0;
+    const rect = node.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const nearViewport =
+      rect.bottom >= -marginPx &&
+      rect.top <= vh + marginPx &&
+      rect.right >= -marginPx &&
+      rect.left <= vw + marginPx;
+    if (nearViewport) {
+      setInView(true);
+      return;
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -105,7 +135,7 @@ export function MediaAperture({
     );
     io.observe(node);
     return () => io.disconnect();
-  }, [lazy, inView, prefetchMargin]);
+  }, [lazy, prefetchMargin, src]);
 
   // Catch images that decoded before React attached the onLoad listener
   // (SSR / cached / eager). Without this they stay opacity:0 forever.
