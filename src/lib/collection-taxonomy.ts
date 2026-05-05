@@ -597,10 +597,16 @@ const RULES: Rule[] = [
   },
 
   {
+    id: "furs-pelts",
+    reason: "furs-pelts slug",
+    score: ({ categorySlug }) => (categorySlug === "furs-pelts" ? 100 : 0),
+  },
+
+  {
     id: "large-decor",
-    reason: "large-decor/furs-pelts slug",
+    reason: "large-decor slug",
     score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["large-decor", "furs-pelts"]) ? 100 : 0,
+      categorySlug === "large-decor" ? 100 : 0,
   },
 
   {
