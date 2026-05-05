@@ -13,7 +13,17 @@ const NAV_LINKS = [
     render: (
       <>
         ATELIER{" "}
-        <span className="font-display italic font-light tracking-normal normal-case lowercase">
+        <span
+          className="font-display italic font-light normal-case lowercase"
+          style={{
+            // Saol italic needs room — bump 1.35× and pull tracking back to 0,
+            // matching the deck's signature lockup.
+            fontSize: "1.35em",
+            letterSpacing: "0",
+            margin: "0 0.08em",
+            verticalAlign: "baseline",
+          }}
+        >
           by
         </span>{" "}
         THE HIVE
