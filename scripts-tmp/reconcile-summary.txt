@@ -1,0 +1,73 @@
+RECONCILIATION SUMMARY — DRY RUN, NO WRITES
+Generated: 2026-05-05T00:13:45.095Z
+
+A. APPLY_SAFE (ready for Phase 1 apply):           484
+B. REVIEW_REQUIRED:                                 349
+C. CONFLICTS:                                       2
+   of which Monroe/Astaire cluster:                 0
+   conflicts after Monroe patch:                    2
+D. UNMATCHED SITE PRODUCTS:                         97
+
+Image-less rows (truly missing): 122
+Image-less after Monroe patch:    122  (Monroe patchable: 0)
+
+REVIEW by category (top 10):
+   tableware: 141
+   styling: 58
+   tables: 38
+   pillows-throws: 38
+   serveware: 26
+   rugs: 12
+   seating: 7
+   bars: 6
+   large-decor: 6
+   lighting: 6
+
+--- APPLY_SAFE breakdown ---
+   filename+squarespace: 130
+   squarespace: 258
+   filename: 96
+
+--- 5 APPLY_SAFE samples ---
+   3146 "Amisa Midnight Bar" [bars] src=filename+squarespace conf=exact gallery=9
+   2816 "Arcus Bevin 12' Slatted Bar" [bars] src=filename+squarespace conf=exact gallery=9
+   2813 "Arcus Calvin 12' Smooth Bar" [bars] src=filename+squarespace conf=exact gallery=9
+   2814 "Arcus Levar 12' Black Tambour Bar" [bars] src=squarespace conf=exact gallery=8
+   3054 "Arcus Ryann 12' White Tambour Bar" [bars] src=filename+squarespace conf=exact gallery=9
+
+--- 5 REVIEW samples (tableware first) ---
+   3410 "Winslow Tortoise Bistro Tea/Dessert Spoon" [tableware]  reason=low confidence (token) from squarespace
+   3412 "Winslow Tortoise Bistro Steak Knife" [tableware]  reason=low confidence (token) from squarespace
+   3408 "Winslow Tortoise Bistro Salad/Dessert Fork" [tableware]  reason=low confidence (token) from squarespace
+   3409 "Winslow Tortoise Bistro Dinner Spoon" [tableware]  reason=low confidence (token) from squarespace
+   3411 "Winslow Tortoise Bistro Dinner Knife" [tableware]  reason=low confidence (token) from squarespace
+
+--- 5 CONFLICT samples ---
+   2757 "Iraja Square Weathered Oak Bar" csv="IRJA_Bar_1.png" → manual cluster review (likely Monroe/Astaire-class rename)
+   2864 "Gideon Small Bamboo Mesh Pendant" csv="small_g.png" → manual cluster review (likely Monroe/Astaire-class rename)
+
+--- 5 UNMATCHED SITE samples ---
+   "Boulder 36" Coffee Table" (lounge-tables) closest=3032/"Boulder 36" Cast Coffee Table" score=8
+   "River 54" Coffee Table" (lounge-tables) closest=3030/"River 54" Stone Coffee Table" score=8
+   "Ezra Antique Console Table" (lounge-tables) closest=2974/"Ezra Marble Top Antique Console Table" score=10
+   "Inola 12' Black Convertible Bar" (cocktail-bar) closest=3674/"Inola Double Black Bar" score=5
+   "Iraja 12' Wood Convertible Bar" (cocktail-bar) closest=3675/"Iraja Double Weathered Oak Bar" score=4
+
+--- MONROE CLUSTER ---
+RMS rows: 5
+CSV filenames using Astaire naming: 8
+Storage files matching monroe|astaire: 6
+Squarespace products: 1
+Recommended bindings with storage match: 0 of 5
+   4118 "Monroe - Black Slat Tambour - Double 10'" → (no storage match)
+   4117 "Monroe - Black Slat Tambour - Double 16'" → (no storage match)
+   4116 "Monroe - Black Slat Tambour - Single 5'" → (no storage match)
+   4108 "Monroe - Black Slat Tambour - Single 8'" → (no storage match)
+   4119 "Monroe - Black Slat Tambour - Triple 15'" → (no storage match)
+
+Files written:
+  scripts-tmp/reconcile-apply-safe.json
+  scripts-tmp/reconcile-review-required.json
+  scripts-tmp/reconcile-conflicts.json
+  scripts-tmp/reconcile-monroe.json
+  scripts-tmp/reconcile-unmatched-site.json
