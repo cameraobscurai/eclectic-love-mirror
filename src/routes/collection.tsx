@@ -600,7 +600,7 @@ function CollectionPage() {
       >
         <div className="px-4 sm:px-6 lg:px-12">
           <div
-            className="mx-auto flex items-center justify-between gap-4 py-2"
+            className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-2 flex-wrap sm:flex-nowrap"
             style={{
               maxWidth: "var(--archive-canvas-max)",
               minHeight: "var(--archive-utility-h)",
