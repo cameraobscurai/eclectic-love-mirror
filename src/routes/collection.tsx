@@ -779,13 +779,13 @@ function CollectionPage() {
           >
             {showOverview && (
               <aside
-                className="hidden lg:flex items-center justify-center h-full min-h-0"
+                className="hidden lg:flex items-stretch h-full min-h-0 self-stretch"
                 style={{ background: "#ffffff" }}
               >
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block max-h-full w-full h-auto object-contain"
+                  className="block h-full w-full object-contain"
                 />
               </aside>
             )}
