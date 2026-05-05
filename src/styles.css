@@ -383,3 +383,21 @@ button, a, [role="button"] {
 /* Hide scrollbars (used by gallery filmstrip + similar). */
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ----------------------------------------------------------------------------
+   Mobile CAPS tracking ramp.
+   Site-wide our ALL CAPS body copy uses 0.22em–0.30em letter-spacing for the
+   editorial register. At ≤640px those gaps read as broken word-shapes.
+   We tighten globally for small CAPS body text on phones, then restore the
+   original tracking at sm. Targets `[class*="tracking-["]` whose computed
+   font-size is small enough to suffer (handled via :where with size cap).
+   ---------------------------------------------------------------------------- */
+@media (max-width: 639.98px) {
+  /* Apply only to small caps text where over-tracking hurts readability. */
+  .text-\[10px\][class*="uppercase"],
+  .text-\[11px\][class*="uppercase"],
+  .text-\[12px\][class*="uppercase"],
+  .text-xs[class*="uppercase"] {
+    letter-spacing: 0.14em;
+  }
+}
