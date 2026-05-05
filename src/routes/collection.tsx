@@ -351,10 +351,19 @@ function CollectionPage() {
     return products.filter((p) => p.title.toLowerCase().includes(query));
   }, [products, q]);
 
+  // Parent first, then subcategory. "All" is the no-op for sub, so a parent's
+  // All view shows every product whose productParent === activeParent — even
+  // items that fail every keyword bucket.
   const groupFiltered = useMemo(() => {
     if (!activeParent) return searchFiltered;
-    return searchFiltered.filter((p) => getProductBrowseGroup(p) === activeParent);
-  }, [searchFiltered, activeParent]);
+    const parentFiltered = searchFiltered.filter(
+      (p) => productParent(p) === activeParent,
+    );
+    if (activeSubcategory === "all") return parentFiltered;
+    return parentFiltered.filter((p) =>
+      productMatchesSub(p, activeParent, activeSubcategory),
+    );
+  }, [searchFiltered, activeParent, activeSubcategory]);
 
   const filtered = useMemo(() => {
     const list = [...groupFiltered];
