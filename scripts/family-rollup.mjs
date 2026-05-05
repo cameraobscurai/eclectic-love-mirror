@@ -96,13 +96,22 @@ export function rollupFamilies(products, liveSnapshot) {
         return { key: 'live:' + lp.slug, source: `prefix-${n}`, familyTitle: lp.title, liveSlug: lp.slug };
       }
     }
-    // 3. tokens-subset
+    // 3. tokens-subset (also strip trailing variant-noun on the live side
+    //    so live "Anastasia Antique Silver Flatware" matches RMS
+    //    "Anastasia Antique Silver Butter Knife")
     const rmsTokSet = new Set(rmsToks);
+    const stripTrailingVariant = (toks) => {
+      const out = [...toks];
+      while (out.length > 1 && VARIANT_NOUN_STEMS.has(out[out.length-1])) out.pop();
+      return out;
+    };
     let bestSubset = null;
+    let bestSubsetCoreLen = 0;
     for (const lp of liveProducts) {
-      if (!lp.tokens.length || lp.tokens.length > rmsToks.length) continue;
-      if (lp.tokens.every(t => rmsTokSet.has(t))) {
-        if (!bestSubset || lp.tokens.length > bestSubset.tokens.length) bestSubset = lp;
+      const core = stripTrailingVariant(lp.tokens);
+      if (!core.length || core.length > rmsToks.length) continue;
+      if (core.every(t => rmsTokSet.has(t))) {
+        if (!bestSubset || core.length > bestSubsetCoreLen) { bestSubset = lp; bestSubsetCoreLen = core.length; }
       }
     }
     if (bestSubset) return { key: 'live:' + bestSubset.slug, source: 'tokens-subset', familyTitle: bestSubset.title, liveSlug: bestSubset.slug };
@@ -111,7 +120,7 @@ export function rollupFamilies(products, liveSnapshot) {
     if (firstTok && hasVariantNoun(p.title)) {
       const candidates = liveByFirstTok.get(firstTok);
       if (candidates) {
-        const familyCards = candidates.filter(c => c.tokens.length <= 3);
+        const familyCards = candidates.filter(c => stripTrailingVariant(c.tokens).length <= 3);
         if (familyCards.length === 1) {
           return { key: 'live:' + familyCards[0].slug, source: 'family-first-token', familyTitle: familyCards[0].title, liveSlug: familyCards[0].slug };
         }
