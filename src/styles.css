@@ -379,3 +379,7 @@ button, a, [role="button"] {
     animation-duration: 0.01ms !important;
   }
 }
+
+/* Hide scrollbars (used by gallery filmstrip + similar). */
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
