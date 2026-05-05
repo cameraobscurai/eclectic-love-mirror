@@ -105,8 +105,13 @@ const products = all.map((r, i) => {
   };
 });
 
+console.log(`[bake] live-image fallback used for ${livesFallback} products`);
+const visibleProducts = products.filter(p => p.imageCount >= 1);
+const hiddenForMissingImage = products.length - visibleProducts.length;
+console.log('hidden (no image):', hiddenForMissingImage);
+
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(products, liveSnapshot);
+const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
