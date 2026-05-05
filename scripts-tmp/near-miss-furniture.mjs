@@ -36,9 +36,11 @@ const unmatchedSite = UNMATCHED_SITE.filter((u) => {
   return FURNITURE_CATS.has(rmsCat);
 });
 
-// RMS rows still missing images AND in a furniture cat
+// All RMS rows in furniture cats — even already-bound rows can show up
+// as the correct site->rms mapping (in which case we report binding state
+// so reviewer can decide whether new images replace/extend the gallery).
 const reviewByRms = new Map(REVIEW.map((r) => [r.product_id, r]));
-const candidateRms = RMS_ROWS.filter((r) => FURNITURE_CATS.has(r.category) && !boundIds.has(r.rms_id));
+const candidateRms = RMS_ROWS.filter((r) => FURNITURE_CATS.has(r.category));
 
 // ---- Normalization ----
 const FILLER_DESCRIPTORS = new Set([
