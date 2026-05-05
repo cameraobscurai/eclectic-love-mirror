@@ -1158,11 +1158,13 @@ function CollectionPage() {
       {searchOpen && (() => {
         // ---- Live suggestion engine (recomputed each render while open) ----
         const raw = modalQuery.trim().toLowerCase();
+        // Categories suggested in the modal are the 10 PARENTS, never the
+        // legacy 18 BrowseGroupIds — that would re-introduce the flattened
+        // taxonomy through the back door.
         const matchedCategories = raw
-          ? BROWSE_GROUP_ORDER.filter((id) => {
-              const label = (BROWSE_GROUP_LABELS[id] || id).toLowerCase();
-              return label.includes(raw);
-            }).slice(0, 4)
+          ? PARENT_ORDER.filter((id) =>
+              PARENT_LABELS[id].toLowerCase().includes(raw),
+            ).slice(0, 4)
           : [];
         const matchedProducts = raw
           ? products
@@ -1170,13 +1172,6 @@ function CollectionPage() {
               .slice(0, 8)
           : [];
 
-        // Search must always run across the WHOLE inventory, not just the
-        // section the user happened to be inside. So we clear `group` at the
-        // same time we set `q`. Categories explicitly set `group` instead.
-        //
-        // Both commits route through the modalCommitTimerRef debounce so a
-        // user mashing Enter or rapid-clicking suggestions only fires one
-        // navigate() — keeps the URL clean and the grid fade smooth.
         const DEBOUNCE_MS = 140;
         const scheduleCommit = (fn: () => void) => {
           if (modalCommitTimerRef.current !== null) {
@@ -1190,8 +1185,6 @@ function CollectionPage() {
         const commitQuery = (text: string) => {
           const next = text.trim();
           if (!next) return;
-          // Close + clear instantly so the modal feels responsive even
-          // though the URL push is debounced.
           setSearchOpen(false);
           setModalQuery("");
           scheduleCommit(() => {
@@ -1200,6 +1193,7 @@ function CollectionPage() {
               search: (prev: CollectionSearch) => ({
                 ...prev,
                 group: "",
+                subcategory: "all",
                 q: next,
                 view: "",
               }),
@@ -1208,7 +1202,7 @@ function CollectionPage() {
             });
           });
         };
-        const commitCategory = (id: BrowseGroupId) => {
+        const commitCategory = (id: ParentId) => {
           setSearchOpen(false);
           setModalQuery("");
           scheduleCommit(() => {
@@ -1217,6 +1211,7 @@ function CollectionPage() {
               search: (prev: CollectionSearch) => ({
                 ...prev,
                 group: id,
+                subcategory: "all",
                 q: "",
                 view: "",
               }),
