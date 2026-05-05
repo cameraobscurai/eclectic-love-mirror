@@ -406,31 +406,9 @@ button, a, [role="button"] {
 
 /* ============================================================
    AAA polish layer (2026-05-05)
-   View Transitions, Ken Burns, film grain, scroll-driven reveals,
-   custom cursor, clip-path image reveals.
+   Ken Burns, film grain, scroll-driven reveals,
+   clip-path image reveals.
    ============================================================ */
-
-/* ---- View Transitions API ----
-   Quiet crossfade between routes. Honour reduced-motion. */
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 360ms;
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  ::view-transition-old(root) {
-    animation-name: vt-fade-out;
-  }
-  ::view-transition-new(root) {
-    animation-name: vt-fade-in;
-  }
-  @keyframes vt-fade-out {
-    to { opacity: 0; }
-  }
-  @keyframes vt-fade-in {
-    from { opacity: 0; }
-  }
-}
 
 /* ---- Ken Burns ambient motion ----
    30s, 1.00 → 1.04, ease-in-out alternate. Imperceptible per frame,
