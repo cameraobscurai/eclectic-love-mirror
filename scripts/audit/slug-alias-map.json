@@ -1,0 +1,33 @@
+{
+  "_doc": "Slug-alias map for image binding. Maps live Squarespace slug -> canonical RMS title (or family token). Use this when binding owner-supplied images to RMS rows where the live slug diverges from the RMS title. Preserve typos exactly (see Gerwyn).",
+  "_source": "Owner reconciliation 2026-05-05",
+  "aliases": [
+    { "live_slug": "sila-grey-speckled-glaze", "live_display_name": "Bulan", "rms_target": null, "category": "tableware", "preserve_typo": false, "notes": "Bulan→sila slug; no RMS row found. Owner: confirm." },
+    { "live_slug": "inola-gold-slatted-bar", "live_display_name": "Gold Acrylic Slatted Bar", "rms_target": "Inola", "category": "cocktail-bar", "preserve_typo": false, "notes": "Live name uses 'Gold Acrylic'; RMS family token is 'Inola'." },
+    { "live_slug": "layla-28in", "live_display_name": "Layla Lanterns", "rms_target": "Layla 28\" Lantern", "category": "lighting", "preserve_typo": false, "notes": "Family card slug points to 28in variant; 32in variant is sibling." },
+    { "live_slug": "powel-dark-brass-tray", "live_display_name": "Powel Dark Brass Tray", "rms_target": "Powell Dark Brass Tray", "category": "tableware", "preserve_typo": true, "notes": "Live spelling 'Powel' (one L); RMS spelling 'Powell' (two L). Preserve live spelling for slug-based image lookup." },
+    { "live_slug": "vespa-shelf-antique-mirror-back", "live_display_name": "Vespa Shelf + Antique Mirror Back", "rms_target": "Vespa Dark Wood Shelf", "category": "cocktail-bar", "preserve_typo": false, "notes": "Live name emphasizes mirror back; RMS uses 'Dark Wood'." },
+    { "live_slug": "gerwyn-grey-dining-chiar", "live_display_name": "Gerwyn Grey Dining Chair", "rms_target": null, "category": "dining", "preserve_typo": true, "notes": "TYPO in live slug: 'chiar' not 'chair'. Preserve exactly for image binding." },
+    { "live_slug": "iraja-12-square-whitewash-bar", "live_display_name": "Iraja 12' Wood Convertible Bar", "rms_target": null, "category": "cocktail-bar", "preserve_typo": false, "notes": "Slug has -square-whitewash- variant suffix." },
+    { "live_slug": "salva", "live_display_name": "Salva Vintage Opera Glasses", "rms_target": null, "category": "styling", "preserve_typo": false, "notes": "Slug shortened to family token. RMS 'salva' probe falsely hits 'Salvatore Marble Coffee Table' — do NOT auto-match." },
+    { "live_slug": "tafari", "live_display_name": "Tafari Tumbleweed", "rms_target": null, "category": "styling", "preserve_typo": false, "notes": "Slug shortened to family token." },
+    { "live_slug": "ryland", "live_display_name": "Ryland Pallet Wall", "rms_target": null, "category": "large-decor", "preserve_typo": false, "notes": "Slug shortened to family token." },
+    { "live_slug": "erwin", "live_display_name": "Erwin/Mahdi Jute Barricade", "rms_target": null, "category": "large-decor", "preserve_typo": false, "notes": "Slug shortened to family token." },
+    { "live_slug": "teigan", "live_display_name": "Teigan/Mahdi White Leather Barricade", "rms_target": null, "category": "large-decor", "preserve_typo": false, "notes": "Slug shortened to family token." },
+    { "live_slug": "maor", "live_display_name": "Maor Market Lighting", "rms_target": null, "category": "lighting", "preserve_typo": false, "notes": "Slug shortened to family token." },
+    { "live_slug": "paxton-10ft", "live_display_name": "Paxton 10'H Black Wireframe Cage", "rms_target": null, "category": "large-decor", "preserve_typo": false, "notes": "Foot-mark abbreviation in slug." },
+    { "live_slug": "paxton-10ftacrylic", "live_display_name": "Paxton 10'H Wireframe Cage with Smoke Acrylic", "rms_target": null, "category": "large-decor", "preserve_typo": true, "notes": "No hyphen between 'ft' and 'acrylic' — preserve exactly." },
+    { "live_slug": "paxton-7ft", "live_display_name": "Paxton 7'H Black Wireframe Cage", "rms_target": null, "category": "large-decor", "preserve_typo": false, "notes": "Foot-mark abbreviation in slug." },
+    { "live_slug": "honey-colored-glassware", "live_display_name": "Honey Glassware", "rms_target": "Honey", "category": "tableware", "preserve_typo": false, "notes": "Slug has -colored- infix; RMS family token 'Honey'." },
+    { "live_slug": "jain-cream-lotus", "live_display_name": "JAIN", "rms_target": "Jain", "category": "tableware", "preserve_typo": false, "notes": "Slug has -cream-lotus suffix." },
+    { "live_slug": "lapis-deep-blue-plates", "live_display_name": "LAPIS", "rms_target": "Lapis", "category": "tableware", "preserve_typo": false, "notes": "Slug has -deep-blue-plates suffix." },
+    { "live_slug": "midori-light-green", "live_display_name": "Midori", "rms_target": "Midori", "category": "tableware", "preserve_typo": false, "notes": "Slug has -light-green suffix." },
+    { "live_slug": "thistle-smoke-glassware", "live_display_name": "Thistle Glassware", "rms_target": "Thistle", "category": "tableware", "preserve_typo": false, "notes": "Slug has -smoke- infix." },
+    { "live_slug": "tillery-white-porcelain-black-rim", "live_display_name": "Tillery", "rms_target": "Tillery", "category": "tableware", "preserve_typo": false, "notes": "Slug has long descriptor suffix." },
+    { "live_slug": "lavanya-stoneware-collection", "live_display_name": "Lavanya Stoneware", "rms_target": "Lavanya", "category": "tableware", "preserve_typo": false, "notes": "Slug has -collection suffix." },
+    { "live_slug": "belissa-dinnerware", "live_display_name": "Belissa", "rms_target": "Belissa", "category": "tableware", "preserve_typo": false, "notes": "Slug has -dinnerware suffix." },
+    { "live_slug": "ophidia-10-serpent-plate", "live_display_name": "Ophidia", "rms_target": "Ophidia", "category": "tableware", "preserve_typo": false, "notes": "Slug has long descriptor suffix." },
+    { "live_slug": "nero-5-round-grey-dining-table", "live_display_name": "Nero 5' Round Dining Table", "rms_target": null, "category": "dining", "preserve_typo": false, "notes": "Slug has -grey- infix." },
+    { "live_slug": "tove-grey-wood-top-dining-table", "live_display_name": "Tove 8' Grey Dining Table", "rms_target": null, "category": "dining", "preserve_typo": false, "notes": "Slug has -grey-wood-top- variant." }
+  ]
+}
