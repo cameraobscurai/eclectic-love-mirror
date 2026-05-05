@@ -575,40 +575,9 @@ function CollectionPage() {
       className="min-h-screen text-charcoal pb-32"
       style={{ background: "var(--cream)" }}
     >
-      {/* ============================================================
-          STATIC DISPLAY HEADING — "THE COLLECTION"
-          No scroll animation, no parallax, no compression. When a
-          category is active, render the category label as a clickable
-          breadcrumb beneath the wordmark.
-          ============================================================ */}
-      <div
-        ref={headingRef}
-        className="px-6 lg:px-12"
-        style={{
-          paddingTop: "calc(var(--nav-h) + clamp(24px, 3vw, 48px))",
-          paddingBottom: "clamp(20px, 2vw, 32px)",
-          background: "#ffffff",
-        }}
-      >
-        <div
-          className="mx-auto"
-          style={{ maxWidth: "var(--archive-canvas-max)" }}
-        >
-          <h1
-            id="collection-heading"
-            data-devedit
-            data-devedit-label="Collection heading"
-            className="font-display uppercase leading-[0.92] text-charcoal"
-            style={{
-              fontSize: "clamp(60px, 8vw, 120px)",
-              fontWeight: 400,
-              letterSpacing: "-0.005em",
-            }}
-          >
-            The Collection
-          </h1>
-        </div>
-      </div>
+      {/* Heading removed — the left "the HIVE" plate IS the page title. */}
+      <div style={{ height: "var(--nav-h)" }} aria-hidden />
+
 
       {/* ============================================================
           UTILITY BAR — only shown when a category is active OR the user
