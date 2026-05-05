@@ -13,6 +13,15 @@ const CAT_DISPLAY = {
 };
 const ORDER = ['seating','tables','bars','tableware','serveware','pillows-throws','rugs','lighting','candlelight','chandeliers','large-decor','styling','storage','furs-pelts'];
 
+const INVENTORY_PUBLIC_MARKER = '/storage/v1/object/public/inventory/';
+
+function restoredInventoryUrl(url) {
+  if (typeof url !== 'string' || !url.includes(INVENTORY_PUBLIC_MARKER)) return url;
+  const [base, pathPart] = url.split(INVENTORY_PUBLIC_MARKER);
+  if (!pathPart || pathPart.startsWith('inventory/') || pathPart.startsWith('_squarespace/')) return url;
+  return `${base}${INVENTORY_PUBLIC_MARKER}inventory/${pathPart}`;
+}
+
 const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
@@ -28,7 +37,7 @@ console.log('public rows:', all.length);
 
 const products = all.map((r, i) => {
   const imgs = (r.images||[]).map((u,idx) => ({
-    url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
+    url: restoredInventoryUrl(u), position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
   }));
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
   return {
