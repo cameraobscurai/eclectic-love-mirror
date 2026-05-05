@@ -64,9 +64,10 @@ export function GalleryLightboxRail({
               ].join(" ")}
             >
               <img
-                src={img.src}
+                src={renderUrl(img.src, { width: 240, quality: 65 })}
                 alt=""
                 loading="lazy"
+                decoding="async"
                 draggable={false}
                 className="w-full h-full object-cover"
               />
