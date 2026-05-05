@@ -154,6 +154,7 @@ export function CategoryTonalGrid({
         );
       })}
     </div>
+    </>
   );
 }
 
