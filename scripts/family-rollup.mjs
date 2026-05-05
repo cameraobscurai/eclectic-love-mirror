@@ -41,7 +41,7 @@ const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.leng
 // rolls up when the suffix is clearly variant-noun material.
 const VARIANT_NOUN_STEMS = new Set([
   'glass','glassware','wine','coupe','rocks','flute','goblet','tumbler','highball','stemless','champagne',
-  'plate','charger','bowl','platter','tray',
+  'plate','charger','bowl','platter','tray','set','dispenser','decanter','cellar','tub','basket','paddle',
   'flatware','fork','knife','spoon','setting',
   'pillow','lumbar','throw',
   'lantern','sconce','pendant','chandelier','lamp',
