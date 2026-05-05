@@ -598,7 +598,7 @@ function CollectionPage() {
           transition: "background 0.3s ease, backdrop-filter 0.3s ease",
         }}
       >
-        <div className="px-6 lg:px-12">
+        <div className="px-4 sm:px-6 lg:px-12">
           <div
             className="mx-auto flex items-center justify-between gap-4 py-2"
             style={{
