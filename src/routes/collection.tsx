@@ -767,10 +767,10 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className="px-6 lg:px-12 pt-0">
+      <section className={showOverview ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
         <div
-          className="mx-auto"
-          style={{ maxWidth: "var(--archive-canvas-max)" }}
+          className={showOverview ? "" : "mx-auto"}
+          style={showOverview ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
         >
           <LayoutGroup id="collection-overview">
           <motion.div
