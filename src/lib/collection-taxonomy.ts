@@ -134,6 +134,7 @@ export const BROWSE_GROUP_ORDER: BrowseGroupId[] = [
   "styling",
   "accents",
   "large-decor",
+  "furs-pelts",
 ];
 
 export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
