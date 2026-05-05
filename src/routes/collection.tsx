@@ -164,12 +164,35 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, q, sort, density, view } = search;
+  const { group, subcategory, q, sort, density, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
-  const activeGroup: BrowseGroupId | "" =
-    group && BROWSE_GROUP_SET.has(group) ? (group as BrowseGroupId) : "";
+  // Parent + sub derived from URL. Legacy `?group=<BrowseGroupId>` is mapped
+  // into the new shape on mount via the redirect effect below.
+  const activeParent: ParentId | "" =
+    group && isParentId(group) ? group : "";
+  const activeSubcategory = activeParent ? subcategory || "all" : "all";
+
+  // Migrate legacy URLs (?group=sofas etc.) → new (?group=lounge-seating&subcategory=sofas-loveseats).
+  useEffect(() => {
+    if (!group || isParentId(group)) return;
+    if (isLegacyTileId(group)) {
+      const { parent, sub } = TILE_TO_PARENT_SUB[group];
+      navigate({
+        search: (prev) => ({ ...(prev as CollectionSearch), group: parent, subcategory: sub }),
+        replace: true,
+        resetScroll: false,
+      });
+    } else {
+      // Unknown group string — clear it.
+      navigate({
+        search: (prev) => ({ ...(prev as CollectionSearch), group: "", subcategory: "all" }),
+        replace: true,
+        resetScroll: false,
+      });
+    }
+  }, [group, navigate]);
 
   // ---------- history.scrollRestoration guard ----------
   // Pin to "manual" while the route is mounted so opening/closing Quick View
