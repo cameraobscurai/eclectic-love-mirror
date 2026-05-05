@@ -80,6 +80,22 @@ const products = visible.map((r, i) => {
 const { products: rolled, stats } = rollupFamilies(products, liveSnapshot);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
 
+// Assign ownerSiteRank from live-site grid order. Each live category maintains
+// its own array order — that IS the owner's curated layout.
+const liveSlugRank = new Map();
+for (const items of Object.values(liveSnapshot || {})) {
+  items.forEach((it, idx) => {
+    if (it.urlId && !liveSlugRank.has(it.urlId)) liveSlugRank.set(it.urlId, idx);
+  });
+}
+let ranked = 0;
+for (const p of rolled) {
+  const rank = liveSlugRank.get(p.slug);
+  if (rank != null) { p.ownerSiteRank = rank; ranked++; }
+}
+console.log(`[rank] assigned ownerSiteRank to ${ranked}/${rolled.length} tiles from live snapshot`);
+
+
 const facetsMap = {};
 for (const p of rolled) {
   if (!facetsMap[p.categorySlug]) facetsMap[p.categorySlug] = { slug:p.categorySlug, display:p.displayCategory, count:0 };
