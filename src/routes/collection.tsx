@@ -924,8 +924,9 @@ function CollectionPage() {
                   </div>
                 </>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
+          </LayoutGroup>
         </div>
       </section>
 
