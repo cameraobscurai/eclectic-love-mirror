@@ -155,6 +155,7 @@ export const BROWSE_GROUP_LABELS: Record<BrowseGroupId, string> = {
   lighting: "Lighting",
   throws: "Throws",
   "large-decor": "Large Decor",
+  "furs-pelts": "Furs & Pelts",
   accents: "Accents",
 };
 
