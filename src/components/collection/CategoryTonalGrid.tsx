@@ -115,7 +115,7 @@ export function CategoryTonalGrid({
       {resolvedRows.map((row, rowIdx) => (
         <div
           key={rowIdx}
-          className="flex-1 min-h-0 grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)]"
+          className="flex-1 min-h-0 grid grid-cols-2 sm:[grid-template-columns:var(--row-cols)]"
           style={{
             ["--row-cols" as string]: `repeat(${MAX_COLS}, minmax(0, 1fr))`,
           }}
@@ -125,7 +125,12 @@ export function CategoryTonalGrid({
             const tone = TONES[(rowIdx * MAX_COLS + colIdx) % TONES.length];
             const isFirstRow = rowIdx === 0;
             const isLast = colIdx === row.length - 1;
-            const finaleSpan = isLast ? MAX_COLS - row.length + 1 : 1;
+            // Desktop ≥sm: short rows let the last tile absorb the remainder
+            // (Chandeliers becomes the wide finale).
+            const desktopSpan = isLast ? MAX_COLS - row.length + 1 : 1;
+            // Mobile (2-col): only span if an odd row leaves a single hanging
+            // cell — let it fill the row instead of leaving a ghost slot.
+            const mobileSpan = isLast && row.length % 2 === 1 ? 2 : 1;
             return (
               <TonalCell
                 key={item.id}
@@ -139,7 +144,8 @@ export function CategoryTonalGrid({
                 firstRowReady={firstRowReady}
                 onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
                 onSelectCategory={onSelectCategory}
-                spanCols={finaleSpan}
+                spanCols={desktopSpan}
+                mobileSpanCols={mobileSpan}
               />
             );
           })}
