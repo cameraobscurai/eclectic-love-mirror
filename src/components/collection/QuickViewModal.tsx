@@ -433,14 +433,38 @@ export function QuickViewModal({
 
             {/* Spec columns */}
             <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
-              {product.dimensions && (
-                <SpecCol label="Dimensions" value={product.dimensions} />
-              )}
-              {product.stockedQuantity && (
-                <SpecCol label="Stocked" value={product.stockedQuantity} />
-              )}
-              {product.isCustomOrder && !product.stockedQuantity && (
-                <SpecCol label="Availability" value="Custom order" />
+              {Array.isArray(product.variants) && product.variants.length > 1 ? (
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+                    Stocked Quantity
+                  </span>
+                  <ul className="text-[12px] leading-[1.55] text-charcoal/85 space-y-0.5">
+                    {product.variants.map((v) => {
+                      const label = String(v.title || "")
+                        .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
+                        .replace(/\s+glass$/i, "")
+                        .trim() || v.title;
+                      return (
+                        <li key={v.id} className="uppercase tracking-[0.06em]">
+                          ({v.stockedQuantity || "—"}) {label}
+                          {v.dimensions ? <span className="text-charcoal/55">, {v.dimensions}</span> : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  {product.dimensions && (
+                    <SpecCol label="Dimensions" value={product.dimensions} />
+                  )}
+                  {product.stockedQuantity && (
+                    <SpecCol label="Stocked" value={product.stockedQuantity} />
+                  )}
+                  {product.isCustomOrder && !product.stockedQuantity && (
+                    <SpecCol label="Availability" value="Custom order" />
+                  )}
+                </>
               )}
               {hasScale && (
                 <button
