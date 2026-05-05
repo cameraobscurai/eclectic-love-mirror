@@ -180,14 +180,14 @@ function CollectionPage() {
     if (isLegacyTileId(group)) {
       const { parent, sub } = TILE_TO_PARENT_SUB[group];
       navigate({
-        search: (prev) => ({ ...(prev as CollectionSearch), group: parent, subcategory: sub }),
+        search: (prev: CollectionSearch) => ({ ...prev, group: parent, subcategory: sub }),
         replace: true,
         resetScroll: false,
       });
     } else {
       // Unknown group string — clear it.
       navigate({
-        search: (prev) => ({ ...(prev as CollectionSearch), group: "", subcategory: "all" }),
+        search: (prev: CollectionSearch) => ({ ...prev, group: "", subcategory: "all" }),
         replace: true,
         resetScroll: false,
       });
