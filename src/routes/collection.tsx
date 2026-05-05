@@ -772,7 +772,10 @@ function CollectionPage() {
           className="mx-auto"
           style={{ maxWidth: "var(--archive-canvas-max)" }}
         >
-          <div
+          <LayoutGroup id="collection-overview">
+          <motion.div
+            layout={!reduced}
+            transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
             className={
               showOverview
                 ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
@@ -780,23 +783,37 @@ function CollectionPage() {
             }
           >
             {showOverview && (
-              <aside
-                className="hidden lg:flex items-center justify-center self-stretch"
-                style={{ background: "#ffffff" }}
+              <motion.aside
+                layout={!reduced}
+                className="hidden lg:grid self-stretch h-plate-slot"
+                style={{
+                  background: "var(--paper)",
+                  containerType: "inline-size",
+                  placeItems: "center",
+                  // The image floats in the optical center of whatever
+                  // shape this slot ends up — wide column, narrow column,
+                  // chat-open, chat-closed. cqi units = % of the slot's
+                  // own inline size, not the viewport, so the artwork
+                  // re-composes per container, not per breakpoint.
+                  padding: "clamp(16px, 4cqi, 56px)",
+                }}
               >
-                {/* object-contain = whole H is always visible, never cropped.
-                    The image scales to fit the row height (set by the
-                    sibling category grid) without distortion. */}
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block max-w-full max-h-full w-auto h-auto object-contain"
+                  className="block object-contain"
+                  style={{
+                    width: "min(100%, 88cqi)",
+                    maxHeight: "100%",
+                    height: "auto",
+                  }}
                 />
-              </aside>
+              </motion.aside>
             )}
 
             {/* ===== RIGHT: main pane ===== */}
-            <div
+            <motion.div
+              layout={!reduced}
               className={`min-w-0 ${showOverview ? "h-full min-h-0 flex flex-col" : ""}`}
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
@@ -806,15 +823,21 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: H plate stacks on top at its natural aspect — no crop. */}
+                  {/* Mobile: H plate stacks on top, also container-aware. */}
                   <div
-                    className="lg:hidden shrink-0 overflow-hidden self-stretch"
-                    style={{ background: "#ffffff" }}
+                    className="lg:hidden shrink-0 self-stretch grid"
+                    style={{
+                      background: "var(--paper)",
+                      containerType: "inline-size",
+                      placeItems: "center",
+                      padding: "clamp(16px, 4cqi, 40px)",
+                    }}
                   >
                     <img
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
-                      className="block w-full h-auto"
+                      className="block object-contain"
+                      style={{ width: "min(100%, 92cqi)", height: "auto" }}
                     />
                   </div>
                   <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">
