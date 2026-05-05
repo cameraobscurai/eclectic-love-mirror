@@ -198,7 +198,7 @@ function HomePage() {
         ref={sectionRef}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
-        className="relative flex flex-col overflow-hidden film-grain"
+        className="relative flex flex-col overflow-hidden"
         style={{
           height: "100dvh",
           minHeight: "100dvh",
@@ -239,7 +239,7 @@ function HomePage() {
             className={cn(
               "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
               "object-[50%_25%] md:object-[50%_38%]",
-              loaded ? "opacity-100 ambient-ken-burns" : "opacity-0"
+              loaded ? "opacity-100" : "opacity-0"
             )}
             draggable={false}
             style={
@@ -293,7 +293,7 @@ function HomePage() {
           }}
         >
           <motion.div
-            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2 wordmark-stagger"
+            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
             style={{
               fontWeight: 400,
               letterSpacing: reduced ? `${BASE_LETTER_SPACING}em` : letterSpacingMV,
@@ -304,14 +304,7 @@ function HomePage() {
                 : "0 1px 24px color-mix(in oklab, var(--charcoal) 35%, transparent)",
             }}
           >
-            {"Eclectic\u00a0Hive".split("").map((ch, i) => (
-              <span
-                key={i}
-                style={{ animationDelay: `${600 + i * 55}ms` }}
-              >
-                {ch === " " ? "\u00a0" : ch}
-              </span>
-            ))}
+            Eclectic&nbsp;Hive
           </motion.div>
         </motion.div>
 

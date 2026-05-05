@@ -22,7 +22,6 @@ import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
-import { HivePlate } from "@/components/collection/HivePlate";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
@@ -779,29 +778,35 @@ function CollectionPage() {
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
             className={
               showOverview
-                ? "grid grid-cols-1 md:grid-cols-[minmax(0,42%)_minmax(0,58%)] items-stretch"
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
                 : "grid grid-cols-1"
             }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden md:block self-stretch"
+                className="hidden lg:grid self-stretch h-plate-slot"
+                style={{
+                  background: "var(--paper)",
+                  containerType: "inline-size",
+                  placeItems: "center",
+                  // The image floats in the optical center of whatever
+                  // shape this slot ends up — wide column, narrow column,
+                  // chat-open, chat-closed. cqi units = % of the slot's
+                  // own inline size, not the viewport, so the artwork
+                  // re-composes per container, not per breakpoint.
+                  padding: "clamp(16px, 4cqi, 56px)",
+                }}
               >
-                <HivePlate
-                  className="h-full w-full"
-                  artifact={
-                    <img
-                      src={hiveSignatureHero}
-                      alt=""
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "contain",
-                        display: "block",
-                      }}
-                    />
-                  }
+                <img
+                  src={hiveSignatureHero}
+                  alt="The Hive — Signature Collection"
+                  className="block object-contain"
+                  style={{
+                    width: "min(100%, 88cqi)",
+                    maxHeight: "100%",
+                    height: "auto",
+                  }}
                 />
               </motion.aside>
             )}
@@ -818,24 +823,24 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile only (<md): SVG H-plate stacks on top. */}
-                  <div className="md:hidden shrink-0 self-stretch">
-                    <HivePlate
-                      artifact={
-                        <img
-                          src={hiveSignatureHero}
-                          alt=""
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            objectFit: "contain",
-                            display: "block",
-                          }}
-                        />
-                      }
+                  {/* Mobile: H plate stacks on top, also container-aware. */}
+                  <div
+                    className="lg:hidden shrink-0 self-stretch grid"
+                    style={{
+                      background: "var(--paper)",
+                      containerType: "inline-size",
+                      placeItems: "center",
+                      padding: "clamp(16px, 4cqi, 40px)",
+                    }}
+                  >
+                    <img
+                      src={hiveSignatureHero}
+                      alt="The Hive — Signature Collection"
+                      className="block object-contain"
+                      style={{ width: "min(100%, 92cqi)", height: "auto" }}
                     />
                   </div>
-                  <div className="flex-1 min-h-0 min-h-[60svh] md:min-h-0">
+                  <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
