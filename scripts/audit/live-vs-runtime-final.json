@@ -1,0 +1,179 @@
+{
+  "mismatches": [
+    {
+      "title": "ROSALIND Cream Velvet Round Banquette",
+      "live": "Sofas & Loveseats",
+      "expected": "sofas-loveseats",
+      "got": null
+    },
+    {
+      "title": "Milos Column Side Table",
+      "live": "Side Tables",
+      "expected": "side-tables",
+      "got": "cocktail-tables"
+    },
+    {
+      "title": "Monroe Black Flat Slat Tambour Bar",
+      "live": "Bars",
+      "expected": "bars",
+      "got": null
+    },
+    {
+      "title": "Thatcher Green Natural Woven Bar Stool",
+      "live": "Stools",
+      "expected": "stools",
+      "got": null
+    },
+    {
+      "title": "Axel Bar Stool",
+      "live": "Stools",
+      "expected": "stools",
+      "got": null
+    },
+    {
+      "title": "Farrell Grey Hide Bar Stool",
+      "live": "Stools",
+      "expected": "stools",
+      "got": null
+    },
+    {
+      "title": "Julien Adjustable Counter Stool",
+      "live": "Stools",
+      "expected": "stools",
+      "got": null
+    },
+    {
+      "title": "Jett Mini Brass + Wood Community Table",
+      "live": "Community Tables",
+      "expected": "community-tables",
+      "got": null
+    },
+    {
+      "title": "Jett Brass & Wood Community Table",
+      "live": "Community Tables",
+      "expected": "community-tables",
+      "got": null
+    },
+    {
+      "title": "Scout Wood Community Table",
+      "live": "Community Tables",
+      "expected": "community-tables",
+      "got": null
+    },
+    {
+      "title": "Broadway Concrete Counter Table",
+      "live": "Community Tables",
+      "expected": "community-tables",
+      "got": null
+    },
+    {
+      "title": "Nima Fabric Banquette",
+      "live": "Dining Chairs",
+      "expected": "chairs",
+      "got": null
+    },
+    {
+      "title": "Auset Linen Banquette",
+      "live": "Dining Chairs",
+      "expected": "chairs",
+      "got": null
+    },
+    {
+      "title": "Cinsere Oak Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null
+    },
+    {
+      "title": "Lars 8' Bleached Oak Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null
+    },
+    {
+      "title": "Nathalie Black Spindle Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null
+    },
+    {
+      "title": "Na'eem Wood Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null
+    },
+    {
+      "title": "Estes Reclaimed Dining Table",
+      "live": "Dining Tables",
+      "expected": "dining-tables",
+      "got": null
+    },
+    {
+      "title": "Brown Fur Oversize",
+      "live": "Pillows",
+      "expected": "pillows",
+      "got": null
+    },
+    {
+      "title": "Ivory Leather Stripe Pillow",
+      "live": "Pillows",
+      "expected": "pillows",
+      "got": null
+    },
+    {
+      "title": "Woven Sand Aztec",
+      "live": "Throws",
+      "expected": "throws",
+      "got": null
+    },
+    {
+      "title": "Hudson Rock Wall + Shelving Display",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Bellow White Corrugated Walls",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "other"
+    },
+    {
+      "title": "WASHINGTON Wall",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Daxton Wood Wall",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Hanoi Cane Wall",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Pema Tibetan Carved Wood Wall",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Marlow Rope Wall",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "structures"
+    },
+    {
+      "title": "Delilah Gold Metal Screen",
+      "live": "Walls",
+      "expected": "walls",
+      "got": "other"
+    }
+  ],
+  "missingCount": 45
+}
