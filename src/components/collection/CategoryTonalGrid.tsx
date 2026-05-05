@@ -35,8 +35,8 @@ const ORDER: BrowseGroupId[] = [
   "throws", "tableware", "serveware", "styling", "accents", "large-decor",
 ];
 
-// Warm-neutral pair — both within 6% of paper white, warm cast.
-const TONES = ["#f5f3ee", "#ebe5d8"] as const;
+// Greyscale checker pair — flat white + soft grey for a neutral rhythm.
+const TONES = ["#ffffff", "#f1f1f1"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
