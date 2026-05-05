@@ -106,7 +106,7 @@ export function CategoryTonalGrid({
           height: 100%;
           gap: 0;
         }
-        @media (max-width: 767px) {
+        @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: none;
