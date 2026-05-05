@@ -115,7 +115,7 @@ export function CategoryTonalGrid({
       {resolvedRows.map((row, rowIdx) => (
         <div
           key={rowIdx}
-          className="flex-1 min-h-0 grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)]"
+          className="flex-1 min-h-0 grid grid-cols-2 sm:[grid-template-columns:var(--row-cols)]"
           style={{
             ["--row-cols" as string]: `repeat(${MAX_COLS}, minmax(0, 1fr))`,
           }}
@@ -125,7 +125,12 @@ export function CategoryTonalGrid({
             const tone = TONES[(rowIdx * MAX_COLS + colIdx) % TONES.length];
             const isFirstRow = rowIdx === 0;
             const isLast = colIdx === row.length - 1;
-            const finaleSpan = isLast ? MAX_COLS - row.length + 1 : 1;
+            // Desktop ≥sm: short rows let the last tile absorb the remainder
+            // (Chandeliers becomes the wide finale).
+            const desktopSpan = isLast ? MAX_COLS - row.length + 1 : 1;
+            // Mobile (2-col): only span if an odd row leaves a single hanging
+            // cell — let it fill the row instead of leaving a ghost slot.
+            const mobileSpan = isLast && row.length % 2 === 1 ? 2 : 1;
             return (
               <TonalCell
                 key={item.id}
@@ -139,7 +144,8 @@ export function CategoryTonalGrid({
                 firstRowReady={firstRowReady}
                 onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
                 onSelectCategory={onSelectCategory}
-                spanCols={finaleSpan}
+                spanCols={desktopSpan}
+                mobileSpanCols={mobileSpan}
               />
             );
           })}
@@ -161,6 +167,7 @@ interface TonalCellProps {
   onFirstRowImageDone?: () => void;
   onSelectCategory: (id: BrowseGroupId) => void;
   spanCols?: number;
+  mobileSpanCols?: number;
 }
 
 function TonalCell({
@@ -175,6 +182,7 @@ function TonalCell({
   onFirstRowImageDone,
   onSelectCategory,
   spanCols = 1,
+  mobileSpanCols = 1,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
   const [reported, setReported] = useState(false);
@@ -196,24 +204,27 @@ function TonalCell({
 
   const showImg = isFirstRow ? firstRowReady : near && (loaded || !heroSrc);
 
+  // Pure Tailwind classes so they survive purge.
+  // Mobile (2-col): hanging odd cell takes full width.
+  // Desktop ≥sm: short-row finale absorbs remainder (max span = 2 in this
+  // composition, so we hardcode the class).
+  const mobileSpanClass = mobileSpanCols > 1 ? "col-span-2 sm:col-auto" : "";
+  const desktopSpanClass = spanCols > 1 ? "sm:[grid-column:span_2]" : "";
+
   return (
     <button
       ref={ref}
       type="button"
       onClick={() => onSelectCategory(id)}
       aria-label={label}
-      className="group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0"
-      style={{
-        background: tone,
-        touchAction: "manipulation",
-        gridColumn: spanCols > 1 ? `span ${spanCols}` : undefined,
-      }}
+      className={`group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0 ${mobileSpanClass} ${desktopSpanClass}`}
+      style={{ background: tone, touchAction: "manipulation" }}
     >
       {heroSrc ? (
         <img
           src={heroSrc}
           srcSet={heroSrcSet}
-          sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 20vw, 32vw"
+          sizes="(min-width: 1280px) 12vw, (min-width: 1024px) 15vw, (min-width: 640px) 20vw, 50vw"
           alt={heroAlt}
           loading={isFirstRow ? "eager" : "lazy"}
           decoding="async"
