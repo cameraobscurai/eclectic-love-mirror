@@ -46,6 +46,11 @@ export interface CollectionProduct {
    * time. Used as the primary in-category sort key.
    */
   ownerSiteRank: number | null;
+  /** Live-site category slug (e.g. "cocktail-bar") when matched to the
+   *  Squarespace snapshot. Overrides keyword-based parent routing. */
+  liveCategory?: string | null;
+  /** Live-site subcategory labels (e.g. ["Cocktail Tables"]). */
+  liveSubcategories?: string[];
   /** Variant rows collapsed under this family tile (e.g. Thistle Red Wine,
    *  Thistle Coupe…). Empty for standalone products. Populated by
    *  scripts/family-rollup.mjs at bake time. */
