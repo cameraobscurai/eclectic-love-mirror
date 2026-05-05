@@ -73,7 +73,7 @@
 
 :root {
   /* Eclectic Hive — Black, Charcoal, Sand, Cream */
-  --background: #f5f2ed;                 /* editorial cream — brand baseline */
+  --background: #fafaf7;                 /* paper white — brand baseline (repaint 2026-05-05) */
   --foreground: oklch(0.18 0 0);         /* #1a1a1a charcoal */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0 0);
@@ -97,8 +97,9 @@
   --sand: oklch(0.85 0.012 75);          /* #d4cdc4 */
   --warm-gray: oklch(0.6 0 0);           /* #8a8a8a */
   --charcoal: oklch(0.18 0 0);           /* #1a1a1a */
-  --cream: #f5f2ed;                      /* editorial cream — brand baseline */
-  --paper: #ffffff;                      /* pure white surface for the archive canvas */
+  --cream: #fafaf7;                      /* paper white — brand baseline. Old #fafaf7 cream deprecated 2026-05-05; token kept so all consumers (text on charcoal, footer, etc.) repaint together. Reintroduce as accent via --cream-accent if needed. */
+  --cream-accent: #fafaf7;               /* deprecated cream, retained one release as optional warm accent */
+  --paper: #fafaf7;                      /* paper white surface — alias of --cream during transition */
   --black: oklch(0 0 0);
 
   /* Typography tracking presets */
@@ -267,14 +268,14 @@ button, a, [role="button"] {
 /* ------------------------------------------------------------------ */
 .eh-map .mapboxgl-canvas { outline: none; }
 .eh-map .mapboxgl-ctrl-attrib {
-  background: rgba(245, 242, 237, 0.55);
+  background: rgba(250, 250, 247, 0.55);
   color: rgba(26, 26, 26, 0.65);
   font-size: 10px;
   letter-spacing: 0.05em;
 }
 .eh-map .mapboxgl-ctrl-attrib a { color: rgba(26, 26, 26, 0.8); }
 .eh-map .mapboxgl-ctrl-group {
-  background: rgba(245, 242, 237, 0.7);
+  background: rgba(250, 250, 247, 0.7);
   border: 1px solid rgba(26, 26, 26, 0.15);
   box-shadow: none;
 }
@@ -308,7 +309,7 @@ button, a, [role="button"] {
   border-radius: 999px;
   background: #1a1a1a;
   box-shadow:
-    0 0 0 2px rgba(245, 242, 237, 0.95),
+    0 0 0 2px rgba(250, 250, 247, 0.95),
     0 0 0 6px rgba(26, 26, 26, 0.12);
   transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
 }
@@ -319,8 +320,8 @@ button, a, [role="button"] {
   gap: 6px;
   padding: 4px 8px;
   background: rgba(26, 26, 26, 0.92);
-  border: 1px solid rgba(245, 242, 237, 0.18);
-  color: #f5f2ed;
+  border: 1px solid rgba(250, 250, 247, 0.18);
+  color: #fafaf7;
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -332,7 +333,7 @@ button, a, [role="button"] {
 }
 .eh-map-pin__num {
   font-variant-numeric: tabular-nums;
-  color: rgba(245, 242, 237, 0.55);
+  color: rgba(250, 250, 247, 0.55);
 }
 .eh-map-pin__name {
   font-family: "Cormorant Garamond", Georgia, serif;
@@ -340,14 +341,14 @@ button, a, [role="button"] {
   font-size: 13px;
   letter-spacing: 0;
   text-transform: none;
-  color: #f5f2ed;
+  color: #fafaf7;
 }
 .eh-map-pin:hover .eh-map-pin__dot,
 .eh-map-pin.is-hover .eh-map-pin__dot,
 .eh-map-pin.is-active .eh-map-pin__dot {
   transform: scale(1.3);
   box-shadow:
-    0 0 0 2px rgba(245, 242, 237, 1),
+    0 0 0 2px rgba(250, 250, 247, 1),
     0 0 0 9px rgba(26, 26, 26, 0.2);
 }
 .eh-map-pin:hover .eh-map-pin__label,
@@ -359,7 +360,7 @@ button, a, [role="button"] {
 .eh-map-pin:focus-visible { outline: none; }
 .eh-map-pin:focus-visible .eh-map-pin__dot {
   box-shadow:
-    0 0 0 2px rgba(245, 242, 237, 1),
+    0 0 0 2px rgba(250, 250, 247, 1),
     0 0 0 9px rgba(26, 26, 26, 0.45);
 }
 
