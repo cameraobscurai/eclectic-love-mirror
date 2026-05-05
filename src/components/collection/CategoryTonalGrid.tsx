@@ -97,7 +97,7 @@ export function CategoryTonalGrid({
     // height, sharing the H-plate's vertical real estate. No aspect-ratio
     // on individual tiles — they take their share of the row.
     <div
-      className="grid grid-cols-2 grid-rows-9 sm:grid-cols-3 sm:grid-rows-6 lg:grid-cols-6 lg:grid-rows-3 w-full h-full min-h-[600px] lg:min-h-0"
+      className="grid grid-cols-3 grid-rows-6 sm:grid-cols-3 sm:grid-rows-6 lg:grid-cols-6 lg:grid-rows-3 w-full h-full min-h-0"
       role="list"
       aria-label="Browse by category"
     >

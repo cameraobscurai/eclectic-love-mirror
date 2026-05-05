@@ -788,7 +788,7 @@ function CollectionPage() {
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:grid self-stretch"
+                className="hidden md:grid self-stretch"
                 style={{
                   background: "var(--paper)",
                   containerType: "inline-size",
@@ -828,13 +828,13 @@ function CollectionPage() {
                 <>
                   {/* Mobile: H plate stacks on top, container-query aware. */}
                   <div
-                    className="lg:hidden grid"
+                    className="md:hidden grid"
                     style={{
                       background: "var(--paper)",
                       containerType: "inline-size",
                       placeItems: "center",
                       aspectRatio: "4 / 3",
-                      padding: "clamp(16px, 4cqi, 40px)",
+                      padding: "clamp(8px, 2cqi, 24px)",
                     }}
                   >
                     <img
