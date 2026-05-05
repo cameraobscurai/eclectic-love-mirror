@@ -21,7 +21,8 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { CollectionRail } from "@/components/collection/CollectionRail";
 
-import { CategoryGalleryOverview } from "@/components/collection/CategoryGalleryOverview";
+import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
+import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
