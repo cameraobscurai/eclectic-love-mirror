@@ -58,7 +58,8 @@ const DENSITIES = ["comfortable", "dense"] as const;
 type Density = (typeof DENSITIES)[number];
 
 interface CollectionSearch {
-  group: string;
+  group: string; // ParentId | "" — semantics flipped from BrowseGroupId
+  subcategory: string; // sub id within parent, or "all"
   q: string;
   sort: SortKey;
   density: Density;
@@ -67,13 +68,12 @@ interface CollectionSearch {
 
 const searchSchema = z.object({
   group: fallback(z.string(), "").default(""),
+  subcategory: fallback(z.string(), "all").default("all"),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
   density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
   view: fallback(z.string(), "").default(""),
 });
-
-const BROWSE_GROUP_SET = new Set<string>(BROWSE_GROUP_ORDER);
 
 // Shared inline styles for the floating search modal's suggestion rows.
 // Kept at module scope so they're stable references and not recreated on
