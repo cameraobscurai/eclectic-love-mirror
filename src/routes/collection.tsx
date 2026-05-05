@@ -598,9 +598,9 @@ function CollectionPage() {
           transition: "background 0.3s ease, backdrop-filter 0.3s ease",
         }}
       >
-        <div className="px-6 lg:px-12">
+        <div className="px-4 sm:px-6 lg:px-12">
           <div
-            className="mx-auto flex items-center justify-between gap-4 py-2"
+            className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-2 flex-wrap sm:flex-nowrap"
             style={{
               maxWidth: "var(--archive-canvas-max)",
               minHeight: "var(--archive-utility-h)",
@@ -643,7 +643,7 @@ function CollectionPage() {
                 Hidden on the category overview — these controls operate on
                 a product list that isn't shown there, so they're noise. */}
             {!showOverview && (
-            <div className="flex items-center justify-end gap-3 min-w-0">
+            <div className="flex items-center justify-end gap-2 sm:gap-3 min-w-0 flex-1">
               <label htmlFor="collection-search" className="sr-only">
                 Search pieces
               </label>
@@ -651,11 +651,11 @@ function CollectionPage() {
                 id="collection-search"
                 type="text"
                 inputMode="search"
-                placeholder="Search pieces"
+                placeholder="Search"
                 value={qLocal}
                 onChange={(e) => setQLocal(e.target.value)}
-                className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
-                style={{ width: "clamp(160px, 14vw, 280px)" }}
+                className="h-10 min-w-0 flex-1 sm:flex-none bg-transparent border-b border-charcoal/20 px-1 text-sm placeholder:text-charcoal/40 focus:outline-none focus:border-charcoal transition-colors"
+                style={{ width: "auto", maxWidth: "280px" }}
               />
 
               <label
