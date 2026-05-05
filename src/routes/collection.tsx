@@ -768,27 +768,54 @@ function CollectionPage() {
             borderTop: "1px solid var(--archive-rule)",
           }}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]">
-            {/* ===== LEFT: permanent rail ===== */}
-            <aside
-              className="hidden lg:block"
-              style={{
-                borderRight: "1px solid var(--archive-rule)",
-                background: "var(--cream)",
-              }}
-            >
-              <CollectionRail
-                products={products}
-                activeGroup={activeGroup}
-                spyActiveGroup={spyActiveGroup}
-                onSelect={selectGroup}
-              />
-            </aside>
+          <div
+            className={
+              showOverview
+                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,38%)_minmax(0,1fr)]"
+                : "grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)]"
+            }
+          >
+            {showOverview ? (
+              <aside
+                className="hidden lg:block"
+                style={{
+                  borderRight: "1px solid var(--archive-rule)",
+                  background: "var(--cream)",
+                }}
+              >
+                <div
+                  className="sticky"
+                  style={{
+                    top: "var(--nav-h)",
+                    height: "calc(100vh - var(--nav-h))",
+                  }}
+                >
+                  <img
+                    src={hiveSignatureHero}
+                    alt="The Hive — Signature Collection"
+                    className="h-full w-full object-contain"
+                    style={{ background: "var(--cream)" }}
+                  />
+                </div>
+              </aside>
+            ) : (
+              <aside
+                className="hidden lg:block"
+                style={{
+                  borderRight: "1px solid var(--archive-rule)",
+                  background: "var(--cream)",
+                }}
+              >
+                <CollectionRail
+                  products={products}
+                  activeGroup={activeGroup}
+                  spyActiveGroup={spyActiveGroup}
+                  onSelect={selectGroup}
+                />
+              </aside>
+            )}
 
-            {/* ===== RIGHT: main pane =====
-                The pane fades down briefly while the URL filter params
-                change, then settles back to full opacity once the new
-                grid has rendered. Subtle — no spinner, no skeleton flash. */}
+            {/* ===== RIGHT: main pane ===== */}
             <div
               className="min-w-0"
               key={activeGroup || (q.trim() ? "search" : "overview")}
@@ -798,12 +825,20 @@ function CollectionPage() {
               }}
             >
               {showOverview ? (
-                <div className="bg-white">
-                  <CategoryGalleryOverview
+                <>
+                  {/* Mobile: show the hero plate above the grid. */}
+                  <div className="lg:hidden" style={{ background: "var(--cream)" }}>
+                    <img
+                      src={hiveSignatureHero}
+                      alt="The Hive — Signature Collection"
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                  <CategoryTonalGrid
                     groups={overviewGroups}
-                    onSelectCategory={(id) => selectGroup(id)}
+                    onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
                   />
-                </div>
+                </>
               ) : (
                 <>
                   <div
