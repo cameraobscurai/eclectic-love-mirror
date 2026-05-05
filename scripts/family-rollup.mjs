@@ -202,6 +202,14 @@ export function rollupFamilies(products, liveSnapshot) {
     finalProducts.push(family);
   }
 
+  // De-duplicate slugs (cross-category families share a liveSlug)
+  const slugSeen = new Map();
+  for (const p of finalProducts) {
+    const c = (slugSeen.get(p.slug) || 0) + 1;
+    slugSeen.set(p.slug, c);
+    if (c > 1) p.slug = `${p.slug}-${p.categorySlug}`;
+  }
+
   // Stats
   const sourceCounts = {};
   for (const p of finalProducts) {
