@@ -1,4 +1,5 @@
 import type { GalleryProject } from "@/content/gallery-projects";
+import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
 interface GalleryProjectCardProps {
   project: GalleryProject;
