@@ -107,6 +107,11 @@ export function CategoryTonalGrid({
     setFirstRowDoneCount((n) => n + 1);
   }, []);
 
+  // Max row length defines the canonical grid width on ≥sm. Rows shorter
+  // than the max get their last tile spanning the remainder so we never
+  // leave an empty ghost cell — that "span-2 finale" feel.
+  const MAX_COLS = resolvedRows.reduce((n, r) => Math.max(n, r.length), 1);
+
   return (
     <div className="flex h-full w-full flex-col">
       {resolvedRows.map((row, rowIdx) => (
@@ -114,12 +119,15 @@ export function CategoryTonalGrid({
           key={rowIdx}
           className="flex-1 min-h-0 grid grid-cols-3 sm:[grid-template-columns:var(--row-cols)]"
           style={{
-            ["--row-cols" as string]: `repeat(${row.length}, minmax(0, 1fr))`,
+            ["--row-cols" as string]: `repeat(${MAX_COLS}, minmax(0, 1fr))`,
           }}
         >
           {row.map((item, colIdx) => {
-            const tone = TONES[(rowIdx + colIdx) % TONES.length];
+            // Wider contrast spread across 5 tones, no neighbour repeats.
+            const tone = TONES[(rowIdx * 2 + colIdx) % TONES.length];
             const isFirstRow = rowIdx === 0;
+            const isLast = colIdx === row.length - 1;
+            const finaleSpan = isLast ? MAX_COLS - row.length + 1 : 1;
             return (
               <TonalCell
                 key={item.id}
@@ -133,6 +141,7 @@ export function CategoryTonalGrid({
                 firstRowReady={firstRowReady}
                 onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
                 onSelectCategory={onSelectCategory}
+                spanCols={finaleSpan}
               />
             );
           })}
