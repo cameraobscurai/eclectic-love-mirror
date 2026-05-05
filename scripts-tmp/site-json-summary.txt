@@ -1,0 +1,55 @@
+# Squarespace JSON-feed dry-run
+Generated: 2026-05-05T08:17:27.847Z
+
+## BLANK fills (products currently with 0 images)
+HIGH (apply): 40   {"large-decor":2,"pillows-throws":37,"chandeliers":1}
+MED:          17    {"pillows-throws":12,"chandeliers":4,"styling":1}
+TIE:          19    {"pillows-throws":19}
+NONE:         23   {"pillows-throws":5,"large-decor":2,"styling":1,"tables":2,"tableware":13}
+
+## GALLERY upgrades (products that already have ≥1 image)
+HIGH (apply): 135  {"bars":14,"large-decor":8,"styling":36,"tables":15,"rugs":13,"tableware":28,"pillows-throws":5,"candlelight":4,"chandeliers":2,"lighting":1,"serveware":9}
+TIE:          18   {"bars":2,"serveware":6,"styling":6,"tables":2,"tableware":1,"lighting":1}
+Total new gallery URLs to add: 483
+
+## Sample blank HIGH fills:
+  [3] large-decor      rms3524 "Hudson Rock Wall" ← "Hudson Rock Wall + Shelving Display" (4 imgs)
+  [3] pillows-throws   rms3092 "Black Brown Plaid Pillow" ← "Brown Black Plaid Pillow" (1 imgs)
+  [3] pillows-throws   rms2419 "Pink Black Abstract Lumbar Pillow" ← "Pink Black Abstract Lumbar" (1 imgs)
+  [3] pillows-throws   rms2244 "Brown Faux Mink Oversize Pillow" ← "Brown Faux Mink Oversize" (1 imgs)
+  [3] pillows-throws   rms2326 "Brown Leather Patchwork Lumbar Pillow" ← "Brown leather patchwork lumbar" (1 imgs)
+  [3] pillows-throws   rms2291 "Brown Maroon Leather Pillow" ← "Brown Maroon Leather Pillow" (1 imgs)
+  [3] pillows-throws   rms2296 "Green Olive Velvet Pillow" ← "Green Olive Velvet Lumbar" (1 imgs)
+  [3] pillows-throws   rms2287 "Ivory Black Native Wool Pillow" ← "Ivory Black Native Pillow" (1 imgs)
+  [3] pillows-throws   rms2284 "Ivory Gold Textured Pillow" ← "Ivory Gold Textured Pillow" (1 imgs)
+  [3] pillows-throws   rms2910 "Orange Ivory Native Pillow" ← "Orange Ivory Native Pillow" (1 imgs)
+  [4] pillows-throws   rms3217 "Pink Wild Lynx Velvet Pillow" ← "Pink Wild Lynx Velvet Pillow" (1 imgs)
+  [3] pillows-throws   rms2917 "Red Tan Plaid Oversize Lumbar" ← "Red Tan Plaid Lumbar" (1 imgs)
+  [3] large-decor      rms3611 "Hudson Rock Wall with Shelves" ← "Hudson Rock Wall + Shelving Display" (4 imgs)
+  [3] pillows-throws   rms3100 "Blue Turquoise Sabra Pillow" ← "Blue Turquoise Sabra Pillow" (1 imgs)
+  [3] pillows-throws   rms2427 "Blue Velvet Brocade Lumbar Pillow" ← "Blue Velvet Brocade Lumbar" (1 imgs)
+
+## NONE (no match):
+  pillows-throws   rms2242 "Brown Fur Square Oversize Pillow"
+  pillows-throws   rms2323 "White Hide Lumbar Pillow"
+  pillows-throws   rms2393 "Black Hide Lumbar Pillow"
+  pillows-throws   rms2243 "Brown Hide Lumbar Pillow"
+  pillows-throws   rms1614 "Pendleton Neutral ZigZag Throw"
+  large-decor      rms3913 "Elysanda Ceremony Path + Platform"
+  large-decor      rms3905 "Layne Gallery Column _ I DO NOT HAVE IMAGE"
+  styling          rms3692 "Huron Snowshoe Pair - I DO NOT HAVE IMAGE"
+  tables           rms328 "Tangier Coffee Table"
+  tables           rms2001 "Vanna Brass Side Table"
+  tableware        rms2930 "Bronson Brown Goblet"
+  tableware        rms2929 "Bronson Brown Rocks Glass"
+  tableware        rms2723 "Honey Coupe Glass"
+  tableware        rms2722 "Honey Red Wine Glass"
+  tableware        rms2724 "Honey  Rocks Glass"
+  tableware        rms2721 "Honey White Wine Glass"
+  tableware        rms2948 "Narin Champagne Flute"
+  tableware        rms2946 "Narin Red Wine Glass"
+  tableware        rms2947 "Narin White Wine Glass"
+  tableware        rms2668 "Thistle Coupe Glass"
+  tableware        rms2671 "Thistle Red Wine Glass"
+  tableware        rms2669 "Thistle Rocks Glass"
+  tableware        rms2672 "Thistle White Wine Glass"

@@ -1,66 +1,95 @@
-## What's actually wrong
+## Goal
 
-Pulled live numbers from the database to confirm what you're seeing on /collection?group=pillows:
+Use Squarespace's `?format=json-pretty` feed on every eclectichive.com category page to (1) fill the **99 remaining imageless products** and (2) upgrade single-image products to full **galleries** — in one dry-run-then-apply pass.
 
-- **835 public products**, **27 still imageless**, but only **676 distinct hero images** — so **47 image files are bound to 179 different products** (~21% of the catalog is sharing a hero with someone else)
-- **Pillows is the worst offender**: 161 products, 91 distinct heroes. Single examples:
-  - `PILLOWS/Blue Green Lumbar.png` → bound to **13 different blue pillows** (Denim Buckle, Light Stripe, Velvet Burnout, Native, Sabra, Wild Bird…)
-  - `PILLOWS/Brown Grey fur.png` → **12 brown pillows**
-  - `PILLOWS/Ivory Black Geo.png` → **10 ivory pillows**
-  - `PILLOWS/Green Block Print.png` → **9 green pillows**
-- **50 pillow files in storage, only 38 actually used** — 12 owner-uploaded files are sitting unbound while wrong files get reused
+## Why this works
 
-Root cause: the earlier "final-bind" pass fell back to a first-color-token match when filename and title didn't agree, so anything starting with "Blue" got the first blue file we found. That rule was fine for true variant families (a flatware set sharing one hero is correct: Heston spoon/fork/knife → `HESTON Set.png`) but catastrophically wrong for pillows, where every SKU is unique.
+JSON feed returns the full collection per category — no lazy-load, no pagination, no HTML parsing. Each `items[]` entry exposes `title`, `urlId`, `assetUrl` (hero), and `items[].assetUrl` (gallery). Confirmed on `/textiles?category=Pillows` → 117 items vs 44 visible in HTML.
 
-Some shared bindings are **legitimate** and must be preserved:
-- Flatware/glassware sets (HESTON Set, ARIAN Set, NISHA Set, CARLISLE Set, ADONIS Set, MIDAS Set, LARIQUE Set, Sage Set, MILLIE Set) — owner intentionally shoots one set photo
-- Banquette sizes (NIMA Banquette — single/double/walnut variants)
-- Plinth sizes (TIVOLI Mini Plinth)
-- Cocktail column heights (Farrow 28/29/31/38/43)
+## Imageless inventory we're filling
 
-Categories where shared heroes are almost always **wrong**: pillows-throws, rugs, large-decor, styling, lighting, candlelight, chandeliers, seating (non-set), tables (non-size-variant).
+```
+pillows-throws  73   (already dry-run, 41 HIGH ready)
+tableware       13
+chandeliers      5
+large-decor      4
+styling          2
+tables           2
+                ── 99 total
+```
 
-## Plan
+## Feeds to fetch
 
-Three-phase, dry-run gated. No bulk writes without you reviewing the manifest.
+```
+/textiles?format=json-pretty                    → pillows-throws + furs-pelts
+/textiles?format=json-pretty&category=Pillows
+/textiles?format=json-pretty&category=Throws
+/light?format=json-pretty                       → lighting + chandeliers + candlelight
+/light?format=json-pretty&category=Chandeliers
+/light?format=json-pretty&category=Candlelight
+/tableware?format=json-pretty                   → tableware + serveware
+/large-decor?format=json-pretty                 → large-decor + storage
+/styling?format=json-pretty                     → styling
+/lounge-tables?format=json-pretty               → tables (lounge)
+/dining?format=json-pretty                      → tables (dining)
+/cocktail-bar?format=json-pretty                → bars
+/rugs?format=json-pretty                        → rugs
+/lounge-seating?format=json-pretty              → seating (for gallery upgrades)
+```
 
-### Phase A — Audit (read-only, no DB changes)
+Dedupe items across feeds by `urlId`.
 
-New script `scripts-tmp/audit-image-dupes.mjs`:
-1. Pull every product where `images[1]` is shared by ≥2 SKUs.
-2. Classify each shared group as:
-   - **KEEP (variant family)**: filename ends in `Set.png`, contains "Plinth", "Banquette", "Column", or all sharing-titles share a leading 2-token brand prefix (e.g. "Heston Dark Brown", "Farrow N\""). Owner-intent shared hero.
-   - **BREAK (false dupe)**: anything else — especially every pillow group, where titles share only a color word.
-3. List unused storage files per category (we know there are 12 unused pillow files — those are real images waiting for their real product).
-4. Write three manifests:
-   - `audit-keep-shared.json` — confirmed legit families
-   - `audit-break-shared.json` — products to reset to imageless pending re-bind (~140-150 rows)
-   - `audit-orphan-files.json` — storage files no product points to
+## Pipeline
 
-Output a summary like the current `reconcile-summary.txt`. **No writes.** You review before Phase B.
+```text
+1. fetch        → /tmp/feeds/<slug>.json   (curl, 14 files)
+2. normalize    → items[] = {title, urlId, hero, gallery[], categories[], tags[]}
+3. dry-run      → scripts-tmp/site-json-rebind.json
+                  • blanks    : matches for 99 imageless DB rows
+                  • galleries : extra gallery URLs for products that already have a hero
+4. review       → counts by category × bucket (HIGH ≥3 / MED 2 / TIE / NONE)
+5. apply        → SQL UPDATE inventory_items SET images=<hero+gallery>
+                  ONLY for HIGH (≥3) + non-tied
+6. rebake       → bun scripts/bake-catalog.mjs
+```
 
-### Phase B — Reset wrong bindings + strict re-bind (gated by your approval of A)
+## Match rules (same as last pass, proven)
 
-1. For every product in `audit-break-shared.json`, set `images = []` so the tile shows the blank/placeholder state instead of a wrong photo. Single migration, one transaction.
-2. Strict re-binder `scripts-tmp/strict-rebind.mjs` that ONLY accepts a binding when:
-   - **Exact filename match** after normalization (Blue Green Lumbar.png → "blue green lumbar" must equal the title's normalized form, OR every distinctive token in the filename appears in the title — no fallbacks on color alone)
-   - OR **Squarespace exact title match** (case-insensitive, full title)
-   - No "first color token wins" fallback. No variant-family inheritance for pillows/rugs/lighting/decor.
-3. Output `strict-rebind-manifest.json` with three buckets: `apply_safe` (high-confidence), `still_imageless` (no honest match exists), `manual_review` (close but not certain). **No writes** — you review.
+- Tokenize title, drop STOP words (`pillow`, `lumbar`, `oversize`, `set`, `with`, etc.)
+- Score = count of shared distinctive tokens
+- HIGH = score ≥3 AND no tie at top → apply
+- MED / TIE / NONE → leave for owner review
+- Gallery upgrade: when a product already has 1 image and the matched site item has more, append new URLs (dedupe, keep current image as position 0)
 
-### Phase C — Apply strict bindings (gated by your approval of B)
+## Apply guardrails
 
-1. Apply `strict-rebind-manifest.json` `apply_safe` rows via migration — sets `images[]` to the correct storage URL.
-2. Re-bake `src/data/inventory/current_catalog.json` via `scripts/bake-catalog.mjs` so the Collection page reflects truth on next deploy.
-3. Print final report:
-   - Imageless count before / after
-   - Duplicate-hero groups remaining (should be only the legit variant families)
-   - List of orphan storage files still not used (these need owner naming help)
+- Single SQL transaction per category, one UPDATE per `rms_id`
+- Never overwrite a non-Squarespace URL that's already in `images[0]`
+- Dry-run JSON committed to `scripts-tmp/` first; you greenlight before any write
+- No deletes, no DB schema changes
 
-## Outcome you'll see
+## Expected yield (rough)
 
-After Phase B alone, the pillows page will instantly look honest: the ~140 mis-bound products show placeholder tiles instead of pretending to be the same blue pillow 13 times. After Phase C, the 12 unused pillow files in storage land on their real products, and the only shared heroes left are the flatware/glass sets (where owner literally shot one photo for the family).
+| Category | Blanks filled | Gallery upgrades |
+|---|---|---|
+| pillows-throws | ~40 | ~30 |
+| tableware | ~10 | ~80 |
+| chandeliers | ~4 | ~10 |
+| large-decor | ~3 | ~15 |
+| styling | ~2 | ~40 |
+| tables | ~2 | ~30 |
+| (already-imaged: bars, seating, rugs, etc.) | — | ~150 |
+| **Total** | **~60 blanks** | **~350 gallery URLs** |
 
-## What I need from you
+## Deliverables
 
-Just "go" to start Phase A. Each phase ends in a manifest you review before I touch the database. Nothing destructive runs without your sign-off.
+1. `scripts-tmp/site-json-rebind.json` — full dry-run by category × bucket
+2. `scripts-tmp/site-json-summary.txt` — human-readable counts + sample matches
+3. After your approval: SQL apply + rebake → live on Collection page
+4. Memory updated to record JSON-feed pattern for future harvests
+
+## Out of scope
+
+- MED / TIE / NONE buckets — surfaced for you, not auto-applied
+- Mirroring CDN URLs into our Storage bucket (they stay hot-linked from Squarespace, same as the existing `_squarespace/...` heroes)
+- Per-product detail page scrape — only needed if JSON feed `additionalImages` is empty for a category, otherwise skipped
