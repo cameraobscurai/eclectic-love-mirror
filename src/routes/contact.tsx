@@ -239,7 +239,10 @@ function ContactPage() {
                 <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   EMAIL
                 </span>
-                <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
+                <a
+                  className="editorial-link uppercase tracking-[0.08em]"
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                >
                   {SUPPORT_EMAIL}
                 </a>
               </p>
@@ -247,7 +250,9 @@ function ContactPage() {
                 <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   ATELIER
                 </span>
-                Denver, Colorado
+                <span className="uppercase tracking-[0.08em]">
+                  Denver, Colorado
+                </span>
               </p>
             </div>
           </aside>
