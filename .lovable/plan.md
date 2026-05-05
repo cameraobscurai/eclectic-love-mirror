@@ -1,27 +1,67 @@
-# Move category nav up to a horizontal bar (when a category is selected)
+# Gallery — restyle to spec
 
-## Goal
-When the user picks a category, the left sidebar rail goes away and the category list appears as a horizontal nav row right under the utility bar — same visual register as the "By Type / Sort / density" controls. Wraps to a second line if needed (no horizontal scroll, ever).
+Rebuild the Gallery page to match the supplied style reference exactly. Replace the current embedded "masthead board" (gallery bar + thumbnail strip + depth card + decorative map) with a clean editorial five-section layout. Existing data (`galleryProjects`, real imagery from storage) is reused. The existing press image (`src/assets/press-glass-bar.png`) and `GalleryLightbox` are kept as-is.
 
-## Behavior
-- **Overview screen (no category, no search):** unchanged — left "the HIVE" image plate + tonal grid, no rail, no top bar.
-- **Category active (or search active):** 
-  - Top horizontal category bar appears, sitting in the same banded/utility-bar area as the search/sort row.
-  - 18 categories, uppercase 10px tracked labels, `flex-wrap` so they wrap to a 2nd line on narrow widths instead of scrolling.
-  - Active category: charcoal text + 1px charcoal underline. Inactive: charcoal/55, hover charcoal.
-  - Left `<aside>` with `<CollectionRail>` is removed in this mode; the right pane goes full-width.
-  - Mobile filters sheet trigger remains for the secondary filter dimensions (vendor, materials, etc. — anything that's still in the sheet beyond categories).
+## Final structure (top → bottom)
+
+```text
+1. Hero            — pt-32/40, max-w-7xl
+   ├ Left:  eyebrow ("Selected Work — NN Environments")
+   │        h1 "The Gallery" (font-display, light)
+   └ Right: descriptor paragraph (cream/50)
+
+2. Filter pills    — px-6/12, max-w-7xl, flex flex-wrap gap-2
+   └ Active = bg-cream text-charcoal; Inactive = border-cream/20
+
+3. Horizontal filmstrip
+   ├ flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide
+   ├ ProjectCard ×N (≈45vw cards, scale + opacity by active state)
+   └ Progress row: 03 ─────●──────────  18  ↔ scroll
+                            (sand fill)
+
+4. Project Index   — bg-cream/5 py-16/24
+   └ NN · Title · Type · Year · → arrow rows
+
+5. CTA             — py-24/32, eyebrow + display H2 + cream button (hover bg-sand)
+
+6. Press logos     — bg-cream py-20/28, existing press-glass-bar.png inverted
+```
+
+Lightbox open trigger: clicking any filmstrip card or any index row opens existing `GalleryLightbox`.
 
 ## Files
 
-**`src/routes/collection.tsx`**
-1. Inside the utility-bar block (the `{(activeGroup || q.trim()) && ...}` div, around L588–725), add a second sub-row beneath the existing flex row containing the new horizontal category nav. Source from `BROWSE_GROUP_ORDER` + `BROWSE_GROUP_LABELS` (already imported area). Click handler: `selectGroup(id)`. Same `var(--archive-canvas-max)` width constraint.
-2. Change the body grid (L737–743) so the non-overview branch becomes a single full-width column — drop `lg:grid-cols-[220px_minmax(0,1fr)]`, just use `grid-cols-1`.
-3. Delete the non-overview `<aside>` block (L755–770) that renders `<CollectionRail>`. Keep the overview `<aside>` (left hero plate) untouched.
-4. Remove the now-unused `CollectionRail` import if no other reference remains. (The mobile sheet still uses it via `variant="sheet"` — verify before removing; if so, keep the import.)
+**New** (`src/components/gallery/`)
+- `GalleryHero.tsx` — section 1, takes `{ total, descriptor }`.
+- `GalleryFilters.tsx` — section 2 pills, takes `{ filters, active, counts, onChange }`.
+- `GalleryFilmstrip.tsx` — section 3. Owns the horizontal scroller, IntersectionObserver-driven `activeIndex`, padded counter ("03 / 18"), sand progress bar, "↔ Scroll" hint. Renders `GalleryProjectCard` children.
+- `GalleryProjectCard.tsx` — single card per spec (4/5 aspect, gradient overlay, region eyebrow, display title, meta row with dot separators, hover circle with arrow).
+- `GalleryIndex.tsx` — section 4 (NN / Title / Type hidden lg / Year / arrow). Hover title goes sand.
+- `GalleryCta.tsx` — section 5, links to `/contact`.
+
+**Edited**
+- `src/routes/gallery.tsx` — replace `<GalleryMasthead>` + `<GalleryCardsTrack>` block with the new section sequence; keep press bar block and `<GalleryLightbox>`. Wire `onOpen(index)` from filmstrip and index.
+- `src/styles.css` — add one-time `.scrollbar-hide` rule (hide WebKit + FF scrollbars).
+
+**Removed (no longer used)**
+- `src/components/gallery/GalleryMasthead.tsx`
+- `src/components/gallery/GalleryCardsTrack.tsx`
+- `src/components/gallery/GalleryEnvironmentCard.tsx`
+- `src/components/gallery/GalleryMap.tsx`
+- `src/components/gallery/GalleryProjectIndex.tsx` (replaced by `GalleryIndex.tsx`)
+
+## Tokens (verified vs `src/styles.css`)
+- `cream`, `charcoal`, `sand` are already exposed as Tailwind colors via `--color-*` mappings (L63–66). Spec's `bg-cream / text-charcoal / bg-sand / border-cream/N` classes resolve directly. `font-display` already maps to Cormorant Garamond. No tailwind-config changes needed.
+
+## Behavior notes
+- Filmstrip `activeIndex` owned by `GalleryFilmstrip` (IntersectionObserver, threshold ~0.6 on snap-center cards) and surfaced for the progress counter/bar.
+- Filter change resets scroll to start and `activeIndex` to 0.
+- Mobile: cards `w-[85vw]`; progress row stays on one line.
+- All new copy/labels follow the project-wide ALL CAPS rule (eyebrows, pills, CTA, index headers). Project titles stay mixed-case (proper names).
+- Press image: continues to use `@/assets/press-glass-bar.png` exactly as today, in the cream-bg section.
 
 ## Out of scope
-- Sticky behavior of the new top bar (it scrolls naturally with the utility bar, matching current behavior).
-- Reordering categories or renaming labels.
-- Touching the mobile filter sheet's category list.
-- Counts next to category names (deliberately omitted, per current rail convention).
+- The SVG distortion / scroll-velocity effect in the spec — defer to a follow-up after base layout is approved.
+- Interactive map (decorative map removed entirely).
+- Changes to `gallery-projects.ts` data shape.
+- Any changes to home, collection, atelier, or contact pages.

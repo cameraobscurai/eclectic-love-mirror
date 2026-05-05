@@ -1,21 +1,19 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { GalleryMasthead, type CategoryFilter } from "@/components/gallery/GalleryMasthead";
-import { GalleryCardsTrack } from "@/components/gallery/GalleryCardsTrack";
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { GalleryHero } from "@/components/gallery/GalleryHero";
+import { GalleryFilters } from "@/components/gallery/GalleryFilters";
+import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
+import { GalleryIndex } from "@/components/gallery/GalleryIndex";
+import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import {
-  galleryProjects,
-  type GalleryProject,
-} from "@/content/gallery-projects";
+import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
 import pressGlassBar from "@/assets/press-glass-bar.png";
 
 // ---------------------------------------------------------------------------
-// Gallery — selected project proof, cinematic exhibition mode
-//
-// Honors the v0 deployed design: dark masthead, "{n} Environments" headline,
-// category pills, big horizontal cards track (mouse-friendly), Project Index
-// strip, and a split-screen lightbox with thumbnail filmstrip.
-// All imagery is real, served from the storage manifest. No fakes.
+// Gallery — editorial five-section layout per design spec.
+//   1. Hero          2. Filter pills        3. Snap filmstrip
+//   4. Project Index 5. CTA                 6. Press logos (existing asset)
+// All imagery is real, served from the storage manifest.
 // ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/gallery")({
@@ -38,9 +36,8 @@ export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
 });
 
-// Build a stable list of regions present in the gallery data, in the order
-// they first appear in the project list. "All" is always pinned first.
-const REGION_FILTERS: CategoryFilter[] = (() => {
+// Stable list of regions in first-appearance order. "All" pinned first.
+const REGION_FILTERS: string[] = (() => {
   const seen = new Set<string>();
   const ordered: string[] = [];
   for (const p of galleryProjects) {
@@ -53,27 +50,22 @@ const REGION_FILTERS: CategoryFilter[] = (() => {
 })();
 
 function GalleryPage() {
-  const [filter, setFilter] = useState<CategoryFilter>("All");
+  const [filter, setFilter] = useState<string>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const jumpRef = useRef<((index: number) => void) | null>(null);
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
     if (filter === "All") return galleryProjects;
     return galleryProjects.filter((p) => p.region === filter);
   }, [filter]);
 
-  const counts: Record<CategoryFilter, number> = useMemo(() => {
-    const base: Record<CategoryFilter, number> = {
-      All: galleryProjects.length,
-    };
-    for (const f of REGION_FILTERS) {
-      if (f !== "All") base[f] = 0;
-    }
+  const counts: Record<string, number> = useMemo(() => {
+    const base: Record<string, number> = { All: galleryProjects.length };
+    for (const f of REGION_FILTERS) if (f !== "All") base[f] = 0;
     for (const p of galleryProjects) base[p.region] = (base[p.region] ?? 0) + 1;
     return base;
   }, []);
 
+  // Open lightbox at the real project index (independent of current filter view).
   const handleOpen = (visibleIndex: number) => {
     const project = visibleProjects[visibleIndex];
     if (!project) return;
@@ -81,81 +73,36 @@ function GalleryPage() {
     setOpenIndex(realIndex >= 0 ? realIndex : 0);
   };
 
-
   return (
-    <main
-      className="min-h-screen bg-charcoal text-cream"
-      style={{ paddingTop: "var(--nav-h)" }}
-    >
-      <GalleryMasthead
-        total={galleryProjects.length}
-        visibleCount={visibleProjects.length}
+    <main className="min-h-screen bg-charcoal text-cream">
+      <GalleryHero total={galleryProjects.length} />
+
+      <GalleryFilters
+        filters={REGION_FILTERS}
         active={filter}
         counts={counts}
         onChange={setFilter}
-        filters={REGION_FILTERS}
-        projects={visibleProjects}
-        onOpen={handleOpen}
-        jumpRef={jumpRef}
-        activeIndex={activeIndex}
       />
 
-      <section className="px-6 lg:px-12">
-        <div className="max-w-[1600px] mx-auto">
-          <GalleryCardsTrack
-            projects={visibleProjects}
-            onOpen={handleOpen}
-            onActiveChange={setActiveIndex}
-            jumpRef={jumpRef}
-          />
-        </div>
-      </section>
+      <GalleryFilmstrip projects={visibleProjects} onOpen={handleOpen} />
 
-      {/* CTA — editorial colophon */}
-      <section className="px-6 lg:px-12 mt-28 mb-16">
-        <div className="max-w-[1600px] mx-auto">
-          <div className="border-t border-cream/10 pt-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-baseline">
-            <div className="lg:col-span-2">
-              <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
-                — Next
-              </p>
-            </div>
+      <GalleryIndex projects={visibleProjects} onOpen={handleOpen} />
 
-            <div className="lg:col-span-7">
-              <p className="font-display text-[clamp(1.5rem,2.4vw,2.25rem)] leading-[1.2] tracking-[-0.005em] text-cream/90 max-w-[34ch]">
-                Considering an environment of your own?
-                <span className="text-cream/45"> We take on a small number of projects each year.</span>
-              </p>
-            </div>
+      <GalleryCta />
 
-            <div className="lg:col-span-3 lg:text-right">
-              <Link
-                to="/contact"
-                className="group inline-flex items-baseline gap-3 text-[11px] uppercase tracking-[0.3em] text-cream hover:text-cream/70 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40 focus-visible:ring-offset-4 focus-visible:ring-offset-charcoal"
-              >
-                <span className="border-b border-cream/40 group-hover:border-cream/70 pb-1 transition-colors">
-                  Begin a conversation
-                </span>
-                <span aria-hidden className="translate-y-[-1px] transition-transform group-hover:translate-x-1">→</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* As Featured In — glass press bar */}
-      <section aria-labelledby="press-heading" className="px-6 lg:px-12 pb-10">
-        <div className="max-w-[1600px] mx-auto">
+      {/* As Featured In — existing press image */}
+      <section aria-labelledby="press-heading" className="bg-cream py-20 lg:py-28 px-6 lg:px-12">
+        <div className="max-w-[1400px] mx-auto">
           <h2
             id="press-heading"
-            className="text-[10px] uppercase tracking-[0.32em] text-cream/40 text-center mb-4"
+            className="text-charcoal/50 text-[10px] uppercase tracking-[0.32em] text-center mb-8"
           >
             As Featured In
           </h2>
           <img
             src={pressGlassBar}
             alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-            className="w-full max-w-[1400px] mx-auto h-auto select-none"
+            className="w-full h-auto select-none"
             loading="lazy"
             draggable={false}
           />
