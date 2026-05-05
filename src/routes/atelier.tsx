@@ -43,8 +43,6 @@ function Placeholder({
 //   6. CTA
 // ---------------------------------------------------------------------------
 
-const CAPABILITIES_HIDDEN_NOTE = "Capabilities list — see below";
-
 
 
 const CAPABILITIES = [
