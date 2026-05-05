@@ -573,7 +573,7 @@ function CollectionPage() {
     <main
       data-collection-main
       className="min-h-screen text-charcoal pb-32"
-      style={{ background: "var(--cream)" }}
+      style={{ background: "var(--paper)" }}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
@@ -590,7 +590,7 @@ function CollectionPage() {
         style={{
           background: utilityScrolled
             ? "rgba(245,242,237,0.78)"
-            : "var(--cream)",
+            : "var(--paper)",
           backdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           WebkitBackdropFilter: utilityScrolled ? "blur(16px) saturate(140%)" : "none",
           borderTop: "1px solid var(--archive-rule)",
@@ -797,7 +797,7 @@ function CollectionPage() {
               key={activeGroup || (q.trim() ? "search" : "overview")}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
-                background: "var(--cream)",
+                background: "var(--paper)",
               }}
             >
               {showOverview ? (
