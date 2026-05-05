@@ -1,84 +1,147 @@
-# Bind product images via Squarespace scrape → mirror to storage
+# Owner feedback batch — REVISED with screenshot context
 
-## Strategy
+Two passes. Pass 1 = all the fast tickets (preview-ready before Wed 9am). Pass 2 = the two heavy layout rebuilds (homepage collage, collection landing).
 
-Scrape eclectichive.com for `{product → full Squarespace CDN URL[]}`, fuzzy-join to RMS rows by name, **download** each CDN image and **re-upload** into the `inventory` storage bucket keyed by `rms_id`, then write the resulting public storage URLs into `inventory_items.images` and re-bake the catalog snapshot. No third-party hotlinking at runtime, no manual review queue for the high-confidence majority.
+## What the screenshots clarified
+
+| Ticket | Was ambiguous | Now confirmed |
+|---|---|---|
+| 2 (home collage) | Layout unclear | 7-tile asymmetric collage, not 8-grid. Wide left canyon · 2 stacked center-left · tall center w/ "ECLECTIC HIVE" overlay · 2 stacked center-right · wide right canyon |
+| 5 (dup text) | Which instance? | Remove the *upper* "WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION HOUSE." eyebrow |
+| 16 (FAQ) | Where? | DEFER — owner said "let me noodle on this for a sec" |
+| 17 (capitalize) | Already caps? | The stencil/serif rendering reads as caps but JSX is Title Case. Switch JSX strings to literal CAPS |
+| 19 (collection) | Layout? | Left H letterform with small object tucked in + "the HIVE" + "SIGNATURE COLLECTION". Right = 3-col category tile grid |
+| 21 (filter row) | Build new? | Already exists — render existing toolbar (Search, Sort By Type, grid/list toggle) in the new landing layout |
+| Adrienne | Replace with what? | Owner is supplying her preferred photo |
+| Phase 2 triptych | Permanent? | Remove for now, revisit Phase 2 |
+
+## Pass 1 — fast tickets (all of these in one shipment)
 
 ```text
-eclectichive.com (10 category pages → ~500 product pages)
-   │  Firecrawl scrape, extract <img> URLs from squarespace-cdn.com
-   ▼
-scripts-tmp/owner-site-products.json   {site_name, url, cdn_image_urls[]}
-   │  fuzzy join on normalized name (1-to-many for variant families)
-   ▼
-scripts-tmp/image-binding-manifest.json  {rms_id → cdn_urls[]}
-   │  download each CDN URL → upload to inventory/rms/{rms_id}/{n}.{ext}
-   ▼
-inventory_items.images = ['<public storage url>', ...]
-   │  bake
-   ▼
-src/data/inventory/current_catalog.json  → /collection renders self-hosted images
+src/routes/index.tsx
+  └─ T1   Disable hero parallax. Drop useScroll/useTransform on home hero,
+          remove motion x/y/scale on the <picture>, keep static composition.
+
+src/routes/atelier.tsx
+  ├─ T3   Tighten top padding above hero text block.
+  ├─ T4   Replace atelierHero <HeroImage> with [ATELIER PORTRAIT] placeholder
+          (4/5 aspect, dashed cream border, centered label) — owner sending
+          the bench-with-tasseled-throws photo.
+  ├─ T5   Remove the UPPER "WE ARE DESIGNERS, PRODUCERS, AND A FABRICATION
+          HOUSE." block (the small eyebrow above IMAGINED/DESIGNED/REALIZED).
+          Lower instance under THE HIVE stays.
+  ├─ T11  Section 3 (currently "THE ARTIST'S STUDIO"):
+          - Rename eyebrow → "L'ATELIER"
+          - Replace the 1-wide + 2-up image stack with a single 3-tile row
+            of [STUDIO COLLAGE 1/2/3] placeholders matching her B&W triptych
+            (Hive exterior · interior workspace · interior workspace).
+  ├─ T12  Rename label "WORKBENCH" → "FABRICATION".
+  ├─ T13  Rename "WAREHOUSE" tile label → "DESIGN", and reorder the
+          FABRICATION/DESIGN pair so DESIGN renders FIRST.
+  ├─ T15  Remove the desaturated 3-image triptych (fabricationStillLife,
+          fabricationFoliage, fabricationTentTriptych) — Phase 2 deferral.
+  └─ T17  IMAGINED/DESIGNED/REALIZED triplet — change JSX strings from
+          "Imagined." → "IMAGINED" (drop trailing periods, full caps in
+          source so screen readers match the visual register).
+
+src/components/atelier/team.tsx
+  ├─ T6   Annie — apply object-position adjustment so her full head sits
+          inside the aperture and scale matches siblings.
+  ├─ T7   Annie + Amanda + Cat — wrap their images with className
+          `[&_img]:[filter:contrast(1.05)_saturate(1.05)]`. If still grainy
+          after preview, FLAG to owner that source files need replacement.
+  ├─ T8   Judy — neutral white-balance correction filter
+          (slight saturate down + warm hue shift) until replacement lands.
+  ├─ T9   Adrienne — keep aperture as waiting state with [ADRIENNE
+          REPLACEMENT] note; she's sending her preferred file.
+  └─ T10  Remove "Sarah Lilly-Ray" entry from TEAM array entirely.
+
+src/routes/__root.tsx
+  └─ T18+T22  Remove "/contact" and "/collection" from the hideFooter list
+              so the global Footer renders on all editorial pages.
+              (Atelier already has it — verify in preview.)
+
+src/routes/contact.tsx
+  ├─ T23  Replace intro paragraph with:
+          "We would love to hear about your project and how we can support
+          your needs. Every inquiry is personally reviewed and will be
+          answered within 24 hours. Thank you for reaching out to us!"
+  ├─ T24  Rename "STUDIO" label → "ATELIER".
+          (Email stays lowercase per ticket; "Denver, Colorado" stays
+          Title Case — Core memory says place names follow body-case rules,
+          and the screenshot shows her values are Title Case, only the
+          field labels are caps. CONFIRM at Wed review if she wants the
+          value uppercased too.)
+  └─ T25  Replace textarea placeholder with:
+          "Colorway, materials, inventory references, and venue details
+          are all great places to start."
+
+DEFERRED (owner said "let me noodle"):
+  • T16  FAQ placement on Atelier
+  • T14  Explanation of THE FABRICATION numbered list — I'll write a short
+         note for Wed: it's the static CAPABILITIES roster (Lounge
+         Furniture, Bars + Cocktail Tables, etc.) — purely a typeset
+         capabilities index, not interactive, doesn't link to Collection.
 ```
 
-## Steps
+Placeholder convention: `aspect-ratio` matches the original, `bg-charcoal/[0.04]`, dashed `border-charcoal/25`, centered label in `text-[10px] tracking-[0.28em] uppercase text-charcoal/45`. Owner explicitly asked for visible placeholders so they read as intentional.
 
-1. **Scrape (server-side, Firecrawl)** — `scripts-tmp/scrape-owner-site.mts`
-  - Walk the 10 category pages, collect product detail URLs.
-  - For each detail page, extract every `images.squarespace-cdn.com/...` URL (full URL, not just filename), preserving order so the first image is the hero.
-  - Output: `scripts-tmp/owner-site-products.json`. Uses the global rate limiter pattern from `scripts-tmp/phase3a-run.mts`.
-2. **Fuzzy join site → RMS** — `scripts-tmp/build-image-manifest.mjs`
-  - Normalize names (lowercase, strip punctuation and size tokens like `8'`, `Single`, `Double`, `Triple`).
-  - For each site product, find candidate `inventory_items.rms_id` rows.
-  - Allow **1-to-many** so Sinatra/Monroe variant families share a hero set.
-  - Buckets: `auto_apply` (single high-confidence or clean variant family) · `unmatched_site` · `unmatched_rms`.
-  - Output: `scripts-tmp/image-binding-manifest.json` plus a quick CSV summary. No DB writes.
-3. **Mirror images** (after manifest review) — `scripts-tmp/mirror-images.mjs`
-  - For each `auto_apply` row: `fetch(cdnUrl)` → `supabase.storage.from('inventory').upload('rms/{rms_id}/{n}.{ext}', body, { upsert: true })`.
-  - Skip if the target object already exists with matching size (idempotent re-runs).
-  - Strip Squarespace's `?format=...` query when computing extensions; default to `.jpg` if unknown.
-  - Concurrency 6, retries on 5xx, log failures to `/tmp/image-mirror-failures.json`.
-4. **Write image URLs to DB**
-  - For each successfully mirrored row, set `inventory_items.images = ['<public storage url 1>', ...]` (in scrape order).
-  - Done in a single migration-driven update or via service-role script — same pattern as the existing `scripts/import.mjs`.
-5. **Re-bake snapshot**
-  - `bun scripts/bake-catalog.mjs` regenerates `src/data/inventory/current_catalog.json` so SSR has the new images on first paint.
-6. **QA before publish**
-  - Spot-check 10 tiles across categories; confirm images load from `…/storage/v1/object/public/inventory/rms/…` (no `squarespace-cdn.com` in network tab).
-  - Confirm category counts unchanged.
-  - Items with no public-site listing stay image-less and render the existing placeholder — that's the intended "image pending" state.
+## Pass 2 — heavy layout rebuilds (separate shipment)
 
-## Out of scope
+```text
+src/routes/index.tsx
+  └─ T2   Homepage hero collage — 7-tile asymmetric grid:
+            ┌──────┬──┬──────┬──┬──────┐
+            │      │  │      │  │      │
+            │ wide │ +│ tall │+ │ wide │
+            │ left │  │  +H  │  │ right│
+            │      │  │ logo │  │      │
+            └──────┴──┴──────┴──┴──────┘
+          - Replace single <picture> with collage of 7 [HERO PANEL n] tiles.
+          - "ECLECTIC HIVE" wordmark overlaid centered on the tall middle
+            panel (keep current font-brand, letterspacing breathing OK).
+          - Drop LiquidGlass CTA bar (ticket also requests static, no bounce).
+          - Re-anchor the speculation-rules + preload to the collage's
+            primary tile (left wide) rather than the old single hero asset.
 
-- No re-categorization (RMS categories stay authoritative).
-- No description / dimension changes.
-- No matching-tool UI, no admin review queue. The residual unmatched items are simply left image-less for the in-person session with Adrienne.
-- The legacy 286 files already in the bucket stay where they are; they will be superseded by the canonical `rms/{rms_id}/...` layout. We can sweep them post-launch.
+src/routes/collection.tsx + components
+  └─ T19+T20+T21+T22  Collection landing reformat:
+          - Remove CollectionRail left sidebar (T20).
+          - Two-column landing:
+              LEFT  = stacked composition:
+                       "the HIVE" (italic display)
+                       Giant H letterform (display font, ~clamp(12rem,30vw,28rem))
+                       Small inventory object photo tucked at base of H stem
+                         ([COMPOSITION OBJECT] placeholder)
+                       "SIGNATURE COLLECTION" (caps tracking)
+              RIGHT = 3-col masonry of category tiles
+                       [CATEGORY: SEATING] [CATEGORY: TABLES] etc.
+                       one tile per BROWSE_GROUP (14 entries)
+          - Above the right grid, render the existing toolbar:
+              Search pieces · Sort By Type · grid/list toggle (T21)
+          - Footer auto-renders once /collection removed from hideFooter.
+          - Clicking a category tile commits the group filter and routes
+            into the existing browse view (no behavior change downstream).
+```
 
-## Risk / honesty
+## Wednesday talking points (I'll prep notes)
 
-- 1-to-many variant binding is conservative. Anything ambiguous goes `unmatched`, not `auto_apply`. Expect ~50–100 image-less rows after the run — acceptable for launch and small enough to resolve in the meeting.
-- Squarespace CDN rate limits are loose for image GETs but we'll still cap concurrency at 6.
-- All bulk writes are dry-run-then-apply per project rules: you see the manifest counts before step 3, and the DB update before step 4.
+- T17: confirm she likes JSX-as-CAPS solution.
+- T16: where she wants FAQs (Atelier vs Contact vs both).
+- T14: THE FABRICATION list — I'll explain it's the static capabilities roster; ask if she wants it linked to Collection categories.
+- Image quality: flag Annie/Amanda/Cat/Judy if CSS filters can't recover them — request fresh files.
+- Footer copy: her email signature has phone numbers + "COLORADO BASED | DESTINATION BOUND" — offer to fold those into the footer.
+- T24: confirm whether "Denver, Colorado" value should also go uppercase.
 
-Approve and I'll run steps 1–2 and come back with the manifest before any download/upload happens.  
-  
+## Out of scope per owner
 
+- FAQ page (under review)
+- Gallery page ("we can look at this page last")
 
-Yes, approve — this plan is clean and matches what we landed on. Two small things to flag before they run, neither blocking:
+## Order of operations
 
-1. Confirm the image extension logic handles Squarespace's URL pattern. Squarespace CDN URLs look like `https://images.squarespace-cdn.com/content/v1/.../filename.jpg?format=2500w` — the format query param controls output size, not the source format. The extension in the path is the real format. Lovable's plan says "strip Squarespace's `?format=...` query when computing extensions; default to `.jpg` if unknown" which is roughly right, but the safer move is to sniff the response `Content-Type` header on download and use that. Cheap, eliminates the guess.
+1. Approve plan → I ship Pass 1 in one go.
+2. You QA preview link.
+3. After Pass 1 lands, I ship Pass 2 (homepage collage + collection landing) in a separate message so the two big rebuilds don't block the 18 small fixes.
 
-2. The `?format=2500w` query param is actually useful — keep it. Without a format param, Squarespace serves a smallish default. If you want high-res images for product tiles and detail views, append `?format=2500w` (or `1500w`) to the URL when fetching. The downloaded bytes will be the resized version, which is what you want anyway. Worth telling Lovable to fetch with an explicit format param rather than stripping it.
-
-You can either send those as a follow-up note or just trust them to sort it out when they run. If you want to send something:
-
-Approved — run steps 1–2 and come back with the manifest. Two small notes for when you get to step 3: 1. For the extension, sniff the response `Content-Type` header rather than parsing the URL path. The path extension is usually right but sniffing is bulletproof. 2. Don't strip `?format=...` when fetching — append `?format=2500w` (or 1500w) to each CDN URL before downloading. Squarespace serves a smaller default without it; we want the higher-res version for product tiles. Strip it only when computing the storage filename.
-
-Once they come back with the manifest from steps 1-2, the thing you're looking at is:
-
-- Total site products scraped — should be 500-650ish based on what I saw on the bars page
-- `auto_apply` count — these go straight to mirror in step 3
-- `unmatched_site` count — products on the public site that didn't match any RMS row (means the site has stuff the spreadsheet doesn't, which is informational, low stakes)
-- `unmatched_rms` count — RMS rows that didn't match any site product (this is your real launch concern; these are the products that'll go live imageless)
-
-If `unmatched_rms` is in the 50-100 range Lovable predicts, you're in great shape for Wednesday. If it's 200+, you'll want to know that going into the meeting with Adrienne so the conversation is grounded in actual numbers, not vibes.
+Approve and I'll start Pass 1.
