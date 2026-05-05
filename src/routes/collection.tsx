@@ -779,14 +779,14 @@ function CollectionPage() {
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
             className={
               showOverview
-                ? "grid grid-cols-1 lg:grid-cols-[minmax(0,40%)_minmax(0,60%)] items-stretch"
+                ? "grid grid-cols-1 md:grid-cols-[minmax(0,42%)_minmax(0,58%)] items-stretch"
                 : "grid grid-cols-1"
             }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:block self-stretch"
+                className="hidden md:block self-stretch"
               >
                 <HivePlate
                   className="h-full w-full"
@@ -818,8 +818,8 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile: SVG H-plate stacks on top — fluid via container queries. */}
-                  <div className="lg:hidden shrink-0 self-stretch">
+                  {/* Mobile only (<md): SVG H-plate stacks on top. */}
+                  <div className="md:hidden shrink-0 self-stretch">
                     <HivePlate
                       artifact={
                         <img
@@ -835,7 +835,7 @@ function CollectionPage() {
                       }
                     />
                   </div>
-                  <div className="flex-1 min-h-0 min-h-[60svh] lg:min-h-0">
+                  <div className="flex-1 min-h-0 min-h-[60svh] md:min-h-0">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectGroup(id)}
