@@ -32,6 +32,11 @@ const TOKEN_CANON = {
   plinths: 'plinth',
   pedestals: 'pedestal',
   risers: 'riser',
+  decanters: 'decanter',
+  bowls: 'bowl',
+  trays: 'tray',
+  sets: 'set',
+  goblets: 'goblet',
 };
 const canonTok = t => TOKEN_CANON[t] || t;
 const wordTokens = s => norm(s).split(' ').filter(t => /[a-z]/.test(t) && t.length >= 3).map(canonTok);
