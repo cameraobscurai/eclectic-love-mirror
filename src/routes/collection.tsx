@@ -789,21 +789,18 @@ function CollectionPage() {
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden md:flex items-center justify-center flex-shrink-0"
+                className="hidden md:block flex-shrink-0"
                 style={{
                   width: "40%",
                   background: "var(--paper)",
-                  containerType: "inline-size",
-                  padding: "clamp(24px, 5cqi, 64px)",
                 }}
               >
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block w-full object-contain"
+                  className="block w-full h-full object-cover"
                   width={1200}
                   height={1600}
-                  style={{ maxHeight: "100%", height: "auto" }}
                 />
               </motion.aside>
             )}
