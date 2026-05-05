@@ -45,22 +45,51 @@ while (true) {
 }
 console.log('public rows:', all.length);
 
-const visible = all.filter(r => Array.isArray(r.images) && r.images.length >= 1);
-const hiddenForMissingImage = all.length - visible.length;
-console.log('hidden (no image):', hiddenForMissingImage);
-const products = visible.map((r, i) => {
-  const imgs = (r.images||[]).map((u,idx) => ({
+// Live per-product harvest (gallery, body) — used as fallback when the
+// owner has not yet supplied images, and to overlay live descriptions.
+let liveProducts = {};
+try {
+  liveProducts = JSON.parse(fs.readFileSync('/dev-server/scripts/audit/live-products.json','utf8'));
+} catch {
+  console.warn('[bake] no live-products.json — run scripts/audit/harvest-live-products.mjs');
+}
+const liveProductByTitle = new Map();
+const norm0 = s => String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+for (const lp of Object.values(liveProducts)) {
+  const t = norm0(lp.title);
+  if (t && !liveProductByTitle.has(t)) liveProductByTitle.set(t, lp);
+  const tStripped = t.split(' ').filter(w => !/^\d/.test(w) && w.length >= 2).join(' ');
+  if (tStripped && !liveProductByTitle.has(tStripped)) liveProductByTitle.set(tStripped, lp);
+}
+function findLiveProduct(slug, title) {
+  if (slug && liveProducts[slug]) return liveProducts[slug];
+  const t = norm0(title);
+  return liveProductByTitle.get(t)
+    || liveProductByTitle.get(t.split(' ').filter(w=>!/^\d/.test(w)&&w.length>=2).join(' '));
+}
+
+let livesFallback = 0;
+const products = all.map((r, i) => {
+  let imgs = (r.images||[]).map((u,idx) => ({
     url: restoredInventoryUrl(u), position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
   }));
+  const lp = findLiveProduct(r.slug, r.title);
+  if (imgs.length === 0 && lp && lp.gallery && lp.gallery.length) {
+    imgs = lp.gallery.map((u, idx) => ({
+      url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
+    }));
+    livesFallback++;
+  }
+  const description = lp && lp.body ? lp.body : null;
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
   return {
     id: r.rms_id,
-    sourceUrl: '',
+    sourceUrl: lp?.fullUrl ? `https://www.eclectichive.com${lp.fullUrl}` : '',
     slug: r.slug,
     categorySlug: r.category,
     displayCategory: CAT_DISPLAY[r.category] || r.category,
     title: r.title,
-    description: null,
+    description,
     dimensions: r.dimensions_raw,
     stockedQuantity: stock,
     isCustomOrder: false,
