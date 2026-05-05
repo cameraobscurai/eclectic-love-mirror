@@ -162,6 +162,7 @@ interface TonalCellProps {
   firstRowReady: boolean;
   onFirstRowImageDone?: () => void;
   onSelectCategory: (id: BrowseGroupId) => void;
+  spanCols?: number;
 }
 
 function TonalCell({
@@ -175,6 +176,7 @@ function TonalCell({
   firstRowReady,
   onFirstRowImageDone,
   onSelectCategory,
+  spanCols = 1,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
   const [reported, setReported] = useState(false);
