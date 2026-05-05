@@ -9,6 +9,8 @@ import {
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
+import { DotCursor } from "../components/dot-cursor";
+import { useViewTransitions } from "../hooks/useViewTransitions";
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
