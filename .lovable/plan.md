@@ -1,61 +1,60 @@
-## Goal
+## Problem
 
-Reskin the Collection landing (`/collection` overview state) to match the reference: a tall **brand panel on the left** ("the HIVE" / big H / chair / SIGNATURE COLLECTION) and a **seamless category grid on the right** with alternating warm/cool tonal backgrounds — one category per cell, product cutout centered, small uppercase label bottom-left.
+The current right grid uses `aspect-square` per cell, so its total height is locked by `(column-width × rows)` — pure math, not flexbox. When the left H-plate ends up taller than that math (the actual case at this viewport), you get a big empty cream slab below the grid. That's the "wasted space, not flex reactive" you're seeing.
 
-This only changes the overview state. The category-detail view, search results, mobile sheet, rail, and product grid all keep working as-is.
+The reference also shows two cells spanning **2 columns wide** (the bench and the wine glasses) for compositional rhythm — our current grid forces every cell to a uniform square.
 
-## Layout
+## Fix — make the grid stretch to match the H-plate, with span variants
+
+Switch `CategoryTonalGrid` from "fixed-aspect cells" to "fill the parent height with `1fr` rows," and let the right column's height be driven by the left H-plate (`items-stretch` on the parent — already set). Then opt a few categories into a `col-span-2` cell for the wider compositions in your reference.
 
 ```text
-lg+ viewport
-┌──────────────────────────┬──────────────────────────────────────┐
-│                          │  SOFAS │ CHAIRS │ BENCHES│ COFFEE │ SIDE  │
-│        the HIVE          ├────────┼────────┼────────┼────────┼───────┤
-│     ┌──────────────┐     │ DINING │  BAR   │STORAGE │LIGHTING│PILLOWS│
-│     │     ⎔H⎔      │     ├────────┼────────┼────────┼────────┼───────┤
-│     │   [chair]    │     │ THROWS │TABLEWARE│SERVEWARE│ACCENTS│LARGE  │
-│     └──────────────┘     │        │         │         │       │ DECOR │
-│   SIGNATURE COLLECTION   ├────────┼────────┼────────┴────────┴───────┤
-│                          │ COCKTAIL │  RUGS │     STYLING            │
-└──────────────────────────┴──────────┴───────┴────────────────────────┘
+xl layout (5 cols × 4 rows, all rows = 1fr of grid height)
+┌───────────────┬─────────┬─────────┬─────────┬─────────┐
+│               │  SOFAS  │ CHAIRS  │ BENCHES & OTTOMANS │  ← wide (span 2)
+│               ├─────────┼─────────┼─────────┼─────────┤
+│   the HIVE    │ COFFEE  │ SIDE    │ COCKTAIL│  DINING │
+│       H       ├─────────┼─────────┼─────────┼─────────┤
+│   chair       │  BAR    │ STORAGE │LIGHTING │  RUGS   │
+│  SIGNATURE    ├─────────┼─────────┼─────────┴─────────┤
+│  COLLECTION   │PILLOWS  │ THROWS  │   LARGE DECOR     │  ← wide (span 2)
+│               ├─────────┼─────────┼─────────┬─────────┤
+│               │TABLEWARE│SERVEWARE│ STYLING │ ACCENTS │
+└───────────────┴─────────┴─────────┴─────────┴─────────┘
 ```
 
-- Left panel: ~38% width on lg, full single image (uploaded `download_14.jpeg`). Cream background, sticky to viewport top under nav so it stays in view while the right grid scrolls if needed.
-- Right grid: 5 columns × 4 rows, **gap = 0** (seamless). Each cell is a square-ish tile (~aspect 5/4) with a tonal background from a 3-tone palette repeating in a checkerboard pattern so adjacent cells never share the same tone. Product cutout centered with padding, label uppercase, bottom-left.
-- Sub-lg: left panel stacks above grid; grid drops to 3 cols.
-- The existing left CollectionRail is **hidden in overview state** on lg+ (the brand panel takes its place). It returns when a category is selected or a search is active.
+That's 18 categories in a 5×4 grid (16 single + 2 double = 20 cells). Zero gaps, zero hard-coded math.
+
+## Why this is reactive, not hard-coded
+
+- Grid is `display: grid; grid-template-columns: repeat(5, 1fr); grid-auto-rows: 1fr; height: 100%;`
+- Parent is the existing `lg:grid lg:grid-cols-[40%_60%] items-stretch` → both columns are the **same height** automatically.
+- The H-plate decides that height (its natural intrinsic ratio at 40% column width). The grid stretches to match. Resize the window and both pieces grow/shrink in lockstep — no media-query height math, no `100vh` hacks.
+- `WIDE_CELLS = new Set(["benches-ottomans", "large-decor"])` — picked because they're horizontal compositions and they fall on rows where exactly one wide cell + three single cells = 5 columns. Easy to swap later.
+
+## Tonal checker still works
+
+I walk the cards in render order honoring spans to compute each cell's actual `(row, col)`, then pick `TONES[(row + col) % 3]`. Spans don't break the alternation rule.
+
+## Below xl
+
+- **lg (4 cols)**, **sm (3)**, **base (2)**: revert each cell to `aspect-square`. The H-plate stacks above the grid on those breakpoints (already implemented), so there's no shared-height contract to honor — square cells just look like a tidy specimen grid.
+- The wide-cell spans only apply at `xl:` so smaller breakpoints don't get awkward 2-col-wide cards crammed next to 1-col cards.
 
 ## Files
 
-**New** `src/assets/collection/hive-signature-hero.jpeg` — copy of `user-uploads://download_14.jpeg`, imported with `?preset=editorial`.
+- **Edit** `src/components/collection/CategoryTonalGrid.tsx`
+  - Drop `aspect-[5/4]` / `aspect-square` from the `<li>`.
+  - Add `gridAutoRows: "1fr"` and `h-full` to the `<ul>`.
+  - Add `WIDE_CELLS` set + per-card `wide` flag → `gridColumn: "span 2"` at xl.
+  - Add `xlPlacement` walker to compute `(row, col)` for tonal checker with spans.
+  - Wrap the inner button with a `aspect-square xl:aspect-auto` div so sub-xl breakpoints still get square cells.
+  - Tighten image padding (`p-5 sm:p-7 xl:p-8`) so cutouts breathe inside the now-shorter cells.
 
-**New** `src/components/collection/CategoryTonalGrid.tsx` — replaces `CategoryGalleryOverview` for the overview state. Renders the 18 browse groups (in `BROWSE_GROUP_ORDER`) as a seamless 5-col grid. Per cell:
-- Background tone picked from `["#efece6", "#d9d4cb", "#c8c2b6"]` via `(row + col) % 3` so neighbors differ.
-- Centered category hero (uses existing `CATEGORY_COVERS`, `withCdnWidth`, `buildCdnSrcSet`, `useNearViewport`, AVIF/WebP fallback chain — same image-loading discipline as the current overview).
-- Bottom-left label: `text-[10px] uppercase tracking-[0.22em]` with cell padding `px-4 py-3`. No frosted glass — sits directly on the tonal field.
-- Click selects the group (same `onSelectCategory` contract).
-- Keeps the first-row synchronized reveal + later-row cascade from the existing component so the page paints as one beat, not a popcorn flicker.
-
-**Edit** `src/routes/collection.tsx` (overview branch only, ~lines 770–805):
-- Wrap the overview state in a new `lg:grid lg:grid-cols-[minmax(0,38%)_minmax(0,1fr)]` layout.
-- Left cell: `<HivePanel />` — sticky `top-[var(--nav-h)]`, cream bg, contains the imported hero image (object-contain, full panel height, max ~`calc(100vh - var(--nav-h))`).
-- Right cell: `<CategoryTonalGrid groups={overviewGroups} onSelectCategory={...} />`.
-- When `showOverview` is true, suppress the `<aside>` rail on lg+ (conditional render). When `showOverview` is false, current two-column rail+grid layout returns unchanged.
-- Drop the `CategoryGalleryOverview` import (component file kept on disk for a turn in case we need to revert; remove next pass once approved).
-
-**Memory** update `mem://design/collection-landing` (new) with the tonal palette, grid size, and the rule "overview hides the left rail; rail returns on category/search."
-
-## Technical notes
-
-- Reference image (`download_14.jpeg`) becomes the left panel verbatim — no recomposition. We treat it as a single editorial plate, which matches the owner's reference exactly and avoids font/layout drift.
-- Tonal palette is sampled from the reference; neutral warm/cool greys that read on the cream page background. Tuned to brand tokens (cream `#f5f2ed`, sand `#d4cdc4`) so the grid sits inside the existing palette.
-- Image loading: cells use `loading="lazy"` except the first row (`fetchPriority="high"`, eager), same as current overview. `useNearViewport` gates later rows to keep the request fanout sane.
-- Accessibility: each cell is a `<button>` with `aria-label={label}`; focus ring uses `focus-visible:ring-charcoal/35 ring-inset` so it's visible against any tone.
-- Reduced-motion: skip the cascade reveal (instant render).
-- No changes to data, sorting, search, quick-view, inquiry tray, or rail. Mobile filter sheet untouched.
+No changes to `collection.tsx` (the parent stretch contract is already in place from the last pass).
 
 ## Out of scope
 
-- Re-cropping/recomposing the H + chair as separate vector + photo layers (would require recreating the wordmark; using the supplied plate is faster and matches owner intent).
-- Restyling the category-detail (grid) state.
-- Changing taxonomy or category labels.
+- Reordering categories (kept owner's `BROWSE_GROUP_ORDER`).
+- Per-cell custom imagery beyond Sofas → Reshma (separate ask).
+- Animating the wide-cell promotion on hover or anything else fancy — keep it static and editorial.
