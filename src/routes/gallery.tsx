@@ -7,7 +7,8 @@ import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
-import pressGlassBar from "@/assets/press-glass-bar.png";
+import pressGlassBar from "@/assets/press-glass-bar.jpg?preset=editorial";
+import { STORAGE_ORIGIN } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
@@ -32,6 +33,15 @@ export const Route = createFileRoute("/gallery")({
           "Selected projects from Eclectic Hive — cinematic event environments.",
       },
     ],
+    // Preconnect to the storage CDN so the TLS handshake happens in
+    // parallel with HTML parsing — first card image starts downloading
+    // ~150-300ms sooner on cold loads.
+    links: STORAGE_ORIGIN
+      ? [
+          { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" },
+          { rel: "dns-prefetch", href: STORAGE_ORIGIN },
+        ]
+      : [],
   }),
   component: GalleryPage,
 });
@@ -99,13 +109,24 @@ function GalleryPage() {
           >
             As Featured In
           </h2>
-          <img
-            src={pressGlassBar}
-            alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-            className="w-full h-auto select-none"
-            loading="lazy"
-            draggable={false}
-          />
+          <picture>
+            {pressGlassBar.sources.avif && (
+              <source type="image/avif" srcSet={pressGlassBar.sources.avif} />
+            )}
+            {pressGlassBar.sources.webp && (
+              <source type="image/webp" srcSet={pressGlassBar.sources.webp} />
+            )}
+            <img
+              src={pressGlassBar.img.src}
+              width={pressGlassBar.img.w}
+              height={pressGlassBar.img.h}
+              alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
+              className="w-full h-auto select-none"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+          </picture>
         </div>
       </section>
 

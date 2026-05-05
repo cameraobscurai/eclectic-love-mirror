@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { acquireScrollLock } from "@/lib/scroll-lock";
+import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // GalleryLightbox
@@ -128,8 +129,12 @@ export function GalleryLightbox({
         >
           <img
             key={plate.src}
-            src={plate.src}
+            src={renderUrl(plate.src, { width: 1600, quality: 78 })}
+            srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
+            sizes="(min-width: 1024px) 66vw, 100vw"
             alt={plate.alt}
+            decoding="async"
+            {...({ fetchPriority: "high" } as Record<string, string>)}
             className="absolute inset-0 w-full h-full object-cover animate-fade-in"
             draggable={false}
           />
