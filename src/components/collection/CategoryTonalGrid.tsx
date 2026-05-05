@@ -205,7 +205,11 @@ function TonalCell({
       onClick={() => onSelectCategory(id)}
       aria-label={label}
       className="group relative min-w-0 overflow-hidden text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset border-r border-b border-charcoal/10 last:border-r-0"
-      style={{ background: tone, touchAction: "manipulation" }}
+      style={{
+        background: tone,
+        touchAction: "manipulation",
+        gridColumn: spanCols > 1 ? `span ${spanCols}` : undefined,
+      }}
     >
       {heroSrc ? (
         <img
