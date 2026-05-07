@@ -165,7 +165,7 @@ export function Navigation() {
           <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
-              const dark = scrolled || !isLightPage;
+              const dark = scrolled ? !isLightPage : !isLightPage;
               const isCollection = link.href === "/collection";
               return (
                 <div key={link.href} className="relative group/navitem">
