@@ -130,18 +130,22 @@ for (const p of catalog.products) {
 const summary = {
   generatedAt: new Date().toISOString(),
   categories: CATS.length ? CATS : 'ALL',
+  targetBucket: TARGET_BUCKET,
   totalImages: manifest.length,
   byAction: manifest.reduce((a, e) => ((a[e.action] = (a[e.action] || 0) + 1), a), {}),
   bySourceKind: manifest.reduce((a, e) => ((a[e.sourceKind] = (a[e.sourceKind] || 0) + 1), a), {}),
   uniqueProducts: new Set(manifest.map(e => e.slug)).size,
-  collisions: collidingTargets.map(([t, srcs]) => ({ targetPath: t, distinctSources: [...new Set(srcs)] })),
+  suffixResolutionsCount: suffixResolutions.length,
+  exactDupesDropped: exactDupes.length,
 };
 
-const manifestPath = '/tmp/mirror-manifest.json';
-fs.writeFileSync(manifestPath, JSON.stringify({ summary, entries: manifest }, null, 2));
+const manifestPath = '/tmp/mirror-manifest-final.json';
+fs.writeFileSync(manifestPath, JSON.stringify({ summary, suffixResolutions, exactDupes, entries: manifest }, null, 2));
 console.log('=== DRY RUN MANIFEST ===');
 console.log(JSON.stringify(summary, null, 2));
 console.log(`\nFull manifest: ${manifestPath} (${manifest.length} entries)`);
+console.log(`Suffix resolutions: ${suffixResolutions.length}, exact dupes dropped: ${exactDupes.length}`);
+
 
 if (!APPLY) {
   console.log('\n(no --apply flag, exiting before any writes)');
