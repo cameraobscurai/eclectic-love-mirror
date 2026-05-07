@@ -964,6 +964,24 @@ function CollectionPage() {
                     />
                   </div>
                 </>
+              ) : layout === "wall" ? (
+                <div
+                  className="relative w-full"
+                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h) - 2px)" }}
+                >
+                  {visibleProducts.length === 0 ? (
+                    <div className="py-32 px-6">
+                      <p className="text-[15px] leading-relaxed text-charcoal/70">
+                        No pieces match the current filters.
+                      </p>
+                    </div>
+                  ) : (
+                    <CollectionWall
+                      products={visibleProducts}
+                      onOpen={(id) => setQuickViewId(id)}
+                    />
+                  )}
+                </div>
               ) : (
                 <>
                   <div
