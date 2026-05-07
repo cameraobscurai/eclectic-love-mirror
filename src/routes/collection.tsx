@@ -952,18 +952,11 @@ function CollectionPage() {
                         </LayoutGroup>
 
                         {hasMore && (
-                          <div className="mt-12 flex justify-center">
-                            <button
-                              onClick={() =>
-                                setVisibleCount((c) =>
-                                  Math.min(c + BATCH_INCREMENT, visibleProducts.length),
-                                )
-                              }
-                              className="px-8 py-3 border border-charcoal/30 text-xs uppercase tracking-[0.2em] text-charcoal hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors active:scale-[0.98]"
-                            >
-                              Load more ({visibleProducts.length - visibleBatch.length} remaining)
-                            </button>
-                          </div>
+                          <div
+                            ref={loadMoreSentinelRef}
+                            aria-hidden
+                            className="h-10 w-full"
+                          />
                         )}
                       </>
                     )}
