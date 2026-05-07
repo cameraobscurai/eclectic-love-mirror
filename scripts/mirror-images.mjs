@@ -26,7 +26,7 @@ const argv = Object.fromEntries(
 
 const APPLY = !!argv.apply;
 const CATS = (argv.categories || '').split(',').map(s => s.trim()).filter(Boolean);
-const TARGET_BUCKET = 'squarespace-mirror';
+const TARGET_BUCKET = argv.bucket || 'collection';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
