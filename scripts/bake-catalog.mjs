@@ -230,7 +230,7 @@ console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.le
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.
-let descAdded = 0, galleryMerged = 0;
+let descAdded = 0, galleryMerged = 0, heroOverridden = 0;
 for (const p of rolled) {
   const lp = findLiveProduct(p.slug, p.title);
   if (!lp) continue;
@@ -245,9 +245,34 @@ for (const p of rolled) {
     p.primaryImage = imgs[0];
     p.imageCount = imgs.length;
     galleryMerged++;
+    continue;
+  }
+  // Hero override for rolled families: when a family was assembled from
+  // multiple RMS variants (e.g. flatware sets, goblets, trays, stoneware),
+  // the default cover photo is whichever variant happened to sort first —
+  // typically a single-utensil shot. The live Squarespace tile shows a
+  // stylized group hero; use it as the cover image while keeping owner
+  // uploads as the rest of the gallery for the detail view.
+  const isRolled = (p.variants && p.variants.length > 0);
+  if (isRolled && lp.gallery && lp.gallery.length) {
+    const liveHero = lp.gallery[0];
+    const seen = new Set();
+    const merged = [];
+    const pushUrl = (url) => {
+      if (!url || seen.has(url)) return;
+      seen.add(url);
+      merged.push({ url, position: merged.length, isHero: merged.length===0, inferredFilename: null, altText: p.title });
+    };
+    pushUrl(liveHero);
+    for (const img of (p.images || [])) pushUrl(typeof img === 'string' ? img : img.url);
+    for (const u of lp.gallery.slice(1)) pushUrl(u);
+    p.images = merged;
+    p.primaryImage = merged[0];
+    p.imageCount = merged.length;
+    heroOverridden++;
   }
 }
-console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}`);
+console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`);
 
 
 
