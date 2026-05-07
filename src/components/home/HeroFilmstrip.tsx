@@ -205,26 +205,7 @@ function FilmstripFrame({
           />
         )}
 
-        {hasVideo && (isHover || isAudio) && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAudioToggle(clip.id);
-            }}
-            aria-label={isAudio ? "Mute" : "Unmute"}
-            aria-pressed={isAudio}
-            className={cn(
-              "absolute bottom-2 right-2 z-10",
-              "flex h-8 w-8 items-center justify-center",
-              "rounded-full bg-charcoal/70 text-paper backdrop-blur-sm",
-              "transition-opacity duration-200",
-              "hover:bg-charcoal/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper/60",
-            )}
-          >
-            {isAudio ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-          </button>
-        )}
+        {/* mute toggle removed — clips stay muted on home */}
 
         {hasVideo && reduced && (
           <button
