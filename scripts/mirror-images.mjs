@@ -39,7 +39,8 @@ const supa = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: 
 const catalog = JSON.parse(fs.readFileSync('src/data/inventory/current_catalog.json', 'utf8'));
 
 function classify(url) {
-  if (url.includes(`/${TARGET_BUCKET}/`)) return 'already-mirrored';
+  if (url.includes(`/${TARGET_BUCKET}/`)) return 'already-in-target';
+  if (url.includes('/squarespace-mirror/')) return 'squarespace-mirror-bucket';
   if (url.includes('squarespace-cdn.com') || url.includes('static1.squarespace.com')) return 'squarespace-cdn';
   if (url.includes('/storage/v1/object/public/inventory/')) return 'inventory-bucket';
   if (url.includes('/storage/v1/object/public/')) return 'other-supabase';
