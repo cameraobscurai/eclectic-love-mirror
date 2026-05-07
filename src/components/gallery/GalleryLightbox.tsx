@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
+import { CrossfadeImage } from "./CrossfadeImage";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
