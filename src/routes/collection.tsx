@@ -50,7 +50,7 @@ const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
 const SEARCH_DEBOUNCE_MS = 280;
 
-const SORTS = ["type", "az"] as const;
+const SORTS = ["type", "az", "tonal"] as const;
 type SortKey = (typeof SORTS)[number];
 
 const DENSITIES = ["comfortable", "dense"] as const;
