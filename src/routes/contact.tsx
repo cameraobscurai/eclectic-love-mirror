@@ -278,7 +278,7 @@ function ContactPage() {
                       <UnderlineInput
                         value={projectDate}
                         onChange={setProjectDate}
-                        placeholder="e.g. October 2026"
+                        placeholder="E.G. OCTOBER 2026"
                       />
                     </Field>
                   </div>
@@ -361,8 +361,8 @@ function ContactPage() {
                       onChange={(e) => setVision(e.target.value)}
                       rows={6}
                       required
-                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[15px] leading-relaxed text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
-                      placeholder="Colorway, materials, inventory references, and venue details are all great places to start."
+                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
+                      placeholder="COLORWAY, MATERIALS, INVENTORY REFERENCES, AND VENUE DETAILS ARE ALL GREAT PLACES TO START."
                     />
                   </Field>
                 </FormSection>
@@ -381,8 +381,8 @@ function ContactPage() {
                   >
                     {submitting ? "SENDING…" : "SEND INQUIRY"}
                   </button>
-                  <p className="mt-6 text-[11px] text-charcoal/45">
-                    Or email us directly at{" "}
+                  <p className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                    OR EMAIL US DIRECTLY AT{" "}
                     <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
                       {SUPPORT_EMAIL}
                     </a>
@@ -474,7 +474,7 @@ function UnderlineInput({
       required={required}
       autoComplete={autoComplete}
       placeholder={placeholder}
-      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[15px] text-charcoal placeholder:text-charcoal/35 transition-colors"
+      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[12px] uppercase tracking-[0.18em] text-charcoal placeholder:text-charcoal/35 transition-colors"
     />
   );
 }
@@ -525,9 +525,9 @@ function SuccessPanel() {
       <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
         Thank you. Your inquiry is with the atelier.
       </h2>
-      <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-charcoal/70">
-        We respond within two business days. If your event is time-sensitive,
-        email us directly at{" "}
+      <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
+        WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE,
+        EMAIL US DIRECTLY AT{" "}
         <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
           {SUPPORT_EMAIL}
         </a>
