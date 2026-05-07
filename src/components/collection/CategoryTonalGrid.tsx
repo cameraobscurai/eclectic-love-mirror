@@ -106,14 +106,18 @@ export function CategoryTonalGrid({
           height: 100%;
           gap: 0;
         }
+        [data-tonal-grid] > button { min-height: 44px; }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(6, 1fr);
             grid-auto-rows: auto;
             height: 100%;
-            padding-bottom: 0;
+            padding: 8px;
+            gap: 8px;
+            background: var(--paper);
           }
+          [data-tonal-grid] > button { min-height: 64px; }
         }
       `}</style>
       <div
