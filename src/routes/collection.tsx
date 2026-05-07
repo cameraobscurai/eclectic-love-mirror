@@ -456,6 +456,31 @@ function CollectionPage() {
   );
   const hasMore = visibleProducts.length > visibleCount;
 
+  // Infinite-scroll sentinel — when this empty div enters the viewport
+  // (with a generous rootMargin so the next batch is fetched before the
+  // user reaches the end), bump the visible window by BATCH_INCREMENT.
+  const loadMoreSentinelRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = loadMoreSentinelRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisibleCount((c) =>
+              Math.min(c + BATCH_INCREMENT, visibleProducts.length),
+            );
+            break;
+          }
+        }
+      },
+      { rootMargin: "1200px 0px" },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [hasMore, visibleProducts.length]);
+
   // ---------- Scroll-spy ----------
   // Reads `data-spy-section="<browseGroupId>"` off ProductTile <li> nodes and
   // produces an active group + per-group fill 0..1. Drives the right-edge
