@@ -105,7 +105,7 @@ function HomePage() {
         {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
         <div
           className={cn(
-            "pt-28 md:pt-32 pb-6 md:pb-10 px-4 text-center transition-opacity duration-700",
+            "pt-24 md:pt-28 pb-3 md:pb-4 px-4 text-center transition-opacity duration-700",
             loaded ? "opacity-100" : "opacity-0",
           )}
         >
@@ -121,7 +121,7 @@ function HomePage() {
             Eclectic&nbsp;Hive
           </h1>
           <p
-            className="mx-auto mt-3 md:mt-4 max-w-3xl font-brand italic text-charcoal/70"
+            className="mx-auto mt-2 max-w-3xl font-brand italic text-charcoal/70"
             style={{
               fontWeight: 400,
               fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)",
@@ -145,7 +145,7 @@ function HomePage() {
         </div>{/* /desktop-only block */}
 
         {/* CTA bar */}
-        <div className="px-4 pb-8 pt-8 md:px-8 md:pb-12 md:pt-12">
+        <div className="px-4 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
           <div className="mx-auto max-w-5xl">
             <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
               {DESTINATIONS.map((dest, i) => (

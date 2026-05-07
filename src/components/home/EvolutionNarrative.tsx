@@ -1,15 +1,13 @@
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * EvolutionNarrative
  * ------------------
- * Scroll-driven manifesto. Each line dims-in/dims-out as it enters and
- * leaves the viewport center, so the reader always has one "active" thought.
- *
- * - Pure visual; no behavior. Skips the highlight under reduced-motion.
- * - Section eyebrow + final brand-mark closer book-end the arc.
+ * Scroll-driven manifesto with PRECISE single-line highlighting (à la
+ * obscura.works). The line whose vertical center is closest to the
+ * viewport center is "active" — full opacity. Everything else snaps to a
+ * dim baseline. No soft gradient where 3 lines look half-bright at once.
  */
 
 type Line = { text: string; emphasis?: "section" | "brand" | "closer" };
@@ -37,46 +35,81 @@ const LINES: Line[] = [
 ];
 
 export function EvolutionNarrative() {
-  const reduced = useReducedMotion();
+  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const recompute = () => {
+      const vCenter = window.innerHeight / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      lineRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const c = r.top + r.height / 2;
+        const d = Math.abs(c - vCenter);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      setActiveIndex(best);
+    };
+
+    recompute();
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        recompute();
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", recompute);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", recompute);
+    };
+  }, []);
 
   return (
     <section
       aria-labelledby="evolution-heading"
-      className="relative bg-paper text-charcoal py-32 md:py-48 px-6"
+      className="relative bg-paper text-charcoal py-24 md:py-36 px-6"
     >
       <div className="mx-auto max-w-3xl">
         {LINES.map((line, i) => (
-          <NarrativeLine key={i} line={line} index={i} reduced={!!reduced} />
+          <NarrativeLine
+            key={i}
+            line={line}
+            active={i === activeIndex}
+            registerRef={(el) => (lineRefs.current[i] = el)}
+          />
         ))}
       </div>
     </section>
   );
 }
 
-function NarrativeLine({ line, index, reduced }: { line: Line; index: number; reduced: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Track this line's progress through the viewport.
-  // 0 = just entering at the bottom; 1 = just exited at the top.
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 90%", "end 10%"],
-  });
-
-  // Bell curve: dim → bright → dim, peaking when the line crosses center.
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.45, 0.55, 1],
-    [0.18, 1, 1, 0.18],
-  );
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [16, 0, -8]);
-
+function NarrativeLine({
+  line,
+  active,
+  registerRef,
+}: {
+  line: Line;
+  active: boolean;
+  registerRef: (el: HTMLDivElement | null) => void;
+}) {
   if (line.emphasis === "section") {
     return (
-      <motion.div
-        ref={ref}
-        style={reduced ? undefined : { opacity, y }}
-        className="mb-10 md:mb-16"
+      <div
+        ref={registerRef}
+        className="mb-8 md:mb-12 transition-opacity duration-300"
+        style={{ opacity: active ? 1 : 0.55 }}
       >
         <h2
           id="evolution-heading"
@@ -89,8 +122,8 @@ function NarrativeLine({ line, index, reduced }: { line: Line; index: number; re
         >
           {line.text}
         </h2>
-        <div className="mt-4 h-px w-12 bg-charcoal/30" />
-      </motion.div>
+        <div className="mt-3 h-px w-12 bg-charcoal/30" />
+      </div>
     );
   }
 
@@ -98,33 +131,32 @@ function NarrativeLine({ line, index, reduced }: { line: Line; index: number; re
   const isCloser = line.emphasis === "closer";
 
   return (
-    <motion.div
-      ref={ref}
-      style={reduced ? undefined : { opacity, y }}
+    <div
+      ref={registerRef}
       className={cn(
-        "py-3 md:py-4",
-        (isBrand || isCloser) && "mt-8 md:mt-12",
+        "py-2 md:py-2.5 transition-all duration-300 ease-out",
+        (isBrand || isCloser) && "mt-6 md:mt-10",
       )}
+      style={{
+        opacity: active ? 1 : 0.18,
+        transform: active ? "translateY(0)" : "translateY(2px)",
+      }}
     >
       <p
         className={cn(
           "font-brand text-charcoal",
-          isBrand
-            ? "uppercase tracking-[0.18em]"
-            : isCloser
-              ? "italic"
-              : "italic",
+          isBrand ? "uppercase tracking-[0.18em]" : "italic",
         )}
         style={{
           fontWeight: 400,
           fontSize: isBrand
             ? "clamp(1.6rem, 3.6vw, 2.75rem)"
             : "clamp(1.35rem, 2.6vw, 2.1rem)",
-          lineHeight: 1.3,
+          lineHeight: 1.25,
         }}
       >
         {line.text}
       </p>
-    </motion.div>
+    </div>
   );
 }
