@@ -474,7 +474,7 @@ function UnderlineInput({
       required={required}
       autoComplete={autoComplete}
       placeholder={placeholder}
-      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[15px] text-charcoal placeholder:text-charcoal/35 transition-colors"
+      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[12px] uppercase tracking-[0.18em] text-charcoal placeholder:text-charcoal/35 transition-colors"
     />
   );
 }
