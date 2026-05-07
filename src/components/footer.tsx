@@ -14,8 +14,8 @@ const informationLinks = [
 
 // Layout-only utilities. Type roles live in src/styles.css as
 // .footer-wordmark / .footer-eyebrow / .footer-link.
-const COL_HEADING = "footer-eyebrow text-cream/40 mb-6 sm:mb-8";
-const COL_LIST = "space-y-3 sm:space-y-4";
+const COL_HEADING = "footer-eyebrow text-cream/40 mb-4 sm:mb-8";
+const COL_LIST = "space-y-2.5 sm:space-y-4";
 const LINK_CLASS =
   "footer-link inline-block py-1 text-cream/70 hover:text-cream transition-colors";
 const META_CLASS = "footer-eyebrow text-cream/35";
