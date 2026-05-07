@@ -83,10 +83,10 @@ interface FooterColumnProps {
 
 function FooterColumn({ title, links, className }: FooterColumnProps) {
   const linkClass =
-    "inline-block py-1 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cream/70 hover:text-cream transition-colors";
+    "inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors";
   return (
     <div className={className}>
-      <h3 className="text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] text-cream/40 mb-3 sm:mb-5">
+      <h3 className="text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-5">
         {title}
       </h3>
       <ul className="space-y-2.5 sm:space-y-3">
