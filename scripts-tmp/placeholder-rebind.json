@@ -1,0 +1,1112 @@
+{
+  "generated_at": "2026-05-07T05:01:48.229Z",
+  "placeholder_count": 68,
+  "affected_rows": 68,
+  "summary": {
+    "HIGH": 31,
+    "MED": 6,
+    "TIE": 0,
+    "NONE": 4,
+    "NO_FEED": 27
+  },
+  "proposals": {
+    "HIGH": [
+      {
+        "rms_id": "288",
+        "title": "Collin Wood-Filled Concrete Coffee Table",
+        "category": "tables",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/collin/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/collin/02-COLLIN_Coffee_Table_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/collin/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "collin",
+            "title": "Collin Wood-Filled Concrete Coffee Table",
+            "score": 5,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a7b60c9985304315510/1743788872748/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824251475-PW18PS9E8FVL2PRU8DHW/COLLIN_Coffee_Table_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2407",
+        "title": "Versailles Cane Coffee Table",
+        "category": "tables",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/versailles/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/versailles/02-VERSAILLES_Coffee_Table_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/versailles/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "versailles",
+            "title": "Versailles Cane Coffee Table",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a9f60c998530431580a/1747952773136/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1637792659173-FKK2E4GJ8SJE3XG2H2P4/VERSAILLES+Coffee+Table+0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2408",
+        "title": "Francoise Cane Side Table",
+        "category": "tables",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/francoise/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/francoise/02-FRANCOISE_Side_Table_0.png",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/francoise/03-FRANCOISE_Detail.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge-tables/francoise/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "francoise",
+            "title": "Francoise Cane Side Table",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a8060c998530431559a/1761774986335/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1637791537258-YYJOMZ2NS0E6QLIU8IN7/FRANCOISE+Side+Table+0.png",
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1637791977024-JS8GMF8NCOHPTIBE180Z/FRANCOISE+Detail.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1570",
+        "title": "Wadsworth Concrete & Birch Bar",
+        "category": "bars",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/wadsworth/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/wadsworth/02-WADSWORTH_Bar_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/wadsworth/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "wadsworth",
+            "title": "Wadsworth Concrete & Birch Bar",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867f3c25a9239f5eeff05/1742416228769/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603823604047-74QSFYIM1JWJESKHDUPN/WADSWORTH_Bar_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1354",
+        "title": "Walden Concrete & Birch Bar",
+        "category": "bars",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/walden/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/walden/02-WALDEN_Bar_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/walden/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "walden",
+            "title": "Walden Concrete & Birch Bar",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867f4c25a9239f5eeff08/1742416267217/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603823604728-YKQDTQS0UGAUDTFVH3S6/WALDEN_Bar_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "188",
+        "title": "Norwood Concrete & Split Wood Top Bar",
+        "category": "bars",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/norwood/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/norwood/02-NORWOOD_Bar_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/norwood/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "norwood",
+            "title": "Norwood Concrete & Wood Top Bar",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867e3c25a9239f5eefead/1742416323301/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603823587451-1QHQDDT1QQXP11QAR4QL/NORWOOD_Bar_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1415",
+        "title": "Elwood Concrete & Split Wood Bar",
+        "category": "bars",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/elwood/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/elwood/02-ELWOOD_Bar_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/elwood/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "elwood",
+            "title": "Elwood Concrete & Split Wood Bar",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867dec25a9239f5eefe94/1742416381132/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603823582228-XW5Y9WHE8TT08S2OFOZF/ELWOOD_Bar_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "351",
+        "title": "Estes Reclaimed Dining Table",
+        "category": "tables",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/estes-dining/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/estes-dining/02-ESTES_Dining_Table_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/estes-dining/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "estes-dining",
+            "title": "Estes Reclaimed Dining Table",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/5f986a7f60c9985304315579/1757537791532/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824255906-N3A1NU9OS97GH1J4MMNU/ESTES_Dining_Table_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2600",
+        "title": "Orla 13\" Chestnut Leather Charger",
+        "category": "tableware",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/orla-chestnut-leather-charger/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/orla-chestnut-leather-charger/02-ORLA_Leather_Charger.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/orla-chestnut-leather-charger/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "orla-chestnut-leather-charger",
+            "title": "Orla Chestnut Leather Charger",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/61ddd5d5ce87c92c376a1871/61c0c9fef49a5b056d670abb/1756484944788/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1640025093709-X5N24E74CMXUPS149AFV/ORLA+Leather+Charger.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1807",
+        "title": "Ginny Whitewash Wood Bowl",
+        "category": "serveware",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/ginny/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/ginny/02-GINNY_Bowl_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/ginny/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "ginny",
+            "title": "Ginny Whitewash Wood Bowl",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/61ddd5d5ce87c92c376a1871/5fa2eb7ef1f7580f59f38f11/1756514475354/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512638558-D646LE4ITWVTTK55ZZ2H/GINNY_Bowl_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1630",
+        "title": "Atlas 8x10 Turkish Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/atlas/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/atlas/02-ATLAS_Rug_8x10_1.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/atlas/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "atlas",
+            "title": "Atlas 8x10 Turkish Rug",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a478b6c475776f22686d/1724703638927/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953208374-THFBL3N13LZSPWJZBD9X/ATLAS_Rug_8x10_1.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1825",
+        "title": "Dayna 8x10 Grey Pattern Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/dayna/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/dayna/02-DAYNA_Rug_8x10_1.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/dayna/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "dayna",
+            "title": "Dayna 8x10 Grey Pattern Rug",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a47db6c475776f2268ed/1724703519894/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953214071-30S43N1UO2GR3KOR871I/DAYNA_Rug_8x10_1.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "403",
+        "title": "Feride 5x8 Kilim Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/kilim/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/kilim/02-KILIM_5x8_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/kilim/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "kilim",
+            "title": "Feride 5x8 Kilim Rug",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a488b6c475776f226a08/1724703519904/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953224376-UGEI56WJ44QTU3FCY08B/KILIM_5x8_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "396",
+        "title": "Gopala 7x7 Natural Tan Hide Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/gopala/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/gopala/02-GOPALA_Natural_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/gopala/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "gopala",
+            "title": "Gopala Natural Tan Hide Rug",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a483b6c475776f22698c/1724703519907/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953219698-SSFBSJS9TKG8YHF0XY1K/GOPALA_Natural_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1933",
+        "title": "Harlow 8x10 Grey Area Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/harlow/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/harlow/02-HARLOW_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/harlow/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "harlow",
+            "title": "Harlow 8x10 Grey Rug",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a484b6c475776f2269af/1725997786265/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953220943-6RYVBJ28BT2PUT7WLKD8/HARLOW_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1817",
+        "title": "Sheridan 8x10 Olive Chenille Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/sheridan/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/sheridan/02-SHERIDAN_8x10_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/sheridan/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "sheridan",
+            "title": "Sheridan 8x10 Olive Chenille Rug",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a48eb6c475776f226acb/1724703519957/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953231030-8200MGJIGA8TDKGK43K8/SHERIDAN_8x10_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "415",
+        "title": "Shiraz 8x10 Ivory & Grey Woven Wool Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/shiraz/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/shiraz/02-SHIRAZ_8x10_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/shiraz/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "shiraz",
+            "title": "Shiraz 8x10 Ivory Grey Wool Rug",
+            "score": 5,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a490b6c475776f226ad4/1744396280873/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953233006-UMLUDDMJUNQO07QCBIIK/SHIRAZ_8x10_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1615",
+        "title": "Webb 5x8 Abstract Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/webb/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/webb/02-WEBB_5x8_Rug_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/webb/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "webb",
+            "title": "Webb 5x8 Abstract Rug",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a493b6c475776f226b30/1756504661262/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953236126-KVLI3JPSW4MAWNQL5Y7H/WEBB_5x8_Rug_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1476",
+        "title": "Minnith Olive Basket",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/minnith/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/minnith/02-MINNITH_Olive_Basket_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/minnith/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "minnith",
+            "title": "Minnith Olive Basket",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb9e9e0607048e815217/1757107337271/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512671090-LRCP4QN2B0QOAJ2MBIF8/MINNITH_Olive_Basket_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2113",
+        "title": "Balsley Vintage Step Ladder",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/balsley/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/balsley/02-BALSLEY_Step_Ladder_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/balsley/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "balsley",
+            "title": "Balsley Vintage Step Ladder",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb5cf1f7580f59f38ef8/1757107337293/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512604524-3T5PI8NOBNLO7SYXUY9M/BALSLEY_Step_Ladder_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1968",
+        "title": "Bill Vintage Cross Country Ski Pair",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/bill/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/bill/02-Bill_Cross_Country_Skis_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/bill/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "bill",
+            "title": "Bill Vintage Cross Country Ski Pair",
+            "score": 6,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb5ff1f7580f59f38ef9/1757107337298/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512607614-76CW71PFR2K0M3OYJUQU/Bill_Cross_Country_Skis_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1512",
+        "title": "Lemiere Vintage Binoculars w/ Leather Case",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/lemiere/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/lemiere/02-LEMIERE_Binoculars.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/lemiere/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "lemiere",
+            "title": "Lemiere Vintage Binoculars w/ Leather Case",
+            "score": 5,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb979e0607048e815213/1757107337307/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512663279-3LAUZTJI4Y7LQ9ZPTL4K/LEMIERE_Binoculars.PNG"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "596",
+        "title": "Sherlock Desktop Magnifying Glass",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/sherlock/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/sherlock/02-SHERLOCK_Magnifying_Glass_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/sherlock/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "sherlock",
+            "title": "Sherlock Desktop Magnifying Glass",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2ebb8f1f7580f59f38f2e/1757107337313/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512696737-1BFEBKXW81ZH8MRFLUNQ/SHERLOCK_Magnifying_Glass_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1508",
+        "title": "Edvard Vintage Horn Ashtray",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/edvard/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/edvard/02-EDVARD_Horn_Ashtray.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/edvard/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "edvard",
+            "title": "Edvard Vintage Horn Ashtray",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb749e0607048e8151fb/1757107337317/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512628646-6ST9WYQG1MH3FEMJ1GG7/EDVARD_Horn_Ashtray.PNG"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1682",
+        "title": "Garry Wagon Wheel",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/garry/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/garry/02-GARRY_Wagon_Wheel_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/garry/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "garry",
+            "title": "Garry Wagon Wheel",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb7cf1f7580f59f38f0e/1757107337324/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512636427-N6HQX05WC49BTNCYC2WQ/GARRY_Wagon_Wheel_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1542",
+        "title": "Rodgers Lariat Rope",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/rodgers/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/rodgers/02-RODGERS_Lariat.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/rodgers/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "rodgers",
+            "title": "Rodgers Lariat Rope",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2ebb29e0607048e815222/1757107337325/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512690567-AK4A3TEE4Z3ZZRQJ9SA7/RODGERS_Lariat.PNG"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "814",
+        "title": "Felix Natural Antler",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/felix/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/felix/02-FELIX_Antler_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/felix/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "felix",
+            "title": "Felix Natural Antler",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb769e0607048e8151fc/1757107337335/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512630734-4PG8NLWY5PW8J9KMV42L/FELIX_Antler_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2049",
+        "title": "Niketas Assorted Vintage Trophy",
+        "category": "styling",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/gareth/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/gareth/02-GARETH_Trophy_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/gareth/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "gareth",
+            "title": "Niketas Vintage Trophy Collection",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb7b377bf1713d437e52/1757107337350/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604512635597-UNBH2T96J7YY0LCRMZ0S/GARETH_Trophy_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2535",
+        "title": "Brantley Dark Orange Metal Wood Burning Chiminea",
+        "category": "large-decor",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/brantley-metal-chiminea/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/brantley-metal-chiminea/02-BRANTLEY_Chiminea_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/brantley-metal-chiminea/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "brantley-metal-chiminea",
+            "title": "BRANTLEY METAL CHIMINEA",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988b16f8d2f740b727cbc0/618452ca6397b265f77604ff/1748901450303/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1636061920057-15KIABDLX169YZQ63YFS/BRANTLEY+Chiminea+0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2154",
+        "title": "Warren Metal Canopy",
+        "category": "large-decor",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/warren/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/warren/02-Canopy.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/large-decor/warren/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "warren",
+            "title": "Warren Metal Canopy",
+            "score": 3,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988b16f8d2f740b727cbc0/5fa9addc92f0a339db12ad72/1757629177478/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604955612551-D0YWWF86Y2YF4WR39DP1/Canopy.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2485",
+        "title": "Eustace 36\" White Cast Antler Chandelier",
+        "category": "chandeliers",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/eustace-white-antler-chandelier/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/eustace-white-antler-chandelier/02-EUSTACE_White_Antler_Chandelier_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/eustace-white-antler-chandelier/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "eustace-white-antler-chandelier",
+            "title": "Eustace White Antler Chandelier",
+            "score": 4,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60ef1458421be65c9d49f13c/1759341610141/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1626281824938-0IEK2QS6YQVQXHLZ3BBS/EUSTACE+White+Antler+Chandelier+0.png"
+            ]
+          }
+        ]
+      }
+    ],
+    "MED": [
+      {
+        "rms_id": "2329",
+        "title": "Calvary Wool Charcoal Throw",
+        "category": "pillows-throws",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-blue/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-blue/02-Calvary_Blue_Tan_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-blue/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "calvary-blue",
+            "title": "Calvary Charcoal Throw",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be772ab804e83285569/1756509777515/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824615282-C84FXOLJHT3FR5I2090R/Calvary_Blue_Tan_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2331",
+        "title": "Calvary Wool Grey Throw",
+        "category": "pillows-throws",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-grey/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-grey/02-Calvary_Grey_Red_0_2_.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-grey/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "calvary-grey",
+            "title": "Calvary Grey Throw",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be772ab804e83285587/1756509777517/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824615946-Z17KU2WMFU7XVUCRA0IM/Calvary_Grey_Red_0__2_.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2330",
+        "title": "Calvary Wool Olive Throw",
+        "category": "pillows-throws",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-olive/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-olive/02-Calvary_Olive_Red_0_4_.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/calvary-olive/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "calvary-olive",
+            "title": "Calvary Olive Throw",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be872ab804e8328558b/1773173727724/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824616708-HP1G47A1BC2SEFW4EMGR/Calvary_Olive_Red_0__4_.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "2346",
+        "title": "Tassel Houndstooth Throw",
+        "category": "pillows-throws",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/houndstooth/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/houndstooth/02-Houndstooth_0_3_.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/textiles/houndstooth/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "houndstooth",
+            "title": "Tassel Houndstooth Throw",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986bf372ab804e83285687/1724716036569/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603824627352-SQQO9V6XOXFJ027IKRHE/Houndstooth_0__3_.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "1932",
+        "title": "Hathor Light Colored Hide Rug",
+        "category": "rugs",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/hathor/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/hathor/02-HATHOR_Champagne_Hide_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/rugs/hathor/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "hathor",
+            "title": "Hathor Light Colored Hide Rug",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a485b6c475776f2269b1/1724703519914/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604953221564-G532UHPNBW3WU77FY9V9/HATHOR_Champagne_Hide_0.png"
+            ]
+          }
+        ]
+      },
+      {
+        "rms_id": "880",
+        "title": "Nixon Globe Lamp",
+        "category": "lighting",
+        "current_images": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/nixon/01-image-0",
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/nixon/02-NIXON_Table_Lamp_0.png"
+        ],
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/nixon/01-image-0"
+        ],
+        "candidates": [
+          {
+            "urlId": "nixon",
+            "title": "Nixon Globe Lamp",
+            "score": 2,
+            "hero": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/5f988c5d72676f623779f53d/1759341610167/",
+            "gallery": [
+              "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1603832925940-42YBLN8CT6MVNHLKAXFP/NIXON_Table_Lamp_0.png"
+            ]
+          }
+        ]
+      }
+    ],
+    "TIE": [],
+    "NONE": [
+      {
+        "rms_id": "1929",
+        "title": "Vespa Dark Wood Shelf",
+        "category": "storage"
+      },
+      {
+        "rms_id": "1928",
+        "title": "Berkshire Wood Shelf",
+        "category": "storage"
+      },
+      {
+        "rms_id": "1857",
+        "title": "Jett Brass & Wood Community Table",
+        "category": "tables"
+      },
+      {
+        "rms_id": "2859",
+        "title": "Ophidia 10\" Serpent Plate",
+        "category": "tableware"
+      }
+    ],
+    "NO_FEED": [
+      {
+        "rms_id": "2747",
+        "title": "Vixxen Black Bar Stool",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/cocktail-bar/vixxen-black-bar-stool/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "735",
+        "title": "Indiwin Black Leather Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/indiwin/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "1770",
+        "title": "Brooklyn Plush Charcoal Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/brooklyn/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2619",
+        "title": "Sylvanus Green & Ash Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/sylvanus-green-ash-sofa/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "1820",
+        "title": "Lindt Toffee Velvet Channel Tufted Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lindt/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2118",
+        "title": "Gwenevere Mulberry Daybed",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/gwenevere/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2717",
+        "title": "Erin Antique White French Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/erin-antique-white-french-sofa/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2714",
+        "title": "Eloise Antique White French Loveseat",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/eloise-antique-white-french-loveseat/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2741",
+        "title": "Cicely Wicker + Linen Loveseat",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/cicely-wicker-linen-loveseat/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "945",
+        "title": "Talon Black Metal Sofa",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/talon/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "74",
+        "title": "Pierre Grey Silk Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/pierre/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "721",
+        "title": "Fawn Natural Cane Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/fawn/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "435",
+        "title": "Nomad Wood Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/nomad/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2884",
+        "title": "Bard Deconstructed Leather Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/bard-deconstructed-leather-chair/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "44",
+        "title": "Amun Brown Leather Butterfly Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/amun/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "76",
+        "title": "Poe Deconstructed Leather Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/poe/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2618",
+        "title": "Suhana Cognac Leather Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/suhana-cognac-leather-chair/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "1814",
+        "title": "Corwin Canvas Lounge Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/corwin/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2970",
+        "title": "Adelaide Antique Arm Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/adelaide-antique-arm-chair/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2749",
+        "title": "Carwyn White + Wood Chair",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/carwyn-white-wood-chair/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "1994",
+        "title": "Ygritte Ebony Tufted Bench",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/ygritte/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2002",
+        "title": "Geraldine Goat Fur Wood Bench",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/geraldine/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "2025",
+        "title": "Morrison Charcoal Ottoman",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/morrison/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "675",
+        "title": "Jessie Cow Hide Ottoman",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/jessie/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "676",
+        "title": "Blanc White & Grey Cow Hide Ottoman",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/blanc/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "749",
+        "title": "Omar Brown Leather Ottoman",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/omar/01-image-0"
+        ]
+      },
+      {
+        "rms_id": "127",
+        "title": "Joseph Goat Hide Ottoman",
+        "category": "seating",
+        "current_bad": [
+          "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/joseph/01-image-0"
+        ]
+      }
+    ]
+  }
+}
