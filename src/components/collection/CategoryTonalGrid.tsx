@@ -234,7 +234,7 @@ function TonalCell({
         <img
           src={heroSrc}
           srcSet={heroSrcSet}
-          sizes="(min-width: 1024px) 16vw, (min-width: 640px) 32vw, 48vw"
+          sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
           width={600}
           height={480}
