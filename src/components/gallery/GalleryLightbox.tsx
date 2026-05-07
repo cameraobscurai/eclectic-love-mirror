@@ -184,11 +184,6 @@ export function GalleryLightbox({
               {project.year}
             </p>
 
-            {project.summary && (
-              <p className="mt-7 text-[14px] leading-relaxed text-cream/70 max-w-sm">
-                {project.summary}
-              </p>
-            )}
           </div>
 
           <div className="mt-auto pt-10 flex items-center justify-between gap-6">
