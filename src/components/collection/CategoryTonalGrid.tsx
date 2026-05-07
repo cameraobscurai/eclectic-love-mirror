@@ -38,7 +38,11 @@ const ORDER: BrowseGroupId[] = [
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
+// Safety net: if a tile's image hangs (CDN slow, network blip), reveal
+// the cohort anyway after this many ms so the page never looks broken.
+// Set generously — the common case is "all images decoded in <800ms" and
+// the synchronized fade fires well before the timeout matters.
+const FIRST_ROW_REVEAL_TIMEOUT_MS = 2500;
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -78,8 +82,11 @@ export function CategoryTonalGrid({
     [byId],
   );
 
-  // First-paint cohort = top desktop row.
-  const cohortSize = Math.min(COLS.lg, tiles.length);
+  // First-paint cohort = the entire grid. All 15 tiles fit in the viewport
+  // on every breakpoint and the images are CDN-resized to ≤600w, so loading
+  // them together is cheap. Revealing them as one synchronized fade avoids
+  // the awkward "row 1 in, rows 2–3 still empty" cascade on fresh visits.
+  const cohortSize = tiles.length;
   const [doneCount, setDoneCount] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
 
