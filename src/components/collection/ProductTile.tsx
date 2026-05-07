@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
@@ -53,6 +53,17 @@ export function ProductTile({
 }: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
+
+  // Walk forward through `product.images` whenever the current candidate
+  // fails (404, blank/zero-byte file, etc). The bake-time `primaryImage`
+  // pointer is sometimes a transparent placeholder while the real hero
+  // sits at images[1] — this lets the tile self-heal without needing a
+  // re-bake. Reset whenever the product itself swaps.
+  const [imgIdx, setImgIdx] = useState(0);
+  useEffect(() => {
+    setImgIdx(0);
+  }, [product.id]);
+  const currentImage = product.images[imgIdx] ?? product.primaryImage ?? null;
 
   // Cards 0-11 render full internals from mount. Cards 12+ render a stable
   // shell until they enter the 600px-margin viewport window. Once `near`
@@ -147,41 +158,51 @@ export function ProductTile({
               aria-hidden
               className="absolute inset-0 bg-white"
               style={{
-                opacity: loaded || !product.primaryImage ? 0 : 1,
+                opacity: loaded || !currentImage ? 0 : 1,
                 transition: "opacity 240ms ease-out",
               }}
             />
 
-            {product.primaryImage ? (
+            {currentImage ? (
               <img
-                src={withCdnWidth(product.primaryImage.url, 750)}
+                // Key on the active image URL so React tears down + remounts
+                // when we walk forward to the next candidate. Without the
+                // key, `loaded` would stay true and the broken paint would
+                // linger.
+                key={currentImage.url}
+                src={withCdnWidth(currentImage.url, 750)}
                 srcSet={
-                  buildCdnSrcSet(product.primaryImage.url, [500, 750, 1100]) ||
+                  buildCdnSrcSet(currentImage.url, [500, 750, 1100]) ||
                   undefined
                 }
                 sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
-                alt={product.primaryImage.altText ?? product.title}
+                alt={currentImage.altText ?? product.title}
                 width={800}
                 height={800}
                 loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
                 decoding="async"
-                // Inline so the preload scanner sees it before mount.
-                // Cast: React's types don't yet include fetchpriority.
                 {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
                 onLoad={() => setLoaded(true)}
-                data-fallback={product.primaryImage.fallbackUrl}
+                data-fallback={currentImage.fallbackUrl}
                 onError={(e) => {
                   const el = e.currentTarget;
+                  // 1) try the bake-time fallbackUrl (collection bucket → CDN)
                   if (el.dataset.fallback) {
                     imgFallback(e);
-                  } else {
-                    onImageFailed?.(product.id);
+                    return;
                   }
+                  // 2) walk to the next image in the gallery — covers the
+                  //    "first photo is blank, second one is the real hero"
+                  //    case the owner flagged.
+                  const next = imgIdx + 1;
+                  if (next < product.images.length) {
+                    setLoaded(false);
+                    setImgIdx(next);
+                    return;
+                  }
+                  // 3) nothing left — let the parent hide the tile.
+                  onImageFailed?.(product.id);
                 }}
-                // No padding — the source assets already carry their own
-                // transparent margin, so any wrapper padding shrinks the
-                // subject to a tiny thumbnail. object-contain fills the
-                // cell; object-center keeps the silhouette balanced.
                 className="absolute inset-0 h-full w-full object-contain object-center will-change-opacity"
                 style={{
                   opacity: loaded ? 1 : 0,
