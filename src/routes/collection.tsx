@@ -141,24 +141,24 @@ export const Route = createFileRoute("/collection")({
 });
 
 function CollectionSkeleton() {
+  // Mirrors <CategoryGalleryOverview> first paint: full-bleed white panel,
+  // hairline-padded 2/3/5/6 col grid of aspect-[5/4] sm:aspect-[4/5] tiles.
+  // Same column counts, same gaps, same aspect — so the cross-fade into
+  // the real overview is silent (no "different page" flash).
   return (
     <main className="min-h-screen bg-white">
-      {/* Sticky utility bar placeholder — matches real header height to
-          prevent layout shift on hydration. */}
       <div
-        className="sticky z-30 bg-white border-b border-charcoal/10"
-        style={{
-          top: "var(--nav-h)",
-          height: "var(--archive-utility-h)",
-        }}
-      />
-      <div className="px-6 lg:px-12 pt-10">
-        <div className="mx-auto" style={{ maxWidth: "var(--archive-canvas-max)" }}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px bg-charcoal/10">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-white aspect-[4/3]" />
-            ))}
-          </div>
+        className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4"
+        style={{ paddingTop: "calc(var(--nav-h, 4rem) + 0.75rem)" }}
+      >
+        <div className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-[#f6f6f6]"
+              aria-hidden
+            />
+          ))}
         </div>
       </div>
     </main>
