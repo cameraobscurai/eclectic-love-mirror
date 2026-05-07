@@ -87,12 +87,7 @@ function GalleryPage() {
     <main className="min-h-screen bg-charcoal text-cream">
       <GalleryHero total={galleryProjects.length} />
 
-      <GalleryFilters
-        filters={REGION_FILTERS}
-        active={filter}
-        counts={counts}
-        onChange={setFilter}
-      />
+      {/* Region filters hidden for now */}
 
       <GalleryFilmstrip projects={visibleProjects} onOpen={handleOpen} />
 
