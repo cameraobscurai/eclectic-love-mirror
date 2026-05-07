@@ -21,13 +21,13 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 sm:gap-10 md:gap-10">
           {/* Brand block — full row on mobile so the wordmark sets the tone. */}
           <div className="col-span-2 md:col-span-5">
-            <h2 className="font-brand text-[1.05rem] sm:text-[1.2rem] lg:text-[1.5rem] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-light">
+            <h2 className="font-brand text-[1.25rem] lg:text-[1.4rem] tracking-[0.18em] uppercase font-light">
               ECLECTIC HIVE
             </h2>
-            <p className="mt-4 sm:mt-6 text-cream/65 max-w-md leading-[1.6] text-[11px] sm:text-[13px] uppercase tracking-[0.14em] sm:tracking-[0.18em]">
+            <p className="mt-5 text-cream/65 max-w-md leading-[1.7] text-[11px] uppercase tracking-[0.18em]">
               AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE ENVIRONMENTS.
             </p>
-            <p className="mt-3 text-cream/55 max-w-md text-[11px] sm:text-[13px] uppercase tracking-[0.14em] sm:tracking-[0.18em]">
+            <p className="mt-3 text-cream/55 max-w-md text-[11px] uppercase tracking-[0.18em]">
               DENVER, COLORADO
             </p>
           </div>
@@ -41,14 +41,14 @@ export function Footer() {
 
           {/* Connect column */}
           <div className="col-span-2 md:col-span-3">
-            <h3 className="text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] text-cream/40 mb-3 sm:mb-5">
+            <h3 className="text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-5">
               CONNECT
             </h3>
-            <ul className="space-y-2.5 sm:space-y-3">
+            <ul className="space-y-3">
               <li>
                 <Link
                   to="/contact"
-                  className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cream/70 hover:text-cream transition-colors"
+                  className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors"
                 >
                   START A CONVERSATION
                 </Link>
@@ -56,7 +56,7 @@ export function Footer() {
               <li>
                 <a
                   href="mailto:info@eclectichive.com"
-                  className="inline-block py-1 text-[12px] uppercase tracking-[0.14em] sm:tracking-[0.18em] text-cream/70 hover:text-cream transition-colors break-all"
+                  className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors break-all"
                 >
                   INFO@ECLECTICHIVE.COM
                 </a>
@@ -66,10 +66,10 @@ export function Footer() {
         </div>
 
         {/* Bottom rule — quiet copyright */}
-        <div className="mt-10 sm:mt-16 pt-5 sm:pt-6 border-t border-cream/10 flex flex-col md:flex-row justify-between gap-2 sm:gap-3 text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] text-cream/35">
+        <div className="mt-12 sm:mt-16 pt-6 border-t border-cream/10 text-[11px] uppercase tracking-[0.22em] text-cream/35">
           <p>© {new Date().getFullYear()} ECLECTIC HIVE</p>
-          <p>DENVER, COLORADO</p>
         </div>
+
       </div>
     </footer>
   );
