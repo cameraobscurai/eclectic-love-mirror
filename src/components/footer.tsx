@@ -12,23 +12,25 @@ const informationLinks = [
   { href: "/privacy", label: "PRIVACY" },
 ] as const;
 
+// Shared rhythm tokens — match the home page spacing system.
+const COL_HEADING = "text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-6 sm:mb-8";
+const COL_LIST = "space-y-3 sm:space-y-4";
+const LINK_CLASS =
+  "inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors";
+const META_CLASS = "text-[11px] uppercase tracking-[0.22em] text-cream/35";
+
 export function Footer() {
   return (
     <footer className="bg-charcoal text-cream border-t border-cream/10">
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-12 sm:pt-16 lg:pt-24 pb-8 lg:pb-10">
-        {/* Top: brand block + columns. Mobile uses 2-col so STUDIO/INFO/CONNECT
-            don't each become a full-width block adding ~150px each. */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 sm:gap-10 md:gap-10">
-          {/* Brand block — full row on mobile so the wordmark sets the tone. */}
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-16 sm:pt-20 lg:pt-24 pb-8 lg:pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-y-12 sm:gap-y-14 gap-x-8 md:gap-x-10">
+          {/* Brand block */}
           <div className="col-span-2 md:col-span-5">
             <h2 className="font-brand text-[1.25rem] lg:text-[1.4rem] tracking-[0.18em] uppercase font-light">
               ECLECTIC HIVE
             </h2>
-            <p className="mt-5 text-cream/65 max-w-md leading-[1.7] text-[11px] uppercase tracking-[0.18em]">
+            <p className="mt-6 sm:mt-8 text-cream/65 max-w-md leading-[1.7] text-[11px] uppercase tracking-[0.18em]">
               AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE ENVIRONMENTS.
-            </p>
-            <p className="mt-3 text-cream/55 max-w-md text-[11px] uppercase tracking-[0.18em]">
-              DENVER, COLORADO
             </p>
           </div>
 
@@ -41,22 +43,17 @@ export function Footer() {
 
           {/* Connect column */}
           <div className="col-span-2 md:col-span-3">
-            <h3 className="text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-5">
-              CONNECT
-            </h3>
-            <ul className="space-y-3">
+            <h3 className={COL_HEADING}>CONNECT</h3>
+            <ul className={COL_LIST}>
               <li>
-                <Link
-                  to="/contact"
-                  className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors"
-                >
+                <Link to="/contact" className={LINK_CLASS}>
                   START A CONVERSATION
                 </Link>
               </li>
               <li>
                 <a
                   href="mailto:info@eclectichive.com"
-                  className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors break-all"
+                  className={`${LINK_CLASS} break-all`}
                 >
                   INFO@ECLECTICHIVE.COM
                 </a>
@@ -65,11 +62,11 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom rule — quiet copyright */}
-        <div className="mt-12 sm:mt-16 pt-6 border-t border-cream/10 text-[11px] uppercase tracking-[0.22em] text-cream/35">
-          <p>© {new Date().getFullYear()} ECLECTIC HIVE</p>
+        {/* Bottom rule */}
+        <div className="mt-16 sm:mt-20 pt-6 border-t border-cream/10 flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center gap-3">
+          <p className={META_CLASS}>© {new Date().getFullYear()} ECLECTIC HIVE</p>
+          <p className={META_CLASS}>DENVER, COLORADO</p>
         </div>
-
       </div>
     </footer>
   );
@@ -82,22 +79,18 @@ interface FooterColumnProps {
 }
 
 function FooterColumn({ title, links, className }: FooterColumnProps) {
-  const linkClass =
-    "inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors";
   return (
     <div className={className}>
-      <h3 className="text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-5">
-        {title}
-      </h3>
-      <ul className="space-y-2.5 sm:space-y-3">
+      <h3 className={COL_HEADING}>{title}</h3>
+      <ul className={COL_LIST}>
         {links.map((l) => (
           <li key={`${l.href}${l.hash ?? ""}`}>
             {l.external ? (
-              <a href={l.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+              <a href={l.href} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
                 {l.label}
               </a>
             ) : (
-              <Link to={l.href} hash={l.hash} className={linkClass}>
+              <Link to={l.href} hash={l.hash} className={LINK_CLASS}>
                 {l.label}
               </Link>
             )}
