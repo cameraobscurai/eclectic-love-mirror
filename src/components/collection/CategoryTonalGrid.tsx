@@ -40,8 +40,53 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
-// Column counts per breakpoint — must match Tailwind classes below.
-const COLS = { base: 2, sm: 3, lg: 5 } as const;
+/**
+ * Auto-fit solver — given a container box and a tile count, find the
+ * (cols, rows) pair that:
+ *   1. Holds all N tiles (cols * rows >= N)
+ *   2. Produces a cell aspect closest to the target (wider on landscape,
+ *      squarer on portrait)
+ *   3. Respects min/max columns for each viewport class
+ *
+ * This replaces hard-coded breakpoint column counts. The grid always
+ * fills its parent box completely — no white space below, no clipped
+ * rows — at any width from 320px to ultrawide.
+ */
+function solveGrid(
+  width: number,
+  height: number,
+  count: number,
+  opts: { minCols: number; maxCols: number; targetAspect: number },
+): { cols: number; rows: number } {
+  if (count <= 0 || width <= 0 || height <= 0) {
+    return { cols: opts.minCols, rows: 1 };
+  }
+  let best = { cols: opts.minCols, rows: Math.ceil(count / opts.minCols), score: Infinity };
+  for (let cols = opts.minCols; cols <= Math.min(opts.maxCols, count); cols++) {
+    const rows = Math.ceil(count / cols);
+    const cellW = width / cols;
+    const cellH = height / rows;
+    const aspect = cellW / cellH;
+    // Score = how far cell aspect is from target (log-space so 2x and 0.5x
+    // are treated symmetrically), plus a small penalty for empty cells in
+    // the last row (we want full rows when possible).
+    const aspectScore = Math.abs(Math.log(aspect / opts.targetAspect));
+    const emptyCells = cols * rows - count;
+    const fillPenalty = emptyCells * 0.05;
+    const score = aspectScore + fillPenalty;
+    if (score < best.score) best = { cols, rows, score };
+  }
+  return { cols: best.cols, rows: best.rows };
+}
+
+// Viewport-class column bounds. The solver picks within these.
+function colBoundsFor(width: number): { minCols: number; maxCols: number; targetAspect: number } {
+  if (width >= 1280) return { minCols: 4, maxCols: 6, targetAspect: 1.3 };  // desktop — slightly landscape cells
+  if (width >= 1024) return { minCols: 4, maxCols: 5, targetAspect: 1.2 };  // small desktop
+  if (width >= 768)  return { minCols: 3, maxCols: 4, targetAspect: 1.0 };  // tablet — squarish
+  if (width >= 480)  return { minCols: 2, maxCols: 3, targetAspect: 0.95 }; // large phone
+  return { minCols: 2, maxCols: 2, targetAspect: 0.9 };                     // phone — slightly portrait
+}
 
 export function CategoryTonalGrid({
   groups,
