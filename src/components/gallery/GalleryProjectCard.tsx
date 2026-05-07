@@ -36,7 +36,7 @@ export function GalleryProjectCard({
       >
         <div
           className={[
-            "relative aspect-[4/5] overflow-hidden bg-charcoal/50 ring-1 ring-cream/5 transition-shadow duration-500",
+            "relative aspect-[4/5] overflow-hidden bg-charcoal ring-1 ring-cream/5 transition-shadow duration-500",
             active
               ? "shadow-[0_25px_60px_-12px_rgba(0,0,0,0.55)]"
               : "shadow-2xl shadow-black/40",
@@ -50,39 +50,19 @@ export function GalleryProjectCard({
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
             {...(index === 0 ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-contain"
             draggable={false}
           />
+        </div>
 
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent pointer-events-none" />
-
-          {/* Project number */}
-          <div className="absolute top-5 left-5 text-cream/60 text-[10px] tracking-[0.32em] font-light uppercase">
-            {project.number}
-          </div>
-
-          {/* Hover circle */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <span className="w-16 h-16 rounded-full border border-cream/30 flex items-center justify-center backdrop-blur-sm bg-black/20 text-cream/80">
-              →
-            </span>
-          </div>
-
-          {/* Bottom info */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 text-cream">
-            <div className="text-cream/70 text-[10px] uppercase tracking-[0.24em] mb-2">
-              {project.region}
-            </div>
-            <h3 className="font-display text-2xl lg:text-3xl text-cream font-light tracking-tight">
-              {project.name}
-            </h3>
-            <div className="flex items-center gap-3 mt-3 text-cream/55 text-[11px] uppercase tracking-[0.18em]">
-              <span>{project.kind}</span>
-              <span aria-hidden className="w-1 h-1 rounded-full bg-cream/30" />
-              <span>{project.year}</span>
-            </div>
-          </div>
+        {/* Minimal caption — title + year only */}
+        <div className="mt-4 flex items-baseline justify-between gap-4 text-cream">
+          <h3 className="font-display text-lg lg:text-xl font-light tracking-tight truncate">
+            {project.name}
+          </h3>
+          <span className="text-cream/40 text-[11px] uppercase tracking-[0.22em] tabular-nums shrink-0">
+            {project.year}
+          </span>
         </div>
       </button>
     </li>
