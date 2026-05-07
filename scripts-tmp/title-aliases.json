@@ -11,7 +11,7 @@
     { "rms": "706",  "live": "Zeki Kilim Arm Chair",                    "note": "spacing" },
     { "rms": "3010", "live": "Ignatius Gold Scale",                     "note": "wording" },
     { "rms": "2535", "live": "BRANTLEY METAL CHIMINEA",                 "note": "shortened" },
-    { "rms": "3542", "live": "Jacen Indoor Fireplace",                  "note": "live typo: fireplace→firepit" },
+    { "rms": "3542", "live": "Jacen Indoor Fireplace",                  "note": "live wording: fireplace vs firepit" },
     { "rms": "2874", "live": "Elgin Pony Bookends",                     "note": "shortened" },
     { "rms": "4136", "live": "BEAUFORT Vintage Riding Helmet",          "note": "case" },
     { "rms": "2859", "live": "Ophidia",                                 "note": "live shortened" },
@@ -19,21 +19,26 @@
     { "rms": "3835", "live": "Jesamay Armchair",                        "note": "live drops 'Chair'" },
     { "rms": "3001", "live": "Tierre Coffee Table",                     "note": "live shortened" },
     { "rms": "3008", "live": "Marceline Gold Bar Cart",                 "note": "Brass→Gold" },
-    { "rms": "1929", "live": "Vespa Shelf + Antique Mirror Back",       "note": "wording" },
-    { "rms": "3170", "live": "Powel Dark Brass Tray",                   "note": "live typo: Powel→Powell + family" },
     { "rms": "3593", "live": "Fringe Blue Grey Throw",                  "note": "Smoke→Grey" },
     { "rms": "3453", "live": "Green Sage Velvet Pillow",                "note": "ours missing 'Pillow'" },
     { "rms": "2418", "live": "Purple Light Velvet Pillow",              "note": "Pale→Light" },
     { "rms": "2781", "live": "Red White Ticking Stripe Pillow",         "note": "ours missing 'Pillow'" },
     { "rms": "1614", "live": "PENDLETON Zig Zag Throw",                 "note": "wording" },
-    { "rms": "2388", "live": "Blue Native X Pillow",                    "note": "exact (was missed by tokenizer)" }
+    { "rms": "2388", "live": "Blue Native X Pillow",                    "note": "exact (tokenizer miss)" },
+    { "rms": "3232", "live": "Joslin Leather Baskets" },
+    { "rms": "3230", "live": "Auskin Leather Baskets" },
+    { "rms": "3156", "live": "Shay Leather Basket",                     "note": "live drops 'Tan'" },
+    { "rms": "1482", "live": "Ravindra Wire & Leather Basket" },
+    { "rms": "3858", "live": "Green Sage Lumbar",                       "note": "wording" },
+    { "rms": "3196", "live": "Blue Ombre Fringe Lumbar",                "note": "Pillow→Lumbar wording" },
+    { "rms": "3088", "live": "Ivory Linen Lumbar",                      "note": "Pillow→Lumbar wording" },
+    { "rms": "3455", "live": "Ivory Sage Stripe Pillow",                "note": "Mini Tassel→Stripe wording" },
+    { "rms": "3193", "live": "Brown Yellow Pillow",                     "note": "Natural Raffia→Brown Yellow" }
   ],
   "groups": [
     { "live": "SANARA Dining Chairs",            "rms": ["4133", "4121"] },
     { "live": "Luna Arcing Dining Chairs",       "rms": ["4122", "4130"] },
     { "live": "Beren Assorted Books",            "rms": ["1733", "3308", "3352", "3445"] },
-    { "live": "Marina Plates",                   "rms": ["3375", "3376", "3377", "3378"] },
-    { "live": "Dover Matte Oyster Plates",       "rms": ["2727", "2728", "3477"] },
     { "live": "Powell Round Dark Brass Trays",   "rms": ["3168", "3170"] },
     { "live": "FARROW Cocktail Column Tables",   "rms": ["2761", "2762", "2763", "2764"] },
     { "live": "Monroe Black Flat Slat Tambour Bar", "rms": ["4108", "4116", "4117", "4118", "4119"] },
@@ -41,7 +46,6 @@
     { "live": "Tivoli Travertine Plinths",       "rms": ["3888", "3889", "3890", "3891", "3892"] },
     { "live": "Deco Etched Alcohol Bottle",      "rms": ["1726", "1727", "1728", "1729", "1730", "1731"] },
     { "live": "Agatha Rustic Mini Vases",        "rms": ["4018", "4019"] },
-    { "live": "Leather Baskets",                 "rms": ["3022", "3023", "3024", "3156", "3230", "3232", "1482"] },
     { "live": "Orange Brown Textile Pillow",     "rms": ["2882", "4147", "4148"] }
   ]
 }
