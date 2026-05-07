@@ -969,7 +969,7 @@ function CollectionPage() {
               ) : layout === "wall" ? (
                 <div
                   className="relative w-full"
-                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h))" }}
+                  style={{ height: "calc(100dvh - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))" }}
                 >
                   {visibleProducts.length === 0 ? (
                     <div className="py-32 px-6">
