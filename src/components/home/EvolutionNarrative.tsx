@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * EvolutionNarrative
  * ------------------
- * Scroll-driven manifesto with PRECISE single-line highlighting (à la
- * obscura.works). The line whose vertical center is closest to the
- * viewport center is "active" — full opacity. Everything else snaps to a
- * dim baseline. No soft gradient where 3 lines look half-bright at once.
+ * Sticky single-fold manifesto. The visible card stays pinned at the
+ * vertical center of the viewport while the page scrolls. Scroll
+ * progress drives which line is "active" — only one line at a time is
+ * full-opacity, every other is dimmed (precise switch-style highlight,
+ * à la obscura.works — no soft gradient).
+ *
+ * Optional `footer` slot renders after the manifesto inside the same
+ * sticky frame, so CTAs can ride the end of the arc.
  */
 
 type Line = { text: string; emphasis?: "section" | "brand" | "closer" };
@@ -17,146 +21,128 @@ const LINES: Line[] = [
   { text: "Growth doesn't happen all at once." },
   { text: "It happens in phases." },
   { text: "There's a beginning that's rooted in curiosity." },
-  { text: "A time where things expand" },
-  { text: "and start to take shape." },
+  { text: "A time where things expand and start to take shape." },
   { text: "A shift toward refining what actually matters." },
   { text: "A moment where letting go becomes necessary." },
-  { text: "And space to step back" },
-  { text: "and see all of it clearly." },
-  { text: "This isn't a reinvention." },
-  { text: "It's a refinement." },
+  { text: "And space to step back and see all of it clearly." },
+  { text: "This isn't a reinvention. It's a refinement." },
   { text: "A deeper understanding of what holds weight." },
-  { text: "Of what lasts." },
-  { text: "We are artists." },
-  { text: "Designers." },
-  { text: "Craftsmen." },
+  { text: "We are artists. Designers. Craftsmen." },
   { text: "We are Eclectic Hive", emphasis: "brand" },
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-export function EvolutionNarrative() {
-  const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
+const STEP_VH = 22; // shorter scroll distance per line — keeps it tight
+
+export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
+  const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showFooter, setShowFooter] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const total = LINES.length;
 
-    const recompute = () => {
-      const vCenter = window.innerHeight / 2;
-      let best = 0;
-      let bestDist = Infinity;
-      lineRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const c = r.top + r.height / 2;
-        const d = Math.abs(c - vCenter);
-        if (d < bestDist) {
-          bestDist = d;
-          best = i;
-        }
-      });
-      setActiveIndex(best);
+    const onScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // progress 0 → 1 across the scroll-distance band
+      const distance = el.offsetHeight - vh;
+      const scrolled = Math.min(Math.max(-rect.top, 0), distance);
+      const progress = distance > 0 ? scrolled / distance : 0;
+      // Map progress to a line index. Last 12% of progress reveals the footer.
+      const idx = Math.min(total - 1, Math.floor(progress * (total + 0.5)));
+      setActiveIndex(idx);
+      setShowFooter(progress > 0.88);
     };
 
-    recompute();
+    onScroll();
     let ticking = false;
-    const onScroll = () => {
+    const handler = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        recompute();
+        onScroll();
         ticking = false;
       });
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", recompute);
+    window.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", handler);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", recompute);
+      window.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
     };
   }, []);
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="evolution-heading"
-      className="relative bg-paper text-charcoal py-24 md:py-36 px-6"
+      className="relative bg-paper text-charcoal"
+      style={{ height: `${LINES.length * STEP_VH + 40}vh` }}
     >
-      <div className="mx-auto max-w-3xl">
-        {LINES.map((line, i) => (
-          <NarrativeLine
-            key={i}
-            line={line}
-            active={i === activeIndex}
-            registerRef={(el) => (lineRefs.current[i] = el)}
-          />
-        ))}
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center px-6">
+        <div className="mx-auto w-full max-w-2xl">
+          <div className="mb-6 md:mb-8">
+            <h2
+              id="evolution-heading"
+              className="font-brand uppercase text-charcoal/85"
+              style={{
+                fontWeight: 400,
+                letterSpacing: "0.32em",
+                fontSize: "clamp(0.7rem, 1vw, 0.875rem)",
+              }}
+            >
+              Evolution
+            </h2>
+            <div className="mt-3 h-px w-12 bg-charcoal/30" />
+          </div>
+
+          <div className="space-y-1.5 md:space-y-2">
+            {LINES.filter((l) => l.emphasis !== "section").map((line, i) => {
+              // skip the section label in the indexable list
+              const lineIndex = i + 1; // line 0 was the section label
+              const active = lineIndex === activeIndex;
+              const isBrand = line.emphasis === "brand";
+              return (
+                <p
+                  key={i}
+                  className={cn(
+                    "font-brand text-charcoal transition-all duration-300 ease-out",
+                    isBrand ? "uppercase tracking-[0.18em]" : "italic",
+                  )}
+                  style={{
+                    fontWeight: 400,
+                    fontSize: isBrand
+                      ? "clamp(1.15rem, 2.4vw, 1.7rem)"
+                      : "clamp(0.95rem, 1.6vw, 1.25rem)",
+                    lineHeight: 1.3,
+                    opacity: active ? 1 : 0.18,
+                    transform: active ? "translateY(0)" : "translateY(2px)",
+                  }}
+                >
+                  {line.text}
+                </p>
+              );
+            })}
+          </div>
+
+          {footer && (
+            <div
+              className="mt-8 md:mt-10 transition-all duration-500 ease-out"
+              style={{
+                opacity: showFooter ? 1 : 0,
+                transform: showFooter ? "translateY(0)" : "translateY(8px)",
+                pointerEvents: showFooter ? "auto" : "none",
+              }}
+            >
+              {footer}
+            </div>
+          )}
+        </div>
       </div>
     </section>
-  );
-}
-
-function NarrativeLine({
-  line,
-  active,
-  registerRef,
-}: {
-  line: Line;
-  active: boolean;
-  registerRef: (el: HTMLDivElement | null) => void;
-}) {
-  if (line.emphasis === "section") {
-    return (
-      <div
-        ref={registerRef}
-        className="mb-8 md:mb-12 transition-opacity duration-300"
-        style={{ opacity: active ? 1 : 0.55 }}
-      >
-        <h2
-          id="evolution-heading"
-          className="font-brand uppercase text-charcoal/85"
-          style={{
-            fontWeight: 400,
-            letterSpacing: "0.32em",
-            fontSize: "clamp(0.7rem, 1vw, 0.875rem)",
-          }}
-        >
-          {line.text}
-        </h2>
-        <div className="mt-3 h-px w-12 bg-charcoal/30" />
-      </div>
-    );
-  }
-
-  const isBrand = line.emphasis === "brand";
-  const isCloser = line.emphasis === "closer";
-
-  return (
-    <div
-      ref={registerRef}
-      className={cn(
-        "py-2 md:py-2.5 transition-all duration-300 ease-out",
-        (isBrand || isCloser) && "mt-6 md:mt-10",
-      )}
-      style={{
-        opacity: active ? 1 : 0.18,
-        transform: active ? "translateY(0)" : "translateY(2px)",
-      }}
-    >
-      <p
-        className={cn(
-          "font-brand text-charcoal",
-          isBrand ? "uppercase tracking-[0.18em]" : "italic",
-        )}
-        style={{
-          fontWeight: 400,
-          fontSize: isBrand
-            ? "clamp(1.6rem, 3.6vw, 2.75rem)"
-            : "clamp(1.35rem, 2.6vw, 2.1rem)",
-          lineHeight: 1.25,
-        }}
-      >
-        {line.text}
-      </p>
-    </div>
   );
 }

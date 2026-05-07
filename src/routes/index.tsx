@@ -144,74 +144,68 @@ function HomePage() {
         </div>
         </div>{/* /desktop-only block */}
 
-        {/* CTA bar */}
-        <div className="px-4 pb-6 pt-4 md:px-8 md:pb-8 md:pt-6">
-          <div className="mx-auto max-w-5xl">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
-              {DESTINATIONS.map((dest, i) => (
-                <Link
-                  key={dest.href}
-                  to={dest.href}
-                  preload="viewport"
-                  aria-label={`${dest.title} — ${dest.label}`}
-                  className={cn(
-                    "group rounded-xl ring-1 ring-charcoal/10 bg-paper transition-all duration-700 hover:ring-charcoal/30",
-                    loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-                  )}
-                  style={{ transitionDelay: loaded ? `${300 + i * 80}ms` : "0ms" }}
-                  onMouseEnter={() => setHoveredIndex(i)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <div className="px-5 py-3.5 md:px-7 md:py-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <h2
-                          className="font-brand uppercase text-charcoal text-[15px] md:text-base"
-                          style={{ fontWeight: 400, letterSpacing: "0.1em" }}
-                        >
-                          {dest.title}
-                        </h2>
-                        <p className="mt-0.5 text-[9px] md:text-[10px] uppercase tracking-[0.08em] text-charcoal/50">
-                          {dest.label}
-                        </p>
-                      </div>
-                      <div
-                        className={cn(
-                          "flex shrink-0 items-center gap-1.5 transition-all duration-300",
-                          hoveredIndex === i ? "opacity-100" : "opacity-40",
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "h-px bg-charcoal/60 transition-all duration-300",
-                            hoveredIndex === i ? "w-5" : "w-2",
-                          )}
-                        />
-                        <svg
-                          className="h-2.5 w-2.5 text-charcoal/70"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={1.5}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
       </section>
 
-      {/* Evolution narrative — scroll-driven manifesto */}
-      <EvolutionNarrative />
+      {/* Evolution narrative — sticky single-fold; CTA cards ride the end */}
+      <EvolutionNarrative
+        footer={
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
+            {DESTINATIONS.map((dest, i) => (
+              <Link
+                key={dest.href}
+                to={dest.href}
+                preload="viewport"
+                aria-label={`${dest.title} — ${dest.label}`}
+                className="group rounded-xl ring-1 ring-charcoal/10 bg-paper transition-all duration-300 hover:ring-charcoal/30"
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="px-5 py-3.5 md:px-6 md:py-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <h3
+                        className="font-brand uppercase text-charcoal text-[15px] md:text-base"
+                        style={{ fontWeight: 400, letterSpacing: "0.1em" }}
+                      >
+                        {dest.title}
+                      </h3>
+                      <p className="mt-0.5 text-[9px] md:text-[10px] uppercase tracking-[0.08em] text-charcoal/50">
+                        {dest.label}
+                      </p>
+                    </div>
+                    <div
+                      className={cn(
+                        "flex shrink-0 items-center gap-1.5 transition-all duration-300",
+                        hoveredIndex === i ? "opacity-100" : "opacity-40",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "h-px bg-charcoal/60 transition-all duration-300",
+                          hoveredIndex === i ? "w-5" : "w-2",
+                        )}
+                      />
+                      <svg
+                        className="h-2.5 w-2.5 text-charcoal/70"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        }
+      />
 
       {/* Keep LiquidGlass referenced to preserve filter prewarm; harmless no-op */}
       <div className="hidden">
