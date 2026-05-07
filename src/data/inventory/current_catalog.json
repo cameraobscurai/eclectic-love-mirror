@@ -18657,7 +18657,7 @@
         "altText": "Ingram Black Leather + Wood Sofa"
       },
       "imageCount": 4,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 432,
       "subcategory": null,
       "ownerSiteRank": null,
@@ -18670,7 +18670,8 @@
       "colorTemperature": null,
       "colorNeedsReview": false,
       "tonalRank": null,
-      "variants": []
+      "variants": [],
+      "hiddenNote": "Hidden per owner request 2026-05-07"
     },
     {
       "id": "3674",

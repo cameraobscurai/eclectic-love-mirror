@@ -107,9 +107,12 @@ const raw = catalog as RawCatalog;
 export const CATEGORY_DISPLAY_ORDER: string[] = raw.meta.categoryDisplayOrder;
 
 export function getCollectionCatalog(): CatalogPayload {
+  // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
+  // of the public grid, counts, and rails.
+  const products = raw.products.filter((p) => p.publicReady !== false);
   return {
-    products: raw.products,
+    products,
     facets: raw.facets,
-    total: raw.total,
+    total: products.length,
   };
 }
