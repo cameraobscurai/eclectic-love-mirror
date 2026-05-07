@@ -26,7 +26,7 @@ const argv = Object.fromEntries(
 
 const APPLY = !!argv.apply;
 const CATS = (argv.categories || '').split(',').map(s => s.trim()).filter(Boolean);
-const TARGET_BUCKET = 'squarespace-mirror';
+const TARGET_BUCKET = argv.bucket || 'collection';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -39,7 +39,8 @@ const supa = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSession: 
 const catalog = JSON.parse(fs.readFileSync('src/data/inventory/current_catalog.json', 'utf8'));
 
 function classify(url) {
-  if (url.includes(`/${TARGET_BUCKET}/`)) return 'already-mirrored';
+  if (url.includes(`/${TARGET_BUCKET}/`)) return 'already-in-target';
+  if (url.includes('/squarespace-mirror/')) return 'squarespace-mirror-bucket';
   if (url.includes('squarespace-cdn.com') || url.includes('static1.squarespace.com')) return 'squarespace-cdn';
   if (url.includes('/storage/v1/object/public/inventory/')) return 'inventory-bucket';
   if (url.includes('/storage/v1/object/public/')) return 'other-supabase';
@@ -80,7 +81,7 @@ for (const p of catalog.products) {
       targetBucket: TARGET_BUCKET,
       targetPath: target,
       newPublicUrl: `${SUPABASE_URL}/storage/v1/object/public/${TARGET_BUCKET}/${target.split('/').map(encodeURIComponent).join('/')}`,
-      action: kind === 'already-mirrored' ? 'skip' : 'copy',
+      action: kind === 'already-in-target' ? 'skip' : 'copy',
     };
     manifest.push(entry);
 
