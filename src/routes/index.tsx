@@ -228,17 +228,6 @@ function HomePage() {
               </Link>
             ))}
           </div>
-
-                {/* Mobile descriptor — sits below the row, indented past the numeral */}
-                <p
-                  className="md:hidden -mt-3 pb-5 pl-12 font-brand italic text-charcoal/55"
-                  style={{ fontWeight: 400, fontSize: "0.85rem" }}
-                >
-                  {dest.label}
-                </p>
-              </Link>
-            ))}
-          </div>
         }
       />
 
