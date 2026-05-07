@@ -651,13 +651,10 @@ function CollectionPage() {
     resultMeta = "";
   }
 
-  const gridCols =
-    density === "dense"
-      ? "grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8"
-      : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
-
-  const gridGapClasses =
-    density === "dense" ? "gap-x-4 gap-y-2" : "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
+  // Grid mode is a single comfortable preset — big tiles. Wall is the dense option.
+  const gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4";
+  const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
+  void density;
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
