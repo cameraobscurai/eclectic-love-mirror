@@ -155,6 +155,10 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Evolution narrative — scroll-driven manifesto */}
+      <EvolutionNarrative />
+
       {/* Keep LiquidGlass referenced to preserve filter prewarm; harmless no-op */}
       <div className="hidden">
         <LiquidGlass>{null}</LiquidGlass>
