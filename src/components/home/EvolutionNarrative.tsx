@@ -33,8 +33,8 @@ const LINES: Line[] = [
 ];
 
 const BODY_LINES = LINES.filter((line) => line.emphasis !== "section");
-const STEP_VH = 18; // tight, but still enough distance for each switch to animate
-const FOOTER_REVEAL_AT = 0.88;
+const STEP_VH = 26; // each line gets real airtime before the next switches in
+const FOOTER_REVEAL_AT = 0.9;
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
@@ -54,8 +54,11 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       const distance = Math.max(el.offsetHeight - vh, 1);
       const progress = clamp01(-rect.top / distance);
 
+      // Stable hold: floor(progress * total) so each line owns an equal
+      // band of scroll. Center-bias by adding 0.5 step so the switch
+      // feels anchored to the line's reading position, not its top edge.
       const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
-      const idx = Math.min(total - 1, Math.round(lineProgress * (total - 1)));
+      const idx = Math.min(total - 1, Math.floor(lineProgress * total));
       const footerVisible = progress >= FOOTER_REVEAL_AT;
       setActiveIndex((current) => (current === idx ? current : idx));
       setShowFooter((current) => (current === footerVisible ? current : footerVisible));
@@ -104,7 +107,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             <div className="mt-3 h-px w-12 bg-charcoal/30" />
           </div>
 
-          <div className="space-y-1.5 md:space-y-2">
+          <div className="space-y-3 md:space-y-3.5">
             {BODY_LINES.map((line, i) => {
               const active = i === activeIndex;
               const isBrand = line.emphasis === "brand";
@@ -113,7 +116,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   key={i}
                   data-active={active ? "true" : "false"}
                   className={cn(
-                    "font-brand text-charcoal transition-[opacity,transform] duration-250 ease-out",
+                    "font-brand text-charcoal transition-[opacity,color,transform] duration-300 ease-out will-change-[opacity,transform]",
                     isBrand ? "uppercase tracking-[0.18em]" : "italic",
                   )}
                   style={{
@@ -121,9 +124,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                     fontSize: isBrand
                       ? "clamp(1.15rem, 2.4vw, 1.7rem)"
                       : "clamp(0.95rem, 1.6vw, 1.25rem)",
-                    lineHeight: 1.3,
-                    opacity: active ? 1 : 0.18,
-                    transform: active ? "translateY(0)" : "translateY(2px)",
+                    lineHeight: 1.35,
+                    opacity: active ? 1 : 0.12,
+                    color: active ? "var(--charcoal)" : "var(--charcoal)",
+                    transform: active ? "translateX(0)" : "translateX(-2px)",
                   }}
                 >
                   {line.text}

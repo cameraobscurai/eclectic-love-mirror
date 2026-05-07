@@ -161,11 +161,7 @@ function RootComponent() {
           inline styles, so layout is byte-identical. */}
       <div id="devedit-canvas">
         <Outlet />
-        {!hideFooter && (
-          <div className={isHome ? "lg:hidden" : undefined}>
-            <Footer />
-          </div>
-        )}
+        {!hideFooter && <Footer />}
       </div>
       <DevEditOverlay />
     </>
