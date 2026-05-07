@@ -126,7 +126,7 @@
   --archive-rule:        color-mix(in oklab, black 8%, transparent);
   --archive-rule-strong: color-mix(in oklab, black 14%, transparent);
 
-  --archive-tile-media-h:   clamp(220px, 18vw, 300px);
+  --archive-tile-media-h:   clamp(240px, 22vw, 340px);
   --archive-tile-caption-w: 190px;
 
   --label-size-micro:     11px;
