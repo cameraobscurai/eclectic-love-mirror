@@ -308,6 +308,8 @@ export function QuickViewModal({
                   <motion.img
                     key={img.url}
                     src={withCdnWidth(img.url, 1500)}
+                    data-fallback={img.fallbackUrl}
+                    onError={imgFallback}
                     alt={img.altText ?? product.title}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
