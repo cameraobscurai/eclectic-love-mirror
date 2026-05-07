@@ -161,46 +161,46 @@ export function GalleryLightbox({
         </div>
 
         {/* Sidebar */}
-        <aside className="relative shrink-0 w-full lg:w-[400px] xl:w-[460px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-7 lg:px-10 py-7 lg:py-10 flex flex-col">
+        <aside className="relative shrink-0 w-full lg:w-[380px] xl:w-[440px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-8 lg:px-12 py-8 lg:py-12 flex flex-col">
           <button
             type="button"
             onClick={onClose}
             aria-label="Close gallery"
-            className="absolute top-5 right-5 h-9 w-9 flex items-center justify-center text-cream/70 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+            className="absolute top-6 right-6 h-9 w-9 flex items-center justify-center text-cream/60 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
           >
             <X className="h-5 w-5" />
           </button>
 
-          <div className="mt-2 lg:mt-10">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-cream/45 tabular-nums">
-              {(plateIndex + 1).toString().padStart(2, "0")} /{" "}
+          <div className="mt-2 lg:mt-12">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
+              {(plateIndex + 1).toString().padStart(2, "0")}
+              <span className="mx-2 text-cream/20">/</span>
               {plates.length.toString().padStart(2, "0")}
             </p>
-            <h2 className="mt-8 font-display text-[clamp(2.5rem,4vw,3.5rem)] leading-[1.02] tracking-[-0.005em]">
+            <h2 className="mt-10 font-display text-[clamp(2.25rem,3.4vw,3.25rem)] leading-[1.02] tracking-[-0.005em]">
               {project.name}
             </h2>
-            <div className="mt-4 h-px w-12 bg-cream/25" aria-hidden />
-            <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-cream/65 tabular-nums">
+            <div className="mt-6 h-px w-10 bg-cream/25" aria-hidden />
+            <p className="mt-5 text-[10px] uppercase tracking-[0.32em] text-cream/55 tabular-nums">
               {project.year}
             </p>
-
           </div>
 
-          <div className="mt-auto pt-10 flex items-center justify-between gap-6">
+          <div className="mt-auto pt-12 flex items-center justify-between gap-6 border-t border-cream/10 -mx-8 lg:-mx-12 px-8 lg:px-12 pt-6">
             <button
               type="button"
               onClick={() => stepProject(-1)}
-              className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-cream/65 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-cream/55 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
             >
               <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-              Prev Project
+              Prev
             </button>
             <button
               type="button"
               onClick={() => stepProject(1)}
-              className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-cream/65 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              className="group inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-cream/55 hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
             >
-              Next Project
+              Next
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
