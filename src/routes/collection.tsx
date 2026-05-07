@@ -715,7 +715,7 @@ function CollectionPage() {
     <main
       data-collection-main
       className={showOverview || (layout === "wall" && activeParent) ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
-      style={{ background: "var(--paper)", "--collection-mobile-h-h": "92px" } as React.CSSProperties}
+      style={{ background: "var(--paper)", "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)" } as React.CSSProperties}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
@@ -944,7 +944,7 @@ function CollectionPage() {
                     style={{
                       height: "var(--collection-mobile-h-h)",
                       background: "var(--paper)",
-                      padding: "10px 18px",
+                      padding: "8px 18px",
                     }}
                   >
                     <img
@@ -956,7 +956,7 @@ function CollectionPage() {
                     />
                   </div>
                   <div
-                    className="h-[calc(100dvh-var(--nav-h)-var(--collection-mobile-h-h))] lg:h-auto lg:flex-1 lg:min-h-0 lg:overflow-hidden"
+                    className="collection-overview-grid-shell lg:flex-1 lg:min-h-0 lg:overflow-hidden"
                   >
                     <CategoryTonalGrid
                       groups={overviewGroups}
