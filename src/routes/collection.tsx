@@ -814,35 +814,55 @@ function CollectionPage() {
               <div
                 className="hidden lg:flex items-center border border-charcoal/10"
                 role="group"
-                aria-label="Grid density"
+                aria-label="View"
               >
+                {layout === "grid" && (
+                  <>
+                    <button
+                      onClick={() => setDensity("comfortable")}
+                      className={[
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        density === "comfortable"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
+                      ].join(" ")}
+                      aria-label="Comfortable grid"
+                      aria-pressed={density === "comfortable"}
+                    >
+                      <DensityIconLarge />
+                    </button>
+                    <button
+                      onClick={() => setDensity("dense")}
+                      className={[
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        density === "dense"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
+                      ].join(" ")}
+                      aria-label="Dense grid"
+                      aria-pressed={density === "dense"}
+                    >
+                      <DensityIconSmall />
+                    </button>
+                  </>
+                )}
                 <button
-                  onClick={() => setDensity("comfortable")}
+                  onClick={() => setLayout(layout === "wall" ? "grid" : "wall")}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                    layout === "grid" ? "border-l border-charcoal/10" : "",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    density === "comfortable"
+                    layout === "wall"
                       ? "text-charcoal bg-charcoal/[0.04]"
                       : "text-charcoal/40 hover:text-charcoal/80",
                   ].join(" ")}
-                  aria-label="Comfortable grid"
-                  aria-pressed={density === "comfortable"}
+                  aria-label="Wall view"
+                  aria-pressed={layout === "wall"}
+                  title="Wall — viewport-locked, hover to magnify"
                 >
-                  <DensityIconLarge />
-                </button>
-                <button
-                  onClick={() => setDensity("dense")}
-                  className={[
-                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    density === "dense"
-                      ? "text-charcoal bg-charcoal/[0.04]"
-                      : "text-charcoal/40 hover:text-charcoal/80",
-                  ].join(" ")}
-                  aria-label="Dense grid"
-                  aria-pressed={density === "dense"}
-                >
-                  <DensityIconSmall />
+                  <WallIcon />
                 </button>
               </div>
             </div>
