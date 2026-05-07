@@ -12,7 +12,38 @@
  */
 export function withCdnWidth(url: string | null | undefined, width: number): string {
   if (!url) return "";
-  // Cheap guard — bail before constructing URL() for obviously-wrong inputs
+  // Supabase Storage public-object URLs: rewrite to the image-transform
+  // endpoint so we get a properly resized variant instead of the full
+  // original asset. Without this, a single multi-MB PNG cover (e.g. the
+  // "sofas" category cover) would dominate first-paint and stall the
+  // whole category-grid cohort while every other tile is already decoded.
+  // We also URL-encode the path so spaces in object keys don't slow the
+  // request with retries / encoding ambiguity.
+  if (url.includes("/storage/v1/object/public/")) {
+    try {
+      const u = new URL(url);
+      const idx = u.pathname.indexOf("/storage/v1/object/public/");
+      if (idx >= 0) {
+        const objectPath = u.pathname.slice(idx + "/storage/v1/object/public/".length);
+        const encoded = objectPath
+          .split("/")
+          .map((seg) => encodeURIComponent(seg))
+          .join("/");
+        const rendered = new URL(
+          `/storage/v1/render/image/public/${encoded}`,
+          u.origin,
+        );
+        rendered.searchParams.set("width", String(Math.round(width)));
+        rendered.searchParams.set("resize", "contain");
+        rendered.searchParams.set("quality", "80");
+        return rendered.toString();
+      }
+    } catch {
+      // fall through
+    }
+    return url;
+  }
+  // Squarespace CDN: tweak the existing `format=NNNw` query param.
   if (!url.includes("squarespace-cdn.com")) return url;
   try {
     const u = new URL(url);
@@ -33,7 +64,11 @@ export function buildCdnSrcSet(
   url: string | null | undefined,
   widths: number[],
 ): string {
-  if (!url || !url.includes("squarespace-cdn.com")) return "";
+  if (!url) return "";
+  const supported =
+    url.includes("squarespace-cdn.com") ||
+    url.includes("/storage/v1/object/public/");
+  if (!supported) return "";
   return widths
     .map((w) => `${withCdnWidth(url, w)} ${w}w`)
     .join(", ");
