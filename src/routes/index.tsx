@@ -297,7 +297,7 @@ function HomePage() {
             style={{
               fontWeight: 300,
               letterSpacing: reduced ? `${BASE_LETTER_SPACING}em` : letterSpacingMV,
-              fontSize: "clamp(0.9rem, 5vw, 4.25rem)",
+              fontSize: "clamp(0.8rem, 3.6vw, 3rem)",
               lineHeight: 1,
               textShadow: parallaxOn
                 ? textShadow
