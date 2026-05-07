@@ -382,6 +382,11 @@ function CollectionPage() {
 
     return sortProductsForCollection(list, {
       mode: sort === "az" ? "az" : sort === "tonal" ? "tonal" : "by-type",
+      // When viewing a single parent (e.g. Cocktail & Bar), collapse the
+      // owner-browse-group tier so products sort by raw ownerSiteRank —
+      // matching the live site's continuous in-category order instead of
+      // re-segmenting into bars→tables→storage buckets.
+      activeGroup: activeParent ? (activeParent as never) : null,
     });
   }, [groupFiltered, sort, q]);
 
