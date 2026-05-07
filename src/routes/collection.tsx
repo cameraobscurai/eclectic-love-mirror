@@ -381,7 +381,7 @@ function CollectionPage() {
     }
 
     return sortProductsForCollection(list, {
-      mode: sort === "az" ? "az" : "by-type",
+      mode: sort === "az" ? "az" : sort === "tonal" ? "tonal" : "by-type",
     });
   }, [groupFiltered, sort, q]);
 
