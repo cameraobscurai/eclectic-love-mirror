@@ -56,12 +56,16 @@ type SortKey = (typeof SORTS)[number];
 const DENSITIES = ["comfortable", "dense"] as const;
 type Density = (typeof DENSITIES)[number];
 
+const LAYOUTS = ["grid", "wall"] as const;
+type Layout = (typeof LAYOUTS)[number];
+
 interface CollectionSearch {
   group: string; // ParentId | "" — semantics flipped from BrowseGroupId
   subcategory: string; // sub id within parent, or "all"
   q: string;
   sort: SortKey;
   density: Density;
+  layout: Layout;
   view: string;
 }
 
@@ -71,6 +75,7 @@ const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
   density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
+  layout: fallback(z.enum(LAYOUTS), "grid").default("grid"),
   view: fallback(z.string(), "").default(""),
 });
 
@@ -163,7 +168,7 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, subcategory, q, sort, density, view } = search;
+  const { group, subcategory, q, sort, density, layout, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
@@ -570,10 +575,19 @@ function CollectionPage() {
         q: "",
         sort: "type" as SortKey,
         density,
+        layout: "grid" as Layout,
         view: "",
       }),
       replace: true,
       // Stay where we are — clearing filters should not yank the page.
+      resetScroll: false,
+    });
+  };
+
+  const setLayout = (next: Layout) => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, layout: next }),
+      replace: true,
       resetScroll: false,
     });
   };
