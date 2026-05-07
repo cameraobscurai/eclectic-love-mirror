@@ -31,8 +31,8 @@
     "ours": 70,
     "matched": 59,
     "liveOnly": [
-      "Vespa Dark Wood Shelf",
-      "Gold Acrylic Slatted Bar"
+      "Gold Acrylic Slatted Bar",
+      "Vespa Shelf + Antique Mirror Back"
     ],
     "oursOnly": [
       "Boone Barrel Stave Bar [rms4086]",
@@ -108,23 +108,19 @@
     "slug": "textiles",
     "live": 157,
     "ours": 152,
-    "matched": 147,
+    "matched": 149,
     "liveOnly": [
       "Blue Native X Pillow",
-      "Blue Ombre Fringe Lumbar",
-      "Gold Velvet Zebra Pillow",
-      "Green Sage Lumbar",
-      "Brown Fur + Mud Cloth Lumbar Oversize",
-      "Brown Yellow Pillow",
-      "Ivory Linen Lumbar",
-      "Breen Olive Velvet Pillow",
+      "Green Sage Velvet Lumbar Pillow",
       "Ivory Linen Small Lumbar",
-      "Ivory Sage Stripe Pillow"
+      "Blue Ombre Fringe Pillow",
+      "Gold Velvet Zebra Pillow",
+      "Brown Fur + Mud Cloth Lumbar Oversize",
+      "Ivory Linen Pillow",
+      "Breen Olive Velvet Pillow"
     ],
     "oursOnly": [
-      "Blue Native X Pillow [rms2388]",
-      "Ivory Sage Mini Tassel [rms3455]",
-      "Natural Raffia Pillow [rms3193]"
+      "Blue Native X Pillow [rms2388]"
     ]
   },
   {
@@ -141,12 +137,9 @@
     "slug": "styling",
     "live": 60,
     "ours": 78,
-    "matched": 52,
+    "matched": 55,
     "liveOnly": [
-      "Joslin Leather Baskets",
-      "Auskin Leather Baskets",
-      "Shay Leather Basket",
-      "Ravindra Wire & Leather Basket",
+      "Leather Baskets",
       "Hans Vintage Brass Telescope",
       "Salva Vintage Opera Glasses",
       "Bettie Blue Hourglass",
@@ -155,9 +148,12 @@
     "oursOnly": [
       "Della Half-Frosted Glass Bottle [rms1258]",
       "Duru Antique Clear Glass Bottle Set [rms1128]",
+      "Faye Black Leather Basket [rms3023]",
       "Jina 14\" Black Metal Vase [rms4020]",
       "Libby Glass Hinged Top Box [rms4137]",
       "Lynden Horseshoe Hat Stand [rms3906]",
+      "Mae Sand Leather Basket [rms3022]",
+      "Rene Taupe Leather Basket [rms3024]",
       "Runa Faux Book Collection [rms4138]",
       "Tivoli Travertine 22\" Plinth - NEED IMAGE [rms3888]",
       "Tivoli Travertine 24\" Plinth - NEED IMAGE [rms3889]",
