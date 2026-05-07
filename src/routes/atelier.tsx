@@ -150,7 +150,7 @@ export const Route = createFileRoute("/atelier")({
       // portrait scrolls into view — saves ~100-300ms on the first image.
       ...(STORAGE_ORIGIN
         ? [
-            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "" },
+            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
