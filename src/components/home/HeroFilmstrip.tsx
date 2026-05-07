@@ -54,20 +54,15 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     setAudioId(null);
   }, [inView]);
 
-  // Drive playback based on hover + audio state.
+  // Autoplay every clip continuously. Hover only governs which one is unmuted later.
   useEffect(() => {
     if (reduced) return;
     Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
-      const shouldPlay = id === audioId || id === hoverId;
       v.muted = id !== audioId;
-      if (shouldPlay) {
-        v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
+      v.play().catch(() => {});
     });
-  }, [hoverId, audioId, reduced]);
+  }, [hoverId, audioId, reduced, inView]);
 
   const toggleAudio = useCallback((id: string) => {
     setAudioId((curr) => (curr === id ? null : id));
@@ -179,14 +174,18 @@ function FilmstripFrame({
             poster={clip.poster}
             muted
             loop
+            autoPlay
             playsInline
-            preload="metadata"
+            preload="auto"
             aria-label={clip.label}
             className={cn(
               "relative h-full w-full object-cover transition-opacity duration-700",
               loaded ? "opacity-100" : "opacity-0",
             )}
-            onLoadedData={() => setLoaded(true)}
+            onLoadedData={(e) => {
+              setLoaded(true);
+              e.currentTarget.play().catch(() => {});
+            }}
           >
             {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
             {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
