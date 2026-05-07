@@ -32,7 +32,10 @@ for (const t of targets) {
     .select('category,images').eq('rms_id', t.rms_id).maybeSingle();
   if (rErr || !row) { results.push({ rms_id: t.rms_id, status: 'fail', error: 'row not found' }); continue; }
 
-  const urls = [c.hero, ...c.gallery.filter(g => g !== c.hero)].filter(Boolean).slice(0, 8);
+  // Squarespace's top-level assetUrl is itself a lazy-load placeholder for these rows.
+  // The real photos live in items[].assetUrl (gallery). Prefer gallery; fall back to hero.
+  const seq = [...c.gallery, c.hero].filter(Boolean);
+  const urls = [...new Set(seq)].slice(0, 8);
   const newPublic = [];
   let uploadFail = false;
   for (let i = 0; i < urls.length; i++) {
