@@ -714,7 +714,7 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
-      className={showOverview || (layout === "wall" && activeParent) ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
+      className={showOverview ? "h-[100dvh] overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
       style={{ background: "var(--paper)", "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)" } as React.CSSProperties}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
@@ -895,7 +895,7 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section className={showOverview ? "px-0 pt-0 h-[calc(100dvh-var(--nav-h))] overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
@@ -904,7 +904,7 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex flex-col lg:flex-row lg:h-[calc(100dvh-var(--nav-h))] lg:overflow-hidden" : "grid grid-cols-1"}
+            className={showOverview ? "flex h-full flex-col overflow-hidden lg:flex-row" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
