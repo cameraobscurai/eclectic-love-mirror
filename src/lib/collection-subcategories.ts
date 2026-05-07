@@ -79,6 +79,13 @@ const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
 export function getProductSubcategory(product: CollectionProduct): string | null {
   const rules = SUBCATEGORY_RULES[product.categorySlug];
   if (!rules) return null;
+  // Live-site authority: if the owner's Squarespace listing carries an explicit
+  // (possibly empty) liveSubcategories array, mirror that exactly. An empty
+  // array means the item is "floating" — visible in All, excluded from every
+  // sub-chip — and we must not let keyword matching re-bucket it.
+  if (Array.isArray(product.liveSubcategories)) {
+    if (product.liveSubcategories.length === 0) return null;
+  }
   const title = product.title.toLowerCase();
   for (const rule of rules) {
     if (rule.keywords.some((kw) => title.includes(kw))) {

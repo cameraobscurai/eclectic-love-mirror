@@ -36342,6 +36342,56 @@
       ],
       "forcedOverride": true,
       "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
+    },
+    {
+      "id": "X9107",
+      "sourceUrl": "https://www.eclectichive.com/lounge/lagos-swivel-chair",
+      "slug": "lagos-swivel-chair-X9107",
+      "categorySlug": "seating",
+      "displayCategory": "Seating",
+      "title": "Lagos Swivel Chair",
+      "description": null,
+      "dimensions": null,
+      "stockedQuantity": null,
+      "isCustomOrder": false,
+      "confidence": 1,
+      "needsManualReview": false,
+      "images": [
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png",
+          "position": 0,
+          "isHero": true,
+          "inferredFilename": null,
+          "altText": "Lagos Swivel Chair"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png",
+          "position": 1,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Lagos Swivel Chair"
+        }
+      ],
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png",
+      "imageCount": 2,
+      "publicReady": true,
+      "scrapedOrder": 9107,
+      "subcategory": null,
+      "ownerSiteRank": 36,
+      "colorHex": null,
+      "colorHexSecondary": null,
+      "colorLightness": null,
+      "colorHue": null,
+      "colorChroma": null,
+      "colorFamily": null,
+      "colorTemperature": null,
+      "colorNeedsReview": false,
+      "tonalRank": null,
+      "variants": [],
+      "liveCategory": "lounge",
+      "liveSubcategories": [],
+      "forcedOverride": true,
+      "forcedNote": "Injected — floats in Lounge Seating, no subcategory tag on live site (2026-05-07)"
     }
   ],
   "facets": [
