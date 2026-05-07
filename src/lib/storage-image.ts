@@ -58,7 +58,11 @@ export function renderUrl(
   );
   const sep = transformed.includes("?") ? "&" : "?";
   const q = opts.quality ?? 72;
-  return `${transformed}${sep}width=${Math.round(opts.width)}&quality=${q}&format=origin`;
+  // resize=contain → keep source aspect ratio. Without it, Supabase's render
+  // endpoint sets the width but keeps the ORIGINAL height, producing absurdly
+  // tall slivers (e.g. 720×3936 from a 2624×3936 source) that then get
+  // catastrophically cropped by `object-cover` in any sane aspect container.
+  return `${transformed}${sep}width=${Math.round(opts.width)}&quality=${q}&resize=contain`;
 }
 
 /**
