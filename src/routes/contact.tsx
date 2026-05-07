@@ -220,16 +220,16 @@ function ContactPage() {
       style={{ paddingTop: "calc(var(--nav-h) + 2rem)" }}
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+        <div className="grid xl:grid-cols-12 gap-12 xl:gap-16">
           {/* LEFT — editorial intro */}
-          <aside className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
+          <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               CONTACT
             </p>
-            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] uppercase tracking-[0.04em]">
+            <h1 className="mt-6 text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] uppercase tracking-[0.06em] font-light text-charcoal">
               LET'S COLLABORATE
             </h1>
-            <p className="mt-8 max-w-md text-[13px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/70">
+            <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
               We would love to hear about your project and how we can support
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
