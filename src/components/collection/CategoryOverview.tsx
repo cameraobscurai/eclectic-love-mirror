@@ -112,7 +112,12 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
               decoding="async"
               {...({ fetchPriority: eager ? "high" : "auto" } as Record<string, string>)}
               onLoad={() => setLoaded(true)}
-              onError={onImageFailed}
+              data-fallback={img!.fallbackUrl}
+              onError={(e) => {
+                const el = e.currentTarget;
+                if (el.dataset.fallback) imgFallback(e);
+                else onImageFailed();
+              }}
               className="w-full h-full object-cover will-change-opacity group-hover:scale-[1.03]"
               style={{
                 opacity: loaded ? 1 : 0,
