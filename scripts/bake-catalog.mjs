@@ -28,12 +28,14 @@ const INVENTORY_PUBLIC_MARKER = '/storage/v1/object/public/inventory/';
 // Title alias overrides — RMS id → preferred live title (presentation only).
 // Source: scripts-tmp/title-aliases.json (curated against live Squarespace).
 let titleAliasByRms = new Map();
+let forcedFamilyGroups = [];
 try {
   const aliases = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/title-aliases.json', 'utf8'));
   for (const p of aliases.pairs || []) {
     if (p.rms && p.live) titleAliasByRms.set(String(p.rms), p.live);
   }
-  console.log(`[bake] loaded ${titleAliasByRms.size} title aliases`);
+  forcedFamilyGroups = aliases.groups || [];
+  console.log(`[bake] loaded ${titleAliasByRms.size} title aliases, ${forcedFamilyGroups.length} forced family groups`);
 } catch {
   console.warn('[bake] no title-aliases.json — skipping alias overrides');
 }
@@ -169,7 +171,7 @@ const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot);
+const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
