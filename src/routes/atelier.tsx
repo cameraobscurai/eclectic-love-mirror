@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
+import { STORAGE_ORIGIN } from "@/lib/storage-image";
 import atelierHero from "@/assets/atelier-hero.png?preset=hero";
 import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
 
@@ -143,7 +144,17 @@ export const Route = createFileRoute("/atelier")({
         content: atelierHero.img.src,
       },
     ],
-    links: [heroPreloadLink(atelierHero)],
+    links: [
+      heroPreloadLink(atelierHero),
+      // Warm the TLS connection to Supabase storage before the first
+      // portrait scrolls into view — saves ~100-300ms on the first image.
+      ...(STORAGE_ORIGIN
+        ? [
+            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
+            { rel: "dns-prefetch", href: STORAGE_ORIGIN },
+          ]
+        : []),
+    ],
   }),
   component: AtelierPage,
 });
