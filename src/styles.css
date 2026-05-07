@@ -255,7 +255,7 @@ button, a, [role="button"] {
 }
 
 .collection-overview-grid-shell {
-  height: calc(100dvh - var(--nav-h) - var(--collection-mobile-h-h));
+  height: calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-mobile-h-h));
   overflow: hidden;
 }
 
