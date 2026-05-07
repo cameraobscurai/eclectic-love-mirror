@@ -714,8 +714,9 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
-      className={layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
-      style={{ background: "var(--paper)" }}
+      data-collection-overview={showOverview ? "" : undefined}
+      className={showOverview ? "h-[100dvh] overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
+      style={{ background: "var(--paper)", "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)" } as React.CSSProperties}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
@@ -895,7 +896,7 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section className={showOverview ? "px-0 pt-0 h-[calc(100dvh-var(--nav-h))] overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
@@ -904,7 +905,7 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex flex-col lg:flex-row lg:h-[calc(100dvh-var(--nav-h))] lg:overflow-hidden" : "grid grid-cols-1"}
+            className={showOverview ? "flex h-full flex-col overflow-hidden lg:flex-row" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
@@ -937,16 +938,26 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile/tablet: no H-plate stack — the grid IS the view.
-                      Fixed 3×6 grid fills viewport beneath nav, no scroll.
-                      The H-plate identity lives on desktop's 40% rail. */}
+                  {/* Mobile/tablet: H identity returns as a fixed-height masthead;
+                      the category grid takes the remaining viewport below it. */}
                   <div
-                    className="lg:flex-1 lg:min-h-0 lg:overflow-hidden"
+                    className="lg:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10 overflow-hidden"
                     style={{
-                      // On mobile, lock the grid to the visible viewport so
-                      // all 18 categories sit on one screen — make-or-break.
-                      height: "calc(100dvh - var(--nav-h))",
+                      height: "var(--collection-mobile-h-h)",
+                      background: "var(--paper)",
+                      padding: "8px 18px",
                     }}
+                  >
+                    <img
+                      src={hiveSignatureHero}
+                      alt="The Hive — Signature Collection"
+                      className="block h-full w-auto object-contain"
+                      width={1535}
+                      height={1920}
+                    />
+                  </div>
+                  <div
+                    className="collection-overview-grid-shell lg:flex-1 lg:min-h-0 lg:overflow-hidden"
                   >
                     <CategoryTonalGrid
                       groups={overviewGroups}

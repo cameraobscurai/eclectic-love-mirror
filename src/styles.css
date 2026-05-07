@@ -254,6 +254,22 @@ button, a, [role="button"] {
   to   { opacity: 1 }
 }
 
+.collection-overview-grid-shell {
+  height: calc(100dvh - var(--nav-h) - var(--collection-mobile-h-h));
+  overflow: hidden;
+}
+
+html:has([data-collection-overview]),
+body:has([data-collection-overview]) {
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .collection-overview-grid-shell {
+    height: auto;
+  }
+}
+
 
 @keyframes tile-shimmer {
   0%   { background-position: 200% 0; }
