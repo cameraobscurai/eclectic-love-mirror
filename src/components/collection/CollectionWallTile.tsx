@@ -1,18 +1,23 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface Props {
   product: CollectionProduct;
+  index?: number;
   isHovered: boolean;
   isAnyHovered: boolean;
   onHover: (id: string | null) => void;
   onOpen: (id: string) => void;
 }
 
-function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
-  const url = product.primaryImage?.url ?? null;
+function CollectionWallTileImpl({ product, index = 999, isHovered, isAnyHovered, onHover, onOpen }: Props) {
+  const rawUrl = product.primaryImage?.url ?? null;
+  const url = rawUrl ? withCdnWidth(rawUrl, 600) : null;
+  const srcSet = rawUrl ? buildCdnSrcSet(rawUrl, [320, 480, 720, 960]) || undefined : undefined;
   const dim = isAnyHovered && !isHovered;
+  const eager = index < 12;
 
   return (
     <motion.button
@@ -34,10 +39,13 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
         {url && (
           <img
             src={url}
-            alt=""
+            srcSet={srcSet}
+            sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 48vw"
+            alt={product.primaryImage?.altText ?? product.title}
             className="w-full h-full object-contain p-[8%] pointer-events-none select-none"
-            loading="lazy"
+            loading={eager ? "eager" : "lazy"}
             decoding="async"
+            {...({ fetchPriority: eager ? "high" : "low" } as Record<string, string>)}
             draggable={false}
           />
         )}

@@ -145,10 +145,11 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
         onTouchEnd={onTouchEnd}
         onTouchCancel={onTouchEnd}
       >
-        {trimmed.map((p) => (
+        {trimmed.map((p, i) => (
           <div key={p.id} className="relative bg-white">
             <CollectionWallTile
               product={p}
+              index={i}
               isHovered={activeId === p.id}
               isAnyHovered={activeId !== null}
               onHover={isMobile ? noopHover : setHoveredId}
