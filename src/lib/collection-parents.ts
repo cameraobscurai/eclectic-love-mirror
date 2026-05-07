@@ -219,9 +219,13 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
   const liveLower = liveSubs.map((s) => s.toLowerCase());
 
   // Hard overrides — structural form trumps live-site labels.
-  // A banquette is a bench (often round/curved), never a sofa, even when
-  // Squarespace tagged it under "Sofas & Loveseats".
-  if (parent === "lounge-seating" && titleLower.includes("banquette")) {
+  // A banquette is normally a bench, BUT respect the live site when it
+  // explicitly tags one under Sofas & Loveseats (e.g. Rosalind round banquette).
+  if (
+    parent === "lounge-seating" &&
+    titleLower.includes("banquette") &&
+    !liveLower.includes("sofas & loveseats")
+  ) {
     return "benches";
   }
 
