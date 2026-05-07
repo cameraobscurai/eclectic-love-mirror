@@ -695,6 +695,25 @@ function CollectionPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Measure the utility bar (utility row + subcategory rail) so Wall view
+  // can subtract its actual rendered height — no dead space, no scroll.
+  const utilityBarRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = utilityBarRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const apply = () => {
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--collection-bar-h", `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty("--collection-bar-h");
+    };
+  }, [activeParent, layout]);
+
   return (
     <main
       data-collection-main
@@ -713,6 +732,7 @@ function CollectionPage() {
           ============================================================ */}
       {(activeParent || q.trim()) && (
       <div
+        ref={utilityBarRef}
         className="sticky z-30"
         style={{
           top: "var(--nav-h)",
