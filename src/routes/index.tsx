@@ -167,49 +167,43 @@ function HomePage() {
       */}
       <EvolutionNarrative
         footer={
-          <div className="border-t border-charcoal/15">
+          <div className="border-t border-charcoal/15 grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-charcoal/15">
             {DESTINATIONS.map((dest, i) => (
               <Link
                 key={dest.href}
                 to={dest.href}
                 preload="viewport"
                 aria-label={`${dest.title} — ${dest.label}`}
-                className="group block border-b border-charcoal/15"
+                className="group block border-b border-charcoal/15 md:border-b-0"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="flex items-baseline gap-4 md:gap-5 py-5 md:py-6">
-                  {/* Title — the hero word */}
+                <div className="flex items-baseline gap-4 md:flex-col md:items-start md:gap-2 px-4 md:px-6 py-5 md:py-7">
                   <h3
-                    className={cn(
-                      "font-brand uppercase text-charcoal transition-colors duration-300",
-                      "group-hover:text-charcoal",
-                    )}
+                    className="font-brand uppercase text-charcoal transition-colors duration-300"
                     style={{
                       fontWeight: 500,
                       letterSpacing: "0.03em",
-                      fontSize: "clamp(1.15rem, 1.9vw, 1.6rem)",
+                      fontSize: "clamp(1.05rem, 1.5vw, 1.35rem)",
                       lineHeight: 1,
                     }}
                   >
                     {dest.title}
                   </h3>
 
-                  {/* Descriptor — italic, sits right alongside */}
                   <p
-                    className="font-brand italic text-charcoal/50 truncate"
+                    className="font-brand italic text-charcoal/55 truncate"
                     style={{
                       fontWeight: 400,
-                      fontSize: "clamp(0.85rem, 1vw, 1rem)",
+                      fontSize: "clamp(0.8rem, 0.95vw, 0.95rem)",
                     }}
                   >
                     {dest.label}
                   </p>
 
-                  {/* Arrow — pinned right, no rail */}
                   <svg
                     className={cn(
-                      "ml-auto h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out",
+                      "ml-auto md:ml-0 md:mt-3 h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out",
                       hoveredIndex === i ? "translate-x-1" : "translate-x-0",
                     )}
                     fill="none"
@@ -228,6 +222,7 @@ function HomePage() {
               </Link>
             ))}
           </div>
+
         }
       />
 
