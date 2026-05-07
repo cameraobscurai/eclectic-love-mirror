@@ -64,6 +64,27 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [hoverId, audioId, reduced, inView]);
 
+  // Kick playback explicitly once refs are registered. Stagger by ~120ms so
+  // browsers don't throttle 5 concurrent video downloads (only the first
+  // would actually start otherwise).
+  useEffect(() => {
+    if (reduced) return;
+    const timers: number[] = [];
+    Object.entries(videoRefs.current).forEach(([_id, v], i) => {
+      if (!v) return;
+      const t = window.setTimeout(() => {
+        try {
+          v.muted = true;
+          v.load();
+          v.play().catch(() => {});
+        } catch {}
+      }, i * 120);
+      timers.push(t);
+    });
+    return () => timers.forEach((t) => window.clearTimeout(t));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clips.length, reduced]);
+
   const toggleAudio = useCallback((id: string) => {
     setAudioId((curr) => (curr === id ? null : id));
   }, []);
