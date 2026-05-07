@@ -149,21 +149,21 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   </p>
                 );
               })}
-            </div>
-
-            {footer && (
-              <div
-                className="mt-12 md:mt-16 transition-all duration-500 ease-out"
-                style={{
-                  opacity: showFooter ? 1 : 0,
-                  transform: showFooter ? "translateY(0)" : "translateY(8px)",
-                  pointerEvents: showFooter ? "auto" : "none",
-                }}
-              >
-                {footer}
-              </div>
-            )}
           </div>
+
+          {footer && (
+            <div
+              className="col-span-12 mt-12 md:mt-16 transition-all duration-500 ease-out"
+              style={{
+                opacity: showFooter ? 1 : 0,
+                transform: showFooter ? "translateY(0)" : "translateY(8px)",
+                pointerEvents: showFooter ? "auto" : "none",
+              }}
+            >
+              {footer}
+            </div>
+          )}
+
         </div>
       </div>
     </section>
