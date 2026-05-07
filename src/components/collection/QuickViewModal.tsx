@@ -413,6 +413,8 @@ export function QuickViewModal({
                         >
                           <img
                             src={withCdnWidth(im.url, 300)}
+                            data-fallback={im.fallbackUrl}
+                            onError={imgFallback}
                             alt=""
                             className="absolute inset-0 w-full h-full object-contain p-1"
                           />
