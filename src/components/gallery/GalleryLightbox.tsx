@@ -127,17 +127,29 @@ export function GalleryLightbox({
           ref={heroRef}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden"
         >
-          <img
-            key={plate.src}
+          <CrossfadeImage
+            srcKey={plate.src}
             src={renderUrl(plate.src, { width: 1600, quality: 78 })}
             srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
             sizes="(min-width: 1024px) 66vw, 100vw"
             alt={plate.alt}
-            decoding="async"
-            {...({ fetchPriority: "high" } as Record<string, string>)}
-            className="absolute inset-0 w-full h-full object-contain animate-fade-in"
-            draggable={false}
           />
+
+          {/* Preload neighbors for instant swap */}
+          {plates.map((p, i) => {
+            if (i === plateIndex) return null;
+            if (Math.abs(i - plateIndex) > 1) return null;
+            return (
+              <link
+                key={p.src}
+                rel="preload"
+                as="image"
+                href={renderUrl(p.src, { width: 1600, quality: 78 })}
+                imageSrcSet={renderSrcSet(p.src, [1200, 1600, 2000], 78)}
+                imageSizes="(min-width: 1024px) 66vw, 100vw"
+              />
+            );
+          })}
 
           {/* Plate paddles */}
           <button
