@@ -32,42 +32,42 @@ const LINES: Line[] = [
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-const STEP_VH = 22; // shorter scroll distance per line — keeps it tight
+const BODY_LINES = LINES.filter((line) => line.emphasis !== "section");
+const STEP_VH = 18; // tight, but still enough distance for each switch to animate
+const FOOTER_REVEAL_AT = 0.88;
+const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
 
-  const BODY_LINES = LINES.filter((l) => l.emphasis !== "section");
-
   useEffect(() => {
     if (typeof window === "undefined") return;
     const total = BODY_LINES.length;
 
-    const onScroll = () => {
+    const updateActiveLine = () => {
       const el = sectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      const distance = el.offsetHeight - vh;
-      const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(distance, 1));
-      const progress = distance > 0 ? scrolled / distance : 0;
+      const distance = Math.max(el.offsetHeight - vh, 1);
+      const progress = clamp01(-rect.top / distance);
 
-      // Reserve last ~15% for footer reveal. Map remaining 0..0.85 across lines.
-      const lineProgress = Math.min(progress / 0.85, 1);
-      const idx = Math.min(total - 1, Math.floor(lineProgress * total));
-      setActiveIndex(idx);
-      setShowFooter(progress > 0.82);
+      const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
+      const idx = Math.min(total - 1, Math.round(lineProgress * (total - 1)));
+      const footerVisible = progress >= FOOTER_REVEAL_AT;
+      setActiveIndex((current) => (current === idx ? current : idx));
+      setShowFooter((current) => (current === footerVisible ? current : footerVisible));
     };
 
-    onScroll();
+    updateActiveLine();
     let ticking = false;
     const handler = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        onScroll();
+        updateActiveLine();
         ticking = false;
       });
     };
@@ -77,12 +77,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       window.removeEventListener("scroll", handler);
       window.removeEventListener("resize", handler);
     };
-  }, [BODY_LINES.length]);
+  }, []);
 
   return (
     <section
       ref={sectionRef}
       aria-labelledby="evolution-heading"
+      data-active-line={activeIndex}
       className="relative bg-paper text-charcoal"
       style={{ height: `${BODY_LINES.length * STEP_VH + 60}vh` }}
     >
@@ -110,8 +111,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               return (
                 <p
                   key={i}
+                  data-active={active ? "true" : "false"}
                   className={cn(
-                    "font-brand text-charcoal transition-all duration-300 ease-out",
+                    "font-brand text-charcoal transition-[opacity,transform] duration-250 ease-out",
                     isBrand ? "uppercase tracking-[0.18em]" : "italic",
                   )}
                   style={{
