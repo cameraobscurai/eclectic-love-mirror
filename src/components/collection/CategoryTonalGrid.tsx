@@ -30,9 +30,9 @@ interface CategoryTonalGridProps {
  * supported. Computing per-tile tone client-side keeps the math explicit.
  */
 const ORDER: BrowseGroupId[] = [
-  "sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables", "cocktail-tables",
-  "dining", "bar", "storage", "lighting", "rugs", "pillows",
-  "throws", "tableware", "serveware", "styling", "accents", "large-decor",
+  "sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables",
+  "cocktail-tables", "dining", "bar", "lighting", "rugs",
+  "pillows", "throws", "tableware", "styling", "large-decor",
 ];
 
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
@@ -41,7 +41,7 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
 // Column counts per breakpoint — must match Tailwind classes below.
-const COLS = { base: 2, sm: 3, lg: 6 } as const;
+const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
 export function CategoryTonalGrid({
   groups,
@@ -100,7 +100,7 @@ export function CategoryTonalGrid({
       <style>{`
         [data-tonal-grid] {
           display: grid;
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(5, 1fr);
           grid-template-rows: repeat(3, 1fr);
           width: 100%;
           height: 100%;
@@ -110,7 +110,7 @@ export function CategoryTonalGrid({
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(6, 1fr);
+            grid-template-rows: repeat(5, 1fr);
             grid-auto-rows: auto;
             height: 100%;
             padding: 8px;
@@ -234,7 +234,7 @@ function TonalCell({
         <img
           src={heroSrc}
           srcSet={heroSrcSet}
-          sizes="(min-width: 1024px) 16vw, (min-width: 640px) 32vw, 48vw"
+          sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
           width={600}
           height={480}
