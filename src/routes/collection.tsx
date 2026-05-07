@@ -714,6 +714,7 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
+      data-collection-overview={showOverview ? "" : undefined}
       className={showOverview ? "h-[100dvh] overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
       style={{ background: "var(--paper)", "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)" } as React.CSSProperties}
     >
