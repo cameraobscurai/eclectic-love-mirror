@@ -240,7 +240,7 @@ export function getOriginalSiteTypeRank(product: CollectionProduct): number {
   return FALLBACK_TYPE_RANK;
 }
 
-export type SortMode = "by-type" | "az" | "newest" | "oldest";
+export type SortMode = "by-type" | "az" | "newest" | "oldest" | "tonal";
 
 export interface SortContext {
   mode: SortMode;
