@@ -25,6 +25,19 @@ const ORDER = ['seating','tables','bars','tableware','serveware','pillows-throws
 
 const INVENTORY_PUBLIC_MARKER = '/storage/v1/object/public/inventory/';
 
+// Title alias overrides — RMS id → preferred live title (presentation only).
+// Source: scripts-tmp/title-aliases.json (curated against live Squarespace).
+let titleAliasByRms = new Map();
+try {
+  const aliases = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/title-aliases.json', 'utf8'));
+  for (const p of aliases.pairs || []) {
+    if (p.rms && p.live) titleAliasByRms.set(String(p.rms), p.live);
+  }
+  console.log(`[bake] loaded ${titleAliasByRms.size} title aliases`);
+} catch {
+  console.warn('[bake] no title-aliases.json — skipping alias overrides');
+}
+
 function restoredInventoryUrl(url) {
   if (typeof url !== 'string' || !url.includes(INVENTORY_PUBLIC_MARKER)) return url;
   const [base, pathPart] = url.split(INVENTORY_PUBLIC_MARKER);
