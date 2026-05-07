@@ -52,7 +52,15 @@ function HomePage() {
       {/* Mobile-only full-viewport sequential video reel. Sits behind the fixed transparent nav. */}
       <section className="md:hidden relative -mt-px">
         <SequentialHeroVideo />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center">
+        <div
+          className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center"
+          style={{
+            paddingTop: "env(safe-area-inset-top)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+            paddingLeft: "max(1.5rem, env(safe-area-inset-left))",
+            paddingRight: "max(1.5rem, env(safe-area-inset-right))",
+          }}
+        >
           <div>
             <h1
               className="font-brand uppercase text-cream drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]"
