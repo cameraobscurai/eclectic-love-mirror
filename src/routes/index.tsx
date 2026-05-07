@@ -110,22 +110,22 @@ function HomePage() {
           )}
         >
           <h1
-            className="font-brand uppercase text-charcoal"
+            className="font-brand text-charcoal"
             style={{
-              fontWeight: 400,
-              letterSpacing: "0.06em",
-              fontSize: "clamp(2.25rem, 6vw, 4.5rem)",
+              fontWeight: 700,
+              letterSpacing: "-0.005em",
+              fontSize: "clamp(2.75rem, 7vw, 5.25rem)",
               lineHeight: 1,
             }}
           >
-            Eclectic&nbsp;Hive
+            ECLECTIC HIVE
           </h1>
           <p
-            className="mx-auto mt-2 max-w-3xl font-brand italic text-charcoal/70"
+            className="mx-auto mt-1 max-w-3xl font-brand italic text-charcoal/70"
             style={{
               fontWeight: 400,
-              fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)",
-              lineHeight: 1.4,
+              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
+              lineHeight: 1.3,
             }}
           >
             Designing for Weddings, Corporate, &amp; Social Events
