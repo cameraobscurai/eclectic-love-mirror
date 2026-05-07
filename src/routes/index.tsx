@@ -61,16 +61,37 @@ function HomePage() {
             paddingRight: "max(1.5rem, env(safe-area-inset-right))",
           }}
         >
-          <div>
+          {/* Soft radial vignette behind wordmark — darkens hot frames, lifts dark ones */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[55vh] w-[110vw] mix-blend-multiply opacity-70"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.18) 35%, rgba(0,0,0,0) 70%)",
+            }}
+          />
+          <div className="relative">
             <h1
-              className="font-brand uppercase text-cream drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]"
-              style={{ fontWeight: 400, letterSpacing: "0.1em", fontSize: "clamp(2rem,9vw,3.25rem)", lineHeight: 1 }}
+              className="font-brand uppercase text-cream"
+              style={{
+                fontWeight: 400,
+                letterSpacing: "0.1em",
+                fontSize: "clamp(2rem,9vw,3.25rem)",
+                lineHeight: 1,
+                textShadow:
+                  "0 1px 2px rgba(0,0,0,0.55), 0 2px 18px rgba(0,0,0,0.45), 0 0 40px rgba(0,0,0,0.35)",
+              }}
             >
               Eclectic&nbsp;Hive
             </h1>
             <p
-              className="mt-3 font-brand italic text-cream/85 drop-shadow-[0_1px_10px_rgba(0,0,0,0.5)]"
-              style={{ fontWeight: 400, fontSize: "clamp(0.85rem,3.4vw,1rem)", lineHeight: 1.4 }}
+              className="mt-3 font-brand italic text-cream/90"
+              style={{
+                fontWeight: 400,
+                fontSize: "clamp(0.85rem,3.4vw,1rem)",
+                lineHeight: 1.4,
+                textShadow: "0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5)",
+              }}
             >
               Designing for Weddings, Corporate, &amp; Social Events
             </p>
