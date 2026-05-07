@@ -7,7 +7,7 @@ import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
-import pressGlassBar from "@/assets/press-glass-bar.jpg?preset=editorial";
+import pressLogos from "@/assets/press-logos-transparent.png";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
@@ -95,33 +95,23 @@ function GalleryPage() {
 
       <GalleryCta />
 
-      {/* As Featured In — existing press image */}
-      <section aria-labelledby="press-heading" className="bg-cream py-20 lg:py-28 px-6 lg:px-12">
+      {/* As Featured In — transparent press logos on charcoal */}
+      <section aria-labelledby="press-heading" className="bg-charcoal pb-16 lg:pb-20 px-6 lg:px-12">
         <div className="max-w-[1400px] mx-auto">
           <h2
             id="press-heading"
-            className="text-charcoal/50 text-[10px] uppercase tracking-[0.32em] text-center mb-8"
+            className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"
           >
             As Featured In
           </h2>
-          <picture>
-            {pressGlassBar.sources.avif && (
-              <source type="image/avif" srcSet={pressGlassBar.sources.avif} />
-            )}
-            {pressGlassBar.sources.webp && (
-              <source type="image/webp" srcSet={pressGlassBar.sources.webp} />
-            )}
-            <img
-              src={pressGlassBar.img.src}
-              width={pressGlassBar.img.w}
-              height={pressGlassBar.img.h}
-              alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-              className="w-full h-auto select-none"
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-            />
-          </picture>
+          <img
+            src={pressLogos}
+            alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
+            className="w-full h-auto max-h-20 lg:max-h-24 object-contain select-none mx-auto opacity-90"
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
         </div>
       </section>
 

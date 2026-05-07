@@ -60,7 +60,7 @@ export function GalleryFilmstrip({
   const padded = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <section aria-label="Project filmstrip" className="pb-20 lg:pb-28">
+    <section aria-label="Project filmstrip" className="pb-10 lg:pb-14">
       <ul
         ref={scrollerRef}
         className="flex gap-8 lg:gap-10 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 lg:px-12 pb-6 scrollbar-hide"
