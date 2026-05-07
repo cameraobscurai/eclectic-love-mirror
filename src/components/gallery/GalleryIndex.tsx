@@ -29,8 +29,6 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                 <span className="font-display text-xl lg:text-2xl text-cream font-light flex-1 group-hover:text-sand transition-colors">
                   {p.name}
                 </span>
-                <span className="hidden lg:block text-cream/40 text-xs uppercase tracking-[0.2em] w-48">
-                  {p.kind}
                 </span>
                 <span className="text-cream/30 text-sm w-16 text-right tabular-nums">
                   {p.year}
