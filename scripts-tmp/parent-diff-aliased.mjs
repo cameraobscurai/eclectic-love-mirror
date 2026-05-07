@@ -17,7 +17,7 @@ for (const g of aliases.groups) for (const r of g.rms) rmsToLive.set(String(r), 
 const STOP = new Set(['the','a','an','of','and','with','&','for','to','in','on','plus','+']);
 const tokens = s => new Set(
   (s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').split(/\s+/)
-    .filter(t => t.length>=2 && !STOP.has(t))
+    .filter(t => t.length>=1 && !STOP.has(t))
 );
 const jaccard = (a,b) => {
   if (!a.size || !b.size) return 0;
