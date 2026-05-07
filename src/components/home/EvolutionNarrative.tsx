@@ -56,8 +56,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
 
       const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
       const idx = Math.min(total - 1, Math.round(lineProgress * (total - 1)));
+      const footerVisible = progress >= FOOTER_REVEAL_AT;
       setActiveIndex((current) => (current === idx ? current : idx));
-      setShowFooter((current) => (current === progress >= FOOTER_REVEAL_AT ? current : progress >= FOOTER_REVEAL_AT));
+      setShowFooter((current) => (current === footerVisible ? current : footerVisible));
     };
 
     updateActiveLine();
