@@ -695,10 +695,29 @@ function CollectionPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Measure the utility bar (utility row + subcategory rail) so Wall view
+  // can subtract its actual rendered height — no dead space, no scroll.
+  const utilityBarRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const el = utilityBarRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return undefined;
+    const apply = () => {
+      const h = Math.ceil(el.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--collection-bar-h", `${h}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      document.documentElement.style.removeProperty("--collection-bar-h");
+    };
+  }, [activeParent, layout]);
+
   return (
     <main
       data-collection-main
-      className="min-h-screen text-charcoal pb-32"
+      className={layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
       style={{ background: "var(--paper)" }}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
@@ -713,6 +732,7 @@ function CollectionPage() {
           ============================================================ */}
       {(activeParent || q.trim()) && (
       <div
+        ref={utilityBarRef}
         className="sticky z-30"
         style={{
           top: "var(--nav-h)",
@@ -817,43 +837,25 @@ function CollectionPage() {
                 role="group"
                 aria-label="View"
               >
-                {layout === "grid" && (
-                  <>
-                    <button
-                      onClick={() => setDensity("comfortable")}
-                      className={[
-                        "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                        density === "comfortable"
-                          ? "text-charcoal bg-charcoal/[0.04]"
-                          : "text-charcoal/40 hover:text-charcoal/80",
-                      ].join(" ")}
-                      aria-label="Comfortable grid"
-                      aria-pressed={density === "comfortable"}
-                    >
-                      <DensityIconLarge />
-                    </button>
-                    <button
-                      onClick={() => setDensity("dense")}
-                      className={[
-                        "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                        density === "dense"
-                          ? "text-charcoal bg-charcoal/[0.04]"
-                          : "text-charcoal/40 hover:text-charcoal/80",
-                      ].join(" ")}
-                      aria-label="Dense grid"
-                      aria-pressed={density === "dense"}
-                    >
-                      <DensityIconSmall />
-                    </button>
-                  </>
-                )}
                 <button
-                  onClick={() => setLayout(layout === "wall" ? "grid" : "wall")}
+                  onClick={() => setLayout("grid")}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                    layout === "grid" ? "border-l border-charcoal/10" : "",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                    layout === "grid"
+                      ? "text-charcoal bg-charcoal/[0.04]"
+                      : "text-charcoal/40 hover:text-charcoal/80",
+                  ].join(" ")}
+                  aria-label="Comfortable grid"
+                  aria-pressed={layout === "grid"}
+                  title="Grid — scrollable, large tiles"
+                >
+                  <DensityIconLarge />
+                </button>
+                <button
+                  onClick={() => setLayout("wall")}
+                  className={[
+                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                     layout === "wall"
                       ? "text-charcoal bg-charcoal/[0.04]"
@@ -861,7 +863,7 @@ function CollectionPage() {
                   ].join(" ")}
                   aria-label="Wall view"
                   aria-pressed={layout === "wall"}
-                  title="Wall — viewport-locked, hover to magnify"
+                  title="Wall — full viewport, every piece at once"
                 >
                   <WallIcon />
                 </button>
@@ -896,10 +898,10 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
         <div
-          className={showOverview ? "" : "mx-auto"}
-          style={showOverview ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
+          className={showOverview || layout === "wall" ? "" : "mx-auto"}
+          style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
         >
           <LayoutGroup id="collection-overview">
           <motion.div
@@ -967,7 +969,7 @@ function CollectionPage() {
               ) : layout === "wall" ? (
                 <div
                   className="relative w-full"
-                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h) - 2px)" }}
+                  style={{ height: "calc(100dvh - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))" }}
                 >
                   {visibleProducts.length === 0 ? (
                     <div className="py-32 px-6">
@@ -979,6 +981,7 @@ function CollectionPage() {
                     <CollectionWall
                       products={visibleProducts}
                       onOpen={(id) => setQuickViewId(id)}
+                      cap={600}
                     />
                   )}
                 </div>
