@@ -96,6 +96,7 @@ export function GalleryLightbox({
   // Wheel-to-plate on the hero side, debounced so each notch counts once.
   const heroRef = useRef<HTMLDivElement>(null);
   const wheelLockRef = useRef(false);
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null);
   useEffect(() => {
     const node = heroRef.current;
     if (!node) return;
@@ -126,7 +127,23 @@ export function GalleryLightbox({
         {/* Hero plate — wheel target */}
         <div
           ref={heroRef}
-          className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden"
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            touchRef.current = { x: t.clientX, y: t.clientY, t: Date.now() };
+          }}
+          onTouchEnd={(e) => {
+            const start = touchRef.current;
+            if (!start) return;
+            const t = e.changedTouches[0];
+            const dx = t.clientX - start.x;
+            const dy = t.clientY - start.y;
+            const dt = Date.now() - start.t;
+            touchRef.current = null;
+            if (dt > 600) return;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+            stepPlate(dx < 0 ? 1 : -1);
+          }}
+          className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
           <CrossfadeImage
             srcKey={plate.src}
