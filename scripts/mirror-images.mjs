@@ -59,22 +59,62 @@ function targetPath(cat, slug, filename) {
 }
 
 const manifest = [];
-const collisions = new Map(); // targetPath -> [sources]
+const claimed = new Map();          // targetPath -> sourceUrl that owns it
+const suffixResolutions = [];        // collision audit log
+const exactDupes = [];               // same source URL appearing twice in one product
+
+function withSuffix(filename, n) {
+  const dot = filename.lastIndexOf('.');
+  if (dot <= 0) return `${filename}__${n}`;
+  return `${filename.slice(0, dot)}__${n}${filename.slice(dot)}`;
+}
 
 for (const p of catalog.products) {
   if (CATS.length && !CATS.includes(p.categorySlug)) continue;
   for (const img of (p.images || [])) {
     const url = img.url || '';
     const kind = classify(url);
-    const filename = exactFilename(url);
-    const target = targetPath(p.categorySlug, p.slug, filename);
+    const baseFilename = exactFilename(url);
+    let filename = baseFilename;
+    let target = targetPath(p.categorySlug, p.slug, filename);
 
-    const entry = {
+    // Resolve collisions: same target path claimed by a DIFFERENT source URL?
+    if (claimed.has(target) && claimed.get(target) !== url) {
+      let n = 2;
+      while (true) {
+        const candidate = withSuffix(baseFilename, n);
+        const candidateTarget = targetPath(p.categorySlug, p.slug, candidate);
+        if (!claimed.has(candidateTarget)) {
+          suffixResolutions.push({
+            slug: p.slug,
+            categorySlug: p.categorySlug,
+            originalTarget: target,
+            resolvedTarget: candidateTarget,
+            originalSource: claimed.get(target),
+            thisSource: url,
+            position: img.position,
+          });
+          filename = candidate;
+          target = candidateTarget;
+          break;
+        }
+        n++;
+        if (n > 20) throw new Error(`runaway suffix collision at ${target}`);
+      }
+    } else if (claimed.has(target) && claimed.get(target) === url) {
+      // Same exact source URL referenced twice in this product's array — keep one, skip the other
+      exactDupes.push({ slug: p.slug, position: img.position, sourceUrl: url, targetPath: target });
+      continue;
+    }
+    claimed.set(target, url);
+
+    manifest.push({
       itemId: p.id,
       slug: p.slug,
       categorySlug: p.categorySlug,
       position: img.position,
       isHero: img.isHero,
+      altText: img.altText ?? null,
       sourceUrl: url,
       sourceKind: kind,
       filename,
@@ -82,33 +122,30 @@ for (const p of catalog.products) {
       targetPath: target,
       newPublicUrl: `${SUPABASE_URL}/storage/v1/object/public/${TARGET_BUCKET}/${target.split('/').map(encodeURIComponent).join('/')}`,
       action: kind === 'already-in-target' ? 'skip' : 'copy',
-    };
-    manifest.push(entry);
-
-    const arr = collisions.get(target) || [];
-    arr.push(url);
-    collisions.set(target, arr);
+    });
   }
 }
 
-// Detect filename collisions inside the same product folder
-const collidingTargets = [...collisions.entries()].filter(([, srcs]) => new Set(srcs).size > 1);
 
 const summary = {
   generatedAt: new Date().toISOString(),
   categories: CATS.length ? CATS : 'ALL',
+  targetBucket: TARGET_BUCKET,
   totalImages: manifest.length,
   byAction: manifest.reduce((a, e) => ((a[e.action] = (a[e.action] || 0) + 1), a), {}),
   bySourceKind: manifest.reduce((a, e) => ((a[e.sourceKind] = (a[e.sourceKind] || 0) + 1), a), {}),
   uniqueProducts: new Set(manifest.map(e => e.slug)).size,
-  collisions: collidingTargets.map(([t, srcs]) => ({ targetPath: t, distinctSources: [...new Set(srcs)] })),
+  suffixResolutionsCount: suffixResolutions.length,
+  exactDupesDropped: exactDupes.length,
 };
 
-const manifestPath = '/tmp/mirror-manifest.json';
-fs.writeFileSync(manifestPath, JSON.stringify({ summary, entries: manifest }, null, 2));
+const manifestPath = '/tmp/mirror-manifest-final.json';
+fs.writeFileSync(manifestPath, JSON.stringify({ summary, suffixResolutions, exactDupes, entries: manifest }, null, 2));
 console.log('=== DRY RUN MANIFEST ===');
 console.log(JSON.stringify(summary, null, 2));
 console.log(`\nFull manifest: ${manifestPath} (${manifest.length} entries)`);
+console.log(`Suffix resolutions: ${suffixResolutions.length}, exact dupes dropped: ${exactDupes.length}`);
+
 
 if (!APPLY) {
   console.log('\n(no --apply flag, exiting before any writes)');
@@ -117,13 +154,17 @@ if (!APPLY) {
 
 // ---- APPLY PHASE ----
 console.log('\n=== APPLY PHASE ===');
-let ok = 0, skipped = 0, failed = [];
-for (const e of manifest) {
-  if (e.action === 'skip') { skipped++; continue; }
+const CONCURRENCY = Number(argv.concurrency || 8);
+const HALT_ON_FAIL = argv.haltOnFail !== false && argv['halt-on-fail'] !== false;
+let ok = 0, skipped = 0;
+const failed = [];
+const applied = [];
+
+async function processOne(e) {
+  if (e.action === 'skip') { skipped++; return; }
   try {
-    // HEAD check: if already exists at target, skip (idempotent)
     const head = await fetch(e.newPublicUrl, { method: 'HEAD' });
-    if (head.ok) { skipped++; continue; }
+    if (head.ok) { skipped++; applied.push(e); return; }
 
     const res = await fetch(e.sourceUrl);
     if (!res.ok) throw new Error(`fetch ${res.status}`);
@@ -134,14 +175,30 @@ for (const e of manifest) {
     });
     if (error && !/already exists/i.test(error.message)) throw error;
     ok++;
-    if (ok % 25 === 0) console.log(`  uploaded ${ok}…`);
+    applied.push(e);
+    if (ok % 50 === 0) console.log(`  uploaded ${ok}…`);
   } catch (err) {
     failed.push({ ...e, error: String(err.message || err) });
   }
 }
+
+// simple worker pool
+const queue = [...manifest];
+async function worker() {
+  while (queue.length) {
+    const e = queue.shift();
+    await processOne(e);
+    if (HALT_ON_FAIL && failed.length) return;
+  }
+}
+await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
 console.log(`\nuploads: ok=${ok} skipped=${skipped} failed=${failed.length}`);
+fs.writeFileSync('/tmp/mirror-applied.json', JSON.stringify(applied, null, 2));
 if (failed.length) {
   fs.writeFileSync('/tmp/mirror-failed.json', JSON.stringify(failed, null, 2));
-  console.log('see /tmp/mirror-failed.json');
+  console.log('see /tmp/mirror-failed.json — apply HALTED' + (HALT_ON_FAIL ? '' : ' (continued)'));
+  process.exit(2);
 }
-console.log('\nNext step (separate command): rewrite inventory_items.images[] using this manifest. Not executed here.');
+console.log('\nApply complete. Next: rewrite inventory_items.images[] from /tmp/mirror-applied.json (separate step).');
+
