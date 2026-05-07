@@ -1,0 +1,266 @@
+{
+  "generated_at": "2026-05-07T05:04:26.798Z",
+  "ok": 0,
+  "fail": 37,
+  "results": [
+    {
+      "rms_id": "288",
+      "title": "Collin Wood-Filled Concrete Coffee Table",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a7b60c9985304315510/1743788872748/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2407",
+      "title": "Versailles Cane Coffee Table",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a9f60c998530431580a/1747952773136/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2408",
+      "title": "Francoise Cane Side Table",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/63efe6b15eb8c04012b24f7e/5f986a8060c998530431559a/1761774986335/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1570",
+      "title": "Wadsworth Concrete & Birch Bar",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867f3c25a9239f5eeff05/1742416228769/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1354",
+      "title": "Walden Concrete & Birch Bar",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867f4c25a9239f5eeff08/1742416267217/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "188",
+      "title": "Norwood Concrete & Split Wood Top Bar",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867e3c25a9239f5eefead/1742416323301/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1415",
+      "title": "Elwood Concrete & Split Wood Bar",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f96ea5ccc17a47254c7b088/5f9867dec25a9239f5eefe94/1742416381132/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "351",
+      "title": "Estes Reclaimed Dining Table",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/5f986a7f60c9985304315579/1757537791532/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2600",
+      "title": "Orla 13\" Chestnut Leather Charger",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/61ddd5d5ce87c92c376a1871/61c0c9fef49a5b056d670abb/1756484944788/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1807",
+      "title": "Ginny Whitewash Wood Bowl",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/61ddd5d5ce87c92c376a1871/5fa2eb7ef1f7580f59f38f11/1756514475354/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1630",
+      "title": "Atlas 8x10 Turkish Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a478b6c475776f22686d/1724703638927/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1825",
+      "title": "Dayna 8x10 Grey Pattern Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a47db6c475776f2268ed/1724703519894/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "403",
+      "title": "Feride 5x8 Kilim Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a488b6c475776f226a08/1724703519904/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "396",
+      "title": "Gopala 7x7 Natural Tan Hide Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a483b6c475776f22698c/1724703519907/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1933",
+      "title": "Harlow 8x10 Grey Area Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a484b6c475776f2269af/1725997786265/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1817",
+      "title": "Sheridan 8x10 Olive Chenille Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a48eb6c475776f226acb/1724703519957/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "415",
+      "title": "Shiraz 8x10 Ivory & Grey Woven Wool Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a490b6c475776f226ad4/1744396280873/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1615",
+      "title": "Webb 5x8 Abstract Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a493b6c475776f226b30/1756504661262/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1476",
+      "title": "Minnith Olive Basket",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb9e9e0607048e815217/1757107337271/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2113",
+      "title": "Balsley Vintage Step Ladder",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb5cf1f7580f59f38ef8/1757107337293/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1968",
+      "title": "Bill Vintage Cross Country Ski Pair",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb5ff1f7580f59f38ef9/1757107337298/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1512",
+      "title": "Lemiere Vintage Binoculars w/ Leather Case",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb979e0607048e815213/1757107337307/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "596",
+      "title": "Sherlock Desktop Magnifying Glass",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2ebb8f1f7580f59f38f2e/1757107337313/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1508",
+      "title": "Edvard Vintage Horn Ashtray",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb749e0607048e8151fb/1757107337317/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1682",
+      "title": "Garry Wagon Wheel",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb7cf1f7580f59f38f0e/1757107337324/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1542",
+      "title": "Rodgers Lariat Rope",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2ebb29e0607048e815222/1757107337325/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "814",
+      "title": "Felix Natural Antler",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb769e0607048e8151fc/1757107337335/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2049",
+      "title": "Niketas Assorted Vintage Trophy",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa2eaeddcd1676785b3a60e/5fa2eb7b377bf1713d437e52/1757107337350/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2535",
+      "title": "Brantley Dark Orange Metal Wood Burning Chiminea",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988b16f8d2f740b727cbc0/618452ca6397b265f77604ff/1748901450303/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2154",
+      "title": "Warren Metal Canopy",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988b16f8d2f740b727cbc0/5fa9addc92f0a339db12ad72/1757629177478/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2485",
+      "title": "Eustace 36\" White Cast Antler Chandelier",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60ef1458421be65c9d49f13c/1759341610141/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2329",
+      "title": "Calvary Wool Charcoal Throw",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be772ab804e83285569/1756509777515/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2331",
+      "title": "Calvary Wool Grey Throw",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be772ab804e83285587/1756509777517/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2330",
+      "title": "Calvary Wool Olive Throw",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986be872ab804e8328558b/1773173727724/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "2346",
+      "title": "Tassel Houndstooth Throw",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fac2d99012f4a35da7ab356/5f986bf372ab804e83285687/1724716036569/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "1932",
+      "title": "Hathor Light Colored Hide Rug",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/66cce0d06595ab2aa7a1567a/5fa9a485b6c475776f2269b1/1724703519914/",
+      "error": "still placeholder bytes=2102"
+    },
+    {
+      "rms_id": "880",
+      "title": "Nixon Globe Lamp",
+      "status": "upload_fail",
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/5f988c5d72676f623779f53d/1759341610167/",
+      "error": "still placeholder bytes=2102"
+    }
+  ]
+}
