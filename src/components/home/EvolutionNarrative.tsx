@@ -39,23 +39,26 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
 
+  const BODY_LINES = LINES.filter((l) => l.emphasis !== "section");
+
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const total = LINES.length;
+    const total = BODY_LINES.length;
 
     const onScroll = () => {
       const el = sectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      // progress 0 → 1 across the scroll-distance band
       const distance = el.offsetHeight - vh;
-      const scrolled = Math.min(Math.max(-rect.top, 0), distance);
+      const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(distance, 1));
       const progress = distance > 0 ? scrolled / distance : 0;
-      // Map progress to a line index. Last 12% of progress reveals the footer.
-      const idx = Math.min(total - 1, Math.floor(progress * (total + 0.5)));
+
+      // Reserve last ~15% for footer reveal. Map remaining 0..0.85 across lines.
+      const lineProgress = Math.min(progress / 0.85, 1);
+      const idx = Math.min(total - 1, Math.floor(lineProgress * total));
       setActiveIndex(idx);
-      setShowFooter(progress > 0.88);
+      setShowFooter(progress > 0.82);
     };
 
     onScroll();
@@ -74,14 +77,14 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       window.removeEventListener("scroll", handler);
       window.removeEventListener("resize", handler);
     };
-  }, []);
+  }, [BODY_LINES.length]);
 
   return (
     <section
       ref={sectionRef}
       aria-labelledby="evolution-heading"
       className="relative bg-paper text-charcoal"
-      style={{ height: `${LINES.length * STEP_VH + 40}vh` }}
+      style={{ height: `${BODY_LINES.length * STEP_VH + 60}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex items-center justify-center px-6">
         <div className="mx-auto w-full max-w-2xl">
@@ -101,10 +104,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
           </div>
 
           <div className="space-y-1.5 md:space-y-2">
-            {LINES.filter((l) => l.emphasis !== "section").map((line, i) => {
-              // skip the section label in the indexable list
-              const lineIndex = i + 1; // line 0 was the section label
-              const active = lineIndex === activeIndex;
+            {BODY_LINES.map((line, i) => {
+              const active = i === activeIndex;
               const isBrand = line.emphasis === "brand";
               return (
                 <p
