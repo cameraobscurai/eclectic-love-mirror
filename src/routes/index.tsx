@@ -52,6 +52,22 @@ function HomePage() {
       {/* Mobile-only full-viewport sequential video reel. Sits behind the fixed transparent nav. */}
       <section className="md:hidden relative -mt-px">
         <SequentialHeroVideo />
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center">
+          <div>
+            <h1
+              className="font-brand uppercase text-cream drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]"
+              style={{ fontWeight: 400, letterSpacing: "0.1em", fontSize: "clamp(2rem,9vw,3.25rem)", lineHeight: 1 }}
+            >
+              Eclectic&nbsp;Hive
+            </h1>
+            <p
+              className="mt-3 font-brand italic text-cream/85 drop-shadow-[0_1px_10px_rgba(0,0,0,0.5)]"
+              style={{ fontWeight: 400, fontSize: "clamp(0.85rem,3.4vw,1rem)", lineHeight: 1.4 }}
+            >
+              Designing for Weddings, Corporate, &amp; Social Events
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="relative flex flex-col">
