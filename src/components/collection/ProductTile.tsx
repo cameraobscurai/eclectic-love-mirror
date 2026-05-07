@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
