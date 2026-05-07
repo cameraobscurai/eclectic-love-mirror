@@ -54,20 +54,15 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     setAudioId(null);
   }, [inView]);
 
-  // Drive playback based on hover + audio state.
+  // Autoplay every clip continuously. Hover only governs which one is unmuted later.
   useEffect(() => {
     if (reduced) return;
     Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
-      const shouldPlay = id === audioId || id === hoverId;
       v.muted = id !== audioId;
-      if (shouldPlay) {
-        v.play().catch(() => {});
-      } else {
-        v.pause();
-      }
+      v.play().catch(() => {});
     });
-  }, [hoverId, audioId, reduced]);
+  }, [hoverId, audioId, reduced, inView]);
 
   const toggleAudio = useCallback((id: string) => {
     setAudioId((curr) => (curr === id ? null : id));
