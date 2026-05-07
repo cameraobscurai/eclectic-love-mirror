@@ -54,6 +54,17 @@ export function ProductTile({
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
+  // Walk forward through `product.images` whenever the current candidate
+  // fails (404, blank/zero-byte file, etc). The bake-time `primaryImage`
+  // pointer is sometimes a transparent placeholder while the real hero
+  // sits at images[1] — this lets the tile self-heal without needing a
+  // re-bake. Reset whenever the product itself swaps.
+  const [imgIdx, setImgIdx] = useState(0);
+  useEffect(() => {
+    setImgIdx(0);
+  }, [product.id]);
+  const currentImage = product.images[imgIdx] ?? product.primaryImage ?? null;
+
   // Cards 0-11 render full internals from mount. Cards 12+ render a stable
   // shell until they enter the 600px-margin viewport window. Once `near`
   // flips true the hook holds it true for the session, so cards stay mounted
