@@ -166,11 +166,11 @@ export function ProductTile({
                 {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
                 onLoad={() => setLoaded(true)}
                 onError={() => onImageFailed?.(product.id)}
-                // No padding — the source assets already carry their own
-                // transparent margin, so any wrapper padding shrinks the
-                // subject to a tiny thumbnail. object-contain fills the
-                // cell; object-center keeps the silhouette balanced.
-                className="absolute inset-0 h-full w-full object-contain object-center will-change-opacity"
+                // Shared bottom baseline anchors every silhouette to one
+                // optical floor — wide sofa, tall lamp, and short stool all
+                // sit on the same line. Inset padding keeps subjects from
+                // kissing the cell edges and gives the tile breathing room.
+                className="absolute inset-0 h-full w-full object-contain object-bottom p-3 sm:p-4 will-change-opacity"
                 style={{
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
