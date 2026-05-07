@@ -28,6 +28,7 @@ import {
 } from "@/lib/collection-parents";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
+import { InfiniteScrollSentinel } from "@/components/collection/InfiniteScrollSentinel";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 
