@@ -167,13 +167,25 @@ function CollectionPage() {
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
-  // Parent + sub derived from URL. Legacy `?group=<BrowseGroupId>` is mapped
-  // into the new shape on mount via the redirect effect below.
-  const activeParent: ParentId | "" =
-    group && isParentId(group) ? group : "";
-  const activeSubcategory = activeParent ? subcategory || "all" : "all";
+  // Resolve effective parent + sub synchronously so first paint already
+  // reflects legacy-URL migration. Without this, a stale `?group=sofas`
+  // URL renders one frame as "no category" before the URL-rewriting
+  // effect fires — reading visually as a redirect to an old page.
+  const resolved = useMemo(() => {
+    if (group && isParentId(group)) {
+      return { parent: group as ParentId | "", sub: subcategory || "all" };
+    }
+    if (group && isLegacyTileId(group)) {
+      const { parent, sub } = TILE_TO_PARENT_SUB[group];
+      return { parent, sub };
+    }
+    return { parent: "" as ParentId | "", sub: "all" };
+  }, [group, subcategory]);
+  const activeParent: ParentId | "" = resolved.parent;
+  const activeSubcategory = activeParent ? resolved.sub : "all";
 
-  // Migrate legacy URLs (?group=sofas etc.) → new (?group=lounge-seating&subcategory=sofas-loveseats).
+  // Side-effect: rewrite legacy URLs in place. The render above already
+  // uses the migrated values, so this is a quiet URL fixup with no flash.
   useEffect(() => {
     if (!group || isParentId(group)) return;
     if (isLegacyTileId(group)) {
@@ -184,7 +196,6 @@ function CollectionPage() {
         resetScroll: false,
       });
     } else {
-      // Unknown group string — clear it.
       navigate({
         search: (prev: CollectionSearch) => ({ ...prev, group: "", subcategory: "all" }),
         replace: true,
