@@ -151,7 +151,6 @@ function FilmstripFrame({
         className={cn(
           "relative overflow-hidden bg-[#f1f1f1]",
           "aspect-[3/4]",
-          "ring-1 ring-charcoal/[0.06]",
         )}
         onMouseEnter={() => !reduced && onHoverChange(clip.id)}
         onMouseLeave={() => !reduced && onHoverChange(null)}
