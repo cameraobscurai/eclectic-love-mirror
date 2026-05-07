@@ -101,65 +101,66 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       className="relative bg-paper text-charcoal"
       style={{ height: `${total * stepVh + 50}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full flex items-center px-6 md:px-10 lg:px-16 relative">
-        {/* Editorial spread: pinned left rail · manifesto column · open right gutter.
-            Baseline rhythm: each line gets ~28-32px of vertical air (lineHeight 1.5
-            on a 18-20px body type = clean 28-30px baseline). */}
-        <div className="mx-auto w-full max-w-6xl grid grid-cols-12 gap-6 md:gap-10 lg:gap-16">
-          {/* Left rail — section label, pinned to top of the column */}
-          <aside className="col-span-12 md:col-span-3 md:pt-1">
-            <div className="flex md:block items-center gap-3">
-              <h2
-                id="evolution-heading"
-                className="font-brand uppercase text-charcoal/85"
-                style={{
-                  fontWeight: 400,
-                  letterSpacing: "0.36em",
-                  fontSize: "clamp(0.65rem, 0.85vw, 0.78rem)",
-                }}
-              >
-                Evolution
-              </h2>
-              <div className="hidden md:block mt-4 h-px w-10 bg-charcoal/30" />
-              <div className="md:hidden h-px flex-1 bg-charcoal/20" />
-            </div>
-          </aside>
+      <div className="sticky top-0 h-screen w-full flex flex-col px-6 md:px-10 lg:px-16">
+        {/* Manifesto fills available height and centers; footer always reserves
+            its own space at the bottom so the last manifesto lines never
+            collide with the CTA row. Footer fades in once revealed. */}
+        <div className="flex-1 min-h-0 flex items-center w-full">
+          <div className="mx-auto w-full max-w-6xl grid grid-cols-12 gap-6 md:gap-10 lg:gap-16">
+            {/* Left rail — section label, pinned to top of the column */}
+            <aside className="col-span-12 md:col-span-3 md:pt-1">
+              <div className="flex md:block items-center gap-3">
+                <h2
+                  id="evolution-heading"
+                  className="font-brand uppercase text-charcoal/85"
+                  style={{
+                    fontWeight: 400,
+                    letterSpacing: "0.36em",
+                    fontSize: "clamp(0.65rem, 0.85vw, 0.78rem)",
+                  }}
+                >
+                  Evolution
+                </h2>
+                <div className="hidden md:block mt-4 h-px w-10 bg-charcoal/30" />
+                <div className="md:hidden h-px flex-1 bg-charcoal/20" />
+              </div>
+            </aside>
 
-          {/* Manifesto column — baseline grid, no centered alignment */}
-          <div className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5">
-            <div className="space-y-5 md:space-y-6">
-              {LINES.map((line, i) => {
-                const local = clamp01(reveal - i);
-                const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
-                const isClose = line.emphasis === "closer";
-                return (
-                  <p
-                    key={i}
-                    className={cn(
-                      "font-brand text-charcoal italic transition-opacity duration-200 ease-out will-change-[opacity]",
-                      isClose && "not-italic uppercase tracking-[0.16em] pt-2",
-                    )}
-                    style={{
-                      fontWeight: 400,
-                      fontSize: isClose
-                        ? "clamp(1rem, 1.6vw, 1.25rem)"
-                        : "clamp(1rem, 1.55vw, 1.3rem)",
-                      lineHeight: 1.5,
-                      opacity,
-                    }}
-                  >
-                    {line.text}
-                  </p>
-                );
-              })}
+            {/* Manifesto column — baseline grid, no centered alignment */}
+            <div className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5">
+              <div className="space-y-5 md:space-y-6">
+                {LINES.map((line, i) => {
+                  const local = clamp01(reveal - i);
+                  const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
+                  const isClose = line.emphasis === "closer";
+                  return (
+                    <p
+                      key={i}
+                      className={cn(
+                        "font-brand text-charcoal italic transition-opacity duration-200 ease-out will-change-[opacity]",
+                        isClose && "not-italic uppercase tracking-[0.16em] pt-2",
+                      )}
+                      style={{
+                        fontWeight: 400,
+                        fontSize: isClose
+                          ? "clamp(1rem, 1.6vw, 1.25rem)"
+                          : "clamp(1rem, 1.55vw, 1.3rem)",
+                        lineHeight: 1.5,
+                        opacity,
+                      }}
+                    >
+                      {line.text}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           </div>
-
         </div>
 
         {footer && (
           <div
-            className="absolute left-0 right-0 bottom-8 md:bottom-12 px-6 md:px-10 lg:px-16 transition-all duration-500 ease-out"
+            className="shrink-0 pb-6 md:pb-10 transition-all duration-500 ease-out"
             style={{
               opacity: showFooter ? 1 : 0,
               transform: showFooter ? "translateY(0)" : "translateY(8px)",
