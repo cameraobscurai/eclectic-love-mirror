@@ -102,6 +102,15 @@ const products = all.map((r, i) => {
     scrapedOrder: i,
     subcategory: null,
     ownerSiteRank: null,
+    colorHex: r.color_hex ?? null,
+    colorHexSecondary: r.color_hex_secondary ?? null,
+    colorLightness: r.color_lightness != null ? Number(r.color_lightness) : null,
+    colorHue: r.color_hue != null ? Number(r.color_hue) : null,
+    colorChroma: r.color_chroma != null ? Number(r.color_chroma) : null,
+    colorFamily: r.color_family ?? null,
+    colorTemperature: r.color_temperature ?? null,
+    colorNeedsReview: !!r.color_needs_review,
+    tonalRank: computeTonalRank(r),
   };
 });
 
