@@ -32,7 +32,11 @@
     { "rms": "3858", "live": "Green Sage Lumbar" },
     { "rms": "3455", "live": "Ivory Sage Stripe Pillow" },
     { "rms": "3193", "live": "Brown Yellow Pillow" },
-    { "rms": "4160", "live": "Gold Velvet Zebra Pillow" }
+    { "rms": "4160", "live": "Gold Velvet Zebra Pillow" },
+    { "rms": "3031", "live": "Boulder 36\" Coffee Table" },
+    { "rms": "3032", "live": "Boulder 48\" Coffee Table" },
+    { "rms": "3029", "live": "River 42\" Coffee Table" },
+    { "rms": "3030", "live": "River 54\" Coffee Table" }
   ],
   "groups": [
     { "live": "SANARA Dining Chairs",            "rms": ["4133", "4121"] },
