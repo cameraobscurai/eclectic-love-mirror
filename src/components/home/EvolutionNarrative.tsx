@@ -34,7 +34,10 @@ const LINES: Line[] = [
 // gives ~2.2 screens of scroll for the whole arc on desktop, ~2 on mobile.
 const STEP_VH_DESKTOP = 16;
 const STEP_VH_MOBILE = 14;
-const FOOTER_REVEAL_AT = 0.86;
+// Lead-in: portion of scroll before any line begins revealing.
+// Lets the section fully settle into center before the manifesto activates.
+const LEAD_IN = 0.1;
+const FOOTER_REVEAL_AT = 0.92;
 const DIM_OPACITY = 0.18;
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 
@@ -88,7 +91,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // Reveal lines across the first FOOTER_REVEAL_AT of scroll.
   // Each line owns a band of width 1/total. Inside that band we ease
   // from DIM_OPACITY → 1. Once past, the line stays at 1.
-  const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
+  const lineProgress = clamp01((progress - LEAD_IN) / (FOOTER_REVEAL_AT - LEAD_IN));
   const reveal = lineProgress * total;
 
   return (
@@ -98,7 +101,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       className="relative bg-paper text-charcoal"
       style={{ height: `${total * stepVh + 50}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full flex items-center px-6 md:px-10 lg:px-16">
+      <div className="sticky top-0 h-screen w-full flex items-center px-6 md:px-10 lg:px-16 relative">
         {/* Editorial spread: pinned left rail · manifesto column · open right gutter.
             Baseline rhythm: each line gets ~28-32px of vertical air (lineHeight 1.5
             on a 18-20px body type = clean 28-30px baseline). */}
@@ -152,20 +155,20 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             </div>
           </div>
 
-          {footer && (
-            <div
-              className="col-span-12 mt-12 md:mt-16 transition-all duration-500 ease-out"
-              style={{
-                opacity: showFooter ? 1 : 0,
-                transform: showFooter ? "translateY(0)" : "translateY(8px)",
-                pointerEvents: showFooter ? "auto" : "none",
-              }}
-            >
-              {footer}
-            </div>
-          )}
-
         </div>
+
+        {footer && (
+          <div
+            className="absolute left-0 right-0 bottom-8 md:bottom-12 px-6 md:px-10 lg:px-16 transition-all duration-500 ease-out"
+            style={{
+              opacity: showFooter ? 1 : 0,
+              transform: showFooter ? "translateY(0)" : "translateY(8px)",
+              pointerEvents: showFooter ? "auto" : "none",
+            }}
+          >
+            <div className="mx-auto w-full max-w-6xl">{footer}</div>
+          </div>
+        )}
       </div>
     </section>
   );
