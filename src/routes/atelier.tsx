@@ -4,8 +4,7 @@ import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
-import atelierHero from "@/assets/atelier-hero.png?preset=hero";
-import atelierReplacement from "@/assets/atelier-replacement.png?preset=editorial";
+import atelierReplacement from "@/assets/atelier-replacement.png?preset=hero";
 
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.jpg?preset=editorial";
@@ -137,15 +136,18 @@ export const Route = createFileRoute("/atelier")({
       },
       {
         property: "og:image",
-        content: atelierHero.img.src,
+        content: atelierReplacement.img.src,
       },
       {
         name: "twitter:image",
-        content: atelierHero.img.src,
+        content: atelierReplacement.img.src,
       },
     ],
     links: [
-      heroPreloadLink(atelierHero),
+      // The hero is a 40vw editorial column on desktop, full-width on mobile.
+      // Pass that sizes hint so the preload scanner picks ~768/1280 instead
+      // of the 2560 variant we'd burn on a full-bleed hero.
+      heroPreloadLink(atelierReplacement, "(min-width: 768px) 40vw, 100vw"),
       // Warm the TLS connection to Supabase storage before the first
       // portrait scrolls into view — saves ~100-300ms on the first image.
       ...(STORAGE_ORIGIN
@@ -221,6 +223,7 @@ function AtelierPage() {
             picture={atelierHiveTriptych}
             alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
             sizes="100vw"
+            prefetchMargin="1600px"
           />
         </div>
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -229,12 +232,14 @@ function AtelierPage() {
             picture={atelierSketchDrape}
             alt="Hand-drawn chair sketch on hanging drape — design phase."
             sizes="(min-width: 768px) 45vw, 100vw"
+            prefetchMargin="1600px"
           />
           <MediaAperture
             ratio="4/5"
             picture={atelierCollage}
             alt="Studio collage — fabrication, sketching, and finished detail."
             sizes="(min-width: 768px) 45vw, 100vw"
+            prefetchMargin="1600px"
           />
         </div>
       </Section>
