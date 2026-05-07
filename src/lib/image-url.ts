@@ -64,7 +64,11 @@ export function buildCdnSrcSet(
   url: string | null | undefined,
   widths: number[],
 ): string {
-  if (!url || !url.includes("squarespace-cdn.com")) return "";
+  if (!url) return "";
+  const supported =
+    url.includes("squarespace-cdn.com") ||
+    url.includes("/storage/v1/object/public/");
+  if (!supported) return "";
   return widths
     .map((w) => `${withCdnWidth(url, w)} ${w}w`)
     .join(", ");
