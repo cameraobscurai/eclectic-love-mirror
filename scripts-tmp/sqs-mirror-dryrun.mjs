@@ -149,6 +149,8 @@ const manifest = {
   totals: {
     live_products: liveSlugs.length,
     matched: matched.length,
+    matched_exact: matched.filter(m=>m.match_kind==='exact').length,
+    matched_fuzzy: matched.filter(m=>m.match_kind==='fuzzy').length,
     ambiguous: ambiguous.length,
     unmatched: unmatched.length,
     unique_urls_to_mirror: allUrls.size,
@@ -156,6 +158,7 @@ const manifest = {
   matched,
   ambiguous,
   unmatched,
+  fuzzy_review: fuzzyMatched,
   url_index: Array.from(allUrls.entries()).map(([url, v]) => ({ url, ...v })),
 };
 writeFileSync('scripts-tmp/sqs-mirror-manifest.json', JSON.stringify(manifest, null, 2));
