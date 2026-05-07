@@ -1,18 +1,23 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface Props {
   product: CollectionProduct;
+  index?: number;
   isHovered: boolean;
   isAnyHovered: boolean;
   onHover: (id: string | null) => void;
   onOpen: (id: string) => void;
 }
 
-function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
-  const url = product.primaryImage?.url ?? null;
+function CollectionWallTileImpl({ product, index = 999, isHovered, isAnyHovered, onHover, onOpen }: Props) {
+  const rawUrl = product.primaryImage?.url ?? null;
+  const url = rawUrl ? withCdnWidth(rawUrl, 600) : null;
+  const srcSet = rawUrl ? buildCdnSrcSet(rawUrl, [320, 480, 720, 960]) || undefined : undefined;
   const dim = isAnyHovered && !isHovered;
+  const eager = index < 12;
 
   return (
     <motion.button
