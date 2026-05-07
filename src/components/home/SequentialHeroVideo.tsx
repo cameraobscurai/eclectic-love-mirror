@@ -32,8 +32,7 @@ export function SequentialHeroVideo() {
         muted
         playsInline
         preload="auto"
-        // @ts-expect-error iOS attribute
-        webkit-playsinline="true"
+        {...({ "webkit-playsinline": "true" } as Record<string, string>)}
         onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
         aria-label={current.label}
       />
