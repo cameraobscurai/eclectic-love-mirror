@@ -44,32 +44,24 @@ const portrait = (filename: string, name: string): TeamMemberImage => ({
   approvedForWeb: true,
 });
 
-// Per-member visual recovery presets (T7/T8) — applied as arbitrary
-// Tailwind on the figure. The `[&_img]` selector reaches the underlying
-// <img> inside MediaAperture without altering the component API.
-const SHARPEN = "[&_img]:[filter:contrast(1.06)_saturate(1.06)]";
-const WHITE_BALANCE = "[&_img]:[filter:saturate(0.92)_brightness(1.02)_hue-rotate(-4deg)]";
-// T6 — Annie's portrait crops out the top of her head; pull focus up.
-const ANNIE_REFRAME = "[&_img]:object-[50%_18%] [&_img]:[filter:contrast(1.06)_saturate(1.06)]";
-
 /**
- * Real staff roster. T10 — Sarah Lilly-Ray removed per owner.
- * T9 — Adrienne keeps her current file until she sends the replacement.
+ * Real staff roster. Portraits are native 2:3 — the aperture below matches
+ * source ratio so faces are never cropped. No per-member reframes needed.
  */
 export const TEAM: TeamMember[] = [
   { name: "Jill Livingston", role: "Founder · Creative Director", image: portrait("Jill.jpg", "Jill Livingston") },
-  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie.jpg", "Annie Ohman"), imageClassName: ANNIE_REFRAME },
-  { name: "Amanda Ferguson", role: "Senior Designer", image: portrait("Amanda.jpg", "Amanda Ferguson"), imageClassName: SHARPEN },
+  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie.jpg", "Annie Ohman") },
+  { name: "Amanda Ferguson", role: "Senior Designer", image: portrait("Amanda.jpg", "Amanda Ferguson") },
   { name: "Erin Purnell", role: "Associate Designer", image: portrait("Erin.jpg", "Erin Purnell") },
   { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
   { name: "Nathan Alexander", role: "Lead Fabricator", image: portrait("Nathan.jpg", "Nathan Alexander") },
-  { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore"), imageClassName: SHARPEN },
+  { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
   { name: "Sam Young", role: "Project Manager", image: portrait("Sam.jpg", "Sam Young") },
   { name: "Ryan Kankowski", role: "Project Manager", image: portrait("Ryan.jpg", "Ryan Kankowski") },
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
   { name: "Sarah Lilly-Ray", role: "Warehouse Operations", image: portrait("Sarah.jpg", "Sarah Lilly-Ray") },
   // { name: "Regina Mennig", role: "Accounting & Business Manager" }, // temp hidden — awaiting portrait
-  { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales"), imageClassName: WHITE_BALANCE },
+  { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
 ];
 
 export function AtelierTeam() {
@@ -110,7 +102,7 @@ export function AtelierTeam() {
           return (
             <li key={member.name}>
               <MediaAperture
-                ratio="4/5"
+                ratio="2/3"
                 src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 70 }) : undefined}
                 srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 70) : undefined}
                 alt={
