@@ -108,14 +108,11 @@ export function CategoryTonalGrid({
         }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: none;
-            grid-auto-rows: 1fr;
-            height: auto;
-            padding-bottom: 96px;
-          }
-          [data-tonal-grid] > button {
-            aspect-ratio: 1 / 1;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            grid-auto-rows: auto;
+            height: 100%;
+            padding-bottom: 0;
           }
         }
       `}</style>

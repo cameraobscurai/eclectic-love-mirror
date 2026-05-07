@@ -937,26 +937,17 @@ function CollectionPage() {
             >
               {showOverview ? (
                 <>
-                  {/* Mobile/tablet: H plate stacks on top, full width, square-ish */}
+                  {/* Mobile/tablet: no H-plate stack — the grid IS the view.
+                      Fixed 3×6 grid fills viewport beneath nav, no scroll.
+                      The H-plate identity lives on desktop's 40% rail. */}
                   <div
-                    className="lg:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10"
+                    className="lg:flex-1 lg:min-h-0 lg:overflow-hidden"
                     style={{
-                      background: "var(--paper)",
-                      containerType: "inline-size",
-                      aspectRatio: "1 / 1",
-                      padding: "clamp(16px, 6cqi, 40px)",
+                      // On mobile, lock the grid to the visible viewport so
+                      // all 18 categories sit on one screen — make-or-break.
+                      height: "calc(100dvh - var(--nav-h))",
                     }}
                   >
-                    <img
-                      src={hiveSignatureHero}
-                      alt="The Hive — Signature Collection"
-                      className="block object-contain"
-                      width={1200}
-                      height={1600}
-                      style={{ width: "min(100%, 88cqi)", height: "auto" }}
-                    />
-                  </div>
-                  <div className="lg:flex-1 lg:min-h-0 lg:overflow-hidden">
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
