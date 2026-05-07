@@ -1,0 +1,196 @@
+{
+  "generated_at": "2026-05-07T05:08:23.258Z",
+  "ok": 27,
+  "fail": 0,
+  "results": [
+    {
+      "rms_id": "2747",
+      "title": "Vixxen Black Bar Stool",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/vixxen-black-bar-stool/01-VIXXEN_Black_Stool.png"
+    },
+    {
+      "rms_id": "735",
+      "title": "Indiwin Black Leather Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/indiwin-black-leather-sofa/01-INDIWIN_Sofa_0.png"
+    },
+    {
+      "rms_id": "1770",
+      "title": "Brooklyn Plush Charcoal Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/brooklyn-plush-charcoal-sofa/01-BROOKLYN_Sofa_0.png"
+    },
+    {
+      "rms_id": "2619",
+      "title": "Sylvanus Green & Ash Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/sylvanus-green-ash-sofa/01-SYLVANUS_Sofa_0.png"
+    },
+    {
+      "rms_id": "1820",
+      "title": "Lindt Toffee Velvet Channel Tufted Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/lindt-toffee-velvet-channel-tufted-sofa/01-LINDT_Sofa_0.png"
+    },
+    {
+      "rms_id": "2118",
+      "title": "Gwenevere Mulberry Daybed",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/gwenevere-mulberry-daybed/01-GWENEVERE_Daybed_0.png"
+    },
+    {
+      "rms_id": "2717",
+      "title": "Erin Antique White French Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/erin-antique-white-french-sofa/01-ERIN_French_Sofa.png"
+    },
+    {
+      "rms_id": "2714",
+      "title": "Eloise Antique White French Loveseat",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/eloise-antique-white-french-loveseat/01-ELOISE_French_Loveseat_0.png"
+    },
+    {
+      "rms_id": "2741",
+      "title": "Cicely Wicker + Linen Loveseat",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/cicely-wicker-linen-loveseat/01-CICELY_Loveseat.png"
+    },
+    {
+      "rms_id": "945",
+      "title": "Talon Black Metal Sofa",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/talon-black-metal-sofa/01-TALON_Sofa_0.png"
+    },
+    {
+      "rms_id": "74",
+      "title": "Pierre Grey Silk Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/pierre-grey-silk-chair/01-PHILLIPE_Chair_0.png"
+    },
+    {
+      "rms_id": "721",
+      "title": "Fawn Natural Cane Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/fawn-natural-cane-chair/01-FAWN_Chair_0.png"
+    },
+    {
+      "rms_id": "435",
+      "title": "Nomad Wood Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/nomad-wood-chair/01-NOMAD_Chair_0.png"
+    },
+    {
+      "rms_id": "2884",
+      "title": "Bard Deconstructed Leather Chair",
+      "status": "ok",
+      "count": 4,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/bard-deconstructed-leather-chair/01-BARD_Chair_0.png"
+    },
+    {
+      "rms_id": "44",
+      "title": "Amun Brown Leather Butterfly Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/amun-brown-leather-butterfly-chair/01-AMUN_Chair_0.png"
+    },
+    {
+      "rms_id": "76",
+      "title": "Poe Deconstructed Leather Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/poe-deconstructed-leather-chair/01-POE_Chair_0.png"
+    },
+    {
+      "rms_id": "2618",
+      "title": "Suhana Cognac Leather Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/suhana-cognac-leather-chair/01-SUHANA_Chair_0.png"
+    },
+    {
+      "rms_id": "1814",
+      "title": "Corwin Canvas Lounge Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/corwin-canvas-lounge-chair/01-CORWIN_Chair_0.png"
+    },
+    {
+      "rms_id": "2970",
+      "title": "Adelaide Antique Arm Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/adelaide-antique-arm-chair/01-ADELAIDE_Chair.png"
+    },
+    {
+      "rms_id": "2749",
+      "title": "Carwyn White + Wood Chair",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/carwyn-white-wood-chair/01-CARWYN_Chair.png"
+    },
+    {
+      "rms_id": "1994",
+      "title": "Ygritte Ebony Tufted Bench",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/ygritte-ebony-tufted-bench/01-YGRITTE_Bench_0.png"
+    },
+    {
+      "rms_id": "2002",
+      "title": "Geraldine Goat Fur Wood Bench",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/geraldine-goat-fur-wood-bench/01-GERALDINE_Bench_0.png"
+    },
+    {
+      "rms_id": "2025",
+      "title": "Morrison Charcoal Ottoman",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/morrison-charcoal-ottoman/01-MORRISON_Ottoman_0.png"
+    },
+    {
+      "rms_id": "675",
+      "title": "Jessie Cow Hide Ottoman",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/jessie-cow-hide-ottoman/01-JESSE_Ottoman_0.png"
+    },
+    {
+      "rms_id": "676",
+      "title": "Blanc White & Grey Cow Hide Ottoman",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/blanc-white-grey-cow-hide-ottoman/01-BLANC_Ottoman_0.png"
+    },
+    {
+      "rms_id": "749",
+      "title": "Omar Brown Leather Ottoman",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/omar-brown-leather-ottoman/01-OMAR_Ottoman_0.png"
+    },
+    {
+      "rms_id": "127",
+      "title": "Joseph Goat Hide Ottoman",
+      "status": "ok",
+      "count": 1,
+      "hero": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/joseph-goat-hide-ottoman/01-JOSEPH_Ottoman_0.png"
+    }
+  ]
+}
