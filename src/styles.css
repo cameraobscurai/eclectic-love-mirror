@@ -404,6 +404,23 @@ body:has([data-collection-overview]) {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
 /* ----------------------------------------------------------------------------
+   Page-title scale — shared across Atelier, Gallery, and Contact.
+   One clamp scale keeps every page H1 in the same family without locking
+   in a full token system yet. Anchored on Gallery/Contact's existing size
+   (≈ clamp(2rem, 4.5vw, 3.25rem)) which the owner approved as the target.
+   Use: <h1 className="page-title"> ... </h1>
+   ---------------------------------------------------------------------------- */
+.page-title {
+  font-family: "Saol Display", "Cormorant", serif;
+  font-weight: 300;
+  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+
+/* ----------------------------------------------------------------------------
    Mobile CAPS tracking ramp.
    Site-wide our ALL CAPS body copy uses 0.22em–0.30em letter-spacing for the
    editorial register. At ≤640px those gaps read as broken word-shapes.
