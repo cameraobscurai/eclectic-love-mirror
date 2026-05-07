@@ -216,6 +216,20 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
+      {heroSrc && !loaded ? (
+        <span
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.04) 100%)",
+            backgroundSize: "200% 100%",
+            animation: "tile-shimmer 1.4s ease-in-out infinite",
+            opacity: showImg ? 1 : 0.6,
+            transition: "opacity 300ms ease-out",
+          }}
+        />
+      ) : null}
       {heroSrc ? (
         <img
           src={heroSrc}
@@ -236,8 +250,8 @@ function TonalCell({
           }}
           className="absolute inset-0 h-full w-full object-contain p-3 sm:p-4 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
-            opacity: showImg ? 1 : 0,
-            transition: "opacity 380ms ease-out, transform 500ms ease-out",
+            opacity: showImg && loaded ? 1 : 0,
+            transition: "opacity 420ms ease-out, transform 500ms ease-out",
           }}
         />
       ) : null}
