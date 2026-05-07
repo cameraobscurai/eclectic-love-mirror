@@ -72,24 +72,24 @@ function HomePage() {
           />
           <div className="relative">
             <h1
-              className="font-brand uppercase text-cream"
+              className="font-brand text-cream"
               style={{
-                fontWeight: 400,
-                letterSpacing: "0.1em",
-                fontSize: "clamp(2rem,9vw,3.25rem)",
+                fontWeight: 700,
+                letterSpacing: "-0.01em",
+                fontSize: "clamp(2.5rem,11vw,4rem)",
                 lineHeight: 1,
                 textShadow:
                   "0 1px 2px rgba(0,0,0,0.55), 0 2px 18px rgba(0,0,0,0.45), 0 0 40px rgba(0,0,0,0.35)",
               }}
             >
-              Eclectic&nbsp;Hive
+              ECLECTIC HIVE
             </h1>
             <p
-              className="mt-3 font-brand italic text-cream/90"
+              className="mt-1 font-brand italic text-cream/90"
               style={{
                 fontWeight: 400,
-                fontSize: "clamp(0.85rem,3.4vw,1rem)",
-                lineHeight: 1.4,
+                fontSize: "clamp(0.9rem,3.6vw,1.1rem)",
+                lineHeight: 1.3,
                 textShadow: "0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5)",
               }}
             >
@@ -110,22 +110,22 @@ function HomePage() {
           )}
         >
           <h1
-            className="font-brand uppercase text-charcoal"
+            className="font-brand text-charcoal"
             style={{
-              fontWeight: 400,
-              letterSpacing: "0.06em",
-              fontSize: "clamp(2.25rem, 6vw, 4.5rem)",
+              fontWeight: 700,
+              letterSpacing: "-0.005em",
+              fontSize: "clamp(2.75rem, 7vw, 5.25rem)",
               lineHeight: 1,
             }}
           >
-            Eclectic&nbsp;Hive
+            ECLECTIC HIVE
           </h1>
           <p
-            className="mx-auto mt-2 max-w-3xl font-brand italic text-charcoal/70"
+            className="mx-auto mt-1 max-w-3xl font-brand italic text-charcoal/70"
             style={{
               fontWeight: 400,
-              fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)",
-              lineHeight: 1.4,
+              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
+              lineHeight: 1.3,
             }}
           >
             Designing for Weddings, Corporate, &amp; Social Events
