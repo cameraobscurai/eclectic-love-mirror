@@ -214,6 +214,15 @@ export const TILE_TO_PARENT_SUB: Record<
 const has = (t: string, kws: string[]) => kws.some((k) => t.includes(k));
 
 function classifySub(parent: ParentId, p: CollectionProduct): string | null {
+  const titleLower = (p.title || "").toLowerCase();
+
+  // Hard overrides — structural form trumps live-site labels.
+  // A banquette is a bench (often round/curved), never a sofa, even when
+  // Squarespace tagged it under "Sofas & Loveseats".
+  if (parent === "lounge-seating" && titleLower.includes("banquette")) {
+    return "benches";
+  }
+
   // Prefer live-site subcategory when available.
   const liveSubs = p.liveSubcategories || [];
   if (liveSubs.length) {
