@@ -102,46 +102,72 @@ function HomePage() {
       <section className="relative flex flex-col">
         {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
-        {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
-        <div
-          className={cn(
-            "pt-24 md:pt-28 pb-3 md:pb-4 px-4 text-center transition-opacity duration-700",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-        >
-          <h1
-            className="font-brand text-charcoal"
-            style={{
-              fontWeight: 700,
-              letterSpacing: "-0.005em",
-              fontSize: "clamp(2.75rem, 7vw, 5.25rem)",
-              lineHeight: 1,
-            }}
+          {/* ── FOLD 1 — Editorial wordmark ─────────────────────
+              Composition rules:
+                • Eyebrow rail (label + hairline) sits flush at top of fold
+                • Wordmark on optical thirds, max-w-5xl tight
+                • Tagline pulled close, set in italic at minor-third scale
+                • Measured spacing snaps to a 12px baseline (1.5rem · 0.75rem · 0.5rem)
+          */}
+          <div
+            className={cn(
+              "px-8 lg:px-12 transition-opacity duration-700",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            style={{ paddingTop: "clamp(7rem, 11vh, 9rem)", paddingBottom: "clamp(2rem, 4vh, 3rem)" }}
           >
-            ECLECTIC HIVE
-          </h1>
-          <p
-            className="mx-auto mt-1 max-w-3xl font-brand italic text-charcoal/70"
-            style={{
-              fontWeight: 400,
-              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
-              lineHeight: 1.3,
-            }}
-          >
-            Designing for Weddings, Corporate, &amp; Social Events
-          </p>
-        </div>
+            <div className="mx-auto max-w-6xl">
+              {/* Eyebrow rail — frames the wordmark, signals editorial intent */}
+              <div className="flex items-center justify-center gap-3 mb-6 md:mb-8">
+                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+                <span
+                  className="font-brand uppercase text-charcoal/55"
+                  style={{
+                    fontWeight: 400,
+                    letterSpacing: "0.36em",
+                    fontSize: "clamp(0.65rem, 0.78vw, 0.78rem)",
+                  }}
+                >
+                  Est · Denver · Colorado
+                </span>
+                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+              </div>
 
-        {/* Filmstrip — center stage */}
-        <div
-          className={cn(
-            "transition-opacity duration-1000",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-          style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
-        >
-          <HeroFilmstrip />
-        </div>
+              <h1
+                className="text-center font-brand text-charcoal"
+                style={{
+                  fontWeight: 600,
+                  letterSpacing: "-0.012em",
+                  fontSize: "clamp(2.75rem, 7.4vw, 5.75rem)",
+                  lineHeight: 0.95,
+                }}
+              >
+                ECLECTIC HIVE
+              </h1>
+
+              <p
+                className="mx-auto mt-3 md:mt-4 max-w-xl text-center font-brand italic text-charcoal/65"
+                style={{
+                  fontWeight: 400,
+                  fontSize: "clamp(0.95rem, 1.25vw, 1.15rem)",
+                  lineHeight: 1.4,
+                }}
+              >
+                Designing for Weddings, Corporate, &amp; Social Events
+              </p>
+            </div>
+          </div>
+
+          {/* Filmstrip — center stage. Top-margin matches the eyebrow rhythm. */}
+          <div
+            className={cn(
+              "transition-opacity duration-1000",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
+          >
+            <HeroFilmstrip />
+          </div>
         </div>{/* /desktop-only block */}
 
       </section>
