@@ -74,7 +74,7 @@ export const Route = createRootRoute({
       // dns-prefetch is the fallback for browsers that ignore preconnect.
       ...(STORAGE_ORIGIN
         ? [
-            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" },
+            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
