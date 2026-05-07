@@ -49,12 +49,38 @@ const { data: dbRows, error } = await sb.from('inventory_items')
   .neq('status','draft');
 if (error) throw error;
 
+const STOP = new Set(['the','a','an','of','and','with','to','for','in','on','set','pair','sofa','chair','loveseat','table','lamp','rug','pillow','throw','vase','bowl','plate','glass','cup','mug','tray','candle','holder','sconce','chandelier','mirror','stool','bench','ottoman']);
+function tokens(s){ return norm(s).split(' ').filter(t=>t.length>=3 && !STOP.has(t)); }
+
 const byTitle = new Map();
 for (const r of dbRows) {
   const k = norm(r.title);
   if (!k) continue;
   if (!byTitle.has(k)) byTitle.set(k, []);
   byTitle.get(k).push(r);
+}
+
+// Token-overlap fallback: returns DB row if there's a unique row sharing
+// >=2 distinctive tokens (after stopwords) AND no other DB row ties.
+function fuzzyMatch(liveTitle, liveCat){
+  const lt = tokens(liveTitle);
+  if (lt.length === 0) return null;
+  const liveSet = new Set(lt);
+  const internalCat = LIVE_CAT_TO_INTERNAL[liveCat];
+  let best = null, bestScore = 0, tied = false;
+  for (const r of dbRows) {
+    if (internalCat && r.category && r.category !== internalCat) continue;
+    const rt = tokens(r.title);
+    if (rt.length === 0) continue;
+    const overlap = rt.filter(t=>liveSet.has(t)).length;
+    if (overlap < 2) continue;
+    // require overlap to be majority of the smaller token set (anti-coincidence)
+    const minLen = Math.min(lt.length, rt.length);
+    if (overlap / minLen < 0.5) continue;
+    if (overlap > bestScore) { best = r; bestScore = overlap; tied = false; }
+    else if (overlap === bestScore) { tied = true; }
+  }
+  return tied ? null : best;
 }
 
 // Build manifest
