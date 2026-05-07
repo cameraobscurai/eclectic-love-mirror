@@ -8,6 +8,7 @@ const studioLinks = [
 
 const informationLinks = [
   { href: "/contact", label: "FAQ", hash: "faq" },
+  { href: "https://eclectic-hive.breezy.hr/", label: "CAREERS", external: true },
   { href: "/privacy", label: "PRIVACY" },
 ] as const;
 
@@ -76,11 +77,13 @@ export function Footer() {
 
 interface FooterColumnProps {
   title: string;
-  links: ReadonlyArray<{ href: string; label: string; hash?: string }>;
+  links: ReadonlyArray<{ href: string; label: string; hash?: string; external?: boolean }>;
   className?: string;
 }
 
 function FooterColumn({ title, links, className }: FooterColumnProps) {
+  const linkClass =
+    "inline-block py-1 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cream/70 hover:text-cream transition-colors";
   return (
     <div className={className}>
       <h3 className="text-[10px] uppercase tracking-[0.22em] sm:tracking-[0.28em] text-cream/40 mb-3 sm:mb-5">
@@ -89,13 +92,15 @@ function FooterColumn({ title, links, className }: FooterColumnProps) {
       <ul className="space-y-2.5 sm:space-y-3">
         {links.map((l) => (
           <li key={`${l.href}${l.hash ?? ""}`}>
-            <Link
-              to={l.href}
-              hash={l.hash}
-              className="inline-block py-1 text-[11px] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-cream/70 hover:text-cream transition-colors"
-            >
-              {l.label}
-            </Link>
+            {l.external ? (
+              <a href={l.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                {l.label}
+              </a>
+            ) : (
+              <Link to={l.href} hash={l.hash} className={linkClass}>
+                {l.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
