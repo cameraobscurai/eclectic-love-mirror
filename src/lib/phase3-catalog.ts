@@ -60,6 +60,24 @@ export interface CollectionProduct {
     dimensions: string | null;
     stockedQuantity: string | null;
   }>;
+  /** AI-tagged primary material color, hex (e.g. "#8b6f4a"). Null when untagged. */
+  colorHex?: string | null;
+  /** Secondary dominant hex for patterned/multi-color items. */
+  colorHexSecondary?: string | null;
+  /** CIELAB L* 0–100 (0=black, 100=white). */
+  colorLightness?: number | null;
+  /** Hue 0–360. Null for neutrals (chroma < 8). */
+  colorHue?: number | null;
+  /** Chroma 0–130. */
+  colorChroma?: number | null;
+  /** Family bucket: black|charcoal|brown|tan|cream|white|grey|red|orange|yellow|green|blue|purple|pink|metallic-warm|metallic-cool|multi */
+  colorFamily?: string | null;
+  /** warm | neutral | cool */
+  colorTemperature?: string | null;
+  /** Pre-computed sort key (lower = darker / earlier). Null when untagged. */
+  tonalRank?: number | null;
+  /** True when AI and pixel-extract disagree, or owner flagged for review. */
+  colorNeedsReview?: boolean;
 }
 
 export interface CategoryFacet {
