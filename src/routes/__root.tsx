@@ -69,6 +69,15 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Warm the TLS handshake to the image CDN so the first tile request
+      // skips DNS+TCP+TLS round trips (saves ~100-200ms on cold loads).
+      // dns-prefetch is the fallback for browsers that ignore preconnect.
+      ...(STORAGE_ORIGIN
+        ? [
+            { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" },
+            { rel: "dns-prefetch", href: STORAGE_ORIGIN },
+          ]
+        : []),
       // Preload Saol so it's fetched before first paint and we never
       // flash a fallback serif. `as: "font"` + `crossOrigin: "anonymous"`
       // are required for the browser to actually use the preload.
