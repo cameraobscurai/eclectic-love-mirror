@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { HeroFilmstrip } from "@/components/home/HeroFilmstrip";
+import { EvolutionNarrative } from "@/components/home/EvolutionNarrative";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -47,7 +48,7 @@ function HomePage() {
 
   return (
     <main id="main-content" className="bg-paper">
-      <section className="relative flex min-h-[100dvh] flex-col">
+      <section className="relative flex flex-col">
         {/* Wordmark + welcome heading */}
         <div
           className={cn(
@@ -81,7 +82,7 @@ function HomePage() {
         {/* Filmstrip — center stage */}
         <div
           className={cn(
-            "flex-1 flex items-center transition-opacity duration-1000",
+            "transition-opacity duration-1000",
             loaded ? "opacity-100" : "opacity-0",
           )}
           style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
@@ -154,6 +155,10 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Evolution narrative — scroll-driven manifesto */}
+      <EvolutionNarrative />
+
       {/* Keep LiquidGlass referenced to preserve filter prewarm; harmless no-op */}
       <div className="hidden">
         <LiquidGlass>{null}</LiquidGlass>
