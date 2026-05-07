@@ -446,7 +446,8 @@ body:has([data-collection-overview]) {
   line-height: 1.6;
 }
 
-
+/* ----------------------------------------------------------------------------
+   Mobile CAPS tracking ramp.
    Site-wide our ALL CAPS body copy uses 0.22em–0.30em letter-spacing for the
    editorial register. At ≤640px those gaps read as broken word-shapes.
    We tighten globally for small CAPS body text on phones, then restore the
