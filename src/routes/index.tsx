@@ -102,105 +102,161 @@ function HomePage() {
       <section className="relative flex flex-col">
         {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
-        {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
-        <div
-          className={cn(
-            "pt-24 md:pt-28 pb-3 md:pb-4 px-4 text-center transition-opacity duration-700",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-        >
-          <h1
-            className="font-brand text-charcoal"
-            style={{
-              fontWeight: 700,
-              letterSpacing: "-0.005em",
-              fontSize: "clamp(2.75rem, 7vw, 5.25rem)",
-              lineHeight: 1,
-            }}
+          {/* ── FOLD 1 — Editorial wordmark ─────────────────────
+              Composition rules:
+                • Eyebrow rail (label + hairline) sits flush at top of fold
+                • Wordmark on optical thirds, max-w-5xl tight
+                • Tagline pulled close, set in italic at minor-third scale
+                • Measured spacing snaps to a 12px baseline (1.5rem · 0.75rem · 0.5rem)
+          */}
+          <div
+            className={cn(
+              "px-8 lg:px-12 transition-opacity duration-700",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            style={{ paddingTop: "clamp(7rem, 11vh, 9rem)", paddingBottom: "clamp(2rem, 4vh, 3rem)" }}
           >
-            ECLECTIC HIVE
-          </h1>
-          <p
-            className="mx-auto mt-1 max-w-3xl font-brand italic text-charcoal/70"
-            style={{
-              fontWeight: 400,
-              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
-              lineHeight: 1.3,
-            }}
-          >
-            Designing for Weddings, Corporate, &amp; Social Events
-          </p>
-        </div>
+            <div className="mx-auto max-w-6xl">
+              {/* Eyebrow rail — frames the wordmark, signals editorial intent */}
+              <div className="flex items-center justify-center gap-3 mb-6 md:mb-8">
+                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+                <span
+                  className="font-brand uppercase text-charcoal/55"
+                  style={{
+                    fontWeight: 400,
+                    letterSpacing: "0.36em",
+                    fontSize: "clamp(0.65rem, 0.78vw, 0.78rem)",
+                  }}
+                >
+                  Est · Denver · Colorado
+                </span>
+                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+              </div>
 
-        {/* Filmstrip — center stage */}
-        <div
-          className={cn(
-            "transition-opacity duration-1000",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-          style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
-        >
-          <HeroFilmstrip />
-        </div>
+              <h1
+                className="text-center font-brand text-charcoal"
+                style={{
+                  fontWeight: 600,
+                  letterSpacing: "-0.012em",
+                  fontSize: "clamp(2.75rem, 7.4vw, 5.75rem)",
+                  lineHeight: 0.95,
+                }}
+              >
+                ECLECTIC HIVE
+              </h1>
+
+              <p
+                className="mx-auto mt-3 md:mt-4 max-w-xl text-center font-brand italic text-charcoal/65"
+                style={{
+                  fontWeight: 400,
+                  fontSize: "clamp(0.95rem, 1.25vw, 1.15rem)",
+                  lineHeight: 1.4,
+                }}
+              >
+                Designing for Weddings, Corporate, &amp; Social Events
+              </p>
+            </div>
+          </div>
+
+          {/* Filmstrip — center stage. Top-margin matches the eyebrow rhythm. */}
+          <div
+            className={cn(
+              "transition-opacity duration-1000",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
+          >
+            <HeroFilmstrip />
+          </div>
         </div>{/* /desktop-only block */}
 
       </section>
 
-      {/* Evolution narrative — sticky single-fold; CTA cards ride the end */}
+      {/* ── FOLD 3 — Index-style destinations ─────────────────
+          Stacked hairline rows, monograph index feel.
+          Each row: number · title · descriptor · arrow.
+          Hover shifts the arrow + lifts the row tone, no fills, no rings.
+      */}
       <EvolutionNarrative
         footer={
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
+          <div className="border-t border-charcoal/15">
             {DESTINATIONS.map((dest, i) => (
               <Link
                 key={dest.href}
                 to={dest.href}
                 preload="viewport"
                 aria-label={`${dest.title} — ${dest.label}`}
-                className="group rounded-xl ring-1 ring-charcoal/10 bg-paper transition-all duration-300 hover:ring-charcoal/30"
+                className="group block border-b border-charcoal/15 transition-colors duration-300 hover:bg-charcoal/[0.03]"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="px-5 py-3.5 md:px-6 md:py-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3
-                        className="font-brand uppercase text-charcoal text-[15px] md:text-base"
-                        style={{ fontWeight: 400, letterSpacing: "0.1em" }}
-                      >
-                        {dest.title}
-                      </h3>
-                      <p className="mt-0.5 text-[9px] md:text-[10px] uppercase tracking-[0.08em] text-charcoal/50">
-                        {dest.label}
-                      </p>
-                    </div>
-                    <div
+                <div className="flex items-center gap-6 md:gap-10 py-5 md:py-7">
+                  {/* Index numeral */}
+                  <span
+                    className="font-brand text-charcoal/40 tabular-nums w-6 md:w-8 shrink-0"
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "clamp(0.7rem, 0.85vw, 0.8rem)",
+                      letterSpacing: "0.18em",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* Title — the hero word in the row */}
+                  <h3
+                    className="font-brand uppercase text-charcoal flex-shrink-0"
+                    style={{
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                      fontSize: "clamp(1.25rem, 2.2vw, 1.85rem)",
+                    }}
+                  >
+                    {dest.title}
+                  </h3>
+
+                  {/* Descriptor — italic, muted, takes available space */}
+                  <p
+                    className="hidden md:block flex-1 font-brand italic text-charcoal/55 truncate"
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)",
+                    }}
+                  >
+                    {dest.label}
+                  </p>
+
+                  {/* Arrow rail — extends on hover */}
+                  <div className="ml-auto md:ml-0 flex shrink-0 items-center gap-2">
+                    <span
                       className={cn(
-                        "flex shrink-0 items-center gap-1.5 transition-all duration-300",
-                        hoveredIndex === i ? "opacity-100" : "opacity-40",
+                        "h-px bg-charcoal/40 transition-all duration-500 ease-out",
+                        hoveredIndex === i ? "w-12 md:w-16" : "w-4 md:w-6",
                       )}
+                    />
+                    <svg
+                      className="h-3 w-3 text-charcoal/70 transition-transform duration-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.25}
                     >
-                      <span
-                        className={cn(
-                          "h-px bg-charcoal/60 transition-all duration-300",
-                          hoveredIndex === i ? "w-5" : "w-2",
-                        )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                       />
-                      <svg
-                        className="h-2.5 w-2.5 text-charcoal/70"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                        />
-                      </svg>
-                    </div>
+                    </svg>
                   </div>
                 </div>
+
+                {/* Mobile descriptor — sits below the row, indented past the numeral */}
+                <p
+                  className="md:hidden -mt-3 pb-5 pl-12 font-brand italic text-charcoal/55"
+                  style={{ fontWeight: 400, fontSize: "0.85rem" }}
+                >
+                  {dest.label}
+                </p>
               </Link>
             ))}
           </div>
