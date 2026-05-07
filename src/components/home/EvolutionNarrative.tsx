@@ -32,7 +32,7 @@ const LINES: Line[] = [
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-const STEP_VH = 60; // scroll distance per line (in viewport heights × 100)
+const STEP_VH = 22; // shorter scroll distance per line — keeps it tight
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
