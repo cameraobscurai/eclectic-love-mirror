@@ -149,7 +149,9 @@ export function Navigation() {
               className={cn(
                 "font-brand text-[0.7rem] lg:text-[0.78rem] tracking-[0.2em] uppercase transition-colors duration-300",
                 scrolled
-                  ? "text-white"
+                  ? isLightPage
+                    ? "text-charcoal"
+                    : "text-white"
                   : isLightPage
                   ? "text-charcoal"
                   : "text-white"
