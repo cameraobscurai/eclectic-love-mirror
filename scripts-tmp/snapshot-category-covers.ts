@@ -12,12 +12,9 @@ const ORDER: BrowseGroupId[] = ["sofas","chairs","benches-ottomans","coffee-tabl
 const catalog = getCollectionCatalog();
 console.log('catalog products:', catalog.products.length);
 
-// Group products by browse-group predicate
+const grouped = groupProductsByBrowseGroup(catalog.products as any);
 function productsForGroup(id: BrowseGroupId) {
-  const g = (BROWSE_GROUPS as any)[id];
-  if (!g) return [];
-  const pred = g.predicate;
-  return catalog.products.filter((p: any) => pred(p));
+  return (grouped.get(id) ?? []) as any[];
 }
 
 const plan: Array<{id:string; url:string; filename:string; targetPath:string}> = [];
