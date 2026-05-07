@@ -28,7 +28,6 @@ const LINES: Line[] = [
   { text: "This isn't a reinvention. It's a refinement." },
   { text: "A deeper understanding of what holds weight." },
   { text: "We are artists. Designers. Craftsmen." },
-  { text: "We are Eclectic Hive", emphasis: "brand" },
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
