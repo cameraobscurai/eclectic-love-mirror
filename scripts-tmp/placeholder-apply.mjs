@@ -37,7 +37,7 @@ for (const t of targets) {
   const seq = [...c.gallery, c.hero].filter(Boolean);
   const urls = [...new Set(seq)].slice(0, 8);
   const newPublic = [];
-  let uploadFail = false;
+  const skipped = [];
   for (let i = 0; i < urls.length; i++) {
     const u = urls[i];
     const f = fname(u, i);
@@ -46,22 +46,23 @@ for (const t of targets) {
       const res = await fetch(u);
       if (!res.ok) throw new Error(`fetch ${res.status}`);
       const buf = Buffer.from(await res.arrayBuffer());
-      if (buf.length < 5000) throw new Error(`still placeholder bytes=${buf.length}`);
+      if (buf.length < 5000) { skipped.push({ url: u, reason: `placeholder bytes=${buf.length}` }); continue; }
       const { error } = await sb.storage.from(BUCKET).upload(path, buf, { upsert: true, contentType: ctype(u), cacheControl: '31536000' });
       if (error) throw error;
       const { data: pub } = sb.storage.from(BUCKET).getPublicUrl(path);
       newPublic.push(pub.publicUrl);
     } catch (e) {
-      results.push({ rms_id: t.rms_id, title: t.title, status: 'upload_fail', url: u, error: String(e.message || e) });
-      uploadFail = true;
-      break;
+      skipped.push({ url: u, reason: String(e.message || e) });
     }
   }
-  if (uploadFail || !newPublic.length) continue;
+  if (!newPublic.length) {
+    results.push({ rms_id: t.rms_id, title: t.title, status: 'no_real_image', skipped });
+    continue;
+  }
 
   const { error: updErr } = await sb.from('inventory_items').update({ images: newPublic }).eq('rms_id', t.rms_id);
   if (updErr) results.push({ rms_id: t.rms_id, title: t.title, status: 'update_fail', error: String(updErr.message) });
-  else results.push({ rms_id: t.rms_id, title: t.title, status: 'ok', count: newPublic.length, hero: newPublic[0] });
+  else results.push({ rms_id: t.rms_id, title: t.title, status: 'ok', count: newPublic.length, hero: newPublic[0], skipped });
   if (results.length % 10 === 0) console.log(`  progress ${results.length}/${targets.length}`);
 }
 
