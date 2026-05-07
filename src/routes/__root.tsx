@@ -14,6 +14,7 @@ import { SmoothScroll } from "../components/SmoothScroll";
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
 import saolSemibold from "../assets/fonts/SaolDisplay-Semibold.woff2?url";
+import { STORAGE_ORIGIN } from "../lib/storage-image";
 
 function NotFoundComponent() {
   return (
