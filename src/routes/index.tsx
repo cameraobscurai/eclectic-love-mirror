@@ -49,10 +49,10 @@ function HomePage() {
   return (
     <main id="main-content" className="bg-paper">
       <section className="relative flex flex-col">
-        {/* Wordmark + welcome heading */}
+        {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
         <div
           className={cn(
-            "pt-10 md:pt-14 pb-6 md:pb-10 px-4 text-center transition-opacity duration-700",
+            "pt-28 md:pt-32 pb-6 md:pb-10 px-4 text-center transition-opacity duration-700",
             loaded ? "opacity-100" : "opacity-0",
           )}
         >

@@ -175,8 +175,17 @@ function FilmstripFrame({
           }
         }}
       >
-        {!loaded && (
-          <div aria-hidden className="absolute inset-0 animate-pulse bg-[#ececec]" />
+        {/* Always-on poster underlay. Stays visible until the video paints
+            its first frame, so we never flash a grey skeleton. */}
+        {clip.poster && (
+          <img
+            src={clip.poster}
+            alt=""
+            aria-hidden
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         )}
 
         {hasVideo ? (
@@ -189,7 +198,7 @@ function FilmstripFrame({
             preload="metadata"
             aria-label={clip.label}
             className={cn(
-              "h-full w-full object-cover transition-opacity duration-700",
+              "relative h-full w-full object-cover transition-opacity duration-700",
               loaded ? "opacity-100" : "opacity-0",
             )}
             onLoadedData={() => setLoaded(true)}
