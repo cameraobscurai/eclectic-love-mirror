@@ -215,6 +215,8 @@ const has = (t: string, kws: string[]) => kws.some((k) => t.includes(k));
 
 function classifySub(parent: ParentId, p: CollectionProduct): string | null {
   const titleLower = (p.title || "").toLowerCase();
+  const liveSubs = p.liveSubcategories || [];
+  const liveLower = liveSubs.map((s) => s.toLowerCase());
 
   // Hard overrides — structural form trumps live-site labels.
   // A banquette is a bench (often round/curved), never a sofa, even when
@@ -223,8 +225,13 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
     return "benches";
   }
 
+  // Dining chairs are NOT lounge chairs — exclude from lounge-seating entirely
+  // so they don't pollute the chairs subcategory.
+  if (parent === "lounge-seating" && liveLower.includes("dining chairs")) {
+    return null;
+  }
+
   // Prefer live-site subcategory when available.
-  const liveSubs = p.liveSubcategories || [];
   if (liveSubs.length) {
     const subList = PARENT_SUBS[parent] || [];
     for (const ls of liveSubs) {
