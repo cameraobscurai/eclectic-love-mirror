@@ -320,6 +320,21 @@ export function sortProductsForCollection(
           b.scrapedOrder - a.scrapedOrder || a.title.localeCompare(b.title),
       );
       return list;
+    case "tonal": {
+      // Darkest → lightest, with chromatic items woven in by hue band.
+      // Untagged products sort to the tail in their natural order.
+      const TAIL = Number.MAX_SAFE_INTEGER;
+      list.sort((a, b) => {
+        const ra = a.tonalRank ?? TAIL;
+        const rb = b.tonalRank ?? TAIL;
+        return (
+          ra - rb ||
+          (a.ownerSiteRank ?? 999_999) - (b.ownerSiteRank ?? 999_999) ||
+          a.title.localeCompare(b.title)
+        );
+      });
+      return list;
+    }
     case "by-type":
     default: {
       list.sort((a, b) => {
