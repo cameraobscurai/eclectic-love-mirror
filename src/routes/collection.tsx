@@ -466,7 +466,7 @@ function CollectionPage() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH);
-  }, [activeParent, q, sort]);
+  }, [activeParent, activeSubcategory, q, sort]);
   const visibleBatch = useMemo(
     () => visibleProducts.slice(0, visibleCount),
     [visibleProducts, visibleCount],
@@ -1016,8 +1016,9 @@ function CollectionPage() {
                       </div>
                     ) : (
                       <>
-                        <LayoutGroup id="collection-grid">
+                        <LayoutGroup id={`collection-grid-${activeParent}-${activeSubcategory}`}>
                           <motion.ul
+                            key={`${activeParent}-${activeSubcategory}`}
                             layout
                             className={`grid ${gridCols} ${gridGapClasses}`}
                             transition={
@@ -1026,17 +1027,15 @@ function CollectionPage() {
                                 : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
                             }
                           >
-                            <AnimatePresence mode="popLayout">
-                              {visibleBatch.map((p, i) => (
-                                <ProductTile
-                                  key={p.id}
-                                  product={p}
-                                  index={i}
-                                  onOpen={() => setQuickViewId(p.id)}
-                                  onImageFailed={markFailed}
-                                />
-                              ))}
-                            </AnimatePresence>
+                            {visibleBatch.map((p, i) => (
+                              <ProductTile
+                                key={p.id}
+                                product={p}
+                                index={i}
+                                onOpen={() => setQuickViewId(p.id)}
+                                onImageFailed={markFailed}
+                              />
+                            ))}
                           </motion.ul>
                         </LayoutGroup>
 
