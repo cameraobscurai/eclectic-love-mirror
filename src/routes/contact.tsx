@@ -209,7 +209,7 @@ function ContactPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               CONTACT
             </p>
-            <h1 className="mt-6 text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] uppercase tracking-[0.06em] font-light text-charcoal">
+            <h1 className="page-title mt-6 text-charcoal">
               LET'S COLLABORATE
             </h1>
             <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">

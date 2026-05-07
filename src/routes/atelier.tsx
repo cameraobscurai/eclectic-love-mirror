@@ -184,7 +184,7 @@ function AtelierPage() {
               ATELIER BY THE HIVE
             </p>
             {/* T17: literal CAPS in source so SR & visual register agree. */}
-            <h1 className="font-display text-[clamp(2.75rem,7vw,6rem)] leading-[0.95] uppercase tracking-[0.04em]">
+            <h1 className="page-title text-charcoal">
               IMAGINED.
               <br />
               DESIGNED.
