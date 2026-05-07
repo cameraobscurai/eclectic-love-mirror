@@ -9,6 +9,7 @@ import {
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
+import { SmoothScroll } from "../components/SmoothScroll";
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
