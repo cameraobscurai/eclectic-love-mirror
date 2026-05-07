@@ -52,10 +52,11 @@
     { "live": "Leather Baskets",                 "rms": ["3023", "3022", "3024"] },
     { "live": "Jina Black Metal Vases",          "rms": ["4020", "4021"] },
     { "live": "Powel Dark Brass Tray",           "rms": ["3170", "3168"] },
-    { "live": "Lavanya Stoneware Bowls",         "rms": ["2469", "2470", "2488", "2489", "2468"] },
+    { "live": "Lavanya Stoneware",               "rms": ["2488", "2489", "2468"] },
+    { "live": "Lavanya Stoneware Bowls",         "rms": ["2469", "2470"] },
 
     { "live": "Anastasia Antique Silver Flatware",   "rms": ["3421","3422","3423","3424","3425","3426","3427"] },
-    { "live": "Astrid Pink Quartz Flatware",         "rms": ["3386","3387","3388","3389","3390","3391","3392"] },
+    { "live": "Astrid Rose Quartz Flatware",         "rms": ["3386","3387","3388","3389","3390","3391","3392"] },
     { "live": "Donaver Tortoise Flatware",           "rms": ["3400","3401","3402","3403","3404","3405","3406"] },
     { "live": "Estella Mixed Metal Flatware",        "rms": ["3414","3415","3416","3417","3418","3419","3420"] },
     { "live": "Fiona Bone Flatware",                 "rms": ["3379","3380","3381","3382","3383","3384","3385"] },
@@ -63,10 +64,10 @@
     { "live": "Winslow Tortoise Bistro Flatware",    "rms": ["3407","3408","3409","3410","3411","3412","3413"] },
     { "live": "Nisha Matte Black Flatware",          "rms": ["2941","2942","2943","2944","2945","3117"] },
     { "live": "Heston Dark Brown Horn Flatware",     "rms": ["2499","2500","2501","2560","2679","2719"] },
-    { "live": "Deja Gold + Stainless Flatware",      "rms": ["2681","2682","2683","2684","2685"] },
-    { "live": "Midas Matte Gold Flatware",           "rms": ["2933","2934","2935","2936","2937","3118"] },
+    { "live": "DEJA Stainless + Gold Flatware",      "rms": ["2681","2682","2683","2684","2685"] },
+    { "live": "Midas Antique Gold Flatware",         "rms": ["2933","2934","2935","2936","2937","3118"] },
     { "live": "Arian Antique Silver Flatware",       "rms": ["2931","2932","2938","2939","2940","3119"] },
     { "live": "MILLIE Flatware",                     "rms": ["2976","2977","2978","2979","2980"] },
-    { "live": "Alta Matte Silver Flatware",          "rms": ["2686","2687","2688","2689","2690"] }
+    { "live": "ALTA Matte Silver Flatware",          "rms": ["2686","2687","2688","2689","2690"] }
   ]
 }

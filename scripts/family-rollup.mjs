@@ -87,9 +87,13 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
   const forcedByRms = new Map();
   for (const g of forcedGroups || []) {
     const lp = liveByKey.get(norm(g.live));
-    if (!lp) { console.warn('[rollup] forced group live tile not found:', g.live); continue; }
+    // If live tile isn't in the snapshot, still honor the owner-forced grouping —
+    // synthesize a slug from g.live and use g.live as the displayed family title.
+    const familyTitle = lp ? lp.title : g.live;
+    const liveSlug = lp ? lp.slug : norm(g.live).replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if (!lp) console.warn('[rollup] forced group live tile not in snapshot, using owner title:', g.live);
     for (const rmsId of g.rms || []) {
-      forcedByRms.set(String(rmsId), { key: 'live:' + lp.slug, source: 'forced', familyTitle: lp.title, liveSlug: lp.slug });
+      forcedByRms.set(String(rmsId), { key: 'live:' + liveSlug, source: lp ? 'forced' : 'forced-owner', familyTitle, liveSlug });
     }
   }
   if (forcedByRms.size) console.log(`[rollup] ${forcedByRms.size} rms_ids assigned by forced groups`);
