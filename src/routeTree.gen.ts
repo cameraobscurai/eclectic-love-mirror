@@ -19,6 +19,7 @@ import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
+import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
@@ -70,6 +71,11 @@ const AdminImageQaRoute = AdminImageQaRouteImport.update({
   path: '/image-qa',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminColorsRoute = AdminColorsRouteImport.update({
+  id: '/colors',
+  path: '/colors',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/colors': typeof AdminColorsRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/colors': typeof AdminColorsRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/admin/colors': typeof AdminColorsRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/colors'
     | '/admin/image-qa'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/colors'
     | '/admin/image-qa'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/privacy'
     | '/process'
+    | '/admin/colors'
     | '/admin/image-qa'
   fileRoutesById: FileRoutesById
 }
@@ -231,14 +243,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageQaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/colors': {
+      id: '/admin/colors'
+      path: '/colors'
+      fullPath: '/admin/colors'
+      preLoaderRoute: typeof AdminColorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminColorsRoute: typeof AdminColorsRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminColorsRoute: AdminColorsRoute,
   AdminImageQaRoute: AdminImageQaRoute,
 }
 
