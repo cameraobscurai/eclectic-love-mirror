@@ -248,7 +248,7 @@ function TonalCell({
           onError={() => {
             if (inCohort) reportDoneOnce();
           }}
-          className="absolute inset-0 h-full w-full object-contain p-3 sm:p-4 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             opacity: showImg && loaded ? 1 : 0,
             transition: "opacity 420ms ease-out, transform 500ms ease-out",
@@ -257,12 +257,13 @@ function TonalCell({
       ) : null}
 
       <span
-        className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 uppercase text-[12px] lg:text-[11px] pointer-events-none"
+        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none truncate"
         style={{
           fontFamily: "var(--font-sans)",
-          letterSpacing: "0.22em",
+          letterSpacing: "0.18em",
           color: "#1a1a1a",
           lineHeight: 1.2,
+          fontSize: "clamp(9px, 2.4vw, 11px)",
         }}
       >
         {label}
