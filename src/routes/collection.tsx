@@ -698,7 +698,7 @@ function CollectionPage() {
   return (
     <main
       data-collection-main
-      className="min-h-screen text-charcoal pb-32"
+      className={layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
       style={{ background: "var(--paper)" }}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
@@ -878,10 +878,10 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
         <div
-          className={showOverview ? "" : "mx-auto"}
-          style={showOverview ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
+          className={showOverview || layout === "wall" ? "" : "mx-auto"}
+          style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
         >
           <LayoutGroup id="collection-overview">
           <motion.div
@@ -949,7 +949,7 @@ function CollectionPage() {
               ) : layout === "wall" ? (
                 <div
                   className="relative w-full"
-                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h) - 2px)" }}
+                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h))" }}
                 >
                   {visibleProducts.length === 0 ? (
                     <div className="py-32 px-6">
@@ -961,6 +961,7 @@ function CollectionPage() {
                     <CollectionWall
                       products={visibleProducts}
                       onOpen={(id) => setQuickViewId(id)}
+                      cap={600}
                     />
                   )}
                 </div>
