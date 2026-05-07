@@ -525,9 +525,9 @@ function SuccessPanel() {
       <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
         Thank you. Your inquiry is with the atelier.
       </h2>
-      <p className="mt-6 max-w-lg text-[15px] leading-relaxed text-charcoal/70">
-        We respond within two business days. If your event is time-sensitive,
-        email us directly at{" "}
+      <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
+        WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE,
+        EMAIL US DIRECTLY AT{" "}
         <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
           {SUPPORT_EMAIL}
         </a>
