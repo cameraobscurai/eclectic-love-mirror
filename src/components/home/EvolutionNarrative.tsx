@@ -4,20 +4,18 @@ import { cn } from "@/lib/utils";
 /**
  * EvolutionNarrative
  * ------------------
- * Sticky single-fold manifesto. The visible card stays pinned at the
- * vertical center of the viewport while the page scrolls. Scroll
- * progress drives which line is "active" — only one line at a time is
- * full-opacity, every other is dimmed (precise switch-style highlight,
- * à la obscura.works — no soft gradient).
+ * Sticky single-fold manifesto with progressive reveal.
  *
- * Optional `footer` slot renders after the manifesto inside the same
- * sticky frame, so CTAs can ride the end of the arc.
+ * Each line fades from dim → bright as the scroll position passes it,
+ * then STAYS bright. The reader accumulates the manifesto line by line
+ * instead of being held hostage to a single active line. Mirrors
+ * droflower's PretextScrollReveal feel (read-through pacing) and
+ * obscura's restraint (no flashy transforms).
  */
 
 type Line = { text: string; emphasis?: "section" | "brand" | "closer" };
 
 const LINES: Line[] = [
-  { text: "Evolution", emphasis: "section" },
   { text: "Growth doesn't happen all at once." },
   { text: "It happens in phases." },
   { text: "There's a beginning that's rooted in curiosity." },
@@ -31,63 +29,74 @@ const LINES: Line[] = [
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-const BODY_LINES = LINES.filter((line) => line.emphasis !== "section");
-const STEP_VH = 26; // each line gets real airtime before the next switches in
-const FOOTER_REVEAL_AT = 0.9;
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
+// Tighter scroll budget so older readers don't feel trapped.
+// Total scroll = LINES.length * STEP_VH + tail. ~16vh per line + 40vh tail
+// gives ~2.2 screens of scroll for the whole arc on desktop, ~2 on mobile.
+const STEP_VH_DESKTOP = 16;
+const STEP_VH_MOBILE = 14;
+const FOOTER_REVEAL_AT = 0.86;
+const DIM_OPACITY = 0.18;
+const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
+  const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const total = BODY_LINES.length;
 
-    const updateActiveLine = () => {
+    const syncBreakpoint = () => {
+      setStepVh(window.innerWidth < 768 ? STEP_VH_MOBILE : STEP_VH_DESKTOP);
+    };
+    syncBreakpoint();
+
+    const update = () => {
       const el = sectionRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
       const distance = Math.max(el.offsetHeight - vh, 1);
-      const progress = clamp01(-rect.top / distance);
-
-      // Stable hold: floor(progress * total) so each line owns an equal
-      // band of scroll. Center-bias by adding 0.5 step so the switch
-      // feels anchored to the line's reading position, not its top edge.
-      const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
-      const idx = Math.min(total - 1, Math.floor(lineProgress * total));
-      const footerVisible = progress >= FOOTER_REVEAL_AT;
-      setActiveIndex((current) => (current === idx ? current : idx));
-      setShowFooter((current) => (current === footerVisible ? current : footerVisible));
+      const p = clamp01(-rect.top / distance);
+      setProgress(p);
+      setShowFooter(p >= FOOTER_REVEAL_AT);
     };
 
-    updateActiveLine();
+    update();
     let ticking = false;
     const handler = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        updateActiveLine();
+        update();
         ticking = false;
       });
     };
     window.addEventListener("scroll", handler, { passive: true });
-    window.addEventListener("resize", handler);
+    window.addEventListener("resize", () => {
+      syncBreakpoint();
+      handler();
+    });
     return () => {
       window.removeEventListener("scroll", handler);
       window.removeEventListener("resize", handler);
     };
   }, []);
 
+  const total = LINES.length;
+  // Reveal lines across the first FOOTER_REVEAL_AT of scroll.
+  // Each line owns a band of width 1/total. Inside that band we ease
+  // from DIM_OPACITY → 1. Once past, the line stays at 1.
+  const lineProgress = clamp01(progress / FOOTER_REVEAL_AT);
+  const reveal = lineProgress * total;
+
   return (
     <section
       ref={sectionRef}
       aria-labelledby="evolution-heading"
-      data-active-line={activeIndex}
       className="relative bg-paper text-charcoal"
-      style={{ height: `${BODY_LINES.length * STEP_VH + 60}vh` }}
+      style={{ height: `${total * stepVh + 50}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex items-center justify-center px-6">
         <div className="mx-auto w-full max-w-2xl">
@@ -107,26 +116,26 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
           </div>
 
           <div className="space-y-3 md:space-y-3.5">
-            {BODY_LINES.map((line, i) => {
-              const active = i === activeIndex;
-              const isBrand = line.emphasis === "brand";
+            {LINES.map((line, i) => {
+              // Per-line opacity: dim until reveal reaches this index,
+              // then ease up to full across one band, then stays at 1.
+              const local = clamp01(reveal - i);
+              const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
+              const isClose = line.emphasis === "closer";
               return (
                 <p
                   key={i}
-                  data-active={active ? "true" : "false"}
                   className={cn(
-                    "font-brand text-charcoal transition-[opacity,color,transform] duration-300 ease-out will-change-[opacity,transform]",
-                    isBrand ? "uppercase tracking-[0.18em]" : "italic",
+                    "font-brand text-charcoal italic transition-opacity duration-200 ease-out will-change-[opacity]",
+                    isClose && "not-italic uppercase tracking-[0.18em]",
                   )}
                   style={{
                     fontWeight: 400,
-                    fontSize: isBrand
-                      ? "clamp(1.15rem, 2.4vw, 1.7rem)"
+                    fontSize: isClose
+                      ? "clamp(1rem, 1.9vw, 1.4rem)"
                       : "clamp(0.95rem, 1.6vw, 1.25rem)",
-                    lineHeight: 1.35,
-                    opacity: active ? 1 : 0.12,
-                    color: active ? "var(--charcoal)" : "var(--charcoal)",
-                    transform: active ? "translateX(0)" : "translateX(-2px)",
+                    lineHeight: 1.4,
+                    opacity,
                   }}
                 >
                   {line.text}
