@@ -50,7 +50,7 @@ const INITIAL_BATCH = 60;
 const BATCH_INCREMENT = 60;
 const SEARCH_DEBOUNCE_MS = 280;
 
-const SORTS = ["type", "az"] as const;
+const SORTS = ["type", "az", "tonal"] as const;
 type SortKey = (typeof SORTS)[number];
 
 const DENSITIES = ["comfortable", "dense"] as const;
@@ -381,7 +381,7 @@ function CollectionPage() {
     }
 
     return sortProductsForCollection(list, {
-      mode: sort === "az" ? "az" : "by-type",
+      mode: sort === "az" ? "az" : sort === "tonal" ? "tonal" : "by-type",
     });
   }, [groupFiltered, sort, q]);
 
@@ -752,6 +752,7 @@ function CollectionPage() {
                 className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
               >
                 <option value="type">By Type</option>
+                <option value="tonal">Tonal (preview)</option>
                 <option value="az">A–Z</option>
               </select>
 

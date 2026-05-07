@@ -32,11 +32,46 @@ function restoredInventoryUrl(url) {
   return `${base}${INVENTORY_PUBLIC_MARKER}inventory/${pathPart}`;
 }
 
+// Tonal rank: lower = darker / earlier in the gradient. Encoded so a single
+// numeric sort produces black → charcoal → brown → tan → cream → white, with
+// chromatic items woven in by lightness band and hue (ROYGBIV nudge within band).
+const FAMILY_BUCKET = {
+  'black': 0, 'charcoal': 1, 'grey': 2, 'gray': 2,
+  'brown': 3, 'tan': 4, 'cream': 5, 'white': 6,
+  'metallic-warm': 5, 'metallic-cool': 2,
+  // Chromatic families slot by their natural lightness; the bucket value is
+  // a tiebreaker only — primary sort is on lightness within "all chromatic".
+  'red': 7, 'orange': 7, 'yellow': 7, 'green': 8, 'blue': 8, 'purple': 8, 'pink': 7,
+  'multi': 9,
+};
+function computeTonalRank(r) {
+  if (r.color_lightness == null) return null;
+  const family = (r.color_family || '').toLowerCase();
+  const bucket = FAMILY_BUCKET[family] ?? 9;
+  const L = Math.max(0, Math.min(100, Number(r.color_lightness)));
+  const isNeutral = bucket <= 6;
+  if (isNeutral) {
+    // Neutrals: bucket dominates (so all blacks come before all charcoals etc.),
+    // lightness orders within bucket.
+    return bucket * 10000 + Math.round(L * 100);
+  }
+  // Chromatic: insert into the gradient by lightness, with a small ROYGBIV
+  // nudge so similar-lightness chromatic items flow red→orange→yellow→green→blue→purple.
+  // Map hue 0..360 → roygbiv index 0..6 (red=0, purple=6).
+  const h = r.color_hue != null ? Number(r.color_hue) : 0;
+  const roygbiv = Math.floor(((h + 15) % 360) / (360 / 7));
+  // Weave chromatic items into the neutral spectrum at their lightness.
+  // Base = neutral bucket nearest to L (charcoal..cream range).
+  const neutralBase = L < 20 ? 1 : L < 40 ? 3 : L < 60 ? 4 : 5;
+  return neutralBase * 10000 + Math.round(L * 100) + roygbiv;
+}
+
+
 const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
   const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at')
+    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review')
     .neq('status','draft').range(from, from+PAGE-1).order('title');
   if (error) { console.error(error); process.exit(1); }
   if (!data.length) break;
@@ -102,6 +137,15 @@ const products = all.map((r, i) => {
     scrapedOrder: i,
     subcategory: null,
     ownerSiteRank: null,
+    colorHex: r.color_hex ?? null,
+    colorHexSecondary: r.color_hex_secondary ?? null,
+    colorLightness: r.color_lightness != null ? Number(r.color_lightness) : null,
+    colorHue: r.color_hue != null ? Number(r.color_hue) : null,
+    colorChroma: r.color_chroma != null ? Number(r.color_chroma) : null,
+    colorFamily: r.color_family ?? null,
+    colorTemperature: r.color_temperature ?? null,
+    colorNeedsReview: !!r.color_needs_review,
+    tonalRank: computeTonalRank(r),
   };
 });
 
