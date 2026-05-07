@@ -4,7 +4,7 @@ import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
-import atelierReplacement from "@/assets/atelier-replacement.png?preset=hero";
+import atelierReplacement from "@/assets/atelier-replacement.jpg?preset=hero";
 
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.jpg?preset=editorial";
