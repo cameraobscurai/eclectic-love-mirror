@@ -257,12 +257,13 @@ function TonalCell({
       ) : null}
 
       <span
-        className="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 uppercase text-[12px] lg:text-[11px] pointer-events-none"
+        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none truncate"
         style={{
           fontFamily: "var(--font-sans)",
-          letterSpacing: "0.22em",
+          letterSpacing: "0.18em",
           color: "#1a1a1a",
           lineHeight: 1.2,
+          fontSize: "clamp(9px, 2.4vw, 11px)",
         }}
       >
         {label}
