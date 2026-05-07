@@ -95,9 +95,10 @@ function GalleryPage() {
 
       <GalleryCta />
 
-      {/* As Featured In — transparent press logos on charcoal */}
+      {/* As Featured In — transparent press logos on charcoal.
+          Width matches the CTA headline measure above for axial continuity. */}
       <section aria-labelledby="press-heading" className="bg-charcoal pb-16 lg:pb-20 px-6 lg:px-12">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-7xl mx-auto">
           <h2
             id="press-heading"
             className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"
@@ -107,7 +108,7 @@ function GalleryPage() {
           <img
             src={pressLogos}
             alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-            className="w-full h-auto max-h-20 lg:max-h-24 object-contain select-none mx-auto opacity-90"
+            className="w-full h-auto object-contain select-none mx-auto opacity-90"
             loading="lazy"
             decoding="async"
             draggable={false}
