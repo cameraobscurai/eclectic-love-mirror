@@ -711,12 +711,40 @@ function CollectionPage() {
     };
   }, [activeParent, layout]);
 
+  // iOS Safari's collapsing address bar makes 100dvh jump on every scroll/
+  // rotation, which leaves the overview grid either clipped or short. We
+  // publish `--app-vh` from visualViewport.height (or innerHeight) and use it
+  // in place of dvh for the overview shell so the fixed grid stays accurate.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const apply = () => {
+      const h = Math.round(window.visualViewport?.height ?? window.innerHeight);
+      document.documentElement.style.setProperty("--app-vh", `${h}px`);
+    };
+    apply();
+    const vv = window.visualViewport;
+    window.addEventListener("resize", apply);
+    window.addEventListener("orientationchange", apply);
+    vv?.addEventListener("resize", apply);
+    vv?.addEventListener("scroll", apply);
+    return () => {
+      window.removeEventListener("resize", apply);
+      window.removeEventListener("orientationchange", apply);
+      vv?.removeEventListener("resize", apply);
+      vv?.removeEventListener("scroll", apply);
+    };
+  }, []);
+
   return (
     <main
       data-collection-main
       data-collection-overview={showOverview ? "" : undefined}
-      className={showOverview ? "h-[100dvh] overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
-      style={{ background: "var(--paper)", "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)" } as React.CSSProperties}
+      className={showOverview ? "overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
+      style={{
+        background: "var(--paper)",
+        "--collection-mobile-h-h": "clamp(112px, 17dvh, 140px)",
+        ...(showOverview ? { height: "var(--app-vh, 100dvh)" } : null),
+      } as React.CSSProperties}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
@@ -896,7 +924,10 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0 h-[calc(100dvh-var(--nav-h))] overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section
+        className={showOverview ? "px-0 pt-0 overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
+        style={showOverview ? { height: "calc(var(--app-vh, 100dvh) - var(--nav-h))" } : undefined}
+      >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
