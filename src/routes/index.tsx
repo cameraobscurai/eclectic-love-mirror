@@ -172,61 +172,91 @@ function HomePage() {
 
       </section>
 
-      {/* Evolution narrative — sticky single-fold; CTA cards ride the end */}
+      {/* ── FOLD 3 — Index-style destinations ─────────────────
+          Stacked hairline rows, monograph index feel.
+          Each row: number · title · descriptor · arrow.
+          Hover shifts the arrow + lifts the row tone, no fills, no rings.
+      */}
       <EvolutionNarrative
         footer={
-          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
+          <div className="border-t border-charcoal/15">
             {DESTINATIONS.map((dest, i) => (
               <Link
                 key={dest.href}
                 to={dest.href}
                 preload="viewport"
                 aria-label={`${dest.title} — ${dest.label}`}
-                className="group rounded-xl ring-1 ring-charcoal/10 bg-paper transition-all duration-300 hover:ring-charcoal/30"
+                className="group block border-b border-charcoal/15 transition-colors duration-300 hover:bg-charcoal/[0.03]"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="px-5 py-3.5 md:px-6 md:py-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <h3
-                        className="font-brand uppercase text-charcoal text-[15px] md:text-base"
-                        style={{ fontWeight: 400, letterSpacing: "0.1em" }}
-                      >
-                        {dest.title}
-                      </h3>
-                      <p className="mt-0.5 text-[9px] md:text-[10px] uppercase tracking-[0.08em] text-charcoal/50">
-                        {dest.label}
-                      </p>
-                    </div>
-                    <div
+                <div className="flex items-center gap-6 md:gap-10 py-5 md:py-7">
+                  {/* Index numeral */}
+                  <span
+                    className="font-brand text-charcoal/40 tabular-nums w-6 md:w-8 shrink-0"
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "clamp(0.7rem, 0.85vw, 0.8rem)",
+                      letterSpacing: "0.18em",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  {/* Title — the hero word in the row */}
+                  <h3
+                    className="font-brand uppercase text-charcoal flex-shrink-0"
+                    style={{
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                      fontSize: "clamp(1.25rem, 2.2vw, 1.85rem)",
+                    }}
+                  >
+                    {dest.title}
+                  </h3>
+
+                  {/* Descriptor — italic, muted, takes available space */}
+                  <p
+                    className="hidden md:block flex-1 font-brand italic text-charcoal/55 truncate"
+                    style={{
+                      fontWeight: 400,
+                      fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)",
+                    }}
+                  >
+                    {dest.label}
+                  </p>
+
+                  {/* Arrow rail — extends on hover */}
+                  <div className="ml-auto md:ml-0 flex shrink-0 items-center gap-2">
+                    <span
                       className={cn(
-                        "flex shrink-0 items-center gap-1.5 transition-all duration-300",
-                        hoveredIndex === i ? "opacity-100" : "opacity-40",
+                        "h-px bg-charcoal/40 transition-all duration-500 ease-out",
+                        hoveredIndex === i ? "w-12 md:w-16" : "w-4 md:w-6",
                       )}
+                    />
+                    <svg
+                      className="h-3 w-3 text-charcoal/70 transition-transform duration-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={1.25}
                     >
-                      <span
-                        className={cn(
-                          "h-px bg-charcoal/60 transition-all duration-300",
-                          hoveredIndex === i ? "w-5" : "w-2",
-                        )}
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                       />
-                      <svg
-                        className="h-2.5 w-2.5 text-charcoal/70"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                        />
-                      </svg>
-                    </div>
+                    </svg>
                   </div>
                 </div>
+
+                {/* Mobile descriptor — sits below the row, indented past the numeral */}
+                <p
+                  className="md:hidden -mt-3 pb-5 pl-12 font-brand italic text-charcoal/55"
+                  style={{ fontWeight: 400, fontSize: "0.85rem" }}
+                >
+                  {dest.label}
+                </p>
               </Link>
             ))}
           </div>
