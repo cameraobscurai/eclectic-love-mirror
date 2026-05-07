@@ -88,6 +88,7 @@ const liveSlugs = Object.keys(live);
 const matched = [];
 const ambiguous = [];
 const unmatched = [];
+const fuzzyMatched = [];
 const allUrls = new Map(); // canonUrl -> { storagePath, storageUrl, category }
 
 for (const slug of liveSlugs) {
