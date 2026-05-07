@@ -129,6 +129,7 @@ const products = all.map((r, i) => {
     livesFallback++;
   }
   const description = lp && lp.body ? lp.body : null;
+  const aliasedTitle = titleAliasByRms.get(String(r.rms_id)) || r.title;
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
   return {
     id: r.rms_id,
@@ -136,7 +137,7 @@ const products = all.map((r, i) => {
     slug: r.slug,
     categorySlug: r.category,
     displayCategory: CAT_DISPLAY[r.category] || r.category,
-    title: r.title,
+    title: aliasedTitle,
     description,
     dimensions: r.dimensions_raw,
     stockedQuantity: stock,
