@@ -1,144 +1,107 @@
-## Goal
+# Mirror live Squarespace inventory → dedicated `squarespace-mirror` bucket
 
-Re-order Collection items so each category flows in a curated tonal progression — darkest → lightest with chromatic items woven in by hue — backed by AI-tagged color data per product. Bulletproof = reproducible, reviewable, and overridable at every step. Nothing irreversible, nothing taste-dependent without a human gate.
+## Revised approach (per your feedback)
 
-## Architecture
+Two changes from the prior plan:
 
-```text
-hero image  ─►  AI vision tag  ─►  pixel sampler verify  ─►  inventory_items.color_*
-                                                                      │
-                                            owner override (admin UI) ┤
-                                                                      ▼
-                                                          bake-catalog.mjs
-                                                                      ▼
-                                                  current_catalog.json (tonalRank)
-                                                                      ▼
-                                                      Collection "Tonal" sort
+1. **New isolated bucket** — `squarespace-mirror` (public read, admin write). Keeps owner-uploaded `inventory/` bucket pristine and untouched. If we ever need to wipe the squarespace pull, it's a single bucket drop.
+2. **Truth = live site only** — we pull from `eclectichive.com`'s live JSON feeds and only mirror what the site currently shows. Anything no longer on the site is left alone (not deleted, not mirrored).
+
+## Live source
+
+`https://www.eclectichive.com/inventory` redirects to the Lounge nav. The 10 live category indexes (from the site nav) are:
+
+```
+lounge · lounge-tables · cocktail-bar · dining · tableware
+lighting · textiles · rugs · styling · large-decor
 ```
 
-Two independent signals (AI + pixel math) cross-check each other. Owner override always wins.
+Each supports `?format=json-pretty` which returns the canonical product list + per-product detail (title, slug, gallery, body, variants). We already have a working harvester at `scripts/audit/harvest-live-products.mjs` and recent output at `scripts/audit/live-products.json` — we'll re-run it fresh so we're working from today's live state.
 
-## Step 1 — Schema (migration)
+## Step 1 — Create the bucket (migration)
 
-Add to `inventory_items`:
+```sql
+insert into storage.buckets (id, name, public)
+  values ('squarespace-mirror', 'squarespace-mirror', true);
 
-- `color_hex text` — primary dominant hex
-- `color_hex_secondary text` — second dominant (for patterned items)
-- `color_lightness numeric` — CIELAB L*, 0–100
-- `color_hue numeric` — 0–360, null for neutrals (chroma < 8)
-- `color_chroma numeric` — 0–130
-- `color_family text` — enum-ish: `black|charcoal|brown|tan|cream|white|grey|red|orange|yellow|green|blue|purple|pink|metallic-warm|metallic-cool|multi`
-- `color_temperature text` — `warm|neutral|cool`
-- `color_confidence numeric` — 0–1, model self-reported
-- `color_source text` — `ai-vision|pixel-extract|manual|merged`
-- `color_tagged_at timestamptz`
-- `color_locked boolean default false` — owner-set; tagger skips locked rows
-- `color_notes text` — free-text override reason
+-- public read
+create policy "Public read squarespace-mirror"
+  on storage.objects for select
+  using (bucket_id = 'squarespace-mirror');
 
-Trigger: when `images[1]` changes, set `color_tagged_at = NULL` (unless `color_locked`) so the next tagger run re-processes it. RLS unchanged.
+-- admin write/update/delete
+create policy "Admins write squarespace-mirror"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
 
-## Step 2 — Two-signal tagging pipeline
+create policy "Admins update squarespace-mirror"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
 
-`scripts/tag-colors.mjs` runs in three phases per product:
-
-**2a. Pixel extract (cheap, deterministic).** Download hero image, run k-means on pixels with edge/background masking (drop pixels within 8px of frame, drop pixels matching corner-sample background within ΔE<5). Returns top 3 clusters with weights. Library: `sharp` is Worker-incompatible but this script runs in Node (sandbox), so `sharp` + `node-vibrant` or `colorthief` is fine. **Decision: use `sharp` for resize + `colorthief` for palette.** This gives us a ground-truth swatch independent of the AI.
-
-**2b. AI vision call.** Send same hero to `google/gemini-3-flash-preview` via Lovable AI Gateway with structured tool-calling. Prompt:
-
-> "You are a textile and furniture stylist tagging items for a tonal merchandising grid. Identify the *material color* of the primary object — the upholstery, wood, ceramic, or metal a designer would key off when styling. Ignore: background, props, shadows, reflections, packaging. Return CIELAB lightness (0=black, 100=white), hue 0–360 (null if chroma<8), chroma 0–130, color family from the fixed list, temperature warm/neutral/cool, and confidence 0–1. If the item is patterned or multi-color, return the dominant tone and set family=multi only if no single tone covers >50% of the object."
-
-Tool schema enforces shape; no JSON parsing of free text.
-
-**2c. Reconcile.** Compare AI hex vs pixel-extract top cluster in CIELAB ΔE:
-- ΔE < 10 → trust AI, source=`merged`, confidence stays
-- ΔE 10–25 → trust AI but flag `needs_review`, confidence × 0.7
-- ΔE > 25 → write both, mark `needs_review=true`, source=`ai-vision`, confidence × 0.4
-
-Concurrency 4, 1.2 req/sec to stay under rate limits. Auto-retry 429 with exp backoff. Cost ≈ 828 Gemini Flash vision calls for backfill, well under free tier.
-
-**2d. Dry-run mandatory.** Script writes `/tmp/color-tag-manifest.json` with every proposed row + both signals + ΔE. Owner reviews via `/admin/colors` (Step 4) before any DB write. `--apply` flag required for the second pass.
-
-## Step 3 — Catalog bake
-
-Update `scripts/bake-catalog.mjs`:
-
-- Select new color columns.
-- Pass through to each product.
-- Compute `tonalRank` server-side (so client does no math):
-
-```text
-tonalRank = familyBucket * 1000 + lightness * 10 + hueOffset
+create policy "Admins delete squarespace-mirror"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
 ```
 
-Where `familyBucket` orders `black → charcoal → brown → tan → cream → white` for neutrals (0–5), then chromatic families woven in by lightness band (warm reds/oranges grouped with browns, cool blues/greens grouped with charcoals). `hueOffset` is a small ROYGBIV nudge within a lightness band so red→orange→yellow→green→blue→purple flows naturally.
+## Step 2 — Refresh live truth (no writes)
 
-Add to `CollectionProduct`: `colorHex`, `colorLightness`, `colorHue`, `colorFamily`, `colorTemperature`, `tonalRank`, `colorNeedsReview`.
+`scripts-tmp/sqs-live-harvest.mjs` (thin wrapper around existing harvester):
+- Hits each of the 10 category JSON feeds
+- For every product: collects `slug`, `title`, `categories[]`, `fullUrl`, `body` (description), `excerpt`, `gallery[]` (full asset URLs at `?format=2500w`), `variants[]`
+- Writes `scripts-tmp/sqs-live-truth.json` and a summary `.txt` showing per-category counts, total unique products, total unique image URLs
 
-## Step 4 — `/admin/colors` QA grid (the bulletproofing layer)
+This is read-only on the live site; no DB or storage writes.
 
-New route. Required before Tonal sort goes live. Features:
+## Step 3 — Build mirror manifest (dry-run, no writes)
 
-- Grid of every product: thumbnail, detected swatch chip, family label, lightness number, confidence, ΔE flag.
-- Filters: `needs_review`, `family=...`, `low confidence`, `untagged`.
-- Click row → side panel with:
-  - Both signals visible (AI hex + pixel hex)
-  - Color picker for manual override (writes `color_source=manual`, `color_locked=true`)
-  - Quick-pick swatches for the 16 families
-  - "Re-tag" button (single-row AI re-run)
-- Bulk actions: "lock selected", "re-tag selected", "mark family for selected".
-- Live preview strip: shows the active category sorted by current tonal data, so the owner sees the gradient updating as they edit.
+`scripts-tmp/sqs-mirror-dryrun.mjs`:
+- For every unique gallery URL across the live truth: compute target path
+  `<category>/<product-slug>/<NN>-<sanitized-filename>.<ext>`
+  e.g. `lounge/indiwin-black-leather-sofa/01-INDIWIN_Sofa_0.png`
+  (deterministic, human-readable, easy to spot-check in the bucket UI)
+- HEAD each URL — record reachable / 4xx / size / content-type
+- Match each live product → existing `inventory_items` row by:
+  1. `rms_id`/slug exact (won't match — squarespace uses different slugs)
+  2. **normalized title exact** (primary signal, already proven in earlier reconcile work)
+  3. fuzzy fallback only logged for review, never auto-applied
+- Per-row plan shows `{slug_live, title_live, matched_rms_id, current_images, proposed_images}` where `proposed_images` reorders to put the live hero first then live gallery
+- Rows with no DB match are listed separately as "live but unbound" — left for manual review, never silently dropped
 
-Server functions for all writes use `requireSupabaseAuth` + `has_role(uid,'admin')`. No bulk write without the manifest review pattern.
+Outputs:
+- `scripts-tmp/sqs-mirror-manifest.json`
+- `scripts-tmp/sqs-mirror-summary.txt` (per-category counts, # to upload, # already-mirrored, # match / no-match, total bytes est.)
 
-## Step 5 — Sort mode rollout (staged)
+You review the summary, spot-check 5–10 rows. Nothing has been written.
 
-Phase A — preview only:
-- Add `"tonal"` to `SortMode` in `collection-sort-intelligence.ts`.
-- Add comparator: `tonalRank ASC`, tie-break on `ownerSiteRank` then `title`.
-- Add "Tonal (preview)" option to the sort dropdown. Default stays "By Type".
+## Step 4 — Apply (mirror + rebind)
 
-Phase B — owner approves:
-- Owner reviews ≥100 items in `/admin/colors`, locks any she wants frozen.
-- Re-bake.
-- Switch default sort to Tonal per category (or globally — owner decision).
-- Drop "(preview)" label.
+`scripts-tmp/sqs-mirror-apply.mjs`:
+1. For each unique URL: `fetch` → `supabase.storage.from('squarespace-mirror').upload(path, buf, { upsert: true })`. Build `remap: cdnUrl → storageUrl`.
+2. Concurrency 4, 100ms gap. ~266 unique URLs (could grow if today's live count is higher) — minutes.
+3. For each matched row: rewrite `images[]` using remap (preserve order; live hero stays hero), `update inventory_items set images=$new where rms_id=$rms`.
+4. Rows that lose all storage references (because every URL came from squarespace) end up fully on `squarespace-mirror`. Rows that had a mix of owner-uploaded `inventory/` images keep them untouched alongside the new mirror URLs.
+5. Writes `scripts-tmp/sqs-mirror-result.json` with per-URL outcome and per-row before/after `images[]` for rollback.
 
-Phase C — drift protection:
-- DB trigger nulls `color_tagged_at` when hero changes (already in Step 1).
-- Cron-style server function (manual trigger from `/admin`) re-tags any row with `color_tagged_at IS NULL AND NOT color_locked`. Keeps gradient accurate as new inventory lands.
+Safeguards:
+- `upsert: true` → re-runnable
+- Per-URL try/catch → one bad URL doesn't abort
+- Per-row try/catch → partial failure is logged, never half-written
+- Verification SQL after: `select count(*) from inventory_items where images::text like '%squarespace-cdn%'` should equal **only** the unmatched-row count.
 
-## Edge cases handled
+## Step 5 — Re-bake catalog
 
-| Case | Mitigation |
-|---|---|
-| Styled scene shot (rug under chair) | Pixel sampler + AI cross-check; ΔE>25 flags for review |
-| Patterned pillow / rug | Dominant + secondary stored; `color_family=multi` if no >50% tone; sorts by dominant lightness |
-| Brass / metallics | Dedicated families `metallic-warm` / `metallic-cool`, slot between cream and white |
-| Cutout on white background | Background masker drops corner-matched pixels before k-means |
-| Same hex two different materials | Owner override + `color_notes` for the stylist's reason |
-| New item added later | Trigger nulls tag, incremental tagger picks it up, locked rows skipped |
-| AI hallucinates color | Pixel signal contradicts → flagged; owner sees both in QA grid |
-| Owner disagrees with AI | Manual override locks the row permanently |
+`node scripts/bake-catalog.mjs` to refresh `src/data/inventory/current_catalog.json`. Visual sweep on `/collection?category=pillows-throws` (heaviest) and `/collection?category=tableware`.
 
-## Cost / risk ledger
+## Out of scope (intentional)
 
-- Tagging cost: ~828 Gemini Flash vision calls, one-time + small incrementals. Within free tier.
-- Reversibility: every column nullable; drop-and-rerun safe; sort default toggle is a single line.
-- Destructive ops: zero. All writes are additive, dry-run gated, owner-reviewable.
-- Performance: client does no color math; sort key pre-computed at bake time. Zero runtime cost on Collection page.
+- Does **not** touch the 7 imageless rows (no live source).
+- Does **not** rebind 88 falsely-shared heroes (separate taste pass).
+- Does **not** delete or alter anything in the existing `inventory` bucket.
+- Does **not** add/remove products from DB — only updates `images[]` for live-matched rows.
 
-## Deliverables
+## Cost
+- ~266+ image fetches from squarespace, equal number of uploads to the new bucket (~50–150 MB).
+- ~220+ row updates, single column.
+- All idempotent. Step 2/3 are pure reads.
 
-1. Migration adding 11 color columns + image-change trigger.
-2. `scripts/tag-colors.mjs` with `--dry-run` (default) and `--apply` modes, two-signal reconcile.
-3. Updated `scripts/bake-catalog.mjs` carrying color fields + computed `tonalRank`.
-4. Updated `CollectionProduct` type + `tonal` sort comparator in `collection-sort-intelligence.ts`.
-5. `/admin/colors` route: QA grid, side panel override, bulk actions, live preview strip.
-6. Server functions for tag/retag/lock/override (admin-gated).
-7. Sort dropdown gets "Tonal (preview)" → owner approves → becomes default.
-
-## Out of scope (explicitly deferred)
-
-- Per-image multi-color gradient sort (treating one tile as several).
-- Cross-category whole-grid ribbon (each category still sorts independently in v1).
-- Automatic seasonal palette themes (winter vs summer reorder).
+Approve and I'll: run the migration to create `squarespace-mirror`, refresh the live truth file, then share the dry-run summary before any uploads or DB writes.

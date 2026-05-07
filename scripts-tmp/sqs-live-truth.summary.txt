@@ -1,0 +1,18 @@
+LIVE HARVEST — 2026-05-07T02:50:53.246Z
+
+Per-category live item counts:
+  lounge           86
+  lounge-tables    49
+  cocktail-bar     61
+  dining           18
+  tableware        79
+  textiles         157
+  rugs             26
+  styling          60
+  large-decor      26
+  light            48
+
+Total unique product slugs: 610
+Total unique image URLs:    1004
+
+Output: scripts-tmp/sqs-live-truth.json

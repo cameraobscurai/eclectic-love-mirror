@@ -1,0 +1,60 @@
+MIRROR DRY-RUN — 2026-05-07T02:53:20.065Z
+
+Live products harvested:    610
+Matched (exact title):      335
+Matched (fuzzy fallback):   128
+Ambiguous (>1 DB match):    0
+Unmatched (no DB row):      147
+Unique URLs to mirror:      628
+
+Per-DB-category (matched rows + URLs):
+  pillows-throws     rows=133  urls=142
+  seating            rows= 91  urls=159
+  tables             rows= 59  urls=86
+  styling            rows= 41  urls=54
+  bars               rows= 28  urls=37
+  lighting           rows= 27  urls=31
+  serveware          rows= 26  urls=31
+  rugs               rows= 25  urls=42
+  large-decor        rows= 16  urls=23
+  storage            rows=  7  urls=10
+  chandeliers        rows=  5  urls=5
+  tableware          rows=  4  urls=6
+  candlelight        rows=  1  urls=2
+
+Sample fuzzy matches (first 15) — REVIEW THESE:
+  • live="Antonella Cotton Velvet Loveseat"  →  db="Antonella Cotton Velvet Sofa"  rms=3006
+  • live="Commodore Canvas Loveseat"  →  db="Commodore Canvas Sofa"  rms=1813
+  • live="Rowntree Leather Loveseat"  →  db="Rowntree Chocolate Leather Loveseat"  rms=1710
+  • live="Elizabeth Velvet Sofa"  →  db="Elizabeth Champagne Velvet Sofa"  rms=755
+  • live="Sidony Wood + White Loveseat"  →  db="Sidony White + Wood Sofa"  rms=2748
+  • live="Fabian Grey Hide Chair"  →  db="Fabian Grey Hide Barrel Chair"  rms=3002
+  • live="Elspeth Almond Velvet Chair"  →  db="Elspeth Almond Velour Chair"  rms=2462
+  • live="Natori Fur Chair"  →  db="Natori Oak + Fur Chair"  rms=2995
+  • live="Florian Ivory Hide Chair"  →  db="Florian Ivory Hide Barrel Chair"  rms=3003
+  • live="Millicent Antique Ornate Chair"  →  db="Millicent Antique Arm Chair"  rms=2971
+  • live="Osprey Black Metal Bench"  →  db="Osprey Black Metal Chair"  rms=3817
+  • live="Zeki Kilim Arm Chair"  →  db="Zeki Kilim Armchair"  rms=706
+  • live="Evander Tapered Hide Ottoman"  →  db="Evander Grey Hide Tapered Ottoman"  rms=3014
+  • live="Leanna Ivory Hide Ottoman"  →  db="Leanna Ivory Hide Tapered Ottoman"  rms=3142
+  • live="Lorenzo Ivory Hide Ottoman"  →  db="Lorenzo Ivory Round Hide Ottoman"  rms=3015
+
+Sample unmatched (first 15):
+  • Jesamay Armchair  [lounge]  slug=jesamay-armchair
+  • Jourdain Bench  [lounge]  slug=jourdain-bench
+  • Boulder 48" Coffee Table  [lounge-tables]  slug=boulder-48-coffee-table
+  • Boulder 36" Coffee Table  [lounge-tables]  slug=boulder-36-coffee-table
+  • River 42" Coffee Table  [lounge-tables]  slug=river-42-coffee-table
+  • River 54" Coffee Table  [lounge-tables]  slug=river-54-coffee-table
+  • Voyage Bar Trunk  [cocktail-bar]  slug=voyage-bar-trunk
+  • Monroe Black Flat Slat Tambour Bar  [cocktail-bar]  slug=monroe-black-flat-slat-tambour-bar
+  • Inola 12' Black Convertible Bar  [cocktail-bar]  slug=inola-12-black-wood-square-bar
+  • Iraja 12' Wood Convertible Bar  [cocktail-bar]  slug=iraja-12-square-whitewash-bar
+  • Gold Acrylic Slatted Bar  [cocktail-bar]  slug=inola-gold-slatted-bar
+  • Sinatra Walnut Fluted Bar  [cocktail-bar]  slug=sinatra-walnut-fluted-bar
+  • Woodsley Concrete & Wood Top Bar  [cocktail-bar]  slug=woodsley
+  • Marceline Gold Bar Cart  [cocktail-bar]  slug=marceline-gold-bar-cart
+  • Anathema 82" Dark Ash Console  [cocktail-bar]  slug=anathema-82-dark-ash-console
+
+Outputs:
+  scripts-tmp/sqs-mirror-manifest.json
