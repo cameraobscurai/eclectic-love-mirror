@@ -99,22 +99,32 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="relative">
+      {/* ── FOLD 1 — Editorial wordmark ───────────────────────
+          Rhythm system (single source of truth, no per-element guesses):
+            --fold-unit  : modular spacing unit, scales 16→40px with vw+vh
+            --fold-top   : breathing band above wordmark (nav clearance + 4 units)
+            --fold-gap   : wordmark→tagline (1 unit)
+            --fold-strip : tagline→filmstrip (3 units)
+            --fold-tail  : filmstrip→Evolution (6 units)
+          Every distance below derives from --fold-unit so the whole fold
+          breathes proportionally on any screen — no hardcoded magic numbers.
+      */}
+      <section
+        className="relative"
+        style={{
+          ["--fold-unit" as string]: "clamp(1rem, 1.4vw + 1vh, 2.5rem)",
+          ["--fold-top" as string]:
+            "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
+          ["--fold-gap" as string]: "calc(var(--fold-unit) * 1)",
+          ["--fold-strip" as string]: "calc(var(--fold-unit) * 3)",
+          ["--fold-tail" as string]: "calc(var(--fold-unit) * 6)",
+        }}
+      >
         {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
-          {/* ── FOLD 1 — Editorial wordmark ─────────────────────
-              Composition matches reference inspo:
-                • Wordmark sits ~one nav-height below the bar
-                • Tagline tucked tight under the wordmark
-                • Filmstrip follows with a single editorial gap
-                • No 100svh stretching — content sets the rhythm,
-                  not the viewport
-          */}
           <div
             className="px-8 lg:px-12"
-            style={{
-              paddingTop: "calc(var(--nav-h, 4rem) + clamp(2rem, 4vh, 3.5rem))",
-            }}
+            style={{ paddingTop: "var(--fold-top)" }}
           >
             <div className="mx-auto max-w-6xl">
               <h1
@@ -136,10 +146,11 @@ function HomePage() {
 
               <p
                 className={cn(
-                  "mx-auto mt-3 md:mt-4 max-w-xl text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
+                  "mx-auto text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out max-w-xl",
                   loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
                 )}
                 style={{
+                  marginTop: "var(--fold-gap)",
                   fontWeight: 400,
                   fontSize: "clamp(0.95rem, 1.2vw, 1.1rem)",
                   lineHeight: 1.4,
@@ -151,14 +162,15 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Filmstrip — single editorial gap below the tagline */}
+          {/* Filmstrip — set on the modular rhythm, with a real tail before Evolution */}
           <div
             className={cn(
               "transition-all ease-out",
               loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
             )}
             style={{
-              paddingTop: "clamp(2.5rem, 5vh, 4rem)",
+              paddingTop: "var(--fold-strip)",
+              paddingBottom: "var(--fold-tail)",
               transitionDuration: "1200ms",
               transitionDelay: loaded ? "650ms" : "0ms",
             }}
