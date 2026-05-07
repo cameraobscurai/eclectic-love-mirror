@@ -174,14 +174,18 @@ function FilmstripFrame({
             poster={clip.poster}
             muted
             loop
+            autoPlay
             playsInline
-            preload="metadata"
+            preload="auto"
             aria-label={clip.label}
             className={cn(
               "relative h-full w-full object-cover transition-opacity duration-700",
               loaded ? "opacity-100" : "opacity-0",
             )}
-            onLoadedData={() => setLoaded(true)}
+            onLoadedData={(e) => {
+              setLoaded(true);
+              e.currentTarget.play().catch(() => {});
+            }}
           >
             {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
             {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
