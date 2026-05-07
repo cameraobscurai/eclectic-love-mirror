@@ -9,6 +9,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
+import { imgFallback } from "@/lib/img-fallback";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 
 interface QuickViewModalProps {
