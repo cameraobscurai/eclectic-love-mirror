@@ -79,14 +79,19 @@ export type Database = {
           description: string | null
           dimensions_raw: string | null
           height_cm: number | null
+          hidden_note: string | null
           id: string
           images: string[]
+          live_subcategories: string[] | null
+          manual_injection: boolean
           materials: string[] | null
           meta_description: string | null
           meta_title: string | null
           og_image: string | null
           origin: string | null
+          owner_site_rank: number | null
           price: number | null
+          public_ready: boolean
           quantity: number | null
           quantity_label: string | null
           rms_id: string | null
@@ -117,14 +122,19 @@ export type Database = {
           description?: string | null
           dimensions_raw?: string | null
           height_cm?: number | null
+          hidden_note?: string | null
           id?: string
           images?: string[]
+          live_subcategories?: string[] | null
+          manual_injection?: boolean
           materials?: string[] | null
           meta_description?: string | null
           meta_title?: string | null
           og_image?: string | null
           origin?: string | null
+          owner_site_rank?: number | null
           price?: number | null
+          public_ready?: boolean
           quantity?: number | null
           quantity_label?: string | null
           rms_id?: string | null
@@ -155,14 +165,19 @@ export type Database = {
           description?: string | null
           dimensions_raw?: string | null
           height_cm?: number | null
+          hidden_note?: string | null
           id?: string
           images?: string[]
+          live_subcategories?: string[] | null
+          manual_injection?: boolean
           materials?: string[] | null
           meta_description?: string | null
           meta_title?: string | null
           og_image?: string | null
           origin?: string | null
+          owner_site_rank?: number | null
           price?: number | null
+          public_ready?: boolean
           quantity?: number | null
           quantity_label?: string | null
           rms_id?: string | null
