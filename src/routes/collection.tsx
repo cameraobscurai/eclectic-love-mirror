@@ -388,7 +388,7 @@ function CollectionPage() {
       // re-segmenting into bars→tables→storage buckets.
       activeGroup: activeParent ? (activeParent as never) : null,
     });
-  }, [groupFiltered, sort, q]);
+  }, [groupFiltered, sort, q, activeParent]);
 
   // Failed-image filter (per-session)
   const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
