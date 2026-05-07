@@ -9,6 +9,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
+import { imgFallback } from "@/lib/img-fallback";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 
 interface QuickViewModalProps {
@@ -307,6 +308,8 @@ export function QuickViewModal({
                   <motion.img
                     key={img.url}
                     src={withCdnWidth(img.url, 1500)}
+                    data-fallback={img.fallbackUrl}
+                    onError={imgFallback}
                     alt={img.altText ?? product.title}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -410,6 +413,8 @@ export function QuickViewModal({
                         >
                           <img
                             src={withCdnWidth(im.url, 300)}
+                            data-fallback={im.fallbackUrl}
+                            onError={imgFallback}
                             alt=""
                             className="absolute inset-0 w-full h-full object-contain p-1"
                           />

@@ -1,18 +1,23 @@
 /**
- * Rewrites a Squarespace CDN image URL to request a tile-appropriate width.
+ * Image URL helpers — width-rewriting for both image origins we serve from.
  *
- * The Phase 3 catalog stores every image with `?format=2500w` baked in —
- * which is correct for the source-of-truth archive but ~50× more pixels
- * than a grid tile or thumbnail can ever display. Calling withCdnWidth(url, 750)
- * mutates the `format` query param so the CDN serves a right-sized variant.
+ * Originally this only handled Squarespace CDN URLs (`?format=NNNw`). Since
+ * the bake step now rewrites every product image to our owned `collection`
+ * Supabase storage bucket, both helpers transparently delegate to
+ * `renderUrl` / `renderSrcSet` when given a Supabase storage URL — so every
+ * existing `<img src={withCdnWidth(...)}>` site gets right-sized variants
+ * automatically without any callsite changes.
  *
- * Only Squarespace CDN URLs with an existing `format=NNNw` param are touched.
- * Anything else (future Supabase storage URLs, direct uploads, broken inputs)
- * passes through untouched.
+ * Anything we don't recognize (direct uploads, broken inputs) passes through
+ * untouched.
  */
+import { renderUrl, renderSrcSet } from "./storage-image";
+
+const STORAGE_MARKER = "/storage/v1/object/public/";
+
 export function withCdnWidth(url: string | null | undefined, width: number): string {
   if (!url) return "";
-  // Cheap guard — bail before constructing URL() for obviously-wrong inputs
+  if (url.includes(STORAGE_MARKER)) return renderUrl(url, { width });
   if (!url.includes("squarespace-cdn.com")) return url;
   try {
     const u = new URL(url);
@@ -24,17 +29,12 @@ export function withCdnWidth(url: string | null | undefined, width: number): str
   }
 }
 
-/**
- * Builds a `srcSet` string for retina + dense-grid fidelity. Returns "" when
- * the URL isn't a Squarespace CDN URL we can resize, so callers can pass it
- * straight to <img srcSet={...}> without conditional logic.
- */
 export function buildCdnSrcSet(
   url: string | null | undefined,
   widths: number[],
 ): string {
-  if (!url || !url.includes("squarespace-cdn.com")) return "";
-  return widths
-    .map((w) => `${withCdnWidth(url, w)} ${w}w`)
-    .join(", ");
+  if (!url) return "";
+  if (url.includes(STORAGE_MARKER)) return renderSrcSet(url, widths);
+  if (!url.includes("squarespace-cdn.com")) return "";
+  return widths.map((w) => `${withCdnWidth(url, w)} ${w}w`).join(", ");
 }
