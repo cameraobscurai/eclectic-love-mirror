@@ -817,43 +817,25 @@ function CollectionPage() {
                 role="group"
                 aria-label="View"
               >
-                {layout === "grid" && (
-                  <>
-                    <button
-                      onClick={() => setDensity("comfortable")}
-                      className={[
-                        "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                        density === "comfortable"
-                          ? "text-charcoal bg-charcoal/[0.04]"
-                          : "text-charcoal/40 hover:text-charcoal/80",
-                      ].join(" ")}
-                      aria-label="Comfortable grid"
-                      aria-pressed={density === "comfortable"}
-                    >
-                      <DensityIconLarge />
-                    </button>
-                    <button
-                      onClick={() => setDensity("dense")}
-                      className={[
-                        "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                        density === "dense"
-                          ? "text-charcoal bg-charcoal/[0.04]"
-                          : "text-charcoal/40 hover:text-charcoal/80",
-                      ].join(" ")}
-                      aria-label="Dense grid"
-                      aria-pressed={density === "dense"}
-                    >
-                      <DensityIconSmall />
-                    </button>
-                  </>
-                )}
                 <button
-                  onClick={() => setLayout(layout === "wall" ? "grid" : "wall")}
+                  onClick={() => setLayout("grid")}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
-                    layout === "grid" ? "border-l border-charcoal/10" : "",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                    layout === "grid"
+                      ? "text-charcoal bg-charcoal/[0.04]"
+                      : "text-charcoal/40 hover:text-charcoal/80",
+                  ].join(" ")}
+                  aria-label="Comfortable grid"
+                  aria-pressed={layout === "grid"}
+                  title="Grid — scrollable, large tiles"
+                >
+                  <DensityIconLarge />
+                </button>
+                <button
+                  onClick={() => setLayout("wall")}
+                  className={[
+                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                     layout === "wall"
                       ? "text-charcoal bg-charcoal/[0.04]"
@@ -861,7 +843,7 @@ function CollectionPage() {
                   ].join(" ")}
                   aria-label="Wall view"
                   aria-pressed={layout === "wall"}
-                  title="Wall — viewport-locked, hover to magnify"
+                  title="Wall — full viewport, every piece at once"
                 >
                   <WallIcon />
                 </button>
