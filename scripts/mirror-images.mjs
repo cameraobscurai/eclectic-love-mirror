@@ -81,7 +81,7 @@ for (const p of catalog.products) {
       targetBucket: TARGET_BUCKET,
       targetPath: target,
       newPublicUrl: `${SUPABASE_URL}/storage/v1/object/public/${TARGET_BUCKET}/${target.split('/').map(encodeURIComponent).join('/')}`,
-      action: kind === 'already-mirrored' ? 'skip' : 'copy',
+      action: kind === 'already-in-target' ? 'skip' : 'copy',
     };
     manifest.push(entry);
 
