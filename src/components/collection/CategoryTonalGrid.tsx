@@ -88,12 +88,7 @@ export function CategoryTonalGrid({
   // the awkward "row 1 in, rows 2–3 still empty" cascade on fresh visits.
   const cohortSize = tiles.length;
   const [doneCount, setDoneCount] = useState(0);
-  // Skip the synchronized fade entirely for users who prefer reduced motion —
-  // start in the "ready" state so tiles appear the moment their image decodes.
-  const [timedOut, setTimedOut] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  });
+  const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
