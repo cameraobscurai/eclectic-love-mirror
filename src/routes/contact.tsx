@@ -381,8 +381,8 @@ function ContactPage() {
                   >
                     {submitting ? "SENDING…" : "SEND INQUIRY"}
                   </button>
-                  <p className="mt-6 text-[11px] text-charcoal/45">
-                    Or email us directly at{" "}
+                  <p className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                    OR EMAIL US DIRECTLY AT{" "}
                     <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
                       {SUPPORT_EMAIL}
                     </a>
