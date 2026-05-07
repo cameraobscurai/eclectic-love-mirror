@@ -68,7 +68,7 @@ const hasVariantNoun = title => {
   return false;
 };
 
-export function rollupFamilies(products, liveSnapshot) {
+export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
   // Index live products by various keys
   const liveProducts = [];
   for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
@@ -82,6 +82,17 @@ export function rollupFamilies(products, liveSnapshot) {
     }
   }
   const liveByKey = new Map(liveProducts.map(l => [l.key, l]));
+
+  // Owner-forced family overrides: rms_id → live tile (preempts heuristics).
+  const forcedByRms = new Map();
+  for (const g of forcedGroups || []) {
+    const lp = liveByKey.get(norm(g.live));
+    if (!lp) { console.warn('[rollup] forced group live tile not found:', g.live); continue; }
+    for (const rmsId of g.rms || []) {
+      forcedByRms.set(String(rmsId), { key: 'live:' + lp.slug, source: 'forced', familyTitle: lp.title, liveSlug: lp.slug });
+    }
+  }
+  if (forcedByRms.size) console.log(`[rollup] ${forcedByRms.size} rms_ids assigned by forced groups`);
   const liveByFirstTok = new Map();
   for (const lp of liveProducts) {
     const t = lp.tokens[0];
@@ -91,6 +102,9 @@ export function rollupFamilies(products, liveSnapshot) {
   }
 
   function familyKeyForRms(p) {
+    // 0. owner-forced override
+    const forced = forcedByRms.get(String(p.id));
+    if (forced) return forced;
     const k = norm(p.title);
     const rmsToks = wordTokens(p.title);
     // 1. exact title
