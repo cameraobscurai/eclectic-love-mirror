@@ -30,6 +30,7 @@ import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
+import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
@@ -56,12 +57,16 @@ type SortKey = (typeof SORTS)[number];
 const DENSITIES = ["comfortable", "dense"] as const;
 type Density = (typeof DENSITIES)[number];
 
+const LAYOUTS = ["grid", "wall"] as const;
+type Layout = (typeof LAYOUTS)[number];
+
 interface CollectionSearch {
   group: string; // ParentId | "" — semantics flipped from BrowseGroupId
   subcategory: string; // sub id within parent, or "all"
   q: string;
   sort: SortKey;
   density: Density;
+  layout: Layout;
   view: string;
 }
 
@@ -71,6 +76,7 @@ const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
   density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
+  layout: fallback(z.enum(LAYOUTS), "grid").default("grid"),
   view: fallback(z.string(), "").default(""),
 });
 
@@ -163,7 +169,7 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, subcategory, q, sort, density, view } = search;
+  const { group, subcategory, q, sort, density, layout, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
@@ -570,10 +576,19 @@ function CollectionPage() {
         q: "",
         sort: "type" as SortKey,
         density,
+        layout: "grid" as Layout,
         view: "",
       }),
       replace: true,
       // Stay where we are — clearing filters should not yank the page.
+      resetScroll: false,
+    });
+  };
+
+  const setLayout = (next: Layout) => {
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, layout: next }),
+      replace: true,
       resetScroll: false,
     });
   };
@@ -800,35 +815,55 @@ function CollectionPage() {
               <div
                 className="hidden lg:flex items-center border border-charcoal/10"
                 role="group"
-                aria-label="Grid density"
+                aria-label="View"
               >
+                {layout === "grid" && (
+                  <>
+                    <button
+                      onClick={() => setDensity("comfortable")}
+                      className={[
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        density === "comfortable"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
+                      ].join(" ")}
+                      aria-label="Comfortable grid"
+                      aria-pressed={density === "comfortable"}
+                    >
+                      <DensityIconLarge />
+                    </button>
+                    <button
+                      onClick={() => setDensity("dense")}
+                      className={[
+                        "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                        density === "dense"
+                          ? "text-charcoal bg-charcoal/[0.04]"
+                          : "text-charcoal/40 hover:text-charcoal/80",
+                      ].join(" ")}
+                      aria-label="Dense grid"
+                      aria-pressed={density === "dense"}
+                    >
+                      <DensityIconSmall />
+                    </button>
+                  </>
+                )}
                 <button
-                  onClick={() => setDensity("comfortable")}
+                  onClick={() => setLayout(layout === "wall" ? "grid" : "wall")}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
+                    layout === "grid" ? "border-l border-charcoal/10" : "",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    density === "comfortable"
+                    layout === "wall"
                       ? "text-charcoal bg-charcoal/[0.04]"
                       : "text-charcoal/40 hover:text-charcoal/80",
                   ].join(" ")}
-                  aria-label="Comfortable grid"
-                  aria-pressed={density === "comfortable"}
+                  aria-label="Wall view"
+                  aria-pressed={layout === "wall"}
+                  title="Wall — viewport-locked, hover to magnify"
                 >
-                  <DensityIconLarge />
-                </button>
-                <button
-                  onClick={() => setDensity("dense")}
-                  className={[
-                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    density === "dense"
-                      ? "text-charcoal bg-charcoal/[0.04]"
-                      : "text-charcoal/40 hover:text-charcoal/80",
-                  ].join(" ")}
-                  aria-label="Dense grid"
-                  aria-pressed={density === "dense"}
-                >
-                  <DensityIconSmall />
+                  <WallIcon />
                 </button>
               </div>
             </div>
@@ -929,6 +964,24 @@ function CollectionPage() {
                     />
                   </div>
                 </>
+              ) : layout === "wall" ? (
+                <div
+                  className="relative w-full"
+                  style={{ height: "calc(100dvh - var(--nav-h) - var(--archive-utility-h) - 2px)" }}
+                >
+                  {visibleProducts.length === 0 ? (
+                    <div className="py-32 px-6">
+                      <p className="text-[15px] leading-relaxed text-charcoal/70">
+                        No pieces match the current filters.
+                      </p>
+                    </div>
+                  ) : (
+                    <CollectionWall
+                      products={visibleProducts}
+                      onOpen={(id) => setQuickViewId(id)}
+                    />
+                  )}
+                </div>
               ) : (
                 <>
                   <div
@@ -1570,6 +1623,20 @@ function DensityIconSmall() {
           />
         )),
       )}
+    </svg>
+  );
+}
+
+function WallIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <rect x="0.5" y="0.5" width="13" height="13" stroke="currentColor" strokeWidth="1" />
+      <line x1="3.75" y1="0.5" x2="3.75" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="7" y1="0.5" x2="7" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="10.25" y1="0.5" x2="10.25" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="3.75" x2="13.5" y2="3.75" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="7" x2="13.5" y2="7" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="10.25" x2="13.5" y2="10.25" stroke="currentColor" strokeWidth="0.6" />
     </svg>
   );
 }
