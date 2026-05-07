@@ -924,7 +924,10 @@ function CollectionPage() {
           Left: CollectionRail (always visible on lg+).
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
-      <section className={showOverview ? "px-0 pt-0 h-[calc(100dvh-var(--nav-h))] overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}>
+      <section
+        className={showOverview ? "px-0 pt-0 overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
+        style={showOverview ? { height: "calc(var(--app-vh, 100dvh) - var(--nav-h))" } : undefined}
+      >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
