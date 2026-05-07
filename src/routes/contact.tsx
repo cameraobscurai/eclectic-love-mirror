@@ -361,8 +361,8 @@ function ContactPage() {
                       onChange={(e) => setVision(e.target.value)}
                       rows={6}
                       required
-                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[15px] leading-relaxed text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
-                      placeholder="Colorway, materials, inventory references, and venue details are all great places to start."
+                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
+                      placeholder="COLORWAY, MATERIALS, INVENTORY REFERENCES, AND VENUE DETAILS ARE ALL GREAT PLACES TO START."
                     />
                   </Field>
                 </FormSection>
