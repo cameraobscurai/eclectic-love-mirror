@@ -20,7 +20,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       onMouseEnter={() => onHover(product.id)}
       onMouseLeave={() => onHover(null)}
       onClick={() => onOpen(product.id)}
-      className="relative w-full h-full bg-paper overflow-visible group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+      className="relative w-full h-full bg-white overflow-visible group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
       animate={{
         opacity: dim ? 0.12 : 1,
         zIndex: isHovered ? 50 : 1,

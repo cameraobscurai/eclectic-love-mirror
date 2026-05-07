@@ -134,7 +134,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       : null;
 
   return (
-    <div className="relative w-full h-full bg-paper">
+    <div className="relative w-full h-full bg-white">
       <div
         ref={containerRef}
         className="absolute inset-0 grid touch-none select-none"
@@ -146,7 +146,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
         onTouchCancel={onTouchEnd}
       >
         {trimmed.map((p) => (
-          <div key={p.id} className="relative bg-paper">
+          <div key={p.id} className="relative bg-white">
             <CollectionWallTile
               product={p}
               isHovered={activeId === p.id}
