@@ -48,7 +48,7 @@ function HomePage() {
   return (
     <main id="main-content" className="bg-paper">
       <section className="relative flex min-h-[100dvh] flex-col">
-        {/* Wordmark */}
+        {/* Wordmark + welcome heading */}
         <div
           className={cn(
             "pt-10 md:pt-14 pb-6 md:pb-10 px-4 text-center transition-opacity duration-700",
@@ -58,14 +58,24 @@ function HomePage() {
           <h1
             className="font-brand uppercase text-charcoal"
             style={{
-              fontWeight: 300,
-              letterSpacing: "0.32em",
-              fontSize: "clamp(0.9rem, 2.2vw, 1.5rem)",
+              fontWeight: 400,
+              letterSpacing: "0.04em",
+              fontSize: "clamp(2rem, 5vw, 3.75rem)",
               lineHeight: 1,
             }}
           >
-            Eclectic&nbsp;Hive
+            Welcome&nbsp;Video
           </h1>
+          <p
+            className="mx-auto mt-3 md:mt-4 max-w-3xl font-brand italic text-charcoal/75"
+            style={{
+              fontWeight: 400,
+              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
+              lineHeight: 1.4,
+            }}
+          >
+            A 16&prime; white drape showcases the five seasons of the Hive&rsquo;s Brand Evolution.
+          </p>
         </div>
 
         {/* Filmstrip — center stage */}
