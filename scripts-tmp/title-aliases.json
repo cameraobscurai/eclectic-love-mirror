@@ -1,0 +1,35 @@
+// Title alias map — maps RMS ids to a live Squarespace tile.
+// One live tile may map to many RMS rows (family rollup).
+// Used by the diff so families count as matched.
+//
+// Two sections:
+//   pairs:   1-to-1 wording-drift renames
+//   groups:  many-to-1 family rollups (live shows one tile, RMS has variants)
+//
+// Source of truth = RMS. This file changes nothing in the catalog or DB.
+{
+  "pairs": [
+    { "rms": "2961", "live": "Pliny H Frame Easel",                    "note": "live typo Pliney→Pliny" },
+    { "rms": "2735", "live": "Ivory Mud Cloth Pillow",                 "note": "spacing" },
+    { "rms": "2783", "live": "Ivory Mud Cloth Lumbar",                 "note": "spacing" },
+    { "rms": "707",  "live": "Evren 8x10 Kilim Rug",                   "note": "ours missing space" },
+    { "rms": "3477", "live": "Dover 8\" Matte Oyster Bowl",            "note": "wording" },
+    { "rms": "2254", "live": "B/W Yarn Detail Lumbar Oversize",        "note": "wording" }
+  ],
+  "groups": [
+    { "live": "SANARA Dining Chairs",            "rms": ["4133", "4136"] },
+    { "live": "Luna Arcing Dining Chairs",       "rms": ["4122", "4123"] },
+    { "live": "Beren Assorted Books",            "rms": ["1733", "3308", "3352", "3445"] },
+    { "live": "Marina Plates",                   "rms": ["3375", "3376", "3377", "3378"] },
+    { "live": "Dover Matte Oyster Plates",       "rms": ["2727", "2728", "3477"] },
+    { "live": "Powell Round Dark Brass Trays",   "rms": ["3168", "3170"] },
+    { "live": "FARROW Cocktail Column Tables",   "rms": ["2762", "2763", "2764"] },
+    { "live": "Monroe Black Flat Slat Tambour Bar", "rms": ["4108", "4117", "4118", "4119"] },
+    { "live": "Kinlee Cocoon Luminary",          "rms": ["3078", "3079", "3080"] },
+    { "live": "Tivoli Travertine Plinths",       "rms": ["3888", "3889", "3890", "3891", "3892"] },
+    { "live": "Deco Etched Liquor Bottles",      "rms": ["1726", "1727", "1728", "1729", "1730", "1731"] },
+    { "live": "Agatha Rustic Vases",             "rms": ["4018", "4019"] },
+    { "live": "Leather Baskets",                 "rms": ["3022", "3023", "3024"] },
+    { "live": "Orange Textile Pillows",          "rms": ["2882", "4147", "4148"] }
+  ]
+}
