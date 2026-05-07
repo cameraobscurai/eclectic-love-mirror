@@ -174,69 +174,60 @@ function HomePage() {
                 to={dest.href}
                 preload="viewport"
                 aria-label={`${dest.title} — ${dest.label}`}
-                className="group block border-b border-charcoal/15 transition-colors duration-300 hover:bg-charcoal/[0.03]"
+                className="group block border-b border-charcoal/15"
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="flex items-center gap-6 md:gap-10 py-5 md:py-7">
-                  {/* Index numeral */}
-                  <span
-                    className="font-brand text-charcoal/40 tabular-nums w-6 md:w-8 shrink-0"
-                    style={{
-                      fontWeight: 400,
-                      fontSize: "clamp(0.7rem, 0.85vw, 0.8rem)",
-                      letterSpacing: "0.18em",
-                    }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-
-                  {/* Title — the hero word in the row */}
+                <div className="flex items-baseline gap-4 md:gap-5 py-5 md:py-6">
+                  {/* Title — the hero word */}
                   <h3
-                    className="font-brand uppercase text-charcoal flex-shrink-0"
+                    className={cn(
+                      "font-brand uppercase text-charcoal transition-colors duration-300",
+                      "group-hover:text-charcoal",
+                    )}
                     style={{
                       fontWeight: 500,
-                      letterSpacing: "0.04em",
-                      fontSize: "clamp(1.25rem, 2.2vw, 1.85rem)",
+                      letterSpacing: "0.03em",
+                      fontSize: "clamp(1.15rem, 1.9vw, 1.6rem)",
+                      lineHeight: 1,
                     }}
                   >
                     {dest.title}
                   </h3>
 
-                  {/* Descriptor — italic, muted, takes available space */}
+                  {/* Descriptor — italic, sits right alongside */}
                   <p
-                    className="hidden md:block flex-1 font-brand italic text-charcoal/55 truncate"
+                    className="font-brand italic text-charcoal/50 truncate"
                     style={{
                       fontWeight: 400,
-                      fontSize: "clamp(0.9rem, 1.1vw, 1.05rem)",
+                      fontSize: "clamp(0.85rem, 1vw, 1rem)",
                     }}
                   >
                     {dest.label}
                   </p>
 
-                  {/* Arrow rail — extends on hover */}
-                  <div className="ml-auto md:ml-0 flex shrink-0 items-center gap-2">
-                    <span
-                      className={cn(
-                        "h-px bg-charcoal/40 transition-all duration-500 ease-out",
-                        hoveredIndex === i ? "w-12 md:w-16" : "w-4 md:w-6",
-                      )}
+                  {/* Arrow — pinned right, no rail */}
+                  <svg
+                    className={cn(
+                      "ml-auto h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out",
+                      hoveredIndex === i ? "translate-x-1" : "translate-x-0",
+                    )}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.25}
+                    aria-hidden
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                     />
-                    <svg
-                      className="h-3 w-3 text-charcoal/70 transition-transform duration-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.25}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                      />
-                    </svg>
-                  </div>
+                  </svg>
                 </div>
+              </Link>
+            ))}
+          </div>
 
                 {/* Mobile descriptor — sits below the row, indented past the numeral */}
                 <p
