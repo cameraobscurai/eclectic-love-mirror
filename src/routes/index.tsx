@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { HeroFilmstrip } from "@/components/home/HeroFilmstrip";
+import { SequentialHeroVideo } from "@/components/home/SequentialHeroVideo";
 import { EvolutionNarrative } from "@/components/home/EvolutionNarrative";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +49,12 @@ function HomePage() {
 
   return (
     <main id="main-content" className="bg-paper">
-      <section className="relative flex flex-col">
+      {/* Mobile-only full-viewport sequential video reel. Sits behind the fixed transparent nav. */}
+      <section className="md:hidden relative -mt-px">
+        <SequentialHeroVideo />
+      </section>
+
+      <section className="relative hidden md:flex flex-col">
         {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
         <div
           className={cn(
