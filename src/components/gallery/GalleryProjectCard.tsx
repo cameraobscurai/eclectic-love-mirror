@@ -56,11 +56,11 @@ export function GalleryProjectCard({
         </div>
 
         {/* Minimal caption — title + year only */}
-        <div className="mt-4 flex items-baseline justify-between gap-4 text-cream">
-          <h3 className="font-display text-lg lg:text-xl font-light tracking-tight truncate">
+        <div className="mt-5 flex items-baseline justify-between gap-6 text-cream">
+          <h3 className="text-[11px] uppercase tracking-[0.24em] text-cream/85 truncate">
             {project.name}
           </h3>
-          <span className="text-cream/40 text-[11px] uppercase tracking-[0.22em] tabular-nums shrink-0">
+          <span className="text-cream/35 text-[10px] uppercase tracking-[0.28em] tabular-nums shrink-0">
             {project.year}
           </span>
         </div>
