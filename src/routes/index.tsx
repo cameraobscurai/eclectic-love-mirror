@@ -54,7 +54,9 @@ function HomePage() {
         <SequentialHeroVideo />
       </section>
 
-      <section className="relative hidden md:flex flex-col">
+      <section className="relative flex flex-col">
+        {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
+        <div className="hidden md:block">
         {/* Wordmark + welcome heading. pt clears the fixed glass nav. */}
         <div
           className={cn(
@@ -95,6 +97,7 @@ function HomePage() {
         >
           <HeroFilmstrip />
         </div>
+        </div>{/* /desktop-only block */}
 
         {/* CTA bar */}
         <div className="px-4 pb-8 pt-8 md:px-8 md:pb-12 md:pt-12">
