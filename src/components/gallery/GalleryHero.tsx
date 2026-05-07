@@ -9,7 +9,7 @@ export function GalleryHero({ total }: GalleryHeroProps) {
         <p className="text-cream/45 text-[10px] uppercase tracking-[0.32em] mb-6">
           Selected Work · {String(total).padStart(2, "0")}
         </p>
-        <h1 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-cream font-light tracking-[-0.005em] uppercase leading-[0.95]">
+        <h1 className="page-title text-cream">
           The Gallery
         </h1>
       </div>
