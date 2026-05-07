@@ -136,26 +136,26 @@ export function Navigation() {
         <nav
           className={cn(
             "flex items-center justify-between px-6 lg:px-12 transition-all duration-300",
-            scrolled ? "py-4 lg:py-5" : "py-6 lg:py-8"
+            scrolled ? "py-3 lg:py-3.5" : "py-4 lg:py-5"
           )}
         >
           <Link to="/" preload="intent" className="relative" aria-label="ECLECTIC HIVE — home">
             <span
               className={cn(
-                "font-brand text-[0.8rem] lg:text-[0.9rem] tracking-[0.18em] uppercase transition-colors duration-300",
+                "font-brand text-[0.7rem] lg:text-[0.78rem] tracking-[0.2em] uppercase transition-colors duration-300",
                 scrolled
-                  ? "text-cream"
+                  ? "text-white"
                   : isLightPage
                   ? "text-charcoal"
-                  : "text-cream"
+                  : "text-white"
               )}
-              style={{ fontWeight: 400 }}
+              style={{ fontWeight: 300 }}
             >
               ECLECTIC HIVE
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-12">
+          <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
               const dark = scrolled || !isLightPage;
@@ -166,15 +166,16 @@ export function Navigation() {
                     to={link.href}
                     preload="intent"
                     className={cn(
-                      "relative group text-[13px] xl:text-[14px] tracking-[0.28em] uppercase font-light transition-colors duration-300",
+                      "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
                         ? active
-                          ? "text-cream"
-                          : "text-cream/70 hover:text-cream"
+                          ? "text-white"
+                          : "text-white/85 hover:text-white"
                         : active
                         ? "text-charcoal"
                         : "text-charcoal/70 hover:text-charcoal"
                     )}
+                    style={{ fontWeight: 300 }}
                   >
                     {link.render}
                     <span
