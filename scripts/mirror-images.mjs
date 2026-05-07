@@ -59,22 +59,62 @@ function targetPath(cat, slug, filename) {
 }
 
 const manifest = [];
-const collisions = new Map(); // targetPath -> [sources]
+const claimed = new Map();          // targetPath -> sourceUrl that owns it
+const suffixResolutions = [];        // collision audit log
+const exactDupes = [];               // same source URL appearing twice in one product
+
+function withSuffix(filename, n) {
+  const dot = filename.lastIndexOf('.');
+  if (dot <= 0) return `${filename}__${n}`;
+  return `${filename.slice(0, dot)}__${n}${filename.slice(dot)}`;
+}
 
 for (const p of catalog.products) {
   if (CATS.length && !CATS.includes(p.categorySlug)) continue;
   for (const img of (p.images || [])) {
     const url = img.url || '';
     const kind = classify(url);
-    const filename = exactFilename(url);
-    const target = targetPath(p.categorySlug, p.slug, filename);
+    const baseFilename = exactFilename(url);
+    let filename = baseFilename;
+    let target = targetPath(p.categorySlug, p.slug, filename);
 
-    const entry = {
+    // Resolve collisions: same target path claimed by a DIFFERENT source URL?
+    if (claimed.has(target) && claimed.get(target) !== url) {
+      let n = 2;
+      while (true) {
+        const candidate = withSuffix(baseFilename, n);
+        const candidateTarget = targetPath(p.categorySlug, p.slug, candidate);
+        if (!claimed.has(candidateTarget)) {
+          suffixResolutions.push({
+            slug: p.slug,
+            categorySlug: p.categorySlug,
+            originalTarget: target,
+            resolvedTarget: candidateTarget,
+            originalSource: claimed.get(target),
+            thisSource: url,
+            position: img.position,
+          });
+          filename = candidate;
+          target = candidateTarget;
+          break;
+        }
+        n++;
+        if (n > 20) throw new Error(`runaway suffix collision at ${target}`);
+      }
+    } else if (claimed.has(target) && claimed.get(target) === url) {
+      // Same exact source URL referenced twice in this product's array — keep one, skip the other
+      exactDupes.push({ slug: p.slug, position: img.position, sourceUrl: url, targetPath: target });
+      continue;
+    }
+    claimed.set(target, url);
+
+    manifest.push({
       itemId: p.id,
       slug: p.slug,
       categorySlug: p.categorySlug,
       position: img.position,
       isHero: img.isHero,
+      altText: img.altText ?? null,
       sourceUrl: url,
       sourceKind: kind,
       filename,
@@ -82,17 +122,10 @@ for (const p of catalog.products) {
       targetPath: target,
       newPublicUrl: `${SUPABASE_URL}/storage/v1/object/public/${TARGET_BUCKET}/${target.split('/').map(encodeURIComponent).join('/')}`,
       action: kind === 'already-in-target' ? 'skip' : 'copy',
-    };
-    manifest.push(entry);
-
-    const arr = collisions.get(target) || [];
-    arr.push(url);
-    collisions.set(target, arr);
+    });
   }
 }
 
-// Detect filename collisions inside the same product folder
-const collidingTargets = [...collisions.entries()].filter(([, srcs]) => new Set(srcs).size > 1);
 
 const summary = {
   generatedAt: new Date().toISOString(),
