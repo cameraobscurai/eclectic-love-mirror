@@ -631,7 +631,7 @@ function CollectionPage() {
       : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4";
 
   const gridGapClasses =
-    density === "dense" ? "gap-4" : "gap-4 lg:gap-5";
+    density === "dense" ? "gap-x-4 gap-y-2" : "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
