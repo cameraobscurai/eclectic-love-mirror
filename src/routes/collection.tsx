@@ -956,12 +956,7 @@ function CollectionPage() {
                     />
                   </div>
                   <div
-                    className="lg:flex-1 lg:min-h-0 lg:overflow-hidden"
-                    style={{
-                      // On mobile, lock the grid to the remaining viewport so
-                      // the H and all 18 categories sit on one screen — no feed.
-                      height: "calc(100dvh - var(--nav-h) - var(--collection-mobile-h-h))",
-                    }}
+                    className="h-[calc(100dvh-var(--nav-h)-var(--collection-mobile-h-h))] lg:h-auto lg:flex-1 lg:min-h-0 lg:overflow-hidden"
                   >
                     <CategoryTonalGrid
                       groups={overviewGroups}
