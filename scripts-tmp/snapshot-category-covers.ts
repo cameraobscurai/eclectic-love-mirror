@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { getCollectionCatalog } from '../src/lib/phase3-catalog';
-import { BROWSE_GROUPS, BROWSE_GROUP_LABELS, type BrowseGroupId } from '../src/lib/collection-browse-groups';
+import { groupProductsByBrowseGroup, type BrowseGroupId } from '../src/lib/collection-browse-groups';
 import { CATEGORY_COVERS } from '../src/lib/category-covers';
 
 const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!,{auth:{persistSession:false}});
