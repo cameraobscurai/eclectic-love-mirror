@@ -48,7 +48,7 @@ function HomePage() {
 
   return (
     <main id="main-content" className="bg-paper">
-      <section className="relative flex min-h-[100dvh] flex-col">
+      <section className="relative flex flex-col">
         {/* Wordmark + welcome heading */}
         <div
           className={cn(
