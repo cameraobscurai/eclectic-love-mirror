@@ -479,7 +479,7 @@ function FormSection({
       style={{ borderColor: "var(--archive-rule)" }}
     >
       <div className="flex items-baseline gap-4 mb-10">
-        <span className="font-display text-base text-charcoal/40 tabular-nums">
+        <span className="text-base text-charcoal/40 tabular-nums">
           {number}
         </span>
         <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/55">
