@@ -149,6 +149,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   </p>
                 );
               })}
+            </div>
           </div>
 
           {footer && (
