@@ -81,28 +81,17 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(
-        "w-full bg-paper",
-        className,
-      )}
-    >
-      {/* ≥640px: flex row. <640px: horizontal snap scroll carousel. */}
+    <div ref={containerRef} className={cn("w-full bg-paper", className)}>
+      {/* Edge-to-edge, zero-gap row at ≥640. Mobile keeps a snap carousel. */}
       <div
         className={cn(
-          "mx-auto max-w-[1400px]",
-          // mobile carousel
-          "flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-2",
+          "w-full",
+          "flex gap-0 overflow-x-auto snap-x snap-mandatory",
           "scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-          // ≥640: real flex row, no scroll
-          "sm:gap-2 sm:overflow-visible sm:px-6 sm:snap-none",
-          "lg:gap-2 lg:px-8",
+          "sm:gap-0 sm:overflow-visible sm:snap-none",
         )}
       >
         {clips.map((clip, i) => {
-          // Outer frames (index 0 and 4) hide between 640–1023px so the
-          // middle three frames can breathe at tablet width.
           const isOuter = i === 0 || i === clips.length - 1;
           return (
             <FilmstripFrame
@@ -118,11 +107,8 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
                 videoRefs.current[clip.id] = el;
               }}
               className={cn(
-                // mobile carousel item sizing
-                "shrink-0 basis-[78%] snap-center",
-                // ≥640: equal flex children
+                "shrink-0 basis-full snap-center",
                 "sm:basis-0 sm:flex-1 sm:snap-align-none",
-                // hide outer frames at tablet, show again at desktop
                 isOuter && "hidden lg:block",
               )}
             />
