@@ -49,8 +49,41 @@ const { data: dbRows, error } = await sb.from('inventory_items')
   .neq('status','draft');
 if (error) throw error;
 
-const STOP = new Set(['the','a','an','of','and','with','to','for','in','on','set','pair','sofa','chair','loveseat','table','lamp','rug','pillow','throw','vase','bowl','plate','glass','cup','mug','tray','candle','holder','sconce','chandelier','mirror','stool','bench','ottoman']);
-function tokens(s){ return norm(s).split(' ').filter(t=>t.length>=3 && !STOP.has(t)); }
+// Form-factor tokens FLIP the SKU even when family + material match.
+// Sofa ≠ Loveseat ≠ Bench ≠ Chair. We require these to match exactly
+// (or both sides absent) before we'll fuzzy-bind two titles.
+const FORM_FACTORS = new Set([
+  'sofa','loveseat','sectional','daybed','chaise','settee',
+  'chair','armchair','barrelchair','accentchair','slipperchair','clubchair','wingchair','rockingchair','swivelchair',
+  'bench','stool','barstool','counterstool','ottoman','pouf','poof',
+  'table','cocktail','coffee','side','console','dining','end','nesting',
+  'bar','barcart','cart','bartrunk','trunk',
+  'lamp','floorlamp','tablelamp','sconce','pendant','chandelier','lantern',
+  'rug','runner','pillow','throw','blanket','cushion','bolster',
+  'mirror','shelf','shelves','bookcase','cabinet','dresser','sideboard','credenza','buffet','etagere',
+  'bed','headboard',
+  'vase','bowl','plate','platter','glass','goblet','flute','coupe','tumbler','rocks','wineglass','mug','cup','tray','candle','candleholder','holder','urn','planter',
+]);
+// Size tokens that flip the SKU (XL, 36", 48", 12', etc.)
+const SIZE_RX = /^(?:\d{1,3}(?:["'']|in|inch|ft|feet|cm)?|x?xs|xs|sm|small|med|medium|lg|large|xl|xxl)$/;
+const STOP = new Set(['the','a','an','of','and','with','to','for','in','on','set','pair']);
+function rawTokens(s){ return norm(s).split(' ').filter(Boolean); }
+function tokens(s){ return rawTokens(s).filter(t=>t.length>=3 && !STOP.has(t) && !FORM_FACTORS.has(t) && !SIZE_RX.test(t)); }
+function blockingSet(s){
+  const out = new Set();
+  for (const t of rawTokens(s)) {
+    if (FORM_FACTORS.has(t)) out.add('FF:'+t);
+    if (SIZE_RX.test(t)) out.add('SZ:'+t.replace(/["'']/g,''));
+  }
+  return out;
+}
+function blockingMatches(a, b){
+  const A = blockingSet(a), B = blockingSet(b);
+  // Require identical set of form-factor + size tokens on both sides
+  if (A.size !== B.size) return false;
+  for (const x of A) if (!B.has(x)) return false;
+  return true;
+}
 
 const byTitle = new Map();
 for (const r of dbRows) {
