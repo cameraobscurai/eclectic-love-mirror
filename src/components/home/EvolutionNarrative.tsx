@@ -154,14 +154,14 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
 
           {footer && (
             <div
-              className="col-span-12 mt-12 md:mt-16 transition-all duration-500 ease-out"
+              className="col-span-12 absolute left-0 right-0 bottom-10 md:bottom-14 px-6 md:px-10 lg:px-16 transition-all duration-500 ease-out"
               style={{
                 opacity: showFooter ? 1 : 0,
                 transform: showFooter ? "translateY(0)" : "translateY(8px)",
                 pointerEvents: showFooter ? "auto" : "none",
               }}
             >
-              {footer}
+              <div className="mx-auto w-full max-w-6xl">{footer}</div>
             </div>
           )}
 
