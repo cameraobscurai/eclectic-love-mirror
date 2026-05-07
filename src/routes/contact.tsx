@@ -411,50 +411,7 @@ function ContactPage() {
           </section>
         </div>
 
-        {/* FAQ — anchor target for /contact#faq */}
-        <section id="faq" className="mt-32 scroll-mt-32">
-          <div
-            className="border-t pt-10"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              FREQUENTLY ASKED
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] uppercase tracking-[0.04em]">
-              WORKING WITH THE STUDIO
-            </h2>
-
-            <ul
-              className="mt-10 divide-y max-w-3xl"
-              style={{ borderColor: "var(--archive-rule)" }}
-            >
-              {FAQ_ITEMS.map((item) => (
-                <li
-                  key={item.q}
-                  className="border-t first:border-t-0"
-                  style={{ borderColor: "var(--archive-rule)" }}
-                >
-                  <details className="group">
-                    <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                      <span className="font-display text-xl uppercase tracking-[0.06em]">
-                        {item.q}
-                      </span>
-                      <span
-                        aria-hidden
-                        className="text-charcoal/45 text-lg transition-transform group-open:rotate-45 select-none"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="pb-6 max-w-2xl text-[15px] leading-relaxed text-charcoal/75">
-                      {item.a}
-                    </p>
-                  </details>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        {/* FAQ hidden for now */}
       </div>
     </main>
   );
