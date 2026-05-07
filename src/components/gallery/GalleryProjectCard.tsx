@@ -50,7 +50,7 @@ export function GalleryProjectCard({
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
             {...(index === 0 ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
-            className="absolute inset-0 w-full h-full object-contain"
+            className="absolute inset-0 w-full h-full object-cover"
             draggable={false}
           />
         </div>
