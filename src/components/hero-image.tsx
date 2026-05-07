@@ -230,8 +230,14 @@ function Scrim({ variant, strength, loaded }: ScrimProps) {
  * starts the AVIF download before React even mounts.
  *
  *   links: [heroPreloadLink(homeHero)]
+ *
+ * For non-full-bleed heroes (e.g. a 40vw column), pass `sizes` so the
+ * preload scanner picks a smaller width variant from the srcset.
  */
-export function heroPreloadLink(source: HeroImageSource) {
+export function heroPreloadLink(
+  source: HeroImageSource,
+  sizes: string = "100vw",
+) {
   // Prefer AVIF; the browser will download only this one if it supports AVIF.
   // We pass the full srcset + sizes so the preload scanner picks the right
   // width — critical, otherwise it grabs the largest variant by default.
@@ -242,7 +248,7 @@ export function heroPreloadLink(source: HeroImageSource) {
     href,
     type: source.sources.avif ? "image/avif" : undefined,
     imageSrcSet: source.sources.avif ?? source.sources.webp,
-    imageSizes: "100vw",
+    imageSizes: sizes,
     fetchPriority: "high" as const,
   };
 }
