@@ -59,18 +59,18 @@ function HomePage() {
             className="font-brand uppercase text-charcoal"
             style={{
               fontWeight: 400,
-              letterSpacing: "0.04em",
-              fontSize: "clamp(2rem, 5vw, 3.75rem)",
+              letterSpacing: "0.06em",
+              fontSize: "clamp(2.25rem, 6vw, 4.5rem)",
               lineHeight: 1,
             }}
           >
-            Welcome&nbsp;Video
+            Eclectic&nbsp;Hive
           </h1>
           <p
-            className="mx-auto mt-3 md:mt-4 max-w-3xl font-brand italic text-charcoal/75"
+            className="mx-auto mt-3 md:mt-4 max-w-3xl font-brand italic text-charcoal/70"
             style={{
               fontWeight: 400,
-              fontSize: "clamp(0.95rem, 1.4vw, 1.25rem)",
+              fontSize: "clamp(0.9rem, 1.3vw, 1.15rem)",
               lineHeight: 1.4,
             }}
           >
