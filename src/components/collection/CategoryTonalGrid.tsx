@@ -248,7 +248,7 @@ function TonalCell({
           onError={() => {
             if (inCohort) reportDoneOnce();
           }}
-          className="absolute inset-0 h-full w-full object-contain p-3 sm:p-4 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             opacity: showImg && loaded ? 1 : 0,
             transition: "opacity 420ms ease-out, transform 500ms ease-out",
