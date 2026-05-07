@@ -43,13 +43,14 @@ const NAV_LINKS = [
 // DARK (cinematic exhibition page) — it stays out of LIGHT_BG_PAGES so the
 // nav renders cream-on-charcoal there.
 const LIGHT_BG_PAGES = [
+  "/",
   "/atelier",
   "/collection",
   "/contact",
   "/privacy",
 ];
 
-const WHITE_BG_PAGES = ["/collection"];
+const WHITE_BG_PAGES = ["/", "/collection"];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -121,7 +122,11 @@ export function Navigation() {
           "backdrop-blur-md backdrop-saturate-150",
           "border-b",
           scrolled
-            ? "bg-charcoal/70 border-cream/10"
+            ? isWhitePage
+              ? "bg-white/85 border-charcoal/10"
+              : isLightPage
+              ? "bg-cream/85 border-charcoal/10"
+              : "bg-charcoal/70 border-cream/10"
             : isWhitePage
             ? "bg-white/65 border-charcoal/10"
             : isLightPage
@@ -144,7 +149,9 @@ export function Navigation() {
               className={cn(
                 "font-brand text-[0.7rem] lg:text-[0.78rem] tracking-[0.2em] uppercase transition-colors duration-300",
                 scrolled
-                  ? "text-white"
+                  ? isLightPage
+                    ? "text-charcoal"
+                    : "text-white"
                   : isLightPage
                   ? "text-charcoal"
                   : "text-white"
@@ -158,7 +165,7 @@ export function Navigation() {
           <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
-              const dark = scrolled || !isLightPage;
+              const dark = scrolled ? !isLightPage : !isLightPage;
               const isCollection = link.href === "/collection";
               return (
                 <div key={link.href} className="relative group/navitem">
