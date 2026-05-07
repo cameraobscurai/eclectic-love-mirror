@@ -120,17 +120,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               <div className="hidden md:block mt-4 h-px w-10 bg-charcoal/30" />
               <div className="md:hidden h-px flex-1 bg-charcoal/20" />
             </div>
-            <p
-              className="hidden md:block mt-4 font-brand italic text-charcoal/45"
-              style={{
-                fontWeight: 400,
-                fontSize: "0.78rem",
-                lineHeight: 1.5,
-                letterSpacing: "0.01em",
-              }}
-            >
-              A manifesto, in eleven lines.
-            </p>
           </aside>
 
           {/* Manifesto column — baseline grid, no centered alignment */}

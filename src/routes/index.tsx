@@ -114,42 +114,42 @@ function HomePage() {
               "px-8 lg:px-12 transition-opacity duration-700",
               loaded ? "opacity-100" : "opacity-0",
             )}
-            style={{ paddingTop: "clamp(7rem, 11vh, 9rem)", paddingBottom: "clamp(2rem, 4vh, 3rem)" }}
+            style={{ paddingTop: "clamp(6rem, 9vh, 7.5rem)", paddingBottom: "clamp(1.25rem, 2.5vh, 2rem)" }}
           >
             <div className="mx-auto max-w-6xl">
-              {/* Eyebrow rail — frames the wordmark, signals editorial intent */}
-              <div className="flex items-center justify-center gap-3 mb-6 md:mb-8">
-                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+              {/* Eyebrow rail */}
+              <div className="flex items-center justify-center gap-3 mb-4 md:mb-5">
+                <span className="h-px w-6 bg-charcoal/25" aria-hidden />
                 <span
                   className="font-brand uppercase text-charcoal/55"
                   style={{
                     fontWeight: 400,
                     letterSpacing: "0.36em",
-                    fontSize: "clamp(0.65rem, 0.78vw, 0.78rem)",
+                    fontSize: "clamp(0.6rem, 0.7vw, 0.72rem)",
                   }}
                 >
                   Est · Denver · Colorado
                 </span>
-                <span className="h-px w-8 bg-charcoal/25" aria-hidden />
+                <span className="h-px w-6 bg-charcoal/25" aria-hidden />
               </div>
 
               <h1
                 className="text-center font-brand text-charcoal"
                 style={{
                   fontWeight: 600,
-                  letterSpacing: "-0.012em",
-                  fontSize: "clamp(2.75rem, 7.4vw, 5.75rem)",
-                  lineHeight: 0.95,
+                  letterSpacing: "-0.008em",
+                  fontSize: "clamp(2.25rem, 5.2vw, 4rem)",
+                  lineHeight: 0.98,
                 }}
               >
                 ECLECTIC HIVE
               </h1>
 
               <p
-                className="mx-auto mt-3 md:mt-4 max-w-xl text-center font-brand italic text-charcoal/65"
+                className="mx-auto mt-2.5 md:mt-3 max-w-xl text-center font-brand italic text-charcoal/65"
                 style={{
                   fontWeight: 400,
-                  fontSize: "clamp(0.95rem, 1.25vw, 1.15rem)",
+                  fontSize: "clamp(0.9rem, 1.15vw, 1.05rem)",
                   lineHeight: 1.4,
                 }}
               >
@@ -158,7 +158,7 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Filmstrip — center stage. Top-margin matches the eyebrow rhythm. */}
+          {/* Filmstrip — center stage */}
           <div
             className={cn(
               "transition-opacity duration-1000",
@@ -168,6 +168,9 @@ function HomePage() {
           >
             <HeroFilmstrip />
           </div>
+
+          {/* Breathing room before the Evolution fold */}
+          <div className="h-24 md:h-32 lg:h-40" aria-hidden />
         </div>{/* /desktop-only block */}
 
       </section>
