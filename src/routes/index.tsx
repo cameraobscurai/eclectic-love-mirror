@@ -101,30 +101,22 @@ function HomePage() {
 
       <section className="relative">
         {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
-        <div className="hidden md:flex md:flex-col min-h-[100svh]">
+        <div className="hidden md:block">
           {/* ── FOLD 1 — Editorial wordmark ─────────────────────
-              Layout logic (no hardcoded gaps):
-                • Section is a flex column at min-h-[100svh] so the fold
-                  fills the viewport on every screen
-                • Top padding clears the fixed nav using safe-area + a
-                  proportional breathing band
-                • Wordmark + tagline group is centered as one unit with a
-                  modular gap that scales with viewport height
-                • mt-auto pushes the filmstrip to settle at the bottom of
-                  the fold so the negative space above always feels
-                  intentional, never cramped
-                • Bottom padding mirrors the top so the rhythm is symmetric
+              Composition matches reference inspo:
+                • Wordmark sits ~one nav-height below the bar
+                • Tagline tucked tight under the wordmark
+                • Filmstrip follows with a single editorial gap
+                • No 100svh stretching — content sets the rhythm,
+                  not the viewport
           */}
           <div
             className="px-8 lg:px-12"
             style={{
-              paddingTop: "calc(env(safe-area-inset-top) + clamp(5.5rem, 11vh, 8rem))",
+              paddingTop: "calc(var(--nav-h, 4rem) + clamp(2rem, 4vh, 3.5rem))",
             }}
           >
-            <div
-              className="mx-auto max-w-6xl flex flex-col items-center"
-              style={{ rowGap: "clamp(0.75rem, 1.6vh, 1.5rem)" }}
-            >
+            <div className="mx-auto max-w-6xl">
               <h1
                 className={cn(
                   "text-center font-display text-charcoal transition-[opacity,transform,letter-spacing] ease-out",
@@ -144,7 +136,7 @@ function HomePage() {
 
               <p
                 className={cn(
-                  "max-w-xl text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
+                  "mx-auto mt-3 md:mt-4 max-w-xl text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
                   loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
                 )}
                 style={{
@@ -159,15 +151,14 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Filmstrip — mt-auto seats it at the natural bottom of the fold */}
+          {/* Filmstrip — single editorial gap below the tagline */}
           <div
             className={cn(
-              "mt-auto transition-all ease-out",
+              "transition-all ease-out",
               loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
             )}
             style={{
-              paddingTop: "clamp(2.5rem, 6vh, 5rem)",
-              paddingBottom: "clamp(2rem, 5vh, 4rem)",
+              paddingTop: "clamp(2.5rem, 5vh, 4rem)",
               transitionDuration: "1200ms",
               transitionDelay: loaded ? "650ms" : "0ms",
             }}
