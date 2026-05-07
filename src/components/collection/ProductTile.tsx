@@ -5,6 +5,7 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { imgFallback } from "@/lib/img-fallback";
 
 interface ProductTileProps {
   product: CollectionProduct;
