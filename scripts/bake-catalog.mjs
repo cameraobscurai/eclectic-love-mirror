@@ -302,54 +302,6 @@ const payload = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Collection-bucket rewrite
-// Promote our owned `collection` bucket clone to be the primary URL for every
-// product image, with the original URL preserved on `fallbackUrl`. Read-only
-// against scripts-tmp/collection-manifest.json (built by
-// scripts-tmp/build-collection-manifest.mjs). No DB writes — pure bake-time.
-// ---------------------------------------------------------------------------
-let collectionManifest = {};
-try {
-  collectionManifest = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/collection-manifest.json', 'utf8'));
-} catch {
-  console.warn('[bake] no collection-manifest.json — skipping collection rewrite (run scripts-tmp/build-collection-manifest.mjs)');
-}
-function exactFilename(url) {
-  const noQ = String(url).split('?')[0];
-  const last = noQ.substring(noQ.lastIndexOf('/') + 1);
-  try { return decodeURIComponent(last); } catch { return last; }
-}
-function encodePath(p) {
-  return p.split('/').map((s) => encodeURIComponent(s)).join('/');
-}
-const SUPA = process.env.SUPABASE_URL || '';
-let rewritten = 0, kept = 0;
-if (Object.keys(collectionManifest).length > 0 && SUPA) {
-  for (const p of payload.products) {
-    for (const img of (p.images || [])) {
-      if (!img.url) continue;
-      const fn = exactFilename(img.url);
-      if (!fn) { kept++; continue; }
-      const path = `${p.categorySlug}/${p.slug}/${fn}`;
-      if (collectionManifest[path]) {
-        const newUrl = `${SUPA}/storage/v1/object/public/collection/${encodePath(path)}`;
-        if (newUrl !== img.url) {
-          img.fallbackUrl = img.url;
-          img.url = newUrl;
-        }
-        rewritten++;
-      } else {
-        kept++;
-      }
-    }
-    if (p.primaryImage && p.images && p.images[0]) {
-      p.primaryImage = p.images[0];
-    }
-  }
-  console.log(`[collection] rewrote ${rewritten} URLs to collection bucket, kept ${kept} originals`);
-}
-
 const outDir = '/dev-server/src/data/inventory';
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'current_catalog.json'), JSON.stringify(payload));

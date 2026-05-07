@@ -17,10 +17,6 @@ export interface CollectionImage {
   isHero: boolean;
   inferredFilename: string | null;
   altText: string | null;
-  /** Original URL preserved when `url` was rewritten at bake time to point
-   *  at the owned `collection` bucket. Used by `<img onError>` as a
-   *  one-shot fallback so a stale manifest can't show a broken tile. */
-  fallbackUrl?: string;
 }
 
 export interface CollectionProduct {

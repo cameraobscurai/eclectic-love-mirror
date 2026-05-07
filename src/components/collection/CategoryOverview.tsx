@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct, CategoryFacet } from "@/lib/phase3-catalog";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { imgFallback } from "@/lib/img-fallback";
 
 interface CategoryOverviewProps {
   facets: CategoryFacet[];
@@ -112,12 +111,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
               decoding="async"
               {...({ fetchPriority: eager ? "high" : "auto" } as Record<string, string>)}
               onLoad={() => setLoaded(true)}
-              data-fallback={img!.fallbackUrl}
-              onError={(e) => {
-                const el = e.currentTarget;
-                if (el.dataset.fallback) imgFallback(e);
-                else onImageFailed();
-              }}
+              onError={onImageFailed}
               className="w-full h-full object-cover will-change-opacity group-hover:scale-[1.03]"
               style={{
                 opacity: loaded ? 1 : 0,
