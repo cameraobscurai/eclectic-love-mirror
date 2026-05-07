@@ -419,6 +419,32 @@ body:has([data-collection-overview]) {
   text-transform: uppercase;
 }
 
+/* ----------------------------------------------------------------------------
+   Footer typography tokens — locked roles so footer text never drifts.
+     .footer-wordmark — brand wordmark
+     .footer-eyebrow  — column titles
+     .footer-link     — links, body lines, meta row
+   ---------------------------------------------------------------------------- */
+.footer-wordmark {
+  font-family: "Saol Display", "Cormorant", serif;
+  font-weight: 300;
+  font-size: clamp(1.25rem, 1.6vw, 1.4rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.footer-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.footer-link {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
 
 /* ----------------------------------------------------------------------------
    Mobile CAPS tracking ramp.

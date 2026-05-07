@@ -12,12 +12,13 @@ const informationLinks = [
   { href: "/privacy", label: "PRIVACY" },
 ] as const;
 
-// Shared rhythm tokens — match the home page spacing system.
-const COL_HEADING = "text-[11px] uppercase tracking-[0.22em] text-cream/40 mb-6 sm:mb-8";
+// Layout-only utilities. Type roles live in src/styles.css as
+// .footer-wordmark / .footer-eyebrow / .footer-link.
+const COL_HEADING = "footer-eyebrow text-cream/40 mb-6 sm:mb-8";
 const COL_LIST = "space-y-3 sm:space-y-4";
 const LINK_CLASS =
-  "inline-block py-1 text-[11px] uppercase tracking-[0.18em] text-cream/70 hover:text-cream transition-colors";
-const META_CLASS = "text-[11px] uppercase tracking-[0.22em] text-cream/35";
+  "footer-link inline-block py-1 text-cream/70 hover:text-cream transition-colors";
+const META_CLASS = "footer-eyebrow text-cream/35";
 
 export function Footer() {
   return (
@@ -26,10 +27,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-y-12 sm:gap-y-14 gap-x-8 md:gap-x-10">
           {/* Brand block */}
           <div className="col-span-2 md:col-span-5">
-            <h2 className="font-brand text-[1.25rem] lg:text-[1.4rem] tracking-[0.18em] uppercase font-light">
-              ECLECTIC HIVE
-            </h2>
-            <p className="mt-6 sm:mt-8 text-cream/65 max-w-md leading-[1.7] text-[11px] uppercase tracking-[0.18em]">
+            <h2 className="footer-wordmark">ECLECTIC HIVE</h2>
+            <p className="footer-link mt-6 sm:mt-8 text-cream/65 max-w-md">
               AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE ENVIRONMENTS.
             </p>
           </div>
