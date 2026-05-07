@@ -94,12 +94,17 @@ for (const slug of liveSlugs) {
   const p = live[slug];
   const k = norm(p.title);
   const hits = byTitle.get(k) || [];
-  if (hits.length === 0) { unmatched.push({ slug, title:p.title, categories:p.categories }); continue; }
-  if (hits.length > 1) {
-    ambiguous.push({ slug, title:p.title, categories:p.categories, candidates: hits.map(h=>({rms_id:h.rms_id, category:h.category})) });
+  let row = null;
+  let matchKind = 'exact';
+  if (hits.length === 1) row = hits[0];
+  else if (hits.length > 1) {
+    ambiguous.push({ slug, title:p.title, categories:p.categories, candidates: hits.map(h=>({rms_id:h.rms_id, category:h.category, db_title:h.title})) });
     continue;
+  } else {
+    const fz = fuzzyMatch(p.title, p.categories[0]);
+    if (fz) { row = fz; matchKind = 'fuzzy'; }
+    else { unmatched.push({ slug, title:p.title, categories:p.categories }); continue; }
   }
-  const row = hits[0];
   const liveCat = p.categories[0];
   const internalCat = LIVE_CAT_TO_INTERNAL[liveCat] || row.category || 'misc';
 
