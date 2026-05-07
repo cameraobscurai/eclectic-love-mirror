@@ -96,6 +96,7 @@ export function GalleryLightbox({
   // Wheel-to-plate on the hero side, debounced so each notch counts once.
   const heroRef = useRef<HTMLDivElement>(null);
   const wheelLockRef = useRef(false);
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null);
   useEffect(() => {
     const node = heroRef.current;
     if (!node) return;
