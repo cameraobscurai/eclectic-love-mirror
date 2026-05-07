@@ -1,7 +1,9 @@
 // Hero filmstrip clip manifest.
-// Drop encoded videos into /public/media/home/ and fill in `src.mp4` (+ optional webm).
-// Posters should live in /public/media/home/ as well (jpg, 1080×1440, 3:4).
-// Until real assets arrive, leaving src empty renders the poster only.
+// Videos live in the `videos` Lovable Cloud storage bucket (public read).
+// Posters: drop JPGs into /public/media/home/ as 01-poster.jpg … 05-poster.jpg
+// (1080×1440, 3:4). Until they exist the frame shows a neutral skeleton.
+
+const STORAGE_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/videos`;
 
 export type FilmstripClip = {
   id: string;       // "01" … "05"
@@ -12,9 +14,9 @@ export type FilmstripClip = {
 };
 
 export const HERO_CLIPS: FilmstripClip[] = [
-  { id: "01", season: "Spring",      poster: "/media/home/01-poster.jpg", label: "Spring" },
-  { id: "02", season: "Summer",      poster: "/media/home/02-poster.jpg", label: "Summer" },
-  { id: "03", season: "Late Summer", poster: "/media/home/03-poster.jpg", label: "Late Summer" },
-  { id: "04", season: "Autumn",      poster: "/media/home/04-poster.jpg", label: "Autumn" },
-  { id: "05", season: "Winter",      poster: "/media/home/05-poster.jpg", label: "Winter" },
+  { id: "01", season: "Spring",      poster: "/media/home/01-poster.jpg", label: "Spring",      src: { mp4: `${STORAGE_BASE}/01SPRING` } },
+  { id: "02", season: "Summer",      poster: "/media/home/02-poster.jpg", label: "Summer",      src: { mp4: `${STORAGE_BASE}/02SUMMER` } },
+  { id: "03", season: "Late Summer", poster: "/media/home/03-poster.jpg", label: "Late Summer", src: { mp4: `${STORAGE_BASE}/03LATESUMER` } },
+  { id: "04", season: "Autumn",      poster: "/media/home/04-poster.jpg", label: "Autumn",      src: { mp4: `${STORAGE_BASE}/04AUTUMN` } },
+  { id: "05", season: "Winter",      poster: "/media/home/05-poster.jpg", label: "Winter",      src: { mp4: `${STORAGE_BASE}/05WINTER` } },
 ];
