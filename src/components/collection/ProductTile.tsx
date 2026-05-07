@@ -169,7 +169,15 @@ export function ProductTile({
                 // Cast: React's types don't yet include fetchpriority.
                 {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
                 onLoad={() => setLoaded(true)}
-                onError={() => onImageFailed?.(product.id)}
+                data-fallback={product.primaryImage.fallbackUrl}
+                onError={(e) => {
+                  const el = e.currentTarget;
+                  if (el.dataset.fallback) {
+                    imgFallback(e);
+                  } else {
+                    onImageFailed?.(product.id);
+                  }
+                }}
                 // No padding — the source assets already carry their own
                 // transparent margin, so any wrapper padding shrinks the
                 // subject to a tiny thumbnail. object-contain fills the
