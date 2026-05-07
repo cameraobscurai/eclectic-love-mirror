@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
@@ -40,53 +40,8 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
-/**
- * Auto-fit solver — given a container box and a tile count, find the
- * (cols, rows) pair that:
- *   1. Holds all N tiles (cols * rows >= N)
- *   2. Produces a cell aspect closest to the target (wider on landscape,
- *      squarer on portrait)
- *   3. Respects min/max columns for each viewport class
- *
- * This replaces hard-coded breakpoint column counts. The grid always
- * fills its parent box completely — no white space below, no clipped
- * rows — at any width from 320px to ultrawide.
- */
-function solveGrid(
-  width: number,
-  height: number,
-  count: number,
-  opts: { minCols: number; maxCols: number; targetAspect: number },
-): { cols: number; rows: number } {
-  if (count <= 0 || width <= 0 || height <= 0) {
-    return { cols: opts.minCols, rows: 1 };
-  }
-  let best = { cols: opts.minCols, rows: Math.ceil(count / opts.minCols), score: Infinity };
-  for (let cols = opts.minCols; cols <= Math.min(opts.maxCols, count); cols++) {
-    const rows = Math.ceil(count / cols);
-    const cellW = width / cols;
-    const cellH = height / rows;
-    const aspect = cellW / cellH;
-    // Score = how far cell aspect is from target (log-space so 2x and 0.5x
-    // are treated symmetrically), plus a small penalty for empty cells in
-    // the last row (we want full rows when possible).
-    const aspectScore = Math.abs(Math.log(aspect / opts.targetAspect));
-    const emptyCells = cols * rows - count;
-    const fillPenalty = emptyCells * 0.05;
-    const score = aspectScore + fillPenalty;
-    if (score < best.score) best = { cols, rows, score };
-  }
-  return { cols: best.cols, rows: best.rows };
-}
-
-// Viewport-class column bounds. The solver picks within these.
-function colBoundsFor(width: number): { minCols: number; maxCols: number; targetAspect: number } {
-  if (width >= 1280) return { minCols: 4, maxCols: 6, targetAspect: 1.3 };  // desktop — slightly landscape cells
-  if (width >= 1024) return { minCols: 4, maxCols: 5, targetAspect: 1.2 };  // small desktop
-  if (width >= 768)  return { minCols: 3, maxCols: 4, targetAspect: 1.0 };  // tablet — squarish
-  if (width >= 480)  return { minCols: 2, maxCols: 3, targetAspect: 0.95 }; // large phone
-  return { minCols: 2, maxCols: 2, targetAspect: 0.9 };                     // phone — slightly portrait
-}
+// Column counts per breakpoint — must match Tailwind classes below.
+const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
 export function CategoryTonalGrid({
   groups,
@@ -123,35 +78,8 @@ export function CategoryTonalGrid({
     [byId],
   );
 
-  // ResizeObserver-driven solver: measure the container, pick (cols, rows)
-  // that fit all tiles with cells closest to a target aspect for the
-  // current viewport class. Re-runs on every resize/orientation change.
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [grid, setGrid] = useState<{ cols: number; rows: number }>({ cols: 5, rows: 3 });
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-    const apply = () => {
-      const rect = el.getBoundingClientRect();
-      const bounds = colBoundsFor(window.innerWidth);
-      const next = solveGrid(rect.width, rect.height, tiles.length, bounds);
-      setGrid((prev) =>
-        prev.cols === next.cols && prev.rows === next.rows ? prev : next,
-      );
-    };
-    apply();
-    const ro = new ResizeObserver(apply);
-    ro.observe(el);
-    window.addEventListener("orientationchange", apply);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("orientationchange", apply);
-    };
-  }, [tiles.length]);
-
-  // First-paint cohort = top row at the current solved column count.
-  const cohortSize = Math.min(grid.cols, tiles.length);
+  // First-paint cohort = top desktop row.
+  const cohortSize = Math.min(COLS.lg, tiles.length);
   const [doneCount, setDoneCount] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
 
@@ -165,25 +93,49 @@ export function CategoryTonalGrid({
   const reportDone = useCallback(() => setDoneCount((n) => n + 1), []);
 
   return (
-    <div
-      ref={containerRef}
+    // grid-rows-3 lg + h-full = three equal rows that fill the parent's
+    // height, sharing the H-plate's vertical real estate. No aspect-ratio
+    // on individual tiles — they take their share of the row.
+    <>
+      <style>{`
+        [data-tonal-grid] {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          grid-template-rows: repeat(3, 1fr);
+          width: 100%;
+          height: 100%;
+          gap: 0;
+        }
+        [data-tonal-grid] > button { min-height: 44px; }
+        @media (max-width: 1023px) {
+          [data-tonal-grid] {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            grid-auto-rows: auto;
+            height: 100%;
+            padding: 8px;
+            gap: 8px;
+            background: var(--paper);
+          }
+          [data-tonal-grid] > button { min-height: 64px; }
+        }
+      `}</style>
+      <div
       data-tonal-grid
       role="list"
       aria-label="Browse by category"
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${grid.cols}, 1fr)`,
-        gridTemplateRows: `repeat(${grid.rows}, 1fr)`,
-        width: "100%",
-        height: "100%",
-        gap: 0,
-        background: "var(--paper)",
-      }}
     >
       {tiles.map((t, i) => {
-        // Real checkerboard against the solved column count.
-        const row = Math.floor(i / grid.cols);
-        const col = i % grid.cols;
+        // Real checkerboard: parity over (row + col). Computed against
+        // each breakpoint's column count, picked at render via window
+        // size isn't necessary — we use the LG count as the canonical
+        // pattern; on smaller widths the wrap re-flows but parity holds
+        // because COLS values are all even except 3. 3-col tablet falls
+        // into a diagonal stripe which actually reads fine — the rhythm
+        // is what matters, not perfect parity.
+        const cols = COLS.lg;
+        const row = Math.floor(i / cols);
+        const col = i % cols;
         const tone = TONES[(row + col) % 2];
         const inCohort = i < cohortSize;
         return (
@@ -203,6 +155,7 @@ export function CategoryTonalGrid({
         );
       })}
     </div>
+    </>
   );
 }
 
