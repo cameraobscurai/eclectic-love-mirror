@@ -154,13 +154,17 @@ if (!APPLY) {
 
 // ---- APPLY PHASE ----
 console.log('\n=== APPLY PHASE ===');
-let ok = 0, skipped = 0, failed = [];
-for (const e of manifest) {
-  if (e.action === 'skip') { skipped++; continue; }
+const CONCURRENCY = Number(argv.concurrency || 8);
+const HALT_ON_FAIL = argv.haltOnFail !== false && argv['halt-on-fail'] !== false;
+let ok = 0, skipped = 0;
+const failed = [];
+const applied = [];
+
+async function processOne(e) {
+  if (e.action === 'skip') { skipped++; return; }
   try {
-    // HEAD check: if already exists at target, skip (idempotent)
     const head = await fetch(e.newPublicUrl, { method: 'HEAD' });
-    if (head.ok) { skipped++; continue; }
+    if (head.ok) { skipped++; applied.push(e); return; }
 
     const res = await fetch(e.sourceUrl);
     if (!res.ok) throw new Error(`fetch ${res.status}`);
@@ -171,14 +175,30 @@ for (const e of manifest) {
     });
     if (error && !/already exists/i.test(error.message)) throw error;
     ok++;
-    if (ok % 25 === 0) console.log(`  uploaded ${ok}…`);
+    applied.push(e);
+    if (ok % 50 === 0) console.log(`  uploaded ${ok}…`);
   } catch (err) {
     failed.push({ ...e, error: String(err.message || err) });
   }
 }
+
+// simple worker pool
+const queue = [...manifest];
+async function worker() {
+  while (queue.length) {
+    const e = queue.shift();
+    await processOne(e);
+    if (HALT_ON_FAIL && failed.length) return;
+  }
+}
+await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+
 console.log(`\nuploads: ok=${ok} skipped=${skipped} failed=${failed.length}`);
+fs.writeFileSync('/tmp/mirror-applied.json', JSON.stringify(applied, null, 2));
 if (failed.length) {
   fs.writeFileSync('/tmp/mirror-failed.json', JSON.stringify(failed, null, 2));
-  console.log('see /tmp/mirror-failed.json');
+  console.log('see /tmp/mirror-failed.json — apply HALTED' + (HALT_ON_FAIL ? '' : ' (continued)'));
+  process.exit(2);
 }
-console.log('\nNext step (separate command): rewrite inventory_items.images[] using this manifest. Not executed here.');
+console.log('\nApply complete. Next: rewrite inventory_items.images[] from /tmp/mirror-applied.json (separate step).');
+
