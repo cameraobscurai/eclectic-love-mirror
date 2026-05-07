@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct, CategoryFacet } from "@/lib/phase3-catalog";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { imgFallback } from "@/lib/img-fallback";
 
 interface CategoryOverviewProps {
   facets: CategoryFacet[];
