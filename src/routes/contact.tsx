@@ -258,7 +258,7 @@ function ContactPage() {
           </aside>
 
           {/* RIGHT — single form */}
-          <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
+          <section id="inquiry" className="xl:col-span-7 scroll-mt-32">
             {success ? (
               <SuccessPanel />
             ) : (
