@@ -38,7 +38,11 @@ const ORDER: BrowseGroupId[] = [
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
+// Safety net: if a tile's image hangs (CDN slow, network blip), reveal
+// the cohort anyway after this many ms so the page never looks broken.
+// Set generously — the common case is "all images decoded in <800ms" and
+// the synchronized fade fires well before the timeout matters.
+const FIRST_ROW_REVEAL_TIMEOUT_MS = 2500;
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
