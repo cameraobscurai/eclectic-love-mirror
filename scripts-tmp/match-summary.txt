@@ -1,0 +1,30 @@
+EVIDENCE MATCH — 2026-05-07T04:24:17.198Z
+
+Live products:                  610
+DB rows (public):               835
+
+Bound (high confidence):        411
+  Wave 1 image URL overlap:     131
+  Wave 2 exact title:           246
+  Wave 3 slug match:            5
+  Wave 4 evidence (auto):       29
+
+Wave 4 needs review:            62  → scripts-tmp/match-fuzzy.csv
+Live with no candidate at all:  137    → scripts-tmp/match-unmatched.csv
+
+Top 10 review-needed (sorted by pts):
+  pts=6 margin=0 mutual=true  "Deco Etched Alcohol Bottle"  →  "Deco Etched Agave Bottle"  [{"shared_tokens":["deco","etched","bottle"],"category":true,"slug_substr":true}]
+  pts=5 margin=1 mutual=true  "Elijah Antique Marble Top Console"  →  "Elijah Marble Top Antique Console Table"  [{"shared_tokens":["elijah","antique","marble","top"],"category":true}]
+  pts=5 margin=0 mutual=true  "Heston Dark Brown Horn Flatware"  →  "Heston Dark Brown Horn Butter Knife"  [{"shared_tokens":["heston","dark","brown","horn"],"category":true}]
+  pts=5 margin=1 mutual=true  "Keitha 9x12 Chunky Natural Jute Rug"  →  "Keitha 9x12 Chunky Jute Tassels Rug"  [{"shared_tokens":["keitha","9x12","chunky","jute"],"category":true}]
+  pts=5 margin=0 mutual=true  "Beren Assorted Books"  →  "Beren Black Books"  [{"shared_tokens":["beren","books"],"category":true,"slug_substr":true}]
+  pts=4 margin=1 mutual=true  "Evander Tapered Hide Ottoman"  →  "Evander Grey Hide Tapered Ottoman"  [{"shared_tokens":["evander","tapered","hide"],"category":true}]
+  pts=4 margin=1 mutual=true  "Leanna Ivory Hide Ottoman"  →  "Leanna Ivory Hide Tapered Ottoman"  [{"shared_tokens":["leanna","ivory","hide"],"category":true}]
+  pts=4 margin=1 mutual=true  "Lorenzo Ivory Hide Ottoman"  →  "Lorenzo Ivory Round Hide Ottoman"  [{"shared_tokens":["lorenzo","ivory","hide"],"category":true}]
+  pts=4 margin=1 mutual=false  "Ezra Antique Console Table"  →  "Ezra Marble Top Antique Console Table"  [{"shared_tokens":["ezra","antique","table"],"category":true}]
+  pts=4 margin=0 mutual=true  "Anastasia Antique Silver Flatware"  →  "Anastasia Antique Silver Butter Knife"  [{"shared_tokens":["anastasia","antique","silver"],"category":true}]
+
+Outputs:
+  scripts-tmp/match-bound.json
+  scripts-tmp/match-fuzzy.csv
+  scripts-tmp/match-unmatched.csv
