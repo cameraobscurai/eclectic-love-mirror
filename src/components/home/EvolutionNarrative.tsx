@@ -107,7 +107,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             <div className="mt-3 h-px w-12 bg-charcoal/30" />
           </div>
 
-          <div className="space-y-1.5 md:space-y-2">
+          <div className="space-y-3 md:space-y-3.5">
             {BODY_LINES.map((line, i) => {
               const active = i === activeIndex;
               const isBrand = line.emphasis === "brand";
@@ -116,7 +116,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   key={i}
                   data-active={active ? "true" : "false"}
                   className={cn(
-                    "font-brand text-charcoal transition-[opacity,transform] duration-250 ease-out",
+                    "font-brand text-charcoal transition-[opacity,color,transform] duration-300 ease-out will-change-[opacity,transform]",
                     isBrand ? "uppercase tracking-[0.18em]" : "italic",
                   )}
                   style={{
@@ -124,9 +124,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                     fontSize: isBrand
                       ? "clamp(1.15rem, 2.4vw, 1.7rem)"
                       : "clamp(0.95rem, 1.6vw, 1.25rem)",
-                    lineHeight: 1.3,
-                    opacity: active ? 1 : 0.18,
-                    transform: active ? "translateY(0)" : "translateY(2px)",
+                    lineHeight: 1.35,
+                    opacity: active ? 1 : 0.12,
+                    color: active ? "var(--charcoal)" : "var(--charcoal)",
+                    transform: active ? "translateX(0)" : "translateX(-2px)",
                   }}
                 >
                   {line.text}
