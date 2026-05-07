@@ -43,13 +43,14 @@ const NAV_LINKS = [
 // DARK (cinematic exhibition page) — it stays out of LIGHT_BG_PAGES so the
 // nav renders cream-on-charcoal there.
 const LIGHT_BG_PAGES = [
+  "/",
   "/atelier",
   "/collection",
   "/contact",
   "/privacy",
 ];
 
-const WHITE_BG_PAGES = ["/collection"];
+const WHITE_BG_PAGES = ["/", "/collection"];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
