@@ -1,5 +1,5 @@
 import { MediaAperture } from "@/components/media-aperture";
-import { teamPhotoUrl } from "@/lib/storage-image";
+import { teamPhotoUrl, renderUrl, renderSrcSet } from "@/lib/storage-image";
 
 // ---------------------------------------------------------------------------
 // Atelier — THE HUMANS module
