@@ -61,6 +61,19 @@ export type Database = {
       inventory_items: {
         Row: {
           category: string | null
+          color_chroma: number | null
+          color_confidence: number | null
+          color_family: string | null
+          color_hex: string | null
+          color_hex_secondary: string | null
+          color_hue: number | null
+          color_lightness: number | null
+          color_locked: boolean
+          color_needs_review: boolean
+          color_notes: string | null
+          color_source: string | null
+          color_tagged_at: string | null
+          color_temperature: string | null
           created_at: string
           depth_cm: number | null
           description: string | null
@@ -86,6 +99,19 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          color_chroma?: number | null
+          color_confidence?: number | null
+          color_family?: string | null
+          color_hex?: string | null
+          color_hex_secondary?: string | null
+          color_hue?: number | null
+          color_lightness?: number | null
+          color_locked?: boolean
+          color_needs_review?: boolean
+          color_notes?: string | null
+          color_source?: string | null
+          color_tagged_at?: string | null
+          color_temperature?: string | null
           created_at?: string
           depth_cm?: number | null
           description?: string | null
@@ -111,6 +137,19 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          color_chroma?: number | null
+          color_confidence?: number | null
+          color_family?: string | null
+          color_hex?: string | null
+          color_hex_secondary?: string | null
+          color_hue?: number | null
+          color_lightness?: number | null
+          color_locked?: boolean
+          color_needs_review?: boolean
+          color_notes?: string | null
+          color_source?: string | null
+          color_tagged_at?: string | null
+          color_temperature?: string | null
           created_at?: string
           depth_cm?: number | null
           description?: string | null
