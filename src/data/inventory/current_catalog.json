@@ -36359,21 +36359,21 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Lagos Swivel Chair"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Lagos Swivel Chair"
         }
       ],
-      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png",
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png",
       "imageCount": 2,
       "publicReady": true,
       "scrapedOrder": 9107,
