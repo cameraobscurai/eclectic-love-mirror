@@ -2876,20 +2876,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ASHURA Rusric Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/ashura-rustic-terracotta-vase.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Ashura 5\" Rustic Terracotta Vase"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ASHURA Rusric Vase.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Ashura 5\" Rustic Terracotta Vase"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/ashura-rustic-terracotta-vase.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 73,
@@ -3683,27 +3677,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BAMBI Antler Rack 1.tif",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/bambi-antler-rack.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Bambi Natural Antler Rack"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BAMBI.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Bambi Natural Antler Rack"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BAMBI Antler Rack 1.tif",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Bambi Natural Antler Rack"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/bambi-antler-rack.png",
       "imageCount": 2,
       "publicReady": true,
       "scrapedOrder": 92,
@@ -5429,20 +5410,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/Black Tourmaline.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/black-tourmaline-acrylic-stand.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Black Tourmaline with Acrylic Stand"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/Black Tourmaline.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Black Tourmaline with Acrylic Stand"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/black-tourmaline-acrylic-stand.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 129,
@@ -9505,20 +9480,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CLYDE BLUE Wood Knot.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/clyde-blue-wood-chain.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Clyde Smoke Blue Wood Chain"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CLYDE BLUE Wood Knot.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Clyde Smoke Blue Wood Chain"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/clyde-blue-wood-chain.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 218,
@@ -10821,20 +10790,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DIVYA Paper Mache Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/divya-rustic-paper-mache-vase.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Divya 11\" Rustic Paper Mache Vase"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DIVYA Paper Mache Vase.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Divya 11\" Rustic Paper Mache Vase"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/divya-rustic-paper-mache-vase.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 249,
@@ -11619,41 +11582,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ELGIN Bronze.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/elgin-pony-bookends.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Elgin Pony Bronze Bookend Set"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ELGIN Dark Bookends.tif",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Elgin Pony Bronze Bookend Set"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ELGIN Silver Bookends.tif",
-          "position": 2,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Elgin Pony Bronze Bookend Set"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ELGIN Silver.png",
-          "position": 3,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Elgin Pony Bronze Bookend Set"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/ELGIN Bronze.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Elgin Pony Bronze Bookend Set"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/elgin-pony-bookends.png",
       "imageCount": 4,
       "publicReady": true,
       "scrapedOrder": 269,
@@ -18544,27 +18480,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/IGNATIUS Scale.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/ignatius-gold-scale.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Ignatius Brass Balancing Scale"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/IGNATIUS Scale.tif",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Ignatius Brass Balancing Scale"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/IGNATIUS Scale.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Ignatius Brass Balancing Scale"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/ignatius-gold-scale.png",
       "imageCount": 2,
       "publicReady": true,
       "scrapedOrder": 429,
@@ -21573,20 +21496,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/KETTE Marble Chain.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/kette-white-marble-chain.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Kette Marble Chain"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/KETTE Marble Chain.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Kette Marble Chain"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/kette-white-marble-chain.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 494,
@@ -23045,20 +22962,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LILITH Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/lilith-textured-earth-vase.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Lilith 14\" Textured Earth Vase"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LILITH Vase.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Lilith 14\" Textured Earth Vase"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/lilith-textured-earth-vase.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 532,
@@ -23094,20 +23005,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LIMULUS Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/limulus-white-porcelain-vase.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Limulus 5.75\" White Porcelain Vase"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LIMULUS Vase.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Limulus 5.75\" White Porcelain Vase"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/limulus-white-porcelain-vase.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 533,
@@ -23192,20 +23097,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LINUS Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/linus-white-porcelain-vase.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Linus 12.25\" White Porcelain Vase"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/LINUS Vase.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Linus 12.25\" White Porcelain Vase"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/linus-white-porcelain-vase.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 535,
@@ -28434,20 +28333,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/PLINY Easel.tif",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/pliney-h-frame-easel.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Pliny H Frame Easel"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/PLINY Easel.tif",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Pliny H Frame Easel"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/pliney-h-frame-easel.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 661,
@@ -31173,20 +31066,14 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/SHAY Leather Basket.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/shay-leather-basket.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Shay Tan Leather Basket"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/SHAY Leather Basket.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Shay Tan Leather Basket"
-      },
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/styling/shay-leather-basket.png",
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 724,
