@@ -15573,56 +15573,49 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60342b23ea3c8164bfa197a4/1759341610135/",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/gideon-bamboo-pendant-family.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Gideon Bamboo Pendant Light"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/gideon-bamboo-pendant-family.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Gideon Bamboo Pendant Light"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032239397-6KG0L6J0VW8ZB1T8FQ30/GIDEON+3+Bamboo+Pendant+0.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Gideon Bamboo Pendant Light"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032239397-6KG0L6J0VW8ZB1T8FQ30/GIDEON+3+Bamboo+Pendant+0.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032380954-939I433SAV578J2R30DH/GIDEON+Bamboo+Pendant+0.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Gideon Bamboo Pendant Light"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032380954-939I433SAV578J2R30DH/GIDEON+Bamboo+Pendant+0.png",
-          "position": 4,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Gideon Bamboo Pendant Light"
-        },
-        {
           "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032278515-BQBXNENP1JFSI9ORE1WD/GIDEON+4+Bamboo+Pendant+0.png",
-          "position": 5,
+          "position": 4,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Gideon Bamboo Pendant Light"
         }
       ],
       "primaryImage": {
-        "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60342b23ea3c8164bfa197a4/1759341610135/",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/gideon-bamboo-pendant-family.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Gideon Bamboo Pendant Light"
       },
-      "imageCount": 6,
+      "imageCount": 5,
       "publicReady": true,
       "scrapedOrder": 360,
       "subcategory": null,
