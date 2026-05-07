@@ -78,8 +78,11 @@ export function CategoryTonalGrid({
     [byId],
   );
 
-  // First-paint cohort = top desktop row.
-  const cohortSize = Math.min(COLS.lg, tiles.length);
+  // First-paint cohort = the entire grid. All 15 tiles fit in the viewport
+  // on every breakpoint and the images are CDN-resized to ≤600w, so loading
+  // them together is cheap. Revealing them as one synchronized fade avoids
+  // the awkward "row 1 in, rows 2–3 still empty" cascade on fresh visits.
+  const cohortSize = tiles.length;
   const [doneCount, setDoneCount] = useState(0);
   const [timedOut, setTimedOut] = useState(false);
 
