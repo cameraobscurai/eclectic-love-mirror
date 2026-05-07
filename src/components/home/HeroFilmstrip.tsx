@@ -81,28 +81,17 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(
-        "w-full bg-paper",
-        className,
-      )}
-    >
-      {/* ≥640px: flex row. <640px: horizontal snap scroll carousel. */}
+    <div ref={containerRef} className={cn("w-full bg-paper", className)}>
+      {/* Edge-to-edge, zero-gap row at ≥640. Mobile keeps a snap carousel. */}
       <div
         className={cn(
-          "mx-auto max-w-[1400px]",
-          // mobile carousel
-          "flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-2",
+          "w-full",
+          "flex gap-0 overflow-x-auto snap-x snap-mandatory",
           "scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-          // ≥640: real flex row, no scroll
-          "sm:gap-2 sm:overflow-visible sm:px-6 sm:snap-none",
-          "lg:gap-2 lg:px-8",
+          "sm:gap-0 sm:overflow-visible sm:snap-none",
         )}
       >
         {clips.map((clip, i) => {
-          // Outer frames (index 0 and 4) hide between 640–1023px so the
-          // middle three frames can breathe at tablet width.
           const isOuter = i === 0 || i === clips.length - 1;
           return (
             <FilmstripFrame
@@ -118,11 +107,8 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
                 videoRefs.current[clip.id] = el;
               }}
               className={cn(
-                // mobile carousel item sizing
-                "shrink-0 basis-[78%] snap-center",
-                // ≥640: equal flex children
+                "shrink-0 basis-full snap-center",
                 "sm:basis-0 sm:flex-1 sm:snap-align-none",
-                // hide outer frames at tablet, show again at desktop
                 isOuter && "hidden lg:block",
               )}
             />
@@ -165,7 +151,6 @@ function FilmstripFrame({
         className={cn(
           "relative overflow-hidden bg-[#f1f1f1]",
           "aspect-[3/4]",
-          "ring-1 ring-charcoal/[0.06]",
         )}
         onMouseEnter={() => !reduced && onHoverChange(clip.id)}
         onMouseLeave={() => !reduced && onHoverChange(null)}
@@ -259,9 +244,9 @@ function FilmstripFrame({
         )}
       </figure>
 
-      {/* Caption — sits beneath the frame, bottom-left aligned */}
+      {/* Caption — sits beneath the frame, bottom-left aligned with a small gutter */}
       <figcaption
-        className="mt-2 md:mt-3 flex items-baseline gap-1.5 font-brand text-charcoal"
+        className="mt-2 md:mt-3 px-3 md:px-4 flex items-baseline gap-1.5 font-brand text-charcoal"
         style={{ fontWeight: 400 }}
       >
         <span
