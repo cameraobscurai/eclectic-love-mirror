@@ -37,30 +37,28 @@ async function fetchFeed(slug) {
 }
 
 // ── load runtime catalog & classifier ─────────────────────────────────
-const catalog = JSON.parse(fs.readFileSync('src/data/inventory/current_catalog.json','utf8'));
-// classify each catalog row using the same logic as the site
-const { productParent } = await import('../src/lib/collection-parents.ts').catch(async () => {
-  // fall back: re-implement minimal parent routing using liveCategory
-  const LIVE_CAT_TO_PARENT = {
-    'lounge':'lounge-seating','lounge-tables':'lounge-tables','cocktail-bar':'cocktail-bar',
-    'dining':'dining','tableware':'tableware','textiles':'textiles','rugs':'rugs',
-    'styling':'styling','large-decor':'large-decor','light':'lighting',
-  };
-  const CAT_TO_PARENT = {
-    seating:'lounge-seating', tables:'lounge-tables', bars:'cocktail-bar',
-    tableware:'tableware', serveware:'tableware',
-    'pillows-throws':'textiles', 'furs-pelts':'furs-pelts',
-    rugs:'rugs', lighting:'lighting', chandeliers:'lighting', candlelight:'lighting',
-    'large-decor':'large-decor', styling:'styling', storage:'cocktail-bar',
-  };
-  return { productParent: (p) => p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory] || CAT_TO_PARENT[p.category] || null };
-});
+const catalog = JSON.parse(fs.readFileSync('src/data/inventory/current_catalog.json','utf8')).products;
+const LIVE_CAT_TO_PARENT = {
+  'lounge':'lounge-seating','lounge-tables':'lounge-tables','cocktail-bar':'cocktail-bar',
+  'dining':'dining','tableware':'tableware','textiles':'textiles','rugs':'rugs',
+  'styling':'styling','large-decor':'large-decor','light':'lighting',
+};
+const CAT_TO_PARENT = {
+  seating:'lounge-seating', tables:'lounge-tables', bars:'cocktail-bar',
+  tableware:'tableware', serveware:'tableware',
+  'pillows-throws':'textiles', 'furs-pelts':'furs-pelts',
+  rugs:'rugs', lighting:'lighting', chandeliers:'lighting', candlelight:'lighting',
+  'large-decor':'large-decor', styling:'styling', storage:'cocktail-bar',
+};
+const productParent = p =>
+  (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory]) ||
+  CAT_TO_PARENT[p.categorySlug] || null;
 
 const ourByParent = {};
 for (const p of catalog) {
   const par = productParent(p);
   if (!par) continue;
-  (ourByParent[par] ||= []).push({ title: p.title, rms: p.rmsId, key: norm(p.title) });
+  (ourByParent[par] ||= []).push({ title: p.title, rms: p.id, key: norm(p.title) });
 }
 
 // ── pull live feeds & diff ────────────────────────────────────────────
