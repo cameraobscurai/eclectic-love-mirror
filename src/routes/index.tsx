@@ -117,21 +117,6 @@ function HomePage() {
             style={{ paddingTop: "clamp(6rem, 9vh, 7.5rem)", paddingBottom: "clamp(1.25rem, 2.5vh, 2rem)" }}
           >
             <div className="mx-auto max-w-6xl">
-              {/* Eyebrow rail */}
-              <div className="flex items-center justify-center gap-3 mb-4 md:mb-5">
-                <span className="h-px w-6 bg-charcoal/25" aria-hidden />
-                <span
-                  className="font-brand uppercase text-charcoal/55"
-                  style={{
-                    fontWeight: 400,
-                    letterSpacing: "0.36em",
-                    fontSize: "clamp(0.6rem, 0.7vw, 0.72rem)",
-                  }}
-                >
-                  Est · Denver · Colorado
-                </span>
-                <span className="h-px w-6 bg-charcoal/25" aria-hidden />
-              </div>
 
               <h1
                 className="text-center font-brand text-charcoal"
