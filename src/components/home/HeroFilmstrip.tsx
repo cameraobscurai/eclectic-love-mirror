@@ -160,108 +160,111 @@ function FilmstripFrame({
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
 
   return (
-    <figure
-      className={cn(
-        "relative overflow-hidden bg-[#f1f1f1]",
-        "aspect-[3/4]",
-        "ring-1 ring-charcoal/[0.06]",
-        className,
-      )}
-      onMouseEnter={() => !reduced && onHoverChange(clip.id)}
-      onMouseLeave={() => !reduced && onHoverChange(null)}
-      onClick={() => {
-        // On touch, tap toggles play/pause.
-        if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
-          onManualPlay(clip.id);
-        }
-      }}
-    >
-      {/* Skeleton — visible until the poster image (or video first frame) paints */}
-      {!loaded && (
-        <div
-          aria-hidden
-          className="absolute inset-0 animate-pulse bg-[#ececec]"
-        />
-      )}
-
-      {hasVideo ? (
-        <video
-          ref={registerRef}
-          poster={clip.poster}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-label={clip.label}
-          className={cn(
-            "h-full w-full object-cover transition-opacity duration-700",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-          onLoadedData={() => setLoaded(true)}
-        >
-          {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
-          {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
-        </video>
-      ) : (
-        // No video yet — show poster only. Falls back to neutral panel if
-        // poster is also missing (placeholder mode during build).
-        <img
-          src={clip.poster}
-          alt={clip.label ?? ""}
-          loading="lazy"
-          decoding="async"
-          className={cn(
-            "h-full w-full object-cover transition-opacity duration-700",
-            loaded ? "opacity-100" : "opacity-0",
-          )}
-          onLoad={() => setLoaded(true)}
-          onError={() => setLoaded(true)}
-        />
-      )}
-
-      {/* Audio toggle — only render when a video source exists */}
-      {hasVideo && (isHover || isAudio) && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onAudioToggle(clip.id);
-          }}
-          aria-label={isAudio ? "Mute" : "Unmute"}
-          aria-pressed={isAudio}
-          className={cn(
-            "absolute bottom-2 right-2 z-10",
-            "flex h-8 w-8 items-center justify-center",
-            "rounded-full bg-charcoal/70 text-paper backdrop-blur-sm",
-            "transition-opacity duration-200",
-            "hover:bg-charcoal/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper/60",
-          )}
-        >
-          {isAudio ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-        </button>
-      )}
-
-      {/* Reduced-motion manual play */}
-      {hasVideo && reduced && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
+    <div className={cn("flex flex-col", className)}>
+      <figure
+        className={cn(
+          "relative overflow-hidden bg-[#f1f1f1]",
+          "aspect-[3/4]",
+          "ring-1 ring-charcoal/[0.06]",
+        )}
+        onMouseEnter={() => !reduced && onHoverChange(clip.id)}
+        onMouseLeave={() => !reduced && onHoverChange(null)}
+        onClick={() => {
+          if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
             onManualPlay(clip.id);
-          }}
-          aria-label="Play clip"
-          className={cn(
-            "absolute inset-0 z-10 flex items-center justify-center",
-            "bg-charcoal/0 hover:bg-charcoal/10 transition-colors",
-          )}
-        >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-charcoal/70 text-paper">
-            <Play className="h-5 w-5" />
-          </span>
-        </button>
-      )}
+          }
+        }}
+      >
+        {!loaded && (
+          <div aria-hidden className="absolute inset-0 animate-pulse bg-[#ececec]" />
+        )}
 
-      {clip.label && <figcaption className="sr-only">{clip.label}</figcaption>}
-    </figure>
+        {hasVideo ? (
+          <video
+            ref={registerRef}
+            poster={clip.poster}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={clip.label}
+            className={cn(
+              "h-full w-full object-cover transition-opacity duration-700",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            onLoadedData={() => setLoaded(true)}
+          >
+            {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
+            {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
+          </video>
+        ) : (
+          <img
+            src={clip.poster}
+            alt={clip.label ?? ""}
+            loading="lazy"
+            decoding="async"
+            className={cn(
+              "h-full w-full object-cover transition-opacity duration-700",
+              loaded ? "opacity-100" : "opacity-0",
+            )}
+            onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
+          />
+        )}
+
+        {hasVideo && (isHover || isAudio) && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onAudioToggle(clip.id);
+            }}
+            aria-label={isAudio ? "Mute" : "Unmute"}
+            aria-pressed={isAudio}
+            className={cn(
+              "absolute bottom-2 right-2 z-10",
+              "flex h-8 w-8 items-center justify-center",
+              "rounded-full bg-charcoal/70 text-paper backdrop-blur-sm",
+              "transition-opacity duration-200",
+              "hover:bg-charcoal/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper/60",
+            )}
+          >
+            {isAudio ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </button>
+        )}
+
+        {hasVideo && reduced && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onManualPlay(clip.id);
+            }}
+            aria-label="Play clip"
+            className="absolute inset-0 z-10 flex items-center justify-center bg-charcoal/0 transition-colors hover:bg-charcoal/10"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-charcoal/70 text-paper">
+              <Play className="h-5 w-5" />
+            </span>
+          </button>
+        )}
+      </figure>
+
+      {/* Caption — sits beneath the frame, bottom-left aligned */}
+      <figcaption
+        className="mt-2 md:mt-3 flex items-baseline gap-1.5 font-brand text-charcoal"
+        style={{ fontWeight: 400 }}
+      >
+        <span
+          className="text-[10px] md:text-[11px] tracking-[0.18em] text-charcoal/55"
+          style={{ fontVariantNumeric: "tabular-nums" }}
+        >
+          {clip.id}
+        </span>
+        <span className="text-[11px] md:text-[13px] uppercase tracking-[0.22em]">
+          {clip.season}
+        </span>
+      </figcaption>
+    </div>
   );
 }
