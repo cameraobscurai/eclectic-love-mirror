@@ -75,7 +75,7 @@ function HomePage() {
               lineHeight: 1.4,
             }}
           >
-            A 16&prime; white drape showcases the five seasons of the Hive&rsquo;s Brand Evolution.
+            Designing for Weddings, Corporate, &amp; Social Events
           </p>
         </div>
 
