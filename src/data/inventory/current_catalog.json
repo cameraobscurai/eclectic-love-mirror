@@ -8367,7 +8367,7 @@
       "slug": "cameron-directors-dining-chair-3827",
       "categorySlug": "seating",
       "displayCategory": "Seating",
-      "title": "Cameron Directors Dining Chair",
+      "title": "Cameron Wheat Directors Dining Chair",
       "description": null,
       "dimensions": "24.5\"W x 17.25\"D x 37.75\"H   18\" Seat Height",
       "stockedQuantity": "64",
@@ -8380,14 +8380,14 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Cameron Directors Dining Chair"
+          "altText": "Cameron Wheat Directors Dining Chair"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SEATING/CHAIRDINING/CAMERON 1.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Cameron Directors Dining Chair"
+          "altText": "Cameron Wheat Directors Dining Chair"
         }
       ],
       "primaryImage": {
@@ -8395,7 +8395,7 @@
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
-        "altText": "Cameron Directors Dining Chair"
+        "altText": "Cameron Wheat Directors Dining Chair"
       },
       "imageCount": 2,
       "publicReady": true,
@@ -12727,7 +12727,7 @@
       "publicReady": true,
       "scrapedOrder": 297,
       "subcategory": null,
-      "ownerSiteRank": 16,
+      "ownerSiteRank": 14,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -25057,7 +25057,7 @@
       "publicReady": true,
       "scrapedOrder": 582,
       "subcategory": null,
-      "ownerSiteRank": 15,
+      "ownerSiteRank": 13,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -25280,7 +25280,7 @@
       "publicReady": true,
       "scrapedOrder": 588,
       "subcategory": null,
-      "ownerSiteRank": 14,
+      "ownerSiteRank": 12,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -28056,7 +28056,7 @@
       "publicReady": true,
       "scrapedOrder": 653,
       "subcategory": null,
-      "ownerSiteRank": 17,
+      "ownerSiteRank": 15,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -35934,6 +35934,108 @@
       "liveSubcategories": [
         "Accents"
       ]
+    },
+    {
+      "id": "X9001",
+      "sourceUrl": "https://www.eclectichive.com/dining/zoe-bleached-oak-dining-chair",
+      "slug": "zoe-bleached-oak-dining-chair-X9001",
+      "categorySlug": "seating",
+      "displayCategory": "Seating",
+      "title": "Zoe Bleached Oak Dining Chair",
+      "description": null,
+      "dimensions": "25\"W x 20\"D x 30\"H",
+      "stockedQuantity": "4",
+      "isCustomOrder": false,
+      "confidence": 1,
+      "needsManualReview": false,
+      "images": [
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/zoe-bleached-oak-dining-chair/01-ZOE_Chair.png",
+          "position": 0,
+          "isHero": true,
+          "inferredFilename": null,
+          "altText": "Zoe Bleached Oak Dining Chair"
+        }
+      ],
+      "primaryImage": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/zoe-bleached-oak-dining-chair/01-ZOE_Chair.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "Zoe Bleached Oak Dining Chair"
+      },
+      "imageCount": 1,
+      "publicReady": true,
+      "scrapedOrder": 9001,
+      "subcategory": null,
+      "ownerSiteRank": 6,
+      "colorHex": null,
+      "colorHexSecondary": null,
+      "colorLightness": null,
+      "colorHue": null,
+      "colorChroma": null,
+      "colorFamily": null,
+      "colorTemperature": null,
+      "colorNeedsReview": false,
+      "tonalRank": null,
+      "variants": [],
+      "liveCategory": "dining",
+      "liveSubcategories": [
+        "Dining Chairs"
+      ],
+      "forcedOverride": true,
+      "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
+    },
+    {
+      "id": "X9002",
+      "sourceUrl": "https://www.eclectichive.com/dining/gerwyn-grey-dining-chiar",
+      "slug": "gerwyn-grey-dining-chiar-X9002",
+      "categorySlug": "seating",
+      "displayCategory": "Seating",
+      "title": "Gerwyn Grey Dining Chiar",
+      "description": null,
+      "dimensions": "18\"W x 22\"D x 33\"H",
+      "stockedQuantity": "4",
+      "isCustomOrder": false,
+      "confidence": 1,
+      "needsManualReview": false,
+      "images": [
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/gerwyn-grey-dining-chiar/01-GERWYN_Chair.png",
+          "position": 0,
+          "isHero": true,
+          "inferredFilename": null,
+          "altText": "Gerwyn Grey Dining Chiar"
+        }
+      ],
+      "primaryImage": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/gerwyn-grey-dining-chiar/01-GERWYN_Chair.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "Gerwyn Grey Dining Chiar"
+      },
+      "imageCount": 1,
+      "publicReady": true,
+      "scrapedOrder": 9002,
+      "subcategory": null,
+      "ownerSiteRank": 8,
+      "colorHex": null,
+      "colorHexSecondary": null,
+      "colorLightness": null,
+      "colorHue": null,
+      "colorChroma": null,
+      "colorFamily": null,
+      "colorTemperature": null,
+      "colorNeedsReview": false,
+      "tonalRank": null,
+      "variants": [],
+      "liveCategory": "dining",
+      "liveSubcategories": [
+        "Dining Chairs"
+      ],
+      "forcedOverride": true,
+      "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
     }
   ],
   "facets": [
@@ -36013,7 +36115,7 @@
       "count": 3
     }
   ],
-  "total": 610,
+  "total": 612,
   "meta": {
     "generatedAt": "2026-05-07T08:55:28.324Z",
     "totalRecords": 610,
