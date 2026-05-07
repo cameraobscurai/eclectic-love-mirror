@@ -12734,7 +12734,7 @@
       "publicReady": true,
       "scrapedOrder": 297,
       "subcategory": null,
-      "ownerSiteRank": 14,
+      "ownerSiteRank": 16,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -25089,7 +25089,7 @@
       "publicReady": true,
       "scrapedOrder": 582,
       "subcategory": null,
-      "ownerSiteRank": 13,
+      "ownerSiteRank": 15,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -25312,7 +25312,7 @@
       "publicReady": true,
       "scrapedOrder": 588,
       "subcategory": null,
-      "ownerSiteRank": 12,
+      "ownerSiteRank": 14,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -28088,7 +28088,7 @@
       "publicReady": true,
       "scrapedOrder": 653,
       "subcategory": null,
-      "ownerSiteRank": 15,
+      "ownerSiteRank": 17,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -36068,6 +36068,108 @@
       ],
       "forcedOverride": true,
       "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
+    },
+    {
+      "id": "X9003",
+      "sourceUrl": "https://www.eclectichive.com/dining/nero-5-round-grey-dining-table",
+      "slug": "nero-5-round-grey-dining-table-X9003",
+      "categorySlug": "tables",
+      "displayCategory": "Tables",
+      "title": "Nero 5' Round Dining Table",
+      "description": null,
+      "dimensions": "5'W x 5'D x 30'H",
+      "stockedQuantity": "1",
+      "isCustomOrder": false,
+      "confidence": 1,
+      "needsManualReview": false,
+      "images": [
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/nero-5-round-dining-table/01-NERO_Dining_Table.png",
+          "position": 0,
+          "isHero": true,
+          "inferredFilename": null,
+          "altText": "Nero 5' Round Dining Table"
+        }
+      ],
+      "primaryImage": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/nero-5-round-dining-table/01-NERO_Dining_Table.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "Nero 5' Round Dining Table"
+      },
+      "imageCount": 1,
+      "publicReady": true,
+      "scrapedOrder": 9003,
+      "subcategory": null,
+      "ownerSiteRank": 12,
+      "colorHex": null,
+      "colorHexSecondary": null,
+      "colorLightness": null,
+      "colorHue": null,
+      "colorChroma": null,
+      "colorFamily": null,
+      "colorTemperature": null,
+      "colorNeedsReview": false,
+      "tonalRank": null,
+      "variants": [],
+      "liveCategory": "dining",
+      "liveSubcategories": [
+        "Dining Tables"
+      ],
+      "forcedOverride": true,
+      "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
+    },
+    {
+      "id": "X9004",
+      "sourceUrl": "https://www.eclectichive.com/dining/kohl-5-round-dining-table",
+      "slug": "kohl-5-round-dining-table-X9004",
+      "categorySlug": "tables",
+      "displayCategory": "Tables",
+      "title": "Kohl 5' Round Dining Table",
+      "description": null,
+      "dimensions": "5'W x 5'D x 30'H",
+      "stockedQuantity": "1",
+      "isCustomOrder": false,
+      "confidence": 1,
+      "needsManualReview": false,
+      "images": [
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/kohl-5-round-dining-table/01-KOHL_Dining_Table.png",
+          "position": 0,
+          "isHero": true,
+          "inferredFilename": null,
+          "altText": "Kohl 5' Round Dining Table"
+        }
+      ],
+      "primaryImage": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/dining/kohl-5-round-dining-table/01-KOHL_Dining_Table.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "Kohl 5' Round Dining Table"
+      },
+      "imageCount": 1,
+      "publicReady": true,
+      "scrapedOrder": 9004,
+      "subcategory": null,
+      "ownerSiteRank": 13,
+      "colorHex": null,
+      "colorHexSecondary": null,
+      "colorLightness": null,
+      "colorHue": null,
+      "colorChroma": null,
+      "colorFamily": null,
+      "colorTemperature": null,
+      "colorNeedsReview": false,
+      "tonalRank": null,
+      "variants": [],
+      "liveCategory": "dining",
+      "liveSubcategories": [
+        "Dining Tables"
+      ],
+      "forcedOverride": true,
+      "forcedNote": "Injected — not in current RMS export (owner approval 2026-05-07)"
     }
   ],
   "facets": [
@@ -36147,7 +36249,7 @@
       "count": 3
     }
   ],
-  "total": 612,
+  "total": 614,
   "meta": {
     "generatedAt": "2026-05-07T08:55:28.324Z",
     "totalRecords": 610,
