@@ -94,11 +94,13 @@ export function AtelierTeam() {
       <ul
         className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16"
       >
-        {visibleMembers.map((member) => {
+        {visibleMembers.map((member, index) => {
           const showImage = !!member.image && member.image.approvedForWeb;
-          // THE HIVE sits below the fold (section 2 of 6, after the full-
-          // height hero). Every portrait lazy-loads on approach — no above-
-          // the-fold exception, no fetchPriority hints.
+          // First row (lg: 4 cols, md: 3, base: 2) is just-below-fold after
+          // the hero. Load those eagerly with high priority so they paint
+          // immediately. Everything else lazy-loads with a generous
+          // prefetch margin so it's already in flight by scroll time.
+          const isFirstRow = index < 4;
           return (
             <li key={member.name}>
               <MediaAperture
@@ -111,7 +113,9 @@ export function AtelierTeam() {
                     : `Portrait slot for ${member.name}`
                 }
                 sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
-                lazy
+                lazy={!isFirstRow}
+                fetchPriority={isFirstRow ? "high" : undefined}
+                prefetchMargin="1400px"
                 className={member.imageClassName}
               />
               <p className="mt-5 font-display text-lg md:text-xl leading-tight text-charcoal">
