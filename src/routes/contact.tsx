@@ -22,24 +22,7 @@ import { useInquiry } from "@/hooks/use-inquiry";
 //   • Success state clears the inquiry store. Failure surfaces hello@…
 // ---------------------------------------------------------------------------
 
-const FAQ_ITEMS = [
-  {
-    q: "WHAT WE OFFER",
-    a: "Full-service design, fabrication, and production — or rental-only access to the Hive Signature Collection. Engagements include space planning + CAD, 3-D modeling, vendor management, on-site logistics, and run of show.",
-  },
-  {
-    q: "HOW TO BEGIN A PROPOSAL",
-    a: "After a consultation call we'll prepare a one to two-page Style Guide that visually summarizes the design direction. A non-refundable Creative Services Fee and signed contract secures the date and unlocks the full proposal and detailed estimate.",
-  },
-  {
-    q: "TRAVEL",
-    a: "Eclectic Hive is a destination design house. Projects take us domestic and international — desert, mountains, and the Caribbean. Travel fees include accommodations, per diems, and mileage.",
-  },
-  {
-    q: "MINIMUMS",
-    a: "We don't set fixed minimums. Availability shifts with the team's existing committed work and the seasonality of inquiries. Each opportunity is reviewed together to make sure we can deliver the requested scope.",
-  },
-];
+// FAQ items removed from view for now.
 
 const SCOPE_OPTIONS = [
   "Full-service design + production",
@@ -220,16 +203,16 @@ function ContactPage() {
       style={{ paddingTop: "calc(var(--nav-h) + 2rem)" }}
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16">
+        <div className="grid xl:grid-cols-12 gap-12 xl:gap-16">
           {/* LEFT — editorial intro */}
-          <aside className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
+          <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               CONTACT
             </p>
-            <h1 className="mt-6 font-display text-[clamp(2.5rem,6vw,4.5rem)] leading-[0.98] uppercase tracking-[0.04em]">
+            <h1 className="mt-6 text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] uppercase tracking-[0.06em] font-light text-charcoal">
               LET'S COLLABORATE
             </h1>
-            <p className="mt-8 max-w-md text-[13px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/70">
+            <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
               We would love to hear about your project and how we can support
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
@@ -258,7 +241,7 @@ function ContactPage() {
           </aside>
 
           {/* RIGHT — single form */}
-          <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
+          <section id="inquiry" className="xl:col-span-7 scroll-mt-32">
             {success ? (
               <SuccessPanel />
             ) : (
@@ -411,50 +394,7 @@ function ContactPage() {
           </section>
         </div>
 
-        {/* FAQ — anchor target for /contact#faq */}
-        <section id="faq" className="mt-32 scroll-mt-32">
-          <div
-            className="border-t pt-10"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              FREQUENTLY ASKED
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.05] uppercase tracking-[0.04em]">
-              WORKING WITH THE STUDIO
-            </h2>
-
-            <ul
-              className="mt-10 divide-y max-w-3xl"
-              style={{ borderColor: "var(--archive-rule)" }}
-            >
-              {FAQ_ITEMS.map((item) => (
-                <li
-                  key={item.q}
-                  className="border-t first:border-t-0"
-                  style={{ borderColor: "var(--archive-rule)" }}
-                >
-                  <details className="group">
-                    <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                      <span className="font-display text-xl uppercase tracking-[0.06em]">
-                        {item.q}
-                      </span>
-                      <span
-                        aria-hidden
-                        className="text-charcoal/45 text-lg transition-transform group-open:rotate-45 select-none"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="pb-6 max-w-2xl text-[15px] leading-relaxed text-charcoal/75">
-                      {item.a}
-                    </p>
-                  </details>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        {/* FAQ hidden for now */}
       </div>
     </main>
   );
@@ -479,7 +419,7 @@ function FormSection({
       style={{ borderColor: "var(--archive-rule)" }}
     >
       <div className="flex items-baseline gap-4 mb-10">
-        <span className="font-display text-base text-charcoal/40 tabular-nums">
+        <span className="text-base text-charcoal/40 tabular-nums">
           {number}
         </span>
         <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/55">
