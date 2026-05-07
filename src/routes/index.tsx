@@ -110,32 +110,37 @@ function HomePage() {
                 • Measured spacing snaps to a 12px baseline (1.5rem · 0.75rem · 0.5rem)
           */}
           <div
-            className={cn(
-              "px-8 lg:px-12 transition-opacity duration-700",
-              loaded ? "opacity-100" : "opacity-0",
-            )}
-            style={{ paddingTop: "clamp(6rem, 9vh, 7.5rem)", paddingBottom: "clamp(1.25rem, 2.5vh, 2rem)" }}
+            className="px-8 lg:px-12"
+            style={{ paddingTop: "clamp(5.5rem, 8vh, 7rem)", paddingBottom: "clamp(1.25rem, 2.5vh, 2rem)" }}
           >
             <div className="mx-auto max-w-6xl">
-
               <h1
-                className="text-center font-brand text-charcoal"
+                className={cn(
+                  "text-center font-display text-charcoal transition-[opacity,transform,letter-spacing] ease-out",
+                  loaded
+                    ? "opacity-100 translate-y-0 [letter-spacing:-0.012em]"
+                    : "opacity-0 translate-y-2 [letter-spacing:0.04em]",
+                )}
                 style={{
-                  fontWeight: 600,
-                  letterSpacing: "-0.008em",
-                  fontSize: "clamp(2.25rem, 5.2vw, 4rem)",
-                  lineHeight: 0.98,
+                  fontWeight: 400,
+                  fontSize: "clamp(3rem, 7vw, 6rem)",
+                  lineHeight: 0.95,
+                  transitionDuration: "1100ms",
                 }}
               >
                 ECLECTIC HIVE
               </h1>
 
               <p
-                className="mx-auto mt-2.5 md:mt-3 max-w-xl text-center font-brand italic text-charcoal/65"
+                className={cn(
+                  "mx-auto mt-3 md:mt-4 max-w-xl text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
+                  loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
+                )}
                 style={{
                   fontWeight: 400,
-                  fontSize: "clamp(0.9rem, 1.15vw, 1.05rem)",
+                  fontSize: "clamp(0.95rem, 1.2vw, 1.1rem)",
                   lineHeight: 1.4,
+                  transitionDelay: loaded ? "350ms" : "0ms",
                 }}
               >
                 Designing for Weddings, Corporate, &amp; Social Events
@@ -143,13 +148,16 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Filmstrip — center stage */}
+          {/* Filmstrip — staged reveal after wordmark settles */}
           <div
             className={cn(
-              "transition-opacity duration-1000",
-              loaded ? "opacity-100" : "opacity-0",
+              "transition-all ease-out",
+              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
             )}
-            style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
+            style={{
+              transitionDuration: "1200ms",
+              transitionDelay: loaded ? "650ms" : "0ms",
+            }}
           >
             <HeroFilmstrip />
           </div>
