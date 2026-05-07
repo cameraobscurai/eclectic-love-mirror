@@ -176,15 +176,12 @@ export function GalleryLightbox({
               {(plateIndex + 1).toString().padStart(2, "0")} /{" "}
               {plates.length.toString().padStart(2, "0")}
             </p>
-            <p className="mt-8 text-[10px] uppercase tracking-[0.3em] text-cream/55">
-              {project.region.toUpperCase()}
-            </p>
-            <h2 className="mt-4 font-display text-[clamp(2.5rem,4vw,3.5rem)] leading-[1.02] tracking-[-0.005em]">
+            <h2 className="mt-8 font-display text-[clamp(2.5rem,4vw,3.5rem)] leading-[1.02] tracking-[-0.005em]">
               {project.name}
             </h2>
             <div className="mt-4 h-px w-12 bg-cream/25" aria-hidden />
-            <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-cream/65">
-              {project.location} · {project.kind} · {project.year}
+            <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-cream/65 tabular-nums">
+              {project.year}
             </p>
 
             {project.summary && (
