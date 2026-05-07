@@ -293,11 +293,11 @@ function HomePage() {
           }}
         >
           <motion.div
-            className="font-brand text-cream/85 uppercase whitespace-nowrap text-center -translate-y-1/2"
+            className="font-brand text-cream/90 uppercase whitespace-nowrap text-center -translate-y-1/2"
             style={{
-              fontWeight: 400,
+              fontWeight: 300,
               letterSpacing: reduced ? `${BASE_LETTER_SPACING}em` : letterSpacingMV,
-              fontSize: "clamp(1rem, 6.2vw, 5.25rem)",
+              fontSize: "clamp(0.9rem, 5vw, 4.25rem)",
               lineHeight: 1,
               textShadow: parallaxOn
                 ? textShadow
