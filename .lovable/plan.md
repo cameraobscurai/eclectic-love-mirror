@@ -1,107 +1,129 @@
-# Mirror live Squarespace inventory → dedicated `squarespace-mirror` bucket
+## Two things in one pass
 
-## Revised approach (per your feedback)
+---
 
-Two changes from the prior plan:
+## 1. Lagos Swivel Chair — fix the blank tile
 
-1. **New isolated bucket** — `squarespace-mirror` (public read, admin write). Keeps owner-uploaded `inventory/` bucket pristine and untouched. If we ever need to wipe the squarespace pull, it's a single bucket drop.
-2. **Truth = live site only** — we pull from `eclectichive.com`'s live JSON feeds and only mirror what the site currently shows. Anything no longer on the site is left alone (not deleted, not mirrored).
+**Diagnosis (confirmed against DB + storage):**
 
-## Live source
+- `inventory_items` row for Lagos (`rms_id=4161`) has `images[0] = .../02-LAGOS_1.png` — that file **404s** in the bucket.
+- The real files in storage are `01-LAGOS_Swivel_Chair.png` and `02-LAGOS_Swivel_Chair.png` (both return 200, ~485KB each).
+- The baked catalog JSON (`current_catalog.json`, the file the Collection page actually reads on first paint) already points at the correct `02-LAGOS_Swivel_Chair.png` URL — **so the JSON is right, the DB is wrong**.
+- Why the tile still shows blank: the previous swap edited the JSON, but on the next bake the script will overwrite it with whatever's in the DB row. The DB is the source of truth — JSON is a snapshot.
 
-`https://www.eclectichive.com/inventory` redirects to the Lounge nav. The 10 live category indexes (from the site nav) are:
-
-```
-lounge · lounge-tables · cocktail-bar · dining · tableware
-lighting · textiles · rugs · styling · large-decor
-```
-
-Each supports `?format=json-pretty` which returns the canonical product list + per-product detail (title, slug, gallery, body, variants). We already have a working harvester at `scripts/audit/harvest-live-products.mjs` and recent output at `scripts/audit/live-products.json` — we'll re-run it fresh so we're working from today's live state.
-
-## Step 1 — Create the bucket (migration)
+**Fix:** one-row migration that rewrites Lagos's `images` array in `inventory_items` to the two real filenames (`01-…Swivel_Chair.png` first as hero, `02-…Swivel_Chair.png` second), then re-bake the catalog so JSON and DB agree. No other rows touched.
 
 ```sql
-insert into storage.buckets (id, name, public)
-  values ('squarespace-mirror', 'squarespace-mirror', true);
-
--- public read
-create policy "Public read squarespace-mirror"
-  on storage.objects for select
-  using (bucket_id = 'squarespace-mirror');
-
--- admin write/update/delete
-create policy "Admins write squarespace-mirror"
-  on storage.objects for insert to authenticated
-  with check (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
-
-create policy "Admins update squarespace-mirror"
-  on storage.objects for update to authenticated
-  using (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
-
-create policy "Admins delete squarespace-mirror"
-  on storage.objects for delete to authenticated
-  using (bucket_id = 'squarespace-mirror' and has_role(auth.uid(),'admin'));
+UPDATE inventory_items
+SET images = ARRAY[
+  '.../squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png',
+  '.../squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png'
+]
+WHERE rms_id = '4161';
 ```
 
-## Step 2 — Refresh live truth (no writes)
+Then `bun scripts/bake-catalog.mjs` to refresh the JSON.
 
-`scripts-tmp/sqs-live-harvest.mjs` (thin wrapper around existing harvester):
-- Hits each of the 10 category JSON feeds
-- For every product: collects `slug`, `title`, `categories[]`, `fullUrl`, `body` (description), `excerpt`, `gallery[]` (full asset URLs at `?format=2500w`), `variants[]`
-- Writes `scripts-tmp/sqs-live-truth.json` and a summary `.txt` showing per-category counts, total unique products, total unique image URLs
+---
 
-This is read-only on the live site; no DB or storage writes.
+## 2. "Wall" view — port the Lab grid to Collection
 
-## Step 3 — Build mirror manifest (dry-run, no writes)
+A second toggle next to the existing density toggle (the two icons in your screenshot). Clicking it swaps the current scroll-paginated `?view=` for a **viewport-locked specimen wall** of the active subcategory.
 
-`scripts-tmp/sqs-mirror-dryrun.mjs`:
-- For every unique gallery URL across the live truth: compute target path
-  `<category>/<product-slug>/<NN>-<sanitized-filename>.<ext>`
-  e.g. `lounge/indiwin-black-leather-sofa/01-INDIWIN_Sofa_0.png`
-  (deterministic, human-readable, easy to spot-check in the bucket UI)
-- HEAD each URL — record reachable / 4xx / size / content-type
-- Match each live product → existing `inventory_items` row by:
-  1. `rms_id`/slug exact (won't match — squarespace uses different slugs)
-  2. **normalized title exact** (primary signal, already proven in earlier reconcile work)
-  3. fuzzy fallback only logged for review, never auto-applied
-- Per-row plan shows `{slug_live, title_live, matched_rms_id, current_images, proposed_images}` where `proposed_images` reorders to put the live hero first then live gallery
-- Rows with no DB match are listed separately as "live but unbound" — left for manual review, never silently dropped
+### Where it lives
 
-Outputs:
-- `scripts-tmp/sqs-mirror-manifest.json`
-- `scripts-tmp/sqs-mirror-summary.txt` (per-category counts, # to upload, # already-mirrored, # match / no-match, total bytes est.)
+- New URL value: `view=wall` (existing param, currently empty).
+- Toggle UI sits **immediately right** of the density toggle in the utility bar (collection.tsx ~line 800). Same 40×40 buttons, same border treatment. Two icons: list/grid (current) and wall (4×4 dense). Only visible when a subcategory is active (wall makes no sense on the overview).
+- Density toggle hides when `view=wall` (density is meaningless — the wall auto-fits).
 
-You review the summary, spot-check 5–10 rows. Nothing has been written.
+### What it renders
 
-## Step 4 — Apply (mirror + rebind)
+A new component `src/components/collection/CollectionWall.tsx` that mirrors `LabGrid` + `LabTile` from the Local Lvrs project, with these adjustments for Hive:
 
-`scripts-tmp/sqs-mirror-apply.mjs`:
-1. For each unique URL: `fetch` → `supabase.storage.from('squarespace-mirror').upload(path, buf, { upsert: true })`. Build `remap: cdnUrl → storageUrl`.
-2. Concurrency 4, 100ms gap. ~266 unique URLs (could grow if today's live count is higher) — minutes.
-3. For each matched row: rewrite `images[]` using remap (preserve order; live hero stays hero), `update inventory_items set images=$new where rms_id=$rms`.
-4. Rows that lose all storage references (because every URL came from squarespace) end up fully on `squarespace-mirror`. Rows that had a mix of owner-uploaded `inventory/` images keep them untouched alongside the new mirror URLs.
-5. Writes `scripts-tmp/sqs-mirror-result.json` with per-URL outcome and per-row before/after `images[]` for rollback.
+| Lab original | Hive port |
+|---|---|
+| Black `#000` background, `bg-border/30` grout | `var(--paper)` (#ffffff) background, `bg-charcoal/8` 1px grout — keeps cutout-on-white aesthetic |
+| `scale: 3.2` on hover | `scale: 2.6` — Hive products have less padding, 3.2 clips edges |
+| `framer-motion` springs (`stiffness: 380 / damping: 32`) | Same — they're tuned right |
+| `dim 0.18` on non-hovered | `0.12` — Hive's white-on-white needs a deeper dim to read |
+| `pulse` ambient blip | Drop it — too playful for Hive register |
+| Mobile loupe | Keep, but ring uses `mix-blend-multiply` not `difference` (white background) |
+| Hero shoe entry screen | Skip — Collection already has the heading & rail; wall mounts directly |
+| `framer-motion` import | Already in deps, reuse |
 
-Safeguards:
-- `upsert: true` → re-runnable
-- Per-URL try/catch → one bad URL doesn't abort
-- Per-row try/catch → partial failure is logged, never half-written
-- Verification SQL after: `select count(*) from inventory_items where images::text like '%squarespace-cdn%'` should equal **only** the unmatched-row count.
+### Layout math (the part that makes it work)
 
-## Step 5 — Re-bake catalog
+The auto-fit `cols × rows` solver from `LabGrid` is copied verbatim. It runs against the available area: viewport height minus nav + heading + utility bar + subcategory rail (computed from existing `--nav-h` and `--collection-heading-h` CSS vars + a new `--utility-bar-h`). The container becomes `position: absolute` inset-0 inside a `position: relative` shell sized to that remaining viewport, exactly like Lab.
 
-`node scripts/bake-catalog.mjs` to refresh `src/data/inventory/current_catalog.json`. Visual sweep on `/collection?category=pillows-throws` (heaviest) and `/collection?category=tableware`.
+For very large subcategories (Tableware = 173, Pillows = 161) we cap at the same 240 ceiling Lab uses; the rest are reachable by switching back to scroll view. We'll surface a small `"Showing 240 / 173"` line in the bottom meta only if trimmed.
 
-## Out of scope (intentional)
+### Component structure
 
-- Does **not** touch the 7 imageless rows (no live source).
-- Does **not** rebind 88 falsely-shared heroes (separate taste pass).
-- Does **not** delete or alter anything in the existing `inventory` bucket.
-- Does **not** add/remove products from DB — only updates `images[]` for live-matched rows.
+```
+src/components/collection/
+  CollectionWall.tsx       # auto-fit grid, derived from LabGrid
+  CollectionWallTile.tsx   # two-layer motion, derived from LabTile
+```
 
-## Cost
-- ~266+ image fetches from squarespace, equal number of uploads to the new bucket (~50–150 MB).
-- ~220+ row updates, single column.
-- All idempotent. Step 2/3 are pure reads.
+Both are self-contained — no edits to ProductTile (scroll view stays untouched).
 
-Approve and I'll: run the migration to create `squarespace-mirror`, refresh the live truth file, then share the dry-run summary before any uploads or DB writes.
+### Wiring in collection.tsx
+
+```text
+{view === "wall" ? (
+  <CollectionWall products={visibleProducts} />
+) : (
+  <ScrollGrid ... />   // existing block
+)}
+```
+
+The IntersectionObserver pagination, density toggle, and infinite-scroll batches all stay; they just don't run when `view=wall`. Switching modes preserves `group`, `subcategory`, `q`, `sort` — only `view` flips.
+
+### Interaction details to keep from Lab
+
+- `gap-px` hairline grout (re-tuned to charcoal/8 against white)
+- `overflow-visible` on tile wrappers so the zoomed image breaks past its cell
+- `memo()` with custom equality on the tile — no re-render storms across 200+ tiles
+- `willChange: "transform, opacity"` for compositor promotion
+- Spring on scale, ease-out cubic on opacity (separated curves)
+- Dim-everyone-on-any-hover for the "isolate" feel
+- rAF-throttled touch handler for the mobile loupe
+
+### What's intentionally NOT ported
+
+- The "Enter the Wall" hero/CTA splash screen — Collection already has context
+- Ambient pulse — too playful
+- `mix-blend-difference` ring — wrong for white bg
+- `getUniqueModels()` dedupe — Hive items are already unique
+- `Lab / 001` and "Wall of Love" copy — replaced with subcategory name + count
+
+### Edge cases handled
+
+- Subcategory with <12 products → solver picks fewer cols, tiles get bigger (still fills viewport)
+- Subcategory with >240 → trim notice in bottom meta
+- Resize / rotate → ResizeObserver re-runs the solver
+- Switch to wall while scrolled → snap to top
+- Switch back to scroll → restore previous scroll position (we already track `lastScrollY` in collection.tsx)
+
+---
+
+## Files
+
+**Edits**
+- `src/routes/collection.tsx` — add wall toggle button next to density toggle (~line 800), add `view === "wall"` branch in the body (~line 966), hide density when wall is active
+- `inventory_items` (Lagos row only) — one-row migration
+
+**New**
+- `src/components/collection/CollectionWall.tsx`
+- `src/components/collection/CollectionWallTile.tsx`
+
+**Regenerate**
+- `src/data/inventory/current_catalog.json` via `bun scripts/bake-catalog.mjs`
+
+No schema changes. No new deps. ~250 lines new code, ~20 lines edited in collection.tsx.
+
+---
+
+## Open question before I build
+
+Should the wall be **per-subcategory only** (e.g. Lounge Seating wall = ~70 chairs), or also available on the **whole-parent view** (Seating wall = all 102)? Lab uses the whole catalog, but Hive's parents go up to 173 items which would force a heavy trim. My recommendation: **subcategory-only** for now — it preserves the "specimen tray" feel without truncating. Easy to widen later. Let me know if you want it on parent-level too.
