@@ -244,9 +244,9 @@ function FilmstripFrame({
         )}
       </figure>
 
-      {/* Caption — sits beneath the frame, bottom-left aligned */}
+      {/* Caption — sits beneath the frame, bottom-left aligned with a small gutter */}
       <figcaption
-        className="mt-2 md:mt-3 flex items-baseline gap-1.5 font-brand text-charcoal"
+        className="mt-2 md:mt-3 px-3 md:px-4 flex items-baseline gap-1.5 font-brand text-charcoal"
         style={{ fontWeight: 400 }}
       >
         <span
