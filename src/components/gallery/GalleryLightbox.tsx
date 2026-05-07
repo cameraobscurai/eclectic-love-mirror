@@ -135,7 +135,7 @@ export function GalleryLightbox({
             alt={plate.alt}
             decoding="async"
             {...({ fetchPriority: "high" } as Record<string, string>)}
-            className="absolute inset-0 w-full h-full object-cover animate-fade-in"
+            className="absolute inset-0 w-full h-full object-contain animate-fade-in"
             draggable={false}
           />
 
