@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { HeroFilmstrip } from "@/components/home/HeroFilmstrip";
+import { EvolutionNarrative } from "@/components/home/EvolutionNarrative";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
