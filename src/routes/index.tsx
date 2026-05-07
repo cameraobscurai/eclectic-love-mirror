@@ -82,7 +82,7 @@ function HomePage() {
         {/* Filmstrip — center stage */}
         <div
           className={cn(
-            "flex-1 flex items-center transition-opacity duration-1000",
+            "transition-opacity duration-1000",
             loaded ? "opacity-100" : "opacity-0",
           )}
           style={{ transitionDelay: loaded ? "150ms" : "0ms" }}
