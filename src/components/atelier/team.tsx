@@ -111,7 +111,8 @@ export function AtelierTeam() {
             <li key={member.name}>
               <MediaAperture
                 ratio="4/5"
-                src={showImage ? member.image!.src : undefined}
+                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 70 }) : undefined}
+                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 70) : undefined}
                 alt={
                   showImage
                     ? member.image!.alt
