@@ -278,7 +278,7 @@ function ContactPage() {
                       <UnderlineInput
                         value={projectDate}
                         onChange={setProjectDate}
-                        placeholder="e.g. October 2026"
+                        placeholder="E.G. OCTOBER 2026"
                       />
                     </Field>
                   </div>
