@@ -39,10 +39,13 @@ function CollectionWallTileImpl({ product, index = 999, isHovered, isAnyHovered,
         {url && (
           <img
             src={url}
-            alt=""
+            srcSet={srcSet}
+            sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 48vw"
+            alt={product.primaryImage?.altText ?? product.title}
             className="w-full h-full object-contain p-[8%] pointer-events-none select-none"
-            loading="lazy"
+            loading={eager ? "eager" : "lazy"}
             decoding="async"
+            {...({ fetchPriority: eager ? "high" : "low" } as Record<string, string>)}
             draggable={false}
           />
         )}
