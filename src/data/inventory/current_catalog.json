@@ -22297,28 +22297,21 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/625dcc56be3200375b299370/1757537791515/",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650314390023-CR6TAXTQTBX7ZYJ9RKUT/LARS+Dining+Table.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Lars 8' Bleached Oak Dining Table"
-        },
-        {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650314390023-CR6TAXTQTBX7ZYJ9RKUT/LARS+Dining+Table.png",
-          "position": 1,
-          "isHero": false,
           "inferredFilename": null,
           "altText": "Lars 8' Bleached Oak Dining Table"
         }
       ],
       "primaryImage": {
-        "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/625dcc56be3200375b299370/1757537791515/",
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650314390023-CR6TAXTQTBX7ZYJ9RKUT/LARS+Dining+Table.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Lars 8' Bleached Oak Dining Table"
       },
-      "imageCount": 2,
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 515,
       "subcategory": null,
@@ -33950,28 +33943,21 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/625dcaa0c5cf985c51c10a08/1757537791518/",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650313958201-6DANM2SA3ILX0POJ515Y/TOVE+Dining+Table.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Tove 8' Grey Dining Table"
-        },
-        {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650313958201-6DANM2SA3ILX0POJ515Y/TOVE+Dining+Table.png",
-          "position": 1,
-          "isHero": false,
           "inferredFilename": null,
           "altText": "Tove 8' Grey Dining Table"
         }
       ],
       "primaryImage": {
-        "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5fa1c4687ba2276621cbdb67/625dcaa0c5cf985c51c10a08/1757537791518/",
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1650313958201-6DANM2SA3ILX0POJ515Y/TOVE+Dining+Table.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Tove 8' Grey Dining Table"
       },
-      "imageCount": 2,
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 786,
       "subcategory": null,
