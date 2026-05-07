@@ -103,13 +103,14 @@ function fuzzyMatch(liveTitle, liveCat){
   let best = null, bestScore = 0, tied = false;
   for (const r of dbRows) {
     if (internalCat && r.category && r.category !== internalCat) continue;
+    // Form-factor + size MUST match exactly (sofa vs loveseat = reject)
+    if (!blockingMatches(liveTitle, r.title)) continue;
     const rt = tokens(r.title);
     if (rt.length === 0) continue;
     const overlap = rt.filter(t=>liveSet.has(t)).length;
     if (overlap < 2) continue;
-    // require overlap to be majority of the smaller token set (anti-coincidence)
     const minLen = Math.min(lt.length, rt.length);
-    if (overlap / minLen < 0.5) continue;
+    if (overlap / minLen < 0.6) continue;
     if (overlap > bestScore) { best = r; bestScore = overlap; tied = false; }
     else if (overlap === bestScore) { tied = true; }
   }
