@@ -60,10 +60,10 @@ export function GalleryFilmstrip({
   const padded = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <section aria-label="Project filmstrip" className="pb-16">
+    <section aria-label="Project filmstrip" className="pb-20 lg:pb-28">
       <ul
         ref={scrollerRef}
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 lg:px-12 pb-4 scrollbar-hide"
+        className="flex gap-8 lg:gap-10 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 lg:px-12 pb-6 scrollbar-hide"
       >
         {projects.map((p, i) => (
           <GalleryProjectCard
@@ -79,21 +79,21 @@ export function GalleryFilmstrip({
       </ul>
 
       {/* Progress + scroll hint */}
-      <div className="px-6 lg:px-12 mt-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4">
-          <span className="text-cream/40 text-xs tracking-[0.18em] tabular-nums">
+      <div className="px-6 lg:px-12 mt-8 max-w-7xl mx-auto">
+        <div className="flex items-center gap-5">
+          <span className="text-cream/55 text-[10px] uppercase tracking-[0.28em] tabular-nums">
             {padded(activeIndex + 1)}
           </span>
           <div className="flex-1 h-px bg-cream/10 relative overflow-hidden">
             <div
-              className="absolute top-0 left-0 h-full bg-sand transition-all duration-300"
+              className="absolute top-0 left-0 h-full bg-cream/55 transition-all duration-300"
               style={{ width: `${total > 0 ? ((activeIndex + 1) / total) * 100 : 0}%` }}
             />
           </div>
-          <span className="text-cream/40 text-xs tracking-[0.18em] tabular-nums">
+          <span className="text-cream/30 text-[10px] uppercase tracking-[0.28em] tabular-nums">
             {padded(total)}
           </span>
-          <span className="hidden sm:inline-block text-cream/30 text-[10px] uppercase tracking-[0.24em] ml-2">
+          <span className="hidden sm:inline-block text-cream/30 text-[10px] uppercase tracking-[0.28em] ml-1">
             ↔ Scroll
           </span>
         </div>
