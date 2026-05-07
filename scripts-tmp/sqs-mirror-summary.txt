@@ -1,0 +1,43 @@
+MIRROR DRY-RUN — 2026-05-07T02:51:34.973Z
+
+Live products harvested:    610
+Matched to DB row:          335
+Ambiguous (>1 DB match):    0
+Unmatched (no DB row):      275
+Unique URLs to mirror:      469
+
+Per-DB-category (matched rows + URLs):
+  pillows-throws     rows= 95  urls=101
+  seating            rows= 75  urls=136
+  tables             rows= 44  urls=67
+  serveware          rows= 26  urls=31
+  styling            rows= 26  urls=38
+  bars               rows= 18  urls=24
+  rugs               rows= 15  urls=26
+  lighting           rows= 13  urls=15
+  large-decor        rows= 10  urls=14
+  storage            rows=  7  urls=10
+  chandeliers        rows=  5  urls=5
+  candlelight        rows=  1  urls=2
+
+Sample matched (first 5):
+  • Indiwin Black Leather Sofa  [lounge→seating]  2 imgs  rms=735
+  • Brooklyn Plush Charcoal Sofa  [lounge→seating]  2 imgs  rms=1770
+  • Stanhope Chocolate Leather Sofa  [lounge→seating]  1 imgs  rms=2983
+  • SYLVANUS GREEN & ASH SOFA  [lounge→seating]  2 imgs  rms=2619
+  • Silas Sage + Oak Cane Sofa  [lounge→seating]  3 imgs  rms=2715
+
+Sample unmatched (first 10):
+  • Antonella Cotton Velvet Loveseat  [lounge]  slug=antonella-cotton-velvet-loveseat
+  • Commodore Canvas Loveseat  [lounge]  slug=commodore
+  • Rowntree Leather Loveseat  [lounge]  slug=rowntree
+  • Elizabeth Velvet Sofa  [lounge]  slug=elizabeth
+  • Sidony Wood + White Loveseat  [lounge]  slug=sidony-wood-white-loveseat
+  • Fabian Grey Hide Chair  [lounge]  slug=fabian-grey-hide-chair
+  • Jesamay Armchair  [lounge]  slug=jesamay-armchair
+  • Elspeth Almond Velvet Chair  [lounge]  slug=elspeth-almond-velvet-chair
+  • Natori Fur Chair  [lounge]  slug=natori-fur-chair
+  • Florian Ivory Hide Chair  [lounge]  slug=florian-ivory-hide-chair
+
+Outputs:
+  scripts-tmp/sqs-mirror-manifest.json
