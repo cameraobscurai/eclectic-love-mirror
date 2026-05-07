@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useReducedMotion } from "framer-motion";
-import { Volume2, VolumeX, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
 
