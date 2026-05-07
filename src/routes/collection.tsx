@@ -752,6 +752,7 @@ function CollectionPage() {
                 className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
               >
                 <option value="type">By Type</option>
+                <option value="tonal">Tonal (preview)</option>
                 <option value="az">A–Z</option>
               </select>
 
