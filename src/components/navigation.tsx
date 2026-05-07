@@ -122,7 +122,11 @@ export function Navigation() {
           "backdrop-blur-md backdrop-saturate-150",
           "border-b",
           scrolled
-            ? "bg-charcoal/70 border-cream/10"
+            ? isWhitePage
+              ? "bg-white/85 border-charcoal/10"
+              : isLightPage
+              ? "bg-cream/85 border-charcoal/10"
+              : "bg-charcoal/70 border-cream/10"
             : isWhitePage
             ? "bg-white/65 border-charcoal/10"
             : isLightPage
