@@ -261,24 +261,7 @@ function FilmstripFrame({
         </button>
       )}
 
-      {/* Season caption — bottom-left, Saol Display (font-brand) */}
-      <figcaption
-        className="pointer-events-none absolute bottom-2 left-2 md:bottom-3 md:left-3 z-10 flex items-baseline gap-1.5 font-brand text-paper"
-        style={{
-          textShadow: "0 1px 8px rgba(26,26,26,0.55)",
-          fontWeight: 400,
-        }}
-      >
-        <span
-          className="text-[10px] md:text-[11px] tracking-[0.18em] opacity-80"
-          style={{ fontVariantNumeric: "tabular-nums" }}
-        >
-          {clip.id}
-        </span>
-        <span className="text-[11px] md:text-[13px] uppercase tracking-[0.2em]">
-          {clip.season}
-        </span>
-      </figcaption>
+      {clip.label && <figcaption className="sr-only">{clip.label}</figcaption>}
     </figure>
   );
 }
