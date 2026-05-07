@@ -1,0 +1,63 @@
+live_slug|live_title|live_cat|rms_id|db_title|db_cat|pts|margin|mutual|db_margin|runner_rms|runner_title|runner_pts|evidence
+deco|Deco Etched Alcohol Bottle|styling|1727|Deco Etched Agave Bottle|styling|6|0|true|6|1730|Deco Etched Bourbon Bottle|6|{"shared_tokens":["deco","etched","bottle"],"category":true,"slug_substr":true}
+elijah-antique-marble-top-console|Elijah Antique Marble Top Console|lounge-tables|2973|Elijah Marble Top Antique Console Table|tables|5|1|true|2|2974|Ezra Marble Top Antique Console Table|4|{"shared_tokens":["elijah","antique","marble","top"],"category":true}
+heston-black-horn-flatware|Heston Dark Brown Horn Flatware|tableware|2679|Heston Dark Brown Horn Butter Knife|tableware|5|0|true|5|2501|Heston Dark Brown Horn Dinner Fork|5|{"shared_tokens":["heston","dark","brown","horn"],"category":true}
+keitha-9x12-chunky-natural-jute-rug|Keitha 9x12 Chunky Natural Jute Rug|rugs|2809|Keitha 9x12 Chunky Jute Tassels Rug|rugs|5|1|true|2|2793|Briar 9x12 Natural Braided Jute Rug|4|{"shared_tokens":["keitha","9x12","chunky","jute"],"category":true}
+beren|Beren Assorted Books|styling|3445|Beren Black Books|styling|5|0|true|5|3308|Beren Blue Books|5|{"shared_tokens":["beren","books"],"category":true,"slug_substr":true}
+evander-tapered-hide-ottoman|Evander Tapered Hide Ottoman|lounge|3014|Evander Grey Hide Tapered Ottoman|seating|4|1|true|4|3142|Leanna Ivory Hide Tapered Ottoman|3|{"shared_tokens":["evander","tapered","hide"],"category":true}
+leanna-ivory-hide-ottoman|Leanna Ivory Hide Ottoman|lounge|3142|Leanna Ivory Hide Tapered Ottoman|seating|4|1|true|1|3015|Lorenzo Ivory Round Hide Ottoman|3|{"shared_tokens":["leanna","ivory","hide"],"category":true}
+lorenzo-ivory-hide-ottoman|Lorenzo Ivory Hide Ottoman|lounge|3015|Lorenzo Ivory Round Hide Ottoman|seating|4|1|true|1|3016|Neriya Ivory Hide Ottoman|3|{"shared_tokens":["lorenzo","ivory","hide"],"category":true}
+ezra-antique-wood-top-console-table|Ezra Antique Console Table|lounge-tables|2974|Ezra Marble Top Antique Console Table|tables|4|1|false|0|2973|Elijah Marble Top Antique Console Table|3|{"shared_tokens":["ezra","antique","table"],"category":true}
+anastasia-antique-silver-collection|Anastasia Antique Silver Flatware|tableware|3427|Anastasia Antique Silver Butter Knife|tableware|4|0|true|1|3425|Anastasia Antique Silver Dinner Knife|4|{"shared_tokens":["anastasia","antique","silver"],"category":true}
+quinn-antique-bone-flatware|Quinn Antique Bone Flatware|tableware|3397|Quinn Antique Bone Dinner Knife|tableware|4|0|true|4|3396|Quinn Antique Bone Tea/Dessert Spoon|4|{"shared_tokens":["quinn","antique","bone"],"category":true}
+winslow-tortoise-bistro-flatware|Winslow Tortoise Bistro Flatware|tableware|3413|Winslow Tortoise Bistro Butter Knife|tableware|4|0|true|4|3409|Winslow Tortoise Bistro Dinner Spoon|4|{"shared_tokens":["winslow","tortoise","bistro"],"category":true}
+nisha-matte-black-flatware|Nisha Matte Black Flatware|tableware|2944|Nisha Matte Black Dessert/Tea Spoon|tableware|4|0|true|4|2945|Nisha Matte Black Fork|4|{"shared_tokens":["nisha","matte","black"],"category":true}
+deja-stainless-gold-flatware|DEJA Stainless + Gold Flatware|tableware|2682|Deja Gold + Stainless Salad Fork|tableware|4|0|true|4|2681|Deja Gold + Stainless Dinner Fork|4|{"shared_tokens":["deja","stainless","gold"],"category":true}
+alta-matte-silver-flatware|ALTA Matte Silver Flatware|tableware|2688|Alta Matte Silver Salad Fork|tableware|4|0|true|4|2690|Alta Matte Silver Butter Knife|4|{"shared_tokens":["alta","matte","silver"],"category":true}
+gold-velvet-zebra|Gold Velvet Zebra Pillow|textiles|4160|Gold Zebra Velvet Pillow|pillows-throws|4|1|true|4|4085|Gold Velvet Fringe Lumbar Pillow|3|{"shared_tokens":["gold","velvet","zebra"],"category":true}
+briar-9x12-jute-rug|Briar 9x12 Jute Rug|rugs|2793|Briar 9x12 Natural Braided Jute Rug|rugs|4|1|true|0|2809|Keitha 9x12 Chunky Jute Tassels Rug|3|{"shared_tokens":["briar","9x12","jute"],"category":true}
+shay-leather-basket|Shay Leather Basket|styling|3156|Shay Tan Leather Basket|styling|4|1|true|1|3023|Faye Black Leather Basket|3|{"shared_tokens":["shay","leather","basket"],"category":true}
+daxton-wood-wall|Daxton Wood Wall|large-decor|3110|Daxton Light Wood Wall|large-decor|4|1|true|1|1703|Pema Ancient Carved Wood Wall|3|{"shared_tokens":["daxton","wood","wall"],"category":true}
+elspeth-almond-velvet-chair|Elspeth Almond Velvet Chair|lounge|2462|Elspeth Almond Velour Chair|seating|3|3|true|3||||{"shared_tokens":["elspeth","almond"],"category":true}
+natori-fur-chair|Natori Fur Chair|lounge|2995|Natori Oak + Fur Chair|seating|3|3|true|3||||{"shared_tokens":["natori","fur"],"category":true}
+millicent-antique-ornate-chair|Millicent Antique Ornate Chair|lounge|2971|Millicent Antique Arm Chair|seating|3|3|true|3||||{"shared_tokens":["millicent","antique"],"category":true}
+neriya-ivory-ottoman|Neriya Ivory Ottoman|lounge|3016|Neriya Ivory Hide Ottoman|seating|3|3|false|0||||{"shared_tokens":["neriya","ivory"],"category":true}
+tierre-coffee-table|Tierre Coffee Table|lounge-tables|3001|Tierre Smoked Wood Round Coffee Table|tables|3|3|true|3||||{"shared_tokens":["tierre","table"],"category":true}
+dashiell-coffee-table|Dashiell Coffee Table|lounge-tables|2997|Dashiell Oak Coffee Table|tables|3|3|true|3||||{"shared_tokens":["dashiell","table"],"category":true}
+boulder-48-coffee-table|Boulder 48" Coffee Table|lounge-tables|3031|Boulder 48" Cast Coffee Table|tables|3|3|true|3||||{"shared_tokens":["boulder","table"],"category":true}
+boulder-36-coffee-table|Boulder 36" Coffee Table|lounge-tables|3032|Boulder 36" Cast Coffee Table|tables|3|3|true|3||||{"shared_tokens":["boulder","table"],"category":true}
+river-42-coffee-table|River 42" Coffee Table|lounge-tables|3029|River 42" Stone Coffee Table|tables|3|3|true|3||||{"shared_tokens":["river","table"],"category":true}
+river-54-coffee-table|River 54" Coffee Table|lounge-tables|3030|River 54" Stone Coffee Table|tables|3|3|true|3||||{"shared_tokens":["river","table"],"category":true}
+gunnison-side-table|Gunnison Side Table|lounge-tables|2860|Gunnison Black Wood Side Table|tables|3|3|true|3||||{"shared_tokens":["gunnison","table"],"category":true}
+lazar-side-table|Lazar Side Table|lounge-tables|3025|Lazar Gold + Bronze Side Table|tables|3|3|true|3||||{"shared_tokens":["lazar","table"],"category":true}
+abigale-side-table|Abigale Side Table|lounge-tables|2994|Abigale Dark Side Table|tables|3|3|true|3||||{"shared_tokens":["abigale","table"],"category":true}
+acelin-side-table|Acelin Side Table|lounge-tables|2996|Acelin Light Side Table|tables|3|3|true|3||||{"shared_tokens":["acelin","table"],"category":true}
+timber-side-table|Timber Side Table|lounge-tables|3034|Timber Stump Side Table|tables|3|3|true|3||||{"shared_tokens":["timber","table"],"category":true}
+excursion-champagne-bar-trunk|Excursion Champagne Bar Trunk|cocktail-bar|2912|Excursion Champagne Trunk Bar|bars|3|3|true|3||||{"shared_tokens":["excursion","champagne"],"category":true}
+tavion-12-oval-bar-ckzdm|Arcus Calvin 12' Customizable Bar|cocktail-bar|2813|Arcus Calvin 12' Smooth Bar|bars|3|3|true|3||||{"shared_tokens":["arcus","calvin"],"category":true}
+evangeline-silver-bar-cart|Evangeline Silver Bar Cart|cocktail-bar|3009|Evangeline Silver Folding Bar Cart|bars|3|3|true|3||||{"shared_tokens":["evangeline","silver"],"category":true}
+astrid-rose-quartz-flatware|Astrid Rose Quartz Flatware|tableware|3392|Astrid Pink Quartz Butter Knife|tableware|3|0|true|3|3388|Astrid Pink Quartz Dinner Spoon|3|{"shared_tokens":["astrid","quartz"],"category":true}
+donaver-tortoise-flatware|Donaver Tortoise Flatware|tableware|3406|Donaver Tortoise Butter Knife|tableware|3|0|true|3|3402|Donaver Tortoise Dinner Spoon|3|{"shared_tokens":["donaver","tortoise"],"category":true}
+fiona-bone-flatware|Fiona Bone Flatware|tableware|3385|Fiona Bone Butter Knife|tableware|3|0|true|3|3381|Fiona Bone Dinner Spoon|3|{"shared_tokens":["fiona","bone"],"category":true}
+midas-antique-gold-flatware|Midas Antique Gold Flatware|tableware|2937|Midas Matte Gold Dessert/Tea Spoon|tableware|3|0|true|3|2934|Midas Matte Gold Dinner Knife|3|{"shared_tokens":["midas","gold"],"category":true}
+arian-antique-silver-flatware|Arian Antique Silver Flatware|tableware|3427|Anastasia Antique Silver Butter Knife|tableware|3|0|false|1|3425|Anastasia Antique Silver Dinner Knife|3|{"shared_tokens":["antique","silver"],"category":true}
+beige-embroidered-pillow|Beige Embroidered Pillow|textiles|3192|Beige Embroidered Oversize Pillow|pillows-throws|3|3|true|3||||{"shared_tokens":["beige","embroidered"],"category":true}
+brown-rust-mudcloth-oversize-lumbar|Brown Rust Mudcloth Oversize Lumbar|textiles|2783|Ivory Mudcloth Lumbar|pillows-throws|3|3|true|0||||{"shared_tokens":["mudcloth","lumbar"],"category":true}
+brown-yellow-pillow|Brown Yellow Pillow|textiles|2238|Brown Yellow Grey Wool Pillow|pillows-throws|3|3|true|3||||{"shared_tokens":["brown","yellow"],"category":true}
+green-olive-velvet-lumbar|Green Olive Velvet Lumbar|textiles|3453|Green Sage Velvet|pillows-throws|3|3|true|0||||{"shared_tokens":["green","velvet"],"category":true}
+breen-olive-velvet-pillow|Breen Olive Velvet Pillow|textiles|2296|Green Olive Velvet Pillow|pillows-throws|3|0|true|0|2297|Green Olive Velvet Lumbar Pillow|3|{"shared_tokens":["olive","velvet"],"category":true}
+green-sage-lumbar|Green Sage Lumbar|textiles|3453|Green Sage Velvet|pillows-throws|3|3|false|0||||{"shared_tokens":["green","sage"],"category":true}
+green-sage-velvet-pillow|Green Sage Velvet Pillow|textiles|2296|Green Olive Velvet Pillow|pillows-throws|3|0|false|0|2297|Green Olive Velvet Lumbar Pillow|3|{"shared_tokens":["green","velvet"],"category":true}
+ivory-linen-lumbar|Ivory Linen Lumbar|textiles|2783|Ivory Mudcloth Lumbar|pillows-throws|3|3|false|0||||{"shared_tokens":["ivory","lumbar"],"category":true}
+ivory-mud-cloth-lumbar|Ivory Mud Cloth Lumbar|textiles|2783|Ivory Mudcloth Lumbar|pillows-throws|3|3|false|0||||{"shared_tokens":["ivory","lumbar"],"category":true}
+fringe-smoke-blue-throw|Fringe Blue Grey Throw|textiles|3593|Fringe Blue Smoke Throw|pillows-throws|3|3|true|3||||{"shared_tokens":["fringe","blue"],"category":true}
+ravindra-set|Ravindra Wire & Leather Basket|styling|3023|Faye Black Leather Basket|styling|3|0|false|0|3022|Mae Sand Leather Basket|3|{"shared_tokens":["leather","basket"],"category":true}
+ignatius-gold-scale|Ignatius Gold Scale|styling|3010|Ignatius Brass Balancing Scale|styling|3|3|true|3||||{"shared_tokens":["ignatius","scale"],"category":true}
+pliney-h-frame-easel|Pliney H Frame Easel|styling|2881|Pliny H Frame Easel|styling|3|3|true|3||||{"shared_tokens":["frame","easel"],"category":true}
+elgin-pony-bookends|Elgin Pony Bookends|styling|2874|Elgin Pony Bronze Bookend Set|styling|3|0|true|3|2873|Elgin Pony Silver Bookend Set|3|{"shared_tokens":["elgin","pony"],"category":true}
+jacen-indoor-fireplace|Jacen Indoor Fireplace|large-decor|3542|Jacen Indoor Firepit|large-decor|3|3|true|3||||{"shared_tokens":["jacen","indoor"],"category":true}
+frost-antler-lamp|Frost Antler Lamp|light|2768|Frost White Antler Table Lamp|lighting|3|3|true|3||||{"shared_tokens":["frost","antler"],"category":true}
+regina-brass-lamp|Regina Brass Lamp|light|2766|Regina Brass Table Lamp|lighting|3|3|true|3||||{"shared_tokens":["regina","brass"],"category":true}
+rodrick-brass-cab-lamp|Rodrick Brass Cab Lamp|light|4037|Rodrick Brass Cabaret Lamp|lighting|3|3|true|3||||{"shared_tokens":["rodrick","brass"],"category":true}
+gisel-green-fringe-lamp|Gisel Green Fringe Lamp|light|3535|Giesel Green Fringe Lamp|lighting|3|3|true|3||||{"shared_tokens":["green","fringe"],"category":true}
+gemma-sage-glass-lamp|Gemma Sage Glass Lamp|light|2964|Gemma Sage Glass Table Lamp|lighting|3|3|true|3||||{"shared_tokens":["gemma","sage"],"category":true}
