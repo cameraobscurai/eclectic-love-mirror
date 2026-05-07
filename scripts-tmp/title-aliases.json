@@ -1,20 +1,11 @@
-// Title alias map — maps RMS ids to a live Squarespace tile.
-// One live tile may map to many RMS rows (family rollup).
-// Used by the diff so families count as matched.
-//
-// Two sections:
-//   pairs:   1-to-1 wording-drift renames
-//   groups:  many-to-1 family rollups (live shows one tile, RMS has variants)
-//
-// Source of truth = RMS. This file changes nothing in the catalog or DB.
 {
+  "_about": "RMS id → live Squarespace tile. pairs = 1:1 wording drift. groups = many:1 family rollups (live shows one tile, RMS has variants). Source of truth = RMS; this is presentation-only.",
   "pairs": [
-    { "rms": "2961", "live": "Pliny H Frame Easel",                    "note": "live typo Pliney→Pliny" },
-    { "rms": "2735", "live": "Ivory Mud Cloth Pillow",                 "note": "spacing" },
-    { "rms": "2783", "live": "Ivory Mud Cloth Lumbar",                 "note": "spacing" },
-    { "rms": "707",  "live": "Evren 8x10 Kilim Rug",                   "note": "ours missing space" },
-    { "rms": "3477", "live": "Dover 8\" Matte Oyster Bowl",            "note": "wording" },
-    { "rms": "2254", "live": "B/W Yarn Detail Lumbar Oversize",        "note": "wording" }
+    { "rms": "2961", "live": "Pliny H Frame Easel" },
+    { "rms": "2735", "live": "Ivory Mud Cloth Pillow" },
+    { "rms": "2783", "live": "Ivory Mud Cloth Lumbar" },
+    { "rms": "707",  "live": "Evren 8x10 Kilim Rug" },
+    { "rms": "2254", "live": "B/W Yarn Detail Lumbar Oversize" }
   ],
   "groups": [
     { "live": "SANARA Dining Chairs",            "rms": ["4133", "4136"] },
