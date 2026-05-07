@@ -22,21 +22,15 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       onClick={() => onOpen(product.id)}
       className="relative w-full h-full bg-white overflow-visible group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
       animate={{
-        opacity: dim ? 0.12 : 1,
-        zIndex: isHovered ? 50 : 1,
+        opacity: dim ? 0.45 : 1,
       }}
       transition={{
-        opacity: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
+        opacity: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
       }}
-      style={{ willChange: "transform, opacity" }}
+      style={{ willChange: "opacity" }}
       aria-label={product.title}
     >
-      <motion.div
-        className="absolute inset-0 origin-center"
-        animate={{ scale: isHovered ? 2.6 : 1 }}
-        transition={{ type: "spring", stiffness: 380, damping: 32 }}
-        style={{ zIndex: isHovered ? 50 : "auto", willChange: "transform" }}
-      >
+      <div className="absolute inset-0">
         {url && (
           <img
             src={url}
@@ -47,7 +41,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
             draggable={false}
           />
         )}
-      </motion.div>
+      </div>
     </motion.button>
   );
 }
