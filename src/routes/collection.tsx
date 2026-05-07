@@ -30,6 +30,7 @@ import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
+import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
