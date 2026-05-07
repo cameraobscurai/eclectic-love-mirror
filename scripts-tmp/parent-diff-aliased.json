@@ -108,20 +108,17 @@
     "slug": "textiles",
     "live": 157,
     "ours": 152,
-    "matched": 149,
+    "matched": 150,
     "liveOnly": [
-      "Blue Native X Pillow",
       "Green Sage Velvet Lumbar Pillow",
-      "Ivory Linen Small Lumbar",
-      "Blue Ombre Fringe Pillow",
+      "Blue Ombre Fringe Lumbar",
       "Gold Velvet Zebra Pillow",
       "Brown Fur + Mud Cloth Lumbar Oversize",
-      "Ivory Linen Pillow",
-      "Breen Olive Velvet Pillow"
+      "Ivory Linen Lumbar",
+      "Breen Olive Velvet Pillow",
+      "Ivory Linen Small Lumbar"
     ],
-    "oursOnly": [
-      "Blue Native X Pillow [rms2388]"
-    ]
+    "oursOnly": []
   },
   {
     "parent": "rugs",
@@ -149,7 +146,7 @@
       "Della Half-Frosted Glass Bottle [rms1258]",
       "Duru Antique Clear Glass Bottle Set [rms1128]",
       "Faye Black Leather Basket [rms3023]",
-      "Jina 14\" Black Metal Vase [rms4020]",
+      "Jina 7.5\" Black Metal Vase [rms4021]",
       "Libby Glass Hinged Top Box [rms4137]",
       "Lynden Horseshoe Hat Stand [rms3906]",
       "Mae Sand Leather Basket [rms3022]",
@@ -167,15 +164,16 @@
     "slug": "large-decor",
     "live": 26,
     "ours": 23,
-    "matched": 19,
+    "matched": 18,
     "liveOnly": [
+      "WASHINGTON Wall",
       "Ryland Pallet Wall",
       "Teigan/Mahdi White Leather Barricade",
       "Paxton 7'H Black Wireframe Cage",
       "Paxton 10'H Black Wireframe Cage",
+      "Paxton 10'H Wireframe Cage with Smoke Acrylic",
       "Ruby Red Ski Lift Bench",
-      "Erwin/Mahdi Jute Barricade",
-      "Paxton 10'H Wireframe Cage with Smoke Acrylic"
+      "Erwin/Mahdi Jute Barricade"
     ],
     "oursOnly": [
       "Aya 16th Century Wooden Doors [rms1616]",
