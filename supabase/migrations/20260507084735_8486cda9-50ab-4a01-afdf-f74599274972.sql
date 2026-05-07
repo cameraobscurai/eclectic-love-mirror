@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET status = 'draft' WHERE rms_id = '4161';
