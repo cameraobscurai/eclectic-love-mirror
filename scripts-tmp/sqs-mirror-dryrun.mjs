@@ -128,16 +128,20 @@ for (const slug of liveSlugs) {
   for (const u of liveMirrored) if (!seen.has(u)) { seen.add(u); proposed.push(u); }
   for (const u of ownerKept) if (!seen.has(u)) { seen.add(u); proposed.push(u); }
 
-  matched.push({
+  const rec = {
     rms_id: row.rms_id,
     db_category: row.category,
+    db_title: row.title,
     live_category: liveCat,
     title: p.title,
     slug_live: slug,
+    match_kind: matchKind,
     current_images: row.images || [],
     planned,
     proposed_images: proposed,
-  });
+  };
+  matched.push(rec);
+  if (matchKind === 'fuzzy') fuzzyMatched.push({ rms_id: row.rms_id, db_title: row.title, live_title: p.title });
 }
 
 const manifest = {
