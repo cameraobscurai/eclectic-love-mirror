@@ -669,49 +669,56 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/9c46df6b-2747-4934-8412-e99f811e8e2e/ALABASTER+Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/alabaster-votive/01-ALABASTER_Set.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "ALABASTER Votive"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/ALABASTER Small.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/9c46df6b-2747-4934-8412-e99f811e8e2e/ALABASTER+Large.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "ALABASTER Votive"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/ALABASTER Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/ALABASTER Small.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "ALABASTER Votive"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/b691a90f-5003-4fb0-a504-a3ad8be81048/ALABASTER+Small.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/ALABASTER Large.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "ALABASTER Votive"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/ce5cefd8-8f91-4b28-8402-6c43b728fe2e/ALABASTER+Set.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/b691a90f-5003-4fb0-a504-a3ad8be81048/ALABASTER+Small.png",
           "position": 4,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "ALABASTER Votive"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/ce5cefd8-8f91-4b28-8402-6c43b728fe2e/ALABASTER+Set.png",
+          "position": 5,
           "isHero": false,
           "inferredFilename": null,
           "altText": "ALABASTER Votive"
         }
       ],
       "primaryImage": {
-        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/9c46df6b-2747-4934-8412-e99f811e8e2e/ALABASTER+Large.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/alabaster-votive/01-ALABASTER_Set.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "ALABASTER Votive"
       },
-      "imageCount": 5,
+      "imageCount": 6,
       "publicReady": true,
       "scrapedOrder": 17,
       "subcategory": null,
@@ -15670,25 +15677,32 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/GIESEL Lamp.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/giesel-green-fringe-lamp/01-GIESEL_Lamp.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": null,
+          "altText": "Giesel Green Fringe Lamp"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/GIESEL Lamp.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Giesel Green Fringe Lamp"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/GIESEL Lamp.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/giesel-green-fringe-lamp/01-GIESEL_Lamp.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Giesel Green Fringe Lamp"
       },
-      "imageCount": 1,
+      "imageCount": 2,
       "publicReady": true,
       "scrapedOrder": 363,
       "subcategory": null,
-      "ownerSiteRank": null,
+      "ownerSiteRank": 26,
       "colorHex": null,
       "colorHexSecondary": null,
       "colorLightness": null,
@@ -15698,7 +15712,11 @@
       "colorTemperature": null,
       "colorNeedsReview": false,
       "tonalRank": null,
-      "variants": []
+      "variants": [],
+      "liveCategory": "light",
+      "liveSubcategories": [
+        "Lamps"
+      ]
     },
     {
       "id": "757",
@@ -21767,77 +21785,84 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/8ff805bc-9fd0-4235-bb31-baec1ea31266/KINLEE+Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/kinlee-cocoon-luminary/01-KINLEE_Set.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Medium.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/8ff805bc-9fd0-4235-bb31-baec1ea31266/KINLEE+Large.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Petite.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Medium.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Small.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Petite.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Small.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/0c9380aa-7511-414c-8958-0272718c1109/KINLEE+Medium.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/KINLEE Large.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/977889d3-0a3d-45e7-93a5-31ee9c8af58b/KINLEE+Small.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/0c9380aa-7511-414c-8958-0272718c1109/KINLEE+Medium.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/668234a3-ec41-4c65-96ee-33ee1d1cf4dd/KINLEE+Petite.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/977889d3-0a3d-45e7-93a5-31ee9c8af58b/KINLEE+Small.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29a0d0db-e282-4c67-b824-0eb6d655d394/KINLEE+Set.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/668234a3-ec41-4c65-96ee-33ee1d1cf4dd/KINLEE+Petite.png",
           "position": 8,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Kinlee Cocoon Luminary"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/29a0d0db-e282-4c67-b824-0eb6d655d394/KINLEE+Set.png",
+          "position": 9,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Kinlee Cocoon Luminary"
         }
       ],
       "primaryImage": {
-        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/8ff805bc-9fd0-4235-bb31-baec1ea31266/KINLEE+Large.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/kinlee-cocoon-luminary/01-KINLEE_Set.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Kinlee Cocoon Luminary"
       },
-      "imageCount": 9,
+      "imageCount": 10,
       "publicReady": true,
       "scrapedOrder": 501,
       "subcategory": null,
@@ -22586,49 +22611,56 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1605551929153-RAW8HZ183MCDNEQ2XHOS/LAYLA+28in+Lantern+0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/layla-lanterns/01-LAYLA_Lantern_Pair.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Layla Lanterns"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/LAYLA 28in Lantern.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1605551929153-RAW8HZ183MCDNEQ2XHOS/LAYLA+28in+Lantern+0.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Layla Lanterns"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/LAYLA 32in Lantern.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/LAYLA 28in Lantern.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Layla Lanterns"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1605551933473-VE24EBUIEPOS3C5DMF0C/LAYLA+32in+Lantern+0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/CANDLELIGHT/LAYLA 32in Lantern.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Layla Lanterns"
         },
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1698783667811-M062S4BK0MZ59TZQ5AO8/LAYLA+Lantern+Pair.png",
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1605551933473-VE24EBUIEPOS3C5DMF0C/LAYLA+32in+Lantern+0.png",
           "position": 4,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Layla Lanterns"
+        },
+        {
+          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1698783667811-M062S4BK0MZ59TZQ5AO8/LAYLA+Lantern+Pair.png",
+          "position": 5,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Layla Lanterns"
         }
       ],
       "primaryImage": {
-        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1605551929153-RAW8HZ183MCDNEQ2XHOS/LAYLA+28in+Lantern+0.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/light/layla-lanterns/01-LAYLA_Lantern_Pair.png",
         "position": 0,
         "isHero": true,
         "inferredFilename": null,
         "altText": "Layla Lanterns"
       },
-      "imageCount": 5,
+      "imageCount": 6,
       "publicReady": true,
       "scrapedOrder": 522,
       "subcategory": null,
