@@ -1607,3 +1607,17 @@ function DensityIconSmall() {
     </svg>
   );
 }
+
+function WallIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <rect x="0.5" y="0.5" width="13" height="13" stroke="currentColor" strokeWidth="1" />
+      <line x1="3.75" y1="0.5" x2="3.75" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="7" y1="0.5" x2="7" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="10.25" y1="0.5" x2="10.25" y2="13.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="3.75" x2="13.5" y2="3.75" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="7" x2="13.5" y2="7" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0.5" y1="10.25" x2="13.5" y2="10.25" stroke="currentColor" strokeWidth="0.6" />
+    </svg>
+  );
+}
