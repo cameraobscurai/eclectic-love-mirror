@@ -4,16 +4,17 @@
 // Until real assets arrive, leaving src empty renders the poster only.
 
 export type FilmstripClip = {
-  id: string;
-  poster: string; // path under /public, e.g. "/media/home/01-poster.jpg"
+  id: string;       // "01" … "05"
+  season: string;   // "Spring", "Summer", …
+  poster: string;
   src?: { mp4?: string; webm?: string };
-  label?: string; // sr-only caption
+  label?: string;   // sr-only caption
 };
 
 export const HERO_CLIPS: FilmstripClip[] = [
-  { id: "01", poster: "/media/home/01-poster.jpg", label: "Tablescape detail" },
-  { id: "02", poster: "/media/home/02-poster.jpg", label: "Floral install" },
-  { id: "03", poster: "/media/home/03-poster.jpg", label: "Lounge vignette" },
-  { id: "04", poster: "/media/home/04-poster.jpg", label: "Lighting moment" },
-  { id: "05", poster: "/media/home/05-poster.jpg", label: "Reveal" },
+  { id: "01", season: "Spring",      poster: "/media/home/01-poster.jpg", label: "Spring" },
+  { id: "02", season: "Summer",      poster: "/media/home/02-poster.jpg", label: "Summer" },
+  { id: "03", season: "Late Summer", poster: "/media/home/03-poster.jpg", label: "Late Summer" },
+  { id: "04", season: "Autumn",      poster: "/media/home/04-poster.jpg", label: "Autumn" },
+  { id: "05", season: "Winter",      poster: "/media/home/05-poster.jpg", label: "Winter" },
 ];
