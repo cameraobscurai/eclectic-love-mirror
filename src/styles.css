@@ -64,6 +64,7 @@
   --color-warm-gray: var(--warm-gray);
   --color-charcoal: var(--charcoal);
   --color-cream: var(--cream);
+  --color-paper: var(--paper);
   --color-black: var(--black);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
