@@ -368,7 +368,7 @@ function Lightbox({ clip, onClose }: LightboxProps) {
       {clip && (
         <motion.div
           key="lightbox"
-          className="fixed inset-0 z-[80] flex items-center justify-center px-4 sm:px-8"
+          className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -378,20 +378,25 @@ function Lightbox({ clip, onClose }: LightboxProps) {
           aria-modal="true"
           aria-label={`${clip.season} — playing with sound`}
         >
-          {/* Soft scrim — subtle, not pitch black. */}
-          <div className="absolute inset-0 bg-charcoal/82 backdrop-blur-md" />
+          {/* Deeper scrim — the frame should be the only thing on screen. */}
+          <div className="absolute inset-0 bg-charcoal/95 backdrop-blur-lg" />
 
           <motion.figure
-            className="relative z-10 max-h-[88vh] w-auto"
+            className="relative z-10 flex flex-col items-center"
             initial={{ scale: 0.96, y: 8, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.97, opacity: 0 }}
             transition={{ duration: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Cap height to leave room for caption (~42px) + outer padding,
+                and cap width on narrow screens so 3:4 never overflows. */}
             <div
-              className="relative overflow-hidden bg-charcoal aspect-[3/4] h-[88vh] max-w-[92vw]"
-              style={{ boxShadow: "0 40px 120px -40px rgba(0,0,0,0.6)" }}
+              className="relative overflow-hidden bg-charcoal aspect-[3/4]"
+              style={{
+                height: "min(calc(100vh - 8rem), calc((100vw - 4rem) * 4 / 3))",
+                boxShadow: "0 40px 120px -40px rgba(0,0,0,0.7)",
+              }}
             >
               <video
                 ref={videoRef}
