@@ -37,6 +37,7 @@ export interface ColorListResponse {
 }
 
 export const listColorRows = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z
       .object({
