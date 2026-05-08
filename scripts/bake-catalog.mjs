@@ -152,6 +152,11 @@ const products = all.map((r, i) => {
     publicReady: true,
     scrapedOrder: i,
     subcategory: null,
+    // Compact per-product version derived from the row's updated_at. Appended
+    // as ?v=… to Supabase storage URLs at read-time so a newly uploaded image
+    // displaces the cached copy the moment the row is touched, while
+    // unchanged products keep using the browser cache.
+    imagesVersion: r.updated_at ? Math.floor(new Date(r.updated_at).getTime() / 1000) : 0,
     ownerSiteRank: null,
     colorHex: r.color_hex ?? null,
     colorHexSecondary: r.color_hex_secondary ?? null,
