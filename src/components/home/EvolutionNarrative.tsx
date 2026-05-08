@@ -93,8 +93,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // from DIM_OPACITY → 1. Once past, the line stays at 1.
   const lineProgress = clamp01((progress - LEAD_IN) / (FOOTER_REVEAL_AT - LEAD_IN));
   const reveal = lineProgress * total;
-  // Scrim pre-warms the footer transition: 0 → 0.10 across progress 0.78 → 1.
-  const scrimOpacity = clamp01((progress - 0.78) / 0.22) * 0.1;
 
   return (
     <section
