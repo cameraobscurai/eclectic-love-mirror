@@ -243,7 +243,7 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
     <div
       ref={containerRef}
       className={cn(
-        "grid grid-cols-1 md:grid-cols-3",
+        "relative grid grid-cols-1 md:grid-cols-3",
         // 3D perspective only when animating
         !isStatic && "[perspective:1400px] [perspective-origin:center_top]",
       )}
