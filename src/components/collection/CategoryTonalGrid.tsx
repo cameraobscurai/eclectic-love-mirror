@@ -28,10 +28,14 @@ interface CategoryTonalGridProps {
  * count after grid wrap. We'd need :nth-child(odd of .row-2) which isn't
  * supported. Computing per-tile tone client-side keeps the math explicit.
  */
+// Owner-curated 15-tile order (3 rows × 5 cols on desktop):
+//   sofas · chairs · benches & ottomans · cocktail tables · side tables
+//   coffee tables · dining · bar · lighting · storage
+//   pillows · throws · tableware · styling · rugs
 const ORDER: BrowseGroupId[] = [
-  "sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables",
-  "cocktail-tables", "dining", "bar", "lighting", "rugs",
-  "pillows", "throws", "tableware", "styling", "large-decor",
+  "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
+  "coffee-tables", "dining", "bar", "lighting", "storage",
+  "pillows", "throws", "tableware", "styling", "rugs",
 ];
 
 // Greyscale checker pair — flat white + soft grey. Bumped from #f1f1f1 to
@@ -58,6 +62,7 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   "benches-ottomans": "10% 10% 22% 10%",
   bar: "10% 12% 22% 12%",
   dining: "10% 12% 22% 12%",
+  storage: "10% 10% 22% 10%",
   // Default for the rest (chairs, tableware, styling, large-decor).
   // Falls through to the inline default below.
 };
@@ -120,8 +125,12 @@ export function CategoryTonalGrid({
 
   const tiles = useMemo(
     () =>
-      ORDER.filter((id) => (byId.get(id)?.length ?? 0) > 0).map((id) => {
-        const products = byId.get(id)!;
+      // Render every tile in the curated 15-card order, even if its bucket
+      // is empty — the overview is a fixed taxonomy, not a dynamic list.
+      // Empty tiles still navigate to their section (filter pipeline handles
+      // an empty result gracefully).
+      ORDER.map((id) => {
+        const products = byId.get(id) ?? [];
         const cover = CATEGORY_COVERS[id];
         const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
         const rawHero = cover ?? fallbackHero?.url ?? null;
