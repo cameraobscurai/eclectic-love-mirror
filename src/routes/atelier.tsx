@@ -10,7 +10,7 @@ import atelierReplacement from "@/assets/atelier-replacement.jpg?preset=hero";
 
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.jpg?preset=editorial";
-import atelierHiveTriptych from "@/assets/atelier/atelier-hive-triptych.jpeg?preset=editorial";
+import atelierPaperMoodboard from "@/assets/atelier/atelier-paper-moodboard.jpg?preset=editorial";
 import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
 import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
 import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
@@ -334,12 +334,12 @@ function AtelierPage() {
       <Section eyebrow="L'ATELIER">
         {/* Triptych is a 3:1 horizontal — readable on tablet+. Below sm we
             relax to 5:3 so the three sub-frames are tall enough to read. */}
-        <div className="mt-4 [&_figure]:[aspect-ratio:5/3_!important] sm:[&_figure]:[aspect-ratio:3/1_!important]">
+        <div className="mt-4 mx-auto max-w-[680px]">
           <MediaAperture
-            ratio="3/1"
-            picture={atelierHiveTriptych}
-            alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
-            sizes="100vw"
+            ratio="4/5"
+            picture={atelierPaperMoodboard}
+            alt="Paper moodboard — fabric studies and stool sketch for L'Atelier."
+            sizes="(min-width: 768px) 680px, 100vw"
             prefetchMargin="1600px"
           />
         </div>
