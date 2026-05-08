@@ -92,13 +92,30 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
 
   const activeClip = clips.find((c) => c.id === lightboxId) ?? null;
 
+  const handleOpen = useCallback((id: string, rect: DOMRect) => {
+    setOriginRect(rect);
+    setLightboxId(id);
+  }, []);
+
   return (
     <div ref={containerRef} className={cn("w-full bg-paper", className)}>
+      {/* Mobile (<md): poster-only strip, all 5 visible at once. No video
+          mounts — tap a poster to open the lightbox. */}
+      <div className="md:hidden w-full flex gap-px px-3">
+        {clips.map((clip) => (
+          <MobilePosterTile
+            key={clip.id}
+            clip={clip}
+            onOpen={(rect) => handleOpen(clip.id, rect)}
+          />
+        ))}
+      </div>
+
+      {/* Desktop / tablet (md+): existing 5-frame autoplay filmstrip. */}
       <div
         className={cn(
           "w-full",
-          "flex gap-0 overflow-x-auto snap-x snap-mandatory",
-          "scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "hidden md:flex gap-0",
           "sm:gap-0 sm:overflow-visible sm:snap-none",
         )}
       >
@@ -113,10 +130,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               reduced={!!reduced}
               isHover={hoverId === clip.id}
               onHoverChange={setHoverId}
-              onOpen={(rect) => {
-                setOriginRect(rect);
-                setLightboxId(clip.id);
-              }}
+              onOpen={(rect) => handleOpen(clip.id, rect)}
               onManualPlay={handleManualPlay}
               registerRef={(el) => {
                 videoRefs.current[clip.id] = el;
@@ -124,8 +138,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               parallaxProgress={scrollYProgress}
               parallaxDir={dir}
               className={cn(
-                "shrink-0 basis-full snap-center",
-                "sm:basis-0 sm:flex-1 sm:snap-align-none",
+                "shrink-0 basis-0 flex-1",
                 !isLast && "sm:[margin-right:-1px]",
                 isOuter && "hidden lg:block",
               )}
