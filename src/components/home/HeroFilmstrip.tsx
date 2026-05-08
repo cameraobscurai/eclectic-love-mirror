@@ -172,9 +172,12 @@ function FilmstripFrame({
     reduced ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
   );
 
+  const figureRef = useRef<HTMLElement | null>(null);
+
   return (
     <div className={cn("flex flex-col", className)}>
       <figure
+        ref={figureRef}
         className={cn(
           "group relative overflow-hidden bg-[#f1f1f1] cursor-pointer",
           "aspect-[3/4]",
@@ -182,17 +185,17 @@ function FilmstripFrame({
         onMouseEnter={() => onHoverChange(clip.id)}
         onMouseLeave={() => onHoverChange(null)}
         onClick={() => {
-          if (reduced) return;
-          onOpen();
+          if (reduced || !figureRef.current) return;
+          onOpen(figureRef.current.getBoundingClientRect());
         }}
         role="button"
         tabIndex={0}
         aria-label={`Play ${clip.label ?? clip.season} with sound`}
         onKeyDown={(e) => {
-          if (reduced) return;
+          if (reduced || !figureRef.current) return;
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            onOpen();
+            onOpen(figureRef.current.getBoundingClientRect());
           }
         }}
       >
