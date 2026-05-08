@@ -228,7 +228,7 @@ async function aiVision(imageUrl, title, prior) {
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'user', content: [
         { type: 'text', text: userText },
-        { type: 'image_url', image_url: { url: imageUrl } },
+        { type: 'image_url', image_url: { url: safeUrl } },
       ]},
     ],
     tools: [TOOL_SCHEMA],
