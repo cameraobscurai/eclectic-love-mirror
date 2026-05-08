@@ -169,6 +169,7 @@ export const overrideColor = createServerFn({ method: "POST" })
   });
 
 export const setColorLocked = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z.object({ rms_id: z.string().min(1), locked: z.boolean() }).parse(d),
   )
