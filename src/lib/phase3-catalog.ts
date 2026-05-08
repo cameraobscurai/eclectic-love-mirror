@@ -133,16 +133,10 @@ function bustImages(
 }
 
 export function getCollectionCatalog(): CatalogPayload {
-  // Lazy import to avoid a circular module init (overrides → taxonomy → catalog).
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { HIDE_FROM_SITE_SLUGS } = require("./collection-overrides") as {
-    HIDE_FROM_SITE_SLUGS: ReadonlySet<string>;
-  };
-  // Respect publicReady AND owner-curated hide list. Items flipped false or
-  // listed in HIDE_FROM_SITE_SLUGS drop out of the public grid, counts, and
-  // rails — Supabase remains the source of truth, this is presentation only.
+  // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
+  // of the public grid, counts, and rails.
   const products = raw.products
-    .filter((p) => p.publicReady !== false && !HIDE_FROM_SITE_SLUGS.has(p.slug))
+    .filter((p) => p.publicReady !== false)
     .map((p) => {
       const v = p.imagesVersion ?? 0;
       if (!v) return p;
