@@ -28,9 +28,26 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   const reduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+  const fadeTimers = useRef<Record<string, number>>({});
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [audioId, setAudioId] = useState<string | null>(null);
   const [inView, setInView] = useState(true);
+  // Browsers require a real user gesture (click/tap/keydown) before any
+  // <video> can play with audio. Hover alone doesn't count. We listen
+  // once for any first interaction on the document, then hover-to-unmute
+  // works for the rest of the session.
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+
+  useEffect(() => {
+    if (audioUnlocked) return;
+    const unlock = () => setAudioUnlocked(true);
+    window.addEventListener("pointerdown", unlock, { once: true, passive: true });
+    window.addEventListener("keydown", unlock, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, [audioUnlocked]);
 
   // Pause everything when the strip leaves the viewport.
   useEffect(() => {
@@ -54,15 +71,43 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     setAudioId(null);
   }, [inView]);
 
-  // Autoplay every clip continuously. Hover only governs which one is unmuted later.
+  // Smooth volume fades (~280ms) instead of hard mute toggles.
+  const fadeVolume = useCallback((v: HTMLVideoElement, target: number, id: string) => {
+    if (fadeTimers.current[id]) {
+      window.clearInterval(fadeTimers.current[id]);
+    }
+    const start = v.volume;
+    const startedAt = performance.now();
+    const DURATION = 280;
+    const tick = () => {
+      const t = Math.min((performance.now() - startedAt) / DURATION, 1);
+      v.volume = start + (target - start) * t;
+      if (t >= 1) {
+        v.volume = target;
+        if (target === 0) v.muted = true;
+        window.clearInterval(fadeTimers.current[id]);
+        delete fadeTimers.current[id];
+      }
+    };
+    fadeTimers.current[id] = window.setInterval(tick, 16);
+  }, []);
+
+  // React to audioId changes: unmute the active clip with a fade-in,
+  // fade-out everything else.
   useEffect(() => {
     if (reduced) return;
     Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
-      v.muted = id !== audioId;
+      if (id === audioId && audioUnlocked && inView) {
+        v.muted = false;
+        if (v.volume === 0) v.volume = 0.0001;
+        fadeVolume(v, 1, id);
+      } else {
+        fadeVolume(v, 0, id);
+      }
       v.play().catch(() => {});
     });
-  }, [hoverId, audioId, reduced, inView]);
+  }, [audioId, audioUnlocked, reduced, inView, fadeVolume]);
 
   // Kick playback explicitly once refs are registered. Stagger by ~120ms so
   // browsers don't throttle 5 concurrent video downloads (only the first
