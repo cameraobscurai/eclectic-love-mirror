@@ -19,7 +19,10 @@ interface ProductTileProps {
 // content-visibility:auto on the deferred shells, off-screen cost stays low.
 const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
 const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
-const HIGH_FETCH_COUNT = 12; // first 12 (top two rows on desktop): fetchpriority="high"
+// First row (4 tiles on desktop) gets fetchpriority="high" — narrow window
+// so the H plate hero (true LCP on /collection landings) wins bandwidth on
+// initial paint instead of competing with 12 tiles in the same HTTP/2 stream.
+const HIGH_FETCH_COUNT = 4;
 
 // Row-aware reveal — wipes left→right as each row scrolls into view.
 // Math is column-modulo against the widest breakpoint (xl: 6 cols). On
