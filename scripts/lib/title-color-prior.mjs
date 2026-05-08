@@ -95,14 +95,13 @@ const LEXICON = [
   ['purple',        'purple'],
 ];
 
-// Words that mean "this is a pattern" — they don't override the first color
-// word, but they bump the secondary signal so we expect 2-color output.
+// Words that mean "this is multi-color / patterned" — they don't override the
+// first color word, but they tell the reconciler to expect a 2-color outcome
+// and to weight AI more heavily for which tone dominates.
 const PATTERN_WORDS = [
   'leopard','zebra','plaid','stripe','striped','patchwork','abstract',
   'native','mud cloth','geo','geometric','brocade','wild bird','wild lynx',
-  'wild leopard','print','fringe','fleck','dotted','quilted','hide',
-  'tweed','disco','snake','shag','boucle','linen','sabra','silk','velvet',
-  'leather','fur','raffia','knit','textile','tassel','antique',
+  'wild leopard','print','fleck','dotted','ticking','ombre','fringe',
 ];
 
 // Modifier hints that tweak shade but don't change family.
