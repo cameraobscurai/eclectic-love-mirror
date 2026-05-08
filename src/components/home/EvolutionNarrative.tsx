@@ -29,23 +29,63 @@ const LINES: Line[] = [
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-// Tighter scroll budget so older readers don't feel trapped.
-// Total scroll = LINES.length * STEP_VH + tail. ~16vh per line + 40vh tail
-// gives ~2.2 screens of scroll for the whole arc on desktop, ~2 on mobile.
+// ─────────────────────────────────────────────────────────────────────────
+// ANIMATION SCHEDULE — single source of truth.
+//
+// Total scroll budget = LINES.length * STEP_VH + tail. Section is pinned
+// (sticky) for the entire run. Progress (0→1) is normalized across that
+// budget, then split into three phases:
+//
+//   ┌─────────────┬──────────────────────────────────────┬───────────────┐
+//   │   ENTER     │              READ (HOLD)             │   CONTINUE    │
+//   │  0 → 0.10   │            0.10 → 0.82               │  0.82 → 1.00  │
+//   └─────────────┴──────────────────────────────────────┴───────────────┘
+//
+//   ENTER (10%): section pins to top of viewport. Eyebrow rule + label
+//     fade in. Manifesto column lifts from y+8 → y0 and goes from 0 → 1
+//     opacity as a block (lines themselves still dim). Reader is given a
+//     beat to settle before reading begins.
+//
+//   READ (72%): per-line wave reveal. Each line owns a centroid at
+//     `i / total` inside the READ band, plus a WINDOW of crossfade so 1.5
+//     lines are mid-transition at any moment. Once a line passes its
+//     centroid, it LOCKS at full brightness (read-through accumulation,
+//     never dims back). Cubic ease-out inside the window.
+//
+//   CONTINUE (18%): manifesto holds. Closer line's tracking relaxes from
+//     0.20em → 0.16em (mirrors wordmark intro gesture). Footer (CTA stack)
+//     rises in with a 60ms-per-card stagger handled inside DestinationStack.
+//
+// Per-line vertical rhythm: tracked by GAP_REM (clamped). Lines have a
+// subtle baseline-shift on reveal (+4px → 0) so the wave reads as motion,
+// not just opacity flicker.
+// ─────────────────────────────────────────────────────────────────────────
+
 const STEP_VH_DESKTOP = 14;
-const STEP_VH_MOBILE = 12;
-// Lead-in: portion of scroll before any line begins revealing.
-// Lets the section fully settle into center before the manifesto activates.
-// Tightened from 0.08 → 0.04 so mobile readers don't get a dead band.
-const LEAD_IN = 0.04;
-const FOOTER_REVEAL_AT = 0.82;
-const DIM_OPACITY = 0.18;
+const STEP_VH_MOBILE = 13;
+
+// Phase boundaries (fractions of total scroll progress).
+const ENTER_END = 0.10;
+const READ_END = 0.82;
+// CONTINUE = READ_END → 1.0
+
+// Line-wave shape inside READ band.
+const WINDOW = 1.5;          // line-units of crossfade overlap
+const DIM_OPACITY = 0.16;    // resting brightness for upcoming lines
+const REVEAL_LIFT_PX = 6;    // baseline shift during a line's reveal
+
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
+// Cubic ease-out — gentle landing on each line's full brightness.
+const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
+// Smoothstep — soft phase-boundary transitions (no hard cuts).
+const smooth = (t: number) => {
+  const x = clamp01(t);
+  return x * x * (3 - 2 * x);
+};
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
-  const [showFooter, setShowFooter] = useState(false);
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
 
   useEffect(() => {
@@ -64,7 +104,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       const distance = Math.max(el.offsetHeight - vh, 1);
       const p = clamp01(-rect.top / distance);
       setProgress(p);
-      setShowFooter(p >= FOOTER_REVEAL_AT);
     };
 
     update();
@@ -89,16 +128,21 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   }, []);
 
   const total = LINES.length;
-  // Reveal lines across the first FOOTER_REVEAL_AT of scroll. Each line is
-  // assigned a center scroll-position; brightness is a smooth function of
-  // distance from that center. WINDOW (in line-units) controls how many
-  // lines crossfade simultaneously — larger = silkier wave, smaller = more
-  // staircase. 1.6 lines wide gives a flowing read-through on mobile that
-  // matches droflower's PretextScrollReveal feel without the per-character
-  // canvas measurement (overkill for our line count).
-  const lineProgress = clamp01((progress - LEAD_IN) / (FOOTER_REVEAL_AT - LEAD_IN));
-  const reveal = lineProgress * total;
-  const WINDOW = 1.6;
+
+  // ── ENTER phase (0 → ENTER_END): block-level intro ──────────────────
+  // Manifesto column lifts + fades in as a whole before any line activates.
+  const enterT = smooth(progress / ENTER_END);
+  const blockOpacity = enterT;
+  const blockLift = (1 - enterT) * 8; // px
+
+  // ── READ phase (ENTER_END → READ_END): per-line wave ────────────────
+  const readT = clamp01((progress - ENTER_END) / (READ_END - ENTER_END));
+  // `reveal` walks 0 → total across the READ band.
+  const reveal = readT * total;
+
+  // ── CONTINUE phase (READ_END → 1): hold + footer reveal ─────────────
+  const continueT = smooth((progress - READ_END) / (1 - READ_END));
+  const showFooter = continueT > 0.05;
 
   return (
     <section
@@ -108,15 +152,22 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       style={{ height: `${total * stepVh + 50}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col">
-        {/* scrim removed: cards sit on paper, darkening here clashed. */}
-        {/* Manifesto fills available height and centers; footer always reserves
-            its own space at the bottom so the last manifesto lines never
-            collide with the CTA row. Footer fades in once revealed. */}
         <div className="flex-1 min-h-0 flex items-center w-full">
-          <div className="fluid-canvas grid grid-cols-12" style={{ columnGap: "clamp(1.5rem, 3vw, 4rem)" }}>
-            {/* Left rail — section label, pinned to top of the column */}
-            <aside className="col-span-12 md:col-span-3 md:pt-1">
-              <div className="flex md:block items-center gap-3">
+          <div
+            className="fluid-canvas grid grid-cols-12"
+            style={{ columnGap: "clamp(1.5rem, 3vw, 4rem)" }}
+          >
+            {/* Left rail — section label. Fades in across the ENTER phase
+                so it lands together with the manifesto block. */}
+            <aside
+              className="col-span-12 md:col-span-3 md:pt-1"
+              style={{
+                opacity: blockOpacity,
+                transform: `translateY(${blockLift}px)`,
+                transition: "none",
+              }}
+            >
+              <div className="flex md:block items-center gap-3 mb-6 md:mb-0">
                 <h2
                   id="evolution-heading"
                   className="font-brand uppercase text-charcoal/85"
@@ -129,35 +180,60 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   Evolution
                 </h2>
                 <div className="hidden md:block mt-4 h-px w-10 bg-charcoal/30" />
-                <div className="md:hidden h-px flex-1 bg-charcoal/20" />
+                <div
+                  className="md:hidden h-px flex-1 bg-charcoal/20 origin-left"
+                  style={{ transform: `scaleX(${enterT})` }}
+                />
               </div>
             </aside>
 
-            {/* Manifesto column — baseline grid, no centered alignment */}
-            <div className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5">
-              <div className="space-y-5 md:space-y-6">
+            {/* Manifesto column.
+                Outer wrapper handles the ENTER block-fade. Inner stack
+                handles per-line READ wave. */}
+            <div
+              className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5"
+              style={{
+                opacity: blockOpacity,
+                transform: `translateY(${blockLift}px)`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  // Tighter rhythm on mobile (less vertical air per line),
+                  // generous on desktop. Driven by a single clamp so the
+                  // manifesto always fits one viewport.
+                  gap: "clamp(0.95rem, 0.6rem + 1vw, 1.6rem)",
+                }}
+              >
                 {LINES.map((line, i) => {
-                  // Distance from this line's reveal centroid (in line-units).
-                  // 0 = perfectly active, ≥WINDOW = past, ≤-WINDOW = upcoming.
-                  // Once a line is past its center, it locks at full brightness
-                  // (read-through accumulation, never dims back).
+                  // Per-line wave inside the READ band.
+                  // delta = how far past this line's centroid the reveal
+                  // pointer has traveled, in line-units.
                   const delta = reveal - i;
-                  const local = delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
-                  const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
+                  // Reveal progress 0→1 across the WINDOW; locks at 1
+                  // once past so prior lines never dim back.
+                  const raw =
+                    delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
+                  const eased = easeOut(raw);
+
+                  const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * eased;
+                  const lift = (1 - eased) * REVEAL_LIFT_PX;
+
                   const isClose = line.emphasis === "closer";
-                  // Closer line: letter-spacing relaxes from 0.20em → 0.16em as
-                  // it brightens, mirroring the wordmark's intro gesture.
+                  // Closer line: tracking relaxes 0.20em → 0.16em as it
+                  // brightens — the same gesture used by the wordmark.
                   const closerTracking = isClose
-                    ? `${(0.2 - 0.04 * local).toFixed(3)}em`
+                    ? `${(0.2 - 0.04 * eased).toFixed(3)}em`
                     : undefined;
+
                   return (
                     <p
                       key={i}
                       className={cn(
-                        "font-brand text-charcoal italic ease-out will-change-[opacity]",
-                        isClose
-                          ? "not-italic uppercase pt-2 transition-[opacity,letter-spacing] duration-[1400ms]"
-                          : "transition-opacity duration-200",
+                        "font-brand text-charcoal italic will-change-[opacity,transform]",
+                        isClose && "not-italic uppercase pt-2",
                       )}
                       style={{
                         fontWeight: 400,
@@ -167,6 +243,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                         lineHeight: 1.5,
                         opacity,
                         letterSpacing: closerTracking,
+                        transform: `translateY(${lift}px)`,
                       }}
                     >
                       {line.text}
@@ -178,12 +255,15 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
           </div>
         </div>
 
+        {/* Footer (destination cards) — CONTINUE phase. Rises in over the
+            last 18% of scroll, after every line has resolved. Smoothstepped
+            opacity + translate keep it from popping. */}
         {footer && (
           <div
-            className="shrink-0 pb-6 md:pb-10 transition-all duration-500 ease-out"
+            className="shrink-0 pb-6 md:pb-10"
             style={{
-              opacity: showFooter ? 1 : 0,
-              transform: showFooter ? "translateY(0)" : "translateY(8px)",
+              opacity: continueT,
+              transform: `translateY(${(1 - continueT) * 14}px)`,
               pointerEvents: showFooter ? "auto" : "none",
             }}
           >
@@ -194,3 +274,4 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
     </section>
   );
 }
+
