@@ -116,7 +116,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
       // Distance the section top has moved past the viewport top, in vh.
-      const sVh = Math.max(-rect.top, 0) / vh;
+      // LEAD_IN starts the animation ~15% of a viewport sooner — manifesto
+      // begins reacting before the section fully pins.
+      const LEAD_IN_VH = 0.15;
+      const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       // Total available pinned travel, in vh.
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       setScrolledVh(sVh);
