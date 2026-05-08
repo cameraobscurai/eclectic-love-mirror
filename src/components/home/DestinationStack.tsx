@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   motion,
@@ -211,13 +211,23 @@ function DestinationCard({
 export function DestinationStack({ destinations }: DestinationStackProps) {
   const reduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isCoarse, setIsCoarse] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(pointer: coarse), (max-width: 767px)");
+    const sync = () => setIsCoarse(mq.matches);
+    sync();
+    mq.addEventListener?.("change", sync);
+    return () => mq.removeEventListener?.("change", sync);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 0.95", "start 0.4"],
   });
 
-  const isStatic = !!reduced;
+  const isStatic = !!reduced || isCoarse;
 
   return (
     <div
