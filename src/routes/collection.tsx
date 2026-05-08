@@ -576,8 +576,12 @@ function CollectionPage() {
     if (!view) return -1;
     return visibleProducts.findIndex((p) => p.id === view || p.slug === view);
   }, [visibleProducts, view]);
+  const quickViewFallbackProduct = useMemo(() => {
+    if (!view || quickViewIndex >= 0) return null;
+    return products.find((p) => p.id === view || p.slug === view) ?? null;
+  }, [products, quickViewIndex, view]);
   const quickViewProduct: CollectionProduct | null =
-    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
+    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : quickViewFallbackProduct;
 
   // Body lock + scroll restore + focus return on Quick View open/close.
   // Uses the shared ref-counted scroll lock (see src/lib/scroll-lock.ts).
