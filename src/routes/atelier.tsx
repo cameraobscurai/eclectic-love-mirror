@@ -254,7 +254,6 @@ function AtelierPage() {
           Left col pins on xl+ while the right column (hero image stacked over
           the team grid) scrolls past. Below xl, stacks normally. */}
       <section
-        className="overflow-hidden"
         style={{
           paddingTop: "clamp(1.5rem, 1rem + 1.5vw, 3rem)",
           paddingBottom: "clamp(3rem, 1.5rem + 3vw, 5rem)",
@@ -306,8 +305,8 @@ function AtelierPage() {
             </div>
           </div>
 
-          {/* Scrolling body — hero image, then THE HIVE team grid */}
-          <div className="xl:col-span-7 flex flex-col gap-[clamp(3rem,2rem+3vw,5rem)]">
+          {/* Scrolling body — tall right-side image gives the pinned headline room to hold. */}
+          <div className="xl:col-span-7 min-h-[calc(120svh-var(--nav-h))] flex flex-col justify-start">
             <MediaAperture
               ratio="4/5"
               picture={atelierReplacement}
@@ -316,15 +315,21 @@ function AtelierPage() {
               lazy={false}
               fetchPriority="high"
             />
-            <div
-              className="border-t pt-10"
-              style={{ borderColor: "var(--archive-rule)" }}
-            >
-              <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
-                02 — THE HIVE
-              </p>
-              <AtelierTeam />
-            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. THE HIVE — centered, full-viewport staff spread. */}
+      <section className="min-h-[calc(100svh-var(--nav-h))] flex items-center py-[clamp(4rem,2rem+5vw,8rem)]">
+        <div className="fluid-canvas w-full">
+          <div
+            className="border-t pt-10"
+            style={{ borderColor: "var(--archive-rule)" }}
+          >
+            <p className="text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
+              02 — THE HIVE
+            </p>
+            <AtelierTeam />
           </div>
         </div>
       </section>
