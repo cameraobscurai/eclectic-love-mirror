@@ -49,48 +49,52 @@ function HomePage() {
 
   return (
     <main id="main-content" className="bg-paper">
-      {/* Mobile-only full-viewport sequential video reel. Sits behind the fixed transparent nav. */}
+      {/* Mobile-only full-viewport sequential video reel. Sits behind the fixed transparent nav.
+          Wordmark sits inside a frosted glass band (no drop-shadow, no radial vignette) —
+          matches the brand baseline ("Amangiri photo + frosted glass band wordmark"). */}
       <section className="md:hidden relative -mt-px">
         <SequentialHeroVideo />
         <div
-          className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center px-4"
           style={{
             paddingTop: "env(safe-area-inset-top)",
             paddingBottom: "env(safe-area-inset-bottom)",
-            paddingLeft: "max(1.5rem, env(safe-area-inset-left))",
-            paddingRight: "max(1.5rem, env(safe-area-inset-right))",
+            paddingLeft: "max(1rem, env(safe-area-inset-left))",
+            paddingRight: "max(1rem, env(safe-area-inset-right))",
           }}
         >
-          {/* Soft radial vignette behind wordmark — darkens hot frames, lifts dark ones */}
           <div
-            aria-hidden
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[55vh] w-[110vw] mix-blend-multiply opacity-70"
+            className="relative text-center"
             style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.18) 35%, rgba(0,0,0,0) 70%)",
+              padding: "1.25rem 1.5rem 1.35rem",
+              // Frosted band — translucent charcoal wash, hairline border,
+              // backdrop blur so the video texture reads through.
+              background: "rgba(26,26,26,0.28)",
+              backdropFilter: "blur(14px) saturate(1.4)",
+              WebkitBackdropFilter: "blur(14px) saturate(1.4)",
+              borderTop: "1px solid rgba(245,242,237,0.18)",
+              borderBottom: "1px solid rgba(245,242,237,0.18)",
+              width: "min(92vw, 32rem)",
             }}
-          />
-          <div className="relative">
+          >
             <h1
               className="font-brand text-cream"
               style={{
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
-                fontSize: "clamp(2.5rem,11vw,4rem)",
+                fontWeight: 600,
+                letterSpacing: "0.02em",
+                fontSize: "clamp(2.25rem, 10vw, 3.5rem)",
                 lineHeight: 1,
-                textShadow:
-                  "0 1px 2px rgba(0,0,0,0.55), 0 2px 18px rgba(0,0,0,0.45), 0 0 40px rgba(0,0,0,0.35)",
               }}
             >
               ECLECTIC HIVE
             </h1>
             <p
-              className="mt-1 font-brand italic text-cream/90"
+              className="mt-2 font-brand italic text-cream/85"
               style={{
                 fontWeight: 400,
-                fontSize: "clamp(0.9rem,3.6vw,1.1rem)",
-                lineHeight: 1.3,
-                textShadow: "0 1px 2px rgba(0,0,0,0.6), 0 1px 10px rgba(0,0,0,0.5)",
+                fontSize: "clamp(0.78rem, 3.2vw, 0.95rem)",
+                lineHeight: 1.4,
+                letterSpacing: "0.02em",
               }}
             >
               Designing for Weddings, Corporate, &amp; Social Events

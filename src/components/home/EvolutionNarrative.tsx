@@ -88,11 +88,16 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   }, []);
 
   const total = LINES.length;
-  // Reveal lines across the first FOOTER_REVEAL_AT of scroll.
-  // Each line owns a band of width 1/total. Inside that band we ease
-  // from DIM_OPACITY → 1. Once past, the line stays at 1.
+  // Reveal lines across the first FOOTER_REVEAL_AT of scroll. Each line is
+  // assigned a center scroll-position; brightness is a smooth function of
+  // distance from that center. WINDOW (in line-units) controls how many
+  // lines crossfade simultaneously — larger = silkier wave, smaller = more
+  // staircase. 1.6 lines wide gives a flowing read-through on mobile that
+  // matches droflower's PretextScrollReveal feel without the per-character
+  // canvas measurement (overkill for our line count).
   const lineProgress = clamp01((progress - LEAD_IN) / (FOOTER_REVEAL_AT - LEAD_IN));
   const reveal = lineProgress * total;
+  const WINDOW = 1.6;
 
   return (
     <section
@@ -131,7 +136,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             <div className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5">
               <div className="space-y-5 md:space-y-6">
                 {LINES.map((line, i) => {
-                  const local = clamp01(reveal - i);
+                  // Distance from this line's reveal centroid (in line-units).
+                  // 0 = perfectly active, ≥WINDOW = past, ≤-WINDOW = upcoming.
+                  // Once a line is past its center, it locks at full brightness
+                  // (read-through accumulation, never dims back).
+                  const delta = reveal - i;
+                  const local = delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
                   const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
                   const isClose = line.emphasis === "closer";
                   // Closer line: letter-spacing relaxes from 0.20em → 0.16em as
