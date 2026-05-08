@@ -104,17 +104,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       style={{ height: `${total * stepVh + 50}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col px-6 md:px-10 lg:px-16">
-        {/* Pre-warm scrim — bottom 30vh deepens slightly as we approach footer
-            so the next dark band feels approached, not dropped on. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[30vh]"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(26,26,26,0) 0%, rgba(26,26,26,1) 100%)",
-            opacity: scrimOpacity,
-          }}
-        />
+        {/* scrim removed: cards sit on paper, darkening here clashed. */}
         {/* Manifesto fills available height and centers; footer always reserves
             its own space at the bottom so the last manifesto lines never
             collide with the CTA row. Footer fades in once revealed. */}
