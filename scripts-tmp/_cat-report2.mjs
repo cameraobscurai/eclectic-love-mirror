@@ -18,7 +18,7 @@ const bakedByGroup = {};
 const bakedByCatGroup = {};
 const unclassified = [];
 for (const p of items) {
-  const c = p.category || '__none__';
+  const c = p.categorySlug || '__none__';
   baked[c] = (baked[c]||0)+1;
   const g = getProductBrowseGroup(p);
   if (!g) { unclassified.push(p); continue; }
