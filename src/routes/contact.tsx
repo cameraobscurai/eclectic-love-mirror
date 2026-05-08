@@ -100,7 +100,7 @@ function ContactPage() {
     (async () => {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("id,title,category")
+        .select("id,title,category,images")
         .in("id", initialIds);
       if (cancelled) return;
       if (error || !data) {
@@ -108,7 +108,17 @@ function ContactPage() {
         setSelectionStatus("error");
         return;
       }
-      const byId = new Map(data.map((d) => [d.id, d as SelectedPiece]));
+      const byId = new Map(
+        data.map((d) => [
+          d.id,
+          {
+            id: d.id,
+            title: d.title,
+            category: d.category,
+            image: Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : null,
+          } as SelectedPiece,
+        ]),
+      );
       setPieces(
         initialIds
           .map((id) => byId.get(id))
