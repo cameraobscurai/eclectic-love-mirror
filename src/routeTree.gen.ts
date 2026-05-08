@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -30,6 +31,11 @@ const ProcessRoute = ProcessRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/gallery'
+    | '/login'
     | '/privacy'
     | '/process'
     | '/admin/colors'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/gallery'
+    | '/login'
     | '/privacy'
     | '/process'
     | '/admin/colors'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/gallery'
+    | '/login'
     | '/privacy'
     | '/process'
     | '/admin/colors'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
 }
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -294,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
 }

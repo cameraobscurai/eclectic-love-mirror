@@ -21,7 +21,10 @@ import {
 //   3. Category mix + image-coverage health.
 // ---------------------------------------------------------------------------
 
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
+
 export const Route = createFileRoute("/admin")({
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "Admin · Eclectic Hive" },
