@@ -100,9 +100,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // Scroll position expressed in VIEWPORT HEIGHTS past the moment the
   // section top reaches the viewport top. 0 = section just pinned;
   // (sectionHeight - vh) / vh = sticky about to release.
-  const [scrolledVh, setScrolledVh] = useState(0);
-  const [travelVh, setTravelVh] = useState(1);
+  const [metrics, setMetrics] = useState({ scrolledVh: 0, travelVh: 1 });
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
+  const lastRef = useRef({ scrolledVh: 0, travelVh: 1 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -117,15 +117,19 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Distance the section top has moved past the viewport top, in vh.
-      // LEAD_IN starts the animation ~15% of a viewport sooner — manifesto
-      // begins reacting before the section fully pins.
       const LEAD_IN_VH = 0.15;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
-      // Total available pinned travel, in vh.
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
-      setScrolledVh(sVh);
-      setTravelVh(tVh);
+      // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
+      const last = lastRef.current;
+      if (
+        Math.abs(sVh - last.scrolledVh) < 0.003 &&
+        Math.abs(tVh - last.travelVh) < 0.003
+      ) {
+        return;
+      }
+      lastRef.current = { scrolledVh: sVh, travelVh: tVh };
+      setMetrics({ scrolledVh: sVh, travelVh: tVh });
     };
 
     update();
