@@ -76,9 +76,6 @@ export interface CollectionProduct {
   colorTemperature?: string | null;
   /** Pre-computed sort key (lower = darker / earlier). Null when untagged. */
   tonalRank?: number | null;
-  /** Owner-curated rank from the wall reorder tool. When set, takes precedence
-   *  over tonalRank in the tonal sort. */
-  manualRank?: number | null;
   /** True when AI and pixel-extract disagree, or owner flagged for review. */
   colorNeedsReview?: boolean;
 }

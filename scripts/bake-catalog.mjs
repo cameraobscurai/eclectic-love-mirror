@@ -86,7 +86,7 @@ const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
   const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,public_ready')
+    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review')
     .neq('status','draft').range(from, from+PAGE-1).order('title');
   if (error) { console.error(error); process.exit(1); }
   if (!data.length) break;
@@ -149,7 +149,7 @@ const products = all.map((r, i) => {
     images: imgs,
     primaryImage: imgs[0] || null,
     imageCount: imgs.length,
-    publicReady: r.public_ready !== false,
+    publicReady: true,
     scrapedOrder: i,
     subcategory: null,
     ownerSiteRank: null,
@@ -166,7 +166,7 @@ const products = all.map((r, i) => {
 });
 
 console.log(`[bake] live-image fallback used for ${livesFallback} products`);
-const visibleProducts = products.filter(p => p.imageCount >= 1 && p.publicReady !== false);
+const visibleProducts = products.filter(p => p.imageCount >= 1);
 const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
@@ -227,23 +227,6 @@ for (const p of rolled) {
 }
 console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
 
-// Manual-order overrides — owner-curated tile sequences captured from the
-// Collection wall's drag-to-reorder tool (scripts-tmp/manual-orders.json).
-// Stamps `manualRank` on matched products; the tonal sort honors it first.
-let manualStamped = 0;
-try {
-  const manual = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/manual-orders.json', 'utf8'));
-  const productById = new Map(rolled.map((p) => [String(p.id), p]));
-  for (const order of manual.orders || []) {
-    order.ids.forEach((id, idx) => {
-      const p = productById.get(String(id));
-      if (p) { p.manualRank = idx; manualStamped++; }
-    });
-  }
-  console.log(`[manual-order] stamped manualRank on ${manualStamped} tiles from ${manual.orders?.length || 0} orders`);
-} catch (e) {
-  console.warn('[manual-order] no manual-orders.json — skipping');
-}
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.
