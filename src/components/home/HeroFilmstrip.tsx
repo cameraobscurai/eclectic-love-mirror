@@ -239,11 +239,22 @@ function FilmstripFrame({
           "relative overflow-hidden bg-[#f1f1f1]",
           "aspect-[3/4]",
         )}
-        onMouseEnter={() => !reduced && onHoverChange(clip.id)}
-        onMouseLeave={() => !reduced && onHoverChange(null)}
+        onMouseEnter={() => {
+          if (reduced) return;
+          onHoverChange(clip.id);
+          // Hover-to-unmute on desktop. (Browser still requires a prior
+          // page-level gesture; HeroFilmstrip handles that unlock.)
+          onAudioToggle(clip.id, true);
+        }}
+        onMouseLeave={() => {
+          if (reduced) return;
+          onHoverChange(null);
+          onAudioToggle(clip.id, false);
+        }}
         onClick={() => {
+          // Touch / no-hover devices: tap toggles audio on this frame.
           if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
-            onManualPlay(clip.id);
+            onAudioToggle(clip.id);
           }
         }}
       >
