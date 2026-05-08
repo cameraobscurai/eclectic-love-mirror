@@ -96,6 +96,11 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     else v.pause();
   }, []);
 
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
   return (
     <div ref={containerRef} className={cn("w-full bg-paper", className)}>
       {/* Edge-to-edge, zero-gap row at ≥640. Mobile keeps a snap carousel. */}
@@ -109,6 +114,9 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
       >
         {clips.map((clip, i) => {
           const isOuter = i === 0 || i === clips.length - 1;
+          // Alternate parallax direction per frame (±14px range) so the
+          // strip reads as a passing train, not a uniform drift.
+          const dir = i % 2 === 0 ? 1 : -1;
           return (
             <FilmstripFrame
               key={clip.id}
@@ -122,6 +130,8 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               registerRef={(el) => {
                 videoRefs.current[clip.id] = el;
               }}
+              parallaxProgress={scrollYProgress}
+              parallaxDir={dir}
               className={cn(
                 "shrink-0 basis-full snap-center",
                 "sm:basis-0 sm:flex-1 sm:snap-align-none",
