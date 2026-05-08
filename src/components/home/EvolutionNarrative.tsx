@@ -189,8 +189,14 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const blockLift = (1 - enterT) * 8; // px
 
   // ── READ: per-line wave ─────────────────────────────────────────────
+  // Lookahead bias (in line-units): shifts each line's centroid earlier so
+  // a line reaches full brightness slightly before it physically reaches
+  // the optical center. Counteracts the perceived lag from sticky pinning
+  // + smoothed scroll. Tuned by feel — 0.7 lands the highlight on the
+  // line you're actively reading.
+  const READ_LOOKAHEAD = 0.7;
   const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
-  const reveal = readT * total;
+  const reveal = readT * total + READ_LOOKAHEAD;
 
   // ── CONTINUE: footer is static ──────────────────────────────────────
   // The footer (DestinationStack) used to rise in over the closing
