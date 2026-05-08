@@ -272,15 +272,16 @@ function AtelierPage() {
                 <br />
                 REALIZED.
               </h1>
-              {/* Body wraps to balanced lines within headline width.
-                  text-wrap: balance evens line lengths automatically. */}
+              {/* Body width is set on the wrapper above by useBalancedColumnWidth:
+                  pretext binary-searches the smallest width where this exact
+                  string + font + letter-spacing wraps into 2 lines, then
+                  takes max(headlineWidth, that). No CSS balance needed —
+                  the container IS the balanced width. */}
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
                   animationDelay: "160ms",
                   lineHeight: 1.8,
-                  textWrap: "balance",
-                  width: "100%",
                 }}
               >
                 The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
