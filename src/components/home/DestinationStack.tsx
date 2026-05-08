@@ -109,17 +109,17 @@ function DestinationCard({
       <div
         className="relative flex h-full flex-col justify-between"
         style={{
-          paddingInline: "clamp(1.25rem, 0.5rem + 1vw, 2rem)",
-          paddingBlock: "clamp(1.5rem, 0.8rem + 1vw, 2.25rem)",
+          paddingInline: "clamp(0.6rem, 0.4rem + 0.6vw, 2rem)",
+          paddingBlock: "clamp(0.7rem, 0.5rem + 0.8vw, 2.25rem)",
         }}
       >
-        <div className="flex items-baseline justify-between gap-3">
+        <div className="flex items-baseline justify-between gap-2">
           <span
             className="font-brand uppercase text-charcoal/45"
             style={{
               fontWeight: 400,
-              letterSpacing: "0.32em",
-              fontSize: "clamp(0.6rem, 0.7vw, 0.7rem)",
+              letterSpacing: "0.28em",
+              fontSize: "clamp(0.5rem, 0.6vw, 0.7rem)",
               fontVariantNumeric: "tabular-nums",
             }}
           >
@@ -127,7 +127,7 @@ function DestinationCard({
           </span>
           <motion.svg
             style={isStatic ? undefined : { opacity: detailReveal }}
-            className="h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out group-hover:translate-x-1"
+            className="h-3 w-3 md:h-3.5 md:w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out group-hover:translate-x-1"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -142,24 +142,24 @@ function DestinationCard({
           </motion.svg>
         </div>
 
-        <div className="mt-6 md:mt-10">
+        <div className="mt-3 md:mt-10">
           <h3
             className="font-brand uppercase text-charcoal"
             style={{
               fontWeight: 500,
               letterSpacing: "0.04em",
-              fontSize: "clamp(1.1rem, 1.6vw, 1.45rem)",
-              lineHeight: 1,
+              fontSize: "clamp(0.85rem, 1.5vw, 1.45rem)",
+              lineHeight: 1.05,
             }}
           >
             {dest.title}
           </h3>
           <p
-            className="mt-2 font-brand uppercase text-charcoal/55 truncate"
+            className="mt-1.5 md:mt-2 hidden sm:block font-brand uppercase text-charcoal/55 truncate"
             style={{
               fontWeight: 400,
               letterSpacing: "0.18em",
-              fontSize: "clamp(0.65rem, 0.78vw, 0.78rem)",
+              fontSize: "clamp(0.6rem, 0.78vw, 0.78rem)",
             }}
           >
             {dest.label}
@@ -185,7 +185,7 @@ function DestinationCard({
       <div
         className="border border-charcoal/12"
         style={{
-          height: "clamp(148px, 9rem + 3vw, 13rem)",
+          height: "clamp(96px, 7rem + 3vw, 13rem)",
           animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
         }}
       >
@@ -225,8 +225,8 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
 
   return (
     <div
-      className="relative grid grid-cols-1 md:grid-cols-3"
-      style={{ gap: "clamp(0.75rem, 0.4rem + 0.6vw, 1.25rem)" }}
+      className="relative grid grid-cols-3"
+      style={{ gap: "clamp(0.4rem, 0.3rem + 0.5vw, 1.25rem)" }}
     >
       <style>{`
         @keyframes dest-fade {
