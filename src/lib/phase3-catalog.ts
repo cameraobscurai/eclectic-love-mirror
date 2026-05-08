@@ -110,9 +110,9 @@ interface RawCatalog extends CatalogPayload {
   };
 }
 
-const raw = catalog as RawCatalog;
-
-export const CATEGORY_DISPLAY_ORDER: string[] = raw.meta.categoryDisplayOrder;
+let cached: CatalogPayload | null = null;
+let loadPromise: Promise<CatalogPayload> | null = null;
+let categoryDisplayOrder: string[] = [];
 
 /**
  * Append `?v={imagesVersion}` to Supabase storage URLs only. Untouched URLs
@@ -134,24 +134,41 @@ function bustImages(
   return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
 }
 
-export function getCollectionCatalog(): CatalogPayload {
-  // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
-  // of the public grid, counts, and rails.
-  const products = raw.products
-    .filter((p) => p.publicReady !== false)
-    .map((p) => {
-      const v = p.imagesVersion ?? 0;
-      if (!v) return p;
-      const images = bustImages(p.images, v);
-      return {
-        ...p,
-        images,
-        primaryImage: images[0] ?? null,
-      };
-    });
-  return {
-    products,
-    facets: raw.facets,
-    total: products.length,
-  };
+export async function getCollectionCatalog(): Promise<CatalogPayload> {
+  if (cached) return cached;
+  if (loadPromise) return loadPromise;
+  loadPromise = import("@/data/inventory/current_catalog.json").then((mod) => {
+    const raw = ((mod as { default?: RawCatalog }).default ?? mod) as RawCatalog;
+    categoryDisplayOrder = raw.meta.categoryDisplayOrder;
+    // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
+    // of the public grid, counts, and rails.
+    const products = raw.products
+      .filter((p) => p.publicReady !== false)
+      .map((p) => {
+        const v = p.imagesVersion ?? 0;
+        if (!v) return p;
+        const images = bustImages(p.images, v);
+        return {
+          ...p,
+          images,
+          primaryImage: images[0] ?? null,
+        };
+      });
+    cached = {
+      products,
+      facets: raw.facets,
+      total: products.length,
+    };
+    return cached;
+  });
+  return loadPromise;
+}
+
+/**
+ * Async accessor for the categoryDisplayOrder list. The catalog must be
+ * loaded first; await getCollectionCatalog() before calling.
+ */
+export async function getCategoryDisplayOrder(): Promise<string[]> {
+  await getCollectionCatalog();
+  return categoryDisplayOrder;
 }
