@@ -40,6 +40,7 @@ import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 // downloads only the variant matched by the <source media> query.
 import hiveSignatureHeroSquare from "@/assets/collection/hive-signature-hero-square.png?preset=editorial";
 import hiveSignatureHeroMobile from "@/assets/collection/hive-signature-hero-mobile.png?preset=editorial";
+import { heroPreloadLink } from "@/components/hero-image";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
