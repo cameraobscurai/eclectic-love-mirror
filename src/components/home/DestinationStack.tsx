@@ -225,8 +225,8 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
 
   return (
     <div
-      className="relative grid grid-cols-1 md:grid-cols-3"
-      style={{ gap: "clamp(0.75rem, 0.4rem + 0.6vw, 1.25rem)" }}
+      className="relative grid grid-cols-3"
+      style={{ gap: "clamp(0.4rem, 0.3rem + 0.5vw, 1.25rem)" }}
     >
       <style>{`
         @keyframes dest-fade {
