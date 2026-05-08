@@ -78,10 +78,10 @@ const STEP_VH_MOBILE = 9;
 //                 line wave fills this band exactly.
 const ENTER_VH_DESKTOP = 0.35;
 const ENTER_VH_MOBILE = 0.3;
-// Footer cards rise quickly — we don't want a long pinned tail after the
-// closer line lands. Keep this small so sticky releases promptly.
-const CONTINUE_VH_DESKTOP = 0.25;
-const CONTINUE_VH_MOBILE = 0.3;
+// Footer no longer animates, so the tail just needs a beat of breathing
+// room after the closer line lands before sticky releases. Small + tight.
+const CONTINUE_VH_DESKTOP = 0.12;
+const CONTINUE_VH_MOBILE = 0.15;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
@@ -181,29 +181,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
   const reveal = readT * total;
 
-  // ── CONTINUE: footer reveal ─────────────────────────────────────────
-  // Per-breakpoint tuning. With the section now sized to fit the full
-  // budget, footer is always reachable; these thresholds just shape WHEN
-  // within the closing window the cards rise.
-  const footerStart = isMobile ? 0.7 : 0.72;
-  const footerSpanVh = isMobile ? 0.25 : 0.22;
-  // Two progress signals — one anchored to READ-band completion, one to
-  // post-READ scroll travel. We blend them with a soft-max (log-sum-exp
-  // style) instead of Math.max so the handoff between the two doesn't
-  // produce a velocity discontinuity at the phase boundary (the source of
-  // the perceived "hitch"). Then we drive opacity/lift with an ease-out
-  // quart — fast in, gentle landing — so the cards feel like they're
-  // already on their way up the moment the closer line resolves.
-  const aRaw = (readT - footerStart) / (1 - footerStart);
-  const bRaw = (scrolledVh - ENTER_VH - readVh) / footerSpanVh;
-  const softMax = (a: number, b: number, k = 18) =>
-    Math.log(Math.exp(a * k) + Math.exp(b * k)) / k;
-  const rawProgress = clamp01(softMax(aRaw, bRaw));
-  // Ease-out quart: 1 - (1-t)^4. Steeper initial slope than smoothstep,
-  // so the cards gain presence quickly and decelerate into place.
-  const easeOutQuart = (t: number) => 1 - Math.pow(1 - clamp01(t), 4);
-  const continueT = easeOutQuart(rawProgress);
-  const showFooter = continueT > 0.02;
+  // ── CONTINUE: footer is static ──────────────────────────────────────
+  // The footer (DestinationStack) used to rise in over the closing
+  // window. We removed that transition: stacking a second scroll-driven
+  // animation on top of sticky release is what produced the perceived
+  // hitch. Now the footer just sits flat under the manifesto and sticky
+  // releases cleanly the moment the closer line resolves.
+  const showFooter = true;
 
   return (
     <section
@@ -316,18 +300,11 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
           </div>
         </div>
 
-        {/* Footer (destination cards) — CONTINUE phase. Rises in over the
-            last 18% of scroll, after every line has resolved. Smoothstepped
-            opacity + translate keep it from popping. */}
+        {/* Footer (destination cards) — flat. No scroll-driven transition
+            here; it would compete with the sticky release and produce a
+            visible hitch. Cards are simply present under the manifesto. */}
         {footer && (
-          <div
-            className="shrink-0 pb-6 md:pb-10"
-            style={{
-              opacity: continueT,
-              transform: `translateY(${(1 - continueT) * 14}px)`,
-              pointerEvents: showFooter ? "auto" : "none",
-            }}
-          >
+          <div className="shrink-0 pb-6 md:pb-10">
             <div className="fluid-canvas">{footer}</div>
           </div>
         )}
