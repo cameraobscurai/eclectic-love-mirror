@@ -256,7 +256,7 @@ function TonalCell({
           loading="eager"
           decoding="async"
           {...({ fetchPriority: "high" } as Record<string, string>)}
-          className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain px-3 pt-4 pb-12 sm:px-4 sm:pt-5 sm:pb-14 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             opacity: gridReady ? 1 : 0,
             transition: "opacity 640ms ease-out, transform 500ms ease-out",
