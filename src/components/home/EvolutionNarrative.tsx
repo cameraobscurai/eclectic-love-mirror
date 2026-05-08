@@ -19,13 +19,20 @@ const LINES: Line[] = [
   { text: "Growth doesn't happen all at once." },
   { text: "It happens in phases." },
   { text: "There's a beginning that's rooted in curiosity." },
-  { text: "A time where things expand and start to take shape." },
+  { text: "A time where things expand" },
+  { text: "and start to take shape." },
   { text: "A shift toward refining what actually matters." },
   { text: "A moment where letting go becomes necessary." },
-  { text: "And space to step back and see all of it clearly." },
-  { text: "This isn't a reinvention. It's a refinement." },
+  { text: "And space to step back" },
+  { text: "and see all of it clearly." },
+  { text: "This isn't a reinvention." },
+  { text: "It's a refinement." },
   { text: "A deeper understanding of what holds weight." },
-  { text: "We are artists. Designers. Craftsmen." },
+  { text: "Of what lasts." },
+  { text: "We are artists." },
+  { text: "Designers." },
+  { text: "Craftsmen." },
+  { text: "We are Eclectic Hive.", emphasis: "brand" },
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
@@ -61,8 +68,8 @@ const LINES: Line[] = [
 // not just opacity flicker.
 // ─────────────────────────────────────────────────────────────────────────
 
-const STEP_VH_DESKTOP = 8;
-const STEP_VH_MOBILE = 9;
+const STEP_VH_DESKTOP = 5;
+const STEP_VH_MOBILE = 6;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
@@ -198,94 +205,78 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
     >
       <div className="sticky top-0 h-screen w-full flex flex-col">
         <div className="flex-1 min-h-0 flex items-center w-full">
-          <div
-            className="fluid-canvas grid grid-cols-12"
-            style={{ columnGap: "clamp(1.5rem, 3vw, 4rem)" }}
-          >
-            {/* Left rail — section label. Fades in across the ENTER phase
-                so it lands together with the manifesto block. */}
-            <aside
-              className="col-span-12 md:col-span-3 md:pt-1"
+          <div className="fluid-canvas w-full">
+            <div
+              className="mx-auto flex flex-col items-center text-center"
               style={{
+                maxWidth: "min(54rem, 92vw)",
                 opacity: blockOpacity,
                 transform: `translateY(${blockLift}px)`,
-                transition: "none",
               }}
             >
-              <div className="flex md:block items-center gap-3 mb-6 md:mb-0">
+              {/* Centered EVOLUTION label with hairline rules on either side */}
+              <div className="flex items-center justify-center gap-4 md:gap-5 mb-8 md:mb-12 w-full">
+                <div
+                  className="h-px bg-charcoal/25 flex-1 max-w-[5rem] md:max-w-[7rem] origin-right"
+                  style={{ transform: `scaleX(${enterT})` }}
+                />
                 <h2
                   id="evolution-heading"
                   className="font-brand uppercase text-charcoal/85"
                   style={{
                     fontWeight: 400,
-                    letterSpacing: "0.36em",
-                    fontSize: "clamp(0.65rem, 0.85vw, 0.78rem)",
+                    letterSpacing: "0.42em",
+                    fontSize: "clamp(0.7rem, 0.9vw, 0.85rem)",
                   }}
                 >
                   Evolution
                 </h2>
-                <div className="hidden md:block mt-4 h-px w-10 bg-charcoal/30" />
                 <div
-                  className="md:hidden h-px flex-1 bg-charcoal/20 origin-left"
+                  className="h-px bg-charcoal/25 flex-1 max-w-[5rem] md:max-w-[7rem] origin-left"
                   style={{ transform: `scaleX(${enterT})` }}
                 />
               </div>
-            </aside>
 
-            {/* Manifesto column.
-                Outer wrapper handles the ENTER block-fade. Inner stack
-                handles per-line READ wave. */}
-            <div
-              className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5"
-              style={{
-                opacity: blockOpacity,
-                transform: `translateY(${blockLift}px)`,
-              }}
-            >
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  // Editorial rhythm: tighter vertical gaps relative to the
-                  // larger type size so the manifesto reads as a paragraph
-                  // block, not a stacked list.
-                  gap: "clamp(0.6rem, 0.3rem + 0.6vw, 1rem)",
+                  alignItems: "center",
+                  gap: "clamp(0.35rem, 0.2rem + 0.35vw, 0.65rem)",
+                  width: "100%",
                 }}
               >
                 {LINES.map((line, i) => {
-                  // Per-line wave inside the READ band.
-                  // delta = how far past this line's centroid the reveal
-                  // pointer has traveled, in line-units.
                   const delta = reveal - i;
-                  // Reveal progress 0→1 across the WINDOW; locks at 1
-                  // once past so prior lines never dim back.
-                  const raw =
-                    delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
+                  const raw = delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
                   const eased = easeOut(raw);
 
                   const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * eased;
                   const lift = (1 - eased) * REVEAL_LIFT_PX;
 
                   const isClose = line.emphasis === "closer";
-                  // Closer line: tracking relaxes 0.20em → 0.16em as it
-                  // brightens — the same gesture used by the wordmark.
+                  const isBrand = line.emphasis === "brand";
                   const closerTracking = isClose
                     ? `${(0.2 - 0.04 * eased).toFixed(3)}em`
-                    : undefined;
+                    : isBrand
+                      ? "0.04em"
+                      : undefined;
 
                   return (
                     <p
                       key={i}
                       className={cn(
-                        "font-brand text-charcoal italic will-change-[opacity,transform]",
-                        isClose && "not-italic uppercase pt-2",
+                        "font-brand text-charcoal will-change-[opacity,transform]",
+                        isClose && "uppercase pt-3 md:pt-4",
+                        isBrand && "pt-2",
                       )}
                       style={{
                         fontWeight: 400,
+                        fontStyle: isClose ? "normal" : "italic",
                         fontSize: isClose
-                          ? "clamp(1.25rem, 0.7rem + 1.1vw, 1.85rem)"
-                          : "clamp(1.35rem, 0.85rem + 1.4vw, 2.15rem)",
-                        lineHeight: 1.3,
+                          ? "clamp(1.15rem, 0.65rem + 1vw, 1.7rem)"
+                          : "clamp(1.1rem, 0.7rem + 1.1vw, 1.75rem)",
+                        lineHeight: 1.35,
                         opacity,
                         letterSpacing: closerTracking,
                         transform: `translateY(${lift}px)`,
