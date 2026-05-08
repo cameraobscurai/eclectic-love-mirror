@@ -110,10 +110,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // (sectionHeight - vh) / vh = sticky about to release.
   const [metrics, setMetrics] = useState({ scrolledVh: 0, travelVh: 1 });
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
+  const [mounted, setMounted] = useState(false);
   const lastRef = useRef({ scrolledVh: 0, travelVh: 1 });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    setMounted(true);
 
     const syncBreakpoint = () => {
       setStepVh(window.innerWidth < 768 ? STEP_VH_MOBILE : STEP_VH_DESKTOP);
