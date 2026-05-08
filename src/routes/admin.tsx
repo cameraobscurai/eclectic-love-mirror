@@ -115,6 +115,19 @@ function AdminPage() {
     };
   }, []);
 
+  if (!stats) {
+    return (
+      <main
+        className="min-h-screen bg-cream text-charcoal grid place-items-center"
+        style={{ paddingTop: "var(--nav-h)" }}
+      >
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
+          Loading inventory…
+        </p>
+      </main>
+    );
+  }
+
   return (
     <main
       className="min-h-screen bg-cream text-charcoal"
