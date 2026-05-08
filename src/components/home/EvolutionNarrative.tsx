@@ -61,8 +61,8 @@ const LINES: Line[] = [
 // not just opacity flicker.
 // ─────────────────────────────────────────────────────────────────────────
 
-const STEP_VH_DESKTOP = 10;
-const STEP_VH_MOBILE = 11;
+const STEP_VH_DESKTOP = 8;
+const STEP_VH_MOBILE = 9;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
@@ -76,10 +76,12 @@ const STEP_VH_MOBILE = 11;
 //                 reveal (last viewport-ish before sticky releases).
 //   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
 //                 line wave fills this band exactly.
-const ENTER_VH_DESKTOP = 0.5;
-const ENTER_VH_MOBILE = 0.4;
-const CONTINUE_VH_DESKTOP = 0.6;
-const CONTINUE_VH_MOBILE = 0.55;
+const ENTER_VH_DESKTOP = 0.35;
+const ENTER_VH_MOBILE = 0.3;
+// Footer cards rise quickly — we don't want a long pinned tail after the
+// closer line lands. Keep this small so sticky releases promptly.
+const CONTINUE_VH_DESKTOP = 0.25;
+const CONTINUE_VH_MOBILE = 0.3;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
@@ -183,8 +185,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // Per-breakpoint tuning. With the section now sized to fit the full
   // budget, footer is always reachable; these thresholds just shape WHEN
   // within the closing window the cards rise.
-  const footerStart = isMobile ? 0.78 : 0.82;
-  const footerSpanVh = isMobile ? 0.55 : 0.7;
+  const footerStart = isMobile ? 0.7 : 0.72;
+  const footerSpanVh = isMobile ? 0.25 : 0.22;
   const footerT = smooth(
     Math.max(
       (readT - footerStart) / (1 - footerStart),
