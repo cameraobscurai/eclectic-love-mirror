@@ -38,8 +38,9 @@ const ORDER: BrowseGroupId[] = [
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
 // The category grid waits for one shared preload/decode batch, then releases
-// all tiles together. No time-based reveal: a timeout can reintroduce the exact
-// random per-tile pop-in this component is designed to avoid.
+// all tiles together. This bounded fallback prevents one stubborn CDN decode
+// from holding the entire page in a blank state.
+const GRID_REVEAL_TIMEOUT_MS = 3200;
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -68,9 +69,9 @@ function decodeGridImage(src: string): Promise<void> {
 }
 
 function preloadGridImage(src: string) {
-  const existing = document.head.querySelector<HTMLLinkElement>(
-    `link[rel="preload"][as="image"][href="${CSS.escape(src)}"]`,
-  );
+  const existing = Array.from(
+    document.head.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="image"]'),
+  ).some((link) => link.href === src);
   if (existing) return;
 
   const link = document.createElement("link");
@@ -122,15 +123,18 @@ export function CategoryTonalGrid({
     const reveal = () => {
       if (!cancelled) setGridReady(true);
     };
+    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
     const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
 
     Promise.all(imageUrls.map(decodeGridImage)).then(() => {
+      window.clearTimeout(timeout);
       reveal();
     });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(timeout);
     };
   }, [tiles]);
 
