@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
-import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { useNearViewport } from "@/hooks/useNearViewport";
+import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface CategoryTonalGridProps {
@@ -38,14 +37,36 @@ const ORDER: BrowseGroupId[] = [
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
-// Safety net: if a tile's image hangs (CDN slow, network blip), reveal
-// the cohort anyway after this many ms so the page never looks broken.
-// Set generously — the common case is "all images decoded in <800ms" and
-// the synchronized fade fires well before the timeout matters.
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 2500;
+// Safety net: the category grid waits for one shared preload/decode batch,
+// then releases all tiles together. Keep this intentionally calm so a fresh
+// uncached visit does not fall back into per-tile random pop-in too early.
+const GRID_REVEAL_TIMEOUT_MS = 4500;
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
+
+function decodeGridImage(src: string): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = "async";
+
+    const finish = () => {
+      if (typeof img.decode === "function") {
+        img.decode().then(() => resolve()).catch(() => resolve());
+      } else {
+        resolve();
+      }
+    };
+
+    img.onload = finish;
+    img.onerror = () => resolve();
+    img.src = src;
+
+    if (img.complete) finish();
+  });
+}
 
 export function CategoryTonalGrid({
   groups,
