@@ -101,13 +101,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       className="relative bg-paper text-charcoal"
       style={{ height: `${total * stepVh + 50}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col px-6 md:px-10 lg:px-16">
+      <div className="sticky top-0 h-screen w-full flex flex-col">
         {/* scrim removed: cards sit on paper, darkening here clashed. */}
         {/* Manifesto fills available height and centers; footer always reserves
             its own space at the bottom so the last manifesto lines never
             collide with the CTA row. Footer fades in once revealed. */}
         <div className="flex-1 min-h-0 flex items-center w-full">
-          <div className="mx-auto w-full max-w-6xl grid grid-cols-12 gap-6 md:gap-10 lg:gap-16">
+          <div className="fluid-canvas grid grid-cols-12" style={{ columnGap: "clamp(1.5rem, 3vw, 4rem)" }}>
             {/* Left rail — section label, pinned to top of the column */}
             <aside className="col-span-12 md:col-span-3 md:pt-1">
               <div className="flex md:block items-center gap-3">
