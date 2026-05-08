@@ -224,7 +224,7 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 0.95", "start 0.4"],
+    offset: ["start 0.85", "start 0.5"],
   });
 
   const isStatic = !!reduced || isCoarse;
