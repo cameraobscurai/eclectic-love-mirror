@@ -305,6 +305,9 @@ export function Navigation() {
                 key={link.href}
                 to={link.href}
                 preload="intent"
+                {...(link.href === "/atelier"
+                  ? { onTouchStart: warmAtelier, onFocus: warmAtelier }
+                  : {})}
                 className="py-4 min-h-[44px] flex items-center"
               >
                 <span
