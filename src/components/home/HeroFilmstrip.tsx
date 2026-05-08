@@ -497,7 +497,7 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
           <motion.div
             className="absolute inset-0 bg-charcoal backdrop-blur-xl"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.96 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
           />
