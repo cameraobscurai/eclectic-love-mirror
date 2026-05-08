@@ -24,6 +24,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [lightboxId, setLightboxId] = useState<string | null>(null);
   const [inView, setInView] = useState(true);
 
