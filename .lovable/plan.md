@@ -1,11 +1,24 @@
-## Fix
+## Goal
 
-The body paragraph under the headline is capped at `maxWidth: "52ch"`, which is why it stops short of "REALIZED." even though both live in the same `md:col-span-7` column. The headline fills the column; the paragraph doesn't.
+Keep the H aside fully cropped (no letterboxing) and stop the chair / "the HIVE" lockup from clipping horizontally. Let the image clip top/bottom instead — that's where the artwork has padding.
 
-**Change in `src/routes/atelier.tsx` (hero section, ~line 227–236):**
+## Single change
 
-Remove the `maxWidth: "52ch"` from the body paragraph so it spans the full col-span-7 column width — matching the headline's right edge.
+In `src/routes/collection.tsx` (the `motion.aside` ~lines 958–1000):
 
-That's the only change. The grid (`md:col-span-7` for text, `md:col-span-5` for image) already constrains both elements identically.
+- **Keep** `object-cover` on the `<img>` (no contain-mode, no letterbox).
+- **Keep** the existing aside width clamp `clamp(44%, 36% + 8vw, 52%)` (grid layout untouched).
+- **Switch the fit strategy** so the image fills width-first instead of cover's default "fill the larger axis":
+  - Set `width: 100%; height: auto; min-height: 100%` on the `<img>` and keep `object-cover` so any overflow is bled off the top/bottom equally.
+  - Or, equivalently (cleaner): keep `w-full h-full object-cover` and pin `objectPosition: "center 50%"` — but force horizontal fullness by using a wrapper with `overflow-hidden` + the image sized to `min-width: 100%; min-height: 100%; width: auto; height: auto;` (classic cover-by-width pattern).
+  - Net effect at every desktop width: full horizontal extent of the artwork is visible (chair + lockup never cropped left/right); any extra image height bleeds above/below into the negative space.
 
-For "THE HIVE" in `src/components/atelier/team.tsx` — same column setup (`md:col-span-7`) with no max-width cap, so it already aligns. No change needed there.
+## Verification
+
+- Resize preview at 1024 / 1209 / 1366 / 1440 / 1600 / 1920.
+- Check at every step: full "the HIVE" wordmark and chair visible left↔right; vertical clip lands in the empty space above/below the mark; aside is flush (no white bands); right-side grid layout unchanged.
+- Mobile/tablet untouched (aside is `hidden lg:flex`).
+
+## Out of scope
+
+- No new assets, no width-cap, no contain-mode, no grid changes.
