@@ -23,7 +23,7 @@ function Placeholder({
 }) {
   return (
     <div
-      className="w-full flex items-center justify-center border border-dashed text-[10px] tracking-[0.28em] uppercase text-charcoal/45"
+      className="w-full flex items-center justify-center border border-dashed text-[11px] tracking-[0.22em] uppercase text-charcoal/45"
       style={{
         aspectRatio: ratio,
         backgroundColor: "color-mix(in oklab, var(--charcoal) 4%, transparent)",
@@ -206,13 +206,7 @@ function AtelierPage() {
           }}
         >
           <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
-            <p
-              className="atelier-hero-reveal uppercase text-charcoal/50"
-              style={{
-                fontSize: "clamp(0.625rem, 0.5rem + 0.15vw, 0.75rem)",
-                letterSpacing: "0.3em",
-              }}
-            >
+            <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
             {/* T17: literal CAPS in source so SR & visual register agree. */}
@@ -227,11 +221,9 @@ function AtelierPage() {
               REALIZED.
             </h1>
             <p
-              className="atelier-hero-reveal uppercase text-charcoal/70"
+              className="atelier-hero-reveal text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
               style={{
                 animationDelay: "160ms",
-                fontSize: "clamp(0.75rem, 0.6rem + 0.2vw, 0.875rem)",
-                letterSpacing: "0.22em",
                 lineHeight: 1.8,
                 maxWidth: "52ch",
               }}
@@ -309,7 +301,7 @@ function AtelierPage() {
                 className="mt-3 font-display uppercase"
                 style={{
                   fontSize: "clamp(1.5rem, 1rem + 0.9vw, 2.125rem)",
-                  letterSpacing: "0.06em",
+                  letterSpacing: "0.04em",
                 }}
               >
                 {step.label}
@@ -322,9 +314,9 @@ function AtelierPage() {
       {/* 5. WORKING WITH THE ATELIER — FAQ accordion */}
       <Section>
         <div>
-          <h3 className="font-display text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.1] uppercase tracking-[0.04em]">
+          <h2 className="font-display text-[clamp(1.5rem,1rem+0.9vw,2.125rem)] leading-[1.1] uppercase tracking-[0.04em]">
             WORKING WITH THE ATELIER
-          </h3>
+          </h2>
           <ul
             className="mt-8 divide-y max-w-3xl"
             style={{ borderColor: "var(--archive-rule)" }}
@@ -337,7 +329,7 @@ function AtelierPage() {
               >
                 <details className="group">
                   <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                    <span className="font-display text-xl uppercase tracking-[0.06em]">
+                    <span className="text-[12px] uppercase tracking-[0.18em]">
                       {item.q}
                     </span>
                     <span
@@ -347,7 +339,7 @@ function AtelierPage() {
                       +
                     </span>
                   </summary>
-                  <p className="pb-6 max-w-2xl text-[15px] leading-relaxed text-charcoal/75">
+                  <p className="pb-6 max-w-2xl text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/75">
                     {item.a}
                   </p>
                 </details>
@@ -370,7 +362,7 @@ function AtelierPage() {
             className="border-t pt-12"
             style={{ borderColor: "var(--archive-rule)" }}
           >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               BEGIN
             </p>
             <h2
@@ -381,11 +373,11 @@ function AtelierPage() {
                 letterSpacing: "0.04em",
               }}
             >
-              Bring a project to the Atelier.
+              BRING A PROJECT TO THE ATELIER.
             </h2>
             <Link
               to="/contact"
-              className="mt-8 inline-block text-xs uppercase tracking-[0.22em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+              className="mt-8 inline-block text-[12px] uppercase tracking-[0.18em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
             >
               START A CONVERSATION
             </Link>
@@ -411,7 +403,7 @@ function Section({
           style={{ borderColor: "var(--archive-rule)" }}
         >
           {eyebrow ? (
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50 mb-10">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
               {eyebrow}
             </p>
           ) : null}

@@ -98,10 +98,10 @@ export function AtelierTeam() {
           titles + brand statements go ALL CAPS). */}
       <div className="mb-16 md:mb-24 grid md:grid-cols-12 gap-8 md:gap-12 items-end">
         <h2
-          className="md:col-span-7 font-display uppercase tracking-[0.02em] leading-[0.95] text-charcoal"
+          className="md:col-span-7 font-display uppercase tracking-[0.04em] leading-[0.95] text-charcoal"
           style={{ fontSize: "clamp(2.75rem, 7vw, 5.5rem)" }}
         >
-          The Hive
+          THE HIVE
         </h2>
         <p className="md:col-span-5 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
           Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.
@@ -142,7 +142,7 @@ export function AtelierTeam() {
               <p className="mt-5 font-display text-lg md:text-xl leading-tight text-charcoal">
                 {member.name}
               </p>
-              <p className="mt-1.5 text-[11px] tracking-[0.04em] text-charcoal/55">
+              <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
                 {member.role}
               </p>
             </li>
