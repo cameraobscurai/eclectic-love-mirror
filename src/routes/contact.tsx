@@ -143,7 +143,11 @@ function ContactPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   function removePiece(id: string) {
-    setPieces((prev) => prev.filter((p) => p.id !== id));
+    setRemovedIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -153,6 +157,12 @@ function ContactPage() {
     // Honeypot
     if (honeypotRef.current && honeypotRef.current.value.trim() !== "") {
       setSuccess(true); // silent accept
+      return;
+    }
+
+    // Hydration guard — defense in depth (button is also disabled)
+    if (selectionStatus === "loading") {
+      setErrorMsg("Loading your selected items — one moment.");
       return;
     }
 
@@ -176,6 +186,14 @@ function ContactPage() {
     const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
+    const selectedLines = effectiveIds.map((id) => {
+      const p = piecesById.get(id);
+      if (p) {
+        return `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`;
+      }
+      return `• Item [${id}]`;
+    });
+
     const messageLines = [
       `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
       "",
@@ -187,8 +205,8 @@ function ContactPage() {
       "— Vision / wish list —",
       vision.trim(),
       "",
-      pieces.length > 0 ? "— Selected from Collection —" : null,
-      ...pieces.map((p) => `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`),
+      effectiveIds.length > 0 ? "— Selected from Collection —" : null,
+      ...selectedLines,
     ].filter((l): l is string => l !== null);
 
     const payload = {
@@ -197,7 +215,7 @@ function ContactPage() {
       phone: phone.trim() ? phone.trim().slice(0, 50) : null,
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
-      item_id: pieces[0]?.id ?? null,
+      item_id: effectiveIds[0] ?? null,
     };
 
     const { error } = await supabase.from("inquiries").insert(payload);
@@ -215,6 +233,7 @@ function ContactPage() {
     }
     clearInquiry();
     setPieces([]);
+    setRemovedIds(new Set());
     setSuccess(true);
   }
 
