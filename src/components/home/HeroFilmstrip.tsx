@@ -364,12 +364,14 @@ function Lightbox({ clip, onClose }: LightboxProps) {
     };
   }, [clip]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence>
       {clip && (
         <motion.div
           key="lightbox"
-          className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -379,8 +381,8 @@ function Lightbox({ clip, onClose }: LightboxProps) {
           aria-modal="true"
           aria-label={`${clip.season} — playing with sound`}
         >
-          {/* Deeper scrim — the frame should be the only thing on screen. */}
-          <div className="absolute inset-0 bg-charcoal/95 backdrop-blur-lg" />
+          {/* Full-page scrim — covers nav, footer, everything. */}
+          <div className="absolute inset-0 bg-charcoal/96 backdrop-blur-xl" />
 
           <motion.figure
             className="relative z-10 flex flex-col items-center"
@@ -390,13 +392,13 @@ function Lightbox({ clip, onClose }: LightboxProps) {
             transition={{ duration: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Cap height to leave room for caption (~42px) + outer padding,
-                and cap width on narrow screens so 3:4 never overflows. */}
+            {/* 4:5 frame — matches how the source clips actually read.
+                Sized to fit either viewport dimension, whichever is tighter. */}
             <div
-              className="relative overflow-hidden bg-charcoal aspect-[3/4]"
+              className="relative overflow-hidden bg-charcoal aspect-[4/5]"
               style={{
-                height: "min(calc(100vh - 8rem), calc((100vw - 4rem) * 4 / 3))",
-                boxShadow: "0 40px 120px -40px rgba(0,0,0,0.7)",
+                height: "min(calc(100vh - 8rem), calc((100vw - 4rem) * 5 / 4))",
+                boxShadow: "0 40px 120px -40px rgba(0,0,0,0.8)",
               }}
             >
               <video
