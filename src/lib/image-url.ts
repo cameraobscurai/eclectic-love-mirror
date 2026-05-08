@@ -45,7 +45,10 @@ export function buildCdnSrcSet(
   url: string | null | undefined,
   widths: number[],
 ): string {
-  if (!url || !url.includes("squarespace-cdn.com")) return "";
+  if (!url) return "";
+  const isSqs = url.includes("squarespace-cdn.com");
+  const isSupabase = url.includes(".supabase.co/storage/v1/object/public/");
+  if (!isSqs && !isSupabase) return "";
   return widths
     .map((w) => `${withCdnWidth(url, w)} ${w}w`)
     .join(", ");
