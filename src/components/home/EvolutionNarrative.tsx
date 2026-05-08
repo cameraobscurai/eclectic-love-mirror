@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
@@ -6,11 +7,11 @@ import { cn } from "@/lib/utils";
  * ------------------
  * Sticky single-fold manifesto with progressive reveal.
  *
- * Each line fades from dim → bright as the scroll position passes it,
- * then STAYS bright. The reader accumulates the manifesto line by line
- * instead of being held hostage to a single active line. Mirrors
- * droflower's PretextScrollReveal feel (read-through pacing) and
- * obscura's restraint (no flashy transforms).
+ * Performance note: the per-line opacity ramp + closer letter-spacing + footer
+ * pre-warm scrim are driven by a single CSS custom property `--p` (0→1) that
+ * we write into the section root from a Framer MotionValue. React renders the
+ * subtree once; everything else is `calc()` in the style attribute. No
+ * setState per scroll frame, no per-line reconciliation.
  */
 
 type Line = { text: string; emphasis?: "section" | "brand" | "closer" };
@@ -29,98 +30,74 @@ const LINES: Line[] = [
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
-// Tighter scroll budget so older readers don't feel trapped.
-// Total scroll = LINES.length * STEP_VH + tail. ~16vh per line + 40vh tail
-// gives ~2.2 screens of scroll for the whole arc on desktop, ~2 on mobile.
 const STEP_VH_DESKTOP = 16;
 const STEP_VH_MOBILE = 14;
-// Lead-in: portion of scroll before any line begins revealing.
-// Lets the section fully settle into center before the manifesto activates.
 const LEAD_IN = 0.1;
 const FOOTER_REVEAL_AT = 0.78;
 const DIM_OPACITY = 0.18;
-const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
   const [showFooter, setShowFooter] = useState(false);
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
 
+  // Track viewport breakpoint once; named handler so removeEventListener works.
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const syncBreakpoint = () => {
+    const sync = () => {
       setStepVh(window.innerWidth < 768 ? STEP_VH_MOBILE : STEP_VH_DESKTOP);
     };
-    syncBreakpoint();
-
-    const update = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const distance = Math.max(el.offsetHeight - vh, 1);
-      const p = clamp01(-rect.top / distance);
-      setProgress(p);
-      setShowFooter(p >= FOOTER_REVEAL_AT);
-    };
-
-    update();
-    let ticking = false;
-    const handler = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", handler, { passive: true });
-    window.addEventListener("resize", () => {
-      syncBreakpoint();
-      handler();
-    });
-    return () => {
-      window.removeEventListener("scroll", handler);
-      window.removeEventListener("resize", handler);
-    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
   }, []);
 
+  // Single subscription. Writes `--p` into the section root each frame; no React state.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    const el = sectionRef.current;
+    if (!el) return;
+    el.style.setProperty("--p", p.toFixed(4));
+    const next = p >= FOOTER_REVEAL_AT;
+    setShowFooter((curr) => (curr === next ? curr : next));
+  });
+
   const total = LINES.length;
-  // Reveal lines across the first FOOTER_REVEAL_AT of scroll.
-  // Each line owns a band of width 1/total. Inside that band we ease
-  // from DIM_OPACITY → 1. Once past, the line stays at 1.
-  const lineProgress = clamp01((progress - LEAD_IN) / (FOOTER_REVEAL_AT - LEAD_IN));
-  const reveal = lineProgress * total;
-  // Scrim pre-warms the footer transition: 0 → 0.10 across progress 0.78 → 1.
-  const scrimOpacity = clamp01((progress - 0.78) / 0.22) * 0.1;
+  const span = 1 / (FOOTER_REVEAL_AT - LEAD_IN); // multiplier inside calc
 
   return (
     <section
       ref={sectionRef}
       aria-labelledby="evolution-heading"
       className="relative bg-paper text-charcoal"
-      style={{ height: `${total * stepVh + 50}vh` }}
+      style={{
+        height: `${total * stepVh + 50}vh`,
+        // initial value; replaced each frame via setProperty
+        ["--p" as string]: "0",
+        ["--dim" as string]: String(DIM_OPACITY),
+        ["--lead" as string]: String(LEAD_IN),
+        ["--span" as string]: String(span),
+        ["--total" as string]: String(total),
+      }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col px-6 md:px-10 lg:px-16">
-        {/* Pre-warm scrim — bottom 30vh deepens slightly as we approach footer
-            so the next dark band feels approached, not dropped on. */}
+        {/* Pre-warm scrim — opacity derived from --p in CSS, no React updates. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-[30vh]"
           style={{
             background:
               "linear-gradient(to bottom, rgba(26,26,26,0) 0%, rgba(26,26,26,1) 100%)",
-            opacity: scrimOpacity,
+            // 0 until p=0.78, then ramps to 0.10 by p=1
+            opacity: "calc(clamp(0, (var(--p) - 0.78) / 0.22, 1) * 0.1)" as unknown as number,
           }}
         />
-        {/* Manifesto fills available height and centers; footer always reserves
-            its own space at the bottom so the last manifesto lines never
-            collide with the CTA row. Footer fades in once revealed. */}
         <div className="flex-1 min-h-0 flex items-center w-full">
           <div className="mx-auto w-full max-w-6xl grid grid-cols-12 gap-6 md:gap-10 lg:gap-16">
-            {/* Left rail — section label, pinned to top of the column */}
             <aside className="col-span-12 md:col-span-3 md:pt-1">
               <div className="flex md:block items-center gap-3">
                 <h2
@@ -139,26 +116,22 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               </div>
             </aside>
 
-            {/* Manifesto column — baseline grid, no centered alignment */}
             <div className="col-span-12 md:col-span-8 md:col-start-5 lg:col-span-7 lg:col-start-5">
               <div className="space-y-5 md:space-y-6">
                 {LINES.map((line, i) => {
-                  const local = clamp01(reveal - i);
-                  const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
                   const isClose = line.emphasis === "closer";
-                  // Closer line: letter-spacing relaxes from 0.20em → 0.16em as
-                  // it brightens, mirroring the wordmark's intro gesture.
-                  const closerTracking = isClose
-                    ? `${(0.2 - 0.04 * local).toFixed(3)}em`
+                  // local = clamp((p - lead) * span - i, 0, 1)
+                  const local = `clamp(0, (var(--p) - var(--lead)) * var(--span) - ${i}, 1)`;
+                  const opacity = `calc(var(--dim) + (1 - var(--dim)) * ${local})`;
+                  const letterSpacing = isClose
+                    ? `calc((0.2 - 0.04 * ${local}) * 1em)`
                     : undefined;
                   return (
                     <p
                       key={i}
                       className={cn(
-                        "font-brand text-charcoal italic ease-out will-change-[opacity]",
-                        isClose
-                          ? "not-italic uppercase pt-2 transition-[opacity,letter-spacing] duration-[1400ms]"
-                          : "transition-opacity duration-200",
+                        "font-brand text-charcoal italic",
+                        isClose ? "not-italic uppercase pt-2" : "",
                       )}
                       style={{
                         fontWeight: 400,
@@ -166,8 +139,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                           ? "clamp(1rem, 1.6vw, 1.25rem)"
                           : "clamp(1rem, 1.55vw, 1.3rem)",
                         lineHeight: 1.5,
-                        opacity,
-                        letterSpacing: closerTracking,
+                        opacity: opacity as unknown as number,
+                        letterSpacing,
                       }}
                     >
                       {line.text}
@@ -186,6 +159,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               opacity: showFooter ? 1 : 0,
               transform: showFooter ? "translateY(0)" : "translateY(8px)",
               pointerEvents: showFooter ? "auto" : "none",
+              contentVisibility: "auto",
+              containIntrinsicSize: "200px",
             }}
           >
             <div className="mx-auto w-full max-w-6xl">{footer}</div>
