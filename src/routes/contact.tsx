@@ -64,6 +64,7 @@ interface SelectedPiece {
   id: string;
   title: string;
   category: string | null;
+  image: string | null;
 }
 
 function ContactPage() {
