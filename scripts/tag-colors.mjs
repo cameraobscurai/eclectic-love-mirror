@@ -9,7 +9,7 @@
  *
  * Reconcile:
  *   - If title prior fires (≥0.75) AND pixel OR AI agrees on family →
- *     write title family. Pull L*/hex from the agreeing signal.
+ *     write title family. Pull L-star/hex from the agreeing signal.
  *   - If title prior fires but neither pixel nor AI agrees → write title
  *     family with AI hex; mark color_needs_review=true.
  *   - If title prior is null/low → fall back to AI family.
