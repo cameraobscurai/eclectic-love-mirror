@@ -172,7 +172,18 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const { scrolledVh, travelVh } = metrics;
   const total = LINES.length;
   const isMobile = stepVh === STEP_VH_MOBILE;
-  const ENTER_VH = isMobile ? ENTER_VH_MOBILE : ENTER_VH_DESKTOP;
+  // Tall-viewport bias: the taller the window, the more "dead air" sits
+  // between the filmstrip tail and the manifesto's optical center. Shrink
+  // ENTER (so the per-line wave starts sooner) and stretch the lookahead
+  // (so the active line resolves earlier in the read band). Computed once
+  // per render — no extra state, no layout thrash.
+  const vhPx =
+    typeof window !== "undefined" ? window.innerHeight : 900;
+  // 0 at vh<=900, 1 at vh>=1300. Smooth ramp between.
+  const tallBias = clamp01((vhPx - 900) / 400);
+  const ENTER_VH = isMobile
+    ? ENTER_VH_MOBILE
+    : ENTER_VH_DESKTOP - 0.08 * tallBias; // 0.18 → 0.10
   const CONTINUE_VH = isMobile ? CONTINUE_VH_MOBILE : CONTINUE_VH_DESKTOP;
 
   // READ band budget in viewports — driven by line count + per-line step.
