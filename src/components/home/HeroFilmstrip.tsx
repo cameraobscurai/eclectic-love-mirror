@@ -456,9 +456,13 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
 
   // Compute the centered final rect from natural aspect + viewport, leaving
   // a comfortable margin so nothing kisses the edge.
-  const PAD = 64; // px on each side
-  const maxW = viewport.w - PAD * 2;
-  const maxH = viewport.h - PAD * 2;
+  // Responsive padding so the video fills as much of the viewport as its real
+  // aspect allows. Reserve space top (close button) and bottom (caption).
+  const PAD_X = viewport.w < 640 ? 16 : viewport.w < 1024 ? 32 : 64;
+  const PAD_TOP = 56;
+  const PAD_BOTTOM = 56;
+  const maxW = viewport.w - PAD_X * 2;
+  const maxH = viewport.h - PAD_TOP - PAD_BOTTOM;
   let finalW = maxH * naturalAspect;
   let finalH = maxH;
   if (finalW > maxW) {
