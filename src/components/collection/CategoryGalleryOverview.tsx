@@ -122,38 +122,83 @@ export function CategoryGalleryOverview({
     setFirstRowDoneCount((n) => n + 1);
   }, []);
 
+  // Owner-curated 14-card overview is laid out as 3 explicit rows on md+:
+  // [4] sofas · chairs · benches & ottomans · side tables
+  // [5] coffee tables · dining · bar · lighting · storage
+  // [5] pillows · throws · tableware · styling · rugs
+  // The route owns the order; we just slice it into the three row buckets.
+  const rowSizes = [4, 5, 5];
+  const rows: typeof resolved[] = [];
+  let cursor = 0;
+  for (const size of rowSizes) {
+    rows.push(resolved.slice(cursor, cursor + size));
+    cursor += size;
+  }
+  // Anything beyond row 3 (shouldn't happen for the curated list, but
+  // safe-guarded) trails into a final row so we never silently drop tiles.
+  if (cursor < resolved.length) rows.push(resolved.slice(cursor));
+
+  const renderCard = (
+    item: typeof resolved[number],
+    globalIdx: number,
+  ) => {
+    const isFirstRow = globalIdx < FIRST_ROW_COUNT;
+    const revealDelayMs = isFirstRow
+      ? 0
+      : Math.min((globalIdx % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
+    return (
+      <CategoryCard
+        key={item.group.id}
+        groupId={item.group.id}
+        heroSrc={item.heroSrc}
+        heroSrcSet={item.heroSrcSet}
+        heroAlt={item.heroAlt}
+        label={item.label}
+        isFirstRow={isFirstRow}
+        firstRowReady={firstRowReady}
+        onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
+        reduced={Boolean(reduced)}
+        revealDelayMs={revealDelayMs}
+        onSelectCategory={onSelectCategory}
+      />
+    );
+  };
+
   return (
     <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-3 sm:p-4">
+      {/* Mobile / tablet: stacked flow grid */}
       <ul
-        className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
+        className="grid w-full grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:hidden"
         style={{ background: "#ffffff" }}
       >
-        {resolved.map((item, idx) => {
-          const isFirstRow = idx < FIRST_ROW_COUNT;
-          // First-row cards reveal as one beat → no per-card delay. Later
-          // rows keep the column-modulo wipe.
-          const revealDelayMs = isFirstRow
-            ? 0
-            : Math.min((idx % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
+        {resolved.map((item, idx) => renderCard(item, idx))}
+      </ul>
 
+      {/* md+ : 3 explicit rows (4 / 5 / 5) */}
+      <div className="hidden md:flex md:flex-col gap-4">
+        {rows.map((row, rowIdx) => {
+          // Each row gets its own grid with a column count matching its size,
+          // so tiles fill the row edge-to-edge without an empty trailing slot.
+          const cols =
+            row.length === 4
+              ? "md:grid-cols-4"
+              : row.length === 5
+                ? "md:grid-cols-5"
+                : `md:grid-cols-${row.length}`;
+          // Compute the running global index so first-row coordination still
+          // lines up with the visually-first 4 cards.
+          const startIdx = rowSizes.slice(0, rowIdx).reduce((a, b) => a + b, 0);
           return (
-            <CategoryCard
-              key={item.group.id}
-              groupId={item.group.id}
-              heroSrc={item.heroSrc}
-              heroSrcSet={item.heroSrcSet}
-              heroAlt={item.heroAlt}
-              label={item.label}
-              isFirstRow={isFirstRow}
-              firstRowReady={firstRowReady}
-              onFirstRowImageDone={isFirstRow ? reportFirstRowDone : undefined}
-              reduced={Boolean(reduced)}
-              revealDelayMs={revealDelayMs}
-              onSelectCategory={onSelectCategory}
-            />
+            <ul
+              key={rowIdx}
+              className={`grid w-full ${cols} gap-4`}
+              style={{ background: "#ffffff" }}
+            >
+              {row.map((item, i) => renderCard(item, startIdx + i))}
+            </ul>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }
