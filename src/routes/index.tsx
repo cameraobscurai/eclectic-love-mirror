@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { LiquidGlass } from "@/components/liquid-glass";
 import { HeroFilmstrip } from "@/components/home/HeroFilmstrip";
 import { SequentialHeroVideo } from "@/components/home/SequentialHeroVideo";
 import { EvolutionNarrative } from "@/components/home/EvolutionNarrative";
+import { DestinationStack } from "@/components/home/DestinationStack";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -34,7 +35,6 @@ const DESTINATIONS = [
 
 function HomePage() {
   const [loaded, setLoaded] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     let r2 = 0;
@@ -187,64 +187,7 @@ function HomePage() {
           Hover shifts the arrow + lifts the row tone, no fills, no rings.
       */}
       <EvolutionNarrative
-        footer={
-          <div className="border-t border-charcoal/15 grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-charcoal/15">
-            {DESTINATIONS.map((dest, i) => (
-              <Link
-                key={dest.href}
-                to={dest.href}
-                preload="viewport"
-                aria-label={`${dest.title} — ${dest.label}`}
-                className="group block border-b border-charcoal/15 md:border-b-0"
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div className="flex items-baseline gap-4 md:flex-col md:items-start md:gap-2 px-4 md:px-6 py-5 md:py-7">
-                  <h3
-                    className="font-brand uppercase text-charcoal transition-colors duration-300"
-                    style={{
-                      fontWeight: 500,
-                      letterSpacing: "0.03em",
-                      fontSize: "clamp(1.05rem, 1.5vw, 1.35rem)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {dest.title}
-                  </h3>
-
-                  <p
-                    className="font-brand italic text-charcoal/55 truncate"
-                    style={{
-                      fontWeight: 400,
-                      fontSize: "clamp(0.8rem, 0.95vw, 0.95rem)",
-                    }}
-                  >
-                    {dest.label}
-                  </p>
-
-                  <svg
-                    className={cn(
-                      "ml-auto md:ml-0 md:mt-3 h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out",
-                      hoveredIndex === i ? "translate-x-1" : "translate-x-0",
-                    )}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={1.25}
-                    aria-hidden
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                    />
-                  </svg>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-        }
+        footer={<DestinationStack destinations={DESTINATIONS} />}
       />
 
       {/* Keep LiquidGlass referenced to preserve filter prewarm; harmless no-op */}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useReducedMotion } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
@@ -96,6 +96,11 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     else v.pause();
   }, []);
 
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
   return (
     <div ref={containerRef} className={cn("w-full bg-paper", className)}>
       {/* Edge-to-edge, zero-gap row at ≥640. Mobile keeps a snap carousel. */}
@@ -109,6 +114,9 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
       >
         {clips.map((clip, i) => {
           const isOuter = i === 0 || i === clips.length - 1;
+          // Alternate parallax direction per frame (±14px range) so the
+          // strip reads as a passing train, not a uniform drift.
+          const dir = i % 2 === 0 ? 1 : -1;
           return (
             <FilmstripFrame
               key={clip.id}
@@ -122,6 +130,8 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               registerRef={(el) => {
                 videoRefs.current[clip.id] = el;
               }}
+              parallaxProgress={scrollYProgress}
+              parallaxDir={dir}
               className={cn(
                 "shrink-0 basis-full snap-center",
                 "sm:basis-0 sm:flex-1 sm:snap-align-none",
@@ -145,6 +155,8 @@ interface FrameProps {
   onAudioToggle: (id: string) => void;
   onManualPlay: (id: string) => void;
   registerRef: (el: HTMLVideoElement | null) => void;
+  parallaxProgress: MotionValue<number>;
+  parallaxDir: 1 | -1;
 }
 
 function FilmstripFrame({
@@ -157,9 +169,18 @@ function FilmstripFrame({
   onAudioToggle,
   onManualPlay,
   registerRef,
+  parallaxProgress,
+  parallaxDir,
 }: FrameProps) {
   const [loaded, setLoaded] = useState(false);
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
+  // Inner image drifts ±14px against its frame edge across the strip's
+  // viewport pass. Disabled for reduced-motion.
+  const innerY = useTransform(
+    parallaxProgress,
+    [0, 1],
+    reduced ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
+  );
 
   return (
     <div className={cn("flex flex-col", className)}>
@@ -177,54 +198,63 @@ function FilmstripFrame({
         }}
       >
         {/* Always-on poster underlay. Stays visible until the video paints
-            its first frame, so we never flash a grey skeleton. */}
-        {clip.poster && (
-          <img
-            src={clip.poster}
-            alt=""
-            aria-hidden
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
+            its first frame, so we never flash a grey skeleton. Wrapped in a
+            motion layer that drifts ±14px so the photograph has weight inside
+            its frame as you scroll past. The wrapper is intentionally taller
+            than the figure so the drift never exposes an edge. */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-x-0 -top-4 -bottom-4"
+          style={{ y: innerY, willChange: "transform" }}
+        >
+          {clip.poster && (
+            <img
+              src={clip.poster}
+              alt=""
+              aria-hidden
+              loading="eager"
+              decoding="async"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
 
-        {hasVideo ? (
-          <video
-            ref={registerRef}
-            poster={clip.poster}
-            muted
-            loop
-            autoPlay
-            playsInline
-            preload="auto"
-            aria-label={clip.label}
-            className={cn(
-              "relative h-full w-full object-cover transition-opacity duration-700",
-              loaded ? "opacity-100" : "opacity-0",
-            )}
-            onLoadedData={(e) => {
-              setLoaded(true);
-              e.currentTarget.play().catch(() => {});
-            }}
-          >
-            {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
-            {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
-          </video>
-        ) : (
-          <img
-            src={clip.poster}
-            alt={clip.label ?? ""}
-            loading="lazy"
-            decoding="async"
-            className={cn(
-              "h-full w-full object-cover transition-opacity duration-700",
-              loaded ? "opacity-100" : "opacity-0",
-            )}
-            onLoad={() => setLoaded(true)}
-            onError={() => setLoaded(true)}
-          />
-        )}
+          {hasVideo ? (
+            <video
+              ref={registerRef}
+              poster={clip.poster}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="auto"
+              aria-label={clip.label}
+              className={cn(
+                "relative h-full w-full object-cover transition-opacity duration-700",
+                loaded ? "opacity-100" : "opacity-0",
+              )}
+              onLoadedData={(e) => {
+                setLoaded(true);
+                e.currentTarget.play().catch(() => {});
+              }}
+            >
+              {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
+              {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
+            </video>
+          ) : (
+            <img
+              src={clip.poster}
+              alt={clip.label ?? ""}
+              loading="lazy"
+              decoding="async"
+              className={cn(
+                "h-full w-full object-cover transition-opacity duration-700",
+                loaded ? "opacity-100" : "opacity-0",
+              )}
+              onLoad={() => setLoaded(true)}
+              onError={() => setLoaded(true)}
+            />
+          )}
+        </motion.div>
 
         {/* mute toggle removed — clips stay muted on home */}
 
