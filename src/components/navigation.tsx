@@ -112,6 +112,22 @@ export function Navigation() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Hover/focus warmup for the Atelier route. Fires once per session — the
+  // hero + first row of THE HIVE portraits start downloading the moment a
+  // user shows intent (hover, touch, focus), so by the time hydration runs
+  // on /atelier the images are either decoded or in-flight.
+  const warmAtelier = useCallback(() => {
+    warmImages([
+      // Hero — render via Supabase image transform sized to the 40vw column.
+      // (The hero asset itself is a bundled Vite asset preloaded via
+      // heroPreloadLink in the route head — this entry covers the
+      // first-row portraits which are remote.)
+      ...["Jill.jpg", "Annie.jpg", "Amanda.jpg", "Erin.jpg"].map((f) =>
+        renderUrl(teamPhotoUrl(f), { width: 720, quality: 70 }),
+      ),
+    ]);
+  }, []);
+
   return (
     <>
       <header
