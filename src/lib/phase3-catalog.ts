@@ -112,10 +112,41 @@ const raw = catalog as RawCatalog;
 
 export const CATEGORY_DISPLAY_ORDER: string[] = raw.meta.categoryDisplayOrder;
 
+/**
+ * Append `?v={imagesVersion}` to Supabase storage URLs only. Untouched URLs
+ * (eclectichive.com sourceUrls, anything off-platform) pass through unchanged.
+ * Idempotent: never double-appends if a `v=` param is already present.
+ */
+function bustUrl(url: string, version: number): string {
+  if (!url || !version) return url;
+  if (!url.includes("/storage/v1/")) return url;
+  if (/[?&]v=/.test(url)) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}v=${version}`;
+}
+
+function bustImages(
+  imgs: CollectionImage[],
+  version: number,
+): CollectionImage[] {
+  if (!version) return imgs;
+  return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
+}
+
 export function getCollectionCatalog(): CatalogPayload {
   // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
   // of the public grid, counts, and rails.
-  const products = raw.products.filter((p) => p.publicReady !== false);
+  const products = raw.products
+    .filter((p) => p.publicReady !== false)
+    .map((p) => {
+      const v = p.imagesVersion ?? 0;
+      if (!v) return p;
+      const images = bustImages(p.images, v);
+      return {
+        ...p,
+        images,
+        primaryImage: images[0] ?? null,
+      };
+    });
   return {
     products,
     facets: raw.facets,
