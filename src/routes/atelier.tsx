@@ -70,20 +70,16 @@ const CAPABILITIES = [
 // kept duplicated for now; lift to a shared module if the lists diverge.
 const ATELIER_FAQ: ReadonlyArray<{ q: string; a: string }> = [
   {
-    q: "WHAT WE OFFER",
-    a: "Full-service design, fabrication, and production — or rental-only access to the Hive Signature Collection. Engagements include space planning + CAD, 3-D modeling, vendor management, on-site logistics, and run of show.",
+    q: "SCOPE OF WORK",
+    a: "Eclectic Hive is a full-service design house working domestically and internationally. Our team guides the creative direction of each environment through spatial planning, guest experience, materiality, and atmosphere. Every detail is considered through the lens of flow, composition, and overall cohesion of all design elements, from furniture and lighting to tablescapes, drapery, styling, and custom design development. On site execution and installation oversight ensure continuity from concept through realization.",
   },
   {
-    q: "HOW TO BEGIN A PROPOSAL",
-    a: "After a consultation call we'll prepare a one to two-page Style Guide that visually summarizes the design direction. A non-refundable Creative Services Fee and signed contract secures the date and unlocks the full proposal and detailed estimate.",
+    q: "INVENTORY + FABRICATION",
+    a: "The Hive Signature Collection includes a curated range of furnishings, lighting, textiles, styling objects, dining pieces, surfaces, and large-scale visual elements available through both rental-only and full-service design projects. The collection is designed to support layered, immersive, and highly intentional environments. Customized inventory and fabrication development are approached through concept direction, material exploration, and design execution. Through collaboration with skilled artisan and production partners, custom pieces and spatial elements are developed to align with the overall atmosphere and experience of each project.",
   },
   {
-    q: "TRAVEL",
-    a: "Eclectic Hive is a destination design house. Projects take us domestic and international — desert, mountains, and the Caribbean. Travel fees include accommodations, per diems, and mileage.",
-  },
-  {
-    q: "MINIMUMS",
-    a: "We don't set fixed minimums. Availability shifts with the team's existing committed work and the seasonality of inquiries. Each opportunity is reviewed together to make sure we can deliver the requested scope.",
+    q: "WORKING WITH OUR TEAM",
+    a: "Our process begins with a consultation designed to better understand the vision, scope of work, and priorities of the overall project. After establishing creative alignment and the investment for design & decor, we create a Style Guide that visually summarizes the proposed direction prior to developing the full design plans. Once vision & direction are aligned, the date of your project is confirmed with a deposit and the full development process begins.",
   },
 ];
 
