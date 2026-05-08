@@ -191,24 +191,23 @@ function AtelierPage() {
   useEffect(() => {
     const el = headlineRef.current;
     if (!el) return;
+    // Headline width is driven by viewport (clamp() font-size) — measure on
+    // mount + window resize. Avoid ResizeObserver here: the measured width
+    // feeds setHeadlineW → re-render → wrapper width changes → headline
+    // re-measures, which loops indefinitely ("ResizeObserver loop completed
+    // with undelivered notifications").
     let rafId = 0;
-    const ro = new ResizeObserver(() => {
-      // Defer the read+setState to the next frame. Reading layout
-      // synchronously inside the RO callback (which then triggers a state
-      // update → re-render → relayout) is what produces the "ResizeObserver
-      // loop completed with undelivered notifications" warning. rAF breaks
-      // the cycle by letting the browser deliver all pending notifications
-      // first, then we measure once on the next frame.
+    const measure = () => {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        const max = el.getBoundingClientRect().width;
-        setHeadlineW(max);
+        setHeadlineW(el.getBoundingClientRect().width);
       });
-    });
-    ro.observe(el);
+    };
+    measure();
+    window.addEventListener("resize", measure);
     return () => {
       cancelAnimationFrame(rafId);
-      ro.disconnect();
+      window.removeEventListener("resize", measure);
     };
   }, []);
 
