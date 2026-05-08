@@ -32,7 +32,6 @@ const LINES: Line[] = [
   { text: "We are artists." },
   { text: "Designers." },
   { text: "Craftsmen." },
-  { text: "We are Eclectic Hive.", emphasis: "brand" },
   { text: "This is our evolution.", emphasis: "closer" },
 ];
 
