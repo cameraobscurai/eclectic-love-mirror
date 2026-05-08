@@ -86,6 +86,15 @@ const searchSchema = z.object({
   view: fallback(z.string(), "").default(""),
 });
 
+const LEGACY_GROUP_ALIASES: Record<string, { parent: ParentId | ""; sub: string }> = {
+  seating: { parent: "lounge-seating", sub: "all" },
+  tables: { parent: "lounge-tables", sub: "all" },
+  bars: { parent: "cocktail-bar", sub: "bars" },
+  "pillows-throws": { parent: "textiles", sub: "all" },
+  candlelight: { parent: "lighting", sub: "candlelight" },
+  chandeliers: { parent: "lighting", sub: "chandeliers" },
+};
+
 // Shared inline styles for the floating search modal's suggestion rows.
 // Kept at module scope so they're stable references and not recreated on
 // every render of the modal IIFE.
