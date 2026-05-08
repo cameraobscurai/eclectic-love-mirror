@@ -124,8 +124,12 @@ export function CategoryTonalGrid({
 
   const tiles = useMemo(
     () =>
-      ORDER.filter((id) => (byId.get(id)?.length ?? 0) > 0).map((id) => {
-        const products = byId.get(id)!;
+      // Render every tile in the curated 15-card order, even if its bucket
+      // is empty — the overview is a fixed taxonomy, not a dynamic list.
+      // Empty tiles still navigate to their section (filter pipeline handles
+      // an empty result gracefully).
+      ORDER.map((id) => {
+        const products = byId.get(id) ?? [];
         const cover = CATEGORY_COVERS[id];
         const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
         const rawHero = cover ?? fallbackHero?.url ?? null;
