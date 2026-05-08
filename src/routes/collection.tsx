@@ -33,7 +33,7 @@ import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
-import hiveSignatureHero from "@/assets/collection/hive-signature-hero.jpeg";
+import hiveSignatureHero from "@/assets/collection/hive-signature-hero-square.png";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
@@ -962,9 +962,9 @@ function CollectionPage() {
                 <img
                   src={hiveSignatureHero}
                   alt="The Hive — Signature Collection"
-                  className="block max-w-full max-h-full w-auto h-auto object-contain"
-                  width={1535}
-                  height={1920}
+                  className="block w-full h-full object-contain"
+                  width={1024}
+                  height={1024}
                 />
               </motion.aside>
             )}
@@ -993,9 +993,9 @@ function CollectionPage() {
                     <img
                       src={hiveSignatureHero}
                       alt="The Hive — Signature Collection"
-                      className="block h-full w-auto object-contain"
-                      width={1535}
-                      height={1920}
+                      className="block w-full h-full object-contain"
+                      width={1024}
+                      height={1024}
                     />
                   </div>
                   <div
