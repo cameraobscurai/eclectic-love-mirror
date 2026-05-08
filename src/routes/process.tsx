@@ -1,10 +1,8 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 // Legacy route — process content now lives on the Atelier page.
-// Kept as a redirect so cached/external links resolve cleanly instead of 404.
+// Redirect at component-render time (not beforeLoad) so preload/prerender
+// can't throw inside loadRouteMatch. See faq.tsx for the same pattern.
 export const Route = createFileRoute("/process")({
-  beforeLoad: () => {
-    throw redirect({ to: "/atelier" });
-  },
-  component: () => null,
+  component: () => <Navigate to="/atelier" replace />,
 });

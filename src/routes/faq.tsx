@@ -1,10 +1,10 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 // Legacy route — FAQ now lives at /contact#faq.
-// Kept as a redirect so cached/external links resolve cleanly instead of 404.
+// Redirect happens at component-render time (not in beforeLoad) so that
+// hover/intent preloads and speculation-rules prerenders don't throw inside
+// the router's loadRouteMatch (which surfaces as a `_nonReactive` TypeError
+// and blocks chunk warming for adjacent links).
 export const Route = createFileRoute("/faq")({
-  beforeLoad: () => {
-    throw redirect({ to: "/contact", hash: "faq" });
-  },
-  component: () => null,
+  component: () => <Navigate to="/contact" hash="faq" replace />,
 });

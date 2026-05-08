@@ -96,6 +96,13 @@ export const Route = createRootRoute({
 // most likely next route on hover/touchstart with moderate eagerness.
 // Browsers without support silently ignore the script tag.
 // Heavy/auth/admin paths are not listed; everything else is conservative.
+// Chromium speculation rules. `conservative` (was `moderate`) — only
+// prerender on actual pointerdown/touchstart, not on hover. Combined with
+// TanStack's `defaultPreload: "intent"`, hover already warms the chunk +
+// loader; we don't need a second full-page prerender racing on the same
+// hover, which previously caused /collection (~900 tiles) to spin up on
+// cursor pass and starve the active route. Legacy redirect routes are
+// also excluded so we never prerender a page whose only job is to bounce.
 const SPECULATION_RULES = JSON.stringify({
   prerender: [
     {
@@ -104,10 +111,12 @@ const SPECULATION_RULES = JSON.stringify({
           { href_matches: "/*" },
           { not: { href_matches: "/admin/*" } },
           { not: { href_matches: "/api/*" } },
+          { not: { href_matches: "/faq" } },
+          { not: { href_matches: "/process" } },
           { not: { selector_matches: "[data-no-prefetch]" } },
         ],
       },
-      eagerness: "moderate",
+      eagerness: "conservative",
     },
   ],
 });
