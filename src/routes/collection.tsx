@@ -11,7 +11,6 @@ import {
   type CatalogPayload,
 } from "@/lib/phase3-catalog";
 import {
-  BROWSE_GROUP_ORDER,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
