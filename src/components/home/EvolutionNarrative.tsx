@@ -82,7 +82,7 @@ const STEP_VH_MOBILE = 6;
 //                 reveal (last viewport-ish before sticky releases).
 //   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
 //                 line wave fills this band exactly.
-const ENTER_VH_DESKTOP = 0.35;
+const ENTER_VH_DESKTOP = 0.18;
 const ENTER_VH_MOBILE = 0.3;
 // Footer no longer animates, so the tail just needs a beat of breathing
 // room after the closer line lands before sticky releases. Small + tight.
@@ -125,7 +125,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      const LEAD_IN_VH = 0.15;
+      // Lead-in: how far before the section pins we start counting.
+      // Bumped on desktop so the dim manifesto is already visible while
+      // the filmstrip tail is still on screen — kills the dead white gap.
+      const LEAD_IN_VH = window.innerWidth < 768 ? 0.15 : 0.32;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
@@ -180,7 +183,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
 
   // ── ENTER ────────────────────────────────────────────────────────────
   const enterT = smooth(scrolledVh / ENTER_VH);
-  const blockOpacity = enterT;
+  // Floor the block opacity so the manifesto is *present* (dim) before it
+  // fully resolves — no more empty white pre-roll between filmstrip and copy.
+  const blockOpacity = 0.35 + 0.65 * enterT;
   const blockLift = (1 - enterT) * 8; // px
 
   // ── READ: per-line wave ─────────────────────────────────────────────
