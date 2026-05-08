@@ -959,10 +959,13 @@ function CollectionPage() {
                 layout={!reduced}
                 className="hidden lg:flex flex-shrink-0 items-center justify-center overflow-hidden"
                 style={{
-                  // Was a flat 40%. Fluid-clamped so the H plate stays
-                  // generous on ultrawides without crushing the grid at
-                  // 1280. 1024→32%, 1440→~37%, 1920→44%.
-                  width: "clamp(32%, 24% + 8vw, 44%)",
+                  // H plate width — tuned for the new portrait H artwork.
+                  // Older 32→44% range left "the HIVE" + chair clipping at
+                  // 1200–1500. Pushed up so the full mark shows on common
+                  // square-ish desktops, with a real cap so 1920+ ultrawide
+                  // still leaves the grid room.
+                  // 1024→44% · 1280→46% · 1440→47% · 1920→52%.
+                  width: "clamp(44%, 36% + 8vw, 52%)",
                   background: "var(--paper)",
                 }}
               >
