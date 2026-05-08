@@ -940,12 +940,17 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex min-h-[inherit] flex-col lg:flex-row" : "grid grid-cols-1"}
+            className={showOverview ? "flex flex-col lg:flex-row" : "grid grid-cols-1"}
+            style={
+              showOverview
+                ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
+                : undefined
+            }
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:block flex-shrink-0"
+                className="hidden lg:flex flex-shrink-0 items-center justify-center"
                 style={{
                   // Was a flat 40%. Fluid-clamped so the H plate stays
                   // generous on ultrawides without crushing the grid at
@@ -954,15 +959,13 @@ function CollectionPage() {
                   background: "var(--paper)",
                 }}
               >
-                <div className="w-full h-full flex items-center justify-center" style={{ padding: "clamp(16px, 2.5vw, 40px)" }}>
-                  <img
-                    src={hiveSignatureHero}
-                    alt="The Hive — Signature Collection"
-                    className="block max-w-full max-h-full w-auto h-auto object-contain"
-                    width={1535}
-                    height={1920}
-                  />
-                </div>
+                <img
+                  src={hiveSignatureHero}
+                  alt="The Hive — Signature Collection"
+                  className="block max-w-full max-h-full w-auto h-auto object-contain"
+                  width={1535}
+                  height={1920}
+                />
               </motion.aside>
             )}
 
@@ -981,11 +984,10 @@ function CollectionPage() {
                   {/* Mobile/tablet: H identity returns as a fixed-height masthead;
                       the category grid takes the remaining viewport below it. */}
                   <div
-                    className="lg:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10 overflow-hidden"
+                    className="lg:hidden flex items-center justify-center flex-shrink-0 overflow-hidden"
                     style={{
                       height: "var(--collection-mobile-h-h)",
                       background: "var(--paper)",
-                      padding: "8px 18px",
                     }}
                   >
                     <img
