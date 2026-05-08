@@ -101,12 +101,19 @@ export function GalleryLightbox({
     const node = heroRef.current;
     if (!node) return;
     const onWheel = (e: WheelEvent) => {
+      // Hijack ONLY when the user's intent is horizontal — trackpad two-finger
+      // sideways swipe, shift+wheel, or a horizontal mouse wheel. A plain
+      // vertical mouse wheel must pass through so the page (and the sidebar
+      // on short viewports) can still scroll naturally.
+      const dx = e.deltaX;
+      const dy = e.deltaY;
+      const horizontalDominant = Math.abs(dx) > Math.abs(dy);
+      if (!horizontalDominant) return;
       e.preventDefault();
       if (wheelLockRef.current) return;
-      const dy = e.deltaY;
-      if (Math.abs(dy) < 8) return;
+      if (Math.abs(dx) < 8) return;
       wheelLockRef.current = true;
-      stepPlate(dy > 0 ? 1 : -1);
+      stepPlate(dx > 0 ? 1 : -1);
       window.setTimeout(() => {
         wheelLockRef.current = false;
       }, 280);
