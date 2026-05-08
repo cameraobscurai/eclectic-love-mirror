@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
 import { CATEGORY_COVERS } from "@/lib/category-covers";
-import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { useNearViewport } from "@/hooks/useNearViewport";
+import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 interface CategoryTonalGridProps {
@@ -38,14 +37,50 @@ const ORDER: BrowseGroupId[] = [
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
-// Safety net: if a tile's image hangs (CDN slow, network blip), reveal
-// the cohort anyway after this many ms so the page never looks broken.
-// Set generously — the common case is "all images decoded in <800ms" and
-// the synchronized fade fires well before the timeout matters.
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 2500;
+// The category grid waits for one shared preload/decode batch, then releases
+// all tiles together. This bounded fallback prevents one stubborn CDN decode
+// from holding the entire page in a blank state.
+const GRID_REVEAL_TIMEOUT_MS = 3200;
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
+
+function decodeGridImage(src: string): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = "async";
+
+    const finish = () => {
+      if (typeof img.decode === "function") {
+        img.decode().then(() => resolve()).catch(() => resolve());
+      } else {
+        resolve();
+      }
+    };
+
+    img.onload = finish;
+    img.onerror = () => resolve();
+    img.src = src;
+
+    if (img.complete) finish();
+  });
+}
+
+function preloadGridImage(src: string) {
+  const existing = Array.from(
+    document.head.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="image"]'),
+  ).some((link) => link.href === src);
+  if (existing) return;
+
+  const link = document.createElement("link");
+  link.rel = "preload";
+  link.as = "image";
+  link.href = src;
+  link.fetchPriority = "high";
+  document.head.appendChild(link);
+}
 
 export function CategoryTonalGrid({
   groups,
@@ -65,16 +100,12 @@ export function CategoryTonalGrid({
         const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
         const rawHero = cover ?? fallbackHero?.url ?? null;
         const heroSrc = rawHero ? withCdnWidth(rawHero, 600) : null;
-        const heroSrcSet = rawHero
-          ? buildCdnSrcSet(rawHero, [320, 480, 720, 960]) || undefined
-          : undefined;
         const heroAlt = cover
           ? BROWSE_GROUP_LABELS[id]
           : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id];
         return {
           id,
           heroSrc,
-          heroSrcSet,
           heroAlt,
           label: BROWSE_GROUP_LABELS[id],
         };
@@ -82,22 +113,30 @@ export function CategoryTonalGrid({
     [byId],
   );
 
-  // First-paint cohort = the entire grid. All 15 tiles fit in the viewport
-  // on every breakpoint and the images are CDN-resized to ≤600w, so loading
-  // them together is cheap. Revealing them as one synchronized fade avoids
-  // the awkward "row 1 in, rows 2–3 still empty" cascade on fresh visits.
-  const cohortSize = tiles.length;
-  const [doneCount, setDoneCount] = useState(0);
-  const [timedOut, setTimedOut] = useState(false);
+  const [gridReady, setGridReady] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const t = window.setTimeout(() => setTimedOut(true), FIRST_ROW_REVEAL_TIMEOUT_MS);
-    return () => window.clearTimeout(t);
-  }, []);
+    setGridReady(false);
 
-  const cohortReady = doneCount >= cohortSize || timedOut;
-  const reportDone = useCallback(() => setDoneCount((n) => n + 1), []);
+    let cancelled = false;
+    const reveal = () => {
+      if (!cancelled) setGridReady(true);
+    };
+    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
+    const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
+    imageUrls.forEach(preloadGridImage);
+
+    Promise.all(imageUrls.map(decodeGridImage)).then(() => {
+      window.clearTimeout(timeout);
+      reveal();
+    });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [tiles]);
 
   return (
     // grid-rows-3 lg + h-full = three equal rows that fill the parent's
@@ -144,19 +183,15 @@ export function CategoryTonalGrid({
         const row = Math.floor(i / cols);
         const col = i % cols;
         const tone = TONES[(row + col) % 2];
-        const inCohort = i < cohortSize;
         return (
           <TonalCell
             key={t.id}
             id={t.id}
             heroSrc={t.heroSrc}
-            heroSrcSet={t.heroSrcSet}
             heroAlt={t.heroAlt}
             label={t.label}
             tone={tone}
-            inCohort={inCohort}
-            cohortReady={cohortReady}
-            onCohortDone={inCohort ? reportDone : undefined}
+            gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
         );
@@ -169,53 +204,26 @@ export function CategoryTonalGrid({
 interface TonalCellProps {
   id: BrowseGroupId;
   heroSrc: string | null;
-  heroSrcSet: string | undefined;
   heroAlt: string;
   label: string;
   tone: string;
-  inCohort: boolean;
-  cohortReady: boolean;
-  onCohortDone?: () => void;
+  gridReady: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
 function TonalCell({
   id,
   heroSrc,
-  heroSrcSet,
   heroAlt,
   label,
   tone,
-  inCohort,
-  cohortReady,
-  onCohortDone,
+  gridReady,
   onSelectCategory,
 }: TonalCellProps) {
-  const [loaded, setLoaded] = useState(false);
-  const [reported, setReported] = useState(false);
-  const { ref, near } = useNearViewport<HTMLButtonElement>({
-    rootMargin: "400px",
-    initial: inCohort,
-  });
-
-  const reportDoneOnce = useCallback(() => {
-    if (reported || !onCohortDone) return;
-    setReported(true);
-    onCohortDone();
-  }, [reported, onCohortDone]);
-
-  useEffect(() => {
-    if (inCohort && !heroSrc) reportDoneOnce();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const showImg = inCohort ? cohortReady : near && (loaded || !heroSrc);
-
   return (
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
     <button
-      ref={ref}
       type="button"
       role="listitem"
       onClick={() => onSelectCategory(id)}
@@ -223,7 +231,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      {heroSrc && !loaded ? (
+      {heroSrc && !gridReady ? (
         <span
           aria-hidden
           className="absolute inset-0 pointer-events-none"
@@ -232,7 +240,7 @@ function TonalCell({
               "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.04) 100%)",
             backgroundSize: "200% 100%",
             animation: "tile-shimmer 1.4s ease-in-out infinite",
-            opacity: showImg ? 1 : 0.6,
+            opacity: 0.45,
             transition: "opacity 300ms ease-out",
           }}
         />
@@ -240,25 +248,17 @@ function TonalCell({
       {heroSrc ? (
         <img
           src={heroSrc}
-          srcSet={heroSrcSet}
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
           width={600}
           height={480}
-          loading={inCohort ? "eager" : "lazy"}
+          loading="eager"
           decoding="async"
-          {...({ fetchPriority: inCohort ? "high" : "auto" } as Record<string, string>)}
-          onLoad={() => {
-            setLoaded(true);
-            if (inCohort) reportDoneOnce();
-          }}
-          onError={() => {
-            if (inCohort) reportDoneOnce();
-          }}
+          {...({ fetchPriority: "high" } as Record<string, string>)}
           className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
-            opacity: showImg && loaded ? 1 : 0,
-            transition: "opacity 420ms ease-out, transform 500ms ease-out",
+            opacity: gridReady ? 1 : 0,
+            transition: "opacity 640ms ease-out, transform 500ms ease-out",
           }}
         />
       ) : null}
