@@ -14,6 +14,11 @@ import lightingCover from "@/assets/category-covers/lighting.png";
 import coffeeTablesCover from "@/assets/category-covers/coffee-tables.png";
 import diningCover from "@/assets/category-covers/dining.png";
 import barCover from "@/assets/category-covers/bar.png";
+import pillowsCover from "@/assets/category-covers/pillows.png";
+import throwsCover from "@/assets/category-covers/throws.png";
+import tablewareCover from "@/assets/category-covers/tableware.png";
+import stylingCover from "@/assets/category-covers/styling.png";
+import rugsCover from "@/assets/category-covers/rugs.png";
 
 export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, string>> = {
   sofas: sofasCover,
@@ -25,4 +30,9 @@ export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, string>> = {
   dining: diningCover,
   bar: barCover,
   lighting: lightingCover,
+  pillows: pillowsCover,
+  throws: throwsCover,
+  tableware: tablewareCover,
+  styling: stylingCover,
+  rugs: rugsCover,
 };
