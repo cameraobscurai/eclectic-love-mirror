@@ -431,12 +431,6 @@ function AtelierPage() {
               </li>
             ))}
           </ul>
-          <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-            MORE QUESTIONS?{" "}
-            <Link to="/contact" hash="faq" className="editorial-link">
-              SEE THE FULL FAQ
-            </Link>
-          </p>
         </div>
       </Section>
 
