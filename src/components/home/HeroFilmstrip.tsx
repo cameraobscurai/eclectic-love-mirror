@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
 import { Play } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -159,7 +159,7 @@ interface FrameProps {
   parallaxDir: 1 | -1;
 }
 
-const FilmstripFrame = memo(function FilmstripFrame({
+function FilmstripFrame({
   clip,
   reduced,
   isHover,
@@ -205,7 +205,7 @@ const FilmstripFrame = memo(function FilmstripFrame({
         <motion.div
           aria-hidden
           className="absolute inset-x-0 -top-4 -bottom-4"
-          style={{ y: innerY }}
+          style={{ y: innerY, willChange: "transform" }}
         >
           {clip.poster && (
             <img
@@ -292,4 +292,4 @@ const FilmstripFrame = memo(function FilmstripFrame({
       </figcaption>
     </div>
   );
-});
+}

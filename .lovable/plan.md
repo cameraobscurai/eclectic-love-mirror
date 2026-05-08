@@ -1,74 +1,71 @@
+# Gluing the home scroll — with droflower's card reveal as the closing beat
 
-## Goal
-Cut scroll-time CPU and React work on `/` without changing the visible motion. Same timing, same easing, same arrival — fewer re-renders, fewer subscriptions, lighter GPU layers.
+I pulled the droflower component you're referencing — `ParallaxDepthReveal` (`src/components/animations/ParallaxDepthReveal.tsx`). Here's what makes that card reveal feel addicting, then how I'd adapt it (not copy it) to the three destination tiles at the bottom of our home page, plus the surrounding motion that makes it feel earned.
 
-## What's expensive today (measured by reading the code)
+## What droflower's reveal actually does
 
-1. **`EvolutionNarrative.tsx`** — the biggest offender.
-   - A scroll handler calls `setProgress(p)` every animation frame.
-   - That re-renders the whole section, which maps over `LINES` (11 paragraphs) and recomputes inline opacity + letter-spacing for each — every frame, the entire React subtree reconciles.
-   - The resize listener is registered with an inline arrow, so the cleanup `removeEventListener("resize", handler)` never matches it → leaks across navigations.
-   - Scrim opacity is also a per-frame React style update.
+As the section approaches the viewport, each card is **stacked, scaled down, rotated, and tilted in 3D**, then they fan out into a row as you scroll. Specifically per card:
+- starts horizontally collapsed toward center (`-offset * 33.33%`), vertically pushed down (`(total-1-i) * 22px`), scale `0.72 + 0.06*i`, rotate Z `±6deg`, rotate X `12deg`, opacity `0.15 + 0.12*i`
+- ends at neutral (x:0, y:0, scale:1, rotateX:0, opacity:1)
+- driven by `useScroll({ offset: ["start 0.85", "start 0.2"] })` — the scrub finishes well before the section centers, so the resolution lands instead of trailing
+- Framer Motion only, no springs (raw `useTransform`), `perspective: 1200px` on the parent, `transform-style: preserve-3d`
+- mobile + reduced-motion fall back to a static grid
 
-2. **`HeroFilmstrip.tsx`** — minor but fixable.
-   - 5 frames each subscribe to `scrollYProgress` via `useTransform` and render a `motion.div` with `will-change: transform` permanently set. That keeps 5 GPU layers promoted forever, even when the strip is offscreen.
-   - Frames also re-render whenever `hoverId`/`audioId` change because the parent passes new closures to every child.
+That's the move you want. The reason it feels good is the **3D tilt + stagger + the scrub finishing early**. Without those three, you just get fade-in.
 
-3. **`DestinationStack.tsx`** — already uses motion values (good), but:
-   - Each card subscribes 7 motion values; `willChange: transform, opacity` is set permanently.
-   - The `[perspective:1400px]` wrapper stays mounted with perspective even after resolution → keeps a stacking context active for nothing.
+## How I'd adapt it for our home page
 
-4. **`SmoothScroll`** — fine; no change.
+Our destinations are 3 hairline rows inside `EvolutionNarrative`'s footer slot, not 3 chunky cards. A literal port would look gaudy against our editorial restraint. Two options:
 
-## Optimizations (no visible change in motion)
+### Option A — "Stacked Index" *(closest to droflower, recommended)*
 
-### A. EvolutionNarrative — drive the reveal with CSS variables, not React state
+Treat the three destinations as a small editorial card stack that resolves into the existing index row.
 
-Replace per-frame `setState` with a single `MotionValue<number>` from `useScroll({ target: sectionRef, offset: ["start start", "end end"] })`, then write progress into a CSS custom property on the section root via `useMotionValueEvent` → `el.style.setProperty('--p', value)`.
+- Each destination becomes a slim card (paper background, hairline charcoal border, ~clamp(120px, 12vh, 180px) tall) holding the same number/title/label/arrow.
+- As you cross from the manifesto into the footer:
+  - Card 1 (Atelier) sits behind, scale `0.86`, y `+44px`, rotateX `10deg`, rotateZ `-3deg`, opacity `0.25`
+  - Card 2 (Collection) middle, scale `0.92`, y `+22px`, rotateX `8deg`, opacity `0.45`
+  - Card 3 (Gallery) top, scale `0.96`, y `+8px`, rotateX `4deg`, opacity `0.7`
+  - All resolve to neutral (row layout) by the end of the scrub.
+- `useScroll({ offset: ["start 0.9", "start 0.35"] })` — the resolution lands as the section centers, not when you hit the very bottom (this is the fix for "dumps you into the buttons").
+- Tone it WAY down vs droflower: rotateX max 10°, rotateZ ±3°, scale floor 0.86 (not 0.72). We're luxe-editorial, not consumer-bold.
+- After resolved: a 1px hairline draws across the top of the row left→right (320ms) — confirms "the room is set."
+- Arrows draw their SVG `pathLength` 0→1 on resolve, 60ms staggered.
+- Mobile + reduced-motion: skip the 3D entirely, cards just stagger-fade in vertically (60ms apart, 12px lift).
 
-Each manifesto line gets its opacity from CSS using its own per-line variable computed once at mount:
+### Option B — "Quiet Slide" *(simpler, no 3D)*
 
-```css
-/* per <p> */
-opacity: calc(var(--dim) + (1 - var(--dim)) *
-  clamp(0, (var(--p) - var(--lead)) * var(--span) - var(--idx), 1));
-```
+Keep the existing flat hairline rows, but each row slides up from `+36px / opacity 0.2` into place as you scroll past `progress 0.78 → 0.95` of the manifesto, staggered 80ms. Shorter scroll budget. Less wow.
 
-- React renders the section ONCE. All 11 lines update via CSS only.
-- Closer line letter-spacing also derives from `--p` via `calc()`.
-- Scrim opacity → same pattern, one CSS var.
-- `showFooter` stays a boolean React state, but only flips at one threshold (rare → cheap). Use `useMotionValueEvent` with a guard so it only `setShowFooter` when the boolean actually changes.
-- Fix the resize listener bug (named handler so cleanup works).
+---
 
-Net: from O(lines) reconciliations per frame to zero React work per frame.
+## The other half of the fix — the 60vh of dead air before the cards
 
-### B. HeroFilmstrip — share one parallax MotionValue, retire `will-change` when out of view
+Even with a great card reveal, the manifesto's last line ("This is our evolution.") currently has nothing between it and the CTA. Two structural improvements (do these regardless of A or B):
 
-- Keep the existing `useScroll` and `useTransform` per frame (alternating direction is real motion, can't be collapsed).
-- Replace the permanent `willChange: 'transform'` with a class that toggles `will-change-transform` only while the strip is in view (we already track `inView` via IntersectionObserver). When the strip leaves the viewport, drop `will-change` so the browser can release the layer.
-- Memoize `setHoverId` / `toggleAudio` / `handleManualPlay` (already useCallback — keep). Wrap `FilmstripFrame` in `React.memo` so hover changes only re-render the entered/left frame, not all 5.
-- Move `parallaxDir` derivation out of the render loop into a memoized array (cheap, but eliminates an allocation per render).
+1. **Closer-line dwell + letter-spacing relax.** The `closer` line gets a 1.4s ease and letter-spacing eases from `0.2em → 0.16em` as it brightens — same gesture as the wordmark on load, completing a visual rhyme. ~5 lines of code in `EvolutionNarrative.tsx`.
 
-### C. DestinationStack — same `will-change` discipline, fewer always-on transforms
+2. **Pre-warm scrim.** A scroll-driven charcoal-on-paper gradient at the bottom 30vh of the EvolutionNarrative section, growing from 0 → 10% as `progress` crosses 0.78 → 1. The footer's darker zone feels approached, not dropped on. Reuses the same gradient pattern as the home hero scrim.
 
-- Add an `IntersectionObserver` on the container; only set `willChange: 'transform, opacity'` and the `[perspective:…]` wrapper class while the stack is within `rootMargin: 200px`. Once resolved + offscreen, drop both.
-- After `scrollYProgress` reaches 1, snap motion values to their resting state and stop subscribing (use `useMotionValueEvent` to set a `resolved` flag → render plain `<div>` instead of `motion.div`). Visual result identical; motion subscriptions released for the rest of the page.
-- Wrap `DestinationCard` in `React.memo`.
+3. **Shrink `FOOTER_REVEAL_AT` from 0.92 → 0.78** so the cards begin their resolve while there's still scroll runway, instead of slamming in at the bottom.
 
-### D. Cross-cutting
+## Filmstrip → manifesto handoff (optional, separate beat)
 
-- Add `content-visibility: auto` + `contain-intrinsic-size` to the manifesto section's offscreen tail and to the destination footer block. Lets the browser skip layout/paint when not visible. Zero visual change.
-- Confirm `transform-style: preserve-3d` is only applied while animating (handled in C).
+The filmstrip currently sits frozen as you scroll past it. A subtle binding: tie each frame's inner image `object-position-y` to scroll progress (±16px range). Photographs gain weight inside their windows, and the strip reads as you "passing through" rather than scrolling over. Pure parallax, ~30 lines in `HeroFilmstrip.tsx`. Easy to add or skip.
 
-## Files to touch
+---
 
-- `src/components/home/EvolutionNarrative.tsx` — biggest rewrite (state → motion value + CSS vars). No prop changes.
-- `src/components/home/HeroFilmstrip.tsx` — `React.memo(FilmstripFrame)`, conditional `will-change`, memoized dirs array.
-- `src/components/home/DestinationStack.tsx` — `React.memo(DestinationCard)`, IO-gated `will-change`/perspective, post-resolve "freeze to plain div" path.
-- No new dependencies. No route or layout changes.
+## My pick
 
-## Acceptance
+**Option A + the three structural fixes + the filmstrip parallax.** That's the version that solves your actual complaint: the manifesto resolves into a card reveal that *feels like an arrival*, not a buttons dump.
 
-- Visual diff on `/` scroll arc: identical pacing, identical brightness ramp on each manifesto line, identical 3D card resolution, identical filmstrip drift, identical pre-warm scrim and footer reveal.
-- React DevTools Profiler while scrolling: `EvolutionNarrative` commits drop from one-per-frame to one (mount) + one (footer reveal). `HeroFilmstrip` commits only on hover of a frame, not on scroll.
-- `will-change` audit: no element keeps `will-change` set while the section is offscreen.
+## Files
+
+- `src/components/home/DestinationStack.tsx` *(new)* — adapted ParallaxDepthReveal, restraint-tuned, 3 cards.
+- `src/routes/index.tsx` — replace inline destinations footer with `<DestinationStack destinations={DESTINATIONS} />`.
+- `src/components/home/EvolutionNarrative.tsx` — closer-line dwell, scrim, `FOOTER_REVEAL_AT` 0.78.
+- `src/components/home/HeroFilmstrip.tsx` — per-frame inner parallax (optional).
+
+No new deps. Framer Motion + Lenis already wired. All transforms GPU-only. `useReducedMotion` gates everything, mobile gets the static fallback.
+
+Tell me **A** or **A without filmstrip** or **B**, and I'll build it.
