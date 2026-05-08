@@ -278,17 +278,15 @@ button, a, [role="button"] {
 }
 
 .collection-overview-grid-shell {
-  height: calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-mobile-h-h));
-  overflow: hidden;
-}
-
-html:has([data-collection-overview]),
-body:has([data-collection-overview]) {
-  overflow: hidden;
+  /* Mobile/tablet: take whatever's left after the H masthead, but never
+     less than what the tiles need. min-h-0 lets flex-children shrink;
+     min-height ensures the bottom row never clips on short viewports. */
+  min-height: calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-mobile-h-h));
 }
 
 @media (min-width: 1024px) {
   .collection-overview-grid-shell {
+    min-height: 0;
     height: auto;
   }
 }
