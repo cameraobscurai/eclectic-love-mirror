@@ -419,9 +419,22 @@ button, a, [role="button"] {
   }
 }
 
-/* Hide scrollbars (used by gallery filmstrip + similar). */
+/* Hide scrollbars (used by carousels where a custom indicator replaces them). */
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* Slim, always-visible horizontal scrollbar — for editorial filmstrips
+   (gallery, lightbox rail) where invisible-scroll left users wondering if
+   the strip moved. Track is barely there at rest; thumb is a quiet cream
+   bar against the charcoal page chrome. */
+.scrollbar-slim { scrollbar-width: thin; scrollbar-color: rgba(245,242,237,0.35) transparent; }
+.scrollbar-slim::-webkit-scrollbar { height: 6px; width: 6px; }
+.scrollbar-slim::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background-color: rgba(245,242,237,0.30);
+  border-radius: 999px;
+}
+.scrollbar-slim:hover::-webkit-scrollbar-thumb { background-color: rgba(245,242,237,0.55); }
 
 /* ----------------------------------------------------------------------------
    Page-title scale — shared across Atelier, Gallery, and Contact.
