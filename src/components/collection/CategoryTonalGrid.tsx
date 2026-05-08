@@ -199,8 +199,7 @@ export function CategoryTonalGrid({
           width: 100%;
           height: 100%;
           gap: 0;
-          padding-top: 12px;
-          padding-bottom: clamp(72px, 9vh, 96px);
+          padding: 0;
         }
         [data-tonal-grid] > button { min-height: 180px; }
         @media (max-width: 1023px) {
