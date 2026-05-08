@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
@@ -164,6 +164,12 @@ export const Route = createFileRoute("/atelier")({
 function AtelierPage() {
   // --- Fabrication list hover ---------------------------------------------
   const [fabHover, setFabHover] = useState<number | null>(null);
+  const [heroReady, setHeroReady] = useState(false);
+
+  useEffect(() => {
+    const fallback = window.setTimeout(() => setHeroReady(true), 2600);
+    return () => window.clearTimeout(fallback);
+  }, []);
 
   return (
     <main
@@ -180,18 +186,27 @@ function AtelierPage() {
       >
         <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-stretch">
           <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            <p
+              className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50"
+              style={{ opacity: heroReady ? 1 : 0, transition: "opacity 620ms ease-out" }}
+            >
               ATELIER BY THE HIVE
             </p>
             {/* T17: literal CAPS in source so SR & visual register agree. */}
-            <h1 className="page-title text-charcoal">
+            <h1
+              className="page-title text-charcoal"
+              style={{ opacity: heroReady ? 1 : 0, transition: "opacity 720ms ease-out 80ms" }}
+            >
               IMAGINED.
               <br />
               DESIGNED.
               <br />
               REALIZED.
             </h1>
-            <p className="text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
+            <p
+              className="text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]"
+              style={{ opacity: heroReady ? 1 : 0, transition: "opacity 620ms ease-out 160ms" }}
+            >
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
           </div>
@@ -203,6 +218,8 @@ function AtelierPage() {
               sizes="(min-width: 768px) 40vw, 100vw"
               lazy={false}
               fetchPriority="high"
+              revealReady={heroReady}
+              onLoad={() => setHeroReady(true)}
             />
           </div>
         </div>
