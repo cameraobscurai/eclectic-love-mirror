@@ -925,8 +925,12 @@ function CollectionPage() {
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
       <section
-        className={showOverview ? "px-0 pt-0 overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
-        style={showOverview ? { height: "calc(var(--app-vh, 100dvh) - var(--nav-h))" } : undefined}
+        className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
+        style={
+          showOverview
+            ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
+            : undefined
+        }
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
@@ -936,7 +940,7 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex h-full flex-col overflow-hidden lg:flex-row" : "grid grid-cols-1"}
+            className={showOverview ? "flex min-h-[inherit] flex-col lg:flex-row" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
