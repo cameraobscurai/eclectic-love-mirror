@@ -55,7 +55,7 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   // Wide horizontal furniture — give the silhouette room.
   sofas: "10% 8% 22% 8%",
   "coffee-tables": "12% 10% 22% 10%",
-  benches: "10% 10% 22% 10%",
+  "benches-ottomans": "10% 10% 22% 10%",
   bar: "10% 12% 22% 12%",
   dining: "10% 12% 22% 12%",
   // Default for the rest (chairs, tableware, styling, large-decor).
