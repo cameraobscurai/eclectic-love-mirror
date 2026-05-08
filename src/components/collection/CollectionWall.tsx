@@ -22,6 +22,8 @@ import {
   loadOrder,
   saveOrder,
   clearOrder,
+  confirmOrder,
+  isOrderConfirmed,
   applySavedOrder,
 } from "@/lib/wall-dnd";
 
