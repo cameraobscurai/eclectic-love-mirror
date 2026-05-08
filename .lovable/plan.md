@@ -1,129 +1,71 @@
-## Two things in one pass
+# Gluing the home scroll — with droflower's card reveal as the closing beat
+
+I pulled the droflower component you're referencing — `ParallaxDepthReveal` (`src/components/animations/ParallaxDepthReveal.tsx`). Here's what makes that card reveal feel addicting, then how I'd adapt it (not copy it) to the three destination tiles at the bottom of our home page, plus the surrounding motion that makes it feel earned.
+
+## What droflower's reveal actually does
+
+As the section approaches the viewport, each card is **stacked, scaled down, rotated, and tilted in 3D**, then they fan out into a row as you scroll. Specifically per card:
+- starts horizontally collapsed toward center (`-offset * 33.33%`), vertically pushed down (`(total-1-i) * 22px`), scale `0.72 + 0.06*i`, rotate Z `±6deg`, rotate X `12deg`, opacity `0.15 + 0.12*i`
+- ends at neutral (x:0, y:0, scale:1, rotateX:0, opacity:1)
+- driven by `useScroll({ offset: ["start 0.85", "start 0.2"] })` — the scrub finishes well before the section centers, so the resolution lands instead of trailing
+- Framer Motion only, no springs (raw `useTransform`), `perspective: 1200px` on the parent, `transform-style: preserve-3d`
+- mobile + reduced-motion fall back to a static grid
+
+That's the move you want. The reason it feels good is the **3D tilt + stagger + the scrub finishing early**. Without those three, you just get fade-in.
+
+## How I'd adapt it for our home page
+
+Our destinations are 3 hairline rows inside `EvolutionNarrative`'s footer slot, not 3 chunky cards. A literal port would look gaudy against our editorial restraint. Two options:
+
+### Option A — "Stacked Index" *(closest to droflower, recommended)*
+
+Treat the three destinations as a small editorial card stack that resolves into the existing index row.
+
+- Each destination becomes a slim card (paper background, hairline charcoal border, ~clamp(120px, 12vh, 180px) tall) holding the same number/title/label/arrow.
+- As you cross from the manifesto into the footer:
+  - Card 1 (Atelier) sits behind, scale `0.86`, y `+44px`, rotateX `10deg`, rotateZ `-3deg`, opacity `0.25`
+  - Card 2 (Collection) middle, scale `0.92`, y `+22px`, rotateX `8deg`, opacity `0.45`
+  - Card 3 (Gallery) top, scale `0.96`, y `+8px`, rotateX `4deg`, opacity `0.7`
+  - All resolve to neutral (row layout) by the end of the scrub.
+- `useScroll({ offset: ["start 0.9", "start 0.35"] })` — the resolution lands as the section centers, not when you hit the very bottom (this is the fix for "dumps you into the buttons").
+- Tone it WAY down vs droflower: rotateX max 10°, rotateZ ±3°, scale floor 0.86 (not 0.72). We're luxe-editorial, not consumer-bold.
+- After resolved: a 1px hairline draws across the top of the row left→right (320ms) — confirms "the room is set."
+- Arrows draw their SVG `pathLength` 0→1 on resolve, 60ms staggered.
+- Mobile + reduced-motion: skip the 3D entirely, cards just stagger-fade in vertically (60ms apart, 12px lift).
+
+### Option B — "Quiet Slide" *(simpler, no 3D)*
+
+Keep the existing flat hairline rows, but each row slides up from `+36px / opacity 0.2` into place as you scroll past `progress 0.78 → 0.95` of the manifesto, staggered 80ms. Shorter scroll budget. Less wow.
 
 ---
 
-## 1. Lagos Swivel Chair — fix the blank tile
+## The other half of the fix — the 60vh of dead air before the cards
 
-**Diagnosis (confirmed against DB + storage):**
+Even with a great card reveal, the manifesto's last line ("This is our evolution.") currently has nothing between it and the CTA. Two structural improvements (do these regardless of A or B):
 
-- `inventory_items` row for Lagos (`rms_id=4161`) has `images[0] = .../02-LAGOS_1.png` — that file **404s** in the bucket.
-- The real files in storage are `01-LAGOS_Swivel_Chair.png` and `02-LAGOS_Swivel_Chair.png` (both return 200, ~485KB each).
-- The baked catalog JSON (`current_catalog.json`, the file the Collection page actually reads on first paint) already points at the correct `02-LAGOS_Swivel_Chair.png` URL — **so the JSON is right, the DB is wrong**.
-- Why the tile still shows blank: the previous swap edited the JSON, but on the next bake the script will overwrite it with whatever's in the DB row. The DB is the source of truth — JSON is a snapshot.
+1. **Closer-line dwell + letter-spacing relax.** The `closer` line gets a 1.4s ease and letter-spacing eases from `0.2em → 0.16em` as it brightens — same gesture as the wordmark on load, completing a visual rhyme. ~5 lines of code in `EvolutionNarrative.tsx`.
 
-**Fix:** one-row migration that rewrites Lagos's `images` array in `inventory_items` to the two real filenames (`01-…Swivel_Chair.png` first as hero, `02-…Swivel_Chair.png` second), then re-bake the catalog so JSON and DB agree. No other rows touched.
+2. **Pre-warm scrim.** A scroll-driven charcoal-on-paper gradient at the bottom 30vh of the EvolutionNarrative section, growing from 0 → 10% as `progress` crosses 0.78 → 1. The footer's darker zone feels approached, not dropped on. Reuses the same gradient pattern as the home hero scrim.
 
-```sql
-UPDATE inventory_items
-SET images = ARRAY[
-  '.../squarespace-mirror/lounge/lagos-swivel-chair/01-LAGOS_Swivel_Chair.png',
-  '.../squarespace-mirror/lounge/lagos-swivel-chair/02-LAGOS_Swivel_Chair.png'
-]
-WHERE rms_id = '4161';
-```
+3. **Shrink `FOOTER_REVEAL_AT` from 0.92 → 0.78** so the cards begin their resolve while there's still scroll runway, instead of slamming in at the bottom.
 
-Then `bun scripts/bake-catalog.mjs` to refresh the JSON.
+## Filmstrip → manifesto handoff (optional, separate beat)
+
+The filmstrip currently sits frozen as you scroll past it. A subtle binding: tie each frame's inner image `object-position-y` to scroll progress (±16px range). Photographs gain weight inside their windows, and the strip reads as you "passing through" rather than scrolling over. Pure parallax, ~30 lines in `HeroFilmstrip.tsx`. Easy to add or skip.
 
 ---
 
-## 2. "Wall" view — port the Lab grid to Collection
+## My pick
 
-A second toggle next to the existing density toggle (the two icons in your screenshot). Clicking it swaps the current scroll-paginated `?view=` for a **viewport-locked specimen wall** of the active subcategory.
-
-### Where it lives
-
-- New URL value: `view=wall` (existing param, currently empty).
-- Toggle UI sits **immediately right** of the density toggle in the utility bar (collection.tsx ~line 800). Same 40×40 buttons, same border treatment. Two icons: list/grid (current) and wall (4×4 dense). Only visible when a subcategory is active (wall makes no sense on the overview).
-- Density toggle hides when `view=wall` (density is meaningless — the wall auto-fits).
-
-### What it renders
-
-A new component `src/components/collection/CollectionWall.tsx` that mirrors `LabGrid` + `LabTile` from the Local Lvrs project, with these adjustments for Hive:
-
-| Lab original | Hive port |
-|---|---|
-| Black `#000` background, `bg-border/30` grout | `var(--paper)` (#ffffff) background, `bg-charcoal/8` 1px grout — keeps cutout-on-white aesthetic |
-| `scale: 3.2` on hover | `scale: 2.6` — Hive products have less padding, 3.2 clips edges |
-| `framer-motion` springs (`stiffness: 380 / damping: 32`) | Same — they're tuned right |
-| `dim 0.18` on non-hovered | `0.12` — Hive's white-on-white needs a deeper dim to read |
-| `pulse` ambient blip | Drop it — too playful for Hive register |
-| Mobile loupe | Keep, but ring uses `mix-blend-multiply` not `difference` (white background) |
-| Hero shoe entry screen | Skip — Collection already has the heading & rail; wall mounts directly |
-| `framer-motion` import | Already in deps, reuse |
-
-### Layout math (the part that makes it work)
-
-The auto-fit `cols × rows` solver from `LabGrid` is copied verbatim. It runs against the available area: viewport height minus nav + heading + utility bar + subcategory rail (computed from existing `--nav-h` and `--collection-heading-h` CSS vars + a new `--utility-bar-h`). The container becomes `position: absolute` inset-0 inside a `position: relative` shell sized to that remaining viewport, exactly like Lab.
-
-For very large subcategories (Tableware = 173, Pillows = 161) we cap at the same 240 ceiling Lab uses; the rest are reachable by switching back to scroll view. We'll surface a small `"Showing 240 / 173"` line in the bottom meta only if trimmed.
-
-### Component structure
-
-```
-src/components/collection/
-  CollectionWall.tsx       # auto-fit grid, derived from LabGrid
-  CollectionWallTile.tsx   # two-layer motion, derived from LabTile
-```
-
-Both are self-contained — no edits to ProductTile (scroll view stays untouched).
-
-### Wiring in collection.tsx
-
-```text
-{view === "wall" ? (
-  <CollectionWall products={visibleProducts} />
-) : (
-  <ScrollGrid ... />   // existing block
-)}
-```
-
-The IntersectionObserver pagination, density toggle, and infinite-scroll batches all stay; they just don't run when `view=wall`. Switching modes preserves `group`, `subcategory`, `q`, `sort` — only `view` flips.
-
-### Interaction details to keep from Lab
-
-- `gap-px` hairline grout (re-tuned to charcoal/8 against white)
-- `overflow-visible` on tile wrappers so the zoomed image breaks past its cell
-- `memo()` with custom equality on the tile — no re-render storms across 200+ tiles
-- `willChange: "transform, opacity"` for compositor promotion
-- Spring on scale, ease-out cubic on opacity (separated curves)
-- Dim-everyone-on-any-hover for the "isolate" feel
-- rAF-throttled touch handler for the mobile loupe
-
-### What's intentionally NOT ported
-
-- The "Enter the Wall" hero/CTA splash screen — Collection already has context
-- Ambient pulse — too playful
-- `mix-blend-difference` ring — wrong for white bg
-- `getUniqueModels()` dedupe — Hive items are already unique
-- `Lab / 001` and "Wall of Love" copy — replaced with subcategory name + count
-
-### Edge cases handled
-
-- Subcategory with <12 products → solver picks fewer cols, tiles get bigger (still fills viewport)
-- Subcategory with >240 → trim notice in bottom meta
-- Resize / rotate → ResizeObserver re-runs the solver
-- Switch to wall while scrolled → snap to top
-- Switch back to scroll → restore previous scroll position (we already track `lastScrollY` in collection.tsx)
-
----
+**Option A + the three structural fixes + the filmstrip parallax.** That's the version that solves your actual complaint: the manifesto resolves into a card reveal that *feels like an arrival*, not a buttons dump.
 
 ## Files
 
-**Edits**
-- `src/routes/collection.tsx` — add wall toggle button next to density toggle (~line 800), add `view === "wall"` branch in the body (~line 966), hide density when wall is active
-- `inventory_items` (Lagos row only) — one-row migration
+- `src/components/home/DestinationStack.tsx` *(new)* — adapted ParallaxDepthReveal, restraint-tuned, 3 cards.
+- `src/routes/index.tsx` — replace inline destinations footer with `<DestinationStack destinations={DESTINATIONS} />`.
+- `src/components/home/EvolutionNarrative.tsx` — closer-line dwell, scrim, `FOOTER_REVEAL_AT` 0.78.
+- `src/components/home/HeroFilmstrip.tsx` — per-frame inner parallax (optional).
 
-**New**
-- `src/components/collection/CollectionWall.tsx`
-- `src/components/collection/CollectionWallTile.tsx`
+No new deps. Framer Motion + Lenis already wired. All transforms GPU-only. `useReducedMotion` gates everything, mobile gets the static fallback.
 
-**Regenerate**
-- `src/data/inventory/current_catalog.json` via `bun scripts/bake-catalog.mjs`
-
-No schema changes. No new deps. ~250 lines new code, ~20 lines edited in collection.tsx.
-
----
-
-## Open question before I build
-
-Should the wall be **per-subcategory only** (e.g. Lounge Seating wall = ~70 chairs), or also available on the **whole-parent view** (Seating wall = all 102)? Lab uses the whole catalog, but Hive's parents go up to 173 items which would force a heavy trim. My recommendation: **subcategory-only** for now — it preserves the "specimen tray" feel without truncating. Easy to widen later. Let me know if you want it on parent-level too.
+Tell me **A** or **A without filmstrip** or **B**, and I'll build it.
