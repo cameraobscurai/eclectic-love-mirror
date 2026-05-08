@@ -300,11 +300,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                       style={{
                         fontWeight: 400,
                         fontStyle: isClose ? "normal" : "italic",
-                        // vh-based sizing keeps the entire 19-line manifesto
+                        // vh-based sizing keeps the entire 17-line manifesto
                         // inside the sticky viewport regardless of breakpoint.
+                        // Bumped 2026-05-08 per owner — script reads a touch
+                        // larger; closer line still slightly smaller for rhythm.
                         fontSize: isClose
-                          ? "clamp(0.85rem, 1.7vh, 1.4rem)"
-                          : "clamp(0.9rem, 1.85vh, 1.55rem)",
+                          ? "clamp(0.95rem, 1.9vh, 1.6rem)"
+                          : "clamp(1rem, 2.05vh, 1.75rem)",
                         lineHeight: 1.25,
                         marginTop: isClose ? "0.6rem" : isBrand ? "0.4rem" : 0,
                         opacity,
