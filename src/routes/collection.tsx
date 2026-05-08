@@ -1017,14 +1017,14 @@ function CollectionPage() {
                     <source
                       type="image/avif"
                       srcSet={hiveSignatureHeroSquare.sources.avif}
-                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                      sizes="(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw"
                     />
                   )}
                   {hiveSignatureHeroSquare.sources.webp && (
                     <source
                       type="image/webp"
                       srcSet={hiveSignatureHeroSquare.sources.webp}
-                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                      sizes="(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw"
                     />
                   )}
                   {/* Cover-by-width: image fills the aside's width fully so
