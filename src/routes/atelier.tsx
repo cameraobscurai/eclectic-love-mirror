@@ -342,7 +342,7 @@ function AtelierPage() {
           <MediaAperture
             ratio="3/1"
             picture={atelierHiveTriptych}
-            alt="The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices."
+            alt={ATELIER_IMAGE_ALT.HIVE_TRIPTYCH}
             sizes="100vw"
             prefetchMargin="1600px"
           />
@@ -351,14 +351,14 @@ function AtelierPage() {
           <MediaAperture
             ratio="4/5"
             picture={atelierSketchDrape}
-            alt="Hand-drawn chair sketch on hanging drape — design phase."
+            alt={ATELIER_IMAGE_ALT.SKETCH_DRAPE}
             sizes="(min-width: 768px) 45vw, 100vw"
             prefetchMargin="1600px"
           />
           <MediaAperture
             ratio="4/5"
             picture={atelierCollage}
-            alt="Studio collage — fabrication, sketching, and finished detail."
+            alt={ATELIER_IMAGE_ALT.WORKSHOP_COLLAGE}
             sizes="(min-width: 768px) 45vw, 100vw"
             prefetchMargin="1600px"
           />
