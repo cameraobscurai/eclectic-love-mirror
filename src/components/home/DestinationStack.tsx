@@ -185,7 +185,7 @@ function DestinationCard({
       <div
         className="border border-charcoal/12"
         style={{
-          height: "clamp(148px, 9rem + 3vw, 13rem)",
+          height: "clamp(96px, 7rem + 3vw, 13rem)",
           animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
         }}
       >
