@@ -32,12 +32,12 @@ const LINES: Line[] = [
 // Tighter scroll budget so older readers don't feel trapped.
 // Total scroll = LINES.length * STEP_VH + tail. ~16vh per line + 40vh tail
 // gives ~2.2 screens of scroll for the whole arc on desktop, ~2 on mobile.
-const STEP_VH_DESKTOP = 16;
-const STEP_VH_MOBILE = 14;
+const STEP_VH_DESKTOP = 14;
+const STEP_VH_MOBILE = 12;
 // Lead-in: portion of scroll before any line begins revealing.
 // Lets the section fully settle into center before the manifesto activates.
-const LEAD_IN = 0.1;
-const FOOTER_REVEAL_AT = 0.78;
+const LEAD_IN = 0.08;
+const FOOTER_REVEAL_AT = 0.82;
 const DIM_OPACITY = 0.18;
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 
