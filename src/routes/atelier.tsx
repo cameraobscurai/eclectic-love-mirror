@@ -158,6 +158,20 @@ export const Route = createFileRoute("/atelier")({
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
+      // Preload the first row of THE HIVE portraits (4 across on desktop).
+      // These sit just below the fold and dominate the second paint — kicking
+      // them off in the document head lets them race the JS bundle instead
+      // of waiting on hydration + IO + image decode.
+      ...TEAM.slice(0, 4)
+        .filter((m) => m.image?.approvedForWeb)
+        .map((m) => ({
+          rel: "preload" as const,
+          as: "image" as const,
+          href: renderUrl(m.image!.src, { width: 720, quality: 70 }),
+          imageSrcSet: renderSrcSet(m.image!.src, [360, 540, 720, 1080], 70),
+          imageSizes: "(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw",
+          fetchPriority: "low" as const,
+        })),
     ],
   }),
   component: AtelierPage,
