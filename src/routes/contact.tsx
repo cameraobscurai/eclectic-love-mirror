@@ -213,7 +213,7 @@ function ContactPage() {
         >
           {/* LEFT — editorial intro */}
           <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               CONTACT
             </p>
             <h1 className="page-title mt-6 text-charcoal">
@@ -224,23 +224,23 @@ function ContactPage() {
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
             </p>
-            <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
+            <div className="mt-12 space-y-5">
               <p>
-                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   EMAIL
                 </span>
                 <a
-                  className="editorial-link uppercase tracking-[0.08em]"
+                  className="editorial-link text-[12px] uppercase tracking-[0.18em] text-charcoal/80"
                   href={`mailto:${SUPPORT_EMAIL}`}
                 >
                   {SUPPORT_EMAIL}
                 </a>
               </p>
               <p>
-                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   ATELIER
                 </span>
-                <span className="uppercase tracking-[0.08em]">
+                <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/80">
                   Denver, Colorado
                 </span>
               </p>
