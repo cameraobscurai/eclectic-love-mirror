@@ -321,10 +321,13 @@ export function sortProductsForCollection(
       );
       return list;
     case "tonal": {
-      // Darkest → lightest, with chromatic items woven in by hue band.
-      // Untagged products sort to the tail in their natural order.
+      // Owner-curated manualRank wins; otherwise darkest → lightest by
+      // tonalRank, with chromatic items woven in by hue band.
       const TAIL = Number.MAX_SAFE_INTEGER;
       list.sort((a, b) => {
+        const ma = a.manualRank ?? TAIL;
+        const mb = b.manualRank ?? TAIL;
+        if (ma !== mb) return ma - mb;
         const ra = a.tonalRank ?? TAIL;
         const rb = b.tonalRank ?? TAIL;
         return (

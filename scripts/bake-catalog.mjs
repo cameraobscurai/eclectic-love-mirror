@@ -227,6 +227,23 @@ for (const p of rolled) {
 }
 console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
 
+// Manual-order overrides — owner-curated tile sequences captured from the
+// Collection wall's drag-to-reorder tool (scripts-tmp/manual-orders.json).
+// Stamps `manualRank` on matched products; the tonal sort honors it first.
+let manualStamped = 0;
+try {
+  const manual = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/manual-orders.json', 'utf8'));
+  const productById = new Map(rolled.map((p) => [String(p.id), p]));
+  for (const order of manual.orders || []) {
+    order.ids.forEach((id, idx) => {
+      const p = productById.get(String(id));
+      if (p) { p.manualRank = idx; manualStamped++; }
+    });
+  }
+  console.log(`[manual-order] stamped manualRank on ${manualStamped} tiles from ${manual.orders?.length || 0} orders`);
+} catch (e) {
+  console.warn('[manual-order] no manual-orders.json — skipping');
+}
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.
