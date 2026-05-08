@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "vr:check": "node scripts/visual-regression/run.mjs --check",
+    "vr:update": "node scripts/visual-regression/run.mjs --update"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.6",
