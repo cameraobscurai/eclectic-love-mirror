@@ -393,7 +393,9 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   // Natural aspect from the actual video file. Falls back to 3/4 (poster ratio)
   // until metadata loads — that way the zoom-in animation has a credible target.
-  const [naturalAspect, setNaturalAspect] = useState<number>(3 / 4);
+  // Natural aspect from the actual video file. Seeded from clip.aspect (so the
+  // zoom target is correct from frame zero); refined when metadata loads.
+  const [naturalAspect, setNaturalAspect] = useState<number>(clip?.aspect ?? 3 / 4);
   const [viewport, setViewport] = useState({
     w: typeof window !== "undefined" ? window.innerWidth : 1280,
     h: typeof window !== "undefined" ? window.innerHeight : 800,
