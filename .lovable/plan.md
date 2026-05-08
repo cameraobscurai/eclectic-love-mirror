@@ -1,70 +1,27 @@
-## Situation
+## Fix the Atelier image swap
 
-- `inventory_items.images` currently holds **1,555 image URLs** across 848 products.
-- **1,156** already live on our Supabase `squarespace-mirror` bucket (safe).
-- **399** still point directly at Squarespace CDN (`images.squarespace-cdn.com` × 389, `static1.squarespace.com` × 10) — these go dark the moment Squarespace pulls the plug.
-- The `squarespace-mirror` bucket already exists, is public-read, and is what the site already serves the other 1,156 from. Tonight's job is finishing that move.
+I put the paper moodboard in the wrong slot last turn. There are three images in the L'ATELIER section of `/atelier`:
 
-## Three scripts, run in order, each gated
+```
+[ TOP — full-width 3:1 ]                  ← atelier-hive-triptych.jpeg (currently: B&W exterior + atrium + offices triptych)
+[ bottom-left 4:5 ] [ bottom-right 4:5 ]  ← atelier-sketch-drape.png  |  atelier-collage.jpg (currently: paper moodboard — wrong)
+```
 
-All scripts go in `scripts/backup/` and reuse existing env (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` from `process.env` — already provisioned in the sandbox; they match what `scripts/mirror-images.mjs` uses).
+The paper moodboard (image-76) was supposed to land in the **TOP** slot. The B&W workshop collage you just re-uploaded (image-77) was the original bottom-right and needs to go back there.
 
-### 1. `scripts/backup/download-squarespace.mjs` — RUN TONIGHT
+### What I'll do
 
-Goal: get a cold copy of every Squarespace-hosted image we currently reference, **before** Squarespace can take it away.
+1. **Save the re-uploaded B&W workshop collage** (image-77) to `src/assets/atelier/atelier-collage.jpg`, optimized the same way as before (~175 KB JPEG, 1600px max, mozjpeg quality 86). This restores the bottom-right tile.
 
-- Read `inventory_items` from Supabase (service role, so RLS doesn't filter).
-- For each URL in `images[]` whose host is `images.squarespace-cdn.com` or `static1.squarespace.com`:
-  - Compute deterministic key: `squarespace/{rms_id}/{sha1(url).slice(0,12)}-{basename}`
-  - Download to `/mnt/documents/squarespace-backup/{key}` (cold local backup → survives as a downloadable artifact).
-  - In parallel, upload the same bytes to the `squarespace-mirror` bucket under the same key.
-  - Skip if the bucket object already exists with matching size (idempotent / resumable).
-- Concurrency: 8 in flight, retry-with-backoff on 429/5xx, hard-fail on 404 (logged to `failed.json`).
-- Outputs:
-  - `scripts/backup/out/download-manifest.json` — `{ rms_id, original_url, bucket_key, public_url, bytes, sha1 }` per file.
-  - `scripts/backup/out/download-failed.json` — anything that 404'd or wouldn't download.
-  - `scripts/backup/out/download-summary.txt` — totals.
-- **Does NOT touch the database.** Pure read + download + upload.
+2. **Move the paper moodboard into the top slot.** Re-export the current paper file as `src/assets/atelier/atelier-paper-moodboard.jpg`, optimized for the wider rendering (1920px max, ~250 KB), then update `src/routes/atelier.tsx` line 12 + 340 to import and render the paper moodboard in place of `atelierHiveTriptych`. Update the alt text to: *"Paper moodboard — fabric studies and stool sketch for L'Atelier."*
 
-### 2. `scripts/backup/supabase-orphans.mjs` — defensive sweep
+3. **Leave `atelier-hive-triptych.jpeg` on disk** (don't delete) in case you want it back later, but it stops being referenced.
 
-Goal: find files sitting in our buckets that no `inventory_items.images` row references — years of disconnected uploads.
+### One thing to flag before I do it
 
-- List every object in buckets `squarespace-mirror`, `inventory`, `collection`, `category-covers` (paginate `storage.from(bucket).list` recursively).
-- Build the set of all referenced URLs from `inventory_items.images`, plus any image columns on other tables that store image URLs (will discover via schema introspection — `category-covers.ts`, gallery manifests, etc.).
-- Diff: every storage object whose public URL is not referenced anywhere.
-- Outputs (report only — **no moves, no deletes**):
-  - `scripts/backup/out/orphans.json` — full list with bucket, key, size, last_modified, public_url.
-  - `scripts/backup/out/orphans.csv` — same, spreadsheet-friendly for owner review.
-  - `scripts/backup/out/orphans-summary.txt` — counts per bucket and total bytes.
+The top frame renders at **3:1 horizontal** (5:3 on mobile). The paper moodboard is **portrait** (~4:5). At 3:1 it will be heavily letterboxed or cropped — losing the top tape strip and the bottom fabric stack. Two options, your call:
 
-### 3. `scripts/backup/swap-urls.mjs` — last, after the first two are clean
+- **A. Keep the 3:1 frame** — the moodboard will be cropped to a horizontal band through the middle. Looks editorial but loses the full composition.
+- **B. Change the top frame's aspect ratio** to something portrait-friendly like **4:5** or **3:4**, full width, so the whole moodboard breathes. This is how it would actually showcase the paper artwork.
 
-Goal: rewrite the 399 Squarespace URLs in `inventory_items.images` to point at the freshly mirrored copies.
-
-- Reads `download-manifest.json`. For every row with a Squarespace URL that has a successful manifest entry:
-  - Build the new array: replace each Squarespace URL with the matching `public_url` from the bucket; preserve order; preserve any non-Squarespace URLs untouched.
-- **Two modes**:
-  - Default = dry-run. Writes `swap-plan.json` with `{ rms_id, before, after, diff }` per row + `swap-summary.txt`. Database is read-only.
-  - `--apply` = actually `update inventory_items set images = $1 where rms_id = $2` for each planned row, in batches of 50, inside a transaction per batch. Writes `swap-applied.json` log.
-- Refuses to apply if `download-failed.json` is non-empty, unless `--allow-partial` is passed.
-- Aligns with project rule: destructive bulk ops are dry-run first, reviewed, then applied.
-
-## Run order
-
-1. Tonight, immediately: `node scripts/backup/download-squarespace.mjs` → confirm `download-failed.json` is empty (or acceptable).
-2. Any time after: `node scripts/backup/supabase-orphans.mjs` → review `orphans.csv` together.
-3. Only after step 1 is clean: `node scripts/backup/swap-urls.mjs` (dry run) → review → `node scripts/backup/swap-urls.mjs --apply`.
-
-## Out of scope
-
-- No Squarespace site crawl beyond the URLs we already reference. (If the owner wants the broader "everything Squarespace will give us" archive, that's a separate, larger script — easy to add as `crawl-squarespace.mjs` later, but not required to protect what's currently wired into our site.)
-- No deletes of orphaned files.
-- No changes to the live site code or the Collection page.
-- No changes to the H aside (the previous task is shipped).
-
-## Verification at each step
-
-- After step 1: bucket file count up by ~399, `download-summary.txt` shows 0 failures, sample 5 random new bucket URLs and confirm they 200.
-- After step 2: spot-check 10 orphans by their public URL — they should be reachable but unreferenced.
-- After step 3: re-run the host-count query from earlier; expect Squarespace host count to drop to 0 and Supabase host count to rise by ~399.
+I'd recommend **B** — the moodboard is the kind of detail piece that loses its soul when cropped. Want me to go with B?
