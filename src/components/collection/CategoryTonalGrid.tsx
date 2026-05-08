@@ -265,13 +265,18 @@ function TonalCell({
       ) : null}
 
       <span
-        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none truncate"
+        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none"
         style={{
           fontFamily: "var(--font-sans)",
-          letterSpacing: "0.18em",
+          letterSpacing: "0.08em",
           color: "#1a1a1a",
-          lineHeight: 1.2,
-          fontSize: "clamp(9px, 2.4vw, 11px)",
+          lineHeight: 1.15,
+          fontSize: "clamp(9px, 1.6vw, 11px)",
+          // 2-line allowance, no ellipsis — labels like "BENCHES &
+          // OTTOMANS" and "COCKTAIL TABLES" wrap naturally instead of clip.
+          wordBreak: "normal",
+          overflowWrap: "break-word",
+          hyphens: "none",
         }}
       >
         {label}
