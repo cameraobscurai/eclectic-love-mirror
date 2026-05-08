@@ -198,8 +198,9 @@ function DestinationCard({
 
   return (
     <motion.div
-      className="border border-charcoal/12 h-[148px] md:h-[176px] gpu-accelerated"
+      className="border border-charcoal/12 gpu-accelerated"
       style={{
+        height: "clamp(148px, 9rem + 3vw, 13rem)",
         x,
         y,
         scale,
