@@ -2,7 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
+
 export const Route = createFileRoute("/admin/image-qa")({
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
+  head: () => ({
+    meta: [
+      { title: "Image QA · Admin · Eclectic Hive" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: ImageQA,
 });
 
