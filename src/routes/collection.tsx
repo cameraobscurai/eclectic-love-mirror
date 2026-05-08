@@ -959,14 +959,11 @@ function CollectionPage() {
                 layout={!reduced}
                 className="hidden lg:flex flex-shrink-0 items-center justify-center overflow-hidden"
                 style={{
+                  // Was a flat 40%. Fluid-clamped so the H plate stays
+                  // generous on ultrawides without crushing the grid at
+                  // 1280. 1024→32%, 1440→~37%, 1920→44%.
                   width: "clamp(32%, 24% + 8vw, 44%)",
                   background: "var(--paper)",
-                  // Inner side padding so the H mark breathes when the
-                  // column clamps narrow — keeps cap serifs off the edges.
-                  paddingLeft: "clamp(1.25rem, 0.5rem + 2vw, 3rem)",
-                  paddingRight: "clamp(1.25rem, 0.5rem + 2vw, 3rem)",
-                  paddingTop: "clamp(1rem, 0.5rem + 1vw, 2rem)",
-                  paddingBottom: "clamp(1rem, 0.5rem + 1vw, 2rem)",
                 }}
               >
                 <picture className="block w-full h-full">
@@ -993,7 +990,7 @@ function CollectionPage() {
                     loading="eager"
                     {...({ fetchPriority: "high" } as Record<string, string>)}
                     draggable={false}
-                    className="block w-full h-full object-contain"
+                    className="block w-full h-full object-cover"
                     style={{ objectPosition: "center" }}
                   />
                 </picture>
