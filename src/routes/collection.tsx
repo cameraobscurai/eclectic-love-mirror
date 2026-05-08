@@ -11,7 +11,6 @@ import {
   type CatalogPayload,
 } from "@/lib/phase3-catalog";
 import {
-  BROWSE_GROUP_ORDER,
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
@@ -454,19 +453,26 @@ function CollectionPage() {
   const showOverview = !activeParent && !q.trim();
 
   const overviewGroups = useMemo(() => {
-    // Bucket the full public-ready catalog by browse group, in display order.
-    // Empty groups are excluded so every card is real and clickable.
+    // Owner-curated overview: 14 cards arranged in 3 explicit rows (4/5/5).
+    // Order is locked here — CategoryGalleryOverview honors it row-by-row.
+    const OVERVIEW_TILE_ORDER: BrowseGroupId[] = [
+      // Row 1 (4)
+      "sofas", "chairs", "benches-ottomans", "side-tables",
+      // Row 2 (5)
+      "coffee-tables", "dining", "bar", "lighting", "storage",
+      // Row 3 (5)
+      "pillows", "throws", "tableware", "styling", "rugs",
+    ];
     const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
-    for (const id of BROWSE_GROUP_ORDER) buckets.set(id, []);
+    for (const id of OVERVIEW_TILE_ORDER) buckets.set(id, []);
     for (const p of products) {
       const id = getProductBrowseGroup(p);
-      if (!id) continue;
+      if (!id || !buckets.has(id)) continue;
       buckets.get(id)!.push(p);
     }
-    return BROWSE_GROUP_ORDER.flatMap((id) => {
-      const list = buckets.get(id)!;
-      return list.length > 0 ? [{ id, products: list }] : [];
-    });
+    // Keep every tile in the requested order even if its bucket is empty —
+    // the overview is a curated taxonomy, not a "non-empty groups" list.
+    return OVERVIEW_TILE_ORDER.map((id) => ({ id, products: buckets.get(id)! }));
   }, [products]);
 
   // ---------- Load More ----------
