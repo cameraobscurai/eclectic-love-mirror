@@ -153,6 +153,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
     };
   }, []);
 
+  const { scrolledVh, travelVh } = metrics;
   const total = LINES.length;
   const isMobile = stepVh === STEP_VH_MOBILE;
   const ENTER_VH = isMobile ? ENTER_VH_MOBILE : ENTER_VH_DESKTOP;
