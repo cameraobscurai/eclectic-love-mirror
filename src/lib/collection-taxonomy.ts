@@ -31,6 +31,7 @@
  */
 
 import type { CollectionProduct } from "./phase3-catalog";
+import { FORCE_GROUP_BY_SLUG } from "./collection-overrides";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public types
