@@ -326,7 +326,7 @@ function ContactPage() {
                 <FormSection number="03" label="Vision + wish list">
                   {pieces.length > 0 && (
                     <div className="mb-10">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
                         SELECTED FROM COLLECTION ({String(pieces.length).padStart(2, "0")})
                       </p>
                       <ul
@@ -340,11 +340,11 @@ function ContactPage() {
                             style={{ borderColor: "var(--archive-rule)" }}
                           >
                             <div className="flex items-baseline gap-4 min-w-0">
-                              <span className="text-[13px] tracking-[0.05em] text-charcoal/85 truncate">
+                              <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
                                 {p.title}
                               </span>
                               {p.category && (
-                                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
+                                <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
                                   {p.category}
                                 </span>
                               )}
@@ -352,7 +352,7 @@ function ContactPage() {
                             <button
                               type="button"
                               onClick={() => removePiece(p.id)}
-                              className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                             >
                               REMOVE
                             </button>
