@@ -124,7 +124,7 @@ function HomePage() {
           ["--fold-tail" as string]: "calc(var(--fold-unit) * 6)",
         }}
       >
-        {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
+        {/* Heading + tagline on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
           <div
             className="fluid-canvas"
@@ -168,23 +168,25 @@ function HomePage() {
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Filmstrip — set on the modular rhythm, with a real tail before Evolution */}
-          <div
-            className={cn(
-              "transition-all ease-out",
-              loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
-            )}
-            style={{
-              paddingTop: "var(--fold-strip)",
-              paddingBottom: "var(--fold-tail)",
-              transitionDuration: "1200ms",
-              transitionDelay: loaded ? "650ms" : "0ms",
-            }}
-          >
-            <HeroFilmstrip />
-          </div>
-        </div>{/* /desktop-only block */}
+        {/* Filmstrip — desktop renders 5 video frames; mobile renders 5 poster
+            tiles. Both routes through the same lightbox. */}
+        <div
+          className={cn(
+            "transition-all ease-out",
+            loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
+          )}
+          style={{
+            paddingTop: "var(--fold-strip)",
+            paddingBottom: "var(--fold-tail)",
+            transitionDuration: "1200ms",
+            transitionDelay: loaded ? "650ms" : "0ms",
+          }}
+        >
+          <HeroFilmstrip className="md:[padding-top:0] md:[padding-bottom:0]" />
+        </div>
+
 
       </section>
 
