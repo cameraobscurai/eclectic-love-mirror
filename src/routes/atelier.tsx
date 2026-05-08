@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
@@ -164,18 +164,25 @@ export const Route = createFileRoute("/atelier")({
 function AtelierPage() {
   // --- Fabrication list hover ---------------------------------------------
   const [fabHover, setFabHover] = useState<number | null>(null);
-  const [heroEntered, setHeroEntered] = useState(false);
-
-  useEffect(() => {
-    const reveal = window.setTimeout(() => setHeroEntered(true), 120);
-    return () => window.clearTimeout(reveal);
-  }, []);
 
   return (
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{ paddingTop: "var(--nav-h)" }}
     >
+      <style>{`
+        @keyframes atelier-hero-reveal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .atelier-hero-reveal {
+          opacity: 0;
+          animation: atelier-hero-reveal 640ms ease-out forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .atelier-hero-reveal { animation-duration: 1ms; }
+        }
+      `}</style>
       {/* 1. HERO — static, tightened top padding (T3) */}
       <section
         className="px-6 lg:px-12 overflow-hidden"
@@ -187,15 +194,14 @@ function AtelierPage() {
         <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-stretch">
           <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
             <p
-              className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50"
-              style={{ opacity: heroEntered ? 1 : 0, transition: "opacity 620ms ease-out" }}
+              className="atelier-hero-reveal text-[10px] uppercase tracking-[0.3em] text-charcoal/50"
             >
               ATELIER BY THE HIVE
             </p>
             {/* T17: literal CAPS in source so SR & visual register agree. */}
             <h1
-              className="page-title text-charcoal"
-              style={{ opacity: heroEntered ? 1 : 0, transition: "opacity 720ms ease-out 80ms" }}
+              className="atelier-hero-reveal page-title text-charcoal"
+              style={{ animationDelay: "80ms" }}
             >
               IMAGINED.
               <br />
@@ -204,8 +210,8 @@ function AtelierPage() {
               REALIZED.
             </h1>
             <p
-              className="text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]"
-              style={{ opacity: heroEntered ? 1 : 0, transition: "opacity 620ms ease-out 160ms" }}
+              className="atelier-hero-reveal text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]"
+              style={{ animationDelay: "160ms" }}
             >
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
