@@ -103,6 +103,12 @@ export function ProductTile({
       style={{
         background: "#ffffff",
         overflow: "hidden",
+        // Skip layout/paint/decode for offscreen tiles. Placeholder height
+        // matches the rendered tile so scroll position never jumps as tiles
+        // enter/leave the rendered set. Eager tiles opt out (they're always
+        // on screen at first paint, no benefit to gating them).
+        contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
+        containIntrinsicSize: "1px 480px",
       }}
     >
       {/* Reveal wrapper — opacity/transform/blur cascade keyed off `entered`.

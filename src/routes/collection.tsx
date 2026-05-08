@@ -153,7 +153,7 @@ export const Route = createFileRoute("/collection")({
     ],
   }),
   validateSearch: zodValidator(searchSchema),
-  loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
+  loader: async (): Promise<CatalogPayload> => await getCollectionCatalog(),
   // Paint a skeleton matching real layout immediately on slow connections,
   // suppress flicker on fast ones.
   pendingComponent: CollectionSkeleton,

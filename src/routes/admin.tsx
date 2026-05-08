@@ -93,9 +93,13 @@ function buildInventoryStats(products: CollectionProduct[]): InventoryStats {
 }
 
 function AdminPage() {
-  const stats = useMemo(() => {
-    const { products } = getCollectionCatalog();
-    return buildInventoryStats(products);
+  const [stats, setStats] = useState<ReturnType<typeof buildInventoryStats> | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog().then(({ products }) => {
+      if (alive) setStats(buildInventoryStats(products));
+    });
+    return () => { alive = false; };
   }, []);
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
@@ -110,6 +114,19 @@ function AdminPage() {
       alive = false;
     };
   }, []);
+
+  if (!stats) {
+    return (
+      <main
+        className="min-h-screen bg-cream text-charcoal grid place-items-center"
+        style={{ paddingTop: "var(--nav-h)" }}
+      >
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
+          Loading inventory…
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main

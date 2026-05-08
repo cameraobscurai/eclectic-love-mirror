@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   getCollectionCatalog,
@@ -97,7 +97,12 @@ function probeImage(url: string): Promise<{ status: Status; ms: number }> {
 }
 
 function ImageHealthPage() {
-  const { products } = useMemo(() => getCollectionCatalog(), []);
+  const [products, setProducts] = useState<CollectionProduct[]>([]);
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog().then((c) => { if (alive) setProducts(c.products); });
+    return () => { alive = false; };
+  }, []);
   const [scope, setScope] = useState<"primary" | "all">("primary");
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(0);

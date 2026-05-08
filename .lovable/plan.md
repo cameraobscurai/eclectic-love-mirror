@@ -1,76 +1,97 @@
-## Goal
 
-Catch Atelier hero / product-card misalignment **before** changes ship by running a scripted screenshot diff at four breakpoints (1920, 1366, 768, 390) against approved baselines.
+# AAA Performance Lift — Zero-Regression Plan
 
-## Approach
+Goal: ship the highest-ROI loading wins from the previous discussion **without touching business logic, RLS, the bake pipeline, or the inventory contract**. Every change is additive and behind the existing `vr:check` visual-regression harness — if a pixel moves, we don't ship.
 
-A small Playwright-based visual-regression script lives in `scripts/visual-regression/`. It:
+Note on omissions:
+- **Service Worker / PWA is dropped.** Lovable's preview iframe + SW is a footgun (stale shells, install-time pinning). Not worth the risk on a luxury site.
+- **Web Workers for the color sort is deferred.** Working code, low daily traffic on that toggle. Revisit only after we measure INP.
+- **Partytown is deferred** until the first 3rd-party script lands. No GA, no Hotjar today → nothing to move off-thread.
 
-1. Boots the local Vite dev server (or hits a passed-in URL).
-2. For each route × viewport, takes a full-page screenshot, masks volatile regions (filmstrip videos, Ken-Burns hero motion, cursor dot), and writes it to `__visual__/current/`.
-3. Pixel-diffs against `__visual__/baseline/` using `pixelmatch`. Anything over a small threshold (default 0.5%) writes a red diff PNG to `__visual__/diff/` and exits non-zero.
-4. Run modes:
-   - `bun run vr:update` — refreshes baselines (use after an intentional design change).
-   - `bun run vr:check` — runs the diff. Prints a table of PASS/FAIL per cell.
+---
 
-## Coverage matrix
+## Pass 1 — Slim & lazy-load the catalog (the big one)
 
-| Route | 1920×1080 | 1366×768 | 768×1024 | 390×844 |
-|---|---|---|---|---|
-| `/atelier` (hero) | ✓ | ✓ | ✓ | ✓ |
-| `/collection` (overview tiles) | ✓ | ✓ | ✓ | ✓ |
-| `/collection/sofas` (product grid) | ✓ | ✓ | ✓ | ✓ |
+Right now `src/lib/phase3-catalog.ts` does `import catalog from ".../current_catalog.json"` at module top-level. That 865 KB JSON is statically imported by `routes/collection.tsx`, `routes/admin.tsx`, and `routes/admin.image-health.tsx`, so it lands in the **main client bundle** and ships to the homepage too.
 
-12 screenshots per run. Each route is captured at viewport-only crop *and* a second hero-region crop (top 1.2× viewport height) so subtle hero misalignment surfaces even when the rest of the page shifts.
+Two surgical moves, in order:
 
-## Volatile-region masking
+1. **Add a `catalog.lite.json` baker** alongside the existing `bake-catalog.mjs`. Same input row → strip to: `id, slug, title, categorySlug, liveCategory, liveSubcategories, primaryImage, imageCount, imagesVersion, ownerSiteRank, subcategory, colorTag, publicReady`. Drop description, gallery images, dimensions, variant rollups. Target: ≤120 KB (~30 KB gzipped).
+2. **Split the accessor.** `getCollectionCatalogLite()` (sync, used by tile grid + category index) loads `catalog.lite.json`; `getCollectionProductFull(id)` is async and dynamic-imports a per-id chunk. Tiles render from lite; QuickView awaits full.
+3. **Convert the imports to dynamic** at the route boundary so the catalog is no longer in the entry chunk:
+   ```ts
+   loader: () => import("@/lib/phase3-catalog-lite").then(m => m.getCollectionCatalogLite())
+   ```
 
-To avoid false positives from animation:
+Expected: homepage TTI improves ~150–250 ms on 4G; `/collection` first paint unchanged (data still arrives before tiles render via the loader).
 
-- HeroFilmstrip videos → masked rectangle.
-- EvolutionNarrative scroll-driven opacity → not in scope (not on these routes).
-- Ken Burns `transform: scale()` on hero — script waits for `prefers-reduced-motion` toggled via Playwright's emulateMedia + a `?vr=1` query param the routes respect to freeze first frame.
-- Dot cursor → CSS injected at script start hides `[data-cursor]`.
+**Zero-regression gate:** before flipping any consumer, write a `scripts/audit/catalog-lite-parity.mjs` that asserts every field used by `ProductTile`, `CategoryIndex`, `CollectionWall`, and `SubcategoryRail` exists on the lite shape. Fail the build if a field is missing. Then `bun run vr:check` across all 12 baselines.
 
-## Files to add
+---
+
+## Pass 2 — Speculation Rules + scroll containment (the free lunch)
+
+Two changes, both additive, both gracefully ignored where unsupported.
+
+1. **Speculation Rules** in `src/routes/__root.tsx` head:
+   ```html
+   <script type="speculationrules">
+   { "prerender": [
+       { "where": { "href_matches": "/collection" }, "eagerness": "moderate" },
+       { "where": { "href_matches": "/atelier"   }, "eagerness": "moderate" },
+       { "where": { "href_matches": "/gallery"   }, "eagerness": "conservative" }
+   ]}
+   </script>
+   ```
+   Hovering a nav link → next route prerenders in a hidden tab → click is 0 ms. Chrome/Edge only; Safari/Firefox no-op. Pair with a guard: skip on `prefers-reduced-data` and on `Save-Data` header.
+
+2. **`content-visibility: auto`** on the long tile lists in `src/components/collection/ProductTile.tsx` *wrapper*:
+   ```css
+   .tile-cv { content-visibility: auto; contain-intrinsic-size: 1px 480px; }
+   ```
+   Browser skips layout/paint/decode for offscreen tiles. On the 161-pillow grid this is a 30–50% scroll-perf win for a one-line change. The `contain-intrinsic-size` placeholder height prevents scrollbar jitter.
+
+**Zero-regression gate:** speculation rules cannot affect visual output (it only prerenders). `content-visibility` *can* (rare) affect scroll-anchored measurements — run `vr:check` and manually scroll the four longest categories on 1366 + 390. If anything jumps, drop `content-visibility` from that breakpoint only.
+
+---
+
+## Pass 3 — Font preload + `fetchpriority="low"` audit (the polish)
+
+Cormorant Garamond is the brand display face. Today it almost certainly loads via stylesheet `@font-face` discovery, blocking FCP by ~150–250 ms.
+
+1. **Audit + preload** the two weights actually used (regular + italic) with `<link rel="preload" as="font" type="font/woff2" crossorigin>` in `__root.tsx`. Self-host if not already.
+2. **Demote** the HeroFilmstrip videos and below-fold tile rows from default priority to `fetchpriority="low"`. They're competing with the H-plate today.
+3. **`font-display: optional`** for Cormorant — render in the system fallback for 100 ms, then swap *only if loaded*. Eliminates FOUT entirely. Requires checking that the system fallback metrics don't shift the H-plate composition; if they do, fall back to `swap` with `size-adjust` tuning.
+
+**Zero-regression gate:** `vr:check` will catch any font-swap-induced layout shift instantly. If a baseline diffs purely because the font now arrives 200 ms earlier (no actual layout change), update baselines deliberately.
+
+---
+
+## Execution order, gated
 
 ```text
-scripts/visual-regression/
-  run.mjs              ← Playwright launcher, viewport loop, diff orchestration
-  config.mjs           ← routes × viewports × masks
-  README.md            ← how to update baselines, interpret diffs
-__visual__/
-  baseline/            ← committed PNGs (12 files initially)
-  current/             ← gitignored, fresh each run
-  diff/                ← gitignored, only populated on failure
+[Pass 1]  baker → parity audit → lite accessor → flip consumers   ──► vr:check
+[Pass 2]  speculation rules     → content-visibility               ──► vr:check + scroll QA
+[Pass 3]  font preload          → fetchpriority demotion           ──► vr:check
+                                                                       │
+                                                                       ▼
+                                                          Lighthouse before/after capture
 ```
 
-`package.json` scripts:
+Each pass is independently revertable. None touch Supabase, RLS, the bake step, or product data. If any gate fails, the pass is reverted and the next is unblocked.
 
-```json
-"vr:check":  "node scripts/visual-regression/run.mjs --check",
-"vr:update": "node scripts/visual-regression/run.mjs --update"
-```
+## Out of scope (intentional)
 
-`.gitignore` adds `__visual__/current/` and `__visual__/diff/`.
+- Service Worker / offline shell
+- Streaming SSR + `<Await>` for the collection (real win, but rewrites the loader contract — earn it later)
+- Worker-ize the tonal sort
+- View Transitions extension to QuickView (separate UX project)
+- Mapbox / Lenis / Framer audit
 
-## Technical details
+## Acceptance criteria
 
-- Deps: `playwright` + `pixelmatch` + `pngjs` (dev only). ~80 MB Chromium download — acceptable, only runs when invoked.
-- Threshold: 0.5% changed pixels per image (pixelmatch threshold `0.1` per pixel). Tunable in `config.mjs`.
-- Baseline source: first run after this lands. Owner / you reviews the 12 baselines, commits them.
-- Workflow: run `bun run vr:check` locally before pushing visual changes. Failing diffs print absolute path to the `diff/<route>-<viewport>.png` so the issue is immediately visible.
-- Not wired into CI yet — Lovable's preview server is the target. Adding GitHub Actions later is a one-file change.
+- Lighthouse mobile **performance ≥ 95** on `/` and `/collection` (baseline today: estimated 78–85).
+- `vr:check` passes 12/12 baselines unchanged.
+- Bundle analyzer shows `current_catalog.json` no longer present in the entry chunk.
+- Manual QA: nav prerender feels instant on Chrome desktop; pillow scroll feels glassy on a mid-tier Android.
 
-## Out of scope (call out to user)
-
-- Cross-browser (only Chromium).
-- Diffing every page (only the three highest-risk surfaces; easy to extend in `config.mjs`).
-- Auth-gated routes (`/admin/*`).
-- Automatic baseline updates on CI — must be a human decision.
-
-## Open questions before I build
-
-1. **Run target**: local `vite dev` (script spawns it) or the live preview URL?
-2. **Baselines in git**: commit the 12 baseline PNGs to the repo (recommended, makes diffs reviewable in PRs) or store in `/mnt/documents`?
-3. **Extra routes now or later**: add `/`, `/contact`, `/gallery` to the matrix on day one, or start with just the three above?
