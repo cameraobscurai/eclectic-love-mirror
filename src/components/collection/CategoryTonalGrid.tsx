@@ -147,23 +147,24 @@ export function CategoryTonalGrid({
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          grid-template-rows: repeat(3, 1fr);
+          grid-auto-rows: minmax(180px, 1fr);
           width: 100%;
           height: 100%;
           gap: 0;
+          padding-top: 12px;
+          padding-bottom: clamp(72px, 9vh, 96px);
         }
-        [data-tonal-grid] > button { min-height: 44px; }
+        [data-tonal-grid] > button { min-height: 180px; }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            grid-auto-rows: auto;
+            grid-auto-rows: minmax(140px, 1fr);
             height: 100%;
-            padding: 8px;
+            padding: 8px 8px clamp(80px, 12vh, 112px);
             gap: 8px;
             background: var(--paper);
           }
-          [data-tonal-grid] > button { min-height: 64px; }
+          [data-tonal-grid] > button { min-height: 140px; }
         }
       `}</style>
       <div
@@ -255,7 +256,7 @@ function TonalCell({
           loading="eager"
           decoding="async"
           {...({ fetchPriority: "high" } as Record<string, string>)}
-          className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain px-3 pt-4 pb-12 sm:px-4 sm:pt-5 sm:pb-14 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             opacity: gridReady ? 1 : 0,
             transition: "opacity 640ms ease-out, transform 500ms ease-out",
@@ -264,13 +265,18 @@ function TonalCell({
       ) : null}
 
       <span
-        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none truncate"
+        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none"
         style={{
           fontFamily: "var(--font-sans)",
-          letterSpacing: "0.18em",
+          letterSpacing: "0.08em",
           color: "#1a1a1a",
-          lineHeight: 1.2,
-          fontSize: "clamp(9px, 2.4vw, 11px)",
+          lineHeight: 1.15,
+          fontSize: "clamp(9px, 1.6vw, 11px)",
+          // 2-line allowance, no ellipsis — labels like "BENCHES &
+          // OTTOMANS" and "COCKTAIL TABLES" wrap naturally instead of clip.
+          wordBreak: "normal",
+          overflowWrap: "break-word",
+          hyphens: "none",
         }}
       >
         {label}

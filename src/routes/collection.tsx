@@ -1237,6 +1237,7 @@ function CollectionPage() {
           FLOATING SEARCH BUTTON — bottom-right, always visible.
           Opens a full-viewport frosted search modal.
           ============================================================ */}
+      {!showOverview && (
       <button
         onClick={() => setSearchOpen(true)}
         aria-label="Search the collection"
@@ -1264,6 +1265,7 @@ function CollectionPage() {
           <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="rgba(245,242,237,0.85)" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       </button>
+      )}
 
       {searchOpen && (() => {
         // ---- Live suggestion engine (recomputed each render while open) ----
