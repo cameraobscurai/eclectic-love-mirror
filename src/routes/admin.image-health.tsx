@@ -15,7 +15,10 @@ import {
 //   • All gallery images      — ~1,847 checks (every URL in the catalog)
 // ---------------------------------------------------------------------------
 
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
+
 export const Route = createFileRoute("/admin/image-health")({
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "Image Health · Admin · Eclectic Hive" },
