@@ -149,7 +149,7 @@ const products = all.map((r, i) => {
     images: imgs,
     primaryImage: imgs[0] || null,
     imageCount: imgs.length,
-    publicReady: true,
+    publicReady: r.public_ready !== false,
     scrapedOrder: i,
     subcategory: null,
     ownerSiteRank: null,
