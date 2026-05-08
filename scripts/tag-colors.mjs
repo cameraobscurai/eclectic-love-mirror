@@ -207,7 +207,18 @@ REFERENCE EXAMPLES:
 - "Leopard Fur Pillow" → family=tan (leopard base is tan, not multi — pattern words alone don't trigger multi)
 - "Alpaca Linear Grey/Black Throw" → family=grey (first color wins on slash-separated lists)`;
 
+function safeImageUrl(u) {
+  // Some storage URLs have unencoded spaces / special chars in the path.
+  // Gemini rejects these as "Invalid URL format". Re-encode just the path.
+  try {
+    const url = new URL(u);
+    url.pathname = url.pathname.split('/').map(s => encodeURIComponent(decodeURIComponent(s))).join('/');
+    return url.toString();
+  } catch { return u; }
+}
+
 async function aiVision(imageUrl, title, prior) {
+  const safeUrl = safeImageUrl(imageUrl);
   const userText = prior.primaryWord
     ? `Tag the dominant material color of: "${title}"\n\nThe first color word in this title is: "${prior.primaryWord}". Unless you have strong visual evidence otherwise, family should reflect this word.`
     : `Tag the dominant material color of: "${title}"\n\nThe title contains no recognized color word — judge purely from the image.`;
