@@ -64,10 +64,20 @@ const LINES: Line[] = [
 const STEP_VH_DESKTOP = 14;
 const STEP_VH_MOBILE = 13;
 
-// Phase boundaries (fractions of total scroll progress).
-const ENTER_END = 0.04;
-const READ_END = 0.74;
-// CONTINUE = READ_END → 1.0
+// Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
+// total scroll budget. Anchoring to the section's real viewport position
+// keeps the pacing consistent regardless of how tall the pinned scroll
+// container ends up — adding/removing lines no longer warps the intro or
+// the footer reveal.
+//
+//   ENTER_VH    : scroll distance for the block-fade in (section top
+//                 reaching viewport top → manifesto fully present).
+//   CONTINUE_VH : scroll distance reserved at the end for the footer
+//                 reveal (last viewport-ish before sticky releases).
+//   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
+//                 line wave fills this band exactly.
+const ENTER_VH = 0.5;
+const CONTINUE_VH = 1.0;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
