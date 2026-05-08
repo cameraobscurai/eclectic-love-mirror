@@ -1330,7 +1330,7 @@ function CollectionPage() {
               key={quickViewProduct.id}
               product={quickViewProduct}
               hasPrev={quickViewIndex > 0}
-              hasNext={quickViewIndex < visibleProducts.length - 1}
+              hasNext={quickViewIndex >= 0 && quickViewIndex < visibleProducts.length - 1}
               onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
               onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
               onClose={() => setQuickViewId(null)}
