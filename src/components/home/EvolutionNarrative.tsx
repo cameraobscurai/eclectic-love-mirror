@@ -163,8 +163,18 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const reveal = readT * total;
 
   // ── CONTINUE (last CONTINUE_VH of travel): hold + footer reveal ─────
-  const continueT = smooth((scrolledVh - ENTER_VH - readVh) / CONTINUE_VH);
-  const showFooter = continueT > 0.05;
+  // Footer starts rising as the LAST line begins resolving (readT > 0.85)
+  // so by the time the manifesto is done, cards are already in. Completes
+  // over 0.6vh of additional scroll — snappy, not slow.
+  const footerStart = 0.85;
+  const footerT = smooth(
+    Math.max(
+      (readT - footerStart) / (1 - footerStart),
+      (scrolledVh - ENTER_VH - readVh) / 0.6,
+    ),
+  );
+  const continueT = footerT;
+  const showFooter = continueT > 0.02;
 
   return (
     <section
