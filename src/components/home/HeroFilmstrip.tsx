@@ -429,15 +429,16 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
           />
 
           {/* The frame itself — fixed-positioned, animating from the clicked
-              filmstrip rect to its centered final rect using a soft spring. */}
+              filmstrip rect to its centered final rect using a soft spring.
+              We size to natural aspect so the video element fills perfectly. */}
           <motion.figure
-            className="absolute z-10 m-0 overflow-hidden bg-charcoal"
+            className="fixed z-10 m-0 overflow-hidden bg-transparent"
             initial={{
               top: origin.top,
               left: origin.left,
               width: origin.width,
               height: origin.height,
-              opacity: 0.85,
+              opacity: 0.9,
             }}
             animate={{
               top: finalTop,
@@ -465,7 +466,12 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
               playsInline
               preload="auto"
               aria-label={clip.label}
-              className="h-full w-full object-cover"
+              // object-contain → never crop. The figure dims already match
+              // natural aspect once metadata loads, so contain == fill there.
+              // Before metadata, contain shows the full poster letterboxed
+              // against transparent (i.e. against the scrim) instead of
+              // chopping off bottom of the video.
+              className="h-full w-full object-contain bg-charcoal"
               onLoadedMetadata={(e) => {
                 const v = e.currentTarget;
                 if (v.videoWidth && v.videoHeight) {
@@ -480,7 +486,7 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
 
           {/* Caption — drifts up under the frame after the zoom settles. */}
           <motion.figcaption
-            className="absolute left-0 right-0 z-10 flex items-baseline justify-center gap-2 font-brand text-paper/80"
+            className="fixed left-0 right-0 z-10 flex items-baseline justify-center gap-2 font-brand text-paper/80"
             style={{ top: finalTop + finalH + 16, fontWeight: 400 }}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 0.18, duration: 0.4 } }}
