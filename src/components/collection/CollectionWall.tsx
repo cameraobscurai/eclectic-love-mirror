@@ -162,7 +162,8 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     [],
   );
 
-  const activeId = isMobile ? loupeId : hoveredId;
+  // In edit mode, suppress hover dim entirely (focus is on dragging).
+  const activeId = editMode ? null : isMobile ? loupeId : hoveredId;
   const noopHover = useCallback(() => {}, []);
 
   const gridStyle = useMemo(
