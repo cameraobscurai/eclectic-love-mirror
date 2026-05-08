@@ -18,18 +18,14 @@ interface CategoryGalleryOverviewProps {
 }
 
 // Row-aware reveal — same column-modulo cascade used by the product grid.
-// On md+ the grid is rendered as 3 explicit rows (4 / 5 / 5). On smaller
-// screens the 14 cards stack into a 2/3-col flow. Either way the first
-// visual row holds at most 5 tiles, so we coordinate the synchronized
-// arrival on those slots.
+// Overview is a uniform 5-column grid on md+ (3 rows × 5 = 15 tiles); on
+// smaller screens tiles flow into a 2/3-col grid.
 const REVEAL_COLS = 5;
 const REVEAL_STEP_MS = 60;
 const REVEAL_MAX_DELAY_MS = 300;
 // First-row arrival beat — hold the row hidden until every image in row 1
 // has resolved (or the safety timeout fires) so it reads as one event.
-// The desktop layout puts 4 cards in row 1; mobile flow may pack 2-3.
-// Coordinating on 4 keeps both layouts feeling synchronous.
-const FIRST_ROW_COUNT = 4;
+const FIRST_ROW_COUNT = 5;
 // Safety net so a single broken image can't strand the row forever.
 const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
 
