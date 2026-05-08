@@ -6,7 +6,7 @@ import { heroPreloadLink } from "@/components/hero-image";
 import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { TEAM } from "@/components/atelier/team";
-import atelierReplacement from "@/assets/atelier-replacement.jpg?preset=hero";
+import atelierReplacement from "@/assets/atelier-replacement.png?preset=hero";
 
 import atelierSketchDrape from "@/assets/atelier/atelier-sketch-drape.png?preset=editorial";
 import atelierCollage from "@/assets/atelier/atelier-collage.jpg?preset=editorial";
