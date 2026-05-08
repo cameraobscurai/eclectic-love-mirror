@@ -114,6 +114,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
       >
         {clips.map((clip, i) => {
           const isOuter = i === 0 || i === clips.length - 1;
+          const isLast = i === clips.length - 1;
           // Alternate parallax direction per frame (±14px range) so the
           // strip reads as a passing train, not a uniform drift.
           const dir = i % 2 === 0 ? 1 : -1;
@@ -135,6 +136,10 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               className={cn(
                 "shrink-0 basis-full snap-center",
                 "sm:basis-0 sm:flex-1 sm:snap-align-none",
+                // Bleed 1px into the next frame to defeat sub-pixel
+                // rounding gaps between flex children at certain viewport
+                // widths (the hairline you saw between frames 3 & 4).
+                !isLast && "sm:[margin-right:-1px]",
                 isOuter && "hidden lg:block",
               )}
             />
