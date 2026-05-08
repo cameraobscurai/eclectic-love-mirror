@@ -176,20 +176,25 @@ function AtelierPage() {
   useEffect(() => {
     const el = headlineRef.current;
     if (!el) return;
+    let rafId = 0;
     const ro = new ResizeObserver(() => {
-      // Largest line of the headline = element's content width since each
-      // line breaks on <br/> and the longest renders flush-left to flush-right.
-      // scrollWidth would over-report on overflow; getBoundingClientRect is
-      // the rendered box.
-      let max = 0;
-      // Walk text nodes line by line via Range — but simpler: the h1's own
-      // width is the longest line because every <br/>'d word is shorter than
-      // "REALIZED." when rendered. Just read offsetWidth.
-      max = el.getBoundingClientRect().width;
-      setHeadlineW(max);
+      // Defer the read+setState to the next frame. Reading layout
+      // synchronously inside the RO callback (which then triggers a state
+      // update → re-render → relayout) is what produces the "ResizeObserver
+      // loop completed with undelivered notifications" warning. rAF breaks
+      // the cycle by letting the browser deliver all pending notifications
+      // first, then we measure once on the next frame.
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const max = el.getBoundingClientRect().width;
+        setHeadlineW(max);
+      });
     });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+    };
   }, []);
 
   const HERO_BODY = "The Atelier is where design authorship, material exploration, and fabrication converge — through process & intention.";
