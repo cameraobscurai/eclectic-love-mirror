@@ -185,11 +185,16 @@ export function Navigation() {
               const active = pathname === link.href;
               const dark = scrolled ? !isLightPage : !isLightPage;
               const isCollection = link.href === "/collection";
+              const isAtelier = link.href === "/atelier";
+              const warmHandlers = isAtelier
+                ? { onMouseEnter: warmAtelier, onFocus: warmAtelier, onTouchStart: warmAtelier }
+                : {};
               return (
                 <div key={link.href} className="relative group/navitem">
                   <Link
                     to={link.href}
                     preload="intent"
+                    {...warmHandlers}
                     className={cn(
                       "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
