@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { PARENT_ORDER, PARENT_LABELS } from "@/lib/collection-parents";
+import { warmImages } from "@/lib/preload-route-images";
+import { teamPhotoUrl, renderUrl } from "@/lib/storage-image";
 
 // Brand signature per the deck: "ATELIER *by* THE HIVE" — lowercase italic
 // "by" set in Saol Display between caps. Render as JSX so the italic survives
@@ -110,6 +112,22 @@ export function Navigation() {
     setIsOpen(false);
   }, [pathname]);
 
+  // Hover/focus warmup for the Atelier route. Fires once per session — the
+  // hero + first row of THE HIVE portraits start downloading the moment a
+  // user shows intent (hover, touch, focus), so by the time hydration runs
+  // on /atelier the images are either decoded or in-flight.
+  const warmAtelier = useCallback(() => {
+    warmImages([
+      // Hero — render via Supabase image transform sized to the 40vw column.
+      // (The hero asset itself is a bundled Vite asset preloaded via
+      // heroPreloadLink in the route head — this entry covers the
+      // first-row portraits which are remote.)
+      ...["Jill.jpg", "Annie.jpg", "Amanda.jpg", "Erin.jpg"].map((f) =>
+        renderUrl(teamPhotoUrl(f), { width: 720, quality: 70 }),
+      ),
+    ]);
+  }, []);
+
   return (
     <>
       <header
@@ -167,11 +185,16 @@ export function Navigation() {
               const active = pathname === link.href;
               const dark = scrolled ? !isLightPage : !isLightPage;
               const isCollection = link.href === "/collection";
+              const isAtelier = link.href === "/atelier";
+              const warmHandlers = isAtelier
+                ? { onMouseEnter: warmAtelier, onFocus: warmAtelier, onTouchStart: warmAtelier }
+                : {};
               return (
                 <div key={link.href} className="relative group/navitem">
                   <Link
                     to={link.href}
                     preload="intent"
+                    {...warmHandlers}
                     className={cn(
                       "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
@@ -282,6 +305,9 @@ export function Navigation() {
                 key={link.href}
                 to={link.href}
                 preload="intent"
+                {...(link.href === "/atelier"
+                  ? { onTouchStart: warmAtelier, onFocus: warmAtelier }
+                  : {})}
                 className="py-4 min-h-[44px] flex items-center"
               >
                 <span
