@@ -215,9 +215,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               }}
             >
               {/* Centered EVOLUTION label with hairline rules on either side */}
-              <div className="flex items-center justify-center gap-4 md:gap-5 mb-8 md:mb-12 w-full">
+              <div className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full">
                 <div
-                  className="h-px bg-charcoal/25 flex-1 max-w-[5rem] md:max-w-[7rem] origin-right"
+                  className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"
                   style={{ transform: `scaleX(${enterT})` }}
                 />
                 <h2
@@ -226,13 +226,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   style={{
                     fontWeight: 400,
                     letterSpacing: "0.42em",
-                    fontSize: "clamp(0.7rem, 0.9vw, 0.85rem)",
+                    fontSize: "clamp(0.65rem, 0.8vw, 0.8rem)",
                   }}
                 >
                   Evolution
                 </h2>
                 <div
-                  className="h-px bg-charcoal/25 flex-1 max-w-[5rem] md:max-w-[7rem] origin-left"
+                  className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-left"
                   style={{ transform: `scaleX(${enterT})` }}
                 />
               </div>
@@ -242,7 +242,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "clamp(0.35rem, 0.2rem + 0.35vw, 0.65rem)",
+                  gap: "clamp(0.1rem, 0.35vh, 0.4rem)",
                   width: "100%",
                 }}
               >
@@ -267,16 +267,18 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                       key={i}
                       className={cn(
                         "font-brand text-charcoal will-change-[opacity,transform]",
-                        isClose && "uppercase pt-3 md:pt-4",
-                        isBrand && "pt-2",
+                        isClose && "uppercase",
                       )}
                       style={{
                         fontWeight: 400,
                         fontStyle: isClose ? "normal" : "italic",
+                        // vh-based sizing keeps the entire 19-line manifesto
+                        // inside the sticky viewport regardless of breakpoint.
                         fontSize: isClose
-                          ? "clamp(1.15rem, 0.65rem + 1vw, 1.7rem)"
-                          : "clamp(1.1rem, 0.7rem + 1.1vw, 1.75rem)",
-                        lineHeight: 1.35,
+                          ? "clamp(0.85rem, 1.7vh, 1.4rem)"
+                          : "clamp(0.9rem, 1.85vh, 1.55rem)",
+                        lineHeight: 1.25,
+                        marginTop: isClose ? "0.6rem" : isBrand ? "0.4rem" : 0,
                         opacity,
                         letterSpacing: closerTracking,
                         transform: `translateY(${lift}px)`,
@@ -287,9 +289,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   );
                 })}
               </div>
-            </div>
-          </div>
-        </div>
 
         {/* Footer (destination cards) — flat. No scroll-driven transition
             here; it would compete with the sticky release and produce a
