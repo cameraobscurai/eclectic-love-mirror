@@ -453,14 +453,14 @@ function CollectionPage() {
   const showOverview = !activeParent && !q.trim();
 
   const overviewGroups = useMemo(() => {
-    // Owner-curated overview: 14 cards arranged in 3 explicit rows (4/5/5).
+    // Owner-curated overview: 15 cards arranged in 3 rows of 5.
     // Order is locked here — CategoryGalleryOverview honors it row-by-row.
     const OVERVIEW_TILE_ORDER: BrowseGroupId[] = [
-      // Row 1 (4)
-      "sofas", "chairs", "benches-ottomans", "side-tables",
-      // Row 2 (5)
+      // Row 1
+      "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
+      // Row 2
       "coffee-tables", "dining", "bar", "lighting", "storage",
-      // Row 3 (5)
+      // Row 3
       "pillows", "throws", "tableware", "styling", "rugs",
     ];
     const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
