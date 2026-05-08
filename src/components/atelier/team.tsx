@@ -96,14 +96,14 @@ export function AtelierTeam() {
       {/* Section header — display title + owner-sourced quiet italic tagline.
           Tagline stays Title/sentence case per typography rule (only display
           titles + brand statements go ALL CAPS). */}
-      <div className="mb-16 md:mb-24 grid md:grid-cols-12 gap-8 md:gap-12 items-end">
+      <div className="mb-16 md:mb-20 flex flex-col items-center text-center">
         <h2
-          className="md:col-span-7 page-title text-charcoal"
+          className="page-title text-charcoal"
           style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)", lineHeight: 1 }}
         >
           THE HIVE
         </h2>
-        <p className="md:col-span-5 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
+        <p className="mt-6 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
           Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.
         </p>
       </div>
@@ -111,7 +111,7 @@ export function AtelierTeam() {
       {/* Portrait grid — single 4-column rhythm. Apertures hold the slot
           until owner-approved portraits land. Names + roles render now. */}
       <ul
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-16"
+        className="mx-auto grid max-w-[1180px] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-14 text-center"
       >
         {visibleMembers.map((member, index) => {
           const showImage = !!member.image && member.image.approvedForWeb;
