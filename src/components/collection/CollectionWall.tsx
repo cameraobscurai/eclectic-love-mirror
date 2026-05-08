@@ -318,6 +318,13 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
           </button>
           <button
             type="button"
+            onClick={copyOrder}
+            className="text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
+          >
+            {copied ? "copied ✓" : "copy for bake"}
+          </button>
+          <button
+            type="button"
             onClick={resetOrder}
             className="text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
           >
