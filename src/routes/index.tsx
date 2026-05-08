@@ -184,7 +184,7 @@ function HomePage() {
             transitionDelay: loaded ? "650ms" : "0ms",
           }}
         >
-          <HeroFilmstrip className="md:[padding-top:0] md:[padding-bottom:0]" />
+          <HeroFilmstrip />
         </div>
 
 
