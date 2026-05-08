@@ -229,7 +229,6 @@ function AtelierPage() {
               style={{
                 animationDelay: "160ms",
                 lineHeight: 1.8,
-                maxWidth: "52ch",
               }}
             >
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
