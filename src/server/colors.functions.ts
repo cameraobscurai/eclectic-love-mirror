@@ -1,10 +1,10 @@
 // Admin server functions for the /admin/colors QA grid.
-// Uses the service role client (the /admin space is unauthenticated for now,
-// matching admin.functions.ts). When auth lands, swap for requireSupabaseAuth
-// + has_role('admin') gate.
+// Gated by requireAdmin (Supabase bearer token + has_role('admin')).
+// Service-role client is used inside handlers for catalog reads/writes.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireAdmin } from "@/integrations/supabase/admin-middleware";
 
 export interface ColorRow {
   rms_id: string;
