@@ -185,8 +185,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // Per-breakpoint tuning. With the section now sized to fit the full
   // budget, footer is always reachable; these thresholds just shape WHEN
   // within the closing window the cards rise.
-  const footerStart = isMobile ? 0.78 : 0.82;
-  const footerSpanVh = isMobile ? 0.55 : 0.7;
+  const footerStart = isMobile ? 0.7 : 0.72;
+  const footerSpanVh = isMobile ? 0.25 : 0.22;
   const footerT = smooth(
     Math.max(
       (readT - footerStart) / (1 - footerStart),
