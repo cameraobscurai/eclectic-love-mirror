@@ -35,6 +35,12 @@ export interface CollectionProduct {
   images: CollectionImage[];
   primaryImage: CollectionImage | null;
   imageCount: number;
+  /** Per-product image cache-buster. Compact unix seconds derived from the
+   *  inventory row's `updated_at` at bake time. Appended as `?v=…` to every
+   *  Supabase storage URL so newly uploaded images displace stale browser
+   *  cache the instant the row is touched, without invalidating images on
+   *  unchanged products. */
+  imagesVersion?: number;
   publicReady: boolean;
   scrapedOrder: number;
   subcategory: string | null;
