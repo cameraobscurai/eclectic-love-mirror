@@ -168,7 +168,15 @@ function AtelierPage() {
   return (
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
-      style={{ paddingTop: "var(--nav-h)" }}
+      style={{
+        paddingTop: "var(--nav-h)",
+        // Atelier reads narrower than home — pin the canvas to 1400 here so
+        // the editorial column doesn't blow out on ultrawides. Sections
+        // inherit via .fluid-canvas.
+        ["--canvas-max" as string]: "1400px",
+        // Shared section rhythm — every Section spaces itself off this.
+        ["--section-gap" as string]: "clamp(4rem, 2rem + 4vw, 8rem)",
+      }}
     >
       <style>{`
         @keyframes atelier-hero-reveal {
@@ -185,16 +193,25 @@ function AtelierPage() {
       `}</style>
       {/* 1. HERO — static, tightened top padding (T3) */}
       <section
-        className="px-6 lg:px-12 overflow-hidden"
+        className="overflow-hidden"
         style={{
-          paddingTop: "clamp(24px, 3vw, 48px)",
-          paddingBottom: "clamp(48px, 5vw, 80px)",
+          paddingTop: "clamp(1.5rem, 1rem + 1.5vw, 3rem)",
+          paddingBottom: "clamp(3rem, 1.5rem + 3vw, 5rem)",
         }}
       >
-        <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-stretch">
+        <div
+          className="fluid-canvas grid md:grid-cols-12 items-stretch"
+          style={{
+            gap: "clamp(2rem, 1rem + 2.5vw, 3rem)",
+          }}
+        >
           <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
             <p
-              className="atelier-hero-reveal text-[10px] uppercase tracking-[0.3em] text-charcoal/50"
+              className="atelier-hero-reveal uppercase text-charcoal/50"
+              style={{
+                fontSize: "clamp(0.625rem, 0.5rem + 0.15vw, 0.75rem)",
+                letterSpacing: "0.3em",
+              }}
             >
               ATELIER BY THE HIVE
             </p>
@@ -210,8 +227,14 @@ function AtelierPage() {
               REALIZED.
             </h1>
             <p
-              className="atelier-hero-reveal text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]"
-              style={{ animationDelay: "160ms" }}
+              className="atelier-hero-reveal uppercase text-charcoal/70"
+              style={{
+                animationDelay: "160ms",
+                fontSize: "clamp(0.75rem, 0.6rem + 0.2vw, 0.875rem)",
+                letterSpacing: "0.22em",
+                lineHeight: 1.8,
+                maxWidth: "52ch",
+              }}
             >
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
@@ -267,16 +290,28 @@ function AtelierPage() {
 
       {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
       <Section eyebrow="ATELIER APPROACH">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
+        <div
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
+        >
           {APPROACH_STEPS.map((step) => (
             <div key={step.number}>
               <p
-                className="font-display text-2xl text-charcoal/45 tabular-nums border-t pt-4"
-                style={{ borderColor: "var(--archive-rule)" }}
+                className="font-display text-charcoal/45 tabular-nums border-t pt-4"
+                style={{
+                  borderColor: "var(--archive-rule)",
+                  fontSize: "clamp(1.25rem, 0.9rem + 0.5vw, 1.625rem)",
+                }}
               >
                 {step.number}
               </p>
-              <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+              <h3
+                className="mt-3 font-display uppercase"
+                style={{
+                  fontSize: "clamp(1.5rem, 1rem + 0.9vw, 2.125rem)",
+                  letterSpacing: "0.06em",
+                }}
+              >
                 {step.label}
               </h3>
             </div>
@@ -329,8 +364,8 @@ function AtelierPage() {
       </Section>
 
       {/* 6. CTA */}
-      <section className="px-6 lg:px-12 mt-24">
-        <div className="max-w-[1400px] mx-auto">
+      <section style={{ marginTop: "var(--section-gap)" }}>
+        <div className="fluid-canvas">
           <div
             className="border-t pt-12"
             style={{ borderColor: "var(--archive-rule)" }}
@@ -338,7 +373,14 @@ function AtelierPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               BEGIN
             </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] uppercase tracking-[0.04em] max-w-2xl">
+            <h2
+              className="mt-4 font-display uppercase max-w-2xl"
+              style={{
+                fontSize: "clamp(2rem, 1rem + 2.5vw, 3.5rem)",
+                lineHeight: 1.05,
+                letterSpacing: "0.04em",
+              }}
+            >
               Bring a project to the Atelier.
             </h2>
             <Link
@@ -362,8 +404,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="px-6 lg:px-12 mt-24">
-      <div className="max-w-[1400px] mx-auto">
+    <section style={{ marginTop: "var(--section-gap)" }}>
+      <div className="fluid-canvas">
         <div
           className="border-t pt-10"
           style={{ borderColor: "var(--archive-rule)" }}
