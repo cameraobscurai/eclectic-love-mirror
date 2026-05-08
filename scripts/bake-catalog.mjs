@@ -259,7 +259,12 @@ for (const p of rolled) {
   // stylized group hero; use it as the cover image while keeping owner
   // uploads as the rest of the gallery for the detail view.
   const isRolled = (p.variants && p.variants.length > 0);
-  if (isRolled && lp.gallery && lp.gallery.length) {
+  // Respect owner-uploaded covers: if the current primary image is from the
+  // `inventory/` bucket (owner originals), do NOT overwrite it with the live
+  // Squarespace hero. Owners explicitly choose these.
+  const currentPrimaryUrl = (p.primaryImage && p.primaryImage.url) || (p.images && p.images[0] && (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].url)) || '';
+  const ownerCoverWins = /\/storage\/v1\/object\/public\/inventory\//.test(currentPrimaryUrl);
+  if (isRolled && !ownerCoverWins && lp.gallery && lp.gallery.length) {
     const liveHero = lp.gallery[0];
     const seen = new Set();
     const merged = [];
