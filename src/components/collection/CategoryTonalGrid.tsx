@@ -86,16 +86,12 @@ export function CategoryTonalGrid({
         const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
         const rawHero = cover ?? fallbackHero?.url ?? null;
         const heroSrc = rawHero ? withCdnWidth(rawHero, 600) : null;
-        const heroSrcSet = rawHero
-          ? buildCdnSrcSet(rawHero, [320, 480, 720, 960]) || undefined
-          : undefined;
         const heroAlt = cover
           ? BROWSE_GROUP_LABELS[id]
           : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id];
         return {
           id,
           heroSrc,
-          heroSrcSet,
           heroAlt,
           label: BROWSE_GROUP_LABELS[id],
         };
@@ -103,22 +99,29 @@ export function CategoryTonalGrid({
     [byId],
   );
 
-  // First-paint cohort = the entire grid. All 15 tiles fit in the viewport
-  // on every breakpoint and the images are CDN-resized to ≤600w, so loading
-  // them together is cheap. Revealing them as one synchronized fade avoids
-  // the awkward "row 1 in, rows 2–3 still empty" cascade on fresh visits.
-  const cohortSize = tiles.length;
-  const [doneCount, setDoneCount] = useState(0);
-  const [timedOut, setTimedOut] = useState(false);
+  const [gridReady, setGridReady] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const t = window.setTimeout(() => setTimedOut(true), FIRST_ROW_REVEAL_TIMEOUT_MS);
-    return () => window.clearTimeout(t);
-  }, []);
+    setGridReady(false);
 
-  const cohortReady = doneCount >= cohortSize || timedOut;
-  const reportDone = useCallback(() => setDoneCount((n) => n + 1), []);
+    let cancelled = false;
+    const reveal = () => {
+      if (!cancelled) setGridReady(true);
+    };
+    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
+    const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
+
+    Promise.all(imageUrls.map(decodeGridImage)).then(() => {
+      window.clearTimeout(timeout);
+      reveal();
+    });
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [tiles]);
 
   return (
     // grid-rows-3 lg + h-full = three equal rows that fill the parent's
