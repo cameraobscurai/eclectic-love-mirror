@@ -146,10 +146,11 @@ export const Route = createFileRoute("/atelier")({
       },
     ],
     links: [
-      // The hero is a 40vw editorial column on desktop, full-width on mobile.
-      // Pass that sizes hint so the preload scanner picks ~768/1280 instead
-      // of the 2560 variant we'd burn on a full-bleed hero.
-      heroPreloadLink(atelierReplacement, "(min-width: 768px) 40vw, 100vw"),
+      // The hero is a 55vw editorial column on xl, full-width below.
+      // Sizes string MUST match the rendered <img sizes> below or the
+      // preloaded variant differs from the chosen one → "preloaded but
+      // not used" warning + wasted bytes.
+      heroPreloadLink(atelierReplacement, "(min-width: 1280px) 55vw, 100vw"),
       // Warm the TLS connection to Supabase storage before the first
       // portrait scrolls into view — saves ~100-300ms on the first image.
       ...(STORAGE_ORIGIN
