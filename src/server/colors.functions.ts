@@ -126,6 +126,7 @@ function rgbToLab(r: number, g: number, b: number) {
 }
 
 export const overrideColor = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z
       .object({
