@@ -12,13 +12,25 @@
  */
 export function withCdnWidth(url: string | null | undefined, width: number): string {
   if (!url) return "";
-  // Cheap guard — bail before constructing URL() for obviously-wrong inputs
-  if (!url.includes("squarespace-cdn.com")) return url;
   try {
     const u = new URL(url);
-    if (!u.searchParams.has("format")) return url;
-    u.searchParams.set("format", `${Math.round(width)}w`);
-    return u.toString();
+    // Squarespace CDN: ?format=NNNw
+    if (u.hostname.includes("squarespace-cdn.com")) {
+      if (!u.searchParams.has("format")) return url;
+      u.searchParams.set("format", `${Math.round(width)}w`);
+      return u.toString();
+    }
+    // Supabase Storage: rewrite /object/public/ → /render/image/public/?width=
+    // so multi-MB owner-uploaded PNGs (e.g. category covers) get served as
+    // right-sized WebP instead of forcing the browser to decode the original.
+    if (u.hostname.endsWith(".supabase.co") && u.pathname.includes("/storage/v1/object/public/")) {
+      u.pathname = u.pathname.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+      u.searchParams.set("width", String(Math.round(width)));
+      u.searchParams.set("resize", "contain");
+      u.searchParams.set("quality", "80");
+      return u.toString();
+    }
+    return url;
   } catch {
     return url;
   }
