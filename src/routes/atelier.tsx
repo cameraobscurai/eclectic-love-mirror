@@ -251,7 +251,9 @@ function AtelierPage() {
           .atelier-hero-reveal { animation-duration: 1ms; }
         }
       `}</style>
-      {/* 1. HERO — static, tightened top padding (T3) */}
+      {/* 1 + 2. HERO + THE HIVE — sticky/fluid pattern (mem://design/sticky-fluid-canvas).
+          Left col pins on xl+ while the right column (hero image stacked over
+          the team grid) scrolls past. Below xl, stacks normally. */}
       <section
         className="overflow-hidden"
         style={{
@@ -260,22 +262,23 @@ function AtelierPage() {
         }}
       >
         <div
-          className="fluid-canvas grid md:grid-cols-12 items-stretch"
+          className="fluid-canvas grid grid-cols-1 xl:grid-cols-12"
           style={{
             gap: "clamp(2rem, 1rem + 2.5vw, 3rem)",
           }}
         >
-          <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
+          {/* Sticky anchor — eyebrow + headline + body manifesto */}
+          <div className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start flex flex-col py-2 md:py-4">
             <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
             <div
+              className="mt-8"
               style={{
                 width: balancedW ? `${balancedW}px` : "fit-content",
                 maxWidth: "100%",
               }}
             >
-              {/* T17: literal CAPS in source so SR & visual register agree. */}
               <h1
                 ref={headlineRef}
                 className="atelier-hero-reveal page-title text-charcoal"
@@ -292,11 +295,6 @@ function AtelierPage() {
                 <br />
                 REALIZED.
               </h1>
-              {/* Body width is set on the wrapper above by useBalancedColumnWidth:
-                  pretext binary-searches the smallest width where this exact
-                  string + font + letter-spacing wraps into 2 lines, then
-                  takes max(headlineWidth, that). No CSS balance needed —
-                  the container IS the balanced width. */}
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
@@ -308,23 +306,29 @@ function AtelierPage() {
               </p>
             </div>
           </div>
-          <div className="md:col-span-5">
+
+          {/* Scrolling body — hero image, then THE HIVE team grid */}
+          <div className="xl:col-span-7 flex flex-col gap-[clamp(3rem,2rem+3vw,5rem)]">
             <MediaAperture
               ratio="4/5"
               picture={atelierReplacement}
               alt="Styled bench with tasseled throws."
-              sizes="(min-width: 768px) 40vw, 100vw"
+              sizes="(min-width: 1280px) 55vw, 100vw"
               lazy={false}
               fetchPriority="high"
             />
+            <div
+              className="border-t pt-10"
+              style={{ borderColor: "var(--archive-rule)" }}
+            >
+              <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
+                02 — THE HIVE
+              </p>
+              <AtelierTeam />
+            </div>
           </div>
         </div>
       </section>
-
-      {/* 2. THE HIVE */}
-      <Section eyebrow="02 — THE HIVE">
-        <AtelierTeam />
-      </Section>
 
       {/* 3. L'ATELIER — triptych above, then collage + sketch drape side by side (swapped) */}
       <Section eyebrow="L'ATELIER">
