@@ -42,9 +42,9 @@ export interface SmoothScrollConfig {
 
 // Site-wide defaults — edit these to retune the cinematic feel everywhere.
 export const SMOOTH_SCROLL_CONFIG: SmoothScrollConfig = {
-  duration: 1.15,
+  duration: 0.9,
   easing: "easeOutExpo",
-  lerp: 0.1,
+  lerp: 0.13,
   wheelMultiplier: 1,
   smoothWheel: true,
 };
