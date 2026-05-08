@@ -37,7 +37,7 @@ const STEP_VH_MOBILE = 14;
 // Lead-in: portion of scroll before any line begins revealing.
 // Lets the section fully settle into center before the manifesto activates.
 const LEAD_IN = 0.1;
-const FOOTER_REVEAL_AT = 0.92;
+const FOOTER_REVEAL_AT = 0.78;
 const DIM_OPACITY = 0.18;
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 
@@ -133,12 +133,19 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   const local = clamp01(reveal - i);
                   const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * local;
                   const isClose = line.emphasis === "closer";
+                  // Closer line: letter-spacing relaxes from 0.20em → 0.16em as
+                  // it brightens, mirroring the wordmark's intro gesture.
+                  const closerTracking = isClose
+                    ? `${(0.2 - 0.04 * local).toFixed(3)}em`
+                    : undefined;
                   return (
                     <p
                       key={i}
                       className={cn(
-                        "font-brand text-charcoal italic transition-opacity duration-200 ease-out will-change-[opacity]",
-                        isClose && "not-italic uppercase tracking-[0.16em] pt-2",
+                        "font-brand text-charcoal italic ease-out will-change-[opacity]",
+                        isClose
+                          ? "not-italic uppercase pt-2 transition-[opacity,letter-spacing] duration-[1400ms]"
+                          : "transition-opacity duration-200",
                       )}
                       style={{
                         fontWeight: 400,
@@ -147,6 +154,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                           : "clamp(1rem, 1.55vw, 1.3rem)",
                         lineHeight: 1.5,
                         opacity,
+                        letterSpacing: closerTracking,
                       }}
                     >
                       {line.text}
