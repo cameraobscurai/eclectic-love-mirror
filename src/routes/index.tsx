@@ -112,7 +112,7 @@ function HomePage() {
       <section
         className="relative"
         style={{
-          ["--fold-unit" as string]: "clamp(1rem, 1.4vw + 1vh, 2.5rem)",
+          ["--fold-unit" as string]: "clamp(1rem, 0.6rem + 1.1vw, 2.25rem)",
           ["--fold-top" as string]:
             "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
           ["--fold-gap" as string]: "calc(var(--fold-unit) * 1)",
