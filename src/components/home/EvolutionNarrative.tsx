@@ -78,8 +78,8 @@ const STEP_VH_MOBILE = 9;
 //                 line wave fills this band exactly.
 const ENTER_VH_DESKTOP = 0.35;
 const ENTER_VH_MOBILE = 0.3;
-// Footer cards rise quickly — we don't want a long pinned tail after the
-// closer line lands. Keep this small so sticky releases promptly.
+// Footer no longer animates, so the tail just needs a beat of breathing
+// room after the closer line lands before sticky releases. Small + tight.
 const CONTINUE_VH_DESKTOP = 0.25;
 const CONTINUE_VH_MOBILE = 0.3;
 
