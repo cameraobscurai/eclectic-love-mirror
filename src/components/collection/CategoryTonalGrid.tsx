@@ -62,6 +62,7 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   "benches-ottomans": "10% 10% 22% 10%",
   bar: "10% 12% 22% 12%",
   dining: "10% 12% 22% 12%",
+  storage: "10% 10% 22% 10%",
   // Default for the rest (chairs, tableware, styling, large-decor).
   // Falls through to the inline default below.
 };
