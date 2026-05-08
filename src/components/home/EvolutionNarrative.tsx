@@ -76,8 +76,10 @@ const STEP_VH_MOBILE = 13;
 //                 reveal (last viewport-ish before sticky releases).
 //   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
 //                 line wave fills this band exactly.
-const ENTER_VH = 0.5;
-const CONTINUE_VH = 1.0;
+const ENTER_VH_DESKTOP = 0.5;
+const ENTER_VH_MOBILE = 0.4;
+const CONTINUE_VH_DESKTOP = 1.0;
+const CONTINUE_VH_MOBILE = 0.7;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
