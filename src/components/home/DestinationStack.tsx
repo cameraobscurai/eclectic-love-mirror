@@ -243,10 +243,11 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
     <div
       ref={containerRef}
       className={cn(
-        "grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4",
+        "grid grid-cols-1 md:grid-cols-3",
         // 3D perspective only when animating
         !isStatic && "[perspective:1400px] [perspective-origin:center_top]",
       )}
+      style={{ gap: "clamp(0.75rem, 0.4rem + 0.6vw, 1.25rem)" }}
     >
       <style>{`
         @keyframes dest-fade {
