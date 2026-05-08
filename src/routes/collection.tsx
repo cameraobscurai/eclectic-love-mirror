@@ -200,6 +200,10 @@ function CollectionPage() {
       const { parent, sub } = TILE_TO_PARENT_SUB[group];
       return { parent, sub };
     }
+    if (group && LEGACY_GROUP_ALIASES[group]) {
+      const { parent, sub } = LEGACY_GROUP_ALIASES[group];
+      return { parent, sub: subcategory && subcategory !== "all" ? subcategory : sub };
+    }
     return { parent: "" as ParentId | "", sub: "all" };
   }, [group, subcategory]);
   const activeParent: ParentId | "" = resolved.parent;
@@ -213,6 +217,17 @@ function CollectionPage() {
       const { parent, sub } = TILE_TO_PARENT_SUB[group];
       navigate({
         search: (prev: CollectionSearch) => ({ ...prev, group: parent, subcategory: sub }),
+        replace: true,
+        resetScroll: false,
+      });
+    } else if (LEGACY_GROUP_ALIASES[group]) {
+      const { parent, sub } = LEGACY_GROUP_ALIASES[group];
+      navigate({
+        search: (prev: CollectionSearch) => ({
+          ...prev,
+          group: parent,
+          subcategory: prev.subcategory && prev.subcategory !== "all" ? prev.subcategory : sub,
+        }),
         replace: true,
         resetScroll: false,
       });
