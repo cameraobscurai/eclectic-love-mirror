@@ -168,19 +168,14 @@ export function CategoryTonalGrid({
         const row = Math.floor(i / cols);
         const col = i % cols;
         const tone = TONES[(row + col) % 2];
-        const inCohort = i < cohortSize;
         return (
           <TonalCell
             key={t.id}
-            id={t.id}
             heroSrc={t.heroSrc}
-            heroSrcSet={t.heroSrcSet}
             heroAlt={t.heroAlt}
             label={t.label}
             tone={tone}
-            inCohort={inCohort}
-            cohortReady={cohortReady}
-            onCohortDone={inCohort ? reportDone : undefined}
+            gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
         );
@@ -191,50 +186,22 @@ export function CategoryTonalGrid({
 }
 
 interface TonalCellProps {
-  id: BrowseGroupId;
   heroSrc: string | null;
-  heroSrcSet: string | undefined;
   heroAlt: string;
   label: string;
   tone: string;
-  inCohort: boolean;
-  cohortReady: boolean;
-  onCohortDone?: () => void;
+  gridReady: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
 function TonalCell({
-  id,
   heroSrc,
-  heroSrcSet,
   heroAlt,
   label,
   tone,
-  inCohort,
-  cohortReady,
-  onCohortDone,
+  gridReady,
   onSelectCategory,
 }: TonalCellProps) {
-  const [loaded, setLoaded] = useState(false);
-  const [reported, setReported] = useState(false);
-  const { ref, near } = useNearViewport<HTMLButtonElement>({
-    rootMargin: "400px",
-    initial: inCohort,
-  });
-
-  const reportDoneOnce = useCallback(() => {
-    if (reported || !onCohortDone) return;
-    setReported(true);
-    onCohortDone();
-  }, [reported, onCohortDone]);
-
-  useEffect(() => {
-    if (inCohort && !heroSrc) reportDoneOnce();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const showImg = inCohort ? cohortReady : near && (loaded || !heroSrc);
-
   return (
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
