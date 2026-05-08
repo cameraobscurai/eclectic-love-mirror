@@ -113,7 +113,10 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               reduced={!!reduced}
               isHover={hoverId === clip.id}
               onHoverChange={setHoverId}
-              onOpen={() => setLightboxId(clip.id)}
+              onOpen={(rect) => {
+                setOriginRect(rect);
+                setLightboxId(clip.id);
+              }}
               onManualPlay={handleManualPlay}
               registerRef={(el) => {
                 videoRefs.current[clip.id] = el;
