@@ -238,8 +238,6 @@ function AtelierPage() {
                 The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
               </p>
             </div>
-              The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
-            </p>
           </div>
           <div className="md:col-span-5">
             <MediaAperture
