@@ -193,12 +193,13 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       const newIdx = ids.indexOf(String(over.id));
       if (oldIdx < 0 || newIdx < 0) return;
       const moved = arrayMove(ids, oldIdx, newIdx);
-      // Persist the full ordered list (trimmed + tail) so saved order
-      // covers items not currently rendered too.
       const tailIds = ordered.slice(trimmed.length).map((p) => p.id);
       const fullIds = [...moved, ...tailIds];
       setOrderedIds(fullIds);
       saveOrder(orderKey, fullIds);
+      // Any new drag invalidates a previous OK confirmation.
+      setConfirmed(false);
+      setJustSaved(false);
     },
     [trimmed, ordered, orderKey],
   );
@@ -207,7 +208,19 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     if (!orderKey) return;
     clearOrder(orderKey);
     setOrderedIds(null);
+    setConfirmed(false);
+    setJustSaved(false);
   }, [orderKey]);
+
+  const okOrder = useCallback(() => {
+    if (!orderKey) return;
+    const ids = ordered.map((p) => p.id);
+    confirmOrder(orderKey, ids);
+    setOrderedIds(ids);
+    setConfirmed(true);
+    setJustSaved(true);
+    window.setTimeout(() => setJustSaved(false), 1600);
+  }, [orderKey, ordered]);
 
   const tilesGrid = (
     <div
