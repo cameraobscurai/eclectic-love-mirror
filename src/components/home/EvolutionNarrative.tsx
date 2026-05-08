@@ -176,7 +176,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               pointerEvents: showFooter ? "auto" : "none",
             }}
           >
-            <div className="mx-auto w-full max-w-6xl">{footer}</div>
+            <div className="fluid-canvas">{footer}</div>
           </div>
         )}
       </div>
