@@ -134,7 +134,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
         })}
       </div>
 
-      <Lightbox clip={activeClip} onClose={() => setLightboxId(null)} />
+      <Lightbox clip={activeClip} originRect={originRect} onClose={() => setLightboxId(null)} />
     </div>
   );
 }
@@ -145,7 +145,7 @@ interface FrameProps {
   isHover: boolean;
   className?: string;
   onHoverChange: (id: string | null) => void;
-  onOpen: () => void;
+  onOpen: (rect: DOMRect) => void;
   onManualPlay: (id: string) => void;
   registerRef: (el: HTMLVideoElement | null) => void;
   parallaxProgress: MotionValue<number>;
