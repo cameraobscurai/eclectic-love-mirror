@@ -1,6 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCenter,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  arrayMove,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { CollectionWallTile } from "./CollectionWallTile";
+import {
+  WALL_DND_ENABLED,
+  orderKeyForIds,
+  loadOrder,
+  saveOrder,
+  clearOrder,
+  applySavedOrder,
+} from "@/lib/wall-dnd";
 
 interface Props {
   products: CollectionProduct[];
@@ -13,8 +36,10 @@ interface Props {
 /**
  * Viewport-locked specimen wall. Auto-fits N products into a perfect
  * cols × rows rectangle (no orphan tiles), with hover-to-magnify and
- * dim-everyone-else. Adapted from the Local Lvrs Lab grid for Hive's
- * cutout-on-white aesthetic.
+ * dim-everyone-else.
+ *
+ * When WALL_DND_ENABLED is on, tiles can be dragged to reorder; the
+ * manual order is persisted in localStorage per filter view.
  */
 export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,13 +50,11 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
   const rafRef = useRef<number | null>(null);
   const pendingTouch = useRef<{ x: number; y: number } | null>(null);
 
-  // Detect coarse pointer once on mount.
   useEffect(() => {
     if (typeof window === "undefined") return;
     setIsMobile(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
   }, []);
 
-  // Track container size.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -44,8 +67,24 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
 
   const capped = useMemo(() => products.slice(0, cap), [products, cap]);
 
+  // ---- DnD: load saved order, then apply ----
+  const orderKey = useMemo(
+    () => (WALL_DND_ENABLED ? orderKeyForIds(capped.map((p) => p.id)) : ""),
+    [capped],
+  );
+  const [orderedIds, setOrderedIds] = useState<string[] | null>(null);
+  useEffect(() => {
+    if (!WALL_DND_ENABLED) return;
+    setOrderedIds(loadOrder(orderKey));
+  }, [orderKey]);
+
+  const ordered = useMemo(() => {
+    if (!WALL_DND_ENABLED) return capped;
+    return applySavedOrder(capped, orderedIds);
+  }, [capped, orderedIds]);
+
   const { cols, rows } = useMemo(() => {
-    const n = capped.length;
+    const n = ordered.length;
     if (!n || !size.w || !size.h) return { cols: 1, rows: 1 };
     const aspect = size.w / size.h;
     const colsF = Math.sqrt(n * aspect);
@@ -60,10 +99,9 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       if (score < best.score) best = { cols: c, rows: r, score };
     }
     return { cols: best.cols, rows: best.rows };
-  }, [capped.length, size.w, size.h]);
+  }, [ordered.length, size.w, size.h]);
 
-  // Trim to perfect rectangle (no orphan tiles).
-  const trimmed = useMemo(() => capped.slice(0, cols * rows), [capped, cols, rows]);
+  const trimmed = useMemo(() => ordered.slice(0, cols * rows), [ordered, cols, rows]);
 
   const loupeId = useMemo(() => {
     if (!loupe || !size.w || !size.h) return null;
@@ -104,7 +142,6 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       rafRef.current = null;
     }
     pendingTouch.current = null;
-    // On touch end, commit the loupe id as a tap → open quick view.
     const id = loupeId;
     setLoupe(null);
     if (id) onOpen(id);
@@ -133,19 +170,58 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       ? `${trimmed.length} of ${products.length} shown — switch to grid for the full set`
       : null;
 
-  return (
-    <div className="relative w-full h-full bg-white">
-      <div
-        ref={containerRef}
-        className="absolute inset-0 grid touch-none select-none"
-        style={{ ...gridStyle, gap: 1, background: "#ffffff" }}
-        onMouseLeave={() => setHoveredId(null)}
-        onTouchStart={handleTouch}
-        onTouchMove={handleTouch}
-        onTouchEnd={onTouchEnd}
-        onTouchCancel={onTouchEnd}
-      >
-        {trimmed.map((p) => (
+  // ---- DnD wiring ----
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+  );
+
+  const handleDragEnd = useCallback(
+    (e: DragEndEvent) => {
+      const { active, over } = e;
+      if (!over || active.id === over.id) return;
+      const ids = trimmed.map((p) => p.id);
+      const oldIdx = ids.indexOf(String(active.id));
+      const newIdx = ids.indexOf(String(over.id));
+      if (oldIdx < 0 || newIdx < 0) return;
+      const moved = arrayMove(ids, oldIdx, newIdx);
+      // Persist the full ordered list (trimmed + tail) so saved order
+      // covers items not currently rendered too.
+      const tailIds = ordered.slice(trimmed.length).map((p) => p.id);
+      const fullIds = [...moved, ...tailIds];
+      setOrderedIds(fullIds);
+      saveOrder(orderKey, fullIds);
+    },
+    [trimmed, ordered, orderKey],
+  );
+
+  const resetOrder = useCallback(() => {
+    if (!orderKey) return;
+    clearOrder(orderKey);
+    setOrderedIds(null);
+  }, [orderKey]);
+
+  const tilesGrid = (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 grid touch-none select-none"
+      style={{ ...gridStyle, gap: 1, background: "#ffffff" }}
+      onMouseLeave={() => setHoveredId(null)}
+      onTouchStart={handleTouch}
+      onTouchMove={handleTouch}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchEnd}
+    >
+      {trimmed.map((p) =>
+        WALL_DND_ENABLED ? (
+          <SortableTile
+            key={p.id}
+            product={p}
+            isHovered={activeId === p.id}
+            isAnyHovered={activeId !== null}
+            onHover={isMobile ? noopHover : setHoveredId}
+            onOpen={onOpen}
+          />
+        ) : (
           <div key={p.id} className="relative bg-white">
             <CollectionWallTile
               product={p}
@@ -155,28 +231,90 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
               onOpen={onOpen}
             />
           </div>
-        ))}
+        ),
+      )}
 
-        {isMobile && loupe && (
-          <div
-            className="pointer-events-none absolute z-[55] rounded-full border border-charcoal/40"
-            style={{
-              width: 88,
-              height: 88,
-              left: loupe.x - 44,
-              top: loupe.y - 44,
-              mixBlendMode: "multiply",
-              willChange: "transform",
-            }}
-          />
-        )}
-      </div>
+      {isMobile && loupe && (
+        <div
+          className="pointer-events-none absolute z-[55] rounded-full border border-charcoal/40"
+          style={{
+            width: 88,
+            height: 88,
+            left: loupe.x - 44,
+            top: loupe.y - 44,
+            mixBlendMode: "multiply",
+            willChange: "transform",
+          }}
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <div className="relative w-full h-full bg-white">
+      {WALL_DND_ENABLED ? (
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={trimmed.map((p) => p.id)} strategy={rectSortingStrategy}>
+            {tilesGrid}
+          </SortableContext>
+        </DndContext>
+      ) : (
+        tilesGrid
+      )}
+
+      {WALL_DND_ENABLED && orderedIds && orderedIds.length > 0 && (
+        <button
+          type="button"
+          onClick={resetOrder}
+          className="absolute bottom-3 left-4 z-[60] text-[9px] uppercase tracking-[0.28em] text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
+        >
+          reset order
+        </button>
+      )}
 
       {trimmedNote && (
         <p className="pointer-events-none absolute bottom-3 right-4 text-[9px] uppercase tracking-[0.28em] text-charcoal/45">
           {trimmedNote}
         </p>
       )}
+    </div>
+  );
+}
+
+interface SortableTileProps {
+  product: CollectionProduct;
+  isHovered: boolean;
+  isAnyHovered: boolean;
+  onHover: (id: string | null) => void;
+  onOpen: (id: string) => void;
+}
+
+function SortableTile({ product, isHovered, isAnyHovered, onHover, onOpen }: SortableTileProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: product.id,
+  });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    opacity: isDragging ? 0.85 : 1,
+    cursor: isDragging ? "grabbing" : "grab",
+  };
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="relative bg-white"
+    >
+      <CollectionWallTile
+        product={product}
+        isHovered={isHovered}
+        isAnyHovered={isAnyHovered}
+        onHover={onHover}
+        onOpen={onOpen}
+      />
     </div>
   );
 }
