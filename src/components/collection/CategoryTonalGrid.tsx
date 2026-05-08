@@ -37,10 +37,9 @@ const ORDER: BrowseGroupId[] = [
 // Greyscale checker pair — flat white + soft grey for a neutral rhythm.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
 
-// Safety net: the category grid waits for one shared preload/decode batch,
-// then releases all tiles together. Keep this intentionally calm so a fresh
-// uncached visit does not fall back into per-tile random pop-in too early.
-const GRID_REVEAL_TIMEOUT_MS = 4500;
+// The category grid waits for one shared preload/decode batch, then releases
+// all tiles together. No time-based reveal: a timeout can reintroduce the exact
+// random per-tile pop-in this component is designed to avoid.
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -66,6 +65,20 @@ function decodeGridImage(src: string): Promise<void> {
 
     if (img.complete) finish();
   });
+}
+
+function preloadGridImage(src: string) {
+  const existing = document.head.querySelector<HTMLLinkElement>(
+    `link[rel="preload"][as="image"][href="${CSS.escape(src)}"]`,
+  );
+  if (existing) return;
+
+  const link = document.createElement("link");
+  link.rel = "preload";
+  link.as = "image";
+  link.href = src;
+  link.fetchPriority = "high";
+  document.head.appendChild(link);
 }
 
 export function CategoryTonalGrid({
@@ -109,17 +122,15 @@ export function CategoryTonalGrid({
     const reveal = () => {
       if (!cancelled) setGridReady(true);
     };
-    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
     const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
+    imageUrls.forEach(preloadGridImage);
 
     Promise.all(imageUrls.map(decodeGridImage)).then(() => {
-      window.clearTimeout(timeout);
       reveal();
     });
 
     return () => {
       cancelled = true;
-      window.clearTimeout(timeout);
     };
   }, [tiles]);
 
