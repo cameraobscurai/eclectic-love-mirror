@@ -954,13 +954,15 @@ function CollectionPage() {
                   background: "var(--paper)",
                 }}
               >
-                <img
-                  src={hiveSignatureHero}
-                  alt="The Hive — Signature Collection"
-                  className="block w-full h-full object-cover"
-                  width={1200}
-                  height={1600}
-                />
+                <div className="w-full h-full flex items-center justify-center" style={{ padding: "clamp(16px, 2.5vw, 40px)" }}>
+                  <img
+                    src={hiveSignatureHero}
+                    alt="The Hive — Signature Collection"
+                    className="block max-w-full max-h-full w-auto h-auto object-contain"
+                    width={1535}
+                    height={1920}
+                  />
+                </div>
               </motion.aside>
             )}
 
