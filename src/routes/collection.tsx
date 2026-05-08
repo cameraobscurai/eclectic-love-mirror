@@ -143,6 +143,14 @@ export const Route = createFileRoute("/collection")({
     // overview branch is actually rendered (not on direct category links or
     // the search view). TanStack Start's head() is route-level, so a
     // child-conditional preload requires the imperative pattern.
+    //
+    // The H-plate hero IS preloaded route-level — it paints on overview AND
+    // is the LCP element on /collection landings. Two media-scoped preloads
+    // so the browser only fetches the variant matching its viewport.
+    links: [
+      { ...heroPreloadLink(hiveSignatureHeroSquare, "46vw"), media: "(min-width: 1024px)" },
+      { ...heroPreloadLink(hiveSignatureHeroMobile, "100vw"), media: "(max-width: 1023px)" },
+    ],
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
