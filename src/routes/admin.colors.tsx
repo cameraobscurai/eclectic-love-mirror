@@ -8,10 +8,16 @@ import {
   type ColorRow,
 } from "@/server/colors.functions";
 
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
+
 export const Route = createFileRoute("/admin/colors")({
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   component: ColorsQA,
   head: () => ({
-    meta: [{ title: "Color QA — Admin" }],
+    meta: [
+      { title: "Color QA — Admin" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
 });
 

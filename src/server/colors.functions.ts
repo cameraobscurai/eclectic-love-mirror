@@ -1,10 +1,10 @@
 // Admin server functions for the /admin/colors QA grid.
-// Uses the service role client (the /admin space is unauthenticated for now,
-// matching admin.functions.ts). When auth lands, swap for requireSupabaseAuth
-// + has_role('admin') gate.
+// Gated by requireAdmin (Supabase bearer token + has_role('admin')).
+// Service-role client is used inside handlers for catalog reads/writes.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireAdmin } from "@/integrations/supabase/admin-middleware";
 
 export interface ColorRow {
   rms_id: string;
@@ -37,6 +37,7 @@ export interface ColorListResponse {
 }
 
 export const listColorRows = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z
       .object({
@@ -125,6 +126,7 @@ function rgbToLab(r: number, g: number, b: number) {
 }
 
 export const overrideColor = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z
       .object({
@@ -167,6 +169,7 @@ export const overrideColor = createServerFn({ method: "POST" })
   });
 
 export const setColorLocked = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z.object({ rms_id: z.string().min(1), locked: z.boolean() }).parse(d),
   )
@@ -180,6 +183,7 @@ export const setColorLocked = createServerFn({ method: "POST" })
   });
 
 export const clearColorTag = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z.object({ rms_id: z.string().min(1) }).parse(d),
   )

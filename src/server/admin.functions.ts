@@ -1,12 +1,12 @@
 // Admin dashboard server functions.
 //
-// These bypass RLS via the service role client because the test admin
-// dashboard at /admin is intentionally unauthenticated for now (per owner).
-// When auth is added, swap supabaseAdmin for the requireSupabaseAuth
-// middleware + a has_role('admin') gate.
+// Gated by requireAdmin (validates Supabase bearer token + has_role('admin')).
+// Service-role client is used inside the handler to read inquiry rows; the
+// auth gate runs first so unauthenticated callers never reach the query.
 
 import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { requireAdmin } from "@/integrations/supabase/admin-middleware";
 
 export interface InquiryRow {
   id: string;
@@ -30,8 +30,9 @@ export interface InquirySummary {
   recent: InquiryRow[];
 }
 
-export const getInquirySummary = createServerFn({ method: "GET" }).handler(
-  async (): Promise<InquirySummary> => {
+export const getInquirySummary = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async (): Promise<InquirySummary> => {
     const { data, error } = await supabaseAdmin
       .from("inquiries")
       .select("id, name, email, phone, subject, message, handled, created_at")
