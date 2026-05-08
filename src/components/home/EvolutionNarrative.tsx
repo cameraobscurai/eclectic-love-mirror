@@ -305,8 +305,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                         // Bumped 2026-05-08 per owner — script reads a touch
                         // larger; closer line still slightly smaller for rhythm.
                         fontSize: isClose
-                          ? "clamp(0.95rem, 1.9vh, 1.6rem)"
-                          : "clamp(1rem, 2.05vh, 1.75rem)",
+                          ? "clamp(1rem, 1.98vh, 1.68rem)"
+                          : "clamp(1.05rem, 2.14vh, 1.83rem)",
                         lineHeight: 1.25,
                         marginTop: isClose ? "0.6rem" : isBrand ? "0.4rem" : 0,
                         opacity,
