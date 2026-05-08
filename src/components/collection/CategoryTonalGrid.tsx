@@ -147,23 +147,24 @@ export function CategoryTonalGrid({
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          grid-template-rows: repeat(3, 1fr);
+          grid-auto-rows: minmax(180px, 1fr);
           width: 100%;
           height: 100%;
           gap: 0;
+          padding-top: 12px;
+          padding-bottom: clamp(72px, 9vh, 96px);
         }
-        [data-tonal-grid] > button { min-height: 44px; }
+        [data-tonal-grid] > button { min-height: 180px; }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            grid-auto-rows: auto;
+            grid-auto-rows: minmax(140px, 1fr);
             height: 100%;
-            padding: 8px;
+            padding: 8px 8px clamp(80px, 12vh, 112px);
             gap: 8px;
             background: var(--paper);
           }
-          [data-tonal-grid] > button { min-height: 64px; }
+          [data-tonal-grid] > button { min-height: 140px; }
         }
       `}</style>
       <div
