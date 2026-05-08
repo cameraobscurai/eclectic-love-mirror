@@ -506,7 +506,7 @@ function PillGroup({
             onClick={() => onChange(active ? "" : opt)}
             aria-pressed={active}
             className={[
-              "text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+              "text-[12px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
               active
                 ? "bg-charcoal text-cream border-charcoal"
                 : "border-charcoal/25 text-charcoal/70 hover:border-charcoal/60 hover:text-charcoal",
