@@ -82,30 +82,51 @@ function ContactPage() {
   }, [storeIds]);
 
   const [pieces, setPieces] = useState<SelectedPiece[]>([]);
+  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+  const [selectionStatus, setSelectionStatus] = useState<
+    "idle" | "loading" | "ready" | "error"
+  >("idle");
+
   useEffect(() => {
     let cancelled = false;
     if (initialIds.length === 0) {
       setPieces([]);
+      setSelectionStatus("idle");
       return;
     }
+    setSelectionStatus("loading");
     (async () => {
       const { data, error } = await supabase
         .from("inventory_items")
         .select("id,title,category")
         .in("id", initialIds);
-      if (cancelled || error || !data) return;
-      // Preserve initialIds ordering
+      if (cancelled) return;
+      if (error || !data) {
+        setPieces([]);
+        setSelectionStatus("error");
+        return;
+      }
       const byId = new Map(data.map((d) => [d.id, d as SelectedPiece]));
       setPieces(
         initialIds
           .map((id) => byId.get(id))
           .filter((x): x is SelectedPiece => Boolean(x)),
       );
+      setSelectionStatus("ready");
     })();
     return () => {
       cancelled = true;
     };
   }, [initialIds]);
+
+  const piecesById = useMemo(
+    () => new Map(pieces.map((p) => [p.id, p])),
+    [pieces],
+  );
+  const effectiveIds = useMemo(
+    () => initialIds.filter((id) => !removedIds.has(id)),
+    [initialIds, removedIds],
+  );
 
   // Form state — owner-defined fields
   const [name, setName] = useState("");
