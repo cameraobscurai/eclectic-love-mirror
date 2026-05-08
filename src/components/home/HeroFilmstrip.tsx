@@ -155,6 +155,8 @@ interface FrameProps {
   onAudioToggle: (id: string) => void;
   onManualPlay: (id: string) => void;
   registerRef: (el: HTMLVideoElement | null) => void;
+  parallaxProgress: MotionValue<number>;
+  parallaxDir: 1 | -1;
 }
 
 function FilmstripFrame({
@@ -167,9 +169,18 @@ function FilmstripFrame({
   onAudioToggle,
   onManualPlay,
   registerRef,
+  parallaxProgress,
+  parallaxDir,
 }: FrameProps) {
   const [loaded, setLoaded] = useState(false);
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
+  // Inner image drifts ±14px against its frame edge across the strip's
+  // viewport pass. Disabled for reduced-motion.
+  const innerY = useTransform(
+    parallaxProgress,
+    [0, 1],
+    reduced ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
+  );
 
   return (
     <div className={cn("flex flex-col", className)}>
