@@ -97,10 +97,7 @@ export function AtelierTeam() {
           Tagline stays Title/sentence case per typography rule (only display
           titles + brand statements go ALL CAPS). */}
       <div className="mb-16 md:mb-24 grid md:grid-cols-12 gap-8 md:gap-12 items-end">
-        <h2
-          className="md:col-span-7 font-display uppercase tracking-[0.04em] leading-[0.95] text-charcoal"
-          style={{ fontSize: "clamp(2.75rem, 7vw, 5.5rem)" }}
-        >
+        <h2 className="md:col-span-7 page-title text-charcoal">
           THE HIVE
         </h2>
         <p className="md:col-span-5 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
