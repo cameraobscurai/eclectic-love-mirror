@@ -246,10 +246,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  // Tighter rhythm on mobile (less vertical air per line),
-                  // generous on desktop. Driven by a single clamp so the
-                  // manifesto always fits one viewport.
-                  gap: "clamp(0.95rem, 0.6rem + 1vw, 1.6rem)",
+                  // Editorial rhythm: tighter vertical gaps relative to the
+                  // larger type size so the manifesto reads as a paragraph
+                  // block, not a stacked list.
+                  gap: "clamp(0.6rem, 0.3rem + 0.6vw, 1rem)",
                 }}
               >
                 {LINES.map((line, i) => {
@@ -283,9 +283,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                       style={{
                         fontWeight: 400,
                         fontSize: isClose
-                          ? "clamp(1.05rem, 0.7rem + 0.55vw, 1.35rem)"
-                          : "clamp(1.05rem, 0.7rem + 0.55vw, 1.4rem)",
-                        lineHeight: 1.5,
+                          ? "clamp(1.25rem, 0.7rem + 1.1vw, 1.85rem)"
+                          : "clamp(1.35rem, 0.85rem + 1.4vw, 2.15rem)",
+                        lineHeight: 1.3,
                         opacity,
                         letterSpacing: closerTracking,
                         transform: `translateY(${lift}px)`,
