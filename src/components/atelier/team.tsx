@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MediaAperture } from "@/components/media-aperture";
 import { teamPhotoUrl, renderUrl, renderSrcSet } from "@/lib/storage-image";
 
@@ -71,6 +72,24 @@ export function AtelierTeam() {
   const visibleMembers = TEAM.filter(
     (m) => m.name.trim().length > 0 && m.role.trim().length > 0,
   );
+  const firstRowImageCount = useMemo(
+    () =>
+      visibleMembers
+        .slice(0, 4)
+        .filter((m) => !!m.image && m.image.approvedForWeb).length,
+    [visibleMembers],
+  );
+  const [firstRowLoaded, setFirstRowLoaded] = useState(0);
+
+  useEffect(() => {
+    setFirstRowLoaded(0);
+  }, [firstRowImageCount]);
+
+  const reportFirstRowLoad = useCallback(() => {
+    setFirstRowLoaded((count) => Math.min(count + 1, firstRowImageCount));
+  }, [firstRowImageCount]);
+
+  const firstRowReady = firstRowImageCount === 0 || firstRowLoaded >= firstRowImageCount;
 
   return (
     <div>
@@ -116,6 +135,8 @@ export function AtelierTeam() {
                 lazy={!isFirstRow}
                 fetchPriority={isFirstRow ? "high" : undefined}
                 prefetchMargin="1400px"
+                revealReady={isFirstRow ? firstRowReady : undefined}
+                onLoad={isFirstRow ? reportFirstRowLoad : undefined}
                 className={member.imageClassName}
               />
               <p className="mt-5 font-display text-lg md:text-xl leading-tight text-charcoal">

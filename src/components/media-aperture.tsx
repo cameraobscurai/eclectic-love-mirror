@@ -71,6 +71,10 @@ interface MediaApertureProps {
   prefetchMargin?: string;
   /** Hint browser priority. Use "high" for above-the-fold portraits. */
   fetchPriority?: "high" | "low" | "auto";
+  /** Optional external reveal gate for synchronizing image cohorts. */
+  revealReady?: boolean;
+  /** Fires once the underlying image has loaded. */
+  onLoad?: () => void;
 }
 
 export function MediaAperture({
@@ -86,12 +90,23 @@ export function MediaAperture({
   lazy = true,
   prefetchMargin = "600px",
   fetchPriority,
+  revealReady,
+  onLoad,
 }: MediaApertureProps) {
   const [loaded, setLoaded] = useState(false);
   // Eager renders immediately. Lazy waits for the IO to fire.
   const [inView, setInView] = useState(!lazy);
   const figureRef = useRef<HTMLElement | null>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const loadReportedRef = useRef(false);
+
+  const reportLoaded = () => {
+    setLoaded(true);
+    if (!loadReportedRef.current) {
+      loadReportedRef.current = true;
+      onLoad?.();
+    }
+  };
 
   // Reset gate state when `src` changes (e.g. on remount after route
   // navigation, or when the parent swaps the image URL). Without this, an
@@ -100,6 +115,7 @@ export function MediaAperture({
   // bypass the prefetch margin entirely on the new src.
   useEffect(() => {
     setLoaded(false);
+    loadReportedRef.current = false;
     setInView(!lazy);
   }, [src, lazy]);
 
@@ -155,7 +171,7 @@ export function MediaAperture({
   // (SSR / cached / eager). Without this they stay opacity:0 forever.
   useEffect(() => {
     if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
-      setLoaded(true);
+      reportLoaded();
     }
   }, [src, inView]);
 
@@ -176,13 +192,13 @@ export function MediaAperture({
       alt={alt ?? ""}
       loading={lazy ? "lazy" : "eager"}
       decoding="async"
-      onLoad={() => setLoaded(true)}
+      onLoad={reportLoaded}
       {...(fetchPriority
         ? ({ fetchPriority: fetchPriority } as Record<string, string>)
         : {})}
       className="absolute inset-0 w-full h-full object-cover will-change-opacity"
       style={{
-        opacity: loaded ? 1 : 0,
+        opacity: revealReady === undefined ? 1 : loaded && revealReady ? 1 : 0,
         transition: "opacity 420ms ease-out",
       }}
     />

@@ -170,6 +170,19 @@ function AtelierPage() {
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{ paddingTop: "var(--nav-h)" }}
     >
+      <style>{`
+        @keyframes atelier-hero-reveal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .atelier-hero-reveal {
+          opacity: 0;
+          animation: atelier-hero-reveal 640ms ease-out forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .atelier-hero-reveal { animation-duration: 1ms; }
+        }
+      `}</style>
       {/* 1. HERO — static, tightened top padding (T3) */}
       <section
         className="px-6 lg:px-12 overflow-hidden"
@@ -180,18 +193,26 @@ function AtelierPage() {
       >
         <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-stretch">
           <div className="md:col-span-7 flex flex-col justify-between min-h-full py-2 md:py-4">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            <p
+              className="atelier-hero-reveal text-[10px] uppercase tracking-[0.3em] text-charcoal/50"
+            >
               ATELIER BY THE HIVE
             </p>
             {/* T17: literal CAPS in source so SR & visual register agree. */}
-            <h1 className="page-title text-charcoal">
+            <h1
+              className="atelier-hero-reveal page-title text-charcoal"
+              style={{ animationDelay: "80ms" }}
+            >
               IMAGINED.
               <br />
               DESIGNED.
               <br />
               REALIZED.
             </h1>
-            <p className="text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]">
+            <p
+              className="atelier-hero-reveal text-xs uppercase tracking-[0.22em] text-charcoal/70 leading-[1.8] max-w-[52ch]"
+              style={{ animationDelay: "160ms" }}
+            >
               The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
             </p>
           </div>
