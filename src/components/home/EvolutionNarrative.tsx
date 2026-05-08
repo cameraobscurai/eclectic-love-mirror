@@ -162,15 +162,20 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
   const reveal = readT * total;
 
-  // ── CONTINUE (last CONTINUE_VH of travel): hold + footer reveal ─────
-  // Footer starts rising as the LAST line begins resolving (readT > 0.85)
-  // so by the time the manifesto is done, cards are already in. Completes
-  // over 0.6vh of additional scroll — snappy, not slow.
-  const footerStart = 0.85;
+  // ── CONTINUE: footer (destination cards) reveal ─────────────────────
+  // Tuned per breakpoint. Mobile pins shorter and the manifesto column
+  // sits closer to the cards, so the cards need to start LATER (after the
+  // closer line lands) and finish over a slightly longer scroll window —
+  // otherwise they pop in while the reader is still on "We are artists."
+  // Desktop has more vertical air, so cards can begin rising while the
+  // last line is still resolving and finish snappily.
+  const isMobile = stepVh === STEP_VH_MOBILE;
+  const footerStart = isMobile ? 0.95 : 0.82;
+  const footerSpanVh = isMobile ? 0.45 : 0.7;
   const footerT = smooth(
     Math.max(
       (readT - footerStart) / (1 - footerStart),
-      (scrolledVh - ENTER_VH - readVh) / 0.6,
+      (scrolledVh - ENTER_VH - readVh) / footerSpanVh,
     ),
   );
   const continueT = footerT;
