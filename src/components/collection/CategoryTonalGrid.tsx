@@ -171,6 +171,7 @@ export function CategoryTonalGrid({
         return (
           <TonalCell
             key={t.id}
+            id={t.id}
             heroSrc={t.heroSrc}
             heroAlt={t.heroAlt}
             label={t.label}
@@ -186,6 +187,7 @@ export function CategoryTonalGrid({
 }
 
 interface TonalCellProps {
+  id: BrowseGroupId;
   heroSrc: string | null;
   heroAlt: string;
   label: string;
@@ -195,6 +197,7 @@ interface TonalCellProps {
 }
 
 function TonalCell({
+  id,
   heroSrc,
   heroAlt,
   label,
@@ -206,7 +209,6 @@ function TonalCell({
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
     <button
-      ref={ref}
       type="button"
       role="listitem"
       onClick={() => onSelectCategory(id)}
@@ -214,7 +216,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      {heroSrc && !loaded ? (
+      {heroSrc && !gridReady ? (
         <span
           aria-hidden
           className="absolute inset-0 pointer-events-none"
@@ -223,7 +225,7 @@ function TonalCell({
               "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.04) 100%)",
             backgroundSize: "200% 100%",
             animation: "tile-shimmer 1.4s ease-in-out infinite",
-            opacity: showImg ? 1 : 0.6,
+            opacity: 0.45,
             transition: "opacity 300ms ease-out",
           }}
         />
@@ -231,25 +233,17 @@ function TonalCell({
       {heroSrc ? (
         <img
           src={heroSrc}
-          srcSet={heroSrcSet}
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
           width={600}
           height={480}
-          loading={inCohort ? "eager" : "lazy"}
+          loading="eager"
           decoding="async"
-          {...({ fetchPriority: inCohort ? "high" : "auto" } as Record<string, string>)}
-          onLoad={() => {
-            setLoaded(true);
-            if (inCohort) reportDoneOnce();
-          }}
-          onError={() => {
-            if (inCohort) reportDoneOnce();
-          }}
+          {...({ fetchPriority: "high" } as Record<string, string>)}
           className="absolute inset-0 h-full w-full object-contain px-3 pt-3 pb-7 sm:px-4 sm:pt-4 sm:pb-9 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
-            opacity: showImg && loaded ? 1 : 0,
-            transition: "opacity 420ms ease-out, transform 500ms ease-out",
+            opacity: gridReady ? 1 : 0,
+            transition: "opacity 640ms ease-out, transform 500ms ease-out",
           }}
         />
       ) : null}
