@@ -179,8 +179,11 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // ENTER (so the per-line wave starts sooner) and stretch the lookahead
   // (so the active line resolves earlier in the read band). Computed once
   // per render — no extra state, no layout thrash.
-  const vhPx =
-    typeof window !== "undefined" ? window.innerHeight : 900;
+  // Gate viewport-derived values behind `mounted` so SSR and the first client
+  // render compute identical styles. Otherwise the client computes tallBias
+  // from real innerHeight while SSR used the 900 fallback, producing a
+  // hydration mismatch on every line's opacity/transform.
+  const vhPx = mounted && typeof window !== "undefined" ? window.innerHeight : 900;
   // 0 at vh<=900, 1 at vh>=1300. Smooth ramp between.
   const tallBias = clamp01((vhPx - 900) / 400);
   const ENTER_VH = isMobile
