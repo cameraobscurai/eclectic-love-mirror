@@ -185,8 +185,11 @@ function DestinationCard({
   if (isStatic) {
     return (
       <div
-        className="border border-charcoal/12 h-[148px] md:h-[176px]"
-        style={{ animation: `dest-fade 700ms ${index * 80}ms ease-out both` }}
+        className="border border-charcoal/12"
+        style={{
+          height: "clamp(148px, 9rem + 3vw, 13rem)",
+          animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
+        }}
       >
         {inner}
       </div>
