@@ -213,7 +213,7 @@ function ContactPage() {
         >
           {/* LEFT — editorial intro */}
           <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               CONTACT
             </p>
             <h1 className="page-title mt-6 text-charcoal">
@@ -224,23 +224,23 @@ function ContactPage() {
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
             </p>
-            <div className="mt-12 space-y-5 text-[14px] text-charcoal/80">
+            <div className="mt-12 space-y-5">
               <p>
-                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   EMAIL
                 </span>
                 <a
-                  className="editorial-link uppercase tracking-[0.08em]"
+                  className="editorial-link text-[12px] uppercase tracking-[0.18em] text-charcoal/80"
                   href={`mailto:${SUPPORT_EMAIL}`}
                 >
                   {SUPPORT_EMAIL}
                 </a>
               </p>
               <p>
-                <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
+                <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   ATELIER
                 </span>
-                <span className="uppercase tracking-[0.08em]">
+                <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/80">
                   Denver, Colorado
                 </span>
               </p>
@@ -326,7 +326,7 @@ function ContactPage() {
                 <FormSection number="03" label="Vision + wish list">
                   {pieces.length > 0 && (
                     <div className="mb-10">
-                      <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
+                      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
                         SELECTED FROM COLLECTION ({String(pieces.length).padStart(2, "0")})
                       </p>
                       <ul
@@ -340,11 +340,11 @@ function ContactPage() {
                             style={{ borderColor: "var(--archive-rule)" }}
                           >
                             <div className="flex items-baseline gap-4 min-w-0">
-                              <span className="text-[13px] tracking-[0.05em] text-charcoal/85 truncate">
+                              <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
                                 {p.title}
                               </span>
                               {p.category && (
-                                <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
+                                <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
                                   {p.category}
                                 </span>
                               )}
@@ -352,7 +352,7 @@ function ContactPage() {
                             <button
                               type="button"
                               onClick={() => removePiece(p.id)}
-                              className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                             >
                               REMOVE
                             </button>
@@ -377,18 +377,18 @@ function ContactPage() {
                 {/* Submit */}
                 <div className="pt-4">
                   {errorMsg && (
-                    <p className="mb-6 text-[13px] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                    <p className="mb-6 text-[12px] uppercase tracking-[0.18em] leading-[1.7] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
                       {errorMsg}
                     </p>
                   )}
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="text-xs uppercase tracking-[0.22em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                    className="text-[12px] uppercase tracking-[0.18em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                   >
                     {submitting ? "SENDING…" : "SEND INQUIRY"}
                   </button>
-                  <p className="mt-6 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                  <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
                     OR EMAIL US DIRECTLY AT{" "}
                     <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
                       {SUPPORT_EMAIL}
@@ -426,10 +426,10 @@ function FormSection({
       style={{ borderColor: "var(--archive-rule)" }}
     >
       <div className="flex items-baseline gap-4 mb-10">
-        <span className="text-base text-charcoal/40 tabular-nums">
+        <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/40 tabular-nums">
           {number}
         </span>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/55">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
           {label}
         </p>
       </div>
@@ -449,7 +449,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
+      <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
         {label}
         {required && <span className="text-charcoal/30"> ·</span>}
       </span>
@@ -506,7 +506,7 @@ function PillGroup({
             onClick={() => onChange(active ? "" : opt)}
             aria-pressed={active}
             className={[
-              "text-[11px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
+              "text-[12px] uppercase tracking-[0.18em] px-4 py-2 border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream",
               active
                 ? "bg-charcoal text-cream border-charcoal"
                 : "border-charcoal/25 text-charcoal/70 hover:border-charcoal/60 hover:text-charcoal",
@@ -526,10 +526,18 @@ function SuccessPanel() {
       className="border-t pt-12"
       style={{ borderColor: "var(--archive-rule)" }}
     >
-      <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
         RECEIVED
       </p>
-      <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
+      <h2
+        className="mt-6 font-display uppercase max-w-xl text-charcoal"
+        style={{
+          fontWeight: 400,
+          fontSize: "clamp(2rem, 1rem + 2.5vw, 3rem)",
+          lineHeight: 1.05,
+          letterSpacing: "0.04em",
+        }}
+      >
         Thank you. Your inquiry is with the atelier.
       </h2>
       <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
