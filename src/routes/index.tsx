@@ -175,11 +175,11 @@ function HomePage() {
         <div
           className={cn(
             "transition-all ease-out",
+            "pb-[calc(var(--fold-tail)*0.45)] md:pb-[var(--fold-tail)]",
             loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
           )}
           style={{
             paddingTop: "var(--fold-strip)",
-            paddingBottom: "var(--fold-tail)",
             transitionDuration: "1200ms",
             transitionDelay: loaded ? "650ms" : "0ms",
           }}
