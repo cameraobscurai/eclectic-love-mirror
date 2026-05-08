@@ -151,8 +151,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                       style={{
                         fontWeight: 400,
                         fontSize: isClose
-                          ? "clamp(1rem, 1.6vw, 1.25rem)"
-                          : "clamp(1rem, 1.55vw, 1.3rem)",
+                          ? "clamp(1.05rem, 0.7rem + 0.55vw, 1.35rem)"
+                          : "clamp(1.05rem, 0.7rem + 0.55vw, 1.4rem)",
                         lineHeight: 1.5,
                         opacity,
                         letterSpacing: closerTracking,
