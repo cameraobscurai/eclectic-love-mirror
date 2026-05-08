@@ -139,6 +139,19 @@ export function CategoryTonalGrid({
     [byId],
   );
 
+  // Track actual rendered column count so the checker parity matches what
+  // the user sees. Without this, mobile (3 cols) was using LG parity (5)
+  // and the tone fell into diagonal stripes instead of a real checker.
+  const [renderedCols, setRenderedCols] = useState<number>(COLS.lg);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setRenderedCols(mq.matches ? COLS.sm : COLS.lg);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const [gridReady, setGridReady] = useState(false);
 
   useEffect(() => {
@@ -199,14 +212,10 @@ export function CategoryTonalGrid({
       aria-label="Browse by category"
     >
       {tiles.map((t, i) => {
-        // Real checkerboard: parity over (row + col). Computed against
-        // each breakpoint's column count, picked at render via window
-        // size isn't necessary — we use the LG count as the canonical
-        // pattern; on smaller widths the wrap re-flows but parity holds
-        // because COLS values are all even except 3. 3-col tablet falls
-        // into a diagonal stripe which actually reads fine — the rhythm
-        // is what matters, not perfect parity.
-        const cols = COLS.lg;
+        // Real checkerboard parity, computed from the actual rendered
+        // column count (3 mobile / 5 desktop). Tracked via matchMedia so
+        // it updates on resize.
+        const cols = renderedCols;
         const row = Math.floor(i / cols);
         const col = i % cols;
         const tone = TONES[(row + col) % 2];
@@ -218,6 +227,7 @@ export function CategoryTonalGrid({
             heroAlt={t.heroAlt}
             label={t.label}
             tone={tone}
+            padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
             gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
@@ -234,6 +244,7 @@ interface TonalCellProps {
   heroAlt: string;
   label: string;
   tone: string;
+  padding: string;
   gridReady: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
