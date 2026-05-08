@@ -319,11 +319,25 @@ function FilmstripFrame({
 
 interface LightboxProps {
   clip: FilmstripClip | null;
+  originRect: DOMRect | null;
   onClose: () => void;
 }
 
-function Lightbox({ clip, onClose }: LightboxProps) {
+function Lightbox({ clip, originRect, onClose }: LightboxProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  // Natural aspect from the actual video file. Falls back to 3/4 (poster ratio)
+  // until metadata loads — that way the zoom-in animation has a credible target.
+  const [naturalAspect, setNaturalAspect] = useState<number>(3 / 4);
+  const [viewport, setViewport] = useState({
+    w: typeof window !== "undefined" ? window.innerWidth : 1280,
+    h: typeof window !== "undefined" ? window.innerHeight : 800,
+  });
+
+  useEffect(() => {
+    const onResize = () => setViewport({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   // Body scroll lock + ESC to close while open.
   useEffect(() => {
@@ -360,7 +374,6 @@ function Lightbox({ clip, onClose }: LightboxProps) {
         raf = requestAnimationFrame(tick);
       })
       .catch(() => {
-        // Autoplay-with-audio rejected — fall back to muted, user can unmute via controls.
         v.muted = true;
         v.play().catch(() => {});
       });
@@ -373,71 +386,117 @@ function Lightbox({ clip, onClose }: LightboxProps) {
 
   if (typeof document === "undefined") return null;
 
+  // Compute the centered final rect from natural aspect + viewport, leaving
+  // a comfortable margin so nothing kisses the edge.
+  const PAD = 64; // px on each side
+  const maxW = viewport.w - PAD * 2;
+  const maxH = viewport.h - PAD * 2;
+  let finalW = maxH * naturalAspect;
+  let finalH = maxH;
+  if (finalW > maxW) {
+    finalW = maxW;
+    finalH = maxW / naturalAspect;
+  }
+  const finalLeft = (viewport.w - finalW) / 2;
+  const finalTop = (viewport.h - finalH) / 2;
+
+  // Origin rect for the zoom-from-frame animation. Falls back to centered
+  // small if a click came in without a measured rect (keyboard etc).
+  const origin = originRect ?? new DOMRect(viewport.w / 2 - 80, viewport.h / 2 - 100, 160, 200);
+
   return createPortal(
     <AnimatePresence>
       {clip && (
         <motion.div
           key="lightbox"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[200]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
+          transition={{ duration: 0.28, ease: [0.22, 0.61, 0.36, 1] }}
           onClick={onClose}
           role="dialog"
           aria-modal="true"
           aria-label={`${clip.season} — playing with sound`}
         >
           {/* Full-page scrim — covers nav, footer, everything. */}
-          <div className="absolute inset-0 bg-charcoal/96 backdrop-blur-xl" />
+          <motion.div
+            className="absolute inset-0 bg-charcoal backdrop-blur-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.96 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
+          />
 
+          {/* The frame itself — fixed-positioned, animating from the clicked
+              filmstrip rect to its centered final rect using a soft spring. */}
           <motion.figure
-            className="relative z-10 flex flex-col items-center"
-            initial={{ scale: 0.96, y: 8, opacity: 0 }}
-            animate={{ scale: 1, y: 0, opacity: 1 }}
-            exit={{ scale: 0.97, opacity: 0 }}
-            transition={{ duration: 0.42, ease: [0.22, 0.61, 0.36, 1] }}
+            className="absolute z-10 m-0 overflow-hidden bg-charcoal"
+            initial={{
+              top: origin.top,
+              left: origin.left,
+              width: origin.width,
+              height: origin.height,
+              opacity: 0.85,
+            }}
+            animate={{
+              top: finalTop,
+              left: finalLeft,
+              width: finalW,
+              height: finalH,
+              opacity: 1,
+            }}
+            exit={{
+              top: origin.top,
+              left: origin.left,
+              width: origin.width,
+              height: origin.height,
+              opacity: 0,
+              transition: { duration: 0.36, ease: [0.4, 0, 0.2, 1] },
+            }}
+            transition={{ type: "spring", stiffness: 220, damping: 30, mass: 0.9 }}
+            style={{ boxShadow: "0 50px 140px -40px rgba(0,0,0,0.85)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* 4:5 frame — matches how the source clips actually read.
-                Sized to fit either viewport dimension, whichever is tighter. */}
-            <div
-              className="relative overflow-hidden bg-charcoal aspect-[4/5]"
-              style={{
-                height: "min(calc(100vh - 8rem), calc((100vw - 4rem) * 5 / 4))",
-                boxShadow: "0 40px 120px -40px rgba(0,0,0,0.8)",
+            <video
+              ref={videoRef}
+              poster={clip.poster}
+              loop
+              playsInline
+              preload="auto"
+              aria-label={clip.label}
+              className="h-full w-full object-cover"
+              onLoadedMetadata={(e) => {
+                const v = e.currentTarget;
+                if (v.videoWidth && v.videoHeight) {
+                  setNaturalAspect(v.videoWidth / v.videoHeight);
+                }
               }}
             >
-              <video
-                ref={videoRef}
-                poster={clip.poster}
-                loop
-                playsInline
-                preload="auto"
-                aria-label={clip.label}
-                className="h-full w-full object-cover"
-              >
-                {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
-                {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
-              </video>
-            </div>
-
-            <figcaption
-              className="mt-3 flex items-baseline justify-center gap-2 font-brand text-paper/80"
-              style={{ fontWeight: 400 }}
-            >
-              <span
-                className="text-[10px] tracking-[0.22em] text-paper/55"
-                style={{ fontVariantNumeric: "tabular-nums" }}
-              >
-                {clip.id}
-              </span>
-              <span className="text-[12px] uppercase tracking-[0.28em]">{clip.season}</span>
-            </figcaption>
+              {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
+              {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
+            </video>
           </motion.figure>
 
+          {/* Caption — drifts up under the frame after the zoom settles. */}
+          <motion.figcaption
+            className="absolute left-0 right-0 z-10 flex items-baseline justify-center gap-2 font-brand text-paper/80"
+            style={{ top: finalTop + finalH + 16, fontWeight: 400 }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 0.18, duration: 0.4 } }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+          >
+            <span
+              className="text-[10px] tracking-[0.22em] text-paper/55"
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {clip.id}
+            </span>
+            <span className="text-[12px] uppercase tracking-[0.28em]">{clip.season}</span>
+          </motion.figcaption>
+
           {/* Close — hairline glyph in the top-right of the viewport. */}
-          <button
+          <motion.button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
@@ -448,9 +507,12 @@ function Lightbox({ clip, onClose }: LightboxProps) {
               "absolute top-5 right-5 z-20 flex h-10 w-10 items-center justify-center",
               "rounded-full text-paper/80 transition-colors hover:text-paper hover:bg-paper/10",
             )}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 0.2 } }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
           >
             <X className="h-4 w-4" strokeWidth={1.25} />
-          </button>
+          </motion.button>
         </motion.div>
       )}
     </AnimatePresence>,
