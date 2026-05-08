@@ -95,7 +95,11 @@ const smooth = (t: number) => {
 
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
+  // Scroll position expressed in VIEWPORT HEIGHTS past the moment the
+  // section top reaches the viewport top. 0 = section just pinned;
+  // (sectionHeight - vh) / vh = sticky about to release.
+  const [scrolledVh, setScrolledVh] = useState(0);
+  const [travelVh, setTravelVh] = useState(1);
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
 
   useEffect(() => {
@@ -111,9 +115,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       if (!el) return;
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      const distance = Math.max(el.offsetHeight - vh, 1);
-      const p = clamp01(-rect.top / distance);
-      setProgress(p);
+      // Distance the section top has moved past the viewport top, in vh.
+      const sVh = Math.max(-rect.top, 0) / vh;
+      // Total available pinned travel, in vh.
+      const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
+      setScrolledVh(sVh);
+      setTravelVh(tVh);
     };
 
     update();
@@ -139,19 +146,21 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
 
   const total = LINES.length;
 
-  // ── ENTER phase (0 → ENTER_END): block-level intro ──────────────────
-  // Manifesto column lifts + fades in as a whole before any line activates.
-  const enterT = smooth(progress / ENTER_END);
+  // Anchor phases to the section's real viewport position, in vh units.
+  // Clamp the read band so very short sections still get a sensible split.
+  const readVh = Math.max(travelVh - ENTER_VH - CONTINUE_VH, 1);
+
+  // ── ENTER (0 → ENTER_VH of pinned travel) ───────────────────────────
+  const enterT = smooth(scrolledVh / ENTER_VH);
   const blockOpacity = enterT;
   const blockLift = (1 - enterT) * 8; // px
 
-  // ── READ phase (ENTER_END → READ_END): per-line wave ────────────────
-  const readT = clamp01((progress - ENTER_END) / (READ_END - ENTER_END));
-  // `reveal` walks 0 → total across the READ band.
+  // ── READ (ENTER_VH → ENTER_VH + readVh): per-line wave ──────────────
+  const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
   const reveal = readT * total;
 
-  // ── CONTINUE phase (READ_END → 1): hold + footer reveal ─────────────
-  const continueT = smooth((progress - READ_END) / (1 - READ_END));
+  // ── CONTINUE (last CONTINUE_VH of travel): hold + footer reveal ─────
+  const continueT = smooth((scrolledVh - ENTER_VH - readVh) / CONTINUE_VH);
   const showFooter = continueT > 0.05;
 
   return (
