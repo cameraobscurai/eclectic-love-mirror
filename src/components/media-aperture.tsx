@@ -198,7 +198,7 @@ export function MediaAperture({
         : {})}
       className="absolute inset-0 w-full h-full object-cover will-change-opacity"
       style={{
-        opacity: loaded && (revealReady ?? true) ? 1 : 0,
+        opacity: revealReady === undefined ? 1 : loaded && revealReady ? 1 : 0,
         transition: "opacity 420ms ease-out",
       }}
     />
