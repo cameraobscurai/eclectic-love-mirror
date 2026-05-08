@@ -654,6 +654,21 @@ export const RULE_ORDER: BrowseGroupId[] = RULES.map((r) => r.id);
  * margin 0 + empty candidates as the explicit fallback signal.
  */
 export function classify(product: CollectionProduct): Classification {
+  // Owner overrides win unconditionally — pin a slug to a group regardless
+  // of the rule engine's verdict. Trace records the override so debugging
+  // tools can tell rule output from manual override.
+  const forced = FORCE_GROUP_BY_SLUG[product.slug];
+  if (forced) {
+    return {
+      group: forced,
+      trace: {
+        candidates: [{ id: forced, score: 9999, reason: "owner override (FORCE_GROUP_BY_SLUG)" }],
+        winnerId: forced,
+        margin: 9999,
+      },
+    };
+  }
+
   const fields: NormalizedFields = {
     title: product.title.toLowerCase(),
     categorySlug: product.categorySlug,
