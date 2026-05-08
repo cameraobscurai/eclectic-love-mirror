@@ -36,7 +36,8 @@ const STEP_VH_DESKTOP = 14;
 const STEP_VH_MOBILE = 12;
 // Lead-in: portion of scroll before any line begins revealing.
 // Lets the section fully settle into center before the manifesto activates.
-const LEAD_IN = 0.08;
+// Tightened from 0.08 → 0.04 so mobile readers don't get a dead band.
+const LEAD_IN = 0.04;
 const FOOTER_REVEAL_AT = 0.82;
 const DIM_OPACITY = 0.18;
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
