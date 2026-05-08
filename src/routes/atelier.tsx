@@ -364,8 +364,8 @@ function AtelierPage() {
       </Section>
 
       {/* 6. CTA */}
-      <section className="px-6 lg:px-12 mt-24">
-        <div className="max-w-[1400px] mx-auto">
+      <section style={{ marginTop: "var(--section-gap)" }}>
+        <div className="fluid-canvas">
           <div
             className="border-t pt-12"
             style={{ borderColor: "var(--archive-rule)" }}
@@ -373,7 +373,14 @@ function AtelierPage() {
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
               BEGIN
             </p>
-            <h2 className="mt-4 font-display text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] uppercase tracking-[0.04em] max-w-2xl">
+            <h2
+              className="mt-4 font-display uppercase max-w-2xl"
+              style={{
+                fontSize: "clamp(2rem, 1rem + 2.5vw, 3.5rem)",
+                lineHeight: 1.05,
+                letterSpacing: "0.04em",
+              }}
+            >
               Bring a project to the Atelier.
             </h2>
             <Link
@@ -397,8 +404,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="px-6 lg:px-12 mt-24">
-      <div className="max-w-[1400px] mx-auto">
+    <section style={{ marginTop: "var(--section-gap)" }}>
+      <div className="fluid-canvas">
         <div
           className="border-t pt-10"
           style={{ borderColor: "var(--archive-rule)" }}
