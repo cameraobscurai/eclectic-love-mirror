@@ -128,7 +128,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       // Lead-in: how far before the section pins we start counting.
       // Bumped on desktop so the dim manifesto is already visible while
       // the filmstrip tail is still on screen — kills the dead white gap.
-      const LEAD_IN_VH = window.innerWidth < 768 ? 0.15 : 0.32;
+      // Scale lead-in with viewport height so tall monitors don't show a
+      // dead white band between the filmstrip tail and the dim manifesto.
+      const isDesk = window.innerWidth >= 768;
+      const LEAD_IN_VH = isDesk
+        ? Math.min(0.32 + Math.max(vh - 900, 0) / 1400, 0.6)
+        : 0.15;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
@@ -214,7 +219,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       style={{ height: `${sectionVh}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col">
-        <div className="flex-1 min-h-0 flex items-center w-full">
+        {/* Pull manifesto above geometric center — optical center sits ~42%
+            from the top, and it closes the gap to the filmstrip tail. */}
+        <div className="flex-1 min-h-0 flex items-start w-full pt-[14vh] md:pt-[12vh]">
           <div className="fluid-canvas w-full">
             <div
               className="mx-auto flex flex-col items-center text-center"
