@@ -166,7 +166,7 @@ const products = all.map((r, i) => {
 });
 
 console.log(`[bake] live-image fallback used for ${livesFallback} products`);
-const visibleProducts = products.filter(p => p.imageCount >= 1);
+const visibleProducts = products.filter(p => p.imageCount >= 1 && p.publicReady !== false);
 const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
