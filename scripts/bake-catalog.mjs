@@ -86,7 +86,7 @@ const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
   const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review')
+    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,public_ready')
     .neq('status','draft').range(from, from+PAGE-1).order('title');
   if (error) { console.error(error); process.exit(1); }
   if (!data.length) break;
@@ -149,7 +149,7 @@ const products = all.map((r, i) => {
     images: imgs,
     primaryImage: imgs[0] || null,
     imageCount: imgs.length,
-    publicReady: true,
+    publicReady: r.public_ready !== false,
     scrapedOrder: i,
     subcategory: null,
     ownerSiteRank: null,
@@ -166,7 +166,7 @@ const products = all.map((r, i) => {
 });
 
 console.log(`[bake] live-image fallback used for ${livesFallback} products`);
-const visibleProducts = products.filter(p => p.imageCount >= 1);
+const visibleProducts = products.filter(p => p.imageCount >= 1 && p.publicReady !== false);
 const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
