@@ -364,40 +364,56 @@ function ContactPage() {
 
                 {/* 3. VISION + SELECTED PIECES */}
                 <FormSection number="03" label="Vision + wish list">
-                  {pieces.length > 0 && (
+                  {effectiveIds.length > 0 && (
                     <div className="mb-10">
-                      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
-                        SELECTED FROM COLLECTION ({String(pieces.length).padStart(2, "0")})
-                      </p>
+                      <div className="flex items-baseline justify-between gap-4 mb-4">
+                        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
+                          SELECTED FROM COLLECTION ({String(effectiveIds.length).padStart(2, "0")})
+                        </p>
+                        {selectionStatus === "loading" && (
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+                            LOADING TITLES…
+                          </p>
+                        )}
+                        {selectionStatus === "error" && (
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+                            COULDN'T LOAD TITLES — IDS WILL STILL BE SENT
+                          </p>
+                        )}
+                      </div>
                       <ul
                         className="divide-y"
                         style={{ borderColor: "var(--archive-rule)" }}
                       >
-                        {pieces.map((p) => (
-                          <li
-                            key={p.id}
-                            className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
-                            style={{ borderColor: "var(--archive-rule)" }}
-                          >
-                            <div className="flex items-baseline gap-4 min-w-0">
-                              <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
-                                {p.title}
-                              </span>
-                              {p.category && (
-                                <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
-                                  {p.category}
-                                </span>
-                              )}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removePiece(p.id)}
-                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                        {effectiveIds.map((id) => {
+                          const p = piecesById.get(id);
+                          const shortId = id.slice(-6).toUpperCase();
+                          return (
+                            <li
+                              key={id}
+                              className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
+                              style={{ borderColor: "var(--archive-rule)" }}
                             >
-                              REMOVE
-                            </button>
-                          </li>
-                        ))}
+                              <div className="flex items-baseline gap-4 min-w-0">
+                                <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
+                                  {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
+                                </span>
+                                {p?.category && (
+                                  <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
+                                    {p.category}
+                                  </span>
+                                )}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removePiece(id)}
+                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              >
+                                REMOVE
+                              </button>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
