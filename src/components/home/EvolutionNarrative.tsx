@@ -61,8 +61,8 @@ const LINES: Line[] = [
 // not just opacity flicker.
 // ─────────────────────────────────────────────────────────────────────────
 
-const STEP_VH_DESKTOP = 14;
-const STEP_VH_MOBILE = 13;
+const STEP_VH_DESKTOP = 10;
+const STEP_VH_MOBILE = 11;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
@@ -78,8 +78,8 @@ const STEP_VH_MOBILE = 13;
 //                 line wave fills this band exactly.
 const ENTER_VH_DESKTOP = 0.5;
 const ENTER_VH_MOBILE = 0.4;
-const CONTINUE_VH_DESKTOP = 1.0;
-const CONTINUE_VH_MOBILE = 0.7;
+const CONTINUE_VH_DESKTOP = 0.6;
+const CONTINUE_VH_MOBILE = 0.55;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
