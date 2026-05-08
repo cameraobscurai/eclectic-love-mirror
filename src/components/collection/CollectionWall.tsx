@@ -22,6 +22,8 @@ import {
   loadOrder,
   saveOrder,
   clearOrder,
+  confirmOrder,
+  isOrderConfirmed,
   applySavedOrder,
 } from "@/lib/wall-dnd";
 
@@ -73,15 +75,21 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     [capped],
   );
   const [orderedIds, setOrderedIds] = useState<string[] | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   useEffect(() => {
     if (!WALL_DND_ENABLED) return;
     setOrderedIds(loadOrder(orderKey));
+    setConfirmed(isOrderConfirmed(orderKey));
   }, [orderKey]);
 
   const ordered = useMemo(() => {
     if (!WALL_DND_ENABLED) return capped;
     return applySavedOrder(capped, orderedIds);
   }, [capped, orderedIds]);
+
+  // Edit mode = DnD on AND user hasn't pressed OK yet on the current order.
+  const editMode = WALL_DND_ENABLED && !confirmed;
 
   const { cols, rows } = useMemo(() => {
     const n = ordered.length;
@@ -154,7 +162,8 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     [],
   );
 
-  const activeId = isMobile ? loupeId : hoveredId;
+  // In edit mode, suppress hover dim entirely (focus is on dragging).
+  const activeId = editMode ? null : isMobile ? loupeId : hoveredId;
   const noopHover = useCallback(() => {}, []);
 
   const gridStyle = useMemo(
@@ -184,12 +193,13 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       const newIdx = ids.indexOf(String(over.id));
       if (oldIdx < 0 || newIdx < 0) return;
       const moved = arrayMove(ids, oldIdx, newIdx);
-      // Persist the full ordered list (trimmed + tail) so saved order
-      // covers items not currently rendered too.
       const tailIds = ordered.slice(trimmed.length).map((p) => p.id);
       const fullIds = [...moved, ...tailIds];
       setOrderedIds(fullIds);
       saveOrder(orderKey, fullIds);
+      // Any new drag invalidates a previous OK confirmation.
+      setConfirmed(false);
+      setJustSaved(false);
     },
     [trimmed, ordered, orderKey],
   );
@@ -198,7 +208,19 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     if (!orderKey) return;
     clearOrder(orderKey);
     setOrderedIds(null);
+    setConfirmed(false);
+    setJustSaved(false);
   }, [orderKey]);
+
+  const okOrder = useCallback(() => {
+    if (!orderKey) return;
+    const ids = ordered.map((p) => p.id);
+    confirmOrder(orderKey, ids);
+    setOrderedIds(ids);
+    setConfirmed(true);
+    setJustSaved(true);
+    window.setTimeout(() => setJustSaved(false), 1600);
+  }, [orderKey, ordered]);
 
   const tilesGrid = (
     <div
@@ -263,13 +285,25 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       )}
 
       {WALL_DND_ENABLED && orderedIds && orderedIds.length > 0 && (
-        <button
-          type="button"
-          onClick={resetOrder}
-          className="absolute bottom-3 left-4 z-[60] text-[9px] uppercase tracking-[0.28em] text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
-        >
-          reset order
-        </button>
+        <div className="absolute bottom-3 left-4 z-[60] flex items-center gap-3 text-[9px] uppercase tracking-[0.28em]">
+          <button
+            type="button"
+            onClick={okOrder}
+            className={
+              "px-2 py-1 border border-charcoal/40 text-charcoal hover:bg-charcoal hover:text-white transition-colors " +
+              (confirmed ? "bg-charcoal/5" : "")
+            }
+          >
+            {justSaved ? "saved ✓" : confirmed ? "saved" : "ok · save"}
+          </button>
+          <button
+            type="button"
+            onClick={resetOrder}
+            className="text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
+          >
+            reset order
+          </button>
+        </div>
       )}
 
       {trimmedNote && (

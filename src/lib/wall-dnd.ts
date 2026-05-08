@@ -45,8 +45,31 @@ export function clearOrder(key: string) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.removeItem(key);
+    window.localStorage.removeItem(key + ":confirmed");
   } catch {
     /* noop */
+  }
+}
+
+export function confirmOrder(key: string, ids: string[]) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(ids));
+    window.localStorage.setItem(
+      key + ":confirmed",
+      String(Date.now()),
+    );
+  } catch {
+    /* noop */
+  }
+}
+
+export function isOrderConfirmed(key: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return !!window.localStorage.getItem(key + ":confirmed");
+  } catch {
+    return false;
   }
 }
 
