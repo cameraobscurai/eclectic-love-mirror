@@ -943,7 +943,10 @@ function CollectionPage() {
                 layout={!reduced}
                 className="hidden lg:block flex-shrink-0"
                 style={{
-                  width: "40%",
+                  // Was a flat 40%. Fluid-clamped so the H plate stays
+                  // generous on ultrawides without crushing the grid at
+                  // 1280. 1024→32%, 1440→~37%, 1920→44%.
+                  width: "clamp(32%, 24% + 8vw, 44%)",
                   background: "var(--paper)",
                 }}
               >

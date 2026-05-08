@@ -34,8 +34,34 @@ const ORDER: BrowseGroupId[] = [
   "pillows", "throws", "tableware", "styling", "large-decor",
 ];
 
-// Greyscale checker pair — flat white + soft grey for a neutral rhythm.
-const TONES = ["#ffffff", "#f1f1f1"] as const;
+// Greyscale checker pair — flat white + soft grey. Bumped from #f1f1f1 to
+// #ebebeb so the checker reads at scale without going warm.
+const TONES = ["#ffffff", "#ebebeb"] as const;
+
+// Per-category padding hints. Image silhouettes vary wildly — a rug fills
+// its frame, a side-table is a thin vertical, a chandelier hangs from the
+// top. Without per-category tuning every tile uses the same padding and
+// half look marooned. Values are CSS shorthand "T R B L".
+// Bottom is always larger to clear the label.
+const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
+  // Wide, frame-filling — minimal padding so they read as fabric.
+  rugs: "6% 6% 22% 6%",
+  pillows: "8% 12% 24% 12%",
+  throws: "6% 10% 22% 10%",
+  // Vertical, sparse silhouettes — extra side padding so they don't tower.
+  "side-tables": "10% 22% 22% 22%",
+  lighting: "8% 22% 22% 22%",
+  "cocktail-tables": "10% 18% 22% 18%",
+  // Wide horizontal furniture — give the silhouette room.
+  sofas: "10% 8% 22% 8%",
+  "coffee-tables": "12% 10% 22% 10%",
+  benches: "10% 10% 22% 10%",
+  bar: "10% 12% 22% 12%",
+  dining: "10% 12% 22% 12%",
+  // Default for the rest (chairs, tableware, styling, large-decor).
+  // Falls through to the inline default below.
+};
+const DEFAULT_PADDING = "10% 14% 22% 14%";
 
 // The category grid waits for one shared preload/decode batch, then releases
 // all tiles together. This bounded fallback prevents one stubborn CDN decode
