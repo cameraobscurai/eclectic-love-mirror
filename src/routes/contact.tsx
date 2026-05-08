@@ -526,10 +526,18 @@ function SuccessPanel() {
       className="border-t pt-12"
       style={{ borderColor: "var(--archive-rule)" }}
     >
-      <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
         RECEIVED
       </p>
-      <h2 className="mt-6 font-display text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] tracking-tight max-w-xl">
+      <h2
+        className="mt-6 font-display uppercase max-w-xl text-charcoal"
+        style={{
+          fontWeight: 400,
+          fontSize: "clamp(2rem, 1rem + 2.5vw, 3rem)",
+          lineHeight: 1.05,
+          letterSpacing: "0.04em",
+        }}
+      >
         Thank you. Your inquiry is with the atelier.
       </h2>
       <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
