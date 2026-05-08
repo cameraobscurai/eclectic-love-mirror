@@ -219,34 +219,15 @@ function DestinationCard({
 }
 
 export function DestinationStack({ destinations }: DestinationStackProps) {
-  const reduced = useReducedMotion();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isCoarse, setIsCoarse] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(pointer: coarse), (max-width: 767px)");
-    const sync = () => setIsCoarse(mq.matches);
-    sync();
-    mq.addEventListener?.("change", sync);
-    return () => mq.removeEventListener?.("change", sync);
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 0.85", "start 0.5"],
-  });
-
-  const isStatic = !!reduced || isCoarse;
+  // Cards always render in their resolved state with a gentle stagger-fade.
+  // The previous 3D parallax entrance overlapped the Evolution sticky
+  // release, producing a perceived hitch. Static is calmer and more
+  // editorial — the cards are simply there when you arrive.
+  const dummyProgress = useScroll().scrollYProgress; // unused, kept for type stability
 
   return (
     <div
-      ref={containerRef}
-      className={cn(
-        "relative grid grid-cols-1 md:grid-cols-3",
-        // 3D perspective only when animating
-        !isStatic && "[perspective:1400px] [perspective-origin:center_top]",
-      )}
+      className="relative grid grid-cols-1 md:grid-cols-3"
       style={{ gap: "clamp(0.75rem, 0.4rem + 0.6vw, 1.25rem)" }}
     >
       <style>{`
@@ -261,8 +242,8 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
           dest={dest}
           index={i}
           total={destinations.length}
-          progress={scrollYProgress}
-          isStatic={isStatic}
+          progress={dummyProgress}
+          isStatic
         />
       ))}
     </div>
