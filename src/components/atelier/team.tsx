@@ -134,7 +134,7 @@ export function AtelierTeam() {
                 sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
                 lazy={!isFirstRow}
                 fetchPriority={isFirstRow ? "high" : undefined}
-                prefetchMargin="1400px"
+                prefetchMargin="2000px"
                 revealReady={isFirstRow ? firstRowReady : undefined}
                 onLoad={isFirstRow ? reportFirstRowLoad : undefined}
                 className={member.imageClassName}
