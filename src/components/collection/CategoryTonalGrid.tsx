@@ -28,10 +28,14 @@ interface CategoryTonalGridProps {
  * count after grid wrap. We'd need :nth-child(odd of .row-2) which isn't
  * supported. Computing per-tile tone client-side keeps the math explicit.
  */
+// Owner-curated 15-tile order (3 rows × 5 cols on desktop):
+//   sofas · chairs · benches & ottomans · cocktail tables · side tables
+//   coffee tables · dining · bar · lighting · storage
+//   pillows · throws · tableware · styling · rugs
 const ORDER: BrowseGroupId[] = [
-  "sofas", "chairs", "benches-ottomans", "coffee-tables", "side-tables",
-  "cocktail-tables", "dining", "bar", "lighting", "rugs",
-  "pillows", "throws", "tableware", "styling", "large-decor",
+  "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
+  "coffee-tables", "dining", "bar", "lighting", "storage",
+  "pillows", "throws", "tableware", "styling", "rugs",
 ];
 
 // Greyscale checker pair — flat white + soft grey. Bumped from #f1f1f1 to
