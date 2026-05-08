@@ -82,30 +82,51 @@ function ContactPage() {
   }, [storeIds]);
 
   const [pieces, setPieces] = useState<SelectedPiece[]>([]);
+  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+  const [selectionStatus, setSelectionStatus] = useState<
+    "idle" | "loading" | "ready" | "error"
+  >("idle");
+
   useEffect(() => {
     let cancelled = false;
     if (initialIds.length === 0) {
       setPieces([]);
+      setSelectionStatus("idle");
       return;
     }
+    setSelectionStatus("loading");
     (async () => {
       const { data, error } = await supabase
         .from("inventory_items")
         .select("id,title,category")
         .in("id", initialIds);
-      if (cancelled || error || !data) return;
-      // Preserve initialIds ordering
+      if (cancelled) return;
+      if (error || !data) {
+        setPieces([]);
+        setSelectionStatus("error");
+        return;
+      }
       const byId = new Map(data.map((d) => [d.id, d as SelectedPiece]));
       setPieces(
         initialIds
           .map((id) => byId.get(id))
           .filter((x): x is SelectedPiece => Boolean(x)),
       );
+      setSelectionStatus("ready");
     })();
     return () => {
       cancelled = true;
     };
   }, [initialIds]);
+
+  const piecesById = useMemo(
+    () => new Map(pieces.map((p) => [p.id, p])),
+    [pieces],
+  );
+  const effectiveIds = useMemo(
+    () => initialIds.filter((id) => !removedIds.has(id)),
+    [initialIds, removedIds],
+  );
 
   // Form state — owner-defined fields
   const [name, setName] = useState("");
@@ -122,7 +143,11 @@ function ContactPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   function removePiece(id: string) {
-    setPieces((prev) => prev.filter((p) => p.id !== id));
+    setRemovedIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -132,6 +157,12 @@ function ContactPage() {
     // Honeypot
     if (honeypotRef.current && honeypotRef.current.value.trim() !== "") {
       setSuccess(true); // silent accept
+      return;
+    }
+
+    // Hydration guard — defense in depth (button is also disabled)
+    if (selectionStatus === "loading") {
+      setErrorMsg("Loading your selected items — one moment.");
       return;
     }
 
@@ -155,6 +186,14 @@ function ContactPage() {
     const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
+    const selectedLines = effectiveIds.map((id) => {
+      const p = piecesById.get(id);
+      if (p) {
+        return `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`;
+      }
+      return `• Item [${id}]`;
+    });
+
     const messageLines = [
       `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
       "",
@@ -166,8 +205,8 @@ function ContactPage() {
       "— Vision / wish list —",
       vision.trim(),
       "",
-      pieces.length > 0 ? "— Selected from Collection —" : null,
-      ...pieces.map((p) => `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`),
+      effectiveIds.length > 0 ? "— Selected from Collection —" : null,
+      ...selectedLines,
     ].filter((l): l is string => l !== null);
 
     const payload = {
@@ -176,7 +215,7 @@ function ContactPage() {
       phone: phone.trim() ? phone.trim().slice(0, 50) : null,
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
-      item_id: pieces[0]?.id ?? null,
+      item_id: effectiveIds[0] ?? null,
     };
 
     const { error } = await supabase.from("inquiries").insert(payload);
@@ -194,6 +233,7 @@ function ContactPage() {
     }
     clearInquiry();
     setPieces([]);
+    setRemovedIds(new Set());
     setSuccess(true);
   }
 
@@ -324,40 +364,56 @@ function ContactPage() {
 
                 {/* 3. VISION + SELECTED PIECES */}
                 <FormSection number="03" label="Vision + wish list">
-                  {pieces.length > 0 && (
+                  {effectiveIds.length > 0 && (
                     <div className="mb-10">
-                      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-4">
-                        SELECTED FROM COLLECTION ({String(pieces.length).padStart(2, "0")})
-                      </p>
+                      <div className="flex items-baseline justify-between gap-4 mb-4">
+                        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
+                          SELECTED FROM COLLECTION ({String(effectiveIds.length).padStart(2, "0")})
+                        </p>
+                        {selectionStatus === "loading" && (
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+                            LOADING TITLES…
+                          </p>
+                        )}
+                        {selectionStatus === "error" && (
+                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+                            COULDN'T LOAD TITLES — IDS WILL STILL BE SENT
+                          </p>
+                        )}
+                      </div>
                       <ul
                         className="divide-y"
                         style={{ borderColor: "var(--archive-rule)" }}
                       >
-                        {pieces.map((p) => (
-                          <li
-                            key={p.id}
-                            className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
-                            style={{ borderColor: "var(--archive-rule)" }}
-                          >
-                            <div className="flex items-baseline gap-4 min-w-0">
-                              <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
-                                {p.title}
-                              </span>
-                              {p.category && (
-                                <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
-                                  {p.category}
-                                </span>
-                              )}
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removePiece(p.id)}
-                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                        {effectiveIds.map((id) => {
+                          const p = piecesById.get(id);
+                          const shortId = id.slice(-6).toUpperCase();
+                          return (
+                            <li
+                              key={id}
+                              className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
+                              style={{ borderColor: "var(--archive-rule)" }}
                             >
-                              REMOVE
-                            </button>
-                          </li>
-                        ))}
+                              <div className="flex items-baseline gap-4 min-w-0">
+                                <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
+                                  {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
+                                </span>
+                                {p?.category && (
+                                  <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
+                                    {p.category}
+                                  </span>
+                                )}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removePiece(id)}
+                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              >
+                                REMOVE
+                              </button>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
@@ -383,10 +439,14 @@ function ContactPage() {
                   )}
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || selectionStatus === "loading"}
                     className="text-[12px] uppercase tracking-[0.18em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                   >
-                    {submitting ? "SENDING…" : "SEND INQUIRY"}
+                    {submitting
+                      ? "SENDING…"
+                      : selectionStatus === "loading"
+                        ? "LOADING SELECTED ITEMS…"
+                        : "SEND INQUIRY"}
                   </button>
                   <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
                     OR EMAIL US DIRECTLY AT{" "}
