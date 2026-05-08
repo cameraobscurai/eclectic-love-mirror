@@ -65,8 +65,8 @@ const STEP_VH_DESKTOP = 14;
 const STEP_VH_MOBILE = 13;
 
 // Phase boundaries (fractions of total scroll progress).
-const ENTER_END = 0.10;
-const READ_END = 0.82;
+const ENTER_END = 0.04;
+const READ_END = 0.74;
 // CONTINUE = READ_END → 1.0
 
 // Line-wave shape inside READ band.
