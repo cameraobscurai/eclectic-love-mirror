@@ -33,7 +33,14 @@ import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
-import hiveSignatureHero from "@/assets/collection/hive-signature-hero-square.png";
+// Art-directed Hive hero: square plate for desktop aside (object-cover so the
+// canvas's intentional white margin gets clipped instead of letterboxing the H),
+// wide composition for the mobile masthead (object-contain — the wide asset is
+// already a complete layout including its own breathing room). Both pipe through
+// vite-imagetools `?preset=editorial` → AVIF + WebP at 768/1280/1920w. Browser
+// downloads only the variant matched by the <source media> query.
+import hiveSignatureHeroSquare from "@/assets/collection/hive-signature-hero-square.png?preset=editorial";
+import hiveSignatureHeroMobile from "@/assets/collection/hive-signature-hero-mobile.png?preset=editorial";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
@@ -950,7 +957,7 @@ function CollectionPage() {
             {showOverview && (
               <motion.aside
                 layout={!reduced}
-                className="hidden lg:flex flex-shrink-0 items-center justify-center"
+                className="hidden lg:flex flex-shrink-0 items-center justify-center overflow-hidden"
                 style={{
                   // Was a flat 40%. Fluid-clamped so the H plate stays
                   // generous on ultrawides without crushing the grid at
@@ -959,13 +966,34 @@ function CollectionPage() {
                   background: "var(--paper)",
                 }}
               >
-                <img
-                  src={hiveSignatureHero}
-                  alt="The Hive — Signature Collection"
-                  className="block w-full h-full object-contain"
-                  width={1024}
-                  height={1024}
-                />
+                <picture className="block w-full h-full">
+                  {hiveSignatureHeroSquare.sources.avif && (
+                    <source
+                      type="image/avif"
+                      srcSet={hiveSignatureHeroSquare.sources.avif}
+                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                    />
+                  )}
+                  {hiveSignatureHeroSquare.sources.webp && (
+                    <source
+                      type="image/webp"
+                      srcSet={hiveSignatureHeroSquare.sources.webp}
+                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                    />
+                  )}
+                  <img
+                    src={hiveSignatureHeroSquare.img.src}
+                    width={hiveSignatureHeroSquare.img.w}
+                    height={hiveSignatureHeroSquare.img.h}
+                    alt="The Hive — Signature Collection"
+                    decoding="async"
+                    loading="eager"
+                    {...({ fetchPriority: "high" } as Record<string, string>)}
+                    draggable={false}
+                    className="block w-full h-full object-cover"
+                    style={{ objectPosition: "center" }}
+                  />
+                </picture>
               </motion.aside>
             )}
 
@@ -990,13 +1018,34 @@ function CollectionPage() {
                       background: "var(--paper)",
                     }}
                   >
-                    <img
-                      src={hiveSignatureHero}
-                      alt="The Hive — Signature Collection"
-                      className="block w-full h-full object-contain"
-                      width={1024}
-                      height={1024}
-                    />
+                    <picture className="block w-full h-full">
+                      {hiveSignatureHeroMobile.sources.avif && (
+                        <source
+                          type="image/avif"
+                          srcSet={hiveSignatureHeroMobile.sources.avif}
+                          sizes="100vw"
+                        />
+                      )}
+                      {hiveSignatureHeroMobile.sources.webp && (
+                        <source
+                          type="image/webp"
+                          srcSet={hiveSignatureHeroMobile.sources.webp}
+                          sizes="100vw"
+                        />
+                      )}
+                      <img
+                        src={hiveSignatureHeroMobile.img.src}
+                        width={hiveSignatureHeroMobile.img.w}
+                        height={hiveSignatureHeroMobile.img.h}
+                        alt="The Hive — Signature Collection"
+                        decoding="async"
+                        loading="eager"
+                        {...({ fetchPriority: "high" } as Record<string, string>)}
+                        draggable={false}
+                        className="block w-full h-full object-contain"
+                        style={{ objectPosition: "center" }}
+                      />
+                    </picture>
                   </div>
                   <div
                     className="collection-overview-grid-shell lg:flex-1 lg:min-h-0 lg:overflow-hidden"
