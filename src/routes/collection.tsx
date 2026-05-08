@@ -40,6 +40,7 @@ import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 // downloads only the variant matched by the <source media> query.
 import hiveSignatureHeroSquare from "@/assets/collection/hive-signature-hero-square.png?preset=editorial";
 import hiveSignatureHeroMobile from "@/assets/collection/hive-signature-hero-mobile.png?preset=editorial";
+import { heroPreloadLink } from "@/components/hero-image";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 
@@ -142,6 +143,14 @@ export const Route = createFileRoute("/collection")({
     // overview branch is actually rendered (not on direct category links or
     // the search view). TanStack Start's head() is route-level, so a
     // child-conditional preload requires the imperative pattern.
+    //
+    // The H-plate hero IS preloaded route-level — it paints on overview AND
+    // is the LCP element on /collection landings. Two media-scoped preloads
+    // so the browser only fetches the variant matching its viewport.
+    links: [
+      { ...heroPreloadLink(hiveSignatureHeroSquare, "46vw"), media: "(min-width: 1024px)" },
+      { ...heroPreloadLink(hiveSignatureHeroMobile, "100vw"), media: "(max-width: 1023px)" },
+    ],
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => getCollectionCatalog(),
@@ -1008,14 +1017,14 @@ function CollectionPage() {
                     <source
                       type="image/avif"
                       srcSet={hiveSignatureHeroSquare.sources.avif}
-                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                      sizes="(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw"
                     />
                   )}
                   {hiveSignatureHeroSquare.sources.webp && (
                     <source
                       type="image/webp"
                       srcSet={hiveSignatureHeroSquare.sources.webp}
-                      sizes="(min-width: 1920px) 44vw, (min-width: 1440px) 37vw, 32vw"
+                      sizes="(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw"
                     />
                   )}
                   {/* Cover-by-width: image fills the aside's width fully so
