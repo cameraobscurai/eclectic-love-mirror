@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
+import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
 import atelierReplacement from "@/assets/atelier-replacement.jpg?preset=hero";
 
@@ -165,6 +166,45 @@ function AtelierPage() {
   // --- Fabrication list hover ---------------------------------------------
   const [fabHover, setFabHover] = useState<number | null>(null);
 
+  // --- Hero column balancing ---------------------------------------------
+  // Measure headline's actual rendered width (CSS clamp() means computed px
+  // changes with viewport — cheaper to read once than to recompute via JS).
+  // Then use pretext to find the smallest column width where the body wraps
+  // into exactly 2 lines. Final column = max(headline, body-2-line).
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const [headlineW, setHeadlineW] = useState<number>(0);
+  useEffect(() => {
+    const el = headlineRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      // Largest line of the headline = element's content width since each
+      // line breaks on <br/> and the longest renders flush-left to flush-right.
+      // scrollWidth would over-report on overflow; getBoundingClientRect is
+      // the rendered box.
+      let max = 0;
+      // Walk text nodes line by line via Range — but simpler: the h1's own
+      // width is the longest line because every <br/>'d word is shorter than
+      // "REALIZED." when rendered. Just read offsetWidth.
+      max = el.getBoundingClientRect().width;
+      setHeadlineW(max);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const HERO_BODY = "The Atelier is where design authorship, material exploration, and fabrication converge — through process & intention.";
+  const balancedW = useBalancedColumnWidth({
+    bodyText: HERO_BODY,
+    bodyFontPx: 12,
+    bodyFontFamily: "Inter",
+    bodyFontWeight: 400,
+    // tracking-[0.18em] @ 12px = 2.16px. Required — pretext otherwise
+    // under-measures and the line count it predicts won't match the browser.
+    bodyLetterSpacingPx: 2.16,
+    bodyTargetLines: 2,
+    headlineWidth: headlineW,
+  });
+
   return (
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
@@ -209,14 +249,21 @@ function AtelierPage() {
             <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            <div style={{ width: "fit-content", maxWidth: "100%" }}>
+            <div
+              style={{
+                width: balancedW ? `${balancedW}px` : "fit-content",
+                maxWidth: "100%",
+              }}
+            >
               {/* T17: literal CAPS in source so SR & visual register agree. */}
               <h1
+                ref={headlineRef}
                 className="atelier-hero-reveal page-title text-charcoal"
                 style={{
                   animationDelay: "80ms",
                   fontSize: "clamp(2.5rem, 8vw, 6rem)",
                   lineHeight: 1,
+                  width: "fit-content",
                 }}
               >
                 IMAGINED.
@@ -225,15 +272,16 @@ function AtelierPage() {
                 <br />
                 REALIZED.
               </h1>
-              {/* Body wraps to balanced lines within headline width.
-                  text-wrap: balance evens line lengths automatically. */}
+              {/* Body width is set on the wrapper above by useBalancedColumnWidth:
+                  pretext binary-searches the smallest width where this exact
+                  string + font + letter-spacing wraps into 2 lines, then
+                  takes max(headlineWidth, that). No CSS balance needed —
+                  the container IS the balanced width. */}
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
                   animationDelay: "160ms",
                   lineHeight: 1.8,
-                  textWrap: "balance",
-                  width: "100%",
                 }}
               >
                 The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
