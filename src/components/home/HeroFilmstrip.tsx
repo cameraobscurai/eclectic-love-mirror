@@ -292,4 +292,4 @@ const FilmstripFrame = memo(function FilmstripFrame({
       </figcaption>
     </div>
   );
-}
+});
