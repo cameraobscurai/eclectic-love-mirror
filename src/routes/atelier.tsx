@@ -310,7 +310,7 @@ function AtelierPage() {
             <MediaAperture
               ratio="4/5"
               picture={atelierReplacement}
-              alt="Styled bench with tasseled throws."
+              alt={ATELIER_IMAGE_ALT.HERO_IMAGE}
               sizes="(min-width: 1280px) 55vw, 100vw"
               lazy={false}
               fetchPriority="high"
