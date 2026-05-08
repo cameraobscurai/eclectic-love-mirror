@@ -204,6 +204,8 @@ function AtelierPage() {
     bodyTargetLines: 2,
     headlineWidth: headlineW,
   });
+
+  return (
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{
@@ -247,14 +249,21 @@ function AtelierPage() {
             <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            <div style={{ width: "fit-content", maxWidth: "100%" }}>
+            <div
+              style={{
+                width: balancedW ? `${balancedW}px` : "fit-content",
+                maxWidth: "100%",
+              }}
+            >
               {/* T17: literal CAPS in source so SR & visual register agree. */}
               <h1
+                ref={headlineRef}
                 className="atelier-hero-reveal page-title text-charcoal"
                 style={{
                   animationDelay: "80ms",
                   fontSize: "clamp(2.5rem, 8vw, 6rem)",
                   lineHeight: 1,
+                  width: "fit-content",
                 }}
               >
                 IMAGINED.
