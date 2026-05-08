@@ -152,6 +152,59 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/* Mobile poster tile — no <video> element, tap to open lightbox.            */
+/* -------------------------------------------------------------------------- */
+
+function MobilePosterTile({
+  clip,
+  onOpen,
+}: {
+  clip: FilmstripClip;
+  onOpen: (rect: DOMRect) => void;
+}) {
+  const ref = useRef<HTMLButtonElement | null>(null);
+  return (
+    <div className="flex-1 min-w-0 flex flex-col">
+      <button
+        ref={ref}
+        type="button"
+        onClick={() => {
+          if (!ref.current) return;
+          onOpen(ref.current.getBoundingClientRect());
+        }}
+        aria-label={`Play ${clip.label ?? clip.season} with sound`}
+        className="relative block w-full overflow-hidden bg-[#f1f1f1] aspect-[3/4] focus:outline-none"
+      >
+        {clip.poster && (
+          <img
+            src={clip.poster}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
+      </button>
+      <figcaption
+        className="mt-1.5 px-1 flex items-baseline gap-1 font-brand text-charcoal"
+        style={{ fontWeight: 400 }}
+      >
+        <span
+          className="text-[8px] tracking-[0.14em] text-charcoal/55"
+          style={{ fontVariantNumeric: "tabular-nums" }}
+        >
+          {clip.id}
+        </span>
+        <span className="text-[8.5px] uppercase tracking-[0.16em] truncate">
+          {clip.season}
+        </span>
+      </figcaption>
+    </div>
+  );
+}
+
 interface FrameProps {
   clip: FilmstripClip;
   reduced: boolean;
