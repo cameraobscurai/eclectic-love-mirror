@@ -68,8 +68,8 @@ const LINES: Line[] = [
 // not just opacity flicker.
 // ─────────────────────────────────────────────────────────────────────────
 
-const STEP_VH_DESKTOP = 8;
-const STEP_VH_MOBILE = 9;
+const STEP_VH_DESKTOP = 5;
+const STEP_VH_MOBILE = 6;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
