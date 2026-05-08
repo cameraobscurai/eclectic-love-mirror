@@ -446,6 +446,7 @@ function Lightbox({ clip, onClose }: LightboxProps) {
           </button>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
