@@ -206,7 +206,7 @@ interface FrameProps {
   isAudio: boolean;
   className?: string;
   onHoverChange: (id: string | null) => void;
-  onAudioToggle: (id: string) => void;
+  onAudioToggle: (id: string, force?: boolean) => void;
   onManualPlay: (id: string) => void;
   registerRef: (el: HTMLVideoElement | null) => void;
   parallaxProgress: MotionValue<number>;
