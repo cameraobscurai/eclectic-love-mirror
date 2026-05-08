@@ -199,11 +199,18 @@ function ContactPage() {
 
   return (
     <main
-      className="min-h-screen bg-cream text-charcoal pt-32 pb-32"
-      style={{ paddingTop: "calc(var(--nav-h) + 2rem)" }}
+      className="min-h-screen bg-cream text-charcoal pb-32"
+      style={{
+        paddingTop: "calc(var(--nav-h) + 2rem)",
+        // Contact reads narrower than home — pin canvas to 1400.
+        ["--canvas-max" as string]: "1400px",
+      }}
     >
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        <div className="grid xl:grid-cols-12 gap-12 xl:gap-16">
+      <div className="fluid-canvas">
+        <div
+          className="grid xl:grid-cols-12"
+          style={{ gap: "clamp(2.5rem, 1rem + 3vw, 4rem)" }}
+        >
           {/* LEFT — editorial intro */}
           <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
