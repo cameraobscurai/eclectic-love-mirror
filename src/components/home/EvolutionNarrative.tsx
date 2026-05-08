@@ -219,7 +219,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       style={{ height: `${sectionVh}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col">
-        <div className="flex-1 min-h-0 flex items-center w-full">
+        {/* Pull manifesto above geometric center — optical center sits ~42%
+            from the top, and it closes the gap to the filmstrip tail. */}
+        <div className="flex-1 min-h-0 flex items-start w-full pt-[14vh] md:pt-[12vh]">
           <div className="fluid-canvas w-full">
             <div
               className="mx-auto flex flex-col items-center text-center"
