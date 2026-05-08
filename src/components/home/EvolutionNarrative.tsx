@@ -289,6 +289,9 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   );
                 })}
               </div>
+            </div>
+          </div>
+        </div>
 
         {/* Footer (destination cards) — flat. No scroll-driven transition
             here; it would compete with the sticky release and produce a
