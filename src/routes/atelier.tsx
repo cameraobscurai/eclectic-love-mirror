@@ -212,7 +212,11 @@ function AtelierPage() {
             {/* T17: literal CAPS in source so SR & visual register agree. */}
             <h1
               className="atelier-hero-reveal page-title text-charcoal"
-              style={{ animationDelay: "80ms" }}
+              style={{
+                animationDelay: "80ms",
+                fontSize: "clamp(2.5rem, 8vw, 6rem)",
+                lineHeight: 1,
+              }}
             >
               IMAGINED.
               <br />
