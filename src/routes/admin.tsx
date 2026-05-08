@@ -93,9 +93,13 @@ function buildInventoryStats(products: CollectionProduct[]): InventoryStats {
 }
 
 function AdminPage() {
-  const stats = useMemo(() => {
-    const { products } = getCollectionCatalog();
-    return buildInventoryStats(products);
+  const [stats, setStats] = useState<ReturnType<typeof buildInventoryStats> | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog().then(({ products }) => {
+      if (alive) setStats(buildInventoryStats(products));
+    });
+    return () => { alive = false; };
   }, []);
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
