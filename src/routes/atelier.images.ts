@@ -38,7 +38,7 @@ export const ATELIER_IMAGES = {
 } as const;
 
 export const ATELIER_IMAGE_ALT = {
-  HERO_IMAGE: "Styled bench with tasseled throws.",
+  HERO_IMAGE: "Atelier moodboard — tasseled bench portrait taped beside antique linen, French silk, and Mruday snow sheer fabric swatches.",
   HIVE_TRIPTYCH:
     "The Hive — exterior signage, interior atrium with steel mezzanine, and studio offices.",
   SKETCH_DRAPE: "Hand-drawn chair sketch on hanging drape — design phase.",
