@@ -20,16 +20,16 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-charcoal text-cream px-4">
       <div className="max-w-md text-center">
         <h1 className="font-brand text-7xl">404</h1>
-        <h2 className="mt-4 text-xl font-brand tracking-[0.2em] uppercase">Page not found</h2>
-        <p className="mt-2 text-sm text-cream/60">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
+        <h2 className="mt-4 text-xl font-brand tracking-[0.2em] uppercase">PAGE NOT FOUND</h2>
+        <p className="mt-2 text-sm uppercase tracking-[0.15em] text-cream/60">
+          THE PAGE YOU&apos;RE LOOKING FOR DOESN&apos;T EXIST OR HAS BEEN MOVED.
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center border border-cream/30 px-5 py-2.5 text-xs uppercase tracking-[0.2em] text-cream hover:bg-cream hover:text-charcoal transition-colors"
           >
-            Go home
+            GO HOME
           </Link>
         </div>
       </div>
