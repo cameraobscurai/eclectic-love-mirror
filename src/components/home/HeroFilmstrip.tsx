@@ -92,13 +92,30 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
 
   const activeClip = clips.find((c) => c.id === lightboxId) ?? null;
 
+  const handleOpen = useCallback((id: string, rect: DOMRect) => {
+    setOriginRect(rect);
+    setLightboxId(id);
+  }, []);
+
   return (
     <div ref={containerRef} className={cn("w-full bg-paper", className)}>
+      {/* Mobile (<md): poster-only strip, all 5 visible at once. No video
+          mounts — tap a poster to open the lightbox. */}
+      <div className="md:hidden w-full flex gap-px px-3">
+        {clips.map((clip) => (
+          <MobilePosterTile
+            key={clip.id}
+            clip={clip}
+            onOpen={(rect) => handleOpen(clip.id, rect)}
+          />
+        ))}
+      </div>
+
+      {/* Desktop / tablet (md+): existing 5-frame autoplay filmstrip. */}
       <div
         className={cn(
           "w-full",
-          "flex gap-0 overflow-x-auto snap-x snap-mandatory",
-          "scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          "hidden md:flex gap-0",
           "sm:gap-0 sm:overflow-visible sm:snap-none",
         )}
       >
@@ -113,10 +130,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               reduced={!!reduced}
               isHover={hoverId === clip.id}
               onHoverChange={setHoverId}
-              onOpen={(rect) => {
-                setOriginRect(rect);
-                setLightboxId(clip.id);
-              }}
+              onOpen={(rect) => handleOpen(clip.id, rect)}
               onManualPlay={handleManualPlay}
               registerRef={(el) => {
                 videoRefs.current[clip.id] = el;
@@ -124,8 +138,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               parallaxProgress={scrollYProgress}
               parallaxDir={dir}
               className={cn(
-                "shrink-0 basis-full snap-center",
-                "sm:basis-0 sm:flex-1 sm:snap-align-none",
+                "shrink-0 basis-0 flex-1",
                 !isLast && "sm:[margin-right:-1px]",
                 isOuter && "hidden lg:block",
               )}
@@ -135,6 +148,59 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
       </div>
 
       <Lightbox clip={activeClip} originRect={originRect} onClose={() => setLightboxId(null)} />
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile poster tile — no <video> element, tap to open lightbox.            */
+/* -------------------------------------------------------------------------- */
+
+function MobilePosterTile({
+  clip,
+  onOpen,
+}: {
+  clip: FilmstripClip;
+  onOpen: (rect: DOMRect) => void;
+}) {
+  const ref = useRef<HTMLButtonElement | null>(null);
+  return (
+    <div className="flex-1 min-w-0 flex flex-col">
+      <button
+        ref={ref}
+        type="button"
+        onClick={() => {
+          if (!ref.current) return;
+          onOpen(ref.current.getBoundingClientRect());
+        }}
+        aria-label={`Play ${clip.label ?? clip.season} with sound`}
+        className="relative block w-full overflow-hidden bg-[#f1f1f1] aspect-[3/4] focus:outline-none"
+      >
+        {clip.poster && (
+          <img
+            src={clip.poster}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
+      </button>
+      <figcaption
+        className="mt-1.5 px-1 flex items-baseline gap-1 font-brand text-charcoal"
+        style={{ fontWeight: 400 }}
+      >
+        <span
+          className="text-[8px] tracking-[0.14em] text-charcoal/55"
+          style={{ fontVariantNumeric: "tabular-nums" }}
+        >
+          {clip.id}
+        </span>
+        <span className="text-[8.5px] uppercase tracking-[0.16em] truncate">
+          {clip.season}
+        </span>
+      </figcaption>
     </div>
   );
 }
@@ -327,7 +393,9 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   // Natural aspect from the actual video file. Falls back to 3/4 (poster ratio)
   // until metadata loads — that way the zoom-in animation has a credible target.
-  const [naturalAspect, setNaturalAspect] = useState<number>(3 / 4);
+  // Natural aspect from the actual video file. Seeded from clip.aspect (so the
+  // zoom target is correct from frame zero); refined when metadata loads.
+  const [naturalAspect, setNaturalAspect] = useState<number>(clip?.aspect ?? 3 / 4);
   const [viewport, setViewport] = useState({
     w: typeof window !== "undefined" ? window.innerWidth : 1280,
     h: typeof window !== "undefined" ? window.innerHeight : 800,
@@ -388,9 +456,13 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
 
   // Compute the centered final rect from natural aspect + viewport, leaving
   // a comfortable margin so nothing kisses the edge.
-  const PAD = 64; // px on each side
-  const maxW = viewport.w - PAD * 2;
-  const maxH = viewport.h - PAD * 2;
+  // Responsive padding so the video fills as much of the viewport as its real
+  // aspect allows. Reserve space top (close button) and bottom (caption).
+  const PAD_X = viewport.w < 640 ? 16 : viewport.w < 1024 ? 32 : 64;
+  const PAD_TOP = 56;
+  const PAD_BOTTOM = 56;
+  const maxW = viewport.w - PAD_X * 2;
+  const maxH = viewport.h - PAD_TOP - PAD_BOTTOM;
   let finalW = maxH * naturalAspect;
   let finalH = maxH;
   if (finalW > maxW) {
@@ -398,7 +470,9 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
     finalH = maxW / naturalAspect;
   }
   const finalLeft = (viewport.w - finalW) / 2;
-  const finalTop = (viewport.h - finalH) / 2;
+  // Bias toward visual center within the reserved band (top..h-bottom),
+  // not pure viewport center, so the caption never collides.
+  const finalTop = PAD_TOP + (maxH - finalH) / 2;
 
   // Origin rect for the zoom-from-frame animation. Falls back to centered
   // small if a click came in without a measured rect (keyboard etc).
@@ -423,7 +497,7 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
           <motion.div
             className="absolute inset-0 bg-charcoal backdrop-blur-xl"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.96 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.32, ease: [0.22, 0.61, 0.36, 1] }}
           />
@@ -432,7 +506,7 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
               filmstrip rect to its centered final rect using a soft spring.
               We size to natural aspect so the video element fills perfectly. */}
           <motion.figure
-            className="fixed z-10 m-0 overflow-hidden bg-transparent"
+            className="fixed z-10 m-0 overflow-hidden bg-charcoal"
             initial={{
               top: origin.top,
               left: origin.left,
