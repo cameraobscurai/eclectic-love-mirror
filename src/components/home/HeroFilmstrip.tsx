@@ -470,7 +470,9 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
     finalH = maxW / naturalAspect;
   }
   const finalLeft = (viewport.w - finalW) / 2;
-  const finalTop = (viewport.h - finalH) / 2;
+  // Bias toward visual center within the reserved band (top..h-bottom),
+  // not pure viewport center, so the caption never collides.
+  const finalTop = PAD_TOP + (maxH - finalH) / 2;
 
   // Origin rect for the zoom-from-frame animation. Falls back to centered
   // small if a click came in without a measured rect (keyboard etc).
