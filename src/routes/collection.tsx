@@ -86,6 +86,15 @@ const searchSchema = z.object({
   view: fallback(z.string(), "").default(""),
 });
 
+const LEGACY_GROUP_ALIASES: Record<string, { parent: ParentId | ""; sub: string }> = {
+  seating: { parent: "lounge-seating", sub: "all" },
+  tables: { parent: "lounge-tables", sub: "all" },
+  bars: { parent: "cocktail-bar", sub: "bars" },
+  "pillows-throws": { parent: "textiles", sub: "all" },
+  candlelight: { parent: "lighting", sub: "candlelight" },
+  chandeliers: { parent: "lighting", sub: "chandeliers" },
+};
+
 // Shared inline styles for the floating search modal's suggestion rows.
 // Kept at module scope so they're stable references and not recreated on
 // every render of the modal IIFE.
@@ -191,6 +200,10 @@ function CollectionPage() {
       const { parent, sub } = TILE_TO_PARENT_SUB[group];
       return { parent, sub };
     }
+    if (group && LEGACY_GROUP_ALIASES[group]) {
+      const { parent, sub } = LEGACY_GROUP_ALIASES[group];
+      return { parent, sub: subcategory && subcategory !== "all" ? subcategory : sub };
+    }
     return { parent: "" as ParentId | "", sub: "all" };
   }, [group, subcategory]);
   const activeParent: ParentId | "" = resolved.parent;
@@ -204,6 +217,17 @@ function CollectionPage() {
       const { parent, sub } = TILE_TO_PARENT_SUB[group];
       navigate({
         search: (prev: CollectionSearch) => ({ ...prev, group: parent, subcategory: sub }),
+        replace: true,
+        resetScroll: false,
+      });
+    } else if (LEGACY_GROUP_ALIASES[group]) {
+      const { parent, sub } = LEGACY_GROUP_ALIASES[group];
+      navigate({
+        search: (prev: CollectionSearch) => ({
+          ...prev,
+          group: parent,
+          subcategory: prev.subcategory && prev.subcategory !== "all" ? prev.subcategory : sub,
+        }),
         replace: true,
         resetScroll: false,
       });
@@ -552,8 +576,12 @@ function CollectionPage() {
     if (!view) return -1;
     return visibleProducts.findIndex((p) => p.id === view || p.slug === view);
   }, [visibleProducts, view]);
+  const quickViewFallbackProduct = useMemo(() => {
+    if (!view || quickViewIndex >= 0) return null;
+    return products.find((p) => p.id === view || p.slug === view) ?? null;
+  }, [products, quickViewIndex, view]);
   const quickViewProduct: CollectionProduct | null =
-    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : null;
+    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : quickViewFallbackProduct;
 
   // Body lock + scroll restore + focus return on Quick View open/close.
   // Uses the shared ref-counted scroll lock (see src/lib/scroll-lock.ts).
@@ -1302,7 +1330,7 @@ function CollectionPage() {
               key={quickViewProduct.id}
               product={quickViewProduct}
               hasPrev={quickViewIndex > 0}
-              hasNext={quickViewIndex < visibleProducts.length - 1}
+              hasNext={quickViewIndex >= 0 && quickViewIndex < visibleProducts.length - 1}
               onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
               onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
               onClose={() => setQuickViewId(null)}
