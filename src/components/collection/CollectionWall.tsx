@@ -75,15 +75,21 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     [capped],
   );
   const [orderedIds, setOrderedIds] = useState<string[] | null>(null);
+  const [confirmed, setConfirmed] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   useEffect(() => {
     if (!WALL_DND_ENABLED) return;
     setOrderedIds(loadOrder(orderKey));
+    setConfirmed(isOrderConfirmed(orderKey));
   }, [orderKey]);
 
   const ordered = useMemo(() => {
     if (!WALL_DND_ENABLED) return capped;
     return applySavedOrder(capped, orderedIds);
   }, [capped, orderedIds]);
+
+  // Edit mode = DnD on AND user hasn't pressed OK yet on the current order.
+  const editMode = WALL_DND_ENABLED && !confirmed;
 
   const { cols, rows } = useMemo(() => {
     const n = ordered.length;
