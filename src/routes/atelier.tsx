@@ -290,16 +290,28 @@ function AtelierPage() {
 
       {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
       <Section eyebrow="ATELIER APPROACH">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
+        <div
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
+        >
           {APPROACH_STEPS.map((step) => (
             <div key={step.number}>
               <p
-                className="font-display text-2xl text-charcoal/45 tabular-nums border-t pt-4"
-                style={{ borderColor: "var(--archive-rule)" }}
+                className="font-display text-charcoal/45 tabular-nums border-t pt-4"
+                style={{
+                  borderColor: "var(--archive-rule)",
+                  fontSize: "clamp(1.25rem, 0.9rem + 0.5vw, 1.625rem)",
+                }}
               >
                 {step.number}
               </p>
-              <h3 className="mt-3 font-display text-3xl uppercase tracking-[0.06em]">
+              <h3
+                className="mt-3 font-display uppercase"
+                style={{
+                  fontSize: "clamp(1.5rem, 1rem + 0.9vw, 2.125rem)",
+                  letterSpacing: "0.06em",
+                }}
+              >
                 {step.label}
               </h3>
             </div>
