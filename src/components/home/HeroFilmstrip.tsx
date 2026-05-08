@@ -130,8 +130,12 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips.length, reduced]);
 
-  const toggleAudio = useCallback((id: string) => {
-    setAudioId((curr) => (curr === id ? null : id));
+  const toggleAudio = useCallback((id: string, force?: boolean) => {
+    setAudioId((curr) => {
+      if (force === true) return id;
+      if (force === false) return curr === id ? null : curr;
+      return curr === id ? null : id;
+    });
   }, []);
 
   const handleManualPlay = useCallback((id: string) => {
