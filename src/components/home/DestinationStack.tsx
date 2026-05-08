@@ -155,11 +155,11 @@ function DestinationCard({
             {dest.title}
           </h3>
           <p
-            className="mt-2 font-brand uppercase text-charcoal/55 truncate"
+            className="mt-1.5 md:mt-2 hidden sm:block font-brand uppercase text-charcoal/55 truncate"
             style={{
               fontWeight: 400,
               letterSpacing: "0.18em",
-              fontSize: "clamp(0.65rem, 0.78vw, 0.78rem)",
+              fontSize: "clamp(0.6rem, 0.78vw, 0.78rem)",
             }}
           >
             {dest.label}
