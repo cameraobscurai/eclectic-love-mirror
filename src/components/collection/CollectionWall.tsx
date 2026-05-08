@@ -222,6 +222,26 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     window.setTimeout(() => setJustSaved(false), 1600);
   }, [orderKey, ordered]);
 
+  const [copied, setCopied] = useState(false);
+  const copyOrder = useCallback(async () => {
+    const ids = ordered.map((p) => p.id);
+    const payload = {
+      key: orderKey,
+      url: typeof window !== "undefined" ? window.location.search : "",
+      count: ids.length,
+      ids,
+    };
+    const text = JSON.stringify(payload, null, 2);
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      // fallback: log so user can grab from console
+      console.log("[wall-order]", text);
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  }, [ordered, orderKey]);
+
   const tilesGrid = (
     <div
       ref={containerRef}
@@ -295,6 +315,13 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
             }
           >
             {justSaved ? "saved ✓" : confirmed ? "saved" : "ok · save"}
+          </button>
+          <button
+            type="button"
+            onClick={copyOrder}
+            className="text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
+          >
+            {copied ? "copied ✓" : "copy for bake"}
           </button>
           <button
             type="button"
