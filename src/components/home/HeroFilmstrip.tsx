@@ -506,7 +506,7 @@ function Lightbox({ clip, originRect, onClose }: LightboxProps) {
               filmstrip rect to its centered final rect using a soft spring.
               We size to natural aspect so the video element fills perfectly. */}
           <motion.figure
-            className="fixed z-10 m-0 overflow-hidden bg-transparent"
+            className="fixed z-10 m-0 overflow-hidden bg-charcoal"
             initial={{
               top: origin.top,
               left: origin.left,
