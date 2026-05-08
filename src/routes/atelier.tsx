@@ -166,7 +166,44 @@ function AtelierPage() {
   // --- Fabrication list hover ---------------------------------------------
   const [fabHover, setFabHover] = useState<number | null>(null);
 
-  return (
+  // --- Hero column balancing ---------------------------------------------
+  // Measure headline's actual rendered width (CSS clamp() means computed px
+  // changes with viewport — cheaper to read once than to recompute via JS).
+  // Then use pretext to find the smallest column width where the body wraps
+  // into exactly 2 lines. Final column = max(headline, body-2-line).
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const [headlineW, setHeadlineW] = useState<number>(0);
+  useEffect(() => {
+    const el = headlineRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      // Largest line of the headline = element's content width since each
+      // line breaks on <br/> and the longest renders flush-left to flush-right.
+      // scrollWidth would over-report on overflow; getBoundingClientRect is
+      // the rendered box.
+      let max = 0;
+      // Walk text nodes line by line via Range — but simpler: the h1's own
+      // width is the longest line because every <br/>'d word is shorter than
+      // "REALIZED." when rendered. Just read offsetWidth.
+      max = el.getBoundingClientRect().width;
+      setHeadlineW(max);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const HERO_BODY = "The Atelier is where design authorship, material exploration, and fabrication converge — through process & intention.";
+  const balancedW = useBalancedColumnWidth({
+    bodyText: HERO_BODY,
+    bodyFontPx: 12,
+    bodyFontFamily: "Inter",
+    bodyFontWeight: 400,
+    // tracking-[0.18em] @ 12px = 2.16px. Required — pretext otherwise
+    // under-measures and the line count it predicts won't match the browser.
+    bodyLetterSpacingPx: 2.16,
+    bodyTargetLines: 2,
+    headlineWidth: headlineW,
+  });
     <main
       className="min-h-screen bg-cream text-charcoal pb-32"
       style={{
