@@ -209,9 +209,6 @@ function AtelierPage() {
             <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
-            {/* Wrap headline + body in a fit-content shell so the paragraph
-                snaps to the natural width of "REALIZED." instead of the full
-                column. Keeps both flush-left + flush-right with each other. */}
             <div style={{ width: "fit-content", maxWidth: "100%" }}>
               {/* T17: literal CAPS in source so SR & visual register agree. */}
               <h1
@@ -228,11 +225,15 @@ function AtelierPage() {
                 <br />
                 REALIZED.
               </h1>
+              {/* Body wraps to balanced lines within headline width.
+                  text-wrap: balance evens line lengths automatically. */}
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
                   animationDelay: "160ms",
                   lineHeight: 1.8,
+                  textWrap: "balance",
+                  width: "100%",
                 }}
               >
                 The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
