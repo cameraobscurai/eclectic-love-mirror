@@ -108,7 +108,13 @@ function DestinationCard({
       aria-label={`${dest.title} — ${dest.label}`}
       className="group block h-full w-full bg-paper outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
     >
-      <div className="relative flex h-full flex-col justify-between px-5 md:px-7 py-6 md:py-8">
+      <div
+        className="relative flex h-full flex-col justify-between"
+        style={{
+          paddingInline: "clamp(1.25rem, 0.5rem + 1vw, 2rem)",
+          paddingBlock: "clamp(1.5rem, 0.8rem + 1vw, 2.25rem)",
+        }}
+      >
         <div className="flex items-baseline justify-between gap-3">
           <span
             className="font-brand uppercase text-charcoal/45"
