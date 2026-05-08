@@ -19,6 +19,7 @@ import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
+import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 
 const ProcessRoute = ProcessRouteImport.update({
@@ -71,6 +72,11 @@ const AdminImageQaRoute = AdminImageQaRouteImport.update({
   path: '/image-qa',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
+  id: '/image-health',
+  path: '/image-health',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminColorsRoute = AdminColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/admin/colors'
+    | '/admin/image-health'
     | '/admin/image-qa'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/admin/colors'
+    | '/admin/image-health'
     | '/admin/image-qa'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/admin/colors'
+    | '/admin/image-health'
     | '/admin/image-qa'
   fileRoutesById: FileRoutesById
 }
@@ -243,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageQaRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/image-health': {
+      id: '/admin/image-health'
+      path: '/image-health'
+      fullPath: '/admin/image-health'
+      preLoaderRoute: typeof AdminImageHealthRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/colors': {
       id: '/admin/colors'
       path: '/colors'
@@ -255,11 +274,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminColorsRoute: typeof AdminColorsRoute
+  AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminColorsRoute: AdminColorsRoute,
+  AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
 }
 
