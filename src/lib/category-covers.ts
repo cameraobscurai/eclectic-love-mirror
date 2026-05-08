@@ -8,9 +8,13 @@ import type { BrowseGroupId } from "@/lib/collection-browse-groups";
 import sofasCover from "@/assets/category-covers/sofas.png";
 import chairsCover from "@/assets/category-covers/chairs.png";
 import benchesOttomansCover from "@/assets/category-covers/benches-ottomans.png";
+import cocktailTablesCover from "@/assets/category-covers/cocktail-tables.webp";
+import sideTablesCover from "@/assets/category-covers/side-tables.png";
 
 export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, string>> = {
   sofas: sofasCover,
   chairs: chairsCover,
   "benches-ottomans": benchesOttomansCover,
+  "cocktail-tables": cocktailTablesCover,
+  "side-tables": sideTablesCover,
 };
