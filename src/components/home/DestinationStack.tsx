@@ -84,23 +84,28 @@ function useCardTransforms(
   return { x, y, scale, rotateZ, rotateX, opacity, detailReveal };
 }
 
-function DestinationCard({
+const DestinationCard = memo(function DestinationCard({
   dest,
   index,
   total,
   progress,
   isStatic,
+  resolved,
 }: {
   dest: Destination;
   index: number;
   total: number;
   progress: MotionValue<number>;
   isStatic: boolean;
+  resolved: boolean;
 }) {
   const { x, y, scale, rotateZ, rotateX, opacity, detailReveal } =
     useCardTransforms(progress, index, total);
 
   const numberLabel = String(index + 1).padStart(2, "0");
+  // Once resolved (or static from the start), drop motion subscriptions and
+  // GPU promotion. Visual end-state is identical.
+  const frozen = isStatic || resolved;
 
   const inner = (
     <Link
@@ -122,21 +127,38 @@ function DestinationCard({
           >
             {numberLabel} / {String(total).padStart(2, "0")}
           </span>
-          <motion.svg
-            style={isStatic ? undefined : { opacity: detailReveal }}
-            className="h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out group-hover:translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={1.25}
-            aria-hidden
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-            />
-          </motion.svg>
+          {frozen ? (
+            <svg
+              className="h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.25}
+              aria-hidden
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
+            </svg>
+          ) : (
+            <motion.svg
+              style={{ opacity: detailReveal }}
+              className="h-3.5 w-3.5 shrink-0 text-charcoal/60 transition-transform duration-500 ease-out group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.25}
+              aria-hidden
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
+            </motion.svg>
+          )}
         </div>
 
         <div className="mt-6 md:mt-10">
@@ -163,16 +185,18 @@ function DestinationCard({
           </p>
         </div>
 
-        {/* hairline that draws in on resolve */}
-        <motion.div
-          aria-hidden
-          className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px bg-charcoal/20 origin-left"
-          style={
-            isStatic
-              ? { transform: "scaleX(1)" }
-              : { scaleX: detailReveal }
-          }
-        />
+        {frozen ? (
+          <div
+            aria-hidden
+            className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px bg-charcoal/20 origin-left"
+          />
+        ) : (
+          <motion.div
+            aria-hidden
+            className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px bg-charcoal/20 origin-left"
+            style={{ scaleX: detailReveal }}
+          />
+        )}
       </div>
     </Link>
   );
@@ -183,6 +207,14 @@ function DestinationCard({
         className="border border-charcoal/12 h-[148px] md:h-[176px]"
         style={{ animation: `dest-fade 700ms ${index * 80}ms ease-out both` }}
       >
+        {inner}
+      </div>
+    );
+  }
+
+  if (resolved) {
+    return (
+      <div className="border border-charcoal/12 h-[148px] md:h-[176px]">
         {inner}
       </div>
     );
@@ -207,12 +239,13 @@ function DestinationCard({
       {inner}
     </motion.div>
   );
-}
+});
 
 export function DestinationStack({ destinations }: DestinationStackProps) {
   const reduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isCoarse, setIsCoarse] = useState(false);
+  const [resolved, setResolved] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -228,6 +261,11 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
     offset: ["start 0.95", "start 0.4"],
   });
 
+  // Once we've fully resolved, swap to plain divs and stop subscribing.
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (v >= 0.999 && !resolved) setResolved(true);
+  });
+
   const isStatic = !!reduced || isCoarse;
 
   return (
@@ -235,8 +273,8 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
       ref={containerRef}
       className={cn(
         "grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4",
-        // 3D perspective only when animating
-        !isStatic && "[perspective:1400px] [perspective-origin:center_top]",
+        // 3D perspective only while actively animating
+        !isStatic && !resolved && "[perspective:1400px] [perspective-origin:center_top]",
       )}
     >
       <style>{`
@@ -253,6 +291,7 @@ export function DestinationStack({ destinations }: DestinationStackProps) {
           total={destinations.length}
           progress={scrollYProgress}
           isStatic={isStatic}
+          resolved={resolved}
         />
       ))}
     </div>
