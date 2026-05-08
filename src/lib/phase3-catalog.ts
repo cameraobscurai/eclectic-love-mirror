@@ -9,7 +9,9 @@
 // (The legacy `phase3_catalog.json` snapshot is kept on disk for archival
 // reference but is no longer imported anywhere.)
 
-import catalog from "@/data/inventory/current_catalog.json";
+// NOTE: catalog JSON is dynamically imported below so it doesn't land in any
+// route's eager chunk. The first call to getCollectionCatalog() pays the
+// fetch + parse cost once; subsequent calls hit a module-level cache.
 
 export interface CollectionImage {
   url: string;
