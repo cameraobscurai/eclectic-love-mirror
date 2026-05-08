@@ -112,7 +112,7 @@ function HomePage() {
       <section
         className="relative"
         style={{
-          ["--fold-unit" as string]: "clamp(1rem, 1.4vw + 1vh, 2.5rem)",
+          ["--fold-unit" as string]: "clamp(1rem, 0.6rem + 1.1vw, 2.25rem)",
           ["--fold-top" as string]:
             "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
           ["--fold-gap" as string]: "calc(var(--fold-unit) * 1)",
@@ -123,10 +123,10 @@ function HomePage() {
         {/* Filmstrip on desktop only — mobile uses the sequential reel above */}
         <div className="hidden md:block">
           <div
-            className="px-8 lg:px-12"
+            className="fluid-canvas"
             style={{ paddingTop: "var(--fold-top)" }}
           >
-            <div className="mx-auto max-w-6xl">
+            <div className="mx-auto" style={{ maxWidth: "min(72rem, 100%)" }}>
               <h1
                 className={cn(
                   "text-center font-display text-charcoal transition-[opacity,transform,letter-spacing] ease-out",
@@ -136,7 +136,9 @@ function HomePage() {
                 )}
                 style={{
                   fontWeight: 400,
-                  fontSize: "clamp(3rem, 7vw, 6rem)",
+                  // Fluid: anchored at 1600px → ~5.5rem. Locked min/max so
+                  // 1280 and 2560 land in the same proportional family.
+                  fontSize: "clamp(3.5rem, 1.5rem + 3.2vw, 5.75rem)",
                   lineHeight: 0.95,
                   transitionDuration: "1100ms",
                 }}
@@ -146,13 +148,14 @@ function HomePage() {
 
               <p
                 className={cn(
-                  "mx-auto text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out max-w-xl",
+                  "mx-auto text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
                   loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
                 )}
                 style={{
                   marginTop: "var(--fold-gap)",
+                  maxWidth: "clamp(28rem, 36vw, 40rem)",
                   fontWeight: 400,
-                  fontSize: "clamp(0.95rem, 1.2vw, 1.1rem)",
+                  fontSize: "clamp(0.95rem, 0.6rem + 0.45vw, 1.15rem)",
                   lineHeight: 1.4,
                   transitionDelay: loaded ? "350ms" : "0ms",
                 }}

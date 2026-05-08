@@ -135,6 +135,28 @@
 
   /* Skeleton minimum-show clock — prevents flash on cached/fast loads. */
   --archive-skel-min-show: 120ms;
+
+  /* ---------- Fluid desktop canvas ----------
+   * One source of truth so the same composition reads at 1280px, 1440px,
+   * 1920px, and ultrawide. Cap content at --canvas-max (page never grows
+   * past this — extra space becomes margin), use --canvas-px as the fluid
+   * outer gutter, and anchor type/spacing on --canvas-unit (a vw value
+   * clamped so 1280 → 1920 lands in proportional places).
+   *
+   * Reference design width: 1600px. 1vw at 1600 = 16px ≈ 1rem, so most
+   * sizes can be expressed as `clamp(min, calc(base + Nvw), max)` and
+   * stay visually identical across the desktop range.
+   */
+  --canvas-max: 1600px;
+  --canvas-px: clamp(1.25rem, 3vw, 4rem);
+  --canvas-unit: clamp(0.875rem, 1vw, 1.25rem);
+}
+
+.fluid-canvas {
+  width: 100%;
+  max-width: var(--canvas-max);
+  margin-inline: auto;
+  padding-inline: var(--canvas-px);
 }
 
 .dark {
