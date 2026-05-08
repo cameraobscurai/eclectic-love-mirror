@@ -984,11 +984,10 @@ function CollectionPage() {
                   {/* Mobile/tablet: H identity returns as a fixed-height masthead;
                       the category grid takes the remaining viewport below it. */}
                   <div
-                    className="lg:hidden flex items-center justify-center flex-shrink-0 border-b border-charcoal/10 overflow-hidden"
+                    className="lg:hidden flex items-center justify-center flex-shrink-0 overflow-hidden"
                     style={{
                       height: "var(--collection-mobile-h-h)",
                       background: "var(--paper)",
-                      padding: "8px 18px",
                     }}
                   >
                     <img
