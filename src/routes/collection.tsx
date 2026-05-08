@@ -739,11 +739,11 @@ function CollectionPage() {
     <main
       data-collection-main
       data-collection-overview={showOverview ? "" : undefined}
-      className={showOverview ? "overflow-hidden text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
+      className={showOverview ? "text-charcoal" : layout === "wall" && activeParent ? "min-h-screen text-charcoal" : "min-h-screen text-charcoal pb-32"}
       style={{
         background: "var(--paper)",
         "--collection-mobile-h-h": "clamp(180px, 26dvh, 240px)",
-        ...(showOverview ? { height: "var(--app-vh, 100dvh)" } : null),
+        ...(showOverview ? { minHeight: "var(--app-vh, 100dvh)" } : null),
       } as React.CSSProperties}
     >
       {/* Heading removed — the left "the HIVE" plate IS the page title. */}
@@ -925,8 +925,12 @@ function CollectionPage() {
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
       <section
-        className={showOverview ? "px-0 pt-0 overflow-hidden" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
-        style={showOverview ? { height: "calc(var(--app-vh, 100dvh) - var(--nav-h))" } : undefined}
+        className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
+        style={
+          showOverview
+            ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
+            : undefined
+        }
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
@@ -936,14 +940,17 @@ function CollectionPage() {
           <motion.div
             layout={!reduced}
             transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
-            className={showOverview ? "flex h-full flex-col overflow-hidden lg:flex-row" : "grid grid-cols-1"}
+            className={showOverview ? "flex min-h-[inherit] flex-col lg:flex-row" : "grid grid-cols-1"}
           >
             {showOverview && (
               <motion.aside
                 layout={!reduced}
                 className="hidden lg:block flex-shrink-0"
                 style={{
-                  width: "40%",
+                  // Was a flat 40%. Fluid-clamped so the H plate stays
+                  // generous on ultrawides without crushing the grid at
+                  // 1280. 1024→32%, 1440→~37%, 1920→44%.
+                  width: "clamp(32%, 24% + 8vw, 44%)",
                   background: "var(--paper)",
                 }}
               >

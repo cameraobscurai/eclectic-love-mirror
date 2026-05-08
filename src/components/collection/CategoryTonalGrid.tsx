@@ -34,8 +34,34 @@ const ORDER: BrowseGroupId[] = [
   "pillows", "throws", "tableware", "styling", "large-decor",
 ];
 
-// Greyscale checker pair — flat white + soft grey for a neutral rhythm.
-const TONES = ["#ffffff", "#f1f1f1"] as const;
+// Greyscale checker pair — flat white + soft grey. Bumped from #f1f1f1 to
+// #ebebeb so the checker reads at scale without going warm.
+const TONES = ["#ffffff", "#ebebeb"] as const;
+
+// Per-category padding hints. Image silhouettes vary wildly — a rug fills
+// its frame, a side-table is a thin vertical, a chandelier hangs from the
+// top. Without per-category tuning every tile uses the same padding and
+// half look marooned. Values are CSS shorthand "T R B L".
+// Bottom is always larger to clear the label.
+const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
+  // Wide, frame-filling — minimal padding so they read as fabric.
+  rugs: "6% 6% 22% 6%",
+  pillows: "8% 12% 24% 12%",
+  throws: "6% 10% 22% 10%",
+  // Vertical, sparse silhouettes — extra side padding so they don't tower.
+  "side-tables": "10% 22% 22% 22%",
+  lighting: "8% 22% 22% 22%",
+  "cocktail-tables": "10% 18% 22% 18%",
+  // Wide horizontal furniture — give the silhouette room.
+  sofas: "10% 8% 22% 8%",
+  "coffee-tables": "12% 10% 22% 10%",
+  "benches-ottomans": "10% 10% 22% 10%",
+  bar: "10% 12% 22% 12%",
+  dining: "10% 12% 22% 12%",
+  // Default for the rest (chairs, tableware, styling, large-decor).
+  // Falls through to the inline default below.
+};
+const DEFAULT_PADDING = "10% 14% 22% 14%";
 
 // The category grid waits for one shared preload/decode batch, then releases
 // all tiles together. This bounded fallback prevents one stubborn CDN decode
@@ -113,6 +139,19 @@ export function CategoryTonalGrid({
     [byId],
   );
 
+  // Track actual rendered column count so the checker parity matches what
+  // the user sees. Without this, mobile (3 cols) was using LG parity (5)
+  // and the tone fell into diagonal stripes instead of a real checker.
+  const [renderedCols, setRenderedCols] = useState<number>(COLS.lg);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setRenderedCols(mq.matches ? COLS.sm : COLS.lg);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   const [gridReady, setGridReady] = useState(false);
 
   useEffect(() => {
@@ -173,14 +212,10 @@ export function CategoryTonalGrid({
       aria-label="Browse by category"
     >
       {tiles.map((t, i) => {
-        // Real checkerboard: parity over (row + col). Computed against
-        // each breakpoint's column count, picked at render via window
-        // size isn't necessary — we use the LG count as the canonical
-        // pattern; on smaller widths the wrap re-flows but parity holds
-        // because COLS values are all even except 3. 3-col tablet falls
-        // into a diagonal stripe which actually reads fine — the rhythm
-        // is what matters, not perfect parity.
-        const cols = COLS.lg;
+        // Real checkerboard parity, computed from the actual rendered
+        // column count (3 mobile / 5 desktop). Tracked via matchMedia so
+        // it updates on resize.
+        const cols = renderedCols;
         const row = Math.floor(i / cols);
         const col = i % cols;
         const tone = TONES[(row + col) % 2];
@@ -192,6 +227,7 @@ export function CategoryTonalGrid({
             heroAlt={t.heroAlt}
             label={t.label}
             tone={tone}
+            padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
             gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
@@ -208,6 +244,7 @@ interface TonalCellProps {
   heroAlt: string;
   label: string;
   tone: string;
+  padding: string;
   gridReady: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
@@ -218,6 +255,7 @@ function TonalCell({
   heroAlt,
   label,
   tone,
+  padding,
   gridReady,
   onSelectCategory,
 }: TonalCellProps) {
@@ -256,8 +294,9 @@ function TonalCell({
           loading="eager"
           decoding="async"
           {...({ fetchPriority: "high" } as Record<string, string>)}
-          className="absolute inset-0 h-full w-full object-contain px-3 pt-4 pb-12 sm:px-4 sm:pt-5 sm:pb-14 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
+            padding,
             opacity: gridReady ? 1 : 0,
             transition: "opacity 640ms ease-out, transform 500ms ease-out",
           }}
