@@ -71,6 +71,10 @@ interface MediaApertureProps {
   prefetchMargin?: string;
   /** Hint browser priority. Use "high" for above-the-fold portraits. */
   fetchPriority?: "high" | "low" | "auto";
+  /** Optional external reveal gate for synchronizing image cohorts. */
+  revealReady?: boolean;
+  /** Fires once the underlying image has loaded. */
+  onLoad?: () => void;
 }
 
 export function MediaAperture({
@@ -86,6 +90,8 @@ export function MediaAperture({
   lazy = true,
   prefetchMargin = "600px",
   fetchPriority,
+  revealReady,
+  onLoad,
 }: MediaApertureProps) {
   const [loaded, setLoaded] = useState(false);
   // Eager renders immediately. Lazy waits for the IO to fire.
@@ -176,13 +182,16 @@ export function MediaAperture({
       alt={alt ?? ""}
       loading={lazy ? "lazy" : "eager"}
       decoding="async"
-      onLoad={() => setLoaded(true)}
+      onLoad={() => {
+        setLoaded(true);
+        onLoad?.();
+      }}
       {...(fetchPriority
         ? ({ fetchPriority: fetchPriority } as Record<string, string>)
         : {})}
       className="absolute inset-0 w-full h-full object-cover will-change-opacity"
       style={{
-        opacity: loaded ? 1 : 0,
+        opacity: loaded && (revealReady ?? true) ? 1 : 0,
         transition: "opacity 420ms ease-out",
       }}
     />
