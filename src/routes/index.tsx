@@ -139,7 +139,7 @@ function HomePage() {
                     : "opacity-0 translate-y-2 [letter-spacing:0.04em]",
                 )}
                 style={{
-                  fontWeight: 400,
+                  fontWeight: 600,
                   // Fluid: anchored at 1600px → ~5.5rem. Locked min/max so
                   // 1280 and 2560 land in the same proportional family.
                   fontSize: "clamp(3.5rem, 1.5rem + 3.2vw, 5.75rem)",
