@@ -183,6 +183,7 @@ export const setColorLocked = createServerFn({ method: "POST" })
   });
 
 export const clearColorTag = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator((d) =>
     z.object({ rms_id: z.string().min(1) }).parse(d),
   )
