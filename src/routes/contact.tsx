@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { withCdnWidth } from "@/lib/image-url";
 
 // ---------------------------------------------------------------------------
 // Contact — one editorial intake form (no wizard, no steppers).
@@ -63,6 +64,7 @@ interface SelectedPiece {
   id: string;
   title: string;
   category: string | null;
+  image: string | null;
 }
 
 function ContactPage() {
@@ -98,7 +100,7 @@ function ContactPage() {
     (async () => {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("id,title,category")
+        .select("id,title,category,images")
         .in("id", initialIds);
       if (cancelled) return;
       if (error || !data) {
@@ -106,7 +108,17 @@ function ContactPage() {
         setSelectionStatus("error");
         return;
       }
-      const byId = new Map(data.map((d) => [d.id, d as SelectedPiece]));
+      const byId = new Map(
+        data.map((d) => [
+          d.id,
+          {
+            id: d.id,
+            title: d.title,
+            category: d.category,
+            image: Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : null,
+          } as SelectedPiece,
+        ]),
+      );
       setPieces(
         initialIds
           .map((id) => byId.get(id))
@@ -388,26 +400,43 @@ function ContactPage() {
                         {effectiveIds.map((id) => {
                           const p = piecesById.get(id);
                           const shortId = id.slice(-6).toUpperCase();
+                          const thumb = p?.image ? withCdnWidth(p.image, 240) : null;
                           return (
                             <li
                               key={id}
-                              className="flex items-baseline justify-between gap-6 py-3 border-t first:border-t-0"
+                              className="flex items-center justify-between gap-6 py-3 border-t first:border-t-0"
                               style={{ borderColor: "var(--archive-rule)" }}
                             >
-                              <div className="flex items-baseline gap-4 min-w-0">
-                                <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
-                                  {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
-                                </span>
-                                {p?.category && (
-                                  <span className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 shrink-0">
-                                    {p.category}
+                              <div className="flex items-center gap-4 min-w-0">
+                                <div
+                                  className="shrink-0 w-14 h-14 bg-charcoal/[0.04] overflow-hidden"
+                                  aria-hidden
+                                >
+                                  {thumb ? (
+                                    <img
+                                      src={thumb}
+                                      alt=""
+                                      loading="lazy"
+                                      decoding="async"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : null}
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
+                                    {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
                                   </span>
-                                )}
+                                  {p?.category && (
+                                    <span className="mt-1 text-[11px] uppercase tracking-[0.22em] text-charcoal/40 truncate">
+                                      {p.category}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
                               <button
                                 type="button"
                                 onClick={() => removePiece(id)}
-                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream shrink-0"
                               >
                                 REMOVE
                               </button>
