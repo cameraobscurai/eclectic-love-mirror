@@ -80,8 +80,8 @@ const ENTER_VH_DESKTOP = 0.35;
 const ENTER_VH_MOBILE = 0.3;
 // Footer no longer animates, so the tail just needs a beat of breathing
 // room after the closer line lands before sticky releases. Small + tight.
-const CONTINUE_VH_DESKTOP = 0.25;
-const CONTINUE_VH_MOBILE = 0.3;
+const CONTINUE_VH_DESKTOP = 0.12;
+const CONTINUE_VH_MOBILE = 0.15;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
