@@ -285,13 +285,25 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       )}
 
       {WALL_DND_ENABLED && orderedIds && orderedIds.length > 0 && (
-        <button
-          type="button"
-          onClick={resetOrder}
-          className="absolute bottom-3 left-4 z-[60] text-[9px] uppercase tracking-[0.28em] text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
-        >
-          reset order
-        </button>
+        <div className="absolute bottom-3 left-4 z-[60] flex items-center gap-3 text-[9px] uppercase tracking-[0.28em]">
+          <button
+            type="button"
+            onClick={okOrder}
+            className={
+              "px-2 py-1 border border-charcoal/40 text-charcoal hover:bg-charcoal hover:text-white transition-colors " +
+              (confirmed ? "bg-charcoal/5" : "")
+            }
+          >
+            {justSaved ? "saved ✓" : confirmed ? "saved" : "ok · save"}
+          </button>
+          <button
+            type="button"
+            onClick={resetOrder}
+            className="text-charcoal/60 hover:text-charcoal underline-offset-4 hover:underline"
+          >
+            reset order
+          </button>
+        </div>
       )}
 
       {trimmedNote && (
