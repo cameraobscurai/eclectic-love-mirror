@@ -300,18 +300,11 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
           </div>
         </div>
 
-        {/* Footer (destination cards) — CONTINUE phase. Rises in over the
-            last 18% of scroll, after every line has resolved. Smoothstepped
-            opacity + translate keep it from popping. */}
+        {/* Footer (destination cards) — flat. No scroll-driven transition
+            here; it would compete with the sticky release and produce a
+            visible hitch. Cards are simply present under the manifesto. */}
         {footer && (
-          <div
-            className="shrink-0 pb-6 md:pb-10"
-            style={{
-              opacity: continueT,
-              transform: `translateY(${(1 - continueT) * 14}px)`,
-              pointerEvents: showFooter ? "auto" : "none",
-            }}
-          >
+          <div className="shrink-0 pb-6 md:pb-10">
             <div className="fluid-canvas">{footer}</div>
           </div>
         )}
