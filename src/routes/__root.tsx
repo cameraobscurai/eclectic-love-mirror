@@ -65,6 +65,11 @@ export const Route = createRootRoute({
         content:
           "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/bc4ec964-a952-41b0-99bc-81098aab7c87/id-preview-b0b6dfc0--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app-1777699372255.png",
       },
+      { name: "description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { property: "og:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { name: "twitter:description", content: "Seamless Site Mirror replicates a website's appearance and functionality using Supabase for data storage." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
