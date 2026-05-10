@@ -186,13 +186,16 @@ export function GalleryLightbox({
               srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
               sizes="(min-width: 1024px) 66vw, 100vw"
               alt={plate.alt}
+              onLoadingChange={handleLoadingChange}
             />
           </LightboxParallax>
 
-          {/* Preload neighbors for instant swap */}
+          {/* Preload neighbors (±2) for instant decode on next/prev. The
+              browser dedupes against in-flight requests, so widening past
+              the immediate neighbor costs nothing once those have landed. */}
           {plates.map((p, i) => {
             if (i === plateIndex) return null;
-            if (Math.abs(i - plateIndex) > 1) return null;
+            if (Math.abs(i - plateIndex) > 2) return null;
             return (
               <link
                 key={p.src}
