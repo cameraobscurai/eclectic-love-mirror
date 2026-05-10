@@ -1,10 +1,10 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 
-// Google-only sign-in gate for the /admin* tree. Owner account access only —
-// after signing in, your account still needs the `admin` role granted via
+// Sign-in gate for the /admin* tree. Supports Google OAuth + email/password.
+// After signing in, the account still needs the `admin` role granted via
 // migration before /admin will load.
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -19,14 +19,35 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
+type Mode = "signin" | "signup" | "forgot";
+
 function LoginPage() {
   const navigate = useNavigate();
   const { redirect: redirectTo } = Route.useSearch();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // If already signed in AND admin, bounce straight to redirect target.
-  // If signed in but NOT admin, sign out and surface the message.
+  // After auth: verify admin role; otherwise sign out and surface message.
+  async function verifyAdminAndRoute() {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData.user) throw new Error("Sign-in succeeded but no session.");
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: userData.user.id,
+      _role: "admin",
+    });
+    if (!isAdmin) {
+      await supabase.auth.signOut();
+      throw new Error(
+        "This account is not authorized for admin access. Contact the site owner.",
+      );
+    }
+    navigate({ to: redirectTo as "/admin" });
+  }
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -37,14 +58,7 @@ function LoginPage() {
         _role: "admin",
       });
       if (cancelled) return;
-      if (isAdmin) {
-        navigate({ to: redirectTo as "/admin" });
-      } else {
-        await supabase.auth.signOut();
-        setError(
-          "This Google account is not authorized for admin access. Contact the site owner.",
-        );
-      }
+      if (isAdmin) navigate({ to: redirectTo as "/admin" });
     })();
     return () => {
       cancelled = true;
@@ -52,28 +66,14 @@ function LoginPage() {
   }, [navigate, redirectTo]);
 
   async function handleGoogle() {
-    setError(null);
-    setBusy(true);
+    setError(null); setInfo(null); setBusy(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
         redirect_uri: window.location.origin + "/login",
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
-      // Tokens received — verify admin role.
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Sign-in succeeded but no session.");
-      const { data: isAdmin } = await supabase.rpc("has_role", {
-        _user_id: userData.user.id,
-        _role: "admin",
-      });
-      if (!isAdmin) {
-        await supabase.auth.signOut();
-        throw new Error(
-          "This Google account is not authorized for admin access. Contact the site owner.",
-        );
-      }
-      navigate({ to: redirectTo as "/admin" });
+      await verifyAdminAndRoute();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
@@ -81,9 +81,59 @@ function LoginPage() {
     }
   }
 
+  async function handleEmailSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null); setInfo(null); setBusy(true);
+    try {
+      if (mode === "signin") {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await verifyAdminAndRoute();
+      } else if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}/login` },
+        });
+        if (error) throw error;
+        setInfo(
+          "Account created. Check your email to confirm, then sign in. The site owner must grant admin access before /admin will load.",
+        );
+        setMode("signin");
+      } else {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setInfo("Password reset email sent. Check your inbox.");
+        setMode("signin");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Authentication failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const labelStyle = {
+    fontSize: "10px",
+    letterSpacing: "0.22em",
+    color: "rgba(26,26,26,0.55)",
+  } as const;
+  const inputStyle = {
+    width: "100%",
+    background: "transparent",
+    border: "none",
+    borderBottom: "1px solid rgba(26,26,26,0.25)",
+    padding: "8px 0",
+    fontSize: "14px",
+    outline: "none",
+    color: "#1a1a1a",
+  } as const;
+
   return (
     <main
-      className="min-h-screen flex items-center justify-center px-6"
+      className="min-h-screen flex items-center justify-center px-6 py-16"
       style={{ background: "var(--paper)", color: "#1a1a1a" }}
     >
       <div className="w-full max-w-sm">
@@ -110,7 +160,7 @@ function LoginPage() {
             letterSpacing: "0.02em",
           }}
         >
-          ADMIN SIGN IN
+          {mode === "signup" ? "CREATE ACCOUNT" : mode === "forgot" ? "RESET PASSWORD" : "ADMIN SIGN IN"}
         </h1>
 
         <button
@@ -135,14 +185,96 @@ function LoginPage() {
           {busy ? "…" : "CONTINUE WITH GOOGLE"}
         </button>
 
-        {error ? (
-          <p
-            className="uppercase mt-6 text-center"
-            style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}
+        <div
+          className="flex items-center gap-3 my-6 uppercase"
+          style={{ fontSize: "10px", letterSpacing: "0.22em", color: "rgba(26,26,26,0.4)" }}
+        >
+          <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.15)" }} />
+          OR
+          <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.15)" }} />
+        </div>
+
+        <form onSubmit={handleEmailSubmit} className="space-y-5">
+          <div>
+            <label className="block uppercase mb-2" style={labelStyle}>EMAIL</label>
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          {mode !== "forgot" && (
+            <div>
+              <label className="block uppercase mb-2" style={labelStyle}>PASSWORD</label>
+              <input
+                type="password"
+                required
+                minLength={8}
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full uppercase py-3 disabled:opacity-50"
+            style={{
+              fontSize: "11px",
+              letterSpacing: "0.18em",
+              background: "#1a1a1a",
+              color: "#ffffff",
+              border: "none",
+              marginTop: 8,
+            }}
           >
+            {busy
+              ? "…"
+              : mode === "signup"
+                ? "CREATE ACCOUNT"
+                : mode === "forgot"
+                  ? "SEND RESET LINK"
+                  : "SIGN IN"}
+          </button>
+        </form>
+
+        <div
+          className="mt-6 flex items-center justify-between uppercase"
+          style={{ fontSize: "10px", letterSpacing: "0.18em" }}
+        >
+          {mode === "signin" ? (
+            <>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                FORGOT PASSWORD?
+              </button>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signup"); }} style={{ color: "#1a1a1a", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                CREATE ACCOUNT
+              </button>
+            </>
+          ) : (
+            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              ← BACK TO SIGN IN
+            </button>
+          )}
+        </div>
+
+        {info && (
+          <p className="uppercase mt-6 text-center" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
+            {info}
+          </p>
+        )}
+        {error && (
+          <p className="uppercase mt-6 text-center" style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
             {error}
           </p>
-        ) : null}
+        )}
       </div>
     </main>
   );
