@@ -4,7 +4,7 @@ import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
-import { CATEGORY_COVERS } from "@/lib/category-covers";
+import { CATEGORY_COVERS, type CoverPicture } from "@/lib/category-covers";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
@@ -27,7 +27,9 @@ const REVEAL_MAX_DELAY_MS = 300;
 // has resolved (or the safety timeout fires) so it reads as one event.
 const FIRST_ROW_COUNT = 5;
 // Safety net so a single broken image can't strand the row forever.
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
+// Combined with AVIF covers (preset=editorial), the practical reveal lands
+// in 250–400ms; this cap is just insurance against a stalled connection.
+const FIRST_ROW_REVEAL_TIMEOUT_MS = 800;
 
 /**
  * Category gallery — the "front door" to the archive.
@@ -43,23 +45,34 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   // Resolve hero sources up-front so the parent owns first-row coordination.
+  // Owner-curated covers ship through `?preset=editorial` → AVIF + WebP at
+  // 768/1280/1920w, ~4–10× smaller than the raw PNG originals. Fallback
+  // (when no curated cover exists) is the first product's primary image
+  // through the CDN width helper — same as before.
   const resolved = useMemo(
     () =>
       groups.map((group) => {
-        const cover = CATEGORY_COVERS[group.id];
+        const cover = CATEGORY_COVERS[group.id] ?? null;
         const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
-        const rawHero = cover ?? fallbackHero?.url ?? null;
-        const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
-        const heroSrcSet = rawHero
-          ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
-          : undefined;
+        const fallbackUrl = fallbackHero?.url ?? null;
+        const heroFallbackSrc = cover
+          ? cover.img.src
+          : fallbackUrl
+            ? withCdnWidth(fallbackUrl, 750)
+            : null;
+        const heroFallbackSrcSet = cover
+          ? undefined
+          : fallbackUrl
+            ? buildCdnSrcSet(fallbackUrl, [400, 600, 900]) || undefined
+            : undefined;
         const heroAlt = cover
           ? BROWSE_GROUP_LABELS[group.id]
           : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
         return {
           group,
-          heroSrc,
-          heroSrcSet,
+          cover,
+          heroFallbackSrc,
+          heroFallbackSrcSet,
           heroAlt,
           label: BROWSE_GROUP_LABELS[group.id],
         };
@@ -85,29 +98,13 @@ export function CategoryGalleryOverview({
     return () => window.clearTimeout(t);
   }, []);
 
-  // Imperative preload of bundled category covers. Lives here (not in the
-  // route head()) because this component only mounts on the overview branch
-  // — direct category links and the search view never pay this cost. This
-  // is a workaround: TanStack Start's head() is route-level, so we can't
-  // condition a preload on which child component renders without splitting
-  // the route. Revisit if the overview becomes its own route.
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const links: HTMLLinkElement[] = [];
-    for (const href of Object.values(CATEGORY_COVERS)) {
-      if (!href) continue;
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = href as string;
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-      links.push(link);
-    }
-    return () => {
-      for (const link of links) link.remove();
-    };
-  }, []);
+  // Note: previously this component imperatively appended <link rel=preload
+  // as=image fetchpriority=high> for every cover after mount. That fired
+  // *after* hydration (losing the race against the natural <img> requests),
+  // conflicted with rows 2–3's loading="lazy", and competed with the H-plate
+  // hero for LCP bandwidth. Removed — the first-row tiles below already use
+  // loading="eager" + fetchpriority="high", which is the correct signal at
+  // the right time.
 
   const firstRowReady =
     Boolean(reduced) ||
@@ -138,8 +135,9 @@ export function CategoryGalleryOverview({
             <CategoryCard
               key={item.group.id}
               groupId={item.group.id}
-              heroSrc={item.heroSrc}
-              heroSrcSet={item.heroSrcSet}
+              cover={item.cover}
+              heroFallbackSrc={item.heroFallbackSrc}
+              heroFallbackSrcSet={item.heroFallbackSrcSet}
               heroAlt={item.heroAlt}
               label={item.label}
               isFirstRow={isFirstRow}
@@ -158,8 +156,9 @@ export function CategoryGalleryOverview({
 
 interface CategoryCardProps {
   groupId: BrowseGroupId;
-  heroSrc: string | null;
-  heroSrcSet: string | undefined;
+  cover: CoverPicture | null;
+  heroFallbackSrc: string | null;
+  heroFallbackSrcSet: string | undefined;
   heroAlt: string;
   label: string;
   isFirstRow: boolean;
@@ -172,8 +171,9 @@ interface CategoryCardProps {
 
 function CategoryCard({
   groupId,
-  heroSrc,
-  heroSrcSet,
+  cover,
+  heroFallbackSrc,
+  heroFallbackSrcSet,
   heroAlt,
   label,
   isFirstRow,
@@ -202,9 +202,14 @@ function CategoryCard({
     onFirstRowImageDone();
   }, [reported, onFirstRowImageDone]);
 
+  // Treat the curated AVIF Picture and the legacy fallback URL as a single
+  // "do we have an image?" signal — drives the row-reveal gate.
+  const hasImage = Boolean(cover) || Boolean(heroFallbackSrc);
+  const fallbackSrc = cover ? cover.img.src : heroFallbackSrc;
+
   // No image → immediately count this slot as done (post-mount).
   useEffect(() => {
-    if (isFirstRow && !heroSrc) reportDoneOnce();
+    if (isFirstRow && !hasImage) reportDoneOnce();
     // reportDoneOnce is stable enough; we only want to fire on mount per card.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -217,11 +222,37 @@ function CategoryCard({
     ? true
     : isFirstRow
       ? firstRowReady
-      : near && (loaded || !heroSrc);
+      : near && (loaded || !hasImage);
 
   // First-row cards skip the cascade animation — they all reveal together
   // with no per-card delay. Later rows keep the wipe.
   const skipReveal = reduced;
+
+  // Shared <img> handlers + props — kept in one place so the curated
+  // <picture>/AVIF branch and the legacy <img> fallback stay in sync.
+  const onImgLoad = () => {
+    setLoaded(true);
+    if (isFirstRow) reportDoneOnce();
+  };
+  const onImgError = () => {
+    // Treat as "done waiting" so one broken image doesn't strand the row.
+    if (isFirstRow) reportDoneOnce();
+  };
+  const imgClassName =
+    "absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90";
+  const imgStyle: React.CSSProperties = {
+    // First-row images are revealed by the row-wide gate (parent flips
+    // `entered` once everyone's ready), so we paint them at full opacity
+    // from mount inside the hidden card. Later rows keep the per-image
+    // fade for a softer scroll arrival.
+    opacity: isFirstRow ? 1 : loaded ? 1 : 0,
+    transition: isFirstRow ? "none" : "opacity 380ms ease-out",
+  };
+  const sizes =
+    "(min-width: 1280px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 32vw, 48vw";
+  const fetchPriorityProp = {
+    fetchPriority: isFirstRow ? "high" : "auto",
+  } as Record<string, string>;
 
   return (
     <motion.li
@@ -235,11 +266,12 @@ function CategoryCard({
         boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
         opacity: entered ? 1 : 0,
         transform: entered ? "translateY(0)" : "translateY(6px)",
-        filter: entered ? "blur(0px)" : "blur(2px)",
+        // Blur removed from the cascade — pure GPU cost without the eye
+        // gaining any signal beyond what opacity + translate already give.
         transition: skipReveal
           ? "none"
-          : `opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
-        willChange: entered ? "auto" : "opacity, transform, filter",
+          : `opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+        willChange: entered ? "auto" : "opacity, transform",
       }}
     >
       <button
@@ -250,33 +282,42 @@ function CategoryCard({
         aria-label={label}
       >
         <div className="relative flex-1">
-          {heroSrc ? (
+          {cover ? (
+            <picture>
+              {cover.sources.avif ? (
+                <source type="image/avif" srcSet={cover.sources.avif} sizes={sizes} />
+              ) : null}
+              {cover.sources.webp ? (
+                <source type="image/webp" srcSet={cover.sources.webp} sizes={sizes} />
+              ) : null}
+              <img
+                src={cover.img.src}
+                width={cover.img.w}
+                height={cover.img.h}
+                sizes={sizes}
+                alt={heroAlt}
+                loading={isFirstRow ? "eager" : "lazy"}
+                decoding="async"
+                {...fetchPriorityProp}
+                onLoad={onImgLoad}
+                onError={onImgError}
+                className={imgClassName}
+                style={imgStyle}
+              />
+            </picture>
+          ) : fallbackSrc ? (
             <img
-              src={heroSrc}
-              srcSet={heroSrcSet}
-              sizes="(min-width: 1280px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 32vw, 48vw"
+              src={fallbackSrc}
+              srcSet={heroFallbackSrcSet}
+              sizes={sizes}
               alt={heroAlt}
               loading={isFirstRow ? "eager" : "lazy"}
               decoding="async"
-              {...({ fetchPriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
-              onLoad={() => {
-                setLoaded(true);
-                if (isFirstRow) reportDoneOnce();
-              }}
-              onError={() => {
-                // Treat as "done waiting" so one broken image doesn't
-                // strand the entire first-row reveal.
-                if (isFirstRow) reportDoneOnce();
-              }}
-              className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90"
-              style={{
-                // First-row images are revealed by the row-wide gate (parent
-                // flips `entered` once everyone's ready), so we paint them
-                // at full opacity from mount inside the hidden card. Later
-                // rows keep the per-image fade for a softer scroll arrival.
-                opacity: isFirstRow ? 1 : loaded ? 1 : 0,
-                transition: isFirstRow ? "none" : "opacity 380ms ease-out",
-              }}
+              {...fetchPriorityProp}
+              onLoad={onImgLoad}
+              onError={onImgError}
+              className={imgClassName}
+              style={imgStyle}
             />
           ) : (
             <div className="absolute inset-0" />
@@ -296,7 +337,7 @@ function CategoryCard({
             WebkitBackdropFilter: "blur(12px)",
             borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
             borderRadius: "0 0 12px 12px",
-            opacity: isFirstRow || loaded || !heroSrc ? 1 : 0.6,
+            opacity: isFirstRow || loaded || !hasImage ? 1 : 0.6,
             transition: "opacity 380ms ease-out",
           }}
         >
