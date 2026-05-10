@@ -7,7 +7,11 @@ import { HERO_CLIPS } from "./clips";
  */
 export function SequentialHeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [index, setIndex] = useState(0);
+  // Randomize the opening clip per visit so repeat viewers don't always
+  // land on the same season (mobile-only component).
+  const [index, setIndex] = useState(() =>
+    Math.floor(Math.random() * HERO_CLIPS.length),
+  );
 
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
