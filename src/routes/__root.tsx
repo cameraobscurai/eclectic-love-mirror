@@ -166,8 +166,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const { pathname } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const isHome = pathname === "/";
+
+  // Send a GA4 page_view on every TanStack route change.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    const path = pathname + (search ? `?${new URLSearchParams(search as Record<string, string>).toString()}` : "") + (hash ?? "");
+    window.gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [pathname, search, hash]);
+
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
   // footer (long editorial scroll, footer is the natural terminus).
