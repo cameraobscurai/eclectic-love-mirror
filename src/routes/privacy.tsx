@@ -15,7 +15,7 @@ export const Route = createFileRoute("/privacy")({
       {
         name: "description",
         content:
-          "How Eclectic Hive collects, uses, and protects information from visitors and clients of eclectichive.com.",
+          "Privacy Policy for Eclectic Hive: how we collect, use, disclose, retain, and protect personal information.",
       },
     ],
   }),
@@ -32,7 +32,7 @@ function PrivacyPage() {
         {/* Header */}
         <header className="pb-12">
           <p className="text-[11px] uppercase tracking-[0.32em] text-charcoal/50">
-            PRIVACY
+            PRIVACY POLICY
           </p>
           <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95]">
             Privacy.
@@ -49,13 +49,17 @@ function PrivacyPage() {
               Eclectic Hive (&ldquo;Eclectic Hive,&rdquo; &ldquo;we,&rdquo;
               &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is an event design and
               production studio based in Denver, Colorado. This Privacy Policy
-              explains how we collect, use, and share information when you visit{" "}
-              <a href="https://eclectichive.com">eclectichive.com</a>, send us
-              an inquiry, or otherwise engage with our studio.
+              describes how we collect, use, disclose, and safeguard personal
+              information when you visit{" "}
+              <a href="https://eclectichive.com">eclectichive.com</a> (the
+              &ldquo;Site&rdquo;), submit an inquiry, or otherwise interact
+              with our studio (collectively, the &ldquo;Services&rdquo;).
             </p>
             <p>
-              By using our site or contacting us, you agree to the practices
-              described below.
+              By accessing the Site or providing information to us, you
+              acknowledge that you have read and understood this Privacy
+              Policy. If you do not agree with its terms, please do not use
+              the Services.
             </p>
           </div>
         </section>
@@ -65,26 +69,25 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>INFORMATION WE COLLECT</h2>
           <div className={PROSE}>
             <p>
-              <strong>Information you give us.</strong> When you submit a
-              contact or inquiry form, we collect the details you choose to
-              share &mdash; typically your name, email address, phone number,
-              event date, location, and a description of your project. If you
-              email us directly, we receive whatever information is in that
-              correspondence.
+              <strong>Information you provide.</strong> We collect information
+              you submit through inquiry forms, email, or other communications,
+              which may include your name, email address, telephone number,
+              event date, event location, budget range, and project details.
             </p>
             <p>
-              <strong>Information collected automatically.</strong> Like most
-              websites, we automatically log basic technical information when
-              you visit, including your IP address, browser type, device, pages
-              viewed, and referring site. This is used to keep the site
-              running well and to understand, in aggregate, how visitors use it.
+              <strong>Information collected automatically.</strong> When you
+              access the Site, we and our service providers may automatically
+              collect certain technical information, including IP address,
+              device identifiers, browser type and version, operating system,
+              referring URLs, pages viewed, and timestamps.
             </p>
             <p>
-              <strong>Cookies.</strong> We use a small number of cookies and
-              similar technologies that are either essential to the site
-              functioning or that help us measure traffic. Most browsers let
-              you refuse or delete cookies; doing so may affect how the site
-              behaves.
+              <strong>Cookies and similar technologies.</strong> We use
+              cookies, pixels, and similar technologies that are strictly
+              necessary for the Site to function and, where applicable, to
+              measure traffic and performance. You may manage cookies through
+              your browser settings; disabling certain cookies may impair
+              functionality.
             </p>
           </div>
         </section>
@@ -93,54 +96,51 @@ function PrivacyPage() {
         <section className={`${SECTION_WRAP} mt-12`}>
           <h2 className={SECTION_LABEL}>HOW WE USE INFORMATION</h2>
           <div className={PROSE}>
-            <p>We use the information we collect to:</p>
+            <p>We process personal information for the following purposes:</p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Respond to inquiries and prepare proposals.</li>
-              <li>
-                Communicate with you about your project, contracts, scheduling,
-                and invoicing.
-              </li>
-              <li>
-                Operate, maintain, and improve our website and our services.
-              </li>
-              <li>
-                Comply with legal obligations and protect our rights, our
-                clients, and our team.
-              </li>
+              <li>To respond to inquiries and provide proposals, quotes, and other requested information.</li>
+              <li>To negotiate, perform, and administer contracts, including scheduling, invoicing, and event delivery.</li>
+              <li>To operate, maintain, secure, and improve the Site and Services.</li>
+              <li>To prevent fraud, enforce our terms, and protect the rights, property, and safety of Eclectic Hive, our clients, and our personnel.</li>
+              <li>To comply with applicable laws, regulations, and legal process.</li>
             </ul>
             <p>
-              We do not use your information for automated decision-making and
-              we do not sell personal information.
+              We do not sell personal information, and we do not engage in
+              automated decision-making that produces legal or similarly
+              significant effects.
             </p>
           </div>
         </section>
 
         {/* Sharing */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>HOW WE SHARE INFORMATION</h2>
+          <h2 className={SECTION_LABEL}>HOW WE DISCLOSE INFORMATION</h2>
           <div className={PROSE}>
             <p>
-              We share information only with the parties needed to run the
-              studio and the website:
+              We disclose personal information only as described below and
+              under appropriate confidentiality obligations:
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li>
-                <strong>Service providers</strong> who host our website,
-                deliver email, store files, process payments, or provide
-                analytics, all under reasonable confidentiality terms.
+                <strong>Service providers</strong> that perform functions on
+                our behalf, including website hosting, email delivery, file
+                storage, analytics, and payment processing.
               </li>
               <li>
-                <strong>Production partners</strong> &mdash; vendors,
-                fabricators, venues, and contractors &mdash; only to the extent
-                needed to deliver your event.
+                <strong>Production partners</strong>, including vendors,
+                fabricators, venues, and contractors, solely to the extent
+                necessary to design and deliver your event.
               </li>
               <li>
-                <strong>Legal and safety</strong> disclosures when required by
-                law, subpoena, or to protect rights, property, or safety.
+                <strong>Legal, regulatory, and safety</strong> disclosures
+                where required by law, subpoena, court order, or other legal
+                process, or where we believe disclosure is necessary to
+                protect rights, property, or safety.
               </li>
               <li>
-                <strong>Business transfers</strong> in connection with a
-                merger, acquisition, or sale of assets.
+                <strong>Business transactions</strong> in connection with a
+                merger, acquisition, financing, reorganization, or sale of
+                assets, subject to customary confidentiality protections.
               </li>
             </ul>
           </div>
@@ -151,11 +151,13 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>DATA RETENTION</h2>
           <div className={PROSE}>
             <p>
-              We retain inquiry and client information for as long as our
-              relationship is active and for a reasonable period afterward to
-              maintain records, complete tax and accounting obligations, and
-              support repeat clients. You may request deletion at any time
-              (see &ldquo;Your Rights&rdquo; below).
+              We retain personal information for as long as necessary to
+              fulfill the purposes for which it was collected, including to
+              provide the Services, maintain business records, resolve
+              disputes, and comply with legal, tax, accounting, and
+              regulatory obligations. When information is no longer required,
+              we will delete or anonymize it in accordance with our retention
+              practices.
             </p>
           </div>
         </section>
@@ -165,18 +167,26 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>YOUR CHOICES &amp; RIGHTS</h2>
           <div className={PROSE}>
             <p>
-              You may ask us to access, correct, or delete the personal
-              information we hold about you, and you may opt out of marketing
-              messages at any time by replying to any email or writing to us
-              directly.
+              Subject to applicable law, you may request access to, correction
+              of, or deletion of personal information we hold about you, and
+              you may opt out of marketing communications at any time by
+              following the unsubscribe instructions in any message or by
+              contacting us directly.
             </p>
             <p>
-              <strong>California residents.</strong> California law gives you
-              the right to request the categories of personal information we
-              have collected about you, the purposes for which it was used,
-              and the right to request deletion, subject to certain exceptions.
-              We will not discriminate against you for exercising these rights.
-              To make a request, email{" "}
+              <strong>California residents.</strong> The California Consumer
+              Privacy Act, as amended, provides California residents with
+              certain rights regarding their personal information, including
+              the right to know what categories and specific pieces of
+              personal information we have collected, the sources from which
+              it was collected, the business or commercial purposes for
+              collection, and the categories of third parties with whom it is
+              shared; the right to request deletion or correction; and the
+              right to opt out of the sale or sharing of personal information.
+              We do not sell or share personal information as those terms are
+              defined under California law. We will not discriminate against
+              you for exercising these rights. To submit a verifiable consumer
+              request, contact{" "}
               <a href="mailto:info@eclectichive.com">info@eclectichive.com</a>.
             </p>
           </div>
@@ -187,35 +197,55 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>SECURITY</h2>
           <div className={PROSE}>
             <p>
-              We use reasonable administrative, technical, and physical
-              safeguards to protect the information we collect. No method of
-              transmission or storage is fully secure, and we cannot guarantee
-              absolute security.
+              We maintain reasonable administrative, technical, and physical
+              safeguards designed to protect personal information against
+              unauthorized access, disclosure, alteration, and destruction.
+              However, no method of transmission over the internet or method
+              of electronic storage is completely secure, and we cannot
+              guarantee absolute security.
             </p>
           </div>
         </section>
 
         {/* Children */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>CHILDREN</h2>
+          <h2 className={SECTION_LABEL}>CHILDREN&apos;S PRIVACY</h2>
           <div className={PROSE}>
             <p>
-              Our site is not directed to children under 13, and we do not
-              knowingly collect personal information from children. If you
-              believe a child has provided us with personal information, please
-              contact us and we will delete it.
+              The Services are not directed to children under 13, and we do
+              not knowingly collect personal information from children under
+              13. If we become aware that we have collected such information
+              without verifiable parental consent, we will take steps to
+              delete it promptly.
             </p>
           </div>
         </section>
 
         {/* Third-party links */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>THIRD-PARTY LINKS</h2>
+          <h2 className={SECTION_LABEL}>THIRD-PARTY LINKS &amp; SERVICES</h2>
           <div className={PROSE}>
             <p>
-              Our site may link to third-party websites. We are not responsible
-              for their content or privacy practices, and we encourage you to
-              read their policies before sharing information.
+              The Site may contain links to third-party websites, products,
+              or services that are not operated by Eclectic Hive. We are not
+              responsible for the content, privacy practices, or security of
+              any third party. We encourage you to review the privacy
+              policies of any third party before providing personal
+              information.
+            </p>
+          </div>
+        </section>
+
+        {/* International */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>INTERNATIONAL USERS</h2>
+          <div className={PROSE}>
+            <p>
+              The Services are operated from the United States. If you access
+              the Services from outside the United States, you understand and
+              agree that your information may be transferred to, stored, and
+              processed in the United States, where data protection laws may
+              differ from those in your jurisdiction.
             </p>
           </div>
         </section>
@@ -225,10 +255,12 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>CHANGES TO THIS POLICY</h2>
           <div className={PROSE}>
             <p>
-              We may update this Privacy Policy from time to time. When we do,
-              we will revise the effective date at the top of this page.
-              Material changes will be highlighted on the site or communicated
-              directly when appropriate.
+              We may update this Privacy Policy from time to time. The
+              effective date at the top of this page indicates when the
+              policy was last revised. Material changes will be posted on
+              this page and, where appropriate, communicated through other
+              channels. Your continued use of the Services following any
+              update constitutes acceptance of the revised policy.
             </p>
           </div>
         </section>
@@ -238,8 +270,8 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>CONTACT US</h2>
           <div className={PROSE}>
             <p>
-              Questions, requests, or concerns about this policy or your
-              information? We would rather hear from you than not.
+              For questions or requests regarding this Privacy Policy or our
+              handling of personal information, please contact:
             </p>
             <p>
               Eclectic Hive
@@ -253,7 +285,7 @@ function PrivacyPage() {
                 to="/contact"
                 className="text-[11px] uppercase tracking-[0.28em] no-underline border-b border-charcoal/40 pb-1 hover:border-charcoal"
               >
-                START A CONVERSATION →
+                CONTACT FORM →
               </Link>
             </p>
           </div>
