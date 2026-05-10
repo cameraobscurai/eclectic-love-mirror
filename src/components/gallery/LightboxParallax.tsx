@@ -170,6 +170,7 @@ export function LightboxParallax({ plateKey, disabled, children }: Props) {
   return (
     <div
       ref={wrapperRef}
+      data-vt-dest="gallery-hero"
       className="absolute inset-0 overflow-hidden pointer-events-auto"
       style={{ contain: "layout paint" }}
     >
