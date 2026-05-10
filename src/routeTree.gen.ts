@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
@@ -24,6 +25,11 @@ import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProcessRoute = ProcessRouteImport.update({
   id: '/process',
   path: '/process',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/process'
+    | '/reset-password'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/process'
+    | '/reset-password'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/process'
+    | '/reset-password'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -206,10 +218,18 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/process': {
       id: '/process'
       path: '/process'
@@ -338,6 +358,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
