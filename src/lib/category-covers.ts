@@ -31,6 +31,13 @@ export interface CoverPicture {
   img: { src: string; w: number; h: number };
 }
 
+/** Convenience: get the fallback raster URL from a CoverPicture (or pass-through string). */
+export function coverUrl(cover: CoverPicture | string | undefined | null): string | null {
+  if (!cover) return null;
+  if (typeof cover === "string") return cover;
+  return cover.img.src;
+}
+
 export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, CoverPicture>> = {
   sofas: sofasCover as unknown as CoverPicture,
   chairs: chairsCover as unknown as CoverPicture,
