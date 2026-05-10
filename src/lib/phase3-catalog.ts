@@ -13,17 +13,12 @@
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
 
-export type CollectionImageRole = "cutout" | "backdrop" | "detail" | "scale" | "context";
-
 export interface CollectionImage {
   url: string;
   position: number;
   isHero: boolean;
   inferredFilename: string | null;
   altText: string | null;
-  /** Display role. `cutout` (default) renders boxed/contained on white;
-   *  `backdrop` renders full-bleed as a tile background. */
-  role?: CollectionImageRole;
 }
 
 export interface CollectionProduct {
@@ -42,6 +37,10 @@ export interface CollectionProduct {
   images: CollectionImage[];
   primaryImage: CollectionImage | null;
   imageCount: number;
+  /** Optional editorial backdrop photograph rendered full-bleed behind the
+   *  product cutout on the Collection wall tile. Lives in its own slot —
+   *  NOT part of the gallery (`images[]`), never appears in QuickView. */
+  cardBackgroundUrl?: string | null;
   /** Per-product image cache-buster. Compact unix seconds derived from the
    *  inventory row's `updated_at` at bake time. Appended as `?v=…` to every
    *  Supabase storage URL so newly uploaded images displace stale browser
