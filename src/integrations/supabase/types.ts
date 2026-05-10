@@ -23,7 +23,12 @@ export type Database = {
           item_id: string | null
           message: string
           name: string
+          outcome_notes: string | null
+          outcome_updated_at: string | null
+          outcome_updated_by: string | null
           phone: string | null
+          quote_value: number | null
+          status: Database["public"]["Enums"]["inquiry_status"]
           subject: string | null
         }
         Insert: {
@@ -34,7 +39,12 @@ export type Database = {
           item_id?: string | null
           message: string
           name: string
+          outcome_notes?: string | null
+          outcome_updated_at?: string | null
+          outcome_updated_by?: string | null
           phone?: string | null
+          quote_value?: number | null
+          status?: Database["public"]["Enums"]["inquiry_status"]
           subject?: string | null
         }
         Update: {
@@ -45,7 +55,12 @@ export type Database = {
           item_id?: string | null
           message?: string
           name?: string
+          outcome_notes?: string | null
+          outcome_updated_at?: string | null
+          outcome_updated_by?: string | null
           phone?: string | null
+          quote_value?: number | null
+          status?: Database["public"]["Enums"]["inquiry_status"]
           subject?: string | null
         }
         Relationships: [
@@ -1258,6 +1273,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      inquiry_status: "new" | "quoted" | "booked" | "lost" | "ghosted"
       item_status: "available" | "reserved" | "sold" | "draft"
       match_decision: "pending" | "approved" | "rejected" | "needs_review"
       phase3_classification:
@@ -1413,6 +1429,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      inquiry_status: ["new", "quoted", "booked", "lost", "ghosted"],
       item_status: ["available", "reserved", "sold", "draft"],
       match_decision: ["pending", "approved", "rejected", "needs_review"],
       phase3_classification: [
