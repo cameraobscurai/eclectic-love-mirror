@@ -211,7 +211,8 @@ function AtelierPage() {
         }
         .atelier-hero-reveal {
           opacity: 0;
-          animation: atelier-hero-reveal 640ms ease-out forwards;
+          animation: atelier-hero-reveal 280ms ease-out forwards;
+          animation-delay: 0ms !important;
         }
         @media (prefers-reduced-motion: reduce) {
           .atelier-hero-reveal { animation-duration: 1ms; }
