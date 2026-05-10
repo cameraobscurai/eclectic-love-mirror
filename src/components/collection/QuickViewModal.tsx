@@ -63,7 +63,14 @@ export function QuickViewModal({
   useEffect(() => {
     setImgIdx(0);
     setShowScale(false);
-  }, [product.id]);
+    // Fire GA4 product_viewed for each product the user opens (or pages to
+    // via prev/next inside the modal).
+    analytics.productViewed({
+      id: product.id,
+      name: product.title,
+      category: product.category ?? null,
+    });
+  }, [product.id, product.title, product.category]);
 
   useEffect(() => {
     setImgNatural(null);
