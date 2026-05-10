@@ -8,7 +8,7 @@ import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
-import { STORAGE_ORIGIN } from "@/lib/storage-image";
+import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
 import { morphOpen } from "@/lib/view-transition";
 import { flushSync } from "react-dom";
 
@@ -19,34 +19,117 @@ import { flushSync } from "react-dom";
 // All imagery is real, served from the storage manifest.
 // ---------------------------------------------------------------------------
 
+const SITE_URL = "https://eclectichive.com";
+const GALLERY_URL = `${SITE_URL}/gallery`;
+
 export const Route = createFileRoute("/gallery")({
-  head: () => ({
-    meta: [
-      { title: "The Gallery — Selected Projects | Eclectic Hive" },
-      {
-        name: "description",
-        content:
-          "Selected projects from Eclectic Hive — cinematic event environments designed, fabricated, and produced from Denver, Colorado.",
+  head: () => {
+    const ogImage = renderUrl(galleryProjects[0].heroImage.src, {
+      width: 1600,
+      quality: 80,
+    });
+
+    const itemListLd = {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${GALLERY_URL}#gallery`,
+      name: "The Gallery — Selected Projects",
+      description:
+        "Selected projects from Eclectic Hive — cinematic event environments designed, fabricated, and produced from Denver, Colorado.",
+      url: GALLERY_URL,
+      isPartOf: { "@type": "WebSite", name: "Eclectic Hive", url: SITE_URL },
+      primaryImageOfPage: { "@type": "ImageObject", url: ogImage },
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: galleryProjects.length,
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        itemListElement: galleryProjects.map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          item: {
+            "@type": "CreativeWork",
+            "@id": `${GALLERY_URL}#project-${p.number}`,
+            name: p.name,
+            description: p.summary,
+            url: `${GALLERY_URL}#project-${p.number}`,
+            image: renderUrl(p.heroImage.src, { width: 1600, quality: 80 }),
+            dateCreated: p.year,
+            genre: p.category,
+            locationCreated: {
+              "@type": "Place",
+              name: p.location,
+              address: { "@type": "PostalAddress", addressRegion: p.region },
+              geo: {
+                "@type": "GeoCoordinates",
+                longitude: p.coords[0],
+                latitude: p.coords[1],
+              },
+            },
+            additionalType: p.kind,
+            creator: {
+              "@type": "Organization",
+              name: "Eclectic Hive",
+              url: SITE_URL,
+            },
+          },
+        })),
       },
-      { property: "og:title", content: "The Gallery — Eclectic Hive" },
-      {
-        property: "og:description",
-        content:
-          "Selected projects from Eclectic Hive — cinematic event environments.",
-      },
-    ],
-    // Preconnect to the storage CDN so the TLS handshake happens in
-    // parallel with HTML parsing — first card image starts downloading
-    // ~150-300ms sooner on cold loads.
-    links: STORAGE_ORIGIN
-      ? [
-          { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" },
-          { rel: "dns-prefetch", href: STORAGE_ORIGIN },
-        ]
-      : [],
-  }),
+    };
+
+    const breadcrumbLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Gallery", item: GALLERY_URL },
+      ],
+    };
+
+    return {
+      meta: [
+        { title: "The Gallery — Selected Projects | Eclectic Hive" },
+        {
+          name: "description",
+          content:
+            "Selected projects from Eclectic Hive — cinematic event environments designed, fabricated, and produced from Denver, Colorado.",
+        },
+        { property: "og:title", content: "The Gallery — Eclectic Hive" },
+        {
+          property: "og:description",
+          content:
+            "Selected projects from Eclectic Hive — cinematic event environments.",
+        },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: GALLERY_URL },
+        { property: "og:image", content: ogImage },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: "The Gallery — Eclectic Hive" },
+        { name: "twitter:image", content: ogImage },
+      ],
+      links: [
+        { rel: "canonical", href: GALLERY_URL },
+        ...(STORAGE_ORIGIN
+          ? [
+              { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
+              { rel: "dns-prefetch", href: STORAGE_ORIGIN },
+            ]
+          : []),
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(itemListLd),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(breadcrumbLd),
+        },
+      ],
+    };
+  },
   component: GalleryPage,
 });
+
 
 // Stable list of regions in first-appearance order. "All" pinned first.
 const REGION_FILTERS: string[] = (() => {
