@@ -419,6 +419,19 @@ button, a, [role="button"] {
   }
 }
 
+/* Gallery card → lightbox shared-element morph. Slightly slower and softer
+   than the browser default so the canyon plate feels like it lifts, not snaps. */
+::view-transition-group(gallery-hero) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(gallery-hero),
+::view-transition-new(gallery-hero) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  mix-blend-mode: normal;
+}
+
 /* Hide scrollbars (used by carousels where a custom indicator replaces them). */
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
