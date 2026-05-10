@@ -6,10 +6,20 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
+
+const GA_MEASUREMENT_ID = "G-6TSJ4D92PH";
+
+declare global {
+  interface Window {
+    dataLayer: unknown[];
+    gtag: (...args: unknown[]) => void;
+  }
+}
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
