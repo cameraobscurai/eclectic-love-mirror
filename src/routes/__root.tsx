@@ -6,10 +6,20 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
+
+const GA_MEASUREMENT_ID = "G-6TSJ4D92PH";
+
+declare global {
+  interface Window {
+    dataLayer: unknown[];
+    gtag: (...args: unknown[]) => void;
+  }
+}
 
 import appCss from "../styles.css?url";
 import saolRegular from "../assets/fonts/SaolDisplay-Regular.woff2?url";
@@ -139,6 +149,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         {children}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
@@ -146,8 +166,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  const { pathname } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const isHome = pathname === "/";
+
+  // Send a GA4 page_view on every TanStack route change.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    const path = pathname + (search ? `?${new URLSearchParams(search as Record<string, string>).toString()}` : "") + (hash ?? "");
+    window.gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, [pathname, search, hash]);
+
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
   // footer (long editorial scroll, footer is the natural terminus).
