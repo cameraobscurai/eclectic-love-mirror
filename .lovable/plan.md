@@ -1,90 +1,57 @@
-# Top 5% Surgical Polish — Eclectic Hive
+# Atelier — fix the whole page's timing, not just THE HIVE
 
-Five moves. Each one is invisible until you feel it, brand-safe, and high-leverage for Awwwards eyes. Nothing redesigned, nothing added.
+I re-read the entire route (`src/routes/atelier.tsx` + `src/components/atelier/team.tsx` + `src/routes/atelier.images.ts`) and watched the live network. The page feels broken for **six** distinct reasons, and only one of them is THE HIVE. Here's the full picture.
 
----
+## What's actually wrong
 
-## 1. Gallery lightbox — image-inside-frame parallax
+### 1. The hero column reserves 120svh of empty air
+`xl:col-span-7 min-h-[calc(120svh-var(--nav-h))]` on the right column forces ~1120px of vertical space on a 934px viewport — taller than the hero image itself ever needs. Result: a huge void below the hero before THE HIVE section starts. This was added to give the sticky-left column "room to hold," but it's the single biggest reason the page feels slow and empty. Even after the hero decodes, the user scrolls through a half-screen of nothing.
 
-**Where:** `GalleryLightbox` hero plate only (Amangiri and the other landscape projects benefit most).
+**Fix:** drop to `min-h-[100svh]` (or remove entirely and let the 4:5 hero define column height). The sticky behavior still works because the left column is shorter than a single viewport.
 
-**What:** The frame stays fixed. The image inside drifts ±10px on pointer movement (desktop) or briefly on swipe (mobile), with a slow settle. No rotation, no zoom, no scrim change.
+### 2. Hero text fades in over 640ms — for content that was already SSR'd
+The `atelier-hero-reveal` keyframes stage three fades (eyebrow, headline 80ms delay, body 160ms delay) at 640ms each. The text exists in the HTML — fading it in just makes the page look like it's hydrating slowly. The hero animation is the first thing the eye registers and it's announcing "I am loading."
 
-**Why it pays:** Turns six already-strong landscape projects into a tactile experience. This is the single moment a juror will screenshot. Costs ~30 lines, zero layout change.
+**Fix:** cut the duration to 280ms with no stagger, or remove the animation entirely. The text should be there on first paint, full stop.
 
-**Guardrails:** `prefers-reduced-motion` → static. GPU transform only. Disabled while plate is changing.
+### 3. Fetch-priority collision on the first row of THE HIVE
+`head().links` preloads the first 4 portraits at `fetchPriority="low"`, then `<MediaAperture>` re-fetches them at `fetchPriority="high"`. Browser warns "preloaded but not used at the same priority" and the head start is wasted. The 4 visible portraits arrive ~500–700ms after they could have.
 
----
+**Fix:** drop the head-preloads. They're below the fold, the component eager-loads them anyway, and they were stealing bandwidth from the hero (the actual LCP).
 
-## 2. Gallery card → lightbox: shared-element transition
+### 4. Rows 2–3 of THE HIVE only fetch on scroll
+The IntersectionObserver uses a 2000px prefetch margin. Row 3 of an 11-portrait grid sits past that on most viewports. When the user scrolls to THE HIVE they meet 7 empty apertures filling in over the network — that's the "blank grid."
 
-**Where:** Click on a project card → `GalleryLightbox` opens.
+**Fix:** for THE HIVE only, drop the IO gate. Eager-load all 11 portraits, with `fetchPriority="high"` on row 1 and `fetchPriority="low"` on rows 2–3. The cohort is finite (11 small portraits, ~30–60KB each on the render endpoint) and the user is going to see all of them anyway.
 
-**What:** View Transitions API. Clicked thumbnail morphs into the lightbox hero plate instead of cross-fading the overlay in.
+### 5. Three unused imagetools imports bloat the route chunk
+`imaginedTent`, `designedSofa`, `realizedCeremony` are imported at the top of `atelier.tsx` and stored in `APPROACH_STEPS`, but the rendered `APPROACH_STEPS` JSX (lines 375–396) only shows `number` + `label` — the `image` field is never read. vite-imagetools still generates AVIF/WebP variants for all three at build time, and the `picture` objects get bundled into the route chunk JS. Pure dead weight.
 
-**Why it pays:** This is the difference between “a portfolio site” and “a designed portfolio site.” Chromium picks it up; Safari/Firefox fall back to today’s instant open — no regression.
+**Fix:** remove the three imports and strip the `image` field from `APPROACH_STEPS`.
 
-**Guardrails:** Feature-detect. Single `view-transition-name` per card/plate pairing. No new components.
+### 6. Hero quality on the team renders is overkill
+Tiles render at ~287 CSS px (574 device px @ 2× DPR). `width: 720, quality: 70` is fine — but quality 60 is invisible at this scale and shaves ~25% bytes per portrait. Eleven portraits × ~25% = noticeable on slow connections.
 
----
+**Fix:** drop team-photo quality 70 → 60 in the two `renderUrl`/`renderSrcSet` calls in `team.tsx`.
 
-## 3. Home: poster-first, video-after-idle
+## Summary of edits (all surgical, frontend only)
 
-**Where:** Desktop `HeroFilmstrip` (5 seasonal videos) and mobile `SequentialHeroVideo`.
+| # | File | Change | Lines |
+|---|------|--------|-------|
+| 1 | `routes/atelier.tsx` | `min-h-[calc(120svh-...)]` → `min-h-[100svh-...]` (or remove) | 1 |
+| 2 | `routes/atelier.tsx` | Shorten/remove `atelier-hero-reveal` animation | ~10 |
+| 3 | `routes/atelier.tsx` | Remove the `TEAM.slice(0,4).map(...)` preload block in `head().links` | ~10 |
+| 4 | `components/atelier/team.tsx` | `lazy={false}` for all members, `fetchPriority` low for index ≥ 4 | 3 |
+| 5 | `routes/atelier.tsx` | Remove 3 dead imagetools imports + image field on `APPROACH_STEPS` | ~10 |
+| 6 | `components/atelier/team.tsx` | quality 70 → 60 in both `renderUrl` calls | 2 |
 
-**What:** Show posters as the LCP. Defer the actual video network requests until **first idle frame after posters paint** OR **plate is in viewport**, whichever comes first. Posters become the brand impression; video becomes the reward.
+## What I'm not doing
 
-**Why it pays:** Today the homepage waits on five concurrent Supabase video downloads (~20s each in the profile). Fixing this drops perceived load from “loading” to “arrived,” without changing a pixel of the design.
+- Not touching the editorial trio (triptych / sketch / collage). They use `?preset=editorial` (AVIF/WebP), lazy-load with 1600px margin, and they sit far below the fold. They're fine.
+- Not adding LQIP/blurhash. Once the IO gate is dropped and the head-preload conflict is resolved, the network is fast enough that LQIP becomes a polish move, not a fix. We can revisit if the page still feels weak after these six changes.
+- Not changing the visual language, layout grid, or aperture frame.
+- Not touching `MediaAperture` itself. The component is correct; the route was using it wrong.
 
-**Guardrails:** Autoplay still works once loaded. Mobile keeps its sequential reel. No layout shift — posters and videos share intrinsic ratio.
+## Order of execution
 
----
-
-## 4. Press logos: kill the 1MB PNG
-
-**Where:** Gallery `As Featured In` block.
-
-**What:** Replace the 1054KB transparent PNG with a responsive AVIF/WebP at the actual rendered width, plus `loading="lazy"` (already present) and proper `width`/`height` attrs. Same visual, ~95% smaller.
-
-**Why it pays:** The single largest asset on the Gallery page is decorative footer chrome. Lighthouse will reward this immediately, and so will every cellular juror.
-
-**Guardrails:** Identical output. Owner-approved logos untouched.
-
----
-
-## 5. Per-route share metadata + JSON-LD
-
-**Where:** Home, Atelier, Collection, Gallery, Contact `head()`.
-
-**What:**
-- Each leaf route ships a unique `og:image` pulled from its real hero (Gallery → Amangiri canyon plate, Atelier → its hero, Collection → Hive H, etc.).
-- Add `Organization` + `LocalBusiness` (Denver) JSON-LD at root, `BreadcrumbList` per leaf.
-- Lock canonical URLs.
-
-**Why it pays:** Awwwards’ “Modern Web Standards” score is partly silent SEO/share quality. A pasted Gallery link should preview the canyon, not a generic site card. Zero visible UI change.
-
-**Guardrails:** Reuse existing approved imagery. No new copy.
-
----
-
-## What I cut from the prior draft
-
-Removed because they were polish theater, not surgical payoff:
-- Crossfade timing tweaks
-- Thumbnail rail edge masks
-- Lightbox metadata expansion
-- Mobile video micro-drift
-- Site-wide focus/hover normalization sweep
-- Collection `content-visibility` pass
-
-These are real but low-leverage. They don’t move the Awwwards needle the way the five above do. They can be a follow-up dust-off after the five ship.
-
----
-
-## Order
-
-1 → 3 → 4 → 2 → 5.
-
-(1 and 3 are the felt wins. 4 is free. 2 is the screenshot moment. 5 is silent quality.)
-
-Greenlight and I start with #1.
+All six in one pass — they're independent and small (~40 lines total across two files). Greenlight and I'll ship it.

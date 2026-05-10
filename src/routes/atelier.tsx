@@ -5,7 +5,6 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
-import { TEAM } from "@/components/atelier/team";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
 
 // Slot-mapped images — see ./atelier.images.ts. DO NOT replace these inline;
@@ -15,9 +14,6 @@ const atelierHiveTriptych = ATELIER_IMAGES.HIVE_TRIPTYCH;
 const atelierSketchDrape = ATELIER_IMAGES.SKETCH_DRAPE;
 const atelierCollage = ATELIER_IMAGES.WORKSHOP_COLLAGE;
 
-import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
-import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
-import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
 
 // Owner-supplied photos pending — render quiet, intentional waiting state.
 function Placeholder({
@@ -91,30 +87,9 @@ const ATELIER_FAQ: ReadonlyArray<{ q: string; a: string }> = [
 // three-square material board sits below the list as quiet evidence.)
 
 const APPROACH_STEPS = [
-  {
-    number: "01",
-    label: "IMAGINED",
-    image: {
-      src: imaginedTent,
-      alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
-    },
-  },
-  {
-    number: "02",
-    label: "DESIGNED",
-    image: {
-      src: designedSofa,
-      alt: "Technical line drawing of a fringed sofa — design phase rendering.",
-    },
-  },
-  {
-    number: "03",
-    label: "REALIZED",
-    image: {
-      src: realizedCeremony,
-      alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
-    },
-  },
+  { number: "01", label: "IMAGINED" },
+  { number: "02", label: "DESIGNED" },
+  { number: "03", label: "REALIZED" },
 ] as const;
 
 export const Route = createFileRoute("/atelier")({
@@ -159,20 +134,11 @@ export const Route = createFileRoute("/atelier")({
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
-      // Preload the first row of THE HIVE portraits (4 across on desktop).
-      // These sit just below the fold and dominate the second paint — kicking
-      // them off in the document head lets them race the JS bundle instead
-      // of waiting on hydration + IO + image decode.
-      ...TEAM.slice(0, 4)
-        .filter((m) => m.image?.approvedForWeb)
-        .map((m) => ({
-          rel: "preload" as const,
-          as: "image" as const,
-          href: renderUrl(m.image!.src, { width: 720, quality: 70 }),
-          imageSrcSet: renderSrcSet(m.image!.src, [360, 540, 720, 1080], 70),
-          imageSizes: "(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw",
-          fetchPriority: "low" as const,
-        })),
+      // NOTE: We intentionally do NOT head-preload team portraits here.
+      // Doing so collided with MediaAperture's own fetchPriority="high" on
+      // the first row (preload at "low" + tag at "high" → browser warning,
+      // wasted head start) and stole bandwidth from the hero LCP. The team
+      // grid eager-loads on mount instead.
     ],
   }),
   component: AtelierPage,
@@ -245,7 +211,8 @@ function AtelierPage() {
         }
         .atelier-hero-reveal {
           opacity: 0;
-          animation: atelier-hero-reveal 640ms ease-out forwards;
+          animation: atelier-hero-reveal 280ms ease-out forwards;
+          animation-delay: 0ms !important;
         }
         @media (prefers-reduced-motion: reduce) {
           .atelier-hero-reveal { animation-duration: 1ms; }
@@ -306,8 +273,11 @@ function AtelierPage() {
             </div>
           </div>
 
-          {/* Scrolling body — tall right-side image gives the pinned headline room to hold. */}
-          <div className="xl:col-span-7 min-h-[calc(120svh-var(--nav-h))] flex flex-col justify-start">
+          {/* Right column — hero image. Sized to its 4:5 intrinsic ratio so
+              the column doesn't reserve a half-screen of empty air below the
+              image (which is what made the page feel slow). The sticky-left
+              column still holds because it's shorter than a single viewport. */}
+          <div className="xl:col-span-7 flex flex-col justify-start">
             <MediaAperture
               ratio="4/5"
               picture={atelierReplacement}
