@@ -15,7 +15,7 @@ export const Route = createFileRoute("/privacy")({
       {
         name: "description",
         content:
-          "Privacy Policy for Eclectic Hive: how personal information is collected, used, disclosed, retained, and protected.",
+          "Privacy Policy for Eclectic Hive: how the website collects, uses, maintains, and discloses information from users.",
       },
     ],
   }),
@@ -46,227 +46,175 @@ function PrivacyPage() {
         <section className={SECTION_WRAP}>
           <div className={PROSE}>
             <p>
-              Eclectic Hive is an event design and production studio based in
-              Denver, Colorado. This Privacy Policy describes how Eclectic Hive
-              collects, uses, discloses, and safeguards personal information
-              in connection with{" "}
-              <a href="https://eclectichive.com">eclectichive.com</a> (the
-              &ldquo;Site&rdquo;), inquiries submitted to the studio, and
-              other interactions with Eclectic Hive (collectively, the
-              &ldquo;Services&rdquo;).
-            </p>
-            <p>
-              By accessing the Site or providing information to Eclectic Hive,
-              the user acknowledges having read and understood this Privacy
-              Policy. Users who do not agree with its terms should not use the
-              Services.
+              This Privacy Policy governs the manner in which the website
+              collects, uses, maintains and discloses information collected
+              from users (each, a &ldquo;User&rdquo;) of the website
+              (&ldquo;Site&rdquo;). This privacy policy applies to the Site
+              and all products and services offered by ECLECTIC HIVE.
             </p>
           </div>
         </section>
 
-        {/* Information collected */}
+        {/* Personal Identification Information */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>INFORMATION COLLECTED</h2>
+          <h2 className={SECTION_LABEL}>PERSONAL IDENTIFICATION INFORMATION</h2>
           <div className={PROSE}>
             <p>
-              <strong>Information provided directly.</strong> Eclectic Hive
-              collects information submitted through inquiry forms, email, or
-              other communications, which may include name, email address,
-              telephone number, event date, event location, budget range, and
-              project details.
-            </p>
-            <p>
-              <strong>Information collected automatically.</strong> When the
-              Site is accessed, Eclectic Hive and its service providers may
-              automatically collect certain technical information, including
-              IP address, device identifiers, browser type and version,
-              operating system, referring URLs, pages viewed, and timestamps.
-            </p>
-            <p>
-              <strong>Cookies and similar technologies.</strong> The Site uses
-              cookies, pixels, and similar technologies that are strictly
-              necessary for the Site to function and, where applicable, to
-              measure traffic and performance. Cookies may be managed through
-              browser settings; disabling certain cookies may impair
-              functionality.
+              We may collect personal identification information from Users in
+              a variety of ways, including, but not limited to, when Users
+              visit our site, register on the site, subscribe to the
+              newsletter, and in connection with other activities, services,
+              features or resources we make available on our Site. Users may
+              be asked for, as appropriate, email address. Users may, however,
+              visit our Site anonymously. We will collect personal
+              identification information from Users only if they voluntarily
+              submit such information to us. Users can always refuse to supply
+              personally identification information, except that it may
+              prevent them from engaging in certain Site related activities.
             </p>
           </div>
         </section>
 
-        {/* How information is used */}
+        {/* Non-Personal Identification Information */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>HOW INFORMATION IS USED</h2>
+          <h2 className={SECTION_LABEL}>NON-PERSONAL IDENTIFICATION INFORMATION</h2>
           <div className={PROSE}>
             <p>
-              Eclectic Hive processes personal information for the following
-              purposes:
-            </p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>To respond to inquiries and provide proposals, quotes, and other requested information.</li>
-              <li>To negotiate, perform, and administer contracts, including scheduling, invoicing, and event delivery.</li>
-              <li>To operate, maintain, secure, and improve the Site and Services.</li>
-              <li>To prevent fraud, enforce applicable terms, and protect the rights, property, and safety of Eclectic Hive, its clients, and its personnel.</li>
-              <li>To comply with applicable laws, regulations, and legal process.</li>
-            </ul>
-            <p>
-              Eclectic Hive does not sell personal information and does not
-              engage in automated decision-making that produces legal or
-              similarly significant effects.
-            </p>
-          </div>
-        </section>
-
-        {/* Disclosure */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>HOW INFORMATION IS DISCLOSED</h2>
-          <div className={PROSE}>
-            <p>
-              Eclectic Hive discloses personal information only as described
-              below and under appropriate confidentiality obligations:
-            </p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>
-                <strong>Service providers</strong> that perform functions on
-                behalf of Eclectic Hive, including website hosting, email
-                delivery, file storage, analytics, and payment processing.
-              </li>
-              <li>
-                <strong>Production partners</strong>, including vendors,
-                fabricators, venues, and contractors, solely to the extent
-                necessary to design and deliver an event.
-              </li>
-              <li>
-                <strong>Legal, regulatory, and safety</strong> disclosures
-                where required by law, subpoena, court order, or other legal
-                process, or where disclosure is reasonably necessary to
-                protect rights, property, or safety.
-              </li>
-              <li>
-                <strong>Business transactions</strong> in connection with a
-                merger, acquisition, financing, reorganization, or sale of
-                assets, subject to customary confidentiality protections.
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Retention */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>DATA RETENTION</h2>
-          <div className={PROSE}>
-            <p>
-              Eclectic Hive retains personal information for as long as
-              necessary to fulfill the purposes for which it was collected,
-              including providing the Services, maintaining business records,
-              resolving disputes, and complying with legal, tax, accounting,
-              and regulatory obligations. When information is no longer
-              required, it will be deleted or anonymized in accordance with
-              Eclectic Hive&apos;s retention practices.
-            </p>
-          </div>
-        </section>
-
-        {/* Rights */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>USER CHOICES &amp; RIGHTS</h2>
-          <div className={PROSE}>
-            <p>
-              Subject to applicable law, users may request access to,
-              correction of, or deletion of personal information held by
-              Eclectic Hive, and may opt out of marketing communications at
-              any time by following the unsubscribe instructions in any
-              message or by contacting Eclectic Hive directly.
-            </p>
-            <p>
-              <strong>California residents.</strong> The California Consumer
-              Privacy Act, as amended, provides California residents with
-              certain rights regarding their personal information, including
-              the right to know what categories and specific pieces of
-              personal information have been collected, the sources from
-              which it was collected, the business or commercial purposes for
-              collection, and the categories of third parties with whom it is
-              shared; the right to request deletion or correction; and the
-              right to opt out of the sale or sharing of personal
-              information. Eclectic Hive does not sell or share personal
-              information as those terms are defined under California law.
-              Eclectic Hive will not discriminate against any user for
-              exercising these rights. To submit a verifiable consumer
-              request, contact{" "}
-              <a href="mailto:info@eclectichive.com">info@eclectichive.com</a>.
-            </p>
-          </div>
-        </section>
-
-        {/* Security */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>SECURITY</h2>
-          <div className={PROSE}>
-            <p>
-              Eclectic Hive maintains reasonable administrative, technical,
-              and physical safeguards designed to protect personal
-              information against unauthorized access, disclosure,
-              alteration, and destruction. However, no method of transmission
-              over the internet or method of electronic storage is completely
-              secure, and absolute security cannot be guaranteed.
-            </p>
-          </div>
-        </section>
-
-        {/* Children */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>CHILDREN&apos;S PRIVACY</h2>
-          <div className={PROSE}>
-            <p>
-              The Services are not directed to children under 13, and
-              Eclectic Hive does not knowingly collect personal information
-              from children under 13. If Eclectic Hive becomes aware that
-              such information has been collected without verifiable parental
-              consent, it will be deleted promptly.
-            </p>
-          </div>
-        </section>
-
-        {/* Third-party links */}
-        <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>THIRD-PARTY LINKS &amp; SERVICES</h2>
-          <div className={PROSE}>
-            <p>
-              The Site may contain links to third-party websites, products,
-              or services not operated by Eclectic Hive. Eclectic Hive is not
-              responsible for the content, privacy practices, or security of
-              any third party. Users are encouraged to review the privacy
-              policies of any third party before providing personal
+              We may collect non-personal identification information about
+              Users whenever they interact with our Site. Non-personal
+              identification information may include the browser name, the
+              type of computer and technical information about Users means of
+              connection to our Site, such as the operating system and the
+              Internet service providers utilized and other similar
               information.
             </p>
           </div>
         </section>
 
-        {/* International */}
+        {/* Web Browser Cookies */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>INTERNATIONAL USERS</h2>
+          <h2 className={SECTION_LABEL}>WEB BROWSER COOKIES</h2>
           <div className={PROSE}>
             <p>
-              The Services are operated from the United States. Users
-              accessing the Services from outside the United States
-              acknowledge that their information may be transferred to,
-              stored, and processed in the United States, where data
-              protection laws may differ from those in the user&apos;s
-              jurisdiction.
+              Our Site may use &ldquo;cookies&rdquo; to enhance User
+              experience. User&apos;s web browser places cookies on their hard
+              drive for record-keeping purposes and sometimes to track
+              information about them. User may choose to set their web browser
+              to refuse cookies, or to alert you when cookies are being sent.
+              If they do so, note that some parts of the Site may not function
+              properly.
             </p>
           </div>
         </section>
 
-        {/* Changes */}
+        {/* How We Use Collected Information */}
         <section className={`${SECTION_WRAP} mt-12`}>
-          <h2 className={SECTION_LABEL}>CHANGES TO THIS POLICY</h2>
+          <h2 className={SECTION_LABEL}>HOW WE USE COLLECTED INFORMATION</h2>
           <div className={PROSE}>
             <p>
-              Eclectic Hive may update this Privacy Policy from time to time.
-              The effective date at the top of this page indicates when the
-              policy was last revised. Material changes will be posted on
-              this page and, where appropriate, communicated through other
-              channels. Continued use of the Services following any update
-              constitutes acceptance of the revised policy.
+              ECLECTIC HIVE may collect and use Users personal information for
+              the following purposes:
+            </p>
+            <p>
+              <strong>To improve customer service.</strong> Information you
+              provide helps us respond to your customer service requests and
+              support needs more efficiently.
+            </p>
+            <p>
+              <strong>To personalize user experience.</strong> We may use
+              information in the aggregate to understand how our Users as a
+              group use the services and resources provided on our Site.
+            </p>
+            <p>
+              <strong>To send periodic emails.</strong> We may use the email
+              address to send User information and updates pertaining to their
+              order. It may also be used to respond to their inquiries,
+              questions, and/or other requests. If User decides to opt-in to
+              our mailing list, they will receive emails that may include
+              company news, updates, related product or service information,
+              etc. If at any time the User would like to unsubscribe from
+              receiving future emails, we include detailed unsubscribe
+              instructions at the bottom of each email or User may contact us
+              via our Site.
+            </p>
+          </div>
+        </section>
+
+        {/* How We Protect Your Information */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>HOW WE PROTECT YOUR INFORMATION</h2>
+          <div className={PROSE}>
+            <p>
+              We adopt appropriate data collection, storage and processing
+              practices and security measures to protect against unauthorized
+              access, alteration, disclosure or destruction of your personal
+              information, username, password, transaction information and
+              data stored on our Site.
+            </p>
+          </div>
+        </section>
+
+        {/* Sharing Your Personal Information */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>SHARING YOUR PERSONAL INFORMATION</h2>
+          <div className={PROSE}>
+            <p>
+              We do not sell, trade, or rent Users personal identification
+              information to others. We may share generic aggregated
+              demographic information not linked to any personal
+              identification information regarding visitors and users with
+              our business partners, trusted affiliates and advertisers for
+              the purposes outlined above.
+            </p>
+          </div>
+        </section>
+
+        {/* Third Party Websites */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>THIRD PARTY WEBSITES</h2>
+          <div className={PROSE}>
+            <p>
+              Users may find advertising or other content on our Site that
+              link to the sites and services of our partners, suppliers,
+              advertisers, sponsors, licensors and other third parties. We do
+              not control the content or links that appear on these sites and
+              are not responsible for the practices employed by websites
+              linked to or from our Site. In addition, these sites or
+              services, including their content and links, may be constantly
+              changing. These sites and services may have their own privacy
+              policies and customer service policies. Browsing and interaction
+              on any other website, including websites which have a link to
+              our Site, is subject to that website&apos;s own terms and
+              policies.
+            </p>
+          </div>
+        </section>
+
+        {/* Changes to This Privacy Policy */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>CHANGES TO THIS PRIVACY POLICY</h2>
+          <div className={PROSE}>
+            <p>
+              ECLECTIC HIVE has the discretion to update this privacy policy
+              at any time. When we do, we will revise the updated date at the
+              bottom of this page. We encourage Users to frequently check this
+              page for any changes to stay informed about how we are helping
+              to protect the personal information we collect. You acknowledge
+              and agree that it is your responsibility to review this privacy
+              policy periodically and become aware of modifications.
+            </p>
+          </div>
+        </section>
+
+        {/* Your Acceptance of These Terms */}
+        <section className={`${SECTION_WRAP} mt-12`}>
+          <h2 className={SECTION_LABEL}>YOUR ACCEPTANCE OF THESE TERMS</h2>
+          <div className={PROSE}>
+            <p>
+              By using this Site, you signify your acceptance of this policy.
+              If you do not agree to this policy, please do not use our Site.
+              Your continued use of the Site following the posting of changes
+              to this policy will be deemed your acceptance of those changes.
             </p>
           </div>
         </section>
@@ -276,8 +224,7 @@ function PrivacyPage() {
           <h2 className={SECTION_LABEL}>CONTACT</h2>
           <div className={PROSE}>
             <p>
-              For questions or requests regarding this Privacy Policy or the
-              handling of personal information, contact:
+              For questions regarding this Privacy Policy, contact:
             </p>
             <p>
               Eclectic Hive
