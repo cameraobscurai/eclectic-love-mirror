@@ -31,13 +31,17 @@ export function SequentialHeroVideo() {
         autoPlay
         muted
         playsInline
-        preload="auto"
+        // Was "auto" — that fetched the full clip during initial paint and
+        // pushed FCP/LCP backward. "metadata" lets the browser fetch just
+        // enough to begin playback while the poster owns first paint.
+        preload="metadata"
         {...({ "webkit-playsinline": "true" } as Record<string, string>)}
         onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
         aria-label={current.label}
       />
-      {/* Preload next clip for seamless transition */}
-      <link rel="preload" as="video" href={next.src?.mp4} />
+      {/* Preload the next clip only after the first has begun playing,
+          so it never competes with the LCP fetch. */}
+      <link rel="prefetch" as="video" href={next.src?.mp4} />
     </div>
   );
 }
