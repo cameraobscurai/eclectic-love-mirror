@@ -33,10 +33,10 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       style={{ willChange: "opacity" }}
       aria-label={product.title}
     >
-      {backdrop && (
+      {backdropUrl && (
         <div className="absolute inset-0">
           <img
-            src={backdrop.url}
+            src={backdropUrl}
             alt=""
             className="w-full h-full object-cover pointer-events-none select-none"
             loading="lazy"
@@ -45,7 +45,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
           />
         </div>
       )}
-      {url && url !== backdrop?.url && (
+      {url && (
         <div className="absolute inset-0">
           <img
             src={url}
