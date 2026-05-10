@@ -135,8 +135,9 @@ export function CategoryGalleryOverview({
             <CategoryCard
               key={item.group.id}
               groupId={item.group.id}
-              heroSrc={item.heroSrc}
-              heroSrcSet={item.heroSrcSet}
+              cover={item.cover}
+              heroFallbackSrc={item.heroFallbackSrc}
+              heroFallbackSrcSet={item.heroFallbackSrcSet}
               heroAlt={item.heroAlt}
               label={item.label}
               isFirstRow={isFirstRow}
@@ -155,8 +156,9 @@ export function CategoryGalleryOverview({
 
 interface CategoryCardProps {
   groupId: BrowseGroupId;
-  heroSrc: string | null;
-  heroSrcSet: string | undefined;
+  cover: CoverPicture | null;
+  heroFallbackSrc: string | null;
+  heroFallbackSrcSet: string | undefined;
   heroAlt: string;
   label: string;
   isFirstRow: boolean;
@@ -169,8 +171,9 @@ interface CategoryCardProps {
 
 function CategoryCard({
   groupId,
-  heroSrc,
-  heroSrcSet,
+  cover,
+  heroFallbackSrc,
+  heroFallbackSrcSet,
   heroAlt,
   label,
   isFirstRow,
