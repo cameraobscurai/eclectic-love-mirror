@@ -75,6 +75,7 @@ export type Database = {
       }
       inventory_items: {
         Row: {
+          card_background_url: string | null
           category: string | null
           color_chroma: number | null
           color_confidence: number | null
@@ -97,6 +98,7 @@ export type Database = {
           hidden_note: string | null
           id: string
           images: string[]
+          images_meta: Json
           live_subcategories: string[] | null
           manual_injection: boolean
           materials: string[] | null
@@ -118,6 +120,7 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          card_background_url?: string | null
           category?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
@@ -140,6 +143,7 @@ export type Database = {
           hidden_note?: string | null
           id?: string
           images?: string[]
+          images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
           materials?: string[] | null
@@ -161,6 +165,7 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          card_background_url?: string | null
           category?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
@@ -183,6 +188,7 @@ export type Database = {
           hidden_note?: string | null
           id?: string
           images?: string[]
+          images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
           materials?: string[] | null
