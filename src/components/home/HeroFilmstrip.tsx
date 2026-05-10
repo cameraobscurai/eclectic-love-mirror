@@ -317,7 +317,7 @@ function FilmstripFrame({
               loop
               autoPlay
               playsInline
-              preload="auto"
+              preload="none"
               aria-label={clip.label}
               className={cn(
                 "relative h-full w-full object-cover transition-opacity duration-700",
