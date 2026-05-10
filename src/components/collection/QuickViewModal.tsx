@@ -10,6 +10,7 @@ import { parseDimensions } from "@/lib/parse-dimensions";
 import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
 import { withCdnWidth } from "@/lib/image-url";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
+import { analytics } from "@/lib/analytics";
 
 interface QuickViewModalProps {
   product: CollectionProduct;
@@ -62,7 +63,14 @@ export function QuickViewModal({
   useEffect(() => {
     setImgIdx(0);
     setShowScale(false);
-  }, [product.id]);
+    // Fire GA4 product_viewed for each product the user opens (or pages to
+    // via prev/next inside the modal).
+    analytics.productViewed({
+      id: product.id,
+      name: product.title,
+      category: product.displayCategory ?? null,
+    });
+  }, [product.id, product.title, product.displayCategory]);
 
   useEffect(() => {
     setImgNatural(null);

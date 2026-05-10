@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { analytics } from "@/lib/analytics";
 
 const studioLinks = [
   { href: "/atelier", label: "ATELIER BY THE HIVE" },
@@ -55,6 +56,7 @@ export function Footer() {
                 <a
                   href="mailto:info@eclectichive.com"
                   className={`${LINK_CLASS} break-all`}
+                  onClick={() => analytics.contactClick("email", "footer")}
                 >
                   INFO@ECLECTICHIVE.COM
                 </a>
