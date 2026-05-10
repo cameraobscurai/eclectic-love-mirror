@@ -14,9 +14,23 @@ interface Props {
   srcSet?: string;
   sizes?: string;
   alt: string;
+  /**
+   * Fires `true` the moment a new srcKey starts decoding, then `false`
+   * the moment the bitmap is ready to paint (before the opacity fade).
+   * Lets the parent freeze parallax/motion only across the perceptible
+   * decode window, not the entire 320ms cosmetic fade.
+   */
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-export function CrossfadeImage({ srcKey, src, srcSet, sizes, alt }: Props) {
+export function CrossfadeImage({
+  srcKey,
+  src,
+  srcSet,
+  sizes,
+  alt,
+  onLoadingChange,
+}: Props) {
   // current = what's painted right now. next = what we're loading.
   const [current, setCurrent] = useState({ srcKey, src, srcSet, sizes, alt });
   const [next, setNext] = useState<typeof current | null>(null);
@@ -29,6 +43,7 @@ export function CrossfadeImage({ srcKey, src, srcSet, sizes, alt }: Props) {
     const incoming = { srcKey, src, srcSet, sizes, alt };
     setNext(incoming);
     setNextReady(false);
+    onLoadingChange?.(true);
 
     const img = new Image();
     if (srcSet) img.srcset = srcSet;
@@ -38,7 +53,11 @@ export function CrossfadeImage({ srcKey, src, srcSet, sizes, alt }: Props) {
 
     const finalize = () => {
       if (token !== tokenRef.current) return;
-      // Trigger the next-layer fade-in, then promote it.
+      // Bitmap is ready — release the parent's motion freeze immediately.
+      // The cosmetic opacity fade that follows is compositor-only and both
+      // layers (current + next) live inside the same translated wrapper,
+      // so resuming parallax mid-fade looks correct.
+      onLoadingChange?.(false);
       setNextReady(true);
       window.setTimeout(() => {
         if (token !== tokenRef.current) return;
@@ -56,7 +75,7 @@ export function CrossfadeImage({ srcKey, src, srcSet, sizes, alt }: Props) {
         img.onerror = finalize;
       }
     });
-  }, [srcKey, src, srcSet, sizes, alt, current.srcKey]);
+  }, [srcKey, src, srcSet, sizes, alt, current.srcKey, onLoadingChange]);
 
   return (
     <>
