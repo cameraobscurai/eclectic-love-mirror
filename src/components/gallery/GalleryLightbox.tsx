@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { CrossfadeImage } from "./CrossfadeImage";
+import { LightboxParallax } from "./LightboxParallax";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
@@ -27,6 +28,7 @@ export function GalleryLightbox({
 }: GalleryLightboxProps) {
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
   const [plateIndex, setPlateIndex] = useState(0);
+  const [plateChanging, setPlateChanging] = useState(false);
 
   const project = projects[projectIndex];
   const plates =
@@ -44,6 +46,14 @@ export function GalleryLightbox({
   useEffect(() => {
     setPlateIndex(0);
   }, [projectIndex]);
+
+  // Briefly suppress parallax during plate transitions so the in-flight
+  // image isn't thrown sideways while CrossfadeImage decodes the next one.
+  useEffect(() => {
+    setPlateChanging(true);
+    const t = window.setTimeout(() => setPlateChanging(false), 360);
+    return () => window.clearTimeout(t);
+  }, [plateIndex, projectIndex]);
 
   const stepPlate = useCallback(
     (dir: -1 | 1) => {
@@ -152,13 +162,15 @@ export function GalleryLightbox({
           }}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
-          <CrossfadeImage
-            srcKey={plate.src}
-            src={renderUrl(plate.src, { width: 1600, quality: 78 })}
-            srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
-            sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={plate.alt}
-          />
+          <LightboxParallax plateKey={plate.src} disabled={plateChanging}>
+            <CrossfadeImage
+              srcKey={plate.src}
+              src={renderUrl(plate.src, { width: 1600, quality: 78 })}
+              srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
+              sizes="(min-width: 1024px) 66vw, 100vw"
+              alt={plate.alt}
+            />
+          </LightboxParallax>
 
           {/* Preload neighbors for instant swap */}
           {plates.map((p, i) => {

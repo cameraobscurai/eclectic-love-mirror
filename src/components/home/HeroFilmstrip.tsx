@@ -59,24 +59,52 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [lightboxId, reduced, inView]);
 
-  // Stagger initial loads so browsers don't throttle 5 concurrent downloads.
+  // Defer video loading until BOTH: (a) the strip is in viewport, and
+  // (b) the browser has gone idle. This keeps the posters as the LCP
+  // and prevents 5 simultaneous Supabase video downloads from saturating
+  // the network during initial paint. Once primed, the videos behave
+  // exactly as before (autoplay muted loop).
   useEffect(() => {
     if (reduced) return;
-    const timers: number[] = [];
-    Object.entries(videoRefs.current).forEach(([_id, v], i) => {
-      if (!v) return;
-      const t = window.setTimeout(() => {
-        try {
-          v.muted = true;
-          v.load();
-          v.play().catch(() => {});
-        } catch {}
-      }, i * 120);
-      timers.push(t);
+    if (!inView) return;
+    let cancelled = false;
+    type IdleWin = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const w = window as IdleWin;
+    const idle = (cb: () => void): number =>
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(cb, { timeout: 1200 })
+        : window.setTimeout(cb, 200);
+    const handle = idle(() => {
+      if (cancelled) return;
+      Object.entries(videoRefs.current).forEach(([_id, v], i) => {
+        if (!v) return;
+        // Stagger the actual loads so we don't hammer the CDN with 5
+        // concurrent requests on slow connections.
+        window.setTimeout(() => {
+          if (cancelled || !v) return;
+          try {
+            v.muted = true;
+            // Promote from preload="none" to actually fetching.
+            v.preload = "auto";
+            v.load();
+            v.play().catch(() => {});
+          } catch {}
+        }, i * 140);
+      });
     });
-    return () => timers.forEach((t) => window.clearTimeout(t));
+    return () => {
+      cancelled = true;
+      if (typeof w.cancelIdleCallback === "function") {
+        w.cancelIdleCallback(handle);
+      } else {
+        window.clearTimeout(handle);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clips.length, reduced]);
+  }, [clips.length, reduced, inView]);
 
   const handleManualPlay = useCallback((id: string) => {
     const v = videoRefs.current[id];
@@ -289,7 +317,7 @@ function FilmstripFrame({
               loop
               autoPlay
               playsInline
-              preload="auto"
+              preload="none"
               aria-label={clip.label}
               className={cn(
                 "relative h-full w-full object-cover transition-opacity duration-700",
