@@ -151,6 +151,7 @@ function AdminPage() {
             </p>
           </div>
           <nav className="flex gap-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+            <Link to="/admin/insights" className="hover:text-charcoal">Insights →</Link>
             <Link to="/admin/colors" className="hover:text-charcoal">Color QA →</Link>
             <Link to="/admin/image-qa" className="hover:text-charcoal">Image QA →</Link>
             <Link to="/admin/image-health" className="hover:text-charcoal">Image Health →</Link>
