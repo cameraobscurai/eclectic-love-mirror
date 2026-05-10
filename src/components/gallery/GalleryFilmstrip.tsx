@@ -71,7 +71,7 @@ export function GalleryFilmstrip({
             project={p}
             index={i}
             active={i === activeIndex}
-            onOpen={() => onOpen(i)}
+            onOpen={(sourceEl) => onOpen(i, sourceEl)}
             registerRef={(el) => (itemRefs.current[i] = el)}
           />
         ))}
