@@ -9,6 +9,8 @@ import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
+import { morphOpen } from "@/lib/view-transition";
+import { flushSync } from "react-dom";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
@@ -76,11 +78,16 @@ function GalleryPage() {
   }, []);
 
   // Open lightbox at the real project index (independent of current filter view).
-  const handleOpen = (visibleIndex: number) => {
+  const handleOpen = (visibleIndex: number, sourceEl?: HTMLElement | null) => {
     const project = visibleProjects[visibleIndex];
     if (!project) return;
     const realIndex = galleryProjects.findIndex((p) => p.number === project.number);
-    setOpenIndex(realIndex >= 0 ? realIndex : 0);
+    const next = realIndex >= 0 ? realIndex : 0;
+    morphOpen(
+      sourceEl ?? null,
+      () => flushSync(() => setOpenIndex(next)),
+      () => document.querySelector<HTMLElement>('[data-vt-dest="gallery-hero"]'),
+    );
   };
 
   return (

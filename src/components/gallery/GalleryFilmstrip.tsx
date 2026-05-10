@@ -4,7 +4,7 @@ import { GalleryProjectCard } from "./GalleryProjectCard";
 
 interface GalleryFilmstripProps {
   projects: GalleryProject[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, sourceEl?: HTMLElement | null) => void;
   onActiveChange?: (index: number) => void;
 }
 
@@ -71,7 +71,7 @@ export function GalleryFilmstrip({
             project={p}
             index={i}
             active={i === activeIndex}
-            onOpen={() => onOpen(i)}
+            onOpen={(sourceEl) => onOpen(i, sourceEl)}
             registerRef={(el) => (itemRefs.current[i] = el)}
           />
         ))}
