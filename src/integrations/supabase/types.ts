@@ -75,6 +75,7 @@ export type Database = {
       }
       inventory_items: {
         Row: {
+          card_background_url: string | null
           category: string | null
           color_chroma: number | null
           color_confidence: number | null
@@ -119,6 +120,7 @@ export type Database = {
           width_cm: number | null
         }
         Insert: {
+          card_background_url?: string | null
           category?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
@@ -163,6 +165,7 @@ export type Database = {
           width_cm?: number | null
         }
         Update: {
+          card_background_url?: string | null
           category?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
