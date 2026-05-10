@@ -5,7 +5,7 @@ interface GalleryProjectCardProps {
   project: GalleryProject;
   index: number;
   active: boolean;
-  onOpen: () => void;
+  onOpen: (sourceEl: HTMLElement | null) => void;
   registerRef: (el: HTMLLIElement | null) => void;
 }
 
