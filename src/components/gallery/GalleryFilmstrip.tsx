@@ -4,7 +4,7 @@ import { GalleryProjectCard } from "./GalleryProjectCard";
 
 interface GalleryFilmstripProps {
   projects: GalleryProject[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, sourceEl?: HTMLElement | null) => void;
   onActiveChange?: (index: number) => void;
 }
 
