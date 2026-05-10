@@ -149,6 +149,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body className="antialiased">
         {children}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
