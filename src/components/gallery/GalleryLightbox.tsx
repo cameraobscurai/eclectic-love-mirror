@@ -28,6 +28,7 @@ export function GalleryLightbox({
 }: GalleryLightboxProps) {
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
   const [plateIndex, setPlateIndex] = useState(0);
+  const [plateChanging, setPlateChanging] = useState(false);
 
   const project = projects[projectIndex];
   const plates =
