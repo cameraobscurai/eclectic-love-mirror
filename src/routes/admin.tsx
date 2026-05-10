@@ -100,6 +100,10 @@ function AdminPage() {
   if (pathname !== "/admin" && pathname !== "/admin/") {
     return <Outlet />;
   }
+  return <AdminDashboard />;
+}
+
+function AdminDashboard() {
   const [stats, setStats] = useState<ReturnType<typeof buildInventoryStats> | null>(null);
   useEffect(() => {
     let alive = true;
