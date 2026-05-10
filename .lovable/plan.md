@@ -1,97 +1,50 @@
+## Goal
 
-# AAA Performance Lift — Zero-Regression Plan
+Replace the current `/privacy` placeholder (just a heading) with a real, plain-English privacy policy that:
+- Covers what an event-design studio actually collects (contact form inquiries, basic analytics, cookies)
+- Reads in Eclectic Hive's editorial voice (ALL CAPS section labels, Cormorant display heading, restrained body prose)
+- Honors the site's locked design tokens (cream background, charcoal text, sand accents)
+- Stays legally reasonable for a US-based (Denver) studio without overpromising
 
-Goal: ship the highest-ROI loading wins from the previous discussion **without touching business logic, RLS, the bake pipeline, or the inventory contract**. Every change is additive and behind the existing `vr:check` visual-regression harness — if a pixel moves, we don't ship.
+## Sections to include
 
-Note on omissions:
-- **Service Worker / PWA is dropped.** Lovable's preview iframe + SW is a footgun (stale shells, install-time pinning). Not worth the risk on a luxury site.
-- **Web Workers for the color sort is deferred.** Working code, low daily traffic on that toggle. Revisit only after we measure INP.
-- **Partytown is deferred** until the first 3rd-party script lands. No GA, no Hotjar today → nothing to move off-thread.
+1. **Effective date + intro** — one short paragraph: who Eclectic Hive is, what this policy covers
+2. **Information we collect**
+   - Information you give us (contact form: name, email, phone, event date, message)
+   - Information collected automatically (IP, browser, pages viewed via standard analytics)
+   - Cookies (essential + analytics)
+3. **How we use it** — respond to inquiries, send proposals, improve the site, legal compliance
+4. **Sharing** — service providers only (hosting/email/analytics); never sold; legal disclosure when required
+5. **Data retention** — inquiries retained while the relationship is active + reasonable archival period
+6. **Your choices & rights** — opt out of marketing, request access/deletion; California (CCPA) note
+7. **Security** — reasonable safeguards, no system is 100% secure
+8. **Children** — site not directed to under 13
+9. **Third-party links** — not responsible for external sites
+10. **Changes** — we may update; effective date at top reflects last change
+11. **Contact** — info@eclectichive.com for privacy requests
 
----
+## Design / layout
 
-## Pass 1 — Slim & lazy-load the catalog (the big one)
+- Reuse existing `/privacy` shell (cream bg, nav offset, max-w-3xl)
+- Page title: "PRIVACY" eyebrow → display "Privacy." (already in place) → effective date in small caps
+- Body: long-form prose (mixed case allowed per DECISIONS.md: "legal long-form prose stays mixed case")
+- Section headings: ALL CAPS tracked labels per typography rule
+- Thin charcoal/15 dividers between sections, no cards or boxes
+- Plenty of vertical rhythm (space-y-12)
 
-Right now `src/lib/phase3-catalog.ts` does `import catalog from ".../current_catalog.json"` at module top-level. That 865 KB JSON is statically imported by `routes/collection.tsx`, `routes/admin.tsx`, and `routes/admin.image-health.tsx`, so it lands in the **main client bundle** and ships to the homepage too.
+## Files touched
 
-Two surgical moves, in order:
+- `src/routes/privacy.tsx` — replace component body with full policy
+- Add a `head()` meta description for SEO ("Privacy policy for Eclectic Hive...")
 
-1. **Add a `catalog.lite.json` baker** alongside the existing `bake-catalog.mjs`. Same input row → strip to: `id, slug, title, categorySlug, liveCategory, liveSubcategories, primaryImage, imageCount, imagesVersion, ownerSiteRank, subcategory, colorTag, publicReady`. Drop description, gallery images, dimensions, variant rollups. Target: ≤120 KB (~30 KB gzipped).
-2. **Split the accessor.** `getCollectionCatalogLite()` (sync, used by tile grid + category index) loads `catalog.lite.json`; `getCollectionProductFull(id)` is async and dynamic-imports a per-id chunk. Tiles render from lite; QuickView awaits full.
-3. **Convert the imports to dynamic** at the route boundary so the catalog is no longer in the entry chunk:
-   ```ts
-   loader: () => import("@/lib/phase3-catalog-lite").then(m => m.getCollectionCatalogLite())
-   ```
+## Out of scope (call out to user)
 
-Expected: homepage TTI improves ~150–250 ms on 4G; `/collection` first paint unchanged (data still arrives before tiles render via the loader).
+- This is a **plain-language template**, not legal advice. Recommend the owner have counsel review before relying on it — especially if they ever serve EU clients (GDPR) or run paid ads with retargeting pixels.
+- No cookie consent banner is being added. If the studio adds analytics that track EU visitors, a banner becomes a separate task.
+- "Effective date" needs a real date — I'll use today (May 10, 2026) unless you'd prefer another.
 
-**Zero-regression gate:** before flipping any consumer, write a `scripts/audit/catalog-lite-parity.mjs` that asserts every field used by `ProductTile`, `CategoryIndex`, `CollectionWall`, and `SubcategoryRail` exists on the lite shape. Fail the build if a field is missing. Then `bun run vr:check` across all 12 baselines.
+## Confirm before I implement
 
----
-
-## Pass 2 — Speculation Rules + scroll containment (the free lunch)
-
-Two changes, both additive, both gracefully ignored where unsupported.
-
-1. **Speculation Rules** in `src/routes/__root.tsx` head:
-   ```html
-   <script type="speculationrules">
-   { "prerender": [
-       { "where": { "href_matches": "/collection" }, "eagerness": "moderate" },
-       { "where": { "href_matches": "/atelier"   }, "eagerness": "moderate" },
-       { "where": { "href_matches": "/gallery"   }, "eagerness": "conservative" }
-   ]}
-   </script>
-   ```
-   Hovering a nav link → next route prerenders in a hidden tab → click is 0 ms. Chrome/Edge only; Safari/Firefox no-op. Pair with a guard: skip on `prefers-reduced-data` and on `Save-Data` header.
-
-2. **`content-visibility: auto`** on the long tile lists in `src/components/collection/ProductTile.tsx` *wrapper*:
-   ```css
-   .tile-cv { content-visibility: auto; contain-intrinsic-size: 1px 480px; }
-   ```
-   Browser skips layout/paint/decode for offscreen tiles. On the 161-pillow grid this is a 30–50% scroll-perf win for a one-line change. The `contain-intrinsic-size` placeholder height prevents scrollbar jitter.
-
-**Zero-regression gate:** speculation rules cannot affect visual output (it only prerenders). `content-visibility` *can* (rare) affect scroll-anchored measurements — run `vr:check` and manually scroll the four longest categories on 1366 + 390. If anything jumps, drop `content-visibility` from that breakpoint only.
-
----
-
-## Pass 3 — Font preload + `fetchpriority="low"` audit (the polish)
-
-Cormorant Garamond is the brand display face. Today it almost certainly loads via stylesheet `@font-face` discovery, blocking FCP by ~150–250 ms.
-
-1. **Audit + preload** the two weights actually used (regular + italic) with `<link rel="preload" as="font" type="font/woff2" crossorigin>` in `__root.tsx`. Self-host if not already.
-2. **Demote** the HeroFilmstrip videos and below-fold tile rows from default priority to `fetchpriority="low"`. They're competing with the H-plate today.
-3. **`font-display: optional`** for Cormorant — render in the system fallback for 100 ms, then swap *only if loaded*. Eliminates FOUT entirely. Requires checking that the system fallback metrics don't shift the H-plate composition; if they do, fall back to `swap` with `size-adjust` tuning.
-
-**Zero-regression gate:** `vr:check` will catch any font-swap-induced layout shift instantly. If a baseline diffs purely because the font now arrives 200 ms earlier (no actual layout change), update baselines deliberately.
-
----
-
-## Execution order, gated
-
-```text
-[Pass 1]  baker → parity audit → lite accessor → flip consumers   ──► vr:check
-[Pass 2]  speculation rules     → content-visibility               ──► vr:check + scroll QA
-[Pass 3]  font preload          → fetchpriority demotion           ──► vr:check
-                                                                       │
-                                                                       ▼
-                                                          Lighthouse before/after capture
-```
-
-Each pass is independently revertable. None touch Supabase, RLS, the bake step, or product data. If any gate fails, the pass is reverted and the next is unblocked.
-
-## Out of scope (intentional)
-
-- Service Worker / offline shell
-- Streaming SSR + `<Await>` for the collection (real win, but rewrites the loader contract — earn it later)
-- Worker-ize the tonal sort
-- View Transitions extension to QuickView (separate UX project)
-- Mapbox / Lenis / Framer audit
-
-## Acceptance criteria
-
-- Lighthouse mobile **performance ≥ 95** on `/` and `/collection` (baseline today: estimated 78–85).
-- `vr:check` passes 12/12 baselines unchanged.
-- Bundle analyzer shows `current_catalog.json` no longer present in the entry chunk.
-- Manual QA: nav prerender feels instant on Chrome desktop; pillow scroll feels glassy on a mid-tier Android.
-
+- OK to use today's date as the effective date?
+- Any specific third-party services to name (Google Analytics, Mailchimp, Calendly, etc.) or keep generic?
+- Add a CCPA section now, or keep it generic until needed?
