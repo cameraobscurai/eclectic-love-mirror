@@ -30,7 +30,7 @@ export function GalleryProjectCard({
     >
       <button
         type="button"
-        onClick={onOpen}
+        onClick={(e) => onOpen(e.currentTarget.querySelector("img"))}
         aria-label={`Open ${project.name}`}
         className="block w-full text-left focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
       >
