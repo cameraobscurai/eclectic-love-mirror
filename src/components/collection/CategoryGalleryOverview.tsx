@@ -45,23 +45,34 @@ export function CategoryGalleryOverview({
   const reduced = useReducedMotion();
 
   // Resolve hero sources up-front so the parent owns first-row coordination.
+  // Owner-curated covers ship through `?preset=editorial` → AVIF + WebP at
+  // 768/1280/1920w, ~4–10× smaller than the raw PNG originals. Fallback
+  // (when no curated cover exists) is the first product's primary image
+  // through the CDN width helper — same as before.
   const resolved = useMemo(
     () =>
       groups.map((group) => {
-        const cover = CATEGORY_COVERS[group.id];
+        const cover = CATEGORY_COVERS[group.id] ?? null;
         const fallbackHero = group.products.find((p) => p.primaryImage)?.primaryImage;
-        const rawHero = cover ?? fallbackHero?.url ?? null;
-        const heroSrc = rawHero ? withCdnWidth(rawHero, 750) : null;
-        const heroSrcSet = rawHero
-          ? buildCdnSrcSet(rawHero, [400, 600, 900]) || undefined
-          : undefined;
+        const fallbackUrl = fallbackHero?.url ?? null;
+        const heroFallbackSrc = cover
+          ? cover.img.src
+          : fallbackUrl
+            ? withCdnWidth(fallbackUrl, 750)
+            : null;
+        const heroFallbackSrcSet = cover
+          ? undefined
+          : fallbackUrl
+            ? buildCdnSrcSet(fallbackUrl, [400, 600, 900]) || undefined
+            : undefined;
         const heroAlt = cover
           ? BROWSE_GROUP_LABELS[group.id]
           : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[group.id];
         return {
           group,
-          heroSrc,
-          heroSrcSet,
+          cover,
+          heroFallbackSrc,
+          heroFallbackSrcSet,
           heroAlt,
           label: BROWSE_GROUP_LABELS[group.id],
         };
@@ -87,29 +98,13 @@ export function CategoryGalleryOverview({
     return () => window.clearTimeout(t);
   }, []);
 
-  // Imperative preload of bundled category covers. Lives here (not in the
-  // route head()) because this component only mounts on the overview branch
-  // — direct category links and the search view never pay this cost. This
-  // is a workaround: TanStack Start's head() is route-level, so we can't
-  // condition a preload on which child component renders without splitting
-  // the route. Revisit if the overview becomes its own route.
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const links: HTMLLinkElement[] = [];
-    for (const href of Object.values(CATEGORY_COVERS)) {
-      if (!href) continue;
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = href as string;
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-      links.push(link);
-    }
-    return () => {
-      for (const link of links) link.remove();
-    };
-  }, []);
+  // Note: previously this component imperatively appended <link rel=preload
+  // as=image fetchpriority=high> for every cover after mount. That fired
+  // *after* hydration (losing the race against the natural <img> requests),
+  // conflicted with rows 2–3's loading="lazy", and competed with the H-plate
+  // hero for LCP bandwidth. Removed — the first-row tiles below already use
+  // loading="eager" + fetchpriority="high", which is the correct signal at
+  // the right time.
 
   const firstRowReady =
     Boolean(reduced) ||
