@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
+import { analytics } from "@/lib/analytics";
 
 // ---------------------------------------------------------------------------
 // Contact — one editorial intake form (no wizard, no steppers).
@@ -243,6 +244,30 @@ function ContactPage() {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
     }
+
+    // Track conversion in GA4. Primary category = the most-frequent category
+    // among selected pieces (so a 12-item inquiry that's mostly tableware
+    // reads as "tableware"). Item names truncated to first 5 inside helper.
+    const selectedPieces = effectiveIds
+      .map((id) => piecesById.get(id))
+      .filter((p): p is NonNullable<typeof p> => Boolean(p));
+    const categoryCounts = new Map<string, number>();
+    for (const p of selectedPieces) {
+      if (!p.category) continue;
+      categoryCounts.set(p.category, (categoryCounts.get(p.category) ?? 0) + 1);
+    }
+    const primaryCategory =
+      [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    analytics.inquirySubmitted({
+      item_count: effectiveIds.length,
+      primary_category: primaryCategory,
+      item_names: selectedPieces.map((p) => p.title),
+      message_length: payload.message.length,
+      has_phone: Boolean(payload.phone),
+      has_date: Boolean(projectDate),
+      has_budget: Boolean(budget),
+    });
+
     clearInquiry();
     setPieces([]);
     setRemovedIds(new Set());
