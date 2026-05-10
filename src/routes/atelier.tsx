@@ -87,30 +87,9 @@ const ATELIER_FAQ: ReadonlyArray<{ q: string; a: string }> = [
 // three-square material board sits below the list as quiet evidence.)
 
 const APPROACH_STEPS = [
-  {
-    number: "01",
-    label: "IMAGINED",
-    image: {
-      src: imaginedTent,
-      alt: "Hand-drawn pencil sketch — interior of a tented event with draped panels and a central tree.",
-    },
-  },
-  {
-    number: "02",
-    label: "DESIGNED",
-    image: {
-      src: designedSofa,
-      alt: "Technical line drawing of a fringed sofa — design phase rendering.",
-    },
-  },
-  {
-    number: "03",
-    label: "REALIZED",
-    image: {
-      src: realizedCeremony,
-      alt: "Realized installation — outdoor ceremony aisle framed by autumn aspens in the Colorado mountains.",
-    },
-  },
+  { number: "01", label: "IMAGINED" },
+  { number: "02", label: "DESIGNED" },
+  { number: "03", label: "REALIZED" },
 ] as const;
 
 export const Route = createFileRoute("/atelier")({
@@ -155,20 +134,11 @@ export const Route = createFileRoute("/atelier")({
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
-      // Preload the first row of THE HIVE portraits (4 across on desktop).
-      // These sit just below the fold and dominate the second paint — kicking
-      // them off in the document head lets them race the JS bundle instead
-      // of waiting on hydration + IO + image decode.
-      ...TEAM.slice(0, 4)
-        .filter((m) => m.image?.approvedForWeb)
-        .map((m) => ({
-          rel: "preload" as const,
-          as: "image" as const,
-          href: renderUrl(m.image!.src, { width: 720, quality: 70 }),
-          imageSrcSet: renderSrcSet(m.image!.src, [360, 540, 720, 1080], 70),
-          imageSizes: "(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw",
-          fetchPriority: "low" as const,
-        })),
+      // NOTE: We intentionally do NOT head-preload team portraits here.
+      // Doing so collided with MediaAperture's own fetchPriority="high" on
+      // the first row (preload at "low" + tag at "high" → browser warning,
+      // wasted head start) and stole bandwidth from the hero LCP. The team
+      // grid eager-loads on mount instead.
     ],
   }),
   component: AtelierPage,
