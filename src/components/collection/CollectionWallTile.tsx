@@ -11,11 +11,10 @@ interface Props {
 }
 
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
-  const primary = product.primaryImage;
-  const url = primary?.url ?? null;
-  // A backdrop image is any photo tagged role:"backdrop" in images_meta.
-  // It renders full-bleed behind the cutout for editorial product cards.
-  const backdrop = product.images.find((i) => i.role === "backdrop");
+  const url = product.primaryImage?.url ?? null;
+  // Optional editorial backdrop — its own slot on the product, never part
+  // of the gallery. Renders full-bleed behind the cutout when present.
+  const backdropUrl = product.cardBackgroundUrl ?? null;
   const dim = isAnyHovered && !isHovered;
 
   return (
