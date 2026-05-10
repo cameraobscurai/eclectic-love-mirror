@@ -68,11 +68,15 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     if (reduced) return;
     if (!inView) return;
     let cancelled = false;
-    const idle: (cb: () => void) => number =
-      typeof window !== "undefined" && "requestIdleCallback" in window
-        ? // @ts-expect-error - requestIdleCallback is well-supported
-          (cb) => window.requestIdleCallback(cb, { timeout: 1200 })
-        : (cb) => window.setTimeout(cb, 200);
+    type IdleWin = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const w = window as IdleWin;
+    const idle = (cb: () => void): number =>
+      typeof w.requestIdleCallback === "function"
+        ? w.requestIdleCallback(cb, { timeout: 1200 })
+        : window.setTimeout(cb, 200);
     const handle = idle(() => {
       if (cancelled) return;
       Object.entries(videoRefs.current).forEach(([_id, v], i) => {
@@ -93,9 +97,8 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
     return () => {
       cancelled = true;
-      if (typeof window !== "undefined" && "cancelIdleCallback" in window) {
-        // @ts-expect-error - cancelIdleCallback companion API
-        window.cancelIdleCallback(handle);
+      if (typeof w.cancelIdleCallback === "function") {
+        w.cancelIdleCallback(handle);
       } else {
         window.clearTimeout(handle);
       }
