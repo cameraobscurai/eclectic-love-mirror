@@ -37,6 +37,10 @@ export interface CollectionProduct {
   images: CollectionImage[];
   primaryImage: CollectionImage | null;
   imageCount: number;
+  /** Optional editorial backdrop photograph rendered full-bleed behind the
+   *  product cutout on the Collection wall tile. Lives in its own slot —
+   *  NOT part of the gallery (`images[]`), never appears in QuickView. */
+  cardBackgroundUrl?: string | null;
   /** Per-product image cache-buster. Compact unix seconds derived from the
    *  inventory row's `updated_at` at bake time. Appended as `?v=…` to every
    *  Supabase storage URL so newly uploaded images displace stale browser
