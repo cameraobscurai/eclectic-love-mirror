@@ -162,13 +162,15 @@ export function GalleryLightbox({
           }}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
-          <CrossfadeImage
-            srcKey={plate.src}
-            src={renderUrl(plate.src, { width: 1600, quality: 78 })}
-            srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
-            sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={plate.alt}
-          />
+          <LightboxParallax plateKey={plate.src} disabled={plateChanging}>
+            <CrossfadeImage
+              srcKey={plate.src}
+              src={renderUrl(plate.src, { width: 1600, quality: 78 })}
+              srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
+              sizes="(min-width: 1024px) 66vw, 100vw"
+              alt={plate.alt}
+            />
+          </LightboxParallax>
 
           {/* Preload neighbors for instant swap */}
           {plates.map((p, i) => {
