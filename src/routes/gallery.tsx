@@ -9,6 +9,8 @@ import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN } from "@/lib/storage-image";
+import { morphOpen } from "@/lib/view-transition";
+import { flushSync } from "react-dom";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
