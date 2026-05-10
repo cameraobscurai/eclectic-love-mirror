@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import {
   getCollectionCatalog,
   type CollectionProduct,
@@ -93,6 +93,17 @@ function buildInventoryStats(products: CollectionProduct[]): InventoryStats {
 }
 
 function AdminPage() {
+  // admin.tsx is the parent layout for /admin/* child routes (admin.insights,
+  // admin.colors, etc.). When a child is active, render only the child via
+  // <Outlet />. The dashboard below is the /admin index view.
+  const { pathname } = useLocation();
+  if (pathname !== "/admin" && pathname !== "/admin/") {
+    return <Outlet />;
+  }
+  return <AdminDashboard />;
+}
+
+function AdminDashboard() {
   const [stats, setStats] = useState<ReturnType<typeof buildInventoryStats> | null>(null);
   useEffect(() => {
     let alive = true;
