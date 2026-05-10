@@ -114,16 +114,16 @@ export function AtelierTeam() {
             <li key={member.name}>
               <MediaAperture
                 ratio="2/3"
-                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 70 }) : undefined}
-                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 70) : undefined}
+                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
+                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
                 alt={
                   showImage
                     ? member.image!.alt
                     : `Portrait slot for ${member.name}`
                 }
                 sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
-                lazy={!isFirstRow}
-                fetchPriority={isFirstRow ? "high" : undefined}
+                lazy={false}
+                fetchPriority={isFirstRow ? "high" : "low"}
                 prefetchMargin="2000px"
                 className={member.imageClassName}
               />

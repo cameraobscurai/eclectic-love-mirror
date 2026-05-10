@@ -5,7 +5,6 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
-import { TEAM } from "@/components/atelier/team";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
 
 // Slot-mapped images — see ./atelier.images.ts. DO NOT replace these inline;
@@ -15,9 +14,6 @@ const atelierHiveTriptych = ATELIER_IMAGES.HIVE_TRIPTYCH;
 const atelierSketchDrape = ATELIER_IMAGES.SKETCH_DRAPE;
 const atelierCollage = ATELIER_IMAGES.WORKSHOP_COLLAGE;
 
-import imaginedTent from "@/assets/atelier/imagined-tent-sketch.png?preset=editorial";
-import designedSofa from "@/assets/atelier/designed-sofa-wireframe.png?preset=editorial";
-import realizedCeremony from "@/assets/atelier/realized-aspen-ceremony.webp?preset=editorial";
 
 // Owner-supplied photos pending — render quiet, intentional waiting state.
 function Placeholder({
