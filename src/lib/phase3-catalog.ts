@@ -13,17 +13,12 @@
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
 
-export type CollectionImageRole = "cutout" | "backdrop" | "detail" | "scale" | "context";
-
 export interface CollectionImage {
   url: string;
   position: number;
   isHero: boolean;
   inferredFilename: string | null;
   altText: string | null;
-  /** Display role. `cutout` (default) renders boxed/contained on white;
-   *  `backdrop` renders full-bleed as a tile background. */
-  role?: CollectionImageRole;
 }
 
 export interface CollectionProduct {
