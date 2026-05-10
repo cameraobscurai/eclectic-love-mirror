@@ -119,11 +119,12 @@ export function ProductTile({
         style={{
           opacity: entered ? 1 : 0,
           transform: entered ? "translateY(0)" : "translateY(4px)",
-          filter: entered ? "blur(0px)" : "blur(2px)",
+          // Blur removed — filter compositing on every tile in the cascade
+          // costs GPU without adding visible signal beyond the opacity fade.
           transition: skipReveal
             ? "none"
-            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
-          willChange: entered ? "auto" : "opacity, transform, filter",
+            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+          willChange: entered ? "auto" : "opacity, transform",
         }}
       >
       {showInternals ? (
@@ -159,9 +160,9 @@ export function ProductTile({
 
             {product.primaryImage ? (
               <img
-                src={withCdnWidth(product.primaryImage.url, 750)}
+                src={withCdnWidth(product.primaryImage.url, 600)}
                 srcSet={
-                  buildCdnSrcSet(product.primaryImage.url, [500, 750, 1100]) ||
+                  buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
                   undefined
                 }
                 sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
