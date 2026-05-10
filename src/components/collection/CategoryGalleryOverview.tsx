@@ -4,7 +4,7 @@ import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
-import { CATEGORY_COVERS } from "@/lib/category-covers";
+import { CATEGORY_COVERS, type CoverPicture } from "@/lib/category-covers";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
@@ -27,7 +27,9 @@ const REVEAL_MAX_DELAY_MS = 300;
 // has resolved (or the safety timeout fires) so it reads as one event.
 const FIRST_ROW_COUNT = 5;
 // Safety net so a single broken image can't strand the row forever.
-const FIRST_ROW_REVEAL_TIMEOUT_MS = 1500;
+// Combined with AVIF covers (preset=editorial), the practical reveal lands
+// in 250–400ms; this cap is just insurance against a stalled connection.
+const FIRST_ROW_REVEAL_TIMEOUT_MS = 800;
 
 /**
  * Category gallery — the "front door" to the archive.
