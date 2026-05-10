@@ -202,9 +202,14 @@ function CategoryCard({
     onFirstRowImageDone();
   }, [reported, onFirstRowImageDone]);
 
+  // Treat the curated AVIF Picture and the legacy fallback URL as a single
+  // "do we have an image?" signal — drives the row-reveal gate.
+  const hasImage = Boolean(cover) || Boolean(heroFallbackSrc);
+  const fallbackSrc = cover ? cover.img.src : heroFallbackSrc;
+
   // No image → immediately count this slot as done (post-mount).
   useEffect(() => {
-    if (isFirstRow && !heroSrc) reportDoneOnce();
+    if (isFirstRow && !hasImage) reportDoneOnce();
     // reportDoneOnce is stable enough; we only want to fire on mount per card.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -217,11 +222,37 @@ function CategoryCard({
     ? true
     : isFirstRow
       ? firstRowReady
-      : near && (loaded || !heroSrc);
+      : near && (loaded || !hasImage);
 
   // First-row cards skip the cascade animation — they all reveal together
   // with no per-card delay. Later rows keep the wipe.
   const skipReveal = reduced;
+
+  // Shared <img> handlers + props — kept in one place so the curated
+  // <picture>/AVIF branch and the legacy <img> fallback stay in sync.
+  const onImgLoad = () => {
+    setLoaded(true);
+    if (isFirstRow) reportDoneOnce();
+  };
+  const onImgError = () => {
+    // Treat as "done waiting" so one broken image doesn't strand the row.
+    if (isFirstRow) reportDoneOnce();
+  };
+  const imgClassName =
+    "absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90";
+  const imgStyle: React.CSSProperties = {
+    // First-row images are revealed by the row-wide gate (parent flips
+    // `entered` once everyone's ready), so we paint them at full opacity
+    // from mount inside the hidden card. Later rows keep the per-image
+    // fade for a softer scroll arrival.
+    opacity: isFirstRow ? 1 : loaded ? 1 : 0,
+    transition: isFirstRow ? "none" : "opacity 380ms ease-out",
+  };
+  const sizes =
+    "(min-width: 1280px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 32vw, 48vw";
+  const fetchPriorityProp = {
+    fetchPriority: isFirstRow ? "high" : "auto",
+  } as Record<string, string>;
 
   return (
     <motion.li
@@ -235,11 +266,12 @@ function CategoryCard({
         boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)",
         opacity: entered ? 1 : 0,
         transform: entered ? "translateY(0)" : "translateY(6px)",
-        filter: entered ? "blur(0px)" : "blur(2px)",
+        // Blur removed from the cascade — pure GPU cost without the eye
+        // gaining any signal beyond what opacity + translate already give.
         transition: skipReveal
           ? "none"
-          : `opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, filter 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
-        willChange: entered ? "auto" : "opacity, transform, filter",
+          : `opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
+        willChange: entered ? "auto" : "opacity, transform",
       }}
     >
       <button
@@ -250,33 +282,42 @@ function CategoryCard({
         aria-label={label}
       >
         <div className="relative flex-1">
-          {heroSrc ? (
+          {cover ? (
+            <picture>
+              {cover.sources.avif ? (
+                <source type="image/avif" srcSet={cover.sources.avif} sizes={sizes} />
+              ) : null}
+              {cover.sources.webp ? (
+                <source type="image/webp" srcSet={cover.sources.webp} sizes={sizes} />
+              ) : null}
+              <img
+                src={cover.img.src}
+                width={cover.img.w}
+                height={cover.img.h}
+                sizes={sizes}
+                alt={heroAlt}
+                loading={isFirstRow ? "eager" : "lazy"}
+                decoding="async"
+                {...fetchPriorityProp}
+                onLoad={onImgLoad}
+                onError={onImgError}
+                className={imgClassName}
+                style={imgStyle}
+              />
+            </picture>
+          ) : fallbackSrc ? (
             <img
-              src={heroSrc}
-              srcSet={heroSrcSet}
-              sizes="(min-width: 1280px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 32vw, 48vw"
+              src={fallbackSrc}
+              srcSet={heroFallbackSrcSet}
+              sizes={sizes}
               alt={heroAlt}
               loading={isFirstRow ? "eager" : "lazy"}
               decoding="async"
-              {...({ fetchPriority: isFirstRow ? "high" : "auto" } as Record<string, string>)}
-              onLoad={() => {
-                setLoaded(true);
-                if (isFirstRow) reportDoneOnce();
-              }}
-              onError={() => {
-                // Treat as "done waiting" so one broken image doesn't
-                // strand the entire first-row reveal.
-                if (isFirstRow) reportDoneOnce();
-              }}
-              className="absolute inset-0 h-full w-full object-contain p-3 sm:p-5 md:p-6 will-change-opacity group-hover:opacity-90"
-              style={{
-                // First-row images are revealed by the row-wide gate (parent
-                // flips `entered` once everyone's ready), so we paint them
-                // at full opacity from mount inside the hidden card. Later
-                // rows keep the per-image fade for a softer scroll arrival.
-                opacity: isFirstRow ? 1 : loaded ? 1 : 0,
-                transition: isFirstRow ? "none" : "opacity 380ms ease-out",
-              }}
+              {...fetchPriorityProp}
+              onLoad={onImgLoad}
+              onError={onImgError}
+              className={imgClassName}
+              style={imgStyle}
             />
           ) : (
             <div className="absolute inset-0" />
@@ -296,7 +337,7 @@ function CategoryCard({
             WebkitBackdropFilter: "blur(12px)",
             borderTop: "0.5px solid rgba(255, 255, 255, 0.8)",
             borderRadius: "0 0 12px 12px",
-            opacity: isFirstRow || loaded || !heroSrc ? 1 : 0.6,
+            opacity: isFirstRow || loaded || !hasImage ? 1 : 0.6,
             transition: "opacity 380ms ease-out",
           }}
         >
