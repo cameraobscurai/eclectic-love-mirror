@@ -6,17 +6,15 @@
 
 type GtagParams = Record<string, string | number | boolean | null | undefined>;
 
-declare global {
-  interface Window {
-    dataLayer: unknown[];
-    gtag?: (...args: unknown[]) => void;
-  }
-}
+// Window.gtag is declared globally in src/routes/__root.tsx where the GA4
+// script tag is injected. We just consume it here.
 
 export function track(eventName: string, params?: GtagParams) {
   if (typeof window === "undefined") return;
   try {
-    window.gtag?.("event", eventName, params ?? {});
+    if (typeof window.gtag === "function") {
+      window.gtag("event", eventName, params ?? {});
+    }
   } catch {
     // never throw from analytics
   }
