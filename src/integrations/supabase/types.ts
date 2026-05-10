@@ -97,6 +97,7 @@ export type Database = {
           hidden_note: string | null
           id: string
           images: string[]
+          images_meta: Json
           live_subcategories: string[] | null
           manual_injection: boolean
           materials: string[] | null
@@ -140,6 +141,7 @@ export type Database = {
           hidden_note?: string | null
           id?: string
           images?: string[]
+          images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
           materials?: string[] | null
@@ -183,6 +185,7 @@ export type Database = {
           hidden_note?: string | null
           id?: string
           images?: string[]
+          images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
           materials?: string[] | null

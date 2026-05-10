@@ -11,7 +11,11 @@ interface Props {
 }
 
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
-  const url = product.primaryImage?.url ?? null;
+  const primary = product.primaryImage;
+  const url = primary?.url ?? null;
+  // A backdrop image is any photo tagged role:"backdrop" in images_meta.
+  // It renders full-bleed behind the cutout for editorial product cards.
+  const backdrop = product.images.find((i) => i.role === "backdrop");
   const dim = isAnyHovered && !isHovered;
 
   return (
@@ -20,7 +24,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       onMouseEnter={() => onHover(product.id)}
       onMouseLeave={() => onHover(null)}
       onClick={() => onOpen(product.id)}
-      className="relative w-full h-full bg-white overflow-visible group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+      className="relative w-full h-full bg-white overflow-hidden group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
       animate={{
         opacity: dim ? 0.45 : 1,
       }}
@@ -30,8 +34,20 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       style={{ willChange: "opacity" }}
       aria-label={product.title}
     >
-      <div className="absolute inset-0">
-        {url && (
+      {backdrop && (
+        <div className="absolute inset-0">
+          <img
+            src={backdrop.url}
+            alt=""
+            className="w-full h-full object-cover pointer-events-none select-none"
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+      )}
+      {url && url !== backdrop?.url && (
+        <div className="absolute inset-0">
           <img
             src={url}
             alt=""
@@ -40,8 +56,8 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
             decoding="async"
             draggable={false}
           />
-        )}
-      </div>
+        </div>
+      )}
     </motion.button>
   );
 }
