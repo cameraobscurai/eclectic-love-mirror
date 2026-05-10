@@ -47,13 +47,30 @@ export function GalleryLightbox({
     setPlateIndex(0);
   }, [projectIndex]);
 
-  // Briefly suppress parallax during plate transitions so the in-flight
-  // image isn't thrown sideways while CrossfadeImage decodes the next one.
+  // plateChanging is now driven by CrossfadeImage's actual decode lifecycle
+  // (see onLoadingChange below). The safety timer here only fires if a decode
+  // hangs past the ceiling — keeps the lightbox from getting stuck frozen.
+  const safetyTimerRef = useRef<number | null>(null);
+  const handleLoadingChange = useCallback((loading: boolean) => {
+    if (safetyTimerRef.current !== null) {
+      window.clearTimeout(safetyTimerRef.current);
+      safetyTimerRef.current = null;
+    }
+    setPlateChanging(loading);
+    if (loading) {
+      safetyTimerRef.current = window.setTimeout(() => {
+        setPlateChanging(false);
+        safetyTimerRef.current = null;
+      }, 1200);
+    }
+  }, []);
   useEffect(() => {
-    setPlateChanging(true);
-    const t = window.setTimeout(() => setPlateChanging(false), 360);
-    return () => window.clearTimeout(t);
-  }, [plateIndex, projectIndex]);
+    return () => {
+      if (safetyTimerRef.current !== null) {
+        window.clearTimeout(safetyTimerRef.current);
+      }
+    };
+  }, []);
 
   const stepPlate = useCallback(
     (dir: -1 | 1) => {
