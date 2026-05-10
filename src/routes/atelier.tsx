@@ -272,8 +272,11 @@ function AtelierPage() {
             </div>
           </div>
 
-          {/* Scrolling body — tall right-side image gives the pinned headline room to hold. */}
-          <div className="xl:col-span-7 min-h-[calc(120svh-var(--nav-h))] flex flex-col justify-start">
+          {/* Right column — hero image. Sized to its 4:5 intrinsic ratio so
+              the column doesn't reserve a half-screen of empty air below the
+              image (which is what made the page feel slow). The sticky-left
+              column still holds because it's shorter than a single viewport. */}
+          <div className="xl:col-span-7 flex flex-col justify-start">
             <MediaAperture
               ratio="4/5"
               picture={atelierReplacement}
