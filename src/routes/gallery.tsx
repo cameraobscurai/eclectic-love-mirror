@@ -8,7 +8,7 @@ import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
-import { STORAGE_ORIGIN } from "@/lib/storage-image";
+import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
 import { morphOpen } from "@/lib/view-transition";
 import { flushSync } from "react-dom";
 
