@@ -156,6 +156,7 @@ const products = all.map((r, i) => {
     images: imgs,
     primaryImage: imgs[0] || null,
     imageCount: imgs.length,
+    cardBackgroundUrl: r.card_background_url || null,
     publicReady: true,
     scrapedOrder: i,
     subcategory: null,
