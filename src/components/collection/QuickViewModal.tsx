@@ -68,9 +68,9 @@ export function QuickViewModal({
     analytics.productViewed({
       id: product.id,
       name: product.title,
-      category: product.category ?? null,
+      category: product.displayCategory ?? null,
     });
-  }, [product.id, product.title, product.category]);
+  }, [product.id, product.title, product.displayCategory]);
 
   useEffect(() => {
     setImgNatural(null);
