@@ -3,7 +3,7 @@ import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
-import { CATEGORY_COVERS } from "@/lib/category-covers";
+import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
@@ -131,7 +131,7 @@ export function CategoryTonalGrid({
       // an empty result gracefully).
       ORDER.map((id) => {
         const products = byId.get(id) ?? [];
-        const cover = CATEGORY_COVERS[id];
+        const cover = coverUrl(CATEGORY_COVERS[id]);
         const fallbackHero = products.find((p) => p.primaryImage)?.primaryImage;
         const rawHero = cover ?? fallbackHero?.url ?? null;
         const heroSrc = rawHero ? withCdnWidth(rawHero, 600) : null;

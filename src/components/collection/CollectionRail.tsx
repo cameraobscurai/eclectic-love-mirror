@@ -4,7 +4,7 @@ import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
 } from "@/lib/collection-browse-groups";
-import { CATEGORY_COVERS } from "@/lib/category-covers";
+import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
@@ -48,9 +48,9 @@ export function CollectionRail({
   const thumbByGroup = useMemo(() => {
     const map = new Map<BrowseGroupId, string | null>();
     for (const id of BROWSE_GROUP_ORDER) {
-      const cover = CATEGORY_COVERS[id];
-      if (cover) {
-        map.set(id, cover);
+      const coverHref = coverUrl(CATEGORY_COVERS[id]);
+      if (coverHref) {
+        map.set(id, coverHref);
         continue;
       }
       // Find the first product in this bucket with an image.
