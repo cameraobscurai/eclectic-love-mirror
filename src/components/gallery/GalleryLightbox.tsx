@@ -47,6 +47,14 @@ export function GalleryLightbox({
     setPlateIndex(0);
   }, [projectIndex]);
 
+  // Briefly suppress parallax during plate transitions so the in-flight
+  // image isn't thrown sideways while CrossfadeImage decodes the next one.
+  useEffect(() => {
+    setPlateChanging(true);
+    const t = window.setTimeout(() => setPlateChanging(false), 360);
+    return () => window.clearTimeout(t);
+  }, [plateIndex, projectIndex]);
+
   const stepPlate = useCallback(
     (dir: -1 | 1) => {
       setPlateIndex((i) => {
