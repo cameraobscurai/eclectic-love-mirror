@@ -120,9 +120,16 @@ function findLiveProduct(slug, title) {
 
 let livesFallback = 0;
 const products = all.map((r, i) => {
-  let imgs = (r.images||[]).map((u,idx) => ({
-    url: restoredInventoryUrl(u), position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
-  }));
+  const meta = (r.images_meta && typeof r.images_meta === 'object') ? r.images_meta : {};
+  let imgs = (r.images||[]).map((u,idx) => {
+    const url = restoredInventoryUrl(u);
+    const m = meta[u] || meta[url] || {};
+    return {
+      url, position: idx, isHero: idx===0, inferredFilename: null,
+      altText: m.alt || r.title,
+      ...(m.role ? { role: m.role } : {}),
+    };
+  });
   const lp = findLiveProduct(r.slug, r.title);
   if (imgs.length === 0 && lp && lp.gallery && lp.gallery.length) {
     imgs = lp.gallery.map((u, idx) => ({
