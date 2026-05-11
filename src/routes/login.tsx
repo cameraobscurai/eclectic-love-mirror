@@ -31,14 +31,22 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  async function checkOwnAdminRole(userId: string) {
+    const { data, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .limit(1);
+    if (error) throw error;
+    return (data ?? []).length > 0;
+  }
+
   // After auth: verify admin role; otherwise sign out and surface message.
   async function verifyAdminAndRoute() {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) throw new Error("Sign-in succeeded but no session.");
-    const { data: isAdmin } = await supabase.rpc("has_role", {
-      _user_id: userData.user.id,
-      _role: "admin",
-    });
+    const isAdmin = await checkOwnAdminRole(userData.user.id);
     if (!isAdmin) {
       await supabase.auth.signOut();
       throw new Error(
@@ -53,10 +61,7 @@ function LoginPage() {
     (async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user || cancelled) return;
-      const { data: isAdmin } = await supabase.rpc("has_role", {
-        _user_id: data.user.id,
-        _role: "admin",
-      });
+      const isAdmin = await checkOwnAdminRole(data.user.id);
       if (cancelled) return;
       if (isAdmin) navigate({ to: redirectTo as "/admin" });
     })();

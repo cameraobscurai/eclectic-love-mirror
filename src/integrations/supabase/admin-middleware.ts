@@ -1,4 +1,4 @@
-// Composed middleware: requireSupabaseAuth + has_role('admin') check.
+// Composed middleware: requireSupabaseAuth + admin role check.
 // Use on every server function that should be admin-only. After this
 // middleware runs, context.supabase is an RLS-respecting client acting as
 // the admin user, and context.userId is verified.
@@ -12,17 +12,18 @@ export const requireAdmin = createMiddleware({ type: "function" })
   .server(async ({ next, context }) => {
     const { supabase, userId } = context;
 
-    // has_role() is SECURITY DEFINER, so it sees user_roles regardless of RLS.
-    const { data, error } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
+    const { data, error } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .limit(1);
 
     if (error) {
-      console.error("[requireAdmin] has_role rpc failed:", error);
+      console.error("[requireAdmin] admin role lookup failed:", error);
       throw new Response("Forbidden", { status: 403 });
     }
-    if (!data) {
+    if ((data ?? []).length === 0) {
       throw new Response("Forbidden: admin role required", { status: 403 });
     }
 
