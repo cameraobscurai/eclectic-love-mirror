@@ -722,7 +722,7 @@ function PillGroup({
   );
 }
 
-function SuccessPanel() {
+function SuccessPanel({ count }: { count: number }) {
   return (
     <div
       className="border-t pt-12"
@@ -742,6 +742,12 @@ function SuccessPanel() {
       >
         Thank you. Your inquiry is with the atelier.
       </h2>
+      {count > 0 && (
+        <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+          LOGGED WITH {String(count).padStart(2, "0")} PIECE
+          {count === 1 ? "" : "S"} FROM YOUR COLLECTION FOLDER.
+        </p>
+      )}
       <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
         WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE,
         EMAIL US DIRECTLY AT{" "}
