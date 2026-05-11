@@ -47,7 +47,7 @@ const inquiryIdSchema = z.object({ inquiryId: z.string().uuid() });
 export const getStudioWorkspace = createServerFn({ method: "GET" })
   .middleware([requireAdmin])
   .inputValidator((d) => inquiryIdSchema.parse(d))
-  .handler(async ({ data }): Promise<StudioWorkspace> => {
+  .handler(async ({ data }) => {
     const { data: inq, error: inqErr } = await supabaseAdmin
       .from("inquiries")
       .select("id,name,email,message,subject,created_at,item_snapshots,metadata")
@@ -65,9 +65,9 @@ export const getStudioWorkspace = createServerFn({ method: "GET" })
     if (bErr) throw bErr;
 
     return {
-      inquiry: inq as StudioInquiry,
-      board: ((boards ?? [])[0] as StyleBoardRow) ?? null,
-    };
+      inquiry: inq as unknown as StudioInquiry,
+      board: ((boards ?? [])[0] as unknown as StyleBoardRow) ?? null,
+    } as { inquiry: StudioInquiry; board: StyleBoardRow | null };
   });
 
 export const signInspoUploadUrl = createServerFn({ method: "POST" })
@@ -131,7 +131,7 @@ const saveBoardSchema = z.object({
 export const saveStyleBoard = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) => saveBoardSchema.parse(d))
-  .handler(async ({ data, context }): Promise<StyleBoardRow> => {
+  .handler(async ({ data, context }) => {
     const payload = {
       inquiry_id: data.inquiryId,
       status: data.status,
@@ -150,7 +150,7 @@ export const saveStyleBoard = createServerFn({ method: "POST" })
         .select("*")
         .single();
       if (error) throw error;
-      return row as StyleBoardRow;
+      return row as unknown as StyleBoardRow;
     }
     const { data: row, error } = await supabaseAdmin
       .from("style_boards")
@@ -158,5 +158,5 @@ export const saveStyleBoard = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw error;
-    return row as StyleBoardRow;
+    return row as unknown as StyleBoardRow;
   });

@@ -82,7 +82,7 @@ export function useStyleBoard(inquiryId: string) {
     let alive = true;
     (async () => {
       try {
-        const ws = await getStudioWorkspace({ data: { inquiryId } });
+        const ws = (await getStudioWorkspace({ data: { inquiryId } })) as { inquiry: StudioInquiry; board: import("@/server/studio.functions").StyleBoardRow | null };
         if (!alive) return;
         const board = ws.board;
         let pinned: string[];
@@ -219,7 +219,7 @@ export function useStyleBoard(inquiryId: string) {
   const save = useCallback(async (status?: BoardStatus) => {
     setState((s) => ({ ...s, saving: true }));
     try {
-      const row = await saveStyleBoard({
+      const row = (await saveStyleBoard({
         data: {
           inquiryId,
           boardId: state.boardId,
