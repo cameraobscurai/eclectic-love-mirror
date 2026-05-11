@@ -572,14 +572,23 @@ function ContactPage() {
                   )}
                   <button
                     type="submit"
-                    disabled={submitting || selectionStatus === "loading"}
+                    disabled={
+                      submitting ||
+                      selectionStatus === "loading" ||
+                      selectionStatus === "error" ||
+                      unresolvedIds.length > 0
+                    }
                     className="text-[12px] uppercase tracking-[0.18em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                   >
                     {submitting
                       ? "SENDING…"
                       : selectionStatus === "loading"
                         ? "LOADING SELECTED ITEMS…"
-                        : "SEND INQUIRY"}
+                        : selectionStatus === "error"
+                          ? "RESOLVE SELECTION TO SEND"
+                          : unresolvedIds.length > 0
+                            ? "RESOLVE MISSING ITEMS TO SEND"
+                            : "SEND INQUIRY"}
                   </button>
                   <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
                     OR EMAIL US DIRECTLY AT{" "}
