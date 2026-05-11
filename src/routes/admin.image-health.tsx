@@ -182,32 +182,22 @@ function ImageHealthPage() {
   const progressPct = total ? (done / total) * 100 : 0;
 
   return (
-    <main
-      className="min-h-screen bg-cream text-charcoal"
-      style={{ paddingTop: "var(--nav-h)" }}
-    >
+    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         {/* Header */}
         <header
-          className="border-b pb-8 mb-10 flex items-end justify-between gap-6 flex-wrap"
+          className="border-b pb-8 mb-10"
           style={{ borderColor: "var(--archive-rule)" }}
         >
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              ADMIN · INTERNAL
-            </p>
-            <h1 className="mt-3 font-display text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[0.95] uppercase tracking-[0.02em]">
-              Image Health
-            </h1>
-            <p className="mt-3 text-xs uppercase tracking-[0.22em] text-charcoal/55">
-              Probes every catalog image URL · reports 404s and timeouts
-            </p>
-          </div>
-          <nav className="flex gap-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-            <Link to="/admin" className="hover:text-charcoal">← Admin</Link>
-            <Link to="/admin/colors" className="hover:text-charcoal">Color QA →</Link>
-            <Link to="/admin/image-qa" className="hover:text-charcoal">Image QA →</Link>
-          </nav>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            ADMIN · INTERNAL
+          </p>
+          <h1 className="mt-3 font-display text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[0.95] uppercase tracking-[0.02em]">
+            Image Health
+          </h1>
+          <p className="mt-3 text-xs uppercase tracking-[0.22em] text-charcoal/55">
+            Probes every catalog image URL · reports 404s and timeouts
+          </p>
         </header>
 
         {/* Controls */}
