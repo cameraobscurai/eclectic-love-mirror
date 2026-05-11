@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
 import { analytics } from "@/lib/analytics";
+import { getCollectionCatalog } from "@/lib/phase3-catalog";
 
 // ---------------------------------------------------------------------------
 // Contact — one editorial intake form (no wizard, no steppers).
@@ -91,6 +92,10 @@ function ContactPage() {
   >("idle");
   const [fetchNonce, setFetchNonce] = useState(0);
 
+  // Hydrate selection from the baked catalog (rms_id is the identity used
+  // by the Collection page and useInquiry). No DB roundtrip needed — the
+  // catalog ships with the bundle and is the source of truth for what the
+  // visitor saw on the public site.
   useEffect(() => {
     let cancelled = false;
     if (initialIds.length === 0) {
@@ -99,46 +104,30 @@ function ContactPage() {
       return;
     }
     setSelectionStatus("loading");
-    // Only valid UUIDs can be queried — Postgres rejects the entire request
-    // otherwise. Malformed ids (e.g. legacy short ids in a shared link) are
-    // surfaced per-row as "MISSING ITEM" so the user can remove them.
-    const UUID_RE =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const validIds = initialIds.filter((id) => UUID_RE.test(id));
     (async () => {
-      let data: Array<{ id: string; title: string; category: string | null; images: unknown }> | null = [];
-      let error: unknown = null;
-      if (validIds.length > 0) {
-        const res = await supabase
-          .from("inventory_items")
-          .select("id,title,category,images")
-          .in("id", validIds);
-        data = (res.data as typeof data) ?? null;
-        error = res.error;
-      }
-      if (cancelled) return;
-      if (error || !data) {
+      try {
+        const catalog = await getCollectionCatalog();
+        if (cancelled) return;
+        const byId = new Map(catalog.products.map((p) => [String(p.id), p]));
+        const resolved: SelectedPiece[] = initialIds
+          .map((id) => {
+            const p = byId.get(id);
+            if (!p) return null;
+            return {
+              id: String(p.id),
+              title: p.title,
+              category: p.displayCategory ?? null,
+              image: p.primaryImage?.url ?? null,
+            } as SelectedPiece;
+          })
+          .filter((x): x is SelectedPiece => Boolean(x));
+        setPieces(resolved);
+        setSelectionStatus("ready");
+      } catch {
+        if (cancelled) return;
         setPieces([]);
         setSelectionStatus("error");
-        return;
       }
-      const byId = new Map(
-        data.map((d) => [
-          d.id,
-          {
-            id: d.id,
-            title: d.title,
-            category: d.category,
-            image: Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : null,
-          } as SelectedPiece,
-        ]),
-      );
-      setPieces(
-        initialIds
-          .map((id) => byId.get(id))
-          .filter((x): x is SelectedPiece => Boolean(x)),
-      );
-      setSelectionStatus("ready");
     })();
     return () => {
       cancelled = true;
@@ -252,11 +241,28 @@ function ContactPage() {
       .map((id) => piecesById.get(id))
       .filter((p): p is SelectedPiece => Boolean(p))
       .map((p) => ({
-        id: p.id,
+        rms_id: p.id,
         title: p.title,
         category: p.category,
         image_url: p.image ? withCdnWidth(p.image, 480) : null,
       }));
+
+    // Resolve catalog rms_ids → DB UUIDs for the typed `item_ids` column.
+    // Failures are non-fatal — snapshots + metadata.rms_ids preserve the
+    // selection even if a row was retired between baked catalog and DB.
+    let resolvedUuids: string[] = [];
+    if (effectiveIds.length > 0) {
+      const { data: rows } = await supabase
+        .from("inventory_items")
+        .select("id,rms_id")
+        .in("rms_id", effectiveIds);
+      if (rows) {
+        const uuidByRms = new Map(rows.map((r) => [r.rms_id, r.id]));
+        resolvedUuids = effectiveIds
+          .map((id) => uuidByRms.get(id))
+          .filter((x): x is string => Boolean(x));
+      }
+    }
 
     const payload = {
       name: name.trim().slice(0, 200),
@@ -265,13 +271,14 @@ function ContactPage() {
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
       // Legacy single-item column kept for backward compat with older admin code.
-      item_id: effectiveIds[0] ?? null,
-      item_ids: effectiveIds,
+      item_id: resolvedUuids[0] ?? null,
+      item_ids: resolvedUuids,
       item_snapshots: itemSnapshots,
       metadata: {
         project_date: projectDate || null,
         budget: budget || null,
         scope: scope || null,
+        rms_ids: effectiveIds,
       },
     };
 
