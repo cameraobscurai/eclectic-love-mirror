@@ -5,15 +5,14 @@
 //
 // If the caller is unauthenticated → 401. Authenticated but not an admin → 403.
 import { createMiddleware } from "@tanstack/react-start";
-import { supabaseAdmin } from "./client.server";
 import { requireSupabaseAuth } from "./auth-middleware";
 
 export const requireAdmin = createMiddleware({ type: "function" })
   .middleware([requireSupabaseAuth])
   .server(async ({ next, context }) => {
-    const { userId } = context;
+    const { supabase, userId } = context;
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
