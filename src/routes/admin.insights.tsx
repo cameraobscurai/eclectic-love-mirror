@@ -72,25 +72,19 @@ function InsightsPage() {
 
   if (err) {
     return (
-      <main
-        className="min-h-screen bg-cream text-charcoal grid place-items-center px-6"
-        style={{ paddingTop: "var(--nav-h)" }}
-      >
+      <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal grid place-items-center px-6">
         <p className="text-sm uppercase tracking-[0.2em] text-charcoal/60">{err}</p>
-      </main>
+      </div>
     );
   }
 
   if (!data) {
     return (
-      <main
-        className="min-h-screen bg-cream text-charcoal grid place-items-center"
-        style={{ paddingTop: "var(--nav-h)" }}
-      >
+      <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal grid place-items-center">
         <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
           Loading insights…
         </p>
-      </main>
+      </div>
     );
   }
 
@@ -102,28 +96,21 @@ function InsightsPage() {
       : null;
 
   return (
-    <main className="min-h-screen bg-cream text-charcoal" style={{ paddingTop: "var(--nav-h)" }}>
+    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         <header
-          className="border-b pb-8 mb-10 flex items-end justify-between gap-6 flex-wrap"
+          className="border-b pb-8 mb-10"
           style={{ borderColor: "var(--archive-rule)" }}
         >
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-              ADMIN · INSIGHTS
-            </p>
-            <h1 className="mt-3 font-display text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[0.95] uppercase tracking-[0.02em]">
-              Demand
-            </h1>
-            <p className="mt-3 text-xs uppercase tracking-[0.22em] text-charcoal/55">
-              Inquiries · outcomes · what the market is asking for
-            </p>
-          </div>
-          <nav className="flex gap-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-            <Link to="/admin" className="hover:text-charcoal">← OPS</Link>
-            <Link to="/admin/colors" className="hover:text-charcoal">COLOR QA</Link>
-            <Link to="/admin/image-qa" className="hover:text-charcoal">IMAGE QA</Link>
-          </nav>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
+            ADMIN · INSIGHTS
+          </p>
+          <h1 className="mt-3 font-display text-[clamp(2.25rem,4.5vw,3.5rem)] leading-[0.95] uppercase tracking-[0.02em]">
+            Demand
+          </h1>
+          <p className="mt-3 text-xs uppercase tracking-[0.22em] text-charcoal/55">
+            Inquiries · outcomes · what the market is asking for
+          </p>
         </header>
 
         {/* KPI strip */}
