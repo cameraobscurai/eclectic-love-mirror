@@ -220,6 +220,7 @@ function RootComponent() {
         {!hideFooter && <Footer />}
       </div>
       <DevEditOverlay />
+      <Toaster />
     </>
   );
 }
