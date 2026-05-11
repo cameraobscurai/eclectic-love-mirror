@@ -99,11 +99,23 @@ function ContactPage() {
       return;
     }
     setSelectionStatus("loading");
+    // Only valid UUIDs can be queried — Postgres rejects the entire request
+    // otherwise. Malformed ids (e.g. legacy short ids in a shared link) are
+    // surfaced per-row as "MISSING ITEM" so the user can remove them.
+    const UUID_RE =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const validIds = initialIds.filter((id) => UUID_RE.test(id));
     (async () => {
-      const { data, error } = await supabase
-        .from("inventory_items")
-        .select("id,title,category,images")
-        .in("id", initialIds);
+      let data: Array<{ id: string; title: string; category: string | null; images: unknown }> | null = [];
+      let error: unknown = null;
+      if (validIds.length > 0) {
+        const res = await supabase
+          .from("inventory_items")
+          .select("id,title,category,images")
+          .in("id", validIds);
+        data = (res.data as typeof data) ?? null;
+        error = res.error;
+      }
       if (cancelled) return;
       if (error || !data) {
         setPieces([]);
