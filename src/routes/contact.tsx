@@ -360,7 +360,7 @@ function ContactPage() {
           {/* RIGHT — single form */}
           <section id="inquiry" className="xl:col-span-7 scroll-mt-32">
             {success ? (
-              <SuccessPanel />
+              <SuccessPanel count={submittedCount} />
             ) : (
               <form onSubmit={onSubmit} noValidate className="space-y-16">
                 {/* 1. YOUR INFORMATION */}
