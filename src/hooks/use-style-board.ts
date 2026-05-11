@@ -114,7 +114,7 @@ export function useStyleBoard(inquiryId: string) {
           inspo: hydrated,
           pinned,
           palette: (board?.palette as ColorInfo[]) ?? [],
-          tones: (board?.tones as ToneAnalysis) ?? null,
+          tones: ((board?.tones as unknown) as ToneAnalysis) ?? null,
           insights: (board?.insights as DesignInsight[]) ?? [],
           curatorNotes: board?.curator_notes ?? "",
           dirty: false,

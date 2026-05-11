@@ -18,9 +18,9 @@ export interface StyleBoardRow {
   status: "draft" | "ready" | "sent";
   inspo_images: InspoImageRecord[];
   pinned_rms_ids: string[];
-  palette: unknown[];
-  tones: Record<string, unknown>;
-  insights: unknown[];
+  palette: {}[];
+  tones: Record<string, {}>;
+  insights: {}[];
   curator_notes: string | null;
   created_at: string;
   updated_at: string;
@@ -33,8 +33,8 @@ export interface StudioInquiry {
   message: string;
   subject: string | null;
   created_at: string;
-  item_snapshots: Array<Record<string, unknown>>;
-  metadata: Record<string, unknown>;
+  item_snapshots: Record<string, {}>[];
+  metadata: Record<string, {}>;
 }
 
 export interface StudioWorkspace {
