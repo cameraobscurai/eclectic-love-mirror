@@ -190,7 +190,9 @@ function RootComponent() {
   // footer (long editorial scroll, footer is the natural terminus).
   // T18+T22: footer now renders on /contact and /collection too.
   // Only /faq and /privacy keep the self-contained-fold treatment.
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
   const hideFooter =
+    isAdmin ||
     pathname === "/faq" ||
     pathname === "/privacy" ||
     pathname === "/process";
@@ -204,7 +206,7 @@ function RootComponent() {
       >
         Skip to main content
       </a>
-      <Navigation />
+      {!isAdmin && <Navigation />}
       {/* No route-level transition. Per spec: navigation is instant —
           chunks and data preload on intent/viewport so the swap is silent.
           AnimatePresence around <Outlet /> forces full subtree remount and
