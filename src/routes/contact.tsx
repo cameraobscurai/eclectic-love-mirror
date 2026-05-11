@@ -241,11 +241,28 @@ function ContactPage() {
       .map((id) => piecesById.get(id))
       .filter((p): p is SelectedPiece => Boolean(p))
       .map((p) => ({
-        id: p.id,
+        rms_id: p.id,
         title: p.title,
         category: p.category,
         image_url: p.image ? withCdnWidth(p.image, 480) : null,
       }));
+
+    // Resolve catalog rms_ids → DB UUIDs for the typed `item_ids` column.
+    // Failures are non-fatal — snapshots + metadata.rms_ids preserve the
+    // selection even if a row was retired between baked catalog and DB.
+    let resolvedUuids: string[] = [];
+    if (effectiveIds.length > 0) {
+      const { data: rows } = await supabase
+        .from("inventory_items")
+        .select("id,rms_id")
+        .in("rms_id", effectiveIds);
+      if (rows) {
+        const uuidByRms = new Map(rows.map((r) => [r.rms_id, r.id]));
+        resolvedUuids = effectiveIds
+          .map((id) => uuidByRms.get(id))
+          .filter((x): x is string => Boolean(x));
+      }
+    }
 
     const payload = {
       name: name.trim().slice(0, 200),
@@ -254,13 +271,14 @@ function ContactPage() {
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
       // Legacy single-item column kept for backward compat with older admin code.
-      item_id: effectiveIds[0] ?? null,
-      item_ids: effectiveIds,
+      item_id: resolvedUuids[0] ?? null,
+      item_ids: resolvedUuids,
       item_snapshots: itemSnapshots,
       metadata: {
         project_date: projectDate || null,
         budget: budget || null,
         scope: scope || null,
+        rms_ids: effectiveIds,
       },
     };
 
