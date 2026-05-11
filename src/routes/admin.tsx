@@ -131,14 +131,11 @@ function AdminDashboard() {
 
   if (!stats) {
     return (
-      <main
-        className="min-h-screen bg-cream text-charcoal grid place-items-center"
-        style={{ paddingTop: "var(--nav-h)" }}
-      >
+      <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal grid place-items-center">
         <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
           Loading inventory…
         </p>
-      </main>
+      </div>
     );
   }
 
