@@ -250,7 +250,7 @@ function InsightsPage() {
           Internal · GA4 page-views and source attribution available in Google Analytics
         </footer>
       </div>
-    </main>
+    </div>
   );
 }
 
