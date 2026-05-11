@@ -303,6 +303,7 @@ function ContactPage() {
     clearInquiry();
     setPieces([]);
     setRemovedIds(new Set());
+    setSubmittedCount(effectiveIds.length);
     setSuccess(true);
   }
 
