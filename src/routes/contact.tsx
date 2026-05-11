@@ -164,6 +164,7 @@ function ContactPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submittedCount, setSubmittedCount] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   function removePiece(id: string) {
