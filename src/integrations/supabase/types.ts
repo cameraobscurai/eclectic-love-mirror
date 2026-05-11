@@ -1048,6 +1048,51 @@ export type Database = {
           },
         ]
       }
+      style_boards: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          curator_notes: string | null
+          id: string
+          inquiry_id: string
+          insights: Json
+          inspo_images: Json
+          palette: Json
+          pinned_rms_ids: string[]
+          status: string
+          tones: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          curator_notes?: string | null
+          id?: string
+          inquiry_id: string
+          insights?: Json
+          inspo_images?: Json
+          palette?: Json
+          pinned_rms_ids?: string[]
+          status?: string
+          tones?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          curator_notes?: string | null
+          id?: string
+          inquiry_id?: string
+          insights?: Json
+          inspo_images?: Json
+          palette?: Json
+          pinned_rms_ids?: string[]
+          status?: string
+          tones?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
