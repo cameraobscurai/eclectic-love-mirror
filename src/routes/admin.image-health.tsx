@@ -384,7 +384,7 @@ function ImageHealthPage() {
           {TIMEOUT_MS / 1000}s timeout
         </footer>
       </div>
-    </main>
+    </div>
   );
 }
 
