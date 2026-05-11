@@ -339,7 +339,7 @@ function AdminDashboard() {
           Internal tool · not indexed · authentication pending
         </footer>
       </div>
-    </main>
+    </div>
   );
 }
 
