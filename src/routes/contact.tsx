@@ -89,6 +89,7 @@ function ContactPage() {
   const [selectionStatus, setSelectionStatus] = useState<
     "idle" | "loading" | "ready" | "error"
   >("idle");
+  const [fetchNonce, setFetchNonce] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,7 +131,7 @@ function ContactPage() {
     return () => {
       cancelled = true;
     };
-  }, [initialIds]);
+  }, [initialIds, fetchNonce]);
 
   const piecesById = useMemo(
     () => new Map(pieces.map((p) => [p.id, p])),
@@ -140,6 +141,16 @@ function ContactPage() {
     () => initialIds.filter((id) => !removedIds.has(id)),
     [initialIds, removedIds],
   );
+  // Ids the user expects to see, but the catalog couldn't resolve. Surfaces
+  // as a blocker on the form so we never silently submit phantom items.
+  const unresolvedIds = useMemo(
+    () =>
+      selectionStatus === "ready"
+        ? effectiveIds.filter((id) => !piecesById.has(id))
+        : [],
+    [effectiveIds, piecesById, selectionStatus],
+  );
+  const retryFetch = () => setFetchNonce((n) => n + 1);
 
   // Form state — owner-defined fields
   const [name, setName] = useState("");
