@@ -2,8 +2,11 @@
 // No server side. Used by the Inventory tray and the contact page.
 
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "sonner";
 
 const KEY = "hive.inquiry.items.v1";
+// Mirrors the DB-level cap (cardinality(item_ids) <= 50). Keep in sync.
+export const INQUIRY_MAX = 50;
 
 function read(): string[] {
   if (typeof window === "undefined") return [];
