@@ -233,13 +233,33 @@ function ContactPage() {
       ...selectedLines,
     ].filter((l): l is string => l !== null);
 
+    // Frozen-at-submit snapshot. Even if catalog rebinds an image tomorrow,
+    // the admin inbox always renders what the customer actually saw.
+    const itemSnapshots = effectiveIds
+      .map((id) => piecesById.get(id))
+      .filter((p): p is SelectedPiece => Boolean(p))
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        image_url: p.image ? withCdnWidth(p.image, 480) : null,
+      }));
+
     const payload = {
       name: name.trim().slice(0, 200),
       email: email.trim().slice(0, 320),
       phone: phone.trim() ? phone.trim().slice(0, 50) : null,
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
+      // Legacy single-item column kept for backward compat with older admin code.
       item_id: effectiveIds[0] ?? null,
+      item_ids: effectiveIds,
+      item_snapshots: itemSnapshots,
+      metadata: {
+        project_date: projectDate || null,
+        budget: budget || null,
+        scope: scope || null,
+      },
     };
 
     const { error } = await supabase.from("inquiries").insert(payload);
