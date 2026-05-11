@@ -21,7 +21,10 @@ export type Database = {
           handled: boolean
           id: string
           item_id: string | null
+          item_ids: string[]
+          item_snapshots: Json
           message: string
+          metadata: Json
           name: string
           outcome_notes: string | null
           outcome_updated_at: string | null
@@ -37,7 +40,10 @@ export type Database = {
           handled?: boolean
           id?: string
           item_id?: string | null
+          item_ids?: string[]
+          item_snapshots?: Json
           message: string
+          metadata?: Json
           name: string
           outcome_notes?: string | null
           outcome_updated_at?: string | null
@@ -53,7 +59,10 @@ export type Database = {
           handled?: boolean
           id?: string
           item_id?: string | null
+          item_ids?: string[]
+          item_snapshots?: Json
           message?: string
+          metadata?: Json
           name?: string
           outcome_notes?: string | null
           outcome_updated_at?: string | null
