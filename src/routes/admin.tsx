@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import {
   getCollectionCatalog,
   type CollectionProduct,
@@ -8,6 +8,7 @@ import {
   getInquirySummary,
   type InquirySummary,
 } from "@/server/admin.functions";
+import { AdminShell } from "@/components/admin/admin-shell";
 
 // ---------------------------------------------------------------------------
 // /admin — Editorial admin dashboard
