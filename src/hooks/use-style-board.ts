@@ -231,7 +231,7 @@ export function useStyleBoard(inquiryId: string) {
           insights: state.insights as unknown[],
           curatorNotes: state.curatorNotes || null,
         },
-      });
+      })) as import("@/server/studio.functions").StyleBoardRow;
       setState((s) => ({
         ...s,
         boardId: row.id,
