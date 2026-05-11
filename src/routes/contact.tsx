@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
 import { analytics } from "@/lib/analytics";
+import { getCollectionCatalog } from "@/lib/phase3-catalog";
 
 // ---------------------------------------------------------------------------
 // Contact — one editorial intake form (no wizard, no steppers).
