@@ -42,15 +42,31 @@ export function useInquiry() {
 
   const add = useCallback((id: string) => {
     const cur = read();
-    if (!cur.includes(id)) write([...cur, id]);
+    if (cur.includes(id)) return;
+    if (cur.length >= INQUIRY_MAX) {
+      toast("Inquiry list full", {
+        description: `Up to ${INQUIRY_MAX} pieces per inquiry — review your selection at /contact.`,
+      });
+      return;
+    }
+    write([...cur, id]);
   }, []);
   const remove = useCallback((id: string) => {
     write(read().filter((x) => x !== id));
   }, []);
   const toggle = useCallback((id: string) => {
     const cur = read();
-    if (cur.includes(id)) write(cur.filter((x) => x !== id));
-    else write([...cur, id]);
+    if (cur.includes(id)) {
+      write(cur.filter((x) => x !== id));
+      return;
+    }
+    if (cur.length >= INQUIRY_MAX) {
+      toast("Inquiry list full", {
+        description: `Up to ${INQUIRY_MAX} pieces per inquiry — review your selection at /contact.`,
+      });
+      return;
+    }
+    write([...cur, id]);
   }, []);
   const clear = useCallback(() => write([]), []);
   const has = useCallback((id: string) => ids.includes(id), [ids]);
