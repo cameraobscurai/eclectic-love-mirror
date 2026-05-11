@@ -20,6 +20,7 @@ import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
@@ -80,6 +81,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStudioRoute = AdminStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInsightsRoute = AdminInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/insights'
+    | '/admin/studio'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/insights'
+    | '/admin/studio'
   id:
     | '__root__'
     | '/'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/insights'
+    | '/admin/studio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,6 +312,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/studio': {
+      id: '/admin/studio'
+      path: '/studio'
+      fullPath: '/admin/studio'
+      preLoaderRoute: typeof AdminStudioRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/insights': {
       id: '/admin/insights'
       path: '/insights'
@@ -336,6 +355,7 @@ interface AdminRouteChildren {
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
+  AdminStudioRoute: typeof AdminStudioRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -343,6 +363,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
   AdminInsightsRoute: AdminInsightsRoute,
+  AdminStudioRoute: AdminStudioRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
