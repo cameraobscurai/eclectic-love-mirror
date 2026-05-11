@@ -4,7 +4,7 @@
 //
 // Checks Supabase session client-side (it'll already be hydrated from
 // localStorage on revisit; on first paint we await getUser()), then verifies
-// the admin role via the SECURITY DEFINER `has_role` rpc. Bounces to /login
+// the admin role via the user's own `user_roles` row. Bounces to /login
 // with a `redirect` search param so we can return after sign-in.
 import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,11 +21,14 @@ export async function requireAdminOrRedirect(currentHref: string): Promise<void>
     throw redirect({ to: "/login", search: { redirect: currentHref } });
   }
 
-  const { data: isAdmin, error: roleErr } = await supabase.rpc("has_role", {
-    _user_id: userData.user.id,
-    _role: "admin",
-  });
-  if (roleErr || !isAdmin) {
+  const { data: roleRows, error: roleErr } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userData.user.id)
+    .eq("role", "admin")
+    .limit(1);
+
+  if (roleErr || (roleRows ?? []).length === 0) {
     throw redirect({ to: "/login", search: { redirect: currentHref } });
   }
 }
