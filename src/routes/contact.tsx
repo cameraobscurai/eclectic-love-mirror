@@ -445,12 +445,40 @@ function ContactPage() {
                             LOADING TITLES…
                           </p>
                         )}
-                        {selectionStatus === "error" && (
-                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                            COULDN'T LOAD TITLES — IDS WILL STILL BE SENT
-                          </p>
-                        )}
                       </div>
+                      {(selectionStatus === "error" || unresolvedIds.length > 0) && (
+                        <div className="mb-4 border-l-2 border-charcoal/40 pl-4 py-2">
+                          <p className="text-[11px] uppercase tracking-[0.22em] leading-[1.7] text-charcoal/75">
+                            {selectionStatus === "error"
+                              ? "COULDN'T LOAD YOUR SELECTION."
+                              : `${unresolvedIds.length} ITEM${unresolvedIds.length === 1 ? "" : "S"} COULDN'T BE FOUND IN THE CATALOG: ${unresolvedIds.map((id) => id.slice(-6).toUpperCase()).join(" · ")}.`}
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-4">
+                            <button
+                              type="button"
+                              onClick={retryFetch}
+                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                            >
+                              RETRY
+                            </button>
+                            {unresolvedIds.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setRemovedIds((prev) => {
+                                    const next = new Set(prev);
+                                    unresolvedIds.forEach((id) => next.add(id));
+                                    return next;
+                                  })
+                                }
+                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              >
+                                REMOVE MISSING
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <ul
                         className="divide-y"
                         style={{ borderColor: "var(--archive-rule)" }}
@@ -459,6 +487,12 @@ function ContactPage() {
                           const p = piecesById.get(id);
                           const shortId = id.slice(-6).toUpperCase();
                           const thumb = p?.image ? withCdnWidth(p.image, 240) : null;
+                          const initial =
+                            p?.category?.trim().charAt(0).toUpperCase() ||
+                            p?.title?.trim().charAt(0).toUpperCase() ||
+                            "·";
+                          const isMissing =
+                            selectionStatus === "ready" && !p;
                           return (
                             <li
                               key={id}
@@ -467,7 +501,7 @@ function ContactPage() {
                             >
                               <div className="flex items-center gap-4 min-w-0">
                                 <div
-                                  className="shrink-0 w-14 h-14 bg-charcoal/[0.04] overflow-hidden"
+                                  className="shrink-0 w-14 h-14 bg-charcoal/[0.04] overflow-hidden flex items-center justify-center"
                                   aria-hidden
                                 >
                                   {thumb ? (
@@ -478,11 +512,23 @@ function ContactPage() {
                                       decoding="async"
                                       className="w-full h-full object-cover"
                                     />
-                                  ) : null}
+                                  ) : (
+                                    <span
+                                      className={`text-[11px] uppercase tracking-[0.22em] ${isMissing ? "text-charcoal/30" : "text-charcoal/45"}`}
+                                    >
+                                      {isMissing ? "?" : initial}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="flex flex-col min-w-0">
-                                  <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
-                                    {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
+                                  <span
+                                    className={`text-[12px] uppercase tracking-[0.18em] truncate ${isMissing ? "text-charcoal/45 line-through" : "text-charcoal/85"}`}
+                                  >
+                                    {p
+                                      ? p.title
+                                      : selectionStatus === "loading"
+                                        ? "LOADING…"
+                                        : `MISSING ITEM ${shortId}`}
                                   </span>
                                   {p?.category && (
                                     <span className="mt-1 text-[11px] uppercase tracking-[0.22em] text-charcoal/40 truncate">
