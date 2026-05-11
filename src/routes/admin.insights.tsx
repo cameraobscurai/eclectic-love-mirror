@@ -318,6 +318,15 @@ function InquiryRow({ row, onSaved }: { row: InsightsInquiry; onSaved: () => voi
           <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums">
             {formatDate(row.created_at)}
           </span>
+          <a
+            href={`/admin/studio?inquiry=${row.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline"
+          >
+            Studio →
+          </a>
         </div>
       </button>
 
