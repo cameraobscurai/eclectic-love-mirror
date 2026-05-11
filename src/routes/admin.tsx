@@ -94,14 +94,16 @@ function buildInventoryStats(products: CollectionProduct[]): InventoryStats {
 }
 
 function AdminPage() {
-  // admin.tsx is the parent layout for /admin/* child routes (admin.insights,
-  // admin.colors, etc.). When a child is active, render only the child via
-  // <Outlet />. The dashboard below is the /admin index view.
   const { pathname } = useLocation();
-  if (pathname !== "/admin" && pathname !== "/admin/") {
-    return <Outlet />;
-  }
-  return <AdminDashboard />;
+  return (
+    <AdminShell>
+      {pathname !== "/admin" && pathname !== "/admin/" ? (
+        <Outlet />
+      ) : (
+        <AdminDashboard />
+      )}
+    </AdminShell>
+  );
 }
 
 function AdminDashboard() {
