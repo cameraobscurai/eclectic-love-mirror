@@ -92,6 +92,10 @@ function ContactPage() {
   >("idle");
   const [fetchNonce, setFetchNonce] = useState(0);
 
+  // Hydrate selection from the baked catalog (rms_id is the identity used
+  // by the Collection page and useInquiry). No DB roundtrip needed — the
+  // catalog ships with the bundle and is the source of truth for what the
+  // visitor saw on the public site.
   useEffect(() => {
     let cancelled = false;
     if (initialIds.length === 0) {
@@ -100,46 +104,30 @@ function ContactPage() {
       return;
     }
     setSelectionStatus("loading");
-    // Only valid UUIDs can be queried — Postgres rejects the entire request
-    // otherwise. Malformed ids (e.g. legacy short ids in a shared link) are
-    // surfaced per-row as "MISSING ITEM" so the user can remove them.
-    const UUID_RE =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const validIds = initialIds.filter((id) => UUID_RE.test(id));
     (async () => {
-      let data: Array<{ id: string; title: string; category: string | null; images: unknown }> | null = [];
-      let error: unknown = null;
-      if (validIds.length > 0) {
-        const res = await supabase
-          .from("inventory_items")
-          .select("id,title,category,images")
-          .in("id", validIds);
-        data = (res.data as typeof data) ?? null;
-        error = res.error;
-      }
-      if (cancelled) return;
-      if (error || !data) {
+      try {
+        const catalog = await getCollectionCatalog();
+        if (cancelled) return;
+        const byId = new Map(catalog.products.map((p) => [String(p.id), p]));
+        const resolved: SelectedPiece[] = initialIds
+          .map((id) => {
+            const p = byId.get(id);
+            if (!p) return null;
+            return {
+              id: String(p.id),
+              title: p.title,
+              category: p.displayCategory ?? null,
+              image: p.primaryImage?.url ?? null,
+            } as SelectedPiece;
+          })
+          .filter((x): x is SelectedPiece => Boolean(x));
+        setPieces(resolved);
+        setSelectionStatus("ready");
+      } catch {
+        if (cancelled) return;
         setPieces([]);
         setSelectionStatus("error");
-        return;
       }
-      const byId = new Map(
-        data.map((d) => [
-          d.id,
-          {
-            id: d.id,
-            title: d.title,
-            category: d.category,
-            image: Array.isArray(d.images) && d.images.length > 0 ? d.images[0] : null,
-          } as SelectedPiece,
-        ]),
-      );
-      setPieces(
-        initialIds
-          .map((id) => byId.get(id))
-          .filter((x): x is SelectedPiece => Boolean(x)),
-      );
-      setSelectionStatus("ready");
     })();
     return () => {
       cancelled = true;
