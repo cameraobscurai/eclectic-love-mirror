@@ -1,137 +1,73 @@
 
-# Make `/admin` staff-ready
+# Inquiry folder — make it actually work end-to-end (collection → contact → DB)
 
-Goal: turn the dashboard from a read-only reporting view into a tool the staff (you + Jenna) can actually *work* in for an hour at a time without friction.
+Scope: only the **submission half**. The admin inbox (status pills, notes, etc.) becomes a follow-up PR that just reads the data this PR persists. We're fixing the leak first.
 
-Scope is UI/UX only. Auth, RLS, and security are out of scope here (covered separately).
+## What's wrong today
 
----
+1. **Lossy submit.** `contact.tsx` writes only `item_id = effectiveIds[0]` to `inquiries`. If staff get a 12-piece inquiry, the DB knows about 1 piece — the other 11 are buried in plain text inside `message`. Admin can't render them, can't link back, can't filter.
+2. **No image proof.** Selected pieces render with thumbnails on `/contact`, but those thumbnails are never persisted with the inquiry. If a piece's image URL changes later (rebind, mirror swap), the admin view of that historical inquiry shows a broken/different image.
+3. **Project metadata is unstructured.** `projectDate`, `budget`, `scope` are concatenated into the message body. Same problem: admin can't filter "all weddings in June" or "$10k+ budgets".
+4. **No removal persistence.** A user can `REMOVE` an item from the preview list, submit, then reload — the inquiry tray (localStorage) still has the original ids. Minor, but confusing if they re-open `/contact`.
+5. **Image hydration race on the preview itself.** The current `useEffect` queries Supabase by id; if it errors or returns fewer rows than requested, the missing rows show "ITEM XXXXXX" with a blank thumbnail tile and the user has no way to know *why*. Submit button stays enabled. Worth tightening.
 
-## 1. Shared admin shell
+## What this PR ships
 
-Right now every sub-route (`/admin`, `/admin/insights`, `/admin/colors`, `/admin/image-qa`, `/admin/image-health`) re-implements its own header + nav. Staff get lost because there's no consistent "where am I / how do I get back."
+### A. DB shape (one migration)
 
-Build a single shell rendered in `admin.tsx` (parent layout) that wraps `<Outlet />`:
+Add to `inquiries`:
+- `item_ids uuid[] not null default '{}'` — full ordered selection
+- `item_snapshots jsonb not null default '[]'` — frozen at submit time, one entry per item:
+  ```json
+  { "id": "...", "title": "...", "category": "...", "image_url": "..." }
+  ```
+  This is the "image proof" — even if the catalog rebinds tomorrow, the admin inbox always shows what the customer actually saw.
+- `metadata jsonb not null default '{}'` — `{ project_date, budget, scope }` (and room for future structured fields).
+- Keep existing `item_id` column populated with `item_ids[0]` for backward compat with any current admin code; mark it as "legacy, prefer item_ids" in a comment.
 
-- **Left rail (collapsible icon sidebar)** — uses shadcn `Sidebar`, grouped:
-  - *Overview*: Dashboard
-  - *Inbox*: Inquiries (badge with open count)
-  - *Inventory*: Insights, Image Health, Image QA, Color QA, Bind (placeholder)
-  - *Site*: View live site, Collection, Contact (external links, open in new tab)
-- **Top bar** — breadcrumb (Admin › Inquiries › #42), `SidebarTrigger`, Cmd+K hint chip, signed-in user avatar with logout, "View live site" link.
-- **Editorial styling preserved** — keep Cormorant display headings, charcoal/cream palette, tracked uppercase eyebrows. The shell is structural, not decorative.
+RLS: no change — existing anon-insert and admin-select policies cover the new columns.
 
-The dashboard, insights, color QA, etc. each lose their duplicated header and just render their content area.
+Public insert WITH CHECK gets one new bound: `cardinality(item_ids) <= 50` and a JSON size sanity cap (`octet_length(item_snapshots::text) < 16000`) so a malicious client can't dump megabytes.
 
-## 2. Inquiry workflow (highest-value change)
+### B. Contact form (`src/routes/contact.tsx`)
 
-The Inbox is currently read-only `<details>` accordions. Staff can't actually *do* anything. Add:
+Submission changes (no visual change to the form):
+- Build `item_snapshots` from `pieces` (the already-loaded preview data) — only for ids still in `effectiveIds`. Use `withCdnWidth(image, 480)` so the snapshot stores a reasonable size.
+- Send `item_ids: effectiveIds` and `metadata: { project_date, budget, scope }` in the payload.
+- Keep building the human-readable `message` body for staff who skim email-style — but it's now redundant context, not the source of truth.
+- After successful insert: call `clearInquiry()` to empty the localStorage tray (fixes #4).
 
-- **Status field** — extend `inquiries` with `status` (`new` | `in_progress` | `quoted` | `won` | `lost` | `archived`). Migrate existing `handled=true` → `won`, `handled=false` → `new`. Keep `handled` as a derived view for now.
-- **Inbox list view** at `/admin/inquiries`:
-  - Three-pane layout: left = filter rail, middle = list, right = detail pane (sticky)
-  - Filter rail: status, date range, has-phone, search by name/email/message
-  - List rows: name, email, subject, age ("2d"), status pill, unread dot
-  - Keyboard nav: `j/k` row, `enter` open, `e` archive, `1–5` set status, `/` focus search, `esc` clear selection
-- **Detail pane**: full message, contact info with click-to-copy, quick actions (Reply via mailto, Mark in_progress / quoted / won / lost, Archive, Add internal note)
-- **Internal notes** — append-only `inquiry_notes` table (user_id, body, created_at). Shows author + timestamp on each note.
-- **Optimistic status changes** with sonner toast + Undo (5s window), rollback on server error.
+Preview-list polish (small, high-value):
+- If `selectionStatus === "error"` or any id failed to resolve, show a clear inline notice listing the missing short-ids and **disable the submit button** until the user removes them or retries. Today it silently submits with placeholder titles.
+- Add a "Retry" button next to the error notice that re-runs the fetch.
+- Image tile gets a subtle fallback chip with the category initial when `thumb` is null, instead of an empty grey square — gives the user confidence the row is real.
+- Add a one-line confirmation in the success state: "We've logged your inquiry with N pieces." so the user knows the selection was received (right now success state is generic).
 
-Dashboard's "Inbox" panel becomes a 5-row preview that links to `/admin/inquiries`.
+### C. Inquiry tray (`src/components/collection/InquiryTray.tsx` + `use-inquiry.ts`)
 
-## 3. URL state everywhere
+- No schema change. Tray already works. Two small fixes:
+  - When `clearInquiry()` is called from `/contact` after submit, the tray's `AnimatePresence` exit animation needs to play even though the user has already navigated away. Move `clearInquiry()` into a small `useEffect` on the success screen so the storage event fires after the success view is mounted (not mid-submit).
+  - Tray currently dedupes by id but doesn't bound size. Add a soft cap of 50 with a toast ("Inquiry list full — review at /contact") matching the new DB cap so client and server agree.
 
-Right now refresh = lose your place. Use TanStack Router `validateSearch` + zod adapter on every list view (`/admin/inquiries`, `/admin/colors`, `/admin/image-qa`, `/admin/image-health`) for:
+### D. Out of scope (next PR)
 
-`?q=&status=&category=&sort=&page=&selected=`
+- Admin inbox UI consuming `item_ids` + `item_snapshots` + `metadata` (status pills, notes, mark-handled).
+- Backfilling `item_ids` for historical inquiries — they keep working via `item_id`.
 
-`retainSearchParams(["q","status"])` on the admin parent so filters survive cross-page navigation. `stripSearchParams` for defaults so URLs stay clean.
+## Acceptance checks
 
-Result: refresh, share URL, browser back — all do the right thing.
+- Submit a 5-piece inquiry → DB row has `item_ids = [5 uuids]`, `item_snapshots` length 5, each snapshot has a working image URL, `metadata` has the 3 project fields populated.
+- Remove 2 pieces in the preview, submit → DB row reflects the 3 remaining only, in original order.
+- Submit, navigate back to `/collection` → tray is empty (localStorage cleared).
+- Force one selected id to be invalid (manual URL edit) → preview shows the error notice listing the bad id, submit disabled until removed or retried.
+- Reload `/contact?items=<one valid, one invalid>` → preview hydrates the valid one with image, flags the invalid one, button disabled.
+- Image rebind script swaps a mirror URL after submission → opening the (future) admin row still shows the historical thumbnail from `item_snapshots`, not the new live URL.
 
-## 4. Command palette (Cmd+K / Ctrl+K)
+## Files touched
 
-Single keyboard surface, `cmdk` library + shadcn `Command`. Indexes:
+- `supabase/migrations/<new>.sql` — columns + bound checks on `inquiries`.
+- `src/routes/contact.tsx` — payload shape, error/empty/success states, snapshot builder, post-submit `clearInquiry`.
+- `src/components/collection/InquiryTray.tsx` — soft cap + toast.
+- `src/hooks/use-inquiry.ts` — soft cap enforcement in `add`/`toggle`.
 
-- Every admin route
-- All 14 categories (jump to Collection filter)
-- Recent inquiries (last 20, by name)
-- Quick actions: "Mark all read", "Open today's inquiries", "Go to live site"
-- Free-text product search across the 835-item baked catalog (already in memory client-side, no DB hit)
-
-Dropdown groups, fuzzy match, recent + pinned commands at top. This is the one feature that will change how the staff actually use the dashboard.
-
-## 5. Feedback primitives
-
-Standardize across every mutation:
-
-- **sonner toasts** for every write — success with Undo when reversible, error with Retry button.
-- **Optimistic updates** with rollback (status changes, image binds, color confirms).
-- **Skeleton loaders** matching final layout — replace the "Loading inventory…" full-screen spinner. No layout shift.
-- **Empty states** with one suggested next action ("No new inquiries · View handled →").
-- **Inline error states** per panel — failed query shows "Couldn't load · Retry" inside the panel, doesn't blank the page.
-- **Stale-data pill** — "Updated 2m ago · refresh" on inquiry/inventory cards. Auto-refresh every 60s on `/admin/inquiries`.
-
-## 6. Bulk operations & dry-run discipline
-
-Memory rule: destructive ops must be dry-run → review → apply. Build a reusable `<BulkActionBar>` component:
-
-- Sticks to bottom when 1+ row selected
-- Shows selection count, action buttons, "Clear selection"
-- Destructive actions open a `<DryRunDrawer>` from the right showing exactly what will change ("137 items will get new image URLs · 12 will be deleted · 3 conflicts") before the Apply button enables.
-- Truly irreversible actions require typing a confirmation phrase.
-
-Apply this pattern to: image-bind (existing flow), bulk inquiry status change, bulk color confirm.
-
-## 7. Saved views
-
-Each list route supports saving the current filter+sort combination as a named view, stored in localStorage keyed per-user. Pinned views appear in the sidebar under each section:
-
-- Inquiries → "My open · This week · Quoted, awaiting reply"
-- Image Health → "Missing images · Fuzzy matches · No dimensions"
-- Color QA → "Needs review · Low confidence"
-
-## 8. Activity feed
-
-Sidebar footer card showing last 10 admin actions across all users:
-
-> Jenna marked Inquiry #42 as quoted · 3m ago
-> Darian confirmed colors on 8 items · 1h ago
-
-Backed by an `admin_activity` table written from server functions. Two-line item, click to jump to the affected row.
-
-## 9. Detail polish (the small stuff that adds up)
-
-- Tabular numbers everywhere counts/dates appear (you do this in some places, not others)
-- Click-to-copy on every email/phone/RMS-id with check-mark feedback
-- Relative timestamps with absolute on hover (`title="2026-05-08 14:12"`)
-- Density toggle: comfortable / compact (compact = 32px row height for power use)
-- Persistent dark-mode toggle (admin only, doesn't affect public site)
-- `?print=1` mode that strips chrome for clean PDF exports of inquiries/reports
-
----
-
-## Implementation order
-
-The list above is the full picture. Recommend shipping in this order so staff get value fast:
-
-1. **Shell + sidebar + breadcrumbs** (1 PR) — visible structural change, no DB work
-2. **Inquiry workflow + status field migration** (1 PR) — actual workflow unlock
-3. **URL state + skeletons + toasts + empty/error states** (1 PR) — feel-of-quality pass
-4. **Cmd+K palette** (1 PR) — power-user multiplier
-5. **Bulk action bar + dry-run drawer** (1 PR) — safety net for destructive ops
-6. **Saved views + activity feed + detail polish** (1 PR) — long-tail UX
-
-Stops 1–3 are the minimum to call this "staff-ready." 4–6 are what makes it feel premium.
-
----
-
-## Technical notes
-
-- Sidebar: shadcn `Sidebar` with `collapsible="icon"` so it can shrink to 56px rail.
-- Search params: `@tanstack/zod-adapter` `fallback()` (not zod `.catch()`) for type safety.
-- Optimistic updates: TanStack Query (already in deps) `useMutation` with `onMutate` / `onError` rollback.
-- Command palette: `cmdk` (shadcn `Command` already wraps it).
-- Activity feed: small `admin_activity` table, RLS = admin-only read, server-fn-only write.
-- All new server fns go through `requireSupabaseAuth` + admin role check (per existing `admin-middleware` pattern).
-- No changes to public site routes, design tokens, or the Squarespace/RMS pipelines.
+No new npm dependencies. No public-site visual change beyond the contact-page error notice and success-line copy.

@@ -89,6 +89,7 @@ function ContactPage() {
   const [selectionStatus, setSelectionStatus] = useState<
     "idle" | "loading" | "ready" | "error"
   >("idle");
+  const [fetchNonce, setFetchNonce] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,7 +131,7 @@ function ContactPage() {
     return () => {
       cancelled = true;
     };
-  }, [initialIds]);
+  }, [initialIds, fetchNonce]);
 
   const piecesById = useMemo(
     () => new Map(pieces.map((p) => [p.id, p])),
@@ -140,6 +141,16 @@ function ContactPage() {
     () => initialIds.filter((id) => !removedIds.has(id)),
     [initialIds, removedIds],
   );
+  // Ids the user expects to see, but the catalog couldn't resolve. Surfaces
+  // as a blocker on the form so we never silently submit phantom items.
+  const unresolvedIds = useMemo(
+    () =>
+      selectionStatus === "ready"
+        ? effectiveIds.filter((id) => !piecesById.has(id))
+        : [],
+    [effectiveIds, piecesById, selectionStatus],
+  );
+  const retryFetch = () => setFetchNonce((n) => n + 1);
 
   // Form state — owner-defined fields
   const [name, setName] = useState("");
@@ -153,6 +164,7 @@ function ContactPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submittedCount, setSubmittedCount] = useState(0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   function removePiece(id: string) {
@@ -222,13 +234,33 @@ function ContactPage() {
       ...selectedLines,
     ].filter((l): l is string => l !== null);
 
+    // Frozen-at-submit snapshot. Even if catalog rebinds an image tomorrow,
+    // the admin inbox always renders what the customer actually saw.
+    const itemSnapshots = effectiveIds
+      .map((id) => piecesById.get(id))
+      .filter((p): p is SelectedPiece => Boolean(p))
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        category: p.category,
+        image_url: p.image ? withCdnWidth(p.image, 480) : null,
+      }));
+
     const payload = {
       name: name.trim().slice(0, 200),
       email: email.trim().slice(0, 320),
       phone: phone.trim() ? phone.trim().slice(0, 50) : null,
       subject: subject.slice(0, 250) || null,
       message: messageLines.join("\n").slice(0, 5000),
+      // Legacy single-item column kept for backward compat with older admin code.
       item_id: effectiveIds[0] ?? null,
+      item_ids: effectiveIds,
+      item_snapshots: itemSnapshots,
+      metadata: {
+        project_date: projectDate || null,
+        budget: budget || null,
+        scope: scope || null,
+      },
     };
 
     const { error } = await supabase.from("inquiries").insert(payload);
@@ -271,6 +303,7 @@ function ContactPage() {
     clearInquiry();
     setPieces([]);
     setRemovedIds(new Set());
+    setSubmittedCount(effectiveIds.length);
     setSuccess(true);
   }
 
@@ -327,7 +360,7 @@ function ContactPage() {
           {/* RIGHT — single form */}
           <section id="inquiry" className="xl:col-span-7 scroll-mt-32">
             {success ? (
-              <SuccessPanel />
+              <SuccessPanel count={submittedCount} />
             ) : (
               <form onSubmit={onSubmit} noValidate className="space-y-16">
                 {/* 1. YOUR INFORMATION */}
@@ -412,12 +445,40 @@ function ContactPage() {
                             LOADING TITLES…
                           </p>
                         )}
-                        {selectionStatus === "error" && (
-                          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                            COULDN'T LOAD TITLES — IDS WILL STILL BE SENT
-                          </p>
-                        )}
                       </div>
+                      {(selectionStatus === "error" || unresolvedIds.length > 0) && (
+                        <div className="mb-4 border-l-2 border-charcoal/40 pl-4 py-2">
+                          <p className="text-[11px] uppercase tracking-[0.22em] leading-[1.7] text-charcoal/75">
+                            {selectionStatus === "error"
+                              ? "COULDN'T LOAD YOUR SELECTION."
+                              : `${unresolvedIds.length} ITEM${unresolvedIds.length === 1 ? "" : "S"} COULDN'T BE FOUND IN THE CATALOG: ${unresolvedIds.map((id) => id.slice(-6).toUpperCase()).join(" · ")}.`}
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-4">
+                            <button
+                              type="button"
+                              onClick={retryFetch}
+                              className="text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                            >
+                              RETRY
+                            </button>
+                            {unresolvedIds.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setRemovedIds((prev) => {
+                                    const next = new Set(prev);
+                                    unresolvedIds.forEach((id) => next.add(id));
+                                    return next;
+                                  })
+                                }
+                                className="text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4 hover:text-charcoal/70 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+                              >
+                                REMOVE MISSING
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <ul
                         className="divide-y"
                         style={{ borderColor: "var(--archive-rule)" }}
@@ -426,6 +487,12 @@ function ContactPage() {
                           const p = piecesById.get(id);
                           const shortId = id.slice(-6).toUpperCase();
                           const thumb = p?.image ? withCdnWidth(p.image, 240) : null;
+                          const initial =
+                            p?.category?.trim().charAt(0).toUpperCase() ||
+                            p?.title?.trim().charAt(0).toUpperCase() ||
+                            "·";
+                          const isMissing =
+                            selectionStatus === "ready" && !p;
                           return (
                             <li
                               key={id}
@@ -434,7 +501,7 @@ function ContactPage() {
                             >
                               <div className="flex items-center gap-4 min-w-0">
                                 <div
-                                  className="shrink-0 w-14 h-14 bg-charcoal/[0.04] overflow-hidden"
+                                  className="shrink-0 w-14 h-14 bg-charcoal/[0.04] overflow-hidden flex items-center justify-center"
                                   aria-hidden
                                 >
                                   {thumb ? (
@@ -445,11 +512,23 @@ function ContactPage() {
                                       decoding="async"
                                       className="w-full h-full object-cover"
                                     />
-                                  ) : null}
+                                  ) : (
+                                    <span
+                                      className={`text-[11px] uppercase tracking-[0.22em] ${isMissing ? "text-charcoal/30" : "text-charcoal/45"}`}
+                                    >
+                                      {isMissing ? "?" : initial}
+                                    </span>
+                                  )}
                                 </div>
                                 <div className="flex flex-col min-w-0">
-                                  <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/85 truncate">
-                                    {p ? p.title : selectionStatus === "loading" ? "LOADING…" : `ITEM ${shortId}`}
+                                  <span
+                                    className={`text-[12px] uppercase tracking-[0.18em] truncate ${isMissing ? "text-charcoal/45 line-through" : "text-charcoal/85"}`}
+                                  >
+                                    {p
+                                      ? p.title
+                                      : selectionStatus === "loading"
+                                        ? "LOADING…"
+                                        : `MISSING ITEM ${shortId}`}
                                   </span>
                                   {p?.category && (
                                     <span className="mt-1 text-[11px] uppercase tracking-[0.22em] text-charcoal/40 truncate">
@@ -493,14 +572,23 @@ function ContactPage() {
                   )}
                   <button
                     type="submit"
-                    disabled={submitting || selectionStatus === "loading"}
+                    disabled={
+                      submitting ||
+                      selectionStatus === "loading" ||
+                      selectionStatus === "error" ||
+                      unresolvedIds.length > 0
+                    }
                     className="text-[12px] uppercase tracking-[0.18em] border border-charcoal px-8 py-4 hover:bg-charcoal hover:text-cream transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
                   >
                     {submitting
                       ? "SENDING…"
                       : selectionStatus === "loading"
                         ? "LOADING SELECTED ITEMS…"
-                        : "SEND INQUIRY"}
+                        : selectionStatus === "error"
+                          ? "RESOLVE SELECTION TO SEND"
+                          : unresolvedIds.length > 0
+                            ? "RESOLVE MISSING ITEMS TO SEND"
+                            : "SEND INQUIRY"}
                   </button>
                   <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
                     OR EMAIL US DIRECTLY AT{" "}
@@ -634,7 +722,7 @@ function PillGroup({
   );
 }
 
-function SuccessPanel() {
+function SuccessPanel({ count }: { count: number }) {
   return (
     <div
       className="border-t pt-12"
@@ -654,6 +742,12 @@ function SuccessPanel() {
       >
         Thank you. Your inquiry is with the atelier.
       </h2>
+      {count > 0 && (
+        <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+          LOGGED WITH {String(count).padStart(2, "0")} PIECE
+          {count === 1 ? "" : "S"} FROM YOUR COLLECTION FOLDER.
+        </p>
+      )}
       <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
         WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE,
         EMAIL US DIRECTLY AT{" "}

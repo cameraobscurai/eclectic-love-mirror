@@ -11,6 +11,7 @@ import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
+import { Toaster } from "../components/ui/sonner";
 import { installServerFnAuth } from "../lib/server-fn-auth";
 
 // Install the Supabase → server-fn Authorization bridge as early as possible
@@ -219,6 +220,7 @@ function RootComponent() {
         {!hideFooter && <Footer />}
       </div>
       <DevEditOverlay />
+      <Toaster />
     </>
   );
 }
