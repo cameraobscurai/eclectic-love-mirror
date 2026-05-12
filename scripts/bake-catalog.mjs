@@ -40,10 +40,29 @@ try {
   console.warn('[bake] no title-aliases.json — skipping alias overrides');
 }
 
+// Slugs that live at the ROOT of the `inventory` bucket (no `inventory/` prefix).
+// These were uploaded directly under the bucket root rather than under the
+// owner-upload `inventory/` folder, so the legacy "restore prefix" logic must
+// skip them or it will produce 404 URLs like `inventory/inventory/<slug>/...`.
+const INVENTORY_ROOT_SLUGS = new Set([
+  'moxxi-black-dining-chair',
+  'gerwyn-grey-dining-chair',
+  'tove-grey-dining-table',
+  'nero-round-grey-dining-table',
+  'zoe-oak-dining-chair',
+  'excursion-champagne-trunk-bar',
+  'lars-bleached-oak-dining-table',
+  'kohl-round-black-dining-table',
+  'elgin-pony-bronze-bookend-set',
+  'elgin-pony-silver-bookend-set',
+]);
+
 function restoredInventoryUrl(url) {
   if (typeof url !== 'string' || !url.includes(INVENTORY_PUBLIC_MARKER)) return url;
   const [base, pathPart] = url.split(INVENTORY_PUBLIC_MARKER);
   if (!pathPart || pathPart.startsWith('inventory/') || pathPart.startsWith('_squarespace/')) return url;
+  const firstSeg = pathPart.split('/')[0];
+  if (INVENTORY_ROOT_SLUGS.has(firstSeg)) return url;
   return `${base}${INVENTORY_PUBLIC_MARKER}inventory/${pathPart}`;
 }
 
