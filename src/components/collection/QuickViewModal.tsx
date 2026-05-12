@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
-import { useFitToLines } from "@/hooks/use-fit-to-lines";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
@@ -42,6 +42,7 @@ export function QuickViewModal({
   const canDrag = isMobile && !reduced;
   const [imgIdx, setImgIdx] = useState(0);
   const [showScale, setShowScale] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -118,38 +119,26 @@ export function QuickViewModal({
       h = zoneSize.h;
       w = zoneSize.h * imgAR;
     }
-    // object-bottom: image sits at the bottom of the zone, centered horizontally
+    // object-contain centered: image sits in the middle of the zone
     const left = (zoneSize.w - w) / 2;
-    const top = zoneSize.h - h;
+    const top = (zoneSize.h - h) / 2;
     return { left, top, width: w, height: h };
   }, [imgNatural, zoneSize]);
 
-  // Title sits behind the image at top-left. Width capped at 78% of the stage
-  // so it never reaches under the measurement zone. Visual ceiling is also
-  // capped by character count — short names ("Lyon Stool") shouldn't explode
-  // to display-billboard size, long names ("Hadley Velvet Arm Chair") get
-  // the full 92px.
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.78 - 16 : 0;
-  const titleMaxPx = product.title.trim().length < 14 ? 72 : 92;
-  const fittedSize = useFitToLines({
-    text: product.title,
-    maxWidth: titleMaxWidth,
-    family: "Cormorant",
-    weight: 400,
-    minPx: 28,
-    maxPx: titleMaxPx,
-    targetLines: 2,
-  });
+  // Title is now small and inline — no fit-to-lines billboard.
+
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft" && hasPrev) onPrev();
-      else if (e.key === "ArrowRight" && hasNext) onNext();
+      if (e.key === "Escape") {
+        if (lightboxOpen) setLightboxOpen(false);
+        else onClose();
+      } else if (e.key === "ArrowLeft" && hasPrev && !lightboxOpen) onPrev();
+      else if (e.key === "ArrowRight" && hasNext && !lightboxOpen) onNext();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [hasPrev, hasNext, onPrev, onNext, onClose]);
+  }, [hasPrev, hasNext, onPrev, onNext, onClose, lightboxOpen]);
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -215,7 +204,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1280px] md:[zoom:0.75] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:h-[92dvh] md:max-h-[1000px] md:max-w-[1400px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)_auto] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Stage panel: 92% white so the grid only ghosts faintly through
@@ -272,43 +261,20 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — desktop: title top-left + image bottom-right overlap.
-            Mobile: clean stack, title above image, no overlap. */}
+        {/* STAGE — small inline title at top, image dominates below. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white flex flex-col md:block"
+          className="relative min-h-0 overflow-hidden bg-white flex flex-col"
         >
-          {/* Mobile-only title (block flow, no overlap) */}
-          <h2
-            className="md:hidden px-6 pt-6 pb-2 font-display leading-[0.95] tracking-[-0.015em] text-charcoal break-words"
-            style={{
-              fontSize: fittedSize ? `${Math.min(fittedSize, 56)}px` : "clamp(2.25rem, 9vw, 3.5rem)",
-            }}
-          >
+          <h2 className="px-6 md:px-10 pt-4 md:pt-5 pb-2 md:pb-3 font-display leading-tight tracking-[-0.01em] text-charcoal text-[22px] md:text-[28px] break-words">
             {product.title}
           </h2>
 
-          {/* Desktop-only title — absolute, top-left, image overlaps it */}
-          <h2
-            className="hidden md:block absolute top-[10%] left-10 z-0 font-display leading-[0.92] tracking-[-0.015em] text-charcoal pointer-events-none select-none break-words"
-            style={{
-              maxWidth: titleMaxWidth > 0 ? `${titleMaxWidth}px` : "70%",
-              fontSize: fittedSize ? `${fittedSize}px` : "clamp(2.5rem, 5.5vw, 5.5rem)",
-            }}
-          >
-            {product.title}
-          </h2>
-
-          {/* MEASUREMENT ZONE — the formal frame the furniture sits inside.
-              Same envelope across every piece (sofa, lamp, chair, accessory).
-              The image fills the zone via object-contain. The scale rules,
-              when toggled on, attach to the zone's own edges — width rule
-              flush to the bottom edge, height rule flush to the right edge —
-              so they wrap the actual furniture region, not the empty stage. */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
+          {/* Image area — fills remaining stage height. Click to enlarge. */}
+          <div className="relative flex-1 min-h-0 flex items-center justify-center px-4 md:px-10 pb-4 md:pb-6">
             <div
               ref={zoneRef}
-              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%]"
+              className="relative w-full h-full max-w-[92%] max-h-[96%]"
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -324,7 +290,8 @@ export function QuickViewModal({
                       const t = e.currentTarget;
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
-                    className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    onClick={() => setLightboxOpen(true)}
+                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)] cursor-zoom-in"
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
@@ -443,10 +410,10 @@ export function QuickViewModal({
             <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {Array.isArray(product.variants) && product.variants.length > 1 ? (
                 <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+                  <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
                     Stocked Quantity
                   </span>
-                  <ul className="text-[12px] leading-[1.55] text-charcoal/85 space-y-0.5">
+                  <ul className="text-[14px] leading-[1.55] text-charcoal space-y-0.5">
                     {product.variants.map((v) => {
                       const label = String(v.title || "")
                         .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
@@ -508,6 +475,34 @@ export function QuickViewModal({
           </div>
         </div>
       </motion.div>
+
+      {/* LIGHTBOX — fullscreen image, click or Esc to close. */}
+      <AnimatePresence>
+        {lightboxOpen && img && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduced ? 0 : 0.2 }}
+            className="absolute inset-0 z-[60] bg-charcoal/95 flex items-center justify-center cursor-zoom-out"
+            onClick={() => setLightboxOpen(false)}
+          >
+            <img
+              src={withCdnWidth(img.url, 2400)}
+              alt={img.altText ?? product.title}
+              className="max-w-[96vw] max-h-[96vh] object-contain"
+            />
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+              aria-label="Close enlarged image"
+              className="absolute top-4 right-4 h-10 w-10 grid place-items-center text-white text-2xl leading-none hover:opacity-70"
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>,
     document.body,
   );
@@ -516,10 +511,12 @@ export function QuickViewModal({
 function SpecCol({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 min-w-0">
-      <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+      <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
         {label}
       </span>
-      <span className="text-sm text-charcoal">{value}</span>
+      <span className="text-[16px] md:text-[17px] leading-snug text-charcoal font-medium">
+        {value}
+      </span>
     </div>
   );
 }
