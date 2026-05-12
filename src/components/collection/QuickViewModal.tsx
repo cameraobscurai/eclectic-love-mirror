@@ -130,13 +130,15 @@ export function QuickViewModal({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft" && hasPrev) onPrev();
-      else if (e.key === "ArrowRight" && hasNext) onNext();
+      if (e.key === "Escape") {
+        if (lightboxOpen) setLightboxOpen(false);
+        else onClose();
+      } else if (e.key === "ArrowLeft" && hasPrev && !lightboxOpen) onPrev();
+      else if (e.key === "ArrowRight" && hasNext && !lightboxOpen) onNext();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [hasPrev, hasNext, onPrev, onNext, onClose]);
+  }, [hasPrev, hasNext, onPrev, onNext, onClose, lightboxOpen]);
 
   useEffect(() => {
     closeRef.current?.focus();
