@@ -481,10 +481,12 @@ export function QuickViewModal({
 function SpecCol({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-1 min-w-0">
-      <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+      <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
         {label}
       </span>
-      <span className="text-sm text-charcoal">{value}</span>
+      <span className="text-[16px] md:text-[17px] leading-snug text-charcoal font-medium">
+        {value}
+      </span>
     </div>
   );
 }
