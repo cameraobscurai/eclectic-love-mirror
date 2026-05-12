@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET images = ARRAY['https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/honey-decanter/01-HONEY_Decanter.png'] WHERE id='58f03a31-b760-4b40-bd4a-a32e2b9f3df0';
