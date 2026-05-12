@@ -408,10 +408,10 @@ export function QuickViewModal({
             <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
               {Array.isArray(product.variants) && product.variants.length > 1 ? (
                 <div className="flex flex-col gap-1">
-                  <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55">
+                  <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
                     Stocked Quantity
                   </span>
-                  <ul className="text-[12px] leading-[1.55] text-charcoal/85 space-y-0.5">
+                  <ul className="text-[14px] leading-[1.55] text-charcoal space-y-0.5">
                     {product.variants.map((v) => {
                       const label = String(v.title || "")
                         .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
