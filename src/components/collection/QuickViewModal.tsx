@@ -119,9 +119,9 @@ export function QuickViewModal({
       h = zoneSize.h;
       w = zoneSize.h * imgAR;
     }
-    // object-bottom: image sits at the bottom of the zone, centered horizontally
+    // object-contain centered: image sits in the middle of the zone
     const left = (zoneSize.w - w) / 2;
-    const top = zoneSize.h - h;
+    const top = (zoneSize.h - h) / 2;
     return { left, top, width: w, height: h };
   }, [imgNatural, zoneSize]);
 
