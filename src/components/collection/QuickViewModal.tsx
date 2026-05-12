@@ -42,6 +42,7 @@ export function QuickViewModal({
   const canDrag = isMobile && !reduced;
   const [imgIdx, setImgIdx] = useState(0);
   const [showScale, setShowScale] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
   const closeRef = useRef<HTMLButtonElement>(null);
