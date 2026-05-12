@@ -125,22 +125,8 @@ export function QuickViewModal({
     return { left, top, width: w, height: h };
   }, [imgNatural, zoneSize]);
 
-  // Title sits behind the image at top-left. Width capped at 78% of the stage
-  // so it never reaches under the measurement zone. Visual ceiling is also
-  // capped by character count — short names ("Lyon Stool") shouldn't explode
-  // to display-billboard size, long names ("Hadley Velvet Arm Chair") get
-  // the full 92px.
-  const titleMaxWidth = stageWidth > 0 ? stageWidth * 0.78 - 16 : 0;
-  const titleMaxPx = product.title.trim().length < 14 ? 72 : 92;
-  const fittedSize = useFitToLines({
-    text: product.title,
-    maxWidth: titleMaxWidth,
-    family: "Cormorant",
-    weight: 400,
-    minPx: 28,
-    maxPx: titleMaxPx,
-    targetLines: 2,
-  });
+  // Title is now small and inline — no fit-to-lines billboard.
+
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
