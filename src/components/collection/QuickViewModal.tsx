@@ -452,6 +452,7 @@ export function QuickViewModal({
             </div>
           </div>
         </div>
+      </motion.div>
 
 
       {/* LIGHTBOX — fullscreen image, click or Esc to close. */}
