@@ -259,32 +259,22 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — desktop: title top-left + image bottom-right overlap.
-            Mobile: clean stack, title above image, no overlap. */}
+        {/* STAGE — small inline title at top, image dominates below. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white flex flex-col md:block"
+          className="relative min-h-0 overflow-hidden bg-white flex flex-col"
         >
-          {/* Mobile-only title (block flow, no overlap) */}
-          <h2
-            className="md:hidden px-6 pt-6 pb-2 font-display leading-[0.95] tracking-[-0.015em] text-charcoal break-words"
-            style={{
-              fontSize: fittedSize ? `${Math.min(fittedSize, 56)}px` : "clamp(2.25rem, 9vw, 3.5rem)",
-            }}
-          >
+          <h2 className="px-6 md:px-10 pt-4 md:pt-5 pb-2 md:pb-3 font-display leading-tight tracking-[-0.01em] text-charcoal text-[22px] md:text-[28px] break-words">
             {product.title}
           </h2>
 
-          {/* Desktop-only title — absolute, top-left, image overlaps it */}
-          <h2
-            className="hidden md:block absolute top-[10%] left-10 z-0 font-display leading-[0.92] tracking-[-0.015em] text-charcoal pointer-events-none select-none break-words"
-            style={{
-              maxWidth: titleMaxWidth > 0 ? `${titleMaxWidth}px` : "70%",
-              fontSize: fittedSize ? `${fittedSize}px` : "clamp(2.5rem, 5.5vw, 5.5rem)",
-            }}
-          >
-            {product.title}
-          </h2>
+          {/* Image area — fills remaining stage height. Click to enlarge. */}
+          <div className="relative flex-1 min-h-0 flex items-center justify-center px-4 md:px-10 pb-4 md:pb-6">
+            <div
+              ref={zoneRef}
+              className="relative w-full h-full max-w-[92%] max-h-[96%]"
+            >
+              <AnimatePresence mode="wait">
 
           {/* MEASUREMENT ZONE — the formal frame the furniture sits inside.
               Same envelope across every piece (sofa, lamp, chair, accessory).
