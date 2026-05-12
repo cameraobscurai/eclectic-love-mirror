@@ -22,7 +22,9 @@ const SB_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!SB_URL || !SB_KEY) { console.error('SUPABASE_URL / SERVICE_ROLE_KEY required'); process.exit(1); }
 
 const sb = createClient(SB_URL, SB_KEY);
-const SET_RX = /set/i;
+// Match "Set" as its own token in the filename: " Set", "_Set", "-Set",
+// followed by word-end or extension. Avoids matching "asset", "settee", etc.
+const SET_RX = /(^|[\s_\-])set([\s_\-.]|$)/i;
 const isSet = (url) => SET_RX.test(url.split('/').pop() || '');
 const fname = (url) => url.split('/').pop() || url;
 
