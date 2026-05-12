@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET owner_site_rank = 6 WHERE id='1654bb36-58d7-44da-992c-8dfa54d4ca0f';
