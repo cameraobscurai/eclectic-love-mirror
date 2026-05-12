@@ -275,19 +275,6 @@ export function QuickViewModal({
               className="relative w-full h-full max-w-[92%] max-h-[96%]"
             >
               <AnimatePresence mode="wait">
-
-          {/* MEASUREMENT ZONE — the formal frame the furniture sits inside.
-              Same envelope across every piece (sofa, lamp, chair, accessory).
-              The image fills the zone via object-contain. The scale rules,
-              when toggled on, attach to the zone's own edges — width rule
-              flush to the bottom edge, height rule flush to the right edge —
-              so they wrap the actual furniture region, not the empty stage. */}
-          <div className="relative md:absolute md:inset-0 z-10 flex-1 md:flex-initial flex items-end justify-center px-6 md:px-16 pt-2 md:pt-[14%] pb-6 md:pb-14 pointer-events-none">
-            <div
-              ref={zoneRef}
-              className="relative w-full max-w-[78%] md:max-w-[52%] h-full max-h-[62%]"
-            >
-              <AnimatePresence mode="wait">
                 {img ? (
                   <motion.img
                     key={img.url}
