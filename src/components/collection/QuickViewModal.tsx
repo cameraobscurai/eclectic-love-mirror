@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useInquiry } from "@/hooks/use-inquiry";
-import { useFitToLines } from "@/hooks/use-fit-to-lines";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
