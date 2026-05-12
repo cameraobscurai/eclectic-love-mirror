@@ -261,20 +261,17 @@ export function QuickViewModal({
           </div>
         </div>
 
-        {/* STAGE — small inline title at top, image dominates below. */}
+        {/* BODY — two-column on desktop: image left, info rail right.
+            Mobile stacks: image, then info. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white flex flex-col"
+          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[1.55fr_1fr]"
         >
-          <h2 className="px-6 md:px-10 pt-4 md:pt-5 pb-2 md:pb-3 font-display leading-tight tracking-[-0.01em] text-charcoal text-[22px] md:text-[28px] break-words">
-            {product.title}
-          </h2>
-
-          {/* Image area — fills remaining stage height. Click to enlarge. */}
-          <div className="relative flex-1 min-h-0 flex items-center justify-center px-4 md:px-10 pb-4 md:pb-6">
+          {/* IMAGE COLUMN */}
+          <div className="relative min-h-0 flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
             <div
               ref={zoneRef}
-              className="relative w-full h-full max-w-[92%] max-h-[96%]"
+              className="relative w-full h-full min-h-[42vh] md:min-h-0"
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -300,9 +297,7 @@ export function QuickViewModal({
                 )}
               </AnimatePresence>
 
-              {/* Scale rules — bound to the actual rendered image footprint
-                  (computed from naturalWidth/Height + object-contain math),
-                  not the zone envelope. The rules wrap the furniture itself. */}
+              {/* Scale rules */}
               <AnimatePresence>
                 {showScale && hasScale && imageBox && dims.width !== null && (
                   <motion.div
@@ -341,79 +336,25 @@ export function QuickViewModal({
               </AnimatePresence>
             </div>
           </div>
-        </div>
 
+          {/* INFO RAIL — title + specs + thumbs + CTA, vertical stack. */}
+          <div
+            className="relative flex flex-col min-h-0 md:border-l md:border-charcoal/10 px-6 md:px-8 py-6 md:py-10 overflow-y-auto"
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
+          >
+            {/* Title */}
+            <h2 className="font-display leading-[1.05] tracking-[-0.01em] text-charcoal text-[26px] md:text-[34px] break-words">
+              {product.title}
+            </h2>
 
-        {/* FOOTER — thumbs · dimensions · stocked · CTA. Frosted strip with
-            top hairline; symmetric framing with the top bar. */}
-        <div
-          style={{
-            ...glassBandLightNoBottom,
-            paddingBottom: "env(safe-area-inset-bottom)",
-          }}
-        >
-          <div className="px-6 md:px-10 py-5 grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-5 md:gap-10 items-center">
-            {/* Thumbs — all visible, horizontal scroll with soft fade edge,
-                quiet counter in the typographic register. */}
-            <div className="order-2 md:order-1 flex items-center gap-4 min-w-0">
-              {product.images.length > 1 ? (
-                <>
-                  <div
-                    className="relative min-w-0"
-                    style={{
-                      maskImage:
-                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
-                      WebkitMaskImage:
-                        "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
-                    }}
-                  >
-                    <div
-                      className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                    >
-                      {product.images.map((im, i) => (
-                        <button
-                          key={im.url}
-                          onClick={() => setImgIdx(i)}
-                          aria-label={`View image ${i + 1} of ${product.images.length}`}
-                          aria-current={i === imgIdx}
-                          className={cn(
-                            "relative h-12 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                            i === imgIdx
-                              ? "border-charcoal"
-                              : "border-charcoal/15 hover:border-charcoal/45",
-                          )}
-                        >
-                          <img
-                            src={withCdnWidth(im.url, 300)}
-                            alt=""
-                            className="absolute inset-0 w-full h-full object-contain p-1"
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <span
-                    aria-hidden
-                    className="hidden sm:inline-block flex-shrink-0 text-[10px] uppercase tracking-[0.28em] text-charcoal/55 tabular-nums"
-                  >
-                    {String(imgIdx + 1).padStart(2, "0")}
-                    <span className="mx-1.5 text-charcoal/30">/</span>
-                    {String(product.images.length).padStart(2, "0")}
-                  </span>
-                </>
-              ) : (
-                <div className="h-12 w-16" aria-hidden />
-              )}
-            </div>
-
-            {/* Spec columns */}
-            <div className="order-3 md:order-2 flex flex-wrap items-end gap-x-10 gap-y-3 md:border-l md:border-charcoal/12 md:pl-10">
+            {/* Specs */}
+            <div className="mt-6 md:mt-8 flex flex-col gap-5">
               {Array.isArray(product.variants) && product.variants.length > 1 ? (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
                     Stocked Quantity
                   </span>
-                  <ul className="text-[14px] leading-[1.55] text-charcoal space-y-0.5">
+                  <ul className="text-[14px] leading-[1.55] text-charcoal space-y-1">
                     {product.variants.map((v) => {
                       const label = String(v.title || "")
                         .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
@@ -422,7 +363,7 @@ export function QuickViewModal({
                       return (
                         <li key={v.id} className="uppercase tracking-[0.06em]">
                           ({v.stockedQuantity || "—"}) {label}
-                          {v.dimensions ? <span className="text-charcoal/55">, {v.dimensions}</span> : null}
+                          {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal">, {v.dimensions}</span> : null}
                         </li>
                       );
                     })}
@@ -441,13 +382,14 @@ export function QuickViewModal({
                   )}
                 </>
               )}
+
               {hasScale && (
                 <button
                   type="button"
                   onClick={() => setShowScale((s) => !s)}
                   aria-pressed={showScale}
                   className={cn(
-                    "self-end h-7 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                    "self-start h-8 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
                     showScale
                       ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
                       : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
@@ -458,12 +400,48 @@ export function QuickViewModal({
               )}
             </div>
 
-            {/* CTA */}
-            <div className="order-1 md:order-3 flex justify-end">
+            {/* Thumbs */}
+            {product.images.length > 1 && (
+              <div className="mt-6 md:mt-8">
+                <div
+                  className="relative"
+                  style={{
+                    maskImage:
+                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                    WebkitMaskImage:
+                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                  }}
+                >
+                  <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                    {product.images.map((im, i) => (
+                      <button
+                        key={im.url}
+                        onClick={() => setImgIdx(i)}
+                        aria-label={`View image ${i + 1} of ${product.images.length}`}
+                        aria-current={i === imgIdx}
+                        className={cn(
+                          "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                          i === imgIdx ? "border-charcoal" : "border-charcoal/15 hover:border-charcoal/45",
+                        )}
+                      >
+                        <img
+                          src={withCdnWidth(im.url, 300)}
+                          alt=""
+                          className="absolute inset-0 w-full h-full object-contain p-1"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* CTA — pinned to bottom of rail */}
+            <div className="mt-auto pt-8">
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
-                  "px-6 py-3 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.97]",
+                  "w-full px-6 py-3.5 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.99]",
                   inInquiry
                     ? "bg-cream text-charcoal border-charcoal"
                     : "bg-charcoal text-cream border-charcoal hover:bg-charcoal/85",
@@ -474,7 +452,7 @@ export function QuickViewModal({
             </div>
           </div>
         </div>
-      </motion.div>
+
 
       {/* LIGHTBOX — fullscreen image, click or Esc to close. */}
       <AnimatePresence>
