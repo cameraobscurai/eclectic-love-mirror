@@ -176,7 +176,7 @@ const products = all.map((r, i) => {
     // displaces the cached copy the moment the row is touched, while
     // unchanged products keep using the browser cache.
     imagesVersion: r.updated_at ? Math.floor(new Date(r.updated_at).getTime() / 1000) : 0,
-    ownerSiteRank: null,
+    ownerSiteRank: r.owner_site_rank ?? null,
     colorHex: r.color_hex ?? null,
     colorHexSecondary: r.color_hex_secondary ?? null,
     colorLightness: r.color_lightness != null ? Number(r.color_lightness) : null,
