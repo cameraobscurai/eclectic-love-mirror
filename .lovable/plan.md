@@ -1,93 +1,62 @@
-## Goal
 
-Act on the inventory specialist's PDF notes. Two tracks: **(A) site-wide UX issues that affect every product** and **(B) per-product data fixes scoped to Tableware** (Dish, Flatware, Glassware, Serveware).
+## What the specialist flagged vs. what the catalog actually shows
 
----
+After auditing every product in the PDF against `current_catalog.json`, most "double set image" complaints are already fixed in code from the prior pass — the live site just needs a republish. But a real list of issues remains. Splitting into three buckets:
 
-## A. Cross-cutting issues (affect the whole Collection)
+### Bucket A — Cross-cutting feedback (already shipped, needs republish)
 
-### A1. ALL CAPS for product names
-Catalog titles ("Akoya", "Belissa") render mixed-case. The standing rule kept catalog names mixed-case as the one exception to the all-caps voice. Owner now wants caps everywhere.
+1. **All caps for inventory names** — done site-wide via `uppercase tracking-[0.06em]` on titles.
+2. **Scrolling images that bleed off page** — added "MORE →" affordance + counter in QuickView thumbnails.
+3. **"Show Scale" doesn't update with image** — fixed via `matchVariant()`; rule now follows the active image.
+4. **Variant titling on listings (Vintage Silver Goblets etc.)** — variant list is now clickable and the title swaps per-image.
 
-Fix: apply `text-transform: uppercase` (with appropriate tracking) to product titles in `ProductTile`, `QuickViewModal` H2, variants list, and inquiry tray. Pure presentation — no data changes. Update the Typography memory to drop the catalog-name exception.
+→ Action: confirm preview, then publish so the specialist sees these live.
 
-### A2. Image carousel scroll affordance ("how do you scroll to see images that bleed off the page?")
-The QuickView thumbs row scrolls horizontally with a subtle right-edge fade mask, no visible cue. Mouse users don't realize they can scroll.
+### Bucket B — Real catalog cleanup still needed
 
-Fix: add visible prev/next arrow chips (desktop) over the thumbs strip when content overflows, plus arrow-key paging through `imgIdx`. Keep touch swipe as-is.
+| Product | Issue | Fix |
+|---|---|---|
+| LARIQUE | 10 images = 5 unique duplicated as `.png` and `.PNG` | Dedupe by lowercased filename, keep first |
+| TABITHA | 2 set images at [0]+[1] (`image-asset.png` + `TABATHIA_Tray_Set_0.png`) | Drop the generic `image-asset.png` |
+| SHETANI | Set image + 2 singles, set is duplicated as a stray | Drop `SHETANI_Set.png`, keep the two trays |
+| HAZEL | 3 images: Small, Bowls (set), Large — set in middle | Reorder: set first, then Small, Large |
+| LAVANYA Stoneware Bowls | Squarespace `LAVANYA+Bowls.png` is the "image of dishes" the spec saw | Replace [0] with a proper bowl set image or drop and let Small/Medium stand |
+| EVITA | 2 images (stray squarespace dup); spec wants Orla-style single SKU | Collapse to one image, no variants |
+| SAGE Glassware | 3 images: `Sage All Set.png`, `SAGE Rocks.png`, `SAGE Set 1.png` — two sets | Drop `SAGE Set 1.png` |
+| AKOYA, MIDORI, TILLERY | Variant images still inherit family `altText` ("Akoya", "Midori", etc.) | Regenerate per-image alt from filename → variant title (same heuristic that already worked on Anastasia/Quinn) |
 
-### A3. "Show Scale" doesn't follow the current image
-Scale rule reads from `product.dimensions` (the family-level dimension). When the user pages through variant images (Akoya: 7", 9.5", 11", 13.5"), the rule stays pinned to one number.
+### Bucket C — Missing singles (catalog gap, owner needs to upload)
 
-Fix: when the product has variants AND there's a 1:1 mapping between non-set images and variants, drive the scale rule from the *current image's* matched variant dimension. Fallback to product.dimensions when no match.
+These need owner-supplied photos before we can wire them in. Producing one consolidated upload-request file:
 
-### A4. Per-image variant labeling
-On family listings (Akoya, Belissa, Vintage Silver Goblets, etc.) the title stays "Akoya" no matter which image is shown, and the variants list isn't clickable.
+- **Flatware singles missing:** DEJA (1), MIDAS (4), ALTA (0–1 depending on variant count), NISHA (6), HESTON (6), ARIAN (6), MILLIE (5), FIONA (need to verify against variant list)
+- **Glassware singles missing:** BRONSON (2), NARIN (3), CARLISLE (5), ADONIS (4)
+- **Dishes:** TILLERY largest plate, LAVANYA smallest plate
+- **Trays:** CALLUM large tray
 
-Fix: 
-- When viewing image N that maps to a variant, show the variant's full name as a sub-line under the H2 ("Akoya 7" Plate").
-- Make each variant row in the Stocked Quantity list clickable — clicking jumps `imgIdx` to that variant's image.
-- Mapping rule: position 0 = family/set image (no variant label). Positions 1..N map to `variants[i-1]` if counts match. If counts mismatch, use filename heuristic on `inferredFilename`/url (`AKOYA 7.png` → 7" variant). If still ambiguous, leave unlabeled.
+Output: `/mnt/documents/tableware-missing-images-v2.md` listing per-product variant→missing-file map, ready to hand to the owner.
 
----
+### Bucket D — Products spec named that don't exist in catalog
 
-## B. Per-product data cleanup (Tableware)
+Need owner clarification before any action:
 
-All data fixes live in `src/data/inventory/current_catalog.json`. Pattern of bugs found:
+- **ALMINA** — spec says "Almina – Do not need two set images" but no product matches "Almina" in 616-item catalog. Possible misspelling of ALLIRA? Or different RMS export?
+- **POWELL** — spec lists under Serveware but not in catalog
+- **EAGEN** — listed under Serveware, not in catalog
+- **DILANI** — referenced as a model for restructuring EVITA, not in catalog
 
-1. **"Double set image"** — products got both `inventory/TABLEWEAR/<NAME> Set.png` AND `squarespace-mirror/_family-sets/<NAME>/<NAME>+Set.png` appended. Visible because both have `position: 0, isHero: true`. Fix: drop the `_family-sets` duplicate.
-2. **Blank / wrong-product images** — Belissa carries a blank squarespace file plus an actual Evita marble charger image. Same blank file appears in others. Fix: remove unmatched squarespace stragglers from the listed products.
-3. **Wrong altText on every image** — every variant image inherits the family altText ("Belissa 13″ White Charger Plate" on the 8.5″ photo, etc.). Fix: derive altText per image from filename → variant title.
+→ Action: ask owner for the RMS IDs or confirm spelling.
 
-### B1. Dishes
-| Product | Action |
-|---|---|
-| ALMINA | Remove duplicate set image |
-| BELISSA | Remove blank image + wrong (Evita) image + duplicate set image |
-| AKOYA | Remove duplicate set image (last entry) |
-| JAIN | Remove duplicate set image |
-| MIDORI | Remove duplicate set image |
-| OPHIDIA | Remove blank image |
-| TILLERY | Remove duplicate set image; **owner: missing largest plate** → uploads needed |
-| LAVANYA | **owner: missing smallest plate** → upload needed |
-| EVITA | Restructure as a single SKU with one image, matching the Orla/Olive/Dilani pattern (drop the two squarespace strays already noted) |
+## Proposed execution order
 
-### B2. Flatware
-| Product | Action |
-|---|---|
-| ANASTASIA, ASTRID, DONAVER, ESTELLA, QUINN, WINSLOW | Remove duplicate set image; **missing single-piece images** → uploads needed |
-| FIONA, DEJA, MIDAS, ALTA | **missing single-piece images** → uploads needed |
-| NISHA, HESTON, ARIAN, MILLIE | **no images at all** → uploads needed |
+1. Run a single dedupe/reorder script over `current_catalog.json` for Bucket B items (LARIQUE, TABITHA, SHETANI, HAZEL, LAVANYA Bowls, EVITA, SAGE Glassware) — diff first, then apply.
+2. Regenerate per-image `altText` for AKOYA, MIDORI, TILLERY, plus a sweep across all flatware/glassware to catch any other generic alts.
+3. Generate `/mnt/documents/tableware-missing-images-v2.md` for Bucket C.
+4. Return Bucket D as 4 questions for the owner.
+5. After approval, publish so Bucket A goes live.
 
-### B3. Glassware
-| Product | Action |
-|---|---|
-| BRONSON, LARIQUE, HONEY, THISTLE, ALLIRA | Remove duplicate set image |
-| SAGE, NARIN | Remove duplicate set image; **missing singles** → uploads needed |
-| CARLISLE, ADONIS | **no images at all** → uploads needed |
+## Technical notes
 
-### B4. Serveware
-| Product | Action |
-|---|---|
-| TABITHA, SHETANI, POWELL, HAZEL | Curate down — too many images (target: set + each variant once) |
-| FARREN, WELLS, EAGEN, ALEXANDER | Remove duplicate set image |
-| CALLUM | **missing large tray** → upload needed |
-| LAVANYA BOWL | Remove the stray Dishes image; curate remaining count down |
-
----
-
-## Execution order
-
-1. **Confirm scope with owner** (one question, below) before touching variant↔image mapping logic.
-2. Cross-cutting UX (A1–A4) shipped as a single pass — all live in `ProductTile.tsx`, `QuickViewModal.tsx`, `InquiryTray.tsx`, plus a memory update.
-3. Data cleanup (B1–B4) as a single edit pass on `current_catalog.json` covering every "remove duplicate / blank / wrong" item. Per-image altText regenerated from variant titles.
-4. Produce a **short missing-images report** listing every product still needing an upload from the owner (everything bolded above), so the inquiry list goes back to the specialist as one document.
-5. Owner uploads missing images → second pass binds them.
-
-## Open question
-
-Per-image variant labeling (A4) needs a decision: when image count and variant count don't match (very common — set image + N singles vs. N variants), should I (a) use filename-pattern matching (`AKOYA 7.png` → 7″ variant) wherever it works and leave the rest unlabeled, or (b) treat this as "needs owner remap" and ship the clickable variants list without the per-image title until owner confirms each mapping? Plan as drafted assumes (a).
-
-## Out of scope (cannot do without owner uploads)
-
-Anything tagged "missing", "no images", or "needs upload" above. The edit pass will surface these in a single CSV/MD report rather than guessing.
+- Catalog is `src/data/inventory/current_catalog.json` (616 items, Set images at `position: 0, isHero: true`).
+- Variant→image matching uses the existing `matchVariant()` filename heuristic in `QuickViewModal.tsx` — same regex generates new alts.
+- No schema changes, no component changes. Pure data pass + one new report file.
