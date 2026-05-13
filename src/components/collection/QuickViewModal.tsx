@@ -52,14 +52,80 @@ export function QuickViewModal({
   const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
   const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
-  // Parse W / D / H once per product. Toggle is offered whenever ANY axis
-  // (width, height, or diameter) parses confidently — silent fallback for
-  // pieces with no dimensions in the catalog.
+  // Match an image to a variant by filename heuristic — numeric ("AKOYA 7.png" → 7"
+  // variant) then word match (Fork/Knife/Bowl/etc.). Lets the title, scale rule,
+  // and dimensions follow the active image when paging through a family listing.
+  const variants = Array.isArray(product.variants) ? product.variants : [];
+  const familyToken = (product.title ?? "").split(/\s+/)[0] ?? "";
+  function matchVariant(img: { url: string } | null | undefined) {
+    if (!img || variants.length === 0) return null;
+    const fname = decodeURIComponent(img.url.split("/").pop() ?? "").toUpperCase();
+    const numMatch = fname.match(/(\d+(?:\.\d+)?)/);
+    if (numMatch) {
+      const v = variants.find((vv) => vv.title?.includes(`${numMatch[1]}"`));
+      if (v) return v;
+    }
+    for (const v of variants) {
+      const tail = (v.title ?? "")
+        .replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
+        .trim();
+      if (!tail) continue;
+      const tokens = tail
+        .toUpperCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 2 && !/["\d.]/.test(t));
+      if (tokens.length && tokens.every((t) => fname.includes(t))) return v;
+    }
+    return null;
+  }
+
+  // Per-image dimensions: use matched variant's, fall back to product-level.
+  const activeImg = product.images[imgIdx] ?? product.primaryImage;
+  const activeVariant = matchVariant(activeImg);
+  const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
   const dims = useMemo(
-    () => parseDimensions(product.dimensions),
-    [product.dimensions],
+    () => parseDimensions(activeDimensions),
+    [activeDimensions],
   );
   const hasScale = dims.width !== null || dims.height !== null;
+
+  // Hide scale when paging — old rule wouldn't match the new image.
+  useEffect(() => {
+    setShowScale(false);
+  }, [imgIdx]);
+
+  // Jump imgIdx to the first image matching a given variant id.
+  function jumpToVariant(variantId: string) {
+    const idx = product.images.findIndex((im) => matchVariant(im)?.id === variantId);
+    if (idx >= 0) setImgIdx(idx);
+  }
+
+  // Thumbs-scroll affordance — show prev/next chips when overflowing on desktop.
+  const thumbsScrollerRef = useRef<HTMLDivElement>(null);
+  const [thumbsOverflow, setThumbsOverflow] = useState({ left: false, right: false });
+  useEffect(() => {
+    const el = thumbsScrollerRef.current;
+    if (!el) return;
+    const update = () => {
+      setThumbsOverflow({
+        left: el.scrollLeft > 4,
+        right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+      });
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [product.id, product.images.length]);
+  function nudgeThumbs(dir: -1 | 1) {
+    const el = thumbsScrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.max(180, el.clientWidth * 0.7), behavior: "smooth" });
+  }
 
   useEffect(() => {
     setImgIdx(0);
@@ -159,7 +225,7 @@ export function QuickViewModal({
     };
   }, []);
 
-  const img = product.images[imgIdx] ?? product.primaryImage;
+  const img = activeImg;
 
   if (typeof document === "undefined") return null;
 
@@ -341,10 +407,17 @@ export function QuickViewModal({
             className="relative flex flex-col min-h-0 md:border-l md:border-charcoal/10 px-6 md:px-8 py-6 md:py-10 overflow-y-auto"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
           >
-            {/* Title */}
-            <h2 className="font-display leading-[1.05] tracking-[-0.01em] text-charcoal text-[26px] md:text-[34px] break-words">
+            {/* Title — uppercase per brand voice. When the active image maps to a
+                variant, surface that variant's name as a secondary line so users
+                know which piece they're viewing in a multi-piece set. */}
+            <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase">
               {product.title}
             </h2>
+            {activeVariant && activeVariant.title !== product.title && (
+              <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
+                {activeVariant.title}
+              </p>
+            )}
 
             {/* Specs */}
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
@@ -359,10 +432,25 @@ export function QuickViewModal({
                         .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
                         .replace(/\s+glass$/i, "")
                         .trim() || v.title;
+                      const targetIdx = product.images.findIndex((im) => matchVariant(im)?.id === v.id);
+                      const clickable = targetIdx >= 0;
+                      const isActive = activeVariant?.id === v.id;
                       return (
-                        <li key={v.id} className="uppercase tracking-[0.06em]">
-                          ({v.stockedQuantity || "—"}) {label}
-                          {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal">, {v.dimensions}</span> : null}
+                        <li key={v.id}>
+                          <button
+                            type="button"
+                            onClick={clickable ? () => setImgIdx(targetIdx) : undefined}
+                            disabled={!clickable}
+                            className={cn(
+                              "uppercase tracking-[0.06em] text-left w-full transition-colors",
+                              clickable ? "hover:text-charcoal/60 cursor-pointer" : "cursor-default",
+                              isActive ? "text-charcoal font-medium" : "text-charcoal",
+                            )}
+                            aria-current={isActive}
+                          >
+                            ({v.stockedQuantity || "—"}) {label}
+                            {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal"> , {v.dimensions}</span> : null}
+                          </button>
                         </li>
                       );
                     })}
@@ -370,8 +458,8 @@ export function QuickViewModal({
                 </div>
               ) : (
                 <>
-                  {product.dimensions && (
-                    <SpecCol label="Dimensions" value={product.dimensions} />
+                  {activeDimensions && (
+                    <SpecCol label="Dimensions" value={activeDimensions} />
                   )}
                   {product.stockedQuantity && (
                     <SpecCol label="Stocked" value={product.stockedQuantity} />
@@ -399,24 +487,29 @@ export function QuickViewModal({
               )}
             </div>
 
-            {/* Thumbs */}
+            {/* Thumbs — overflow-x scroller with explicit prev/next chips when
+                content extends beyond the viewport (the fade alone wasn't a strong
+                enough scroll affordance for mouse users). */}
             {product.images.length > 1 && (
               <div className="mt-6 md:mt-8">
                 <div
                   className="relative"
                   style={{
                     maskImage:
-                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%)",
                     WebkitMaskImage:
-                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%)",
                   }}
                 >
-                  <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                  <div
+                    ref={thumbsScrollerRef}
+                    className="flex gap-2 overflow-x-auto snap-x snap-mandatory px-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                  >
                     {product.images.map((im, i) => (
                       <button
                         key={im.url}
                         onClick={() => setImgIdx(i)}
-                        aria-label={`View image ${i + 1} of ${product.images.length}`}
+                        aria-label={`View image ${i + 1} of ${product.images.length}${im.altText && im.altText !== product.title ? ` — ${im.altText}` : ""}`}
                         aria-current={i === imgIdx}
                         className={cn(
                           "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
@@ -432,6 +525,31 @@ export function QuickViewModal({
                     ))}
                   </div>
                 </div>
+                {(thumbsOverflow.left || thumbsOverflow.right) && (
+                  <div className="mt-2 flex items-center justify-between text-charcoal/70">
+                    <button
+                      type="button"
+                      onClick={() => nudgeThumbs(-1)}
+                      disabled={!thumbsOverflow.left}
+                      aria-label="Scroll thumbnails left"
+                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                    >
+                      ← MORE
+                    </button>
+                    <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40">
+                      {imgIdx + 1} / {product.images.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => nudgeThumbs(1)}
+                      disabled={!thumbsOverflow.right}
+                      aria-label="Scroll thumbnails right"
+                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                    >
+                      MORE →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
