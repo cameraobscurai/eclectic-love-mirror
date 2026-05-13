@@ -120,7 +120,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
             />
           ) : null}
         </div>
-        <p className="mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2">
+        <p className="mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2 uppercase tracking-[0.06em]">
           {product.title}
         </p>
       </button>
