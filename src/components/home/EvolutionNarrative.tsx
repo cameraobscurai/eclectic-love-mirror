@@ -215,7 +215,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // the optical center. Counteracts the perceived lag from sticky pinning
   // + smoothed scroll. Tuned by feel — 0.7 lands the highlight on the
   // line you're actively reading.
-  const READ_LOOKAHEAD = 0.7 + 0.6 * tallBias; // 0.7 → 1.3 on tall screens
+  const READ_LOOKAHEAD = isMobile ? 1.1 : 0.7 + 0.6 * tallBias;
   const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
   const reveal = readT * total + READ_LOOKAHEAD;
 
