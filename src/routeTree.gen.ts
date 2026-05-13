@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -26,6 +27,11 @@ import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -119,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/process'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -231,10 +243,18 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -380,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

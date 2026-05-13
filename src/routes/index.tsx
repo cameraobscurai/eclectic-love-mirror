@@ -10,17 +10,52 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ECLECTIC HIVE — Luxury Event Design & Production | Denver" },
+      { title: "Eclectic Hive — Luxury Event Design | Denver" },
       {
         name: "description",
         content:
-          "Two parts luxe, one part regal, and a dash of edge. Full-service luxury event design, custom fabrication, and furniture rentals in Denver, Colorado.",
+          "Two parts luxe, one part regal, a dash of edge. Full-service event design, custom fabrication, and furniture rentals in Denver, Colorado.",
       },
-      { property: "og:title", content: "ECLECTIC HIVE — Luxury Event Design & Production" },
+      { property: "og:title", content: "Eclectic Hive — Luxury Event Design | Denver" },
       {
         property: "og:description",
         content:
           "Cinematic, art-forward environments for weddings, galas, and corporate events.",
+      },
+      { property: "og:url", content: "https://eclectichive.com/" },
+    ],
+    links: [{ rel: "canonical", href: "https://eclectichive.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://eclectichive.com/#org",
+              name: "Eclectic Hive",
+              url: "https://eclectichive.com/",
+              email: "info@eclectichive.com",
+              areaServed: "Worldwide",
+            },
+            {
+              "@type": "LocalBusiness",
+              "@id": "https://eclectichive.com/#business",
+              name: "Eclectic Hive",
+              url: "https://eclectichive.com/",
+              email: "info@eclectichive.com",
+              description:
+                "Full-service luxury event design, custom fabrication, and furniture rentals based in Denver, Colorado.",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Denver",
+                addressRegion: "CO",
+                addressCountry: "US",
+              },
+            },
+          ],
+        }),
       },
     ],
   }),

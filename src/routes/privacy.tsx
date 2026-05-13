@@ -17,7 +17,10 @@ export const Route = createFileRoute("/privacy")({
         content:
           "Privacy Policy for Eclectic Hive: how the website collects, uses, maintains, and discloses information from users.",
       },
+      { property: "og:title", content: "Privacy — Eclectic Hive" },
+      { property: "og:url", content: "https://eclectichive.com/privacy" },
     ],
+    links: [{ rel: "canonical", href: "https://eclectichive.com/privacy" }],
   }),
   component: PrivacyPage,
 });
