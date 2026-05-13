@@ -21184,32 +21184,39 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN%20Leather%20Baskets%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "JOSLIN Leather Baskets Hero.png",
+          "altText": "Joslin Leather Baskets"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN Large.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Joslin Large Leather Basket"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN Small.png",
-          "position": 0,
-          "isHero": true,
+          "position": 2,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Joslin Small Leather Basket"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN Large.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JOSLIN%20Leather%20Baskets%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Joslin Large Leather Basket"
+        "inferredFilename": "JOSLIN Leather Baskets Hero.png",
+        "altText": "Joslin Leather Baskets"
       },
-      "imageCount": 1,
+      "imageCount": 3,
       "publicReady": true,
       "scrapedOrder": 482,
       "subcategory": null,
-      "imagesVersion": 1777966033,
+      "imagesVersion": 1778638387,
       "ownerSiteRank": 13,
       "colorHex": null,
       "colorHexSecondary": null,
