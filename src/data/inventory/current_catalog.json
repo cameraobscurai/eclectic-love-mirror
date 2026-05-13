@@ -9236,42 +9236,49 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Natural Stripe.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FCHATTA%20Umbrellas%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "CHATTA Umbrellas Hero.png",
+          "altText": "CHATTA 6' Diameter Umbrellas"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Natural Stripe.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Chatta Umbrella - Natural Stripe/White Pole"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Pink Stripe.png",
-          "position": 0,
-          "isHero": true,
+          "position": 2,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Chatta Umbrella - Pink Stripe/White Pole"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Yellow Pattern.png",
-          "position": 0,
-          "isHero": true,
+          "position": 3,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Chatta Umbrella - Yellow Pattern/Wood Pole"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Wide Pink.png",
-          "position": 0,
-          "isHero": true,
+          "position": 4,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Chatta Umbrella -Wide Pink Stripe/Wood Pole"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CHATTA Natural Stripe.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FCHATTA%20Umbrellas%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Chatta Umbrella - Natural Stripe/White Pole"
+        "inferredFilename": "CHATTA Umbrellas Hero.png",
+        "altText": "CHATTA 6' Diameter Umbrellas"
       },
-      "imageCount": 1,
+      "imageCount": 5,
       "publicReady": true,
       "scrapedOrder": 209,
       "subcategory": null,
