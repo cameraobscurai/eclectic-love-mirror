@@ -487,24 +487,29 @@ export function QuickViewModal({
               )}
             </div>
 
-            {/* Thumbs */}
+            {/* Thumbs — overflow-x scroller with explicit prev/next chips when
+                content extends beyond the viewport (the fade alone wasn't a strong
+                enough scroll affordance for mouse users). */}
             {product.images.length > 1 && (
               <div className="mt-6 md:mt-8">
                 <div
                   className="relative"
                   style={{
                     maskImage:
-                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%)",
                     WebkitMaskImage:
-                      "linear-gradient(to right, #000 0, #000 calc(100% - 28px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 28px), transparent 100%)",
                   }}
                 >
-                  <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory pr-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                  <div
+                    ref={thumbsScrollerRef}
+                    className="flex gap-2 overflow-x-auto snap-x snap-mandatory px-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                  >
                     {product.images.map((im, i) => (
                       <button
                         key={im.url}
                         onClick={() => setImgIdx(i)}
-                        aria-label={`View image ${i + 1} of ${product.images.length}`}
+                        aria-label={`View image ${i + 1} of ${product.images.length}${im.altText && im.altText !== product.title ? ` — ${im.altText}` : ""}`}
                         aria-current={i === imgIdx}
                         className={cn(
                           "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
@@ -520,6 +525,31 @@ export function QuickViewModal({
                     ))}
                   </div>
                 </div>
+                {(thumbsOverflow.left || thumbsOverflow.right) && (
+                  <div className="mt-2 flex items-center justify-between text-charcoal/70">
+                    <button
+                      type="button"
+                      onClick={() => nudgeThumbs(-1)}
+                      disabled={!thumbsOverflow.left}
+                      aria-label="Scroll thumbnails left"
+                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                    >
+                      ← MORE
+                    </button>
+                    <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40">
+                      {imgIdx + 1} / {product.images.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => nudgeThumbs(1)}
+                      disabled={!thumbsOverflow.right}
+                      aria-label="Scroll thumbnails right"
+                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                    >
+                      MORE →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
