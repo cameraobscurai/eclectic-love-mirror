@@ -113,7 +113,6 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
   "styling": [
     { id: "accents", label: "Accents" },
     { id: "crates-baskets", label: "Crates & Baskets" },
-    { id: "games", label: "Games" },
   ],
   "large-decor": [
     { id: "structures", label: "Structures" },
@@ -344,8 +343,7 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
       return "rugs";
     case "styling": {
       if (has(t, ["crate", "basket"])) return "crates-baskets";
-      if (has(t, ["game", "chess", "domino", "backgammon", "cards", "puzzle"]))
-        return "games";
+      // Games heading removed per inventory specialist (2026-05-13).
       // Live site lumps everything else in Styling under Accents — make it
       // the explicit fallback rather than relying on a narrow keyword list.
       return "accents";

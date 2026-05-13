@@ -522,35 +522,35 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Akoya Set"
+          "altText": "Akoya — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA 11.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya 11\" Plate"
+          "altText": "Akoya — 11"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA 7.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya 7\" Plate"
+          "altText": "Akoya — 7"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA Charger.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya 13\" Charger"
+          "altText": "Akoya — Charger"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA Low Bowl.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya Low Bowl"
+          "altText": "Akoya — Low Bowl"
         }
       ],
       "primaryImage": {
@@ -700,28 +700,15 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/alexander/01-image-asset.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/alexander/02-ALEXANDER_Decanter_0.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Alexander Decanter"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/alexander/02-ALEXANDER_Decanter_0.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Alexander Decanter"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/alexander/01-image-asset.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Alexander Decanter"
-      },
-      "imageCount": 2,
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/alexander/02-ALEXANDER_Decanter_0.png",
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 19,
       "subcategory": null,
@@ -811,28 +798,28 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Allira Cut Glassware"
+          "altText": "Allira Cut Glassware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ALLIRA Goblet.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Allira Cut Glassware"
+          "altText": "Allira Cut Glassware — Goblet"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ALLIRA Wine.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Allira Cut Glassware"
+          "altText": "Allira Cut Glassware — Wine"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ALLIRA Flute.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Allira Cut Glassware"
+          "altText": "Allira Cut Glassware — Flute"
         }
       ],
       "primaryImage": {
@@ -1729,56 +1716,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ANASTASIA Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ANASTASIA Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ANASTASIA Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3421/2a53acec634b-ANASTASIA_Salad_Fork.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Salad Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3421/fb96e928f3fe-ANASTASIA_Tea_Spoon.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Tea Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3421/7da7bd06fff9-ANASTASIA_Steak_Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Steak Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3421/f983d438b9af-ANASTASIA_Butter_Knife.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Anastasia Antique Silver Flatware"
+          "altText": "Anastasia Antique Silver Flatware — Butter Knife"
         }
       ],
       "primaryImage": {
@@ -1857,8 +1844,8 @@
       "id": "3983",
       "sourceUrl": "",
       "slug": "anathema-82-dark-ash-wood-console-3983",
-      "categorySlug": "storage",
-      "displayCategory": "Storage",
+      "categorySlug": "tables",
+      "displayCategory": "Tables",
       "title": "Anathema 82\"  Dark Ash Wood Console",
       "description": null,
       "dimensions": "82\"W x 17.5\"D x 26\"H",
@@ -1898,9 +1885,9 @@
       "colorNeedsReview": false,
       "tonalRank": null,
       "variants": [],
-      "liveCategory": "cocktail-bar",
+      "liveCategory": "lounge-tables",
       "liveSubcategories": [
-        "Storage"
+        "Consoles"
       ]
     },
     {
@@ -2777,56 +2764,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Dessert Fork.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Dessert Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Dessert Spoon.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Dessert Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Butter Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Butter Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ASTRID Steak Knife.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Astrid Rose Quartz Flatware"
+          "altText": "Astrid Rose Quartz Flatware — Steak Knife"
         }
       ],
       "primaryImage": {
@@ -4245,28 +4232,28 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Belissa"
+          "altText": "Belissa — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/BELISSA 11.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Belissa 11\" White Plate"
+          "altText": "Belissa — 11"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/BELISSA 13.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Belissa 13\" White Charger Plate"
+          "altText": "Belissa — 13"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/BELISSA 8.5.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Belissa 8.5\" White Plate"
+          "altText": "Belissa — 8.5"
         }
       ],
       "primaryImage": {
@@ -10758,56 +10745,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Dessert Fork.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Dessert Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Butter Knife.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Butter Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Steak Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Steak Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/DONAVER Teaspoon.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Donaver Tortoise Flatware"
+          "altText": "Donaver Tortoise Flatware — Teaspoon"
         }
       ],
       "primaryImage": {
@@ -12441,56 +12428,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Salad Fork - Needs Straightening.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Salad Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Butter Knife.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Butter Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Steak Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Steak Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/ESTELLA Tea Spoon.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Estella Mixed Metal Flatware"
+          "altText": "Estella Mixed Metal Flatware — Tea Spoon"
         }
       ],
       "primaryImage": {
@@ -13279,28 +13266,15 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/farren/01-image-asset.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/farren/02-FARREN_Paddle_0.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Farren European Wood Paddle"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/farren/02-FARREN_Paddle_0.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Farren European Wood Paddle"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/farren/01-image-asset.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Farren European Wood Paddle"
-      },
-      "imageCount": 2,
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/farren/02-FARREN_Paddle_0.png",
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 311,
       "subcategory": null,
@@ -17389,7 +17363,7 @@
         "altText": "Gwenevere Mulberry Daybed"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 400,
       "subcategory": null,
       "imagesVersion": 1778130484,
@@ -18163,35 +18137,35 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Honey Glassware"
+          "altText": "Honey Glassware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2723/d9239abd4381-HONEY_Coupe.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Honey Glassware"
+          "altText": "Honey Glassware — Coupe"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2722/3ead6cd0c95f-HONEY_Red_Wine.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Honey Glassware"
+          "altText": "Honey Glassware — Red Wine"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2721/2bf5194b2466-HONEY_White_Wine.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Honey Glassware"
+          "altText": "Honey Glassware — White Wine"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2724/e9ff9579e78f-HONEY_Stemless.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Honey Glassware"
+          "altText": "Honey Glassware — Stemless"
         }
       ],
       "primaryImage": {
@@ -19508,7 +19482,7 @@
         "altText": "Ivory Linen Lumbar"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 454,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -19558,7 +19532,7 @@
         "altText": "Ivory Linen Pillow"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 455,
       "subcategory": null,
       "imagesVersion": 1778234936,
@@ -19608,7 +19582,7 @@
         "altText": "Ivory Linen Small Lumbar"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 456,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -20121,35 +20095,35 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "JAIN"
+          "altText": "JAIN — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 10in.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "JAIN"
+          "altText": "JAIN — 10in"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 11in.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "JAIN"
+          "altText": "JAIN — 11in"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 8.5in Bowl.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Jain 8\" Porcelain Plate"
+          "altText": "JAIN — 8.5in Bowl"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 8in.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "JAIN"
+          "altText": "JAIN — 8in"
         }
       ],
       "primaryImage": {
@@ -22219,21 +22193,21 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Lavanya Stoneware"
+          "altText": "Lavanya Stoneware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/LAVANYA 10.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Lavanya 10\" Riverstone Plate"
+          "altText": "Lavanya Stoneware — 10"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/LAVANYA 12.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Lavanya 12\" Riverstone Charger"
+          "altText": "Lavanya Stoneware — 12"
         }
       ],
       "primaryImage": {
@@ -24215,28 +24189,28 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Midori Set"
+          "altText": "Midori — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 11in.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori 11\" Plate"
+          "altText": "Midori — 11in"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 8in.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori 8\" Plate"
+          "altText": "Midori — 8in"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 9in Bowl.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori 9\" Bowl"
+          "altText": "Midori — 9in Bowl"
         }
       ],
       "primaryImage": {
@@ -27183,7 +27157,7 @@
         "altText": "Paxton 10'H Black Wireframe Cage"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 639,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -27233,7 +27207,7 @@
         "altText": "Paxton 10'H Wireframe Cage with Smoke Acrylic"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 640,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -27283,7 +27257,7 @@
         "altText": "Paxton 7'H Black Wireframe Cage"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 641,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -27862,7 +27836,7 @@
       "colorNeedsReview": false,
       "tonalRank": null,
       "variants": [],
-      "liveCategory": "dining",
+      "liveCategory": "lounge-tables",
       "liveSubcategories": [
         "Consoles"
       ]
@@ -27897,7 +27871,7 @@
         "altText": "Pierre Grey Silk Chair"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 654,
       "subcategory": null,
       "imagesVersion": 1778130488,
@@ -28568,56 +28542,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/QUINN Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/QUINN Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/QUINN Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3393/db02b4810566-QUINN_Salad_Fork.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Salad Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3393/52d1a2daf204-QUINN_Tea_Spoon.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Tea Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3393/11791b944e8e-QUINN_Steak_Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Steak Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3393/fc405f17df06-QUINN_Butter_Knife.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Quinn Antique Bone Flatware"
+          "altText": "Quinn Antique Bone Flatware — Butter Knife"
         }
       ],
       "primaryImage": {
@@ -28700,7 +28674,7 @@
       "displayCategory": "Tables",
       "title": "Raden Distressed Metal Coffee Table",
       "description": null,
-      "dimensions": "48\"W x 48\"D x 15\"H",
+      "dimensions": "53\"W x 35\"D x 15\"H",
       "stockedQuantity": "2",
       "isCustomOrder": false,
       "confidence": 1,
@@ -30722,7 +30696,7 @@
         {
           "id": "4133",
           "title": "Sanara Dining Chair - Taupe Velvet",
-          "dimensions": "19.5\"W x 20\"D x 32\"H",
+          "dimensions": "19\"W x 20\"D x 32\"H",
           "stockedQuantity": "425"
         }
       ],
@@ -32906,35 +32880,35 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Thistle Glassware"
+          "altText": "Thistle Glassware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2668/9c4e44a65fd5-THISTLE_Coupe.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Thistle Glassware"
+          "altText": "Thistle Glassware — Coupe"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2671/9b2a96014b7b-THISTLE_Red_Wine.PNG",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Thistle Glassware"
+          "altText": "Thistle Glassware — Red Wine"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2669/6166a35fe114-THISTLE_Tumbler.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Thistle Glassware"
+          "altText": "Thistle Glassware — Tumbler"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2672/a431444b8ab0-THISTLE_White_Wine.PNG",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Thistle Glassware"
+          "altText": "Thistle Glassware — White Wine"
         }
       ],
       "primaryImage": {
@@ -33160,21 +33134,21 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Tillery Set"
+          "altText": "Tillery — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/TILLERY 8.5in.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tillery 8.5\" Plate"
+          "altText": "Tillery — 8.5in"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/TILLERY Low Bowl.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tillery Low Bowl"
+          "altText": "Tillery — Low Bowl"
         }
       ],
       "primaryImage": {
@@ -34080,7 +34054,15 @@
       "colorTemperature": null,
       "colorNeedsReview": false,
       "tonalRank": null,
-      "variants": [],
+      "variants": [
+        {
+          "id": "live-vespa-shelf-antique-mirror-back",
+          "title": "Vespa Shelf + Antique Mirror Back",
+          "dimensions": "46\"W x 12\"D x 84\"H",
+          "stockedQuantity": "5",
+          "note": "Made-to-order, max qty 5"
+        }
+      ],
       "liveCategory": "cocktail-bar",
       "liveSubcategories": [
         "Storage"
@@ -34116,7 +34098,7 @@
         "altText": "Vespa Shelf + Antique Mirror Back"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 796,
       "subcategory": null,
       "imagesVersion": 1778254144,
@@ -34223,7 +34205,7 @@
         "altText": "Voyage Black Trunk Bar"
       },
       "imageCount": 1,
-      "publicReady": true,
+      "publicReady": false,
       "scrapedOrder": 798,
       "subcategory": null,
       "imagesVersion": 1777967225,
@@ -34636,28 +34618,15 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/wells/01-image-asset.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/wells/02-WELLS_Decanter_0.png",
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
           "altText": "Wells Decanter"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/wells/02-WELLS_Decanter_0.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Wells Decanter"
         }
       ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/wells/01-image-asset.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Wells Decanter"
-      },
-      "imageCount": 2,
+      "primaryImage": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/wells/02-WELLS_Decanter_0.png",
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 807,
       "subcategory": null,
@@ -34997,56 +34966,56 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/WINSLOW Dinner Fork.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Dinner Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/WINSLOW Dinner Knife.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Dinner Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/WINSLOW Dinner Spoon.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Dinner Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3407/7d92dfc513e8-WINSLOW_Salad_Fork.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Salad Fork"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3407/79ad9a6c7868-WINSLOW_Tea_Spoon.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Tea Spoon"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3407/009639a702bc-WINSLOW_Steak_Knife.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Steak Knife"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3407/21a01c680e9f-WINSLOW_Butter_Knife.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Winslow Tortoise Bistro Flatware"
+          "altText": "Winslow Tortoise Bistro Flatware — Butter Knife"
         }
       ],
       "primaryImage": {
