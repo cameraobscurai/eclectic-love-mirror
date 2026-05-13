@@ -225,7 +225,7 @@ export function QuickViewModal({
     };
   }, []);
 
-  const img = product.images[imgIdx] ?? product.primaryImage;
+  const img = activeImg;
 
   if (typeof document === "undefined") return null;
 
