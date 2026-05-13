@@ -89,7 +89,6 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
     { id: "storage", label: "Storage" },
   ],
   "dining": [
-    { id: "consoles", label: "Consoles" },
     { id: "dining-chairs", label: "Dining Chairs" },
     { id: "dining-tables", label: "Dining Tables" },
   ],
@@ -165,6 +164,8 @@ const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
 };
 
 export function productParent(p: CollectionProduct): ParentId | null {
+  // Consoles always belong to Lounge Tables — never Dining.
+  if ((p.title || "").toLowerCase().includes("console")) return "lounge-tables";
   if (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory])
     return LIVE_CAT_TO_PARENT[p.liveCategory];
   const g = getProductBrowseGroup(p);
