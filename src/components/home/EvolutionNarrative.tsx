@@ -135,7 +135,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       const isDesk = window.innerWidth >= 768;
       const LEAD_IN_VH = isDesk
         ? Math.min(0.32 + Math.max(vh - 900, 0) / 1400, 0.6)
-        : 0.15;
+        : 0.34;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
