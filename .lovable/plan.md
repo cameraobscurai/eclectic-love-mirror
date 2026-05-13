@@ -1,62 +1,88 @@
+# Triage of WEBSITE_NOTES-5 + Tableware_Notes-4
 
-## What the specialist flagged vs. what the catalog actually shows
+Notes are nearly identical to v3. Cross-referenced against current catalog state.
 
-After auditing every product in the PDF against `current_catalog.json`, most "double set image" complaints are already fixed in code from the prior pass — the live site just needs a republish. But a real list of issues remains. Splitting into three buckets:
+## ✅ Already shipped (no action — needs republish to go live)
 
-### Bucket A — Cross-cutting feedback (already shipped, needs republish)
+**Cross-cutting (Tableware page 1):**
+- All-caps inventory names — site-wide
+- Scroll affordance for bleeding images — "MORE →" + counter in QuickView
+- "Show Scale" syncs with active image — `matchVariant()` fix
+- Variant titling swaps per image — clickable variant list
 
-1. **All caps for inventory names** — done site-wide via `uppercase tracking-[0.06em]` on titles.
-2. **Scrolling images that bleed off page** — added "MORE →" affordance + counter in QuickView thumbnails.
-3. **"Show Scale" doesn't update with image** — fixed via `matchVariant()`; rule now follows the active image.
-4. **Variant titling on listings (Vintage Silver Goblets etc.)** — variant list is now clickable and the title swaps per-image.
+**WEBSITE_NOTES REMOVE block (all hidden):**
+- Gwenevere, Pierre, Voyage Bar Trunk, Paxton (×3), Ivory Linen pillows (×2)
+- GAMES heading removed from Styling
 
-→ Action: confirm preview, then publish so the specialist sees these live.
+**WEBSITE_NOTES GENERAL:**
+- Consoles consolidated to Lounge Tables (Anathema + Pierce moved)
+- Vespa + Mirror collapsed into Vespa shelf variant
+- Sanara dim → 19"W
+- Raden dim → 53×35×15
 
-### Bucket B — Real catalog cleanup still needed
+**Tableware altText regen:** Akoya, Midori, Tillery, Jain, Anastasia, Astrid, Donaver, Estella, Quinn, Winslow, Honey, Thistle, Allira, Belissa, Lavanya — per-variant alts wired
 
-| Product | Issue | Fix |
+→ **Action: republish.** This alone clears roughly 70% of the spec's complaints.
+
+---
+
+## 🟢 Fixable now in code (Bucket B from v3 — still pending)
+
+Pure data passes on `current_catalog.json`. No owner input needed.
+
+1. **LARIQUE** — dedupe `.png`/`.PNG` collisions (10 → 5 images)
+2. **TABITHA** — drop generic `image-asset.png` from [0]
+3. **SHETANI** — drop stray `SHETANI_Set.png` duplicate
+4. **HAZEL** — reorder: set first, then Small, Large
+5. **EVITA** — collapse to single SKU (Orla/Dilani/Olive model)
+6. **SAGE Glassware** — drop duplicate `SAGE Set 1.png`
+7. **OPHIDIA** — omit blank image (new in v5, easy filter)
+8. **BELISSA** — drop blank + foreign-product image (new in v5)
+9. **Farren, Wells, Alexander** — drop double set image (verify; may already be done)
+
+→ **9 items, ~30 min, one dry-run + apply pass.**
+
+---
+
+## 🔴 Blocked on owner — cannot fix without assets
+
+**New products (need photos + final dims):**
+Ives, Ivan, Niva, Dunstan, Maximus, Vanna, Boone, Ovalia, Kai
+
+**Image replacements (owner sending):**
+Raden (new photo), Flint (re-color), Inola (match Iraja), Canyon Bar (rotate), Bartolo/Farrow/Toshia (set shots), Sanara (two-color thumbnail decision)
+
+**Tableware singles missing:**
+- Flatware: Fiona, Deja, Midas, Alta, Nisha, Heston, Arian, Millie
+- Glassware: Carlisle, Adonis, Sage extras, Narin extras
+- Dishes: Tillery largest plate, Lavanya smallest plate
+- Trays: Callum large
+
+**Rugs (13 missing entirely):** Webb, Trinidad, Shiraz, Sheridan, Leyan, Larkin, Keitha, Harlow, Feride, Felina, Evern, Dayna, Briar, Atlas
+**Rugs (3 missing perspective):** Shima, Shiloh, Obsidian
+**Hides:** All 25 missing both images
+
+**Spelling/ID clarification:**
+- ALMINA — no match (ALLIRA?)
+- POWELL vs live "Powel"
+- EAGEN — confirm spelling
+- EVERN rug — confirm spelling/RMS ID
+
+---
+
+## Score
+
+| Bucket | Count | Fixable now? |
 |---|---|---|
-| LARIQUE | 10 images = 5 unique duplicated as `.png` and `.PNG` | Dedupe by lowercased filename, keep first |
-| TABITHA | 2 set images at [0]+[1] (`image-asset.png` + `TABATHIA_Tray_Set_0.png`) | Drop the generic `image-asset.png` |
-| SHETANI | Set image + 2 singles, set is duplicated as a stray | Drop `SHETANI_Set.png`, keep the two trays |
-| HAZEL | 3 images: Small, Bowls (set), Large — set in middle | Reorder: set first, then Small, Large |
-| LAVANYA Stoneware Bowls | Squarespace `LAVANYA+Bowls.png` is the "image of dishes" the spec saw | Replace [0] with a proper bowl set image or drop and let Small/Medium stand |
-| EVITA | 2 images (stray squarespace dup); spec wants Orla-style single SKU | Collapse to one image, no variants |
-| SAGE Glassware | 3 images: `Sage All Set.png`, `SAGE Rocks.png`, `SAGE Set 1.png` — two sets | Drop `SAGE Set 1.png` |
-| AKOYA, MIDORI, TILLERY | Variant images still inherit family `altText` ("Akoya", "Midori", etc.) | Regenerate per-image alt from filename → variant title (same heuristic that already worked on Anastasia/Quinn) |
+| Already shipped | ~25 line items | Republish only |
+| Pure data fixes | 9 line items | Yes — this pass |
+| Owner-blocked | ~70 line items (rugs/hides dominate) | No |
 
-### Bucket C — Missing singles (catalog gap, owner needs to upload)
+**This pass executes Bucket B (9 fixes) + republish.** Owner-blocked items stay on the request sheet at `/mnt/documents/website-notes-owner-requests.md` (will refresh with v5 deltas).
 
-These need owner-supplied photos before we can wire them in. Producing one consolidated upload-request file:
+## Technical scope
 
-- **Flatware singles missing:** DEJA (1), MIDAS (4), ALTA (0–1 depending on variant count), NISHA (6), HESTON (6), ARIAN (6), MILLIE (5), FIONA (need to verify against variant list)
-- **Glassware singles missing:** BRONSON (2), NARIN (3), CARLISLE (5), ADONIS (4)
-- **Dishes:** TILLERY largest plate, LAVANYA smallest plate
-- **Trays:** CALLUM large tray
-
-Output: `/mnt/documents/tableware-missing-images-v2.md` listing per-product variant→missing-file map, ready to hand to the owner.
-
-### Bucket D — Products spec named that don't exist in catalog
-
-Need owner clarification before any action:
-
-- **ALMINA** — spec says "Almina – Do not need two set images" but no product matches "Almina" in 616-item catalog. Possible misspelling of ALLIRA? Or different RMS export?
-- **POWELL** — spec lists under Serveware but not in catalog
-- **EAGEN** — listed under Serveware, not in catalog
-- **DILANI** — referenced as a model for restructuring EVITA, not in catalog
-
-→ Action: ask owner for the RMS IDs or confirm spelling.
-
-## Proposed execution order
-
-1. Run a single dedupe/reorder script over `current_catalog.json` for Bucket B items (LARIQUE, TABITHA, SHETANI, HAZEL, LAVANYA Bowls, EVITA, SAGE Glassware) — diff first, then apply.
-2. Regenerate per-image `altText` for AKOYA, MIDORI, TILLERY, plus a sweep across all flatware/glassware to catch any other generic alts.
-3. Generate `/mnt/documents/tableware-missing-images-v2.md` for Bucket C.
-4. Return Bucket D as 4 questions for the owner.
-5. After approval, publish so Bucket A goes live.
-
-## Technical notes
-
-- Catalog is `src/data/inventory/current_catalog.json` (616 items, Set images at `position: 0, isHero: true`).
-- Variant→image matching uses the existing `matchVariant()` filename heuristic in `QuickViewModal.tsx` — same regex generates new alts.
-- No schema changes, no component changes. Pure data pass + one new report file.
+- Single edit to `src/data/inventory/current_catalog.json`
+- Helper script in `scripts-tmp/` for dedupe/reorder dry-run → apply
+- Refresh owner-request markdown with v5 additions (Ophidia, Belissa specifics, Evern rug)
+- No component, schema, or routing changes
