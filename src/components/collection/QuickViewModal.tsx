@@ -287,8 +287,7 @@ export function QuickViewModal({
                       const t = e.currentTarget;
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
-                    onClick={() => setLightboxOpen(true)}
-                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)] cursor-zoom-in"
+                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
@@ -455,33 +454,7 @@ export function QuickViewModal({
       </motion.div>
 
 
-      {/* LIGHTBOX — fullscreen image, click or Esc to close. */}
-      <AnimatePresence>
-        {lightboxOpen && img && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduced ? 0 : 0.2 }}
-            className="absolute inset-0 z-[60] bg-charcoal/95 flex items-center justify-center cursor-zoom-out"
-            onClick={() => setLightboxOpen(false)}
-          >
-            <img
-              src={withCdnWidth(img.url, 2400)}
-              alt={img.altText ?? product.title}
-              className="max-w-[96vw] max-h-[96vh] object-contain"
-            />
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
-              aria-label="Close enlarged image"
-              className="absolute top-4 right-4 h-10 w-10 grid place-items-center text-white text-2xl leading-none hover:opacity-70"
-            >
-              ×
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Lightbox temporarily disabled — pending polish. */}
     </div>,
     document.body,
   );
