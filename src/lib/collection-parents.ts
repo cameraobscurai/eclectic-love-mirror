@@ -164,6 +164,8 @@ const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
 };
 
 export function productParent(p: CollectionProduct): ParentId | null {
+  // Consoles always belong to Lounge Tables — never Dining.
+  if ((p.title || "").toLowerCase().includes("console")) return "lounge-tables";
   if (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory])
     return LIVE_CAT_TO_PARENT[p.liveCategory];
   const g = getProductBrowseGroup(p);
