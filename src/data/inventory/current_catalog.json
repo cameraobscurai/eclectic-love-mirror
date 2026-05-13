@@ -17334,56 +17334,6 @@
       ]
     },
     {
-      "id": "2118",
-      "sourceUrl": "https://www.eclectichive.com/lounge/gwenevere",
-      "slug": "gwenevere-mulberry-daybed-2118",
-      "categorySlug": "seating",
-      "displayCategory": "Seating",
-      "title": "Gwenevere Mulberry Daybed",
-      "description": null,
-      "dimensions": "77\"W x 38.5\"D x 16\"H",
-      "stockedQuantity": "2",
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/gwenevere-mulberry-daybed/01-GWENEVERE_Daybed_0.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Gwenevere Mulberry Daybed"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/gwenevere-mulberry-daybed/01-GWENEVERE_Daybed_0.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Gwenevere Mulberry Daybed"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 400,
-      "subcategory": null,
-      "imagesVersion": 1778130484,
-      "ownerSiteRank": 15,
-      "colorHex": null,
-      "colorHexSecondary": null,
-      "colorLightness": null,
-      "colorHue": null,
-      "colorChroma": null,
-      "colorFamily": null,
-      "colorTemperature": null,
-      "colorNeedsReview": false,
-      "tonalRank": null,
-      "variants": [],
-      "liveCategory": "lounge",
-      "liveSubcategories": [
-        "Benches"
-      ]
-    },
-    {
       "id": "1926",
       "sourceUrl": "https://www.eclectichive.com/cocktail-bar/hampton",
       "slug": "hampton-oak-wood-bar-1926",
@@ -19453,56 +19403,6 @@
       ]
     },
     {
-      "id": "live-ivory-linen-lumbar",
-      "sourceUrl": "https://www.eclectichive.com/textiles/ivory-linen-lumbar",
-      "slug": "ivory-linen-lumbar",
-      "categorySlug": "pillows-throws",
-      "displayCategory": "Pillows & Throws",
-      "title": "Ivory Linen Lumbar",
-      "description": null,
-      "dimensions": null,
-      "stockedQuantity": null,
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-ivory-linen-lumbar/2d45a1ce7edf-Ivory_Mudcloth_Lumbar.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Ivory Linen Lumbar"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-ivory-linen-lumbar/2d45a1ce7edf-Ivory_Mudcloth_Lumbar.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Ivory Linen Lumbar"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 454,
-      "subcategory": null,
-      "imagesVersion": 1778254144,
-      "ownerSiteRank": 84,
-      "colorHex": "#f7f7f0",
-      "colorHexSecondary": null,
-      "colorLightness": 97.06,
-      "colorHue": null,
-      "colorChroma": 3.56,
-      "colorFamily": "cream",
-      "colorTemperature": "warm",
-      "colorNeedsReview": false,
-      "tonalRank": 59706,
-      "variants": [],
-      "liveCategory": "textiles",
-      "liveSubcategories": [
-        "Pillows"
-      ]
-    },
-    {
       "id": "3088",
       "sourceUrl": "https://www.eclectichive.com/textiles/ivory-linen-pillow",
       "slug": "ivory-linen-pillow-3088",
@@ -19546,56 +19446,6 @@
       "colorTemperature": "warm",
       "colorNeedsReview": false,
       "tonalRank": 59641,
-      "variants": [],
-      "liveCategory": "textiles",
-      "liveSubcategories": [
-        "Pillows"
-      ]
-    },
-    {
-      "id": "live-ivory-linen-small-lumbar",
-      "sourceUrl": "https://www.eclectichive.com/textiles/ivory-linen-small-lumbar",
-      "slug": "ivory-linen-small-lumbar",
-      "categorySlug": "pillows-throws",
-      "displayCategory": "Pillows & Throws",
-      "title": "Ivory Linen Small Lumbar",
-      "description": null,
-      "dimensions": null,
-      "stockedQuantity": null,
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-ivory-linen-small-lumbar/41b8759799a4-Ivory_Mudcloth_Lumbar_Mini.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Ivory Linen Small Lumbar"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-ivory-linen-small-lumbar/41b8759799a4-Ivory_Mudcloth_Lumbar_Mini.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Ivory Linen Small Lumbar"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 456,
-      "subcategory": null,
-      "imagesVersion": 1778254144,
-      "ownerSiteRank": 86,
-      "colorHex": "#f7f7f2",
-      "colorHexSecondary": null,
-      "colorLightness": 97.11,
-      "colorHue": null,
-      "colorChroma": 2.54,
-      "colorFamily": "cream",
-      "colorTemperature": "warm",
-      "colorNeedsReview": false,
-      "tonalRank": 59711,
       "variants": [],
       "liveCategory": "textiles",
       "liveSubcategories": [
@@ -27128,156 +26978,6 @@
       ]
     },
     {
-      "id": "live-paxton-10ft",
-      "sourceUrl": "https://www.eclectichive.com/large-decor/paxton-10ft",
-      "slug": "paxton-10ft",
-      "categorySlug": "large-decor",
-      "displayCategory": "Large Decor",
-      "title": "Paxton 10'H Black Wireframe Cage",
-      "description": null,
-      "dimensions": null,
-      "stockedQuantity": null,
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-10ft/e44da62b55d1-PAXTON_Wireframe_10ft_0.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Paxton 10'H Black Wireframe Cage"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-10ft/e44da62b55d1-PAXTON_Wireframe_10ft_0.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Paxton 10'H Black Wireframe Cage"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 639,
-      "subcategory": null,
-      "imagesVersion": 1778254144,
-      "ownerSiteRank": 24,
-      "colorHex": null,
-      "colorHexSecondary": null,
-      "colorLightness": null,
-      "colorHue": null,
-      "colorChroma": null,
-      "colorFamily": null,
-      "colorTemperature": null,
-      "colorNeedsReview": false,
-      "tonalRank": null,
-      "variants": [],
-      "liveCategory": "large-decor",
-      "liveSubcategories": [
-        "Other"
-      ]
-    },
-    {
-      "id": "live-paxton-10ftacrylic",
-      "sourceUrl": "https://www.eclectichive.com/large-decor/paxton-10ftacrylic",
-      "slug": "paxton-10ftacrylic",
-      "categorySlug": "large-decor",
-      "displayCategory": "Large Decor",
-      "title": "Paxton 10'H Wireframe Cage with Smoke Acrylic",
-      "description": null,
-      "dimensions": null,
-      "stockedQuantity": null,
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-10ftacrylic/5a2885382fcc-PAXTON_Wireframe_10ft_Smoke_Acrylic_0.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Paxton 10'H Wireframe Cage with Smoke Acrylic"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-10ftacrylic/5a2885382fcc-PAXTON_Wireframe_10ft_Smoke_Acrylic_0.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Paxton 10'H Wireframe Cage with Smoke Acrylic"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 640,
-      "subcategory": null,
-      "imagesVersion": 1778254144,
-      "ownerSiteRank": 22,
-      "colorHex": null,
-      "colorHexSecondary": null,
-      "colorLightness": null,
-      "colorHue": null,
-      "colorChroma": null,
-      "colorFamily": null,
-      "colorTemperature": null,
-      "colorNeedsReview": false,
-      "tonalRank": null,
-      "variants": [],
-      "liveCategory": "large-decor",
-      "liveSubcategories": [
-        "Other"
-      ]
-    },
-    {
-      "id": "live-paxton-7ft",
-      "sourceUrl": "https://www.eclectichive.com/large-decor/paxton-7ft",
-      "slug": "paxton-7ft",
-      "categorySlug": "large-decor",
-      "displayCategory": "Large Decor",
-      "title": "Paxton 7'H Black Wireframe Cage",
-      "description": null,
-      "dimensions": null,
-      "stockedQuantity": null,
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-7ft/d9ef4f41996b-PAXTON_Wireframe_7ft_0.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Paxton 7'H Black Wireframe Cage"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/live-paxton-7ft/d9ef4f41996b-PAXTON_Wireframe_7ft_0.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Paxton 7'H Black Wireframe Cage"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 641,
-      "subcategory": null,
-      "imagesVersion": 1778254144,
-      "ownerSiteRank": 23,
-      "colorHex": null,
-      "colorHexSecondary": null,
-      "colorLightness": null,
-      "colorHue": null,
-      "colorChroma": null,
-      "colorFamily": null,
-      "colorTemperature": null,
-      "colorNeedsReview": false,
-      "tonalRank": null,
-      "variants": [],
-      "liveCategory": "large-decor",
-      "liveSubcategories": [
-        "Other"
-      ]
-    },
-    {
       "id": "330",
       "sourceUrl": "https://www.eclectichive.com/lounge-tables/pebble",
       "slug": "pebble-side-table-330",
@@ -27839,56 +27539,6 @@
       "liveCategory": "lounge-tables",
       "liveSubcategories": [
         "Consoles"
-      ]
-    },
-    {
-      "id": "74",
-      "sourceUrl": "https://www.eclectichive.com/lounge/pierre",
-      "slug": "pierre-grey-silk-chair-74",
-      "categorySlug": "seating",
-      "displayCategory": "Seating",
-      "title": "Pierre Grey Silk Chair",
-      "description": null,
-      "dimensions": "30\"W x 26\"D x 37\"H",
-      "stockedQuantity": "4",
-      "isCustomOrder": false,
-      "confidence": 1,
-      "needsManualReview": false,
-      "images": [
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/pierre-grey-silk-chair/01-PHILLIPE_Chair_0.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Pierre Grey Silk Chair"
-        }
-      ],
-      "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/pierre-grey-silk-chair/01-PHILLIPE_Chair_0.png",
-        "position": 0,
-        "isHero": true,
-        "inferredFilename": null,
-        "altText": "Pierre Grey Silk Chair"
-      },
-      "imageCount": 1,
-      "publicReady": false,
-      "scrapedOrder": 654,
-      "subcategory": null,
-      "imagesVersion": 1778130488,
-      "ownerSiteRank": 28,
-      "colorHex": null,
-      "colorHexSecondary": null,
-      "colorLightness": null,
-      "colorHue": null,
-      "colorChroma": null,
-      "colorFamily": null,
-      "colorTemperature": null,
-      "colorNeedsReview": false,
-      "tonalRank": null,
-      "variants": [],
-      "liveCategory": "lounge",
-      "liveSubcategories": [
-        "Chairs"
       ]
     },
     {
@@ -35694,7 +35344,7 @@
       "count": 6
     }
   ],
-  "total": 616,
+  "total": 609,
   "meta": {
     "generatedAt": "2026-05-12T23:58:13.004Z",
     "totalRecords": 616,
