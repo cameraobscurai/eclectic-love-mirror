@@ -20135,28 +20135,28 @@
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Jain 10\" Porcelain Plate"
+          "altText": "JAIN"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 11in.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Jain 11\" Porcelain Charger Plate"
+          "altText": "JAIN"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 8.5in Bowl.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "JAIN"
+          "altText": "Jain 8\" Porcelain Plate"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/JAIN 8in.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Jain 8\" Porcelain Plate"
+          "altText": "JAIN"
         }
       ],
       "primaryImage": {
@@ -22360,20 +22360,6 @@
           "isHero": false,
           "inferredFilename": null,
           "altText": "Lavanya Stoneware Bowls"
-        },
-        {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1620223089740-0RES7R78UVGBLSIA1V2Z/LAVANYA+Small+Bowl.png",
-          "position": 3,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Lavanya Stoneware Bowls"
-        },
-        {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614028442540-GC0VS61FUYZ7ZWPI00RT/LAVISA+Medium+Bowl.png",
-          "position": 4,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Lavanya Stoneware Bowls"
         }
       ],
       "primaryImage": {
@@ -22383,7 +22369,7 @@
         "inferredFilename": null,
         "altText": "Lavanya Stoneware Bowls"
       },
-      "imageCount": 5,
+      "imageCount": 3,
       "publicReady": true,
       "scrapedOrder": 521,
       "subcategory": null,
@@ -24285,14 +24271,14 @@
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori 11\" Plate"
+          "altText": "Midori"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 8in.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori 8\" Plate"
+          "altText": "Midori"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 9in Bowl.png",
@@ -26500,13 +26486,6 @@
           "isHero": true,
           "inferredFilename": null,
           "altText": "Ophidia 10\" Serpent Plate"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/tableware/ophidia-10-serpent-plate/01-image-0",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Ophidia 10\" Serpent Plate"
         }
       ],
       "primaryImage": {
@@ -26516,7 +26495,7 @@
         "inferredFilename": null,
         "altText": "Ophidia 10\" Serpent Plate"
       },
-      "imageCount": 2,
+      "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 624,
       "subcategory": null,
@@ -32393,21 +32372,21 @@
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tabitha 15\" Copper Rimed Tray"
+          "altText": "Tabitha Copper Rimmed Tray Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SERVEWARE/TABITHA 20in.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tabitha 20\" Copper Rimmed Tray"
+          "altText": "Tabitha Copper Rimmed Tray Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SERVEWARE/TABITHA 23in.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tabitha 23\" Copper Rimmed Tray"
+          "altText": "Tabitha Copper Rimmed Tray Set"
         }
       ],
       "primaryImage": {
@@ -33258,14 +33237,14 @@
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tillery 8.5\" White Porcelain Black Rim Plate"
+          "altText": "Tillery"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/TILLERY Low Bowl.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tillery"
+          "altText": "Tillery Low Bowl"
         }
       ],
       "primaryImage": {
