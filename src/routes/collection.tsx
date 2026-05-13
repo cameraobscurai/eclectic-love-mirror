@@ -1658,6 +1658,8 @@ function CollectionPage() {
                                     fontSize: "clamp(14px, 1.8vw, 16px)",
                                     color: "#1a1a1a",
                                     textAlign: "left",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.06em",
                                   }}
                                 >
                                   {p.title}
