@@ -287,8 +287,7 @@ export function QuickViewModal({
                       const t = e.currentTarget;
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
-                    onClick={() => setLightboxOpen(true)}
-                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)] cursor-zoom-in"
+                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
