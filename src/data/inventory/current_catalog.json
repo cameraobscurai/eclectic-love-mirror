@@ -29282,74 +29282,81 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Large Basket 0.tif",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA%20Wire%20Leather%20Basket%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Ravindra Large Wire & Leather Basket"
+          "inferredFilename": "RAVINDRA Wire Leather Basket Hero.png",
+          "altText": "Ravindra Wire & Leather Basket"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Large Basket 1.tif",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Large Basket 0.tif",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Large Wire & Leather Basket"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/297f4212f8a2-RAVINDRA_Basket_Pair.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Large Basket 1.tif",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Large Wire & Leather Basket"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/6b11830bd3dc-RAVINDRA_Basket_Pair.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/297f4212f8a2-RAVINDRA_Basket_Pair.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Large Wire & Leather Basket"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/835e7f170955-RAVINDRA_Large_Basket_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/6b11830bd3dc-RAVINDRA_Basket_Pair.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Large Wire & Leather Basket"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/19b5800d1616-RAVINDRA_Small_Basket_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/835e7f170955-RAVINDRA_Large_Basket_0.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Large Wire & Leather Basket"
         },
         {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1480/19b5800d1616-RAVINDRA_Small_Basket_0.png",
+          "position": 6,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Ravindra Large Wire & Leather Basket"
+        },
+        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Small Basket 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 7,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Small Wire & Leather Basket"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Small Basket 1.tif",
-          "position": 1,
+          "position": 8,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Ravindra Small Wire & Leather Basket"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA Large Basket 0.tif",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/RAVINDRA%20Wire%20Leather%20Basket%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Ravindra Large Wire & Leather Basket"
+        "inferredFilename": "RAVINDRA Wire Leather Basket Hero.png",
+        "altText": "Ravindra Wire & Leather Basket"
       },
-      "imageCount": 6,
+      "imageCount": 9,
       "publicReady": true,
       "scrapedOrder": 677,
       "subcategory": null,
-      "imagesVersion": 1778254144,
+      "imagesVersion": 1778638265,
       "ownerSiteRank": 20,
       "colorHex": null,
       "colorHexSecondary": null,
