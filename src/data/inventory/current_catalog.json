@@ -27310,67 +27310,74 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD 20 Plinth 1.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD%20Fossil%20Plinth%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Oxford Fossil 20\" Plinth"
+          "inferredFilename": "OXFORD Fossil Plinth Hero.png",
+          "altText": "Oxford Fossil Plinth"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/51eabffcde12-OXFORD_Set.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD 20 Plinth 1.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 20\" Plinth"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/26ed893a36bd-OXFORD_20_Plinth_1.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/51eabffcde12-OXFORD_Set.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 20\" Plinth"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/e314caf545ff-OXFORD_26_Plinth_1.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/26ed893a36bd-OXFORD_20_Plinth_1.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 20\" Plinth"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/ff8fe53b7aa7-OXFORD_36_Plinth_1.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/e314caf545ff-OXFORD_26_Plinth_1.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 20\" Plinth"
         },
         {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3893/ff8fe53b7aa7-OXFORD_36_Plinth_1.png",
+          "position": 5,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Oxford Fossil 20\" Plinth"
+        },
+        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD 26 Plinth 1.png",
-          "position": 0,
-          "isHero": true,
+          "position": 6,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 26\" Plinth"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD 36 Plinth 1.png",
-          "position": 0,
-          "isHero": true,
+          "position": 7,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Oxford Fossil 36\" Plinth"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD 20 Plinth 1.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/OXFORD%20Fossil%20Plinth%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Oxford Fossil 20\" Plinth"
+        "inferredFilename": "OXFORD Fossil Plinth Hero.png",
+        "altText": "Oxford Fossil Plinth"
       },
-      "imageCount": 5,
+      "imageCount": 8,
       "publicReady": true,
       "scrapedOrder": 634,
       "subcategory": null,
-      "imagesVersion": 1778254144,
+      "imagesVersion": 1778638191,
       "ownerSiteRank": 29,
       "colorHex": null,
       "colorHexSecondary": null,
