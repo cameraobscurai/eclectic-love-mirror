@@ -21006,49 +21006,56 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JINA Tall Black Metal Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FJINA%20Black%20Metal%20Vases%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Jina 14\" Black Metal Vase"
+          "inferredFilename": "JINA Black Metal Vases Hero.png",
+          "altText": "JINA Black Metal Vases"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/6445288ff4b3-JINA_Duo.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JINA Tall Black Metal Vase.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Jina 14\" Black Metal Vase"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/944dc5eda9e2-JINA_Tall_Black_Metal_Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/6445288ff4b3-JINA_Duo.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Jina 14\" Black Metal Vase"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/084af8329792-JINA_Short_Black_Metal_Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/944dc5eda9e2-JINA_Tall_Black_Metal_Vase.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Jina 14\" Black Metal Vase"
         },
         {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4020/084af8329792-JINA_Short_Black_Metal_Vase.png",
+          "position": 4,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Jina 14\" Black Metal Vase"
+        },
+        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JINA Short Black Metal Vase.png",
-          "position": 0,
-          "isHero": true,
+          "position": 5,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Jina 7.5\" Black Metal Vase"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/JINA Tall Black Metal Vase.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FJINA%20Black%20Metal%20Vases%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Jina 14\" Black Metal Vase"
+        "inferredFilename": "JINA Black Metal Vases Hero.png",
+        "altText": "JINA Black Metal Vases"
       },
-      "imageCount": 4,
+      "imageCount": 6,
       "publicReady": true,
       "scrapedOrder": 478,
       "subcategory": null,
