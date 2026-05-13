@@ -4691,46 +4691,53 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN Red Books.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN%20Assorted%20Books%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "BEREN Assorted Books Hero.png",
+          "altText": "Beren Assorted Books"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN Red Books.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Beren Red Books"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN Black Books.png",
-          "position": 0,
-          "isHero": true,
+          "position": 2,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Beren Black Books"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN Blue Books.png",
-          "position": 0,
-          "isHero": true,
+          "position": 3,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Beren Blue Books"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN White Books.png",
-          "position": 0,
-          "isHero": true,
+          "position": 4,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Beren White Books"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN Red Books.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/BEREN%20Assorted%20Books%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Beren Red Books"
+        "inferredFilename": "BEREN Assorted Books Hero.png",
+        "altText": "Beren Assorted Books"
       },
-      "imageCount": 1,
+      "imageCount": 5,
       "publicReady": true,
       "scrapedOrder": 116,
       "subcategory": null,
-      "imagesVersion": 1777966033,
+      "imagesVersion": 1778638326,
       "ownerSiteRank": 47,
       "colorHex": null,
       "colorHexSecondary": null,
