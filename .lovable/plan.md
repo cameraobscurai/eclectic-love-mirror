@@ -1,47 +1,93 @@
-## What the CSV gives us
+## Goal
 
-The Squarespace export has **1,453 product rows × 26 categories**, but only one hero image per row (no galleries). SKU is Squarespace's, not the Current RMS ID, so direct join doesn't work. Title match against current inventory lands 350 of 833 items — useful but not a silver bullet.
+Act on the inventory specialist's PDF notes. Two tracks: **(A) site-wide UX issues that affect every product** and **(B) per-product data fixes scoped to Tableware** (Dish, Flatware, Glassware, Serveware).
 
-The real find is in the image filenames. **53 rows in the `tableware`/`dining` categories carry a `*Set*.png` family photo** — each one is a parent listing (e.g. "Anastasia Antique Silver Flatware", "Akoya", "Tabitha Copper Rimmed Tray Set") whose hero image is the exact group/fan/stack photo the owner wants on every individual SKU under that family.
+---
 
-Of our 109 still-broken tableware/serveware items (the ones the 41-swap pass couldn't fix because no Set photo was already in their `images[]`), the majority belong to one of those 53 families. So the CSV closes the loop on most of the remaining problem without new photography.
+## A. Cross-cutting issues (affect the whole Collection)
 
-## Plan
+### A1. ALL CAPS for product names
+Catalog titles ("Akoya", "Belissa") render mixed-case. The standing rule kept catalog names mixed-case as the one exception to the all-caps voice. Owner now wants caps everywhere.
 
-### 1. Build a family→Set-image map (script, dry-run)
-- Parse the 53 Squarespace family-Set rows.
-- Extract a `family_key` from each title (first word, normalized — `ANASTASIA`, `WINSLOW`, `TABITHA`/`TABATHIA`, `SHETANI`, etc.).
-- Output `/tmp/family-set-map.json`: `{ family_key, sq_title, sq_image_url, sq_filename }`.
+Fix: apply `text-transform: uppercase` (with appropriate tracking) to product titles in `ProductTile`, `QuickViewModal` H2, variants list, and inquiry tray. Pure presentation — no data changes. Update the Typography memory to drop the catalog-name exception.
 
-### 2. Match the 109 problem items to family keys (dry-run manifest)
-- For each problem item, derive its family_key the same way.
-- Join against the map.
-- Print a manifest: item id, title, current hero, proposed Set image URL, mirror destination path.
-- Flag items with no family match for owner/Darian queue (true new-photography items).
+### A2. Image carousel scroll affordance ("how do you scroll to see images that bleed off the page?")
+The QuickView thumbs row scrolls horizontally with a subtle right-edge fade mask, no visible cue. Mouse users don't realize they can scroll.
 
-Expected outcome from the data above: roughly 80 of the 109 will match (every Anastasia/Winslow/Quinn/etc. SKU we couldn't fix earlier, plus families like Adonis, Allira, Bronson, Carlisle, Donaver, Estella, Heston, Honey, Isla, Lapis, Larome, Marina, Midas, Midori, Millie, Narin, Nisha, Odessa, Ophidia, Orson, Perdita, Rudy, Sage, Seraphina, Tillery, Yesenia, Zahavi, Zalena, Zeva). The remaining ~30 stay on the re-shoot queue.
+Fix: add visible prev/next arrow chips (desktop) over the thumbs strip when content overflows, plus arrow-key paging through `imgIdx`. Keep touch swipe as-is.
 
-### 3. Owner reviews the manifest
-- You read the printed table and approve.
-- This is the gate before any writes.
+### A3. "Show Scale" doesn't follow the current image
+Scale rule reads from `product.dimensions` (the family-level dimension). When the user pages through variant images (Akoya: 7", 9.5", 11", 13.5"), the rule stays pinned to one number.
 
-### 4. Mirror images + apply (after approval)
-- Download each unique Set URL → upload to the `squarespace-mirror` storage bucket (same pattern used in the 2026-05-07 migration).
-- Update each matched item's `images[]` to put the mirrored Set URL at position 0 (preserve existing detail shots behind it).
-- Re-run `bake-catalog.mjs`.
+Fix: when the product has variants AND there's a 1:1 mapping between non-set images and variants, drive the scale rule from the *current image's* matched variant dimension. Fallback to product.dimensions when no match.
 
-### 5. Output the re-shoot queue
-- Plain CSV of items with no Squarespace Set match: id, title, category, current hero. This is what Darian shoots.
+### A4. Per-image variant labeling
+On family listings (Akoya, Belissa, Vintage Silver Goblets, etc.) the title stays "Akoya" no matter which image is shown, and the variants list isn't clickable.
 
-## Technical notes
+Fix: 
+- When viewing image N that maps to a variant, show the variant's full name as a sub-line under the H2 ("Akoya 7" Plate").
+- Make each variant row in the Stocked Quantity list clickable — clicking jumps `imgIdx` to that variant's image.
+- Mapping rule: position 0 = family/set image (no variant label). Positions 1..N map to `variants[i-1]` if counts match. If counts mismatch, use filename heuristic on `inferredFilename`/url (`AKOYA 7.png` → 7" variant). If still ambiguous, leave unlabeled.
 
-- Reuses existing infra: `squarespace-mirror` bucket, the bake script, the same hero-promotion pattern as the 41-swap pass. No new tables, no new edge functions.
-- Family-key normalization needs a small alias map for the known spelling drift (`TABITHA`↔`TABATHIA`, possibly `POWEL`↔`POWELL`). The script will print unmatched keys so we catch any others.
-- All four scripts are dry-run-by-default with `--apply`; nothing writes without your sign-off, per the destructive-ops rule.
-- Squarespace CSV gives only one image per row, so this fixes hero photos only — gallery enrichment for these families still needs the JSON-feed harvest path documented in memory.
+---
 
-## What this does not solve
+## B. Per-product data cleanup (Tableware)
 
-- Items not in the Squarespace export at all (newer SKUs added since the export). Re-shoot queue.
-- Families where Squarespace itself never had a Set photo (e.g. some single-piece styling items). Re-shoot queue.
-- The "single photos of glassware/flatware" the owner wants *removed* from category covers — that's a separate, smaller task once the heroes are correct.
+All data fixes live in `src/data/inventory/current_catalog.json`. Pattern of bugs found:
+
+1. **"Double set image"** — products got both `inventory/TABLEWEAR/<NAME> Set.png` AND `squarespace-mirror/_family-sets/<NAME>/<NAME>+Set.png` appended. Visible because both have `position: 0, isHero: true`. Fix: drop the `_family-sets` duplicate.
+2. **Blank / wrong-product images** — Belissa carries a blank squarespace file plus an actual Evita marble charger image. Same blank file appears in others. Fix: remove unmatched squarespace stragglers from the listed products.
+3. **Wrong altText on every image** — every variant image inherits the family altText ("Belissa 13″ White Charger Plate" on the 8.5″ photo, etc.). Fix: derive altText per image from filename → variant title.
+
+### B1. Dishes
+| Product | Action |
+|---|---|
+| ALMINA | Remove duplicate set image |
+| BELISSA | Remove blank image + wrong (Evita) image + duplicate set image |
+| AKOYA | Remove duplicate set image (last entry) |
+| JAIN | Remove duplicate set image |
+| MIDORI | Remove duplicate set image |
+| OPHIDIA | Remove blank image |
+| TILLERY | Remove duplicate set image; **owner: missing largest plate** → uploads needed |
+| LAVANYA | **owner: missing smallest plate** → upload needed |
+| EVITA | Restructure as a single SKU with one image, matching the Orla/Olive/Dilani pattern (drop the two squarespace strays already noted) |
+
+### B2. Flatware
+| Product | Action |
+|---|---|
+| ANASTASIA, ASTRID, DONAVER, ESTELLA, QUINN, WINSLOW | Remove duplicate set image; **missing single-piece images** → uploads needed |
+| FIONA, DEJA, MIDAS, ALTA | **missing single-piece images** → uploads needed |
+| NISHA, HESTON, ARIAN, MILLIE | **no images at all** → uploads needed |
+
+### B3. Glassware
+| Product | Action |
+|---|---|
+| BRONSON, LARIQUE, HONEY, THISTLE, ALLIRA | Remove duplicate set image |
+| SAGE, NARIN | Remove duplicate set image; **missing singles** → uploads needed |
+| CARLISLE, ADONIS | **no images at all** → uploads needed |
+
+### B4. Serveware
+| Product | Action |
+|---|---|
+| TABITHA, SHETANI, POWELL, HAZEL | Curate down — too many images (target: set + each variant once) |
+| FARREN, WELLS, EAGEN, ALEXANDER | Remove duplicate set image |
+| CALLUM | **missing large tray** → upload needed |
+| LAVANYA BOWL | Remove the stray Dishes image; curate remaining count down |
+
+---
+
+## Execution order
+
+1. **Confirm scope with owner** (one question, below) before touching variant↔image mapping logic.
+2. Cross-cutting UX (A1–A4) shipped as a single pass — all live in `ProductTile.tsx`, `QuickViewModal.tsx`, `InquiryTray.tsx`, plus a memory update.
+3. Data cleanup (B1–B4) as a single edit pass on `current_catalog.json` covering every "remove duplicate / blank / wrong" item. Per-image altText regenerated from variant titles.
+4. Produce a **short missing-images report** listing every product still needing an upload from the owner (everything bolded above), so the inquiry list goes back to the specialist as one document.
+5. Owner uploads missing images → second pass binds them.
+
+## Open question
+
+Per-image variant labeling (A4) needs a decision: when image count and variant count don't match (very common — set image + N singles vs. N variants), should I (a) use filename-pattern matching (`AKOYA 7.png` → 7″ variant) wherever it works and leave the rest unlabeled, or (b) treat this as "needs owner remap" and ship the clickable variants list without the per-image title until owner confirms each mapping? Plan as drafted assumes (a).
+
+## Out of scope (cannot do without owner uploads)
+
+Anything tagged "missing", "no images", or "needs upload" above. The edit pass will surface these in a single CSV/MD report rather than guessing.
