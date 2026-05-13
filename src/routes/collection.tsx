@@ -137,6 +137,7 @@ export const Route = createFileRoute("/collection")({
         content:
           "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.",
       },
+      { property: "og:url", content: "https://eclectichive.com/collection" },
     ],
     // Note: previously we preloaded CATEGORY_COVERS here. That preload now
     // lives inside <CategoryGalleryOverview> so it only runs when the
@@ -148,6 +149,7 @@ export const Route = createFileRoute("/collection")({
     // is the LCP element on /collection landings. Two media-scoped preloads
     // so the browser only fetches the variant matching its viewport.
     links: [
+      { rel: "canonical", href: "https://eclectichive.com/collection" },
       { ...heroPreloadLink(hiveSignatureHeroSquare, "46vw"), media: "(min-width: 1024px)" },
       { ...heroPreloadLink(hiveSignatureHeroMobile, "100vw"), media: "(max-width: 1023px)" },
     ],

@@ -1,0 +1,15 @@
+# Eclectic Hive
+
+> Full-service luxury event design, custom fabrication, and furniture rentals based in Denver, Colorado. Cinematic, art-forward environments for weddings, galas, and corporate events.
+
+## Pages
+
+- [Home](/): Studio overview and entry to the Atelier, Collection, and Gallery.
+- [Atelier](/atelier): Design house and fabrication studio. Imagined. Designed. Realized.
+- [Collection](/collection): Hive Signature Collection — furniture, lighting, tableware, and bespoke objects available for rental.
+- [Gallery](/gallery): Selected projects and event environments.
+- [Contact](/contact): Inquire about design, fabrication, production, and rentals.
+
+## Optional
+
+- [Privacy](/privacy): Privacy policy.

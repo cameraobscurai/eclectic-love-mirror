@@ -53,11 +53,13 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Inquire about design, fabrication, and production with Eclectic Hive — Denver, Colorado.",
+          "Inquire about luxury event design, custom fabrication, and rentals with Eclectic Hive — Denver, Colorado.",
       },
       { property: "og:title", content: "Contact — Eclectic Hive" },
       { property: "og:description", content: `Inquiries: ${SUPPORT_EMAIL}` },
+      { property: "og:url", content: "https://eclectichive.com/contact" },
     ],
+    links: [{ rel: "canonical", href: "https://eclectichive.com/contact" }],
   }),
   component: ContactPage,
 });
