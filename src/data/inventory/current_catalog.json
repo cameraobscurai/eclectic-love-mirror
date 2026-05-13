@@ -27887,28 +27887,35 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LARGE-DECOR/PEMA 0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FLARGE-DECOR%2FPEMA%20Carved%20Wood%20Wall%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "PEMA Carved Wood Wall Hero.png",
+          "altText": "Pema Tibetan Carved Wood Wall"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LARGE-DECOR/PEMA 0.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Pema Ancient Carved Wood Wall"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LARGE-DECOR/PEMA 1.png",
-          "position": 1,
+          "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Pema Ancient Carved Wood Wall"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LARGE-DECOR/PEMA 0.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FLARGE-DECOR%2FPEMA%20Carved%20Wood%20Wall%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Pema Ancient Carved Wood Wall"
+        "inferredFilename": "PEMA Carved Wood Wall Hero.png",
+        "altText": "Pema Tibetan Carved Wood Wall"
       },
-      "imageCount": 2,
+      "imageCount": 3,
       "publicReady": true,
       "scrapedOrder": 644,
       "subcategory": null,
