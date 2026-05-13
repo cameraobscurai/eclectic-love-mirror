@@ -390,32 +390,39 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA Small.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA%20Rustic%20Mini%20Vases%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "AGATHA Rustic Mini Vases Hero.png",
+          "altText": "Agatha Rustic Mini Vases"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA Small.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Agatha 3\" Rustic Vase"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA Large.png",
-          "position": 0,
-          "isHero": true,
+          "position": 2,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Agatha 4\" Rustic Vase"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA Small.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AGATHA%20Rustic%20Mini%20Vases%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Agatha 3\" Rustic Vase"
+        "inferredFilename": "AGATHA Rustic Mini Vases Hero.png",
+        "altText": "Agatha Rustic Mini Vases"
       },
-      "imageCount": 1,
+      "imageCount": 3,
       "publicReady": true,
       "scrapedOrder": 10,
       "subcategory": null,
-      "imagesVersion": 1777966033,
+      "imagesVersion": 1778638117,
       "ownerSiteRank": 2,
       "colorHex": null,
       "colorHexSecondary": null,
