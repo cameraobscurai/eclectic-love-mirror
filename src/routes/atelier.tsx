@@ -96,7 +96,7 @@ export const Route = createFileRoute("/atelier")({
   head: () => ({
     meta: [
       {
-        title: "Atelier by The Hive — Design + Fabrication | Eclectic Hive",
+        title: "Atelier by The Hive — Design + Fabrication",
       },
       {
         name: "description",
@@ -111,6 +111,7 @@ export const Route = createFileRoute("/atelier")({
         property: "og:description",
         content: "Imagined. Designed. Realized. Design + fabrication studio.",
       },
+      { property: "og:url", content: "https://eclectichive.com/atelier" },
       {
         property: "og:image",
         content: atelierReplacement.img.src,
@@ -121,24 +122,28 @@ export const Route = createFileRoute("/atelier")({
       },
     ],
     links: [
-      // The hero is a 55vw editorial column on xl, full-width below.
-      // Sizes string MUST match the rendered <img sizes> below or the
-      // preloaded variant differs from the chosen one → "preloaded but
-      // not used" warning + wasted bytes.
+      { rel: "canonical", href: "https://eclectichive.com/atelier" },
       heroPreloadLink(atelierReplacement, "(min-width: 1280px) 55vw, 100vw"),
-      // Warm the TLS connection to Supabase storage before the first
-      // portrait scrolls into view — saves ~100-300ms on the first image.
       ...(STORAGE_ORIGIN
         ? [
             { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
             { rel: "dns-prefetch", href: STORAGE_ORIGIN },
           ]
         : []),
-      // NOTE: We intentionally do NOT head-preload team portraits here.
-      // Doing so collided with MediaAperture's own fetchPriority="high" on
-      // the first row (preload at "low" + tag at "high" → browser warning,
-      // wasted head start) and stole bandwidth from the hero LCP. The team
-      // grid eager-loads on mount instead.
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: ATELIER_FAQ.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        }),
+      },
     ],
   }),
   component: AtelierPage,
