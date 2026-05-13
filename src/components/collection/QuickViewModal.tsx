@@ -52,14 +52,80 @@ export function QuickViewModal({
   const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
   const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
-  // Parse W / D / H once per product. Toggle is offered whenever ANY axis
-  // (width, height, or diameter) parses confidently — silent fallback for
-  // pieces with no dimensions in the catalog.
+  // Match an image to a variant by filename heuristic — numeric ("AKOYA 7.png" → 7"
+  // variant) then word match (Fork/Knife/Bowl/etc.). Lets the title, scale rule,
+  // and dimensions follow the active image when paging through a family listing.
+  const variants = Array.isArray(product.variants) ? product.variants : [];
+  const familyToken = (product.title ?? "").split(/\s+/)[0] ?? "";
+  function matchVariant(img: { url: string } | null | undefined) {
+    if (!img || variants.length === 0) return null;
+    const fname = decodeURIComponent(img.url.split("/").pop() ?? "").toUpperCase();
+    const numMatch = fname.match(/(\d+(?:\.\d+)?)/);
+    if (numMatch) {
+      const v = variants.find((vv) => vv.title?.includes(`${numMatch[1]}"`));
+      if (v) return v;
+    }
+    for (const v of variants) {
+      const tail = (v.title ?? "")
+        .replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
+        .trim();
+      if (!tail) continue;
+      const tokens = tail
+        .toUpperCase()
+        .split(/\s+/)
+        .filter((t) => t.length > 2 && !/["\d.]/.test(t));
+      if (tokens.length && tokens.every((t) => fname.includes(t))) return v;
+    }
+    return null;
+  }
+
+  // Per-image dimensions: use matched variant's, fall back to product-level.
+  const activeImg = product.images[imgIdx] ?? product.primaryImage;
+  const activeVariant = matchVariant(activeImg);
+  const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
   const dims = useMemo(
-    () => parseDimensions(product.dimensions),
-    [product.dimensions],
+    () => parseDimensions(activeDimensions),
+    [activeDimensions],
   );
   const hasScale = dims.width !== null || dims.height !== null;
+
+  // Hide scale when paging — old rule wouldn't match the new image.
+  useEffect(() => {
+    setShowScale(false);
+  }, [imgIdx]);
+
+  // Jump imgIdx to the first image matching a given variant id.
+  function jumpToVariant(variantId: string) {
+    const idx = product.images.findIndex((im) => matchVariant(im)?.id === variantId);
+    if (idx >= 0) setImgIdx(idx);
+  }
+
+  // Thumbs-scroll affordance — show prev/next chips when overflowing on desktop.
+  const thumbsScrollerRef = useRef<HTMLDivElement>(null);
+  const [thumbsOverflow, setThumbsOverflow] = useState({ left: false, right: false });
+  useEffect(() => {
+    const el = thumbsScrollerRef.current;
+    if (!el) return;
+    const update = () => {
+      setThumbsOverflow({
+        left: el.scrollLeft > 4,
+        right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+      });
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [product.id, product.images.length]);
+  function nudgeThumbs(dir: -1 | 1) {
+    const el = thumbsScrollerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.max(180, el.clientWidth * 0.7), behavior: "smooth" });
+  }
 
   useEffect(() => {
     setImgIdx(0);
