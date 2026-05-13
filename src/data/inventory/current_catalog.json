@@ -10311,116 +10311,123 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Agave 0.tif",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO%20Etched%20Alcohol%20Bottle%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Deco Etched Agave Bottle"
+          "inferredFilename": "DECO Etched Alcohol Bottle Hero.png",
+          "altText": "Deco Etched Alcohol Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/56a6d69b7056-1757107337352",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Agave 0.tif",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/2bc46a4a0461-DECO_Alcohol_Set_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/56a6d69b7056-1757107337352",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/a88da44bfb06-DECO_Agave_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/2bc46a4a0461-DECO_Alcohol_Set_0.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/a4138a7a5131-DECO_Bourbon_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/a88da44bfb06-DECO_Agave_0.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/b8da180e56d4-DECO_Genievre_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/a4138a7a5131-DECO_Bourbon_0.png",
           "position": 5,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/1b05dcde2d4c-DECO_Rhum_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/b8da180e56d4-DECO_Genievre_0.png",
           "position": 6,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/e8289fa34031-DECO_Scotch_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/1b05dcde2d4c-DECO_Rhum_0.png",
           "position": 7,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/74f1eea274a6-DECO_Vodka_0.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/e8289fa34031-DECO_Scotch_0.png",
           "position": 8,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Agave Bottle"
         },
         {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1726/74f1eea274a6-DECO_Vodka_0.png",
+          "position": 9,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Deco Etched Agave Bottle"
+        },
+        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Bourbon 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 10,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Bourbon Bottle"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Genievre 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 11,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Genievre Bottle"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Rhum 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 12,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Rhum Bottle"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Vodka 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 13,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Vodka Bottle"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Scotch 0.tif",
-          "position": 0,
-          "isHero": true,
+          "position": 14,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Deco Etched Scotch Bottle"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO Agave 0.tif",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/DECO%20Etched%20Alcohol%20Bottle%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Deco Etched Agave Bottle"
+        "inferredFilename": "DECO Etched Alcohol Bottle Hero.png",
+        "altText": "Deco Etched Alcohol Bottle"
       },
-      "imageCount": 9,
+      "imageCount": 15,
       "publicReady": true,
       "scrapedOrder": 232,
       "subcategory": null,
-      "imagesVersion": 1778254144,
+      "imagesVersion": 1778638536,
       "ownerSiteRank": 49,
       "colorHex": null,
       "colorHexSecondary": null,
