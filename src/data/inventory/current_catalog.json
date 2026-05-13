@@ -8887,49 +8887,56 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CATALINA 10 Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FCATALINA%20White%20Clay%20Perforated%20Vase%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
-          "altText": "Catalina 10\" White Clay Perforated Vase"
+          "inferredFilename": "CATALINA White Clay Perforated Vase Hero.png",
+          "altText": "Catalina White Clay Perforated Vase"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/ed638a1a7d61-CATALINA_Duo.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CATALINA 10 Vase.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Catalina 10\" White Clay Perforated Vase"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/f9cf09f71ffd-CATALINA_12_Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/ed638a1a7d61-CATALINA_Duo.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Catalina 10\" White Clay Perforated Vase"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/eba16d1e3221-CATALINA_10_Vase.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/f9cf09f71ffd-CATALINA_12_Vase.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
           "altText": "Catalina 10\" White Clay Perforated Vase"
         },
         {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/4028/eba16d1e3221-CATALINA_10_Vase.png",
+          "position": 4,
+          "isHero": false,
+          "inferredFilename": null,
+          "altText": "Catalina 10\" White Clay Perforated Vase"
+        },
+        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CATALINA 12 Vase.png",
-          "position": 0,
-          "isHero": true,
+          "position": 5,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Catalina 12\" White Clay Perforated Vase"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/CATALINA 10 Vase.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory%2FSTYLING%2FCATALINA%20White%20Clay%20Perforated%20Vase%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Catalina 10\" White Clay Perforated Vase"
+        "inferredFilename": "CATALINA White Clay Perforated Vase Hero.png",
+        "altText": "Catalina White Clay Perforated Vase"
       },
-      "imageCount": 4,
+      "imageCount": 6,
       "publicReady": true,
       "scrapedOrder": 202,
       "subcategory": null,
