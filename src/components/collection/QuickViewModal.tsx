@@ -407,10 +407,17 @@ export function QuickViewModal({
             className="relative flex flex-col min-h-0 md:border-l md:border-charcoal/10 px-6 md:px-8 py-6 md:py-10 overflow-y-auto"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
           >
-            {/* Title */}
-            <h2 className="font-display leading-[1.05] tracking-[-0.01em] text-charcoal text-[26px] md:text-[34px] break-words">
+            {/* Title — uppercase per brand voice. When the active image maps to a
+                variant, surface that variant's name as a secondary line so users
+                know which piece they're viewing in a multi-piece set. */}
+            <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase">
               {product.title}
             </h2>
+            {activeVariant && activeVariant.title !== product.title && (
+              <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
+                {activeVariant.title}
+              </p>
+            )}
 
             {/* Specs */}
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
@@ -425,10 +432,25 @@ export function QuickViewModal({
                         .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
                         .replace(/\s+glass$/i, "")
                         .trim() || v.title;
+                      const targetIdx = product.images.findIndex((im) => matchVariant(im)?.id === v.id);
+                      const clickable = targetIdx >= 0;
+                      const isActive = activeVariant?.id === v.id;
                       return (
-                        <li key={v.id} className="uppercase tracking-[0.06em]">
-                          ({v.stockedQuantity || "—"}) {label}
-                          {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal">, {v.dimensions}</span> : null}
+                        <li key={v.id}>
+                          <button
+                            type="button"
+                            onClick={clickable ? () => setImgIdx(targetIdx) : undefined}
+                            disabled={!clickable}
+                            className={cn(
+                              "uppercase tracking-[0.06em] text-left w-full transition-colors",
+                              clickable ? "hover:text-charcoal/60 cursor-pointer" : "cursor-default",
+                              isActive ? "text-charcoal font-medium" : "text-charcoal",
+                            )}
+                            aria-current={isActive}
+                          >
+                            ({v.stockedQuantity || "—"}) {label}
+                            {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal"> , {v.dimensions}</span> : null}
+                          </button>
                         </li>
                       );
                     })}
@@ -436,8 +458,8 @@ export function QuickViewModal({
                 </div>
               ) : (
                 <>
-                  {product.dimensions && (
-                    <SpecCol label="Dimensions" value={product.dimensions} />
+                  {activeDimensions && (
+                    <SpecCol label="Dimensions" value={activeDimensions} />
                   )}
                   {product.stockedQuantity && (
                     <SpecCol label="Stocked" value={product.stockedQuantity} />
