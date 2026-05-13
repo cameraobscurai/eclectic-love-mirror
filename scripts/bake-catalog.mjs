@@ -255,7 +255,7 @@ console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.le
 // Use to slot items the live-snapshot matcher missed.
 const MANUAL_RANK_OVERRIDES = {
   // Giesel Green Fringe Lamp → after Jana Matte Bronze Cabaret (25), before Winona Silver Trophy (27)
-  'giesel-green-fringe-lamp': { ownerSiteRank: 26, liveCategory: 'lighting' },
+  'giesel-green-fringe-lamp-3535': { ownerSiteRank: 26, liveCategory: 'lighting' },
 };
 for (const p of rolled) {
   const ov = MANUAL_RANK_OVERRIDES[p.slug];
