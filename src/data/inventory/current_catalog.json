@@ -3219,32 +3219,39 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/Auskin Large.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AUSKIN%20Leather%20Baskets%20Hero.png",
           "position": 0,
           "isHero": true,
+          "inferredFilename": "AUSKIN Leather Baskets Hero.png",
+          "altText": "Auskin Leather Baskets"
+        },
+        {
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/Auskin Large.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Auskin Large Leather Basket"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AUSKIN Small Basket.png",
-          "position": 0,
-          "isHero": true,
+          "position": 2,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Auskin Small Leather Basket"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/Auskin Large.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/STYLING/AUSKIN%20Leather%20Baskets%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
-        "altText": "Auskin Large Leather Basket"
+        "inferredFilename": "AUSKIN Leather Baskets Hero.png",
+        "altText": "Auskin Leather Baskets"
       },
-      "imageCount": 1,
+      "imageCount": 3,
       "publicReady": true,
       "scrapedOrder": 83,
       "subcategory": null,
-      "imagesVersion": 1777966033,
+      "imagesVersion": 1778638470,
       "ownerSiteRank": 14,
       "colorHex": null,
       "colorHexSecondary": null,
