@@ -332,7 +332,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             here; it would compete with the sticky release and produce a
             visible hitch. Cards are simply present under the manifesto. */}
         {footer && (
-          <div className="shrink-0 pb-6 md:pb-10 -mt-[7vh] md:mt-0">
+          <div className="shrink-0 pb-6 md:pb-10 -mt-[22vh] md:mt-0">
             <div className="fluid-canvas">{footer}</div>
           </div>
         )}
