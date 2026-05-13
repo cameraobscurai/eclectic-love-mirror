@@ -206,7 +206,7 @@ export function ProductTile({
                 className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
                 style={webkitGlassBlur}
               >
-                <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2">
+                <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
                   {product.title}
                 </p>
               </div>
@@ -215,7 +215,7 @@ export function ProductTile({
           {/* Caption — visible on mobile only (no hover available there).
               Desktop relies on the glass label inside the frame above. */}
           <p
-            className="md:hidden mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors"
+            className="md:hidden mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
             style={{
               maxWidth: "var(--archive-tile-caption-w)",
               color: "var(--archive-text-quiet)",
