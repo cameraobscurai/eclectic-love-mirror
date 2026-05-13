@@ -83,11 +83,11 @@ const STEP_VH_MOBILE = 5;
 //   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
 //                 line wave fills this band exactly.
 const ENTER_VH_DESKTOP = 0.18;
-const ENTER_VH_MOBILE = 0.3;
+const ENTER_VH_MOBILE = 0.18;
 // Footer no longer animates, so the tail just needs a beat of breathing
 // room after the closer line lands before sticky releases. Small + tight.
 const CONTINUE_VH_DESKTOP = 0.12;
-const CONTINUE_VH_MOBILE = 0.15;
+const CONTINUE_VH_MOBILE = 0.05;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
