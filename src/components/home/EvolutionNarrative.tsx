@@ -237,7 +237,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       <div className="sticky top-0 h-screen w-full flex flex-col">
         {/* Pull manifesto above geometric center — optical center sits ~42%
             from the top, and it closes the gap to the filmstrip tail. */}
-        <div className="flex-1 min-h-0 flex items-start w-full pt-[3vh] md:pt-[5vh]">
+        <div className="flex-1 min-h-0 flex items-end md:items-start w-full pb-[2vh] md:pb-0 pt-0 md:pt-[5vh]">
           <div className="fluid-canvas w-full">
             <div
               className="mx-auto flex flex-col items-center text-center"
@@ -332,7 +332,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             here; it would compete with the sticky release and produce a
             visible hitch. Cards are simply present under the manifesto. */}
         {footer && (
-          <div className="shrink-0 pb-6 md:pb-10 -mt-[22vh] md:mt-0">
+          <div className="shrink-0 pb-6 md:pb-10 mt-0">
             <div className="fluid-canvas">{footer}</div>
           </div>
         )}
