@@ -7992,25 +7992,25 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/RUGS/BYRON Black Hide.png",
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/RUGS/BYRON%20Black%20Hide%20Hero.png",
           "position": 0,
           "isHero": true,
-          "inferredFilename": null,
+          "inferredFilename": "BYRON Black Hide Hero.png",
           "altText": "Byron 7x7 Black Hide Rug"
         }
       ],
       "primaryImage": {
-        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/RUGS/BYRON Black Hide.png",
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/RUGS/BYRON%20Black%20Hide%20Hero.png",
         "position": 0,
         "isHero": true,
-        "inferredFilename": null,
+        "inferredFilename": "BYRON Black Hide Hero.png",
         "altText": "Byron 7x7 Black Hide Rug"
       },
       "imageCount": 1,
       "publicReady": true,
       "scrapedOrder": 182,
       "subcategory": null,
-      "imagesVersion": 1777966033,
+      "imagesVersion": 1778638052,
       "ownerSiteRank": 2,
       "colorHex": null,
       "colorHexSecondary": null,
