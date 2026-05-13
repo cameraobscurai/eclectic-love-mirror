@@ -68,7 +68,7 @@ const LINES: Line[] = [
 // ─────────────────────────────────────────────────────────────────────────
 
 const STEP_VH_DESKTOP = 5;
-const STEP_VH_MOBILE = 6;
+const STEP_VH_MOBILE = 5;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
