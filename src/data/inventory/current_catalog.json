@@ -522,7 +522,7 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Akoya"
+          "altText": "Akoya Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA 11.png",
@@ -543,14 +543,14 @@
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya"
+          "altText": "Akoya 13\" Charger"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/AKOYA Low Bowl.png",
           "position": 4,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Akoya"
+          "altText": "Akoya Low Bowl"
         }
       ],
       "primaryImage": {
@@ -12877,13 +12877,6 @@
           "isHero": true,
           "inferredFilename": null,
           "altText": "Evita 13\" Marble Charger"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2730/86e27f134282-EVITA_13_Marble_Charger.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Evita 13\" Marble Charger"
         }
       ],
       "primaryImage": {
@@ -17731,16 +17724,16 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SERVEWARE/HAZEL Small.png",
-          "position": 0,
-          "isHero": true,
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3769/fbf8a16f0231-HAZEL_Bowls.png",
+          "position": 1,
+          "isHero": false,
           "inferredFilename": null,
           "altText": "Hazel Charred Terracotta Bowl"
         },
         {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3769/fbf8a16f0231-HAZEL_Bowls.png",
-          "position": 1,
-          "isHero": false,
+          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SERVEWARE/HAZEL Small.png",
+          "position": 0,
+          "isHero": true,
           "inferredFilename": null,
           "altText": "Hazel Charred Terracotta Bowl"
         },
@@ -22001,41 +21994,6 @@
           "isHero": false,
           "inferredFilename": null,
           "altText": "Larique Smoke Cut Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2673/81fcec8105a8-LARIQUE_Set.PNG",
-          "position": 5,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Larique Smoke Cut Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2673/9afc74687c3d-LARIQUE_Cut_Goblet.PNG",
-          "position": 6,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Larique Smoke Cut Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2673/b324ad23e4a7-LARIQUE_Cut_Wine.PNG",
-          "position": 7,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Larique Smoke Cut Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2673/92cdcedcb70c-LARIQUE_Cut_Flute.PNG",
-          "position": 8,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Larique Smoke Cut Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/2674/ecad258e816d-LARIQUE_Rocks.png",
-          "position": 9,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Larique Smoke Cut Glassware"
         }
       ],
       "primaryImage": {
@@ -22340,13 +22298,6 @@
       "confidence": 1,
       "needsManualReview": false,
       "images": [
-        {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1677783835288-BW1J68W7PKJSU1IY51N5/LAVANYA+Bowls.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Lavanya Stoneware Bowls"
-        },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/SERVEWARE/LAVANYA Bowl Small.png",
           "position": 1,
@@ -24264,28 +24215,28 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Midori"
+          "altText": "Midori Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 11in.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori"
+          "altText": "Midori 11\" Plate"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 8in.png",
           "position": 2,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori"
+          "altText": "Midori 8\" Plate"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/MIDORI 9in Bowl.png",
           "position": 3,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Midori"
+          "altText": "Midori 9\" Bowl"
         }
       ],
       "primaryImage": {
@@ -30484,13 +30435,6 @@
           "isHero": false,
           "inferredFilename": null,
           "altText": "Sage Glassware"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/SAGE Set 1.png",
-          "position": 2,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Sage Glassware"
         }
       ],
       "primaryImage": {
@@ -31172,13 +31116,6 @@
           "isHero": true,
           "inferredFilename": null,
           "altText": "Shetani 21\" Dark Brass Tray"
-        },
-        {
-          "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3122/50913dd31882-SHETANI_Set.png",
-          "position": 1,
-          "isHero": false,
-          "inferredFilename": null,
-          "altText": "Shetani Dark Brass Tray"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/3122/d6aa30178e29-SHETANI_33_Dark_Brass_Tray.png",
@@ -32347,13 +32284,6 @@
       "needsManualReview": false,
       "images": [
         {
-          "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1604423418515-KBO4EJRV5RWZPUE3A6UL/image-asset.png",
-          "position": 0,
-          "isHero": true,
-          "inferredFilename": null,
-          "altText": "Tabitha Copper Rimmed Tray Set"
-        },
-        {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/squarespace/1439/2cc3737c31b7-TABATHIA_Tray_Set_0.png",
           "position": 1,
           "isHero": false,
@@ -33230,14 +33160,14 @@
           "position": 0,
           "isHero": true,
           "inferredFilename": null,
-          "altText": "Tillery"
+          "altText": "Tillery Set"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/TILLERY 8.5in.png",
           "position": 1,
           "isHero": false,
           "inferredFilename": null,
-          "altText": "Tillery"
+          "altText": "Tillery 8.5\" Plate"
         },
         {
           "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/TABLEWEAR/TILLERY Low Bowl.png",
