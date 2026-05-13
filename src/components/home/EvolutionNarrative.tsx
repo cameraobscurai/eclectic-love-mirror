@@ -68,7 +68,7 @@ const LINES: Line[] = [
 // ─────────────────────────────────────────────────────────────────────────
 
 const STEP_VH_DESKTOP = 5;
-const STEP_VH_MOBILE = 6;
+const STEP_VH_MOBILE = 5;
 
 // Phase budgets expressed in VIEWPORT HEIGHTS (vh), not as fractions of the
 // total scroll budget. Anchoring to the section's real viewport position
@@ -83,11 +83,11 @@ const STEP_VH_MOBILE = 6;
 //   READ_VH     : whatever remains between ENTER and CONTINUE — the per-
 //                 line wave fills this band exactly.
 const ENTER_VH_DESKTOP = 0.18;
-const ENTER_VH_MOBILE = 0.3;
+const ENTER_VH_MOBILE = 0.18;
 // Footer no longer animates, so the tail just needs a beat of breathing
 // room after the closer line lands before sticky releases. Small + tight.
 const CONTINUE_VH_DESKTOP = 0.12;
-const CONTINUE_VH_MOBILE = 0.15;
+const CONTINUE_VH_MOBILE = 0.05;
 
 // Line-wave shape inside READ band.
 const WINDOW = 1.5;          // line-units of crossfade overlap
@@ -135,7 +135,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       const isDesk = window.innerWidth >= 768;
       const LEAD_IN_VH = isDesk
         ? Math.min(0.32 + Math.max(vh - 900, 0) / 1400, 0.6)
-        : 0.15;
+        : 0.34;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
@@ -215,7 +215,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   // the optical center. Counteracts the perceived lag from sticky pinning
   // + smoothed scroll. Tuned by feel — 0.7 lands the highlight on the
   // line you're actively reading.
-  const READ_LOOKAHEAD = 0.7 + 0.6 * tallBias; // 0.7 → 1.3 on tall screens
+  const READ_LOOKAHEAD = isMobile ? 1.1 : 0.7 + 0.6 * tallBias;
   const readT = clamp01((scrolledVh - ENTER_VH) / readVh);
   const reveal = readT * total + READ_LOOKAHEAD;
 
