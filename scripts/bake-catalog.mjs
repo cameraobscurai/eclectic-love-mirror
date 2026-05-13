@@ -251,6 +251,19 @@ for (const p of rolled) {
 }
 console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.length} tiles`);
 
+// Manual placement overrides — slug → { ownerSiteRank, liveCategory? }
+// Use to slot items the live-snapshot matcher missed.
+const MANUAL_RANK_OVERRIDES = {
+  // Giesel Green Fringe Lamp → after Jana Matte Bronze Cabaret (25), before Winona Silver Trophy (27)
+  'giesel-green-fringe-lamp-3535': { ownerSiteRank: 26, liveCategory: 'lighting' },
+};
+for (const p of rolled) {
+  const ov = MANUAL_RANK_OVERRIDES[p.slug];
+  if (!ov) continue;
+  if (ov.ownerSiteRank != null) p.ownerSiteRank = ov.ownerSiteRank;
+  if (ov.liveCategory) p.liveCategory = ov.liveCategory;
+}
+
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.
