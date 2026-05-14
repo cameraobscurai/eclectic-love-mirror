@@ -423,15 +423,17 @@ export function QuickViewModal({
             {/* Specs */}
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
               {Array.isArray(product.variants) && product.variants.length > 1 ? (() => {
+                const familyHero = product.primaryImage;
                 const rows = product.variants.map((v) => {
                   const label = String(v.title || "")
                     .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
                     .replace(/\s+glass$/i, "")
                     .trim() || v.title;
-                  const targetIdx = product.images.findIndex((im) => matchVariant(im)?.id === v.id);
-                  return { v, label, targetIdx, clickable: targetIdx >= 0 };
+                  const targetIdx = variantImageIdx.get(v.id);
+                  const chipImg =
+                    typeof targetIdx === "number" ? product.images[targetIdx] : familyHero;
+                  return { v, label, targetIdx, chipImg, hasOwnImage: typeof targetIdx === "number" };
                 });
-                const anyClickable = rows.some((r) => r.clickable);
                 const anyLabel = rows.some((r) => r.label && r.label.trim() !== "");
                 const anyDims = rows.some((r) => !!r.v.dimensions);
                 const heading = anyLabel ? "Configurations" : anyDims ? "Sizes" : "Stocked Quantity";
@@ -440,41 +442,80 @@ export function QuickViewModal({
                     <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
                       {heading}
                     </span>
-                    <ul className="text-[14px] leading-[1.45] text-charcoal divide-y divide-charcoal/10">
-                      {rows.map(({ v, label, targetIdx, clickable }) => {
+                    <ul className="text-[14px] leading-[1.45] text-charcoal flex flex-col gap-1">
+                      {rows.map(({ v, label, chipImg, hasOwnImage }) => {
                         const isActive = activeVariant?.id === v.id;
                         const qty = v.stockedQuantity || "—";
-                        const inner = (
-                          <div className="flex items-baseline gap-3 py-2">
-                            <span className="shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] text-charcoal/80 bg-charcoal/[0.06] tabular-nums">
-                              {qty}
-                            </span>
-                            <div className="flex-1 min-w-0">
-                              <div className={cn("uppercase tracking-[0.06em]", isActive ? "font-medium" : "")}>
-                                {label}
-                              </div>
-                              {v.dimensions ? (
-                                <div className="mt-0.5 text-[12px] text-charcoal/60">
-                                  {v.dimensions}
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        );
                         return (
                           <li key={v.id}>
-                            {anyClickable && clickable ? (
-                              <button
-                                type="button"
-                                onClick={() => setImgIdx(targetIdx)}
-                                className="block w-full text-left transition-colors hover:bg-charcoal/[0.03]"
-                                aria-current={isActive}
-                              >
-                                {inner}
-                              </button>
-                            ) : (
-                              <div aria-current={isActive || undefined}>{inner}</div>
-                            )}
+                            <button
+                              type="button"
+                              onClick={() => selectVariant(v.id)}
+                              onMouseEnter={() => {
+                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
+                              }}
+                              onMouseLeave={() => setHoverVariantId(null)}
+                              onFocus={() => {
+                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
+                              }}
+                              onBlur={() => setHoverVariantId(null)}
+                              aria-current={isActive}
+                              className={cn(
+                                "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
+                                isActive
+                                  ? "border-charcoal bg-charcoal/[0.04]"
+                                  : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
+                              )}
+                            >
+                              <div className="flex items-center gap-3">
+                                {/* Image chip — variant image when available, else family hero */}
+                                <span
+                                  className={cn(
+                                    "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
+                                    isActive ? "border-charcoal" : "border-charcoal/15",
+                                    !hasOwnImage && "opacity-70",
+                                  )}
+                                  aria-hidden
+                                >
+                                  {chipImg && (
+                                    <img
+                                      src={withCdnWidth(chipImg.url, 200)}
+                                      alt=""
+                                      className="absolute inset-0 w-full h-full object-contain p-1"
+                                      loading="lazy"
+                                      decoding="async"
+                                    />
+                                  )}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={cn(
+                                        "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
+                                        isActive
+                                          ? "bg-charcoal text-cream"
+                                          : "bg-charcoal/[0.06] text-charcoal/80",
+                                      )}
+                                    >
+                                      {qty}
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        "uppercase tracking-[0.06em] truncate",
+                                        isActive ? "font-medium" : "",
+                                      )}
+                                    >
+                                      {label}
+                                    </span>
+                                  </div>
+                                  {v.dimensions ? (
+                                    <div className="mt-0.5 text-[12px] text-charcoal/60 pl-[calc(2.25rem+0.5rem)]">
+                                      {v.dimensions}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </button>
                           </li>
                         );
                       })}
