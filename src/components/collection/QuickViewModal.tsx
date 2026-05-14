@@ -6,8 +6,8 @@ import { useInquiry } from "@/hooks/use-inquiry";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
-import { parseDimensions } from "@/lib/parse-dimensions";
-import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
+
+
 import { withCdnWidth } from "@/lib/image-url";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 import { analytics } from "@/lib/analytics";
@@ -41,7 +41,7 @@ export function QuickViewModal({
   const isMobile = useIsMobile();
   const canDrag = isMobile && !reduced;
   const [imgIdx, setImgIdx] = useState(0);
-  const [showScale, setShowScale] = useState(false);
+  
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
@@ -83,15 +83,6 @@ export function QuickViewModal({
   const activeImg = product.images[imgIdx] ?? product.primaryImage;
   const activeVariant = matchVariant(activeImg);
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
-  const dims = useMemo(
-    () => parseDimensions(activeDimensions),
-    [activeDimensions],
-  );
-  const hasScale = dims.width !== null || dims.height !== null;
-
-  // Show Scale persists across images — `dims` re-derives from the active
-  // variant's dimensions automatically, so the rule re-renders against the
-  // new image. (Was previously force-reset on every imgIdx change.)
 
   // Jump imgIdx to the first image matching a given variant id.
   function jumpToVariant(variantId: string) {
@@ -169,27 +160,6 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Compute the rendered image box inside the zone given object-contain.
-  // This is the actual furniture footprint — what the rules should wrap.
-  const imageBox = useMemo(() => {
-    if (!imgNatural || zoneSize.w === 0 || zoneSize.h === 0) return null;
-    const zoneAR = zoneSize.w / zoneSize.h;
-    const imgAR = imgNatural.w / imgNatural.h;
-    let w: number, h: number;
-    if (imgAR > zoneAR) {
-      // image is wider than zone — pinned to width
-      w = zoneSize.w;
-      h = zoneSize.w / imgAR;
-    } else {
-      // image is taller — pinned to height
-      h = zoneSize.h;
-      w = zoneSize.h * imgAR;
-    }
-    // object-contain centered: image sits in the middle of the zone
-    const left = (zoneSize.w - w) / 2;
-    const top = (zoneSize.h - h) / 2;
-    return { left, top, width: w, height: h };
-  }, [imgNatural, zoneSize]);
 
   // Title is now small and inline — no fit-to-lines billboard.
 
@@ -362,44 +332,6 @@ export function QuickViewModal({
                 )}
               </AnimatePresence>
 
-              {/* Scale rules */}
-              <AnimatePresence>
-                {showScale && hasScale && imageBox && dims.width !== null && (
-                  <motion.div
-                    key="scale-width"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.18 }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      left: `${imageBox.left}px`,
-                      width: `${imageBox.width}px`,
-                      top: `${imageBox.top + imageBox.height + 10}px`,
-                    }}
-                  >
-                    <ScaleRuleWidth inches={dims.width} />
-                  </motion.div>
-                )}
-                {showScale && hasScale && imageBox && dims.height !== null && (
-                  <motion.div
-                    key="scale-height"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reduced ? 0 : 0.22 }}
-                    className="absolute pointer-events-none"
-                    style={{
-                      top: `${imageBox.top}px`,
-                      height: `${imageBox.height}px`,
-                      left: `${imageBox.left + imageBox.width + 10}px`,
-                    }}
-                  >
-                    <ScaleRuleHeight inches={dims.height} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
               {/* Variant label — surfaced over the image so the active piece
                   in a multi-piece set (e.g. "7\" GOBLET") is identifiable
                   without scrolling to the info rail on mobile. */}
@@ -481,21 +413,6 @@ export function QuickViewModal({
                 </>
               )}
 
-              {hasScale && (
-                <button
-                  type="button"
-                  onClick={() => setShowScale((s) => !s)}
-                  aria-pressed={showScale}
-                  className={cn(
-                    "self-start h-8 px-3 text-[10px] uppercase tracking-[0.28em] border transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                    showScale
-                      ? "border-charcoal text-charcoal bg-charcoal/[0.04]"
-                      : "border-charcoal/25 text-charcoal/65 hover:border-charcoal/60 hover:text-charcoal",
-                  )}
-                >
-                  {showScale ? "Hide Scale" : "Show Scale"}
-                </button>
-              )}
             </div>
 
             {/* Thumbs — overflow-x scroller with explicit prev/next chips when
