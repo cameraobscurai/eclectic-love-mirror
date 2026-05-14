@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET images = ARRAY['https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/marshall/02-MARSHALL_Chair_0.png'] WHERE rms_id = '672';
