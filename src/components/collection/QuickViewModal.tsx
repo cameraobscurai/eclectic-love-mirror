@@ -576,7 +576,7 @@ export function QuickViewModal({
                                     </span>
                                     <span
                                       className={cn(
-                                        "uppercase tracking-[0.06em] truncate",
+                                        "uppercase tracking-[0.06em] line-clamp-2 break-words",
                                         isActive ? "font-medium" : "",
                                       )}
                                     >
