@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET images = ARRAY['https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/silas-sage-oak-cane-sofa/01-SILAS_Cane_Sofa_0.png','https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/silas-sage-oak-cane-sofa/03-SILAS_Cane_Sofa_1.png'] WHERE rms_id = '2715';
