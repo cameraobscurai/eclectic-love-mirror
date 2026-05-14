@@ -55,6 +55,12 @@ const INVENTORY_ROOT_SLUGS = new Set([
   'kohl-round-black-dining-table',
   'elgin-pony-bronze-bookend-set',
   'elgin-pony-silver-bookend-set',
+  'HAZEL_Bowls.png',
+  'HAZEL_Small.png',
+  'HAZEL_Large.png',
+  'POWELL_Set.png',
+  'POWELL_18in_Tray.png',
+  'POWELL_14in_Tray.png',
 ]);
 
 function restoredInventoryUrl(url) {
@@ -339,6 +345,38 @@ for (const p of rolled) {
   }
 }
 console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`);
+
+// Locked family covers from the reference site. These are only for rolled
+// tableware/serveware families whose correct cover is a plural group shot
+// that is not named "Set" in the owner-uploaded inventory files.
+const LOCKED_REFERENCE_COVERS = {
+  'tabitha-set': /tabitha[_+\s-]*(tray[_+\s-]*)?set|tabathia[_+\s-]*tray[_+\s-]*set/i,
+  'powel-dark-brass-tray': /powell?[_+\s-]*set/i,
+  'shetani-dark-brass-tray': /shetani[_+\s-]*set/i,
+  'hazel-charred-terracotta-bowl': /hazel[_+\s-]*bowls/i,
+  'lavanya-riverstone-medium-bowl': /lavanya\+bowls|lavanya[_+\s-]*bowls/i,
+  'vintage-silver-goblets': /silver[_+\s-]*goblet.*(collection|set)|vintage[_+\s-]*silver[_+\s-]*goblet/i,
+};
+let lockedReferenceCovers = 0;
+for (const p of rolled) {
+  const pattern = LOCKED_REFERENCE_COVERS[p.slug];
+  if (!pattern) continue;
+  const lp = findLiveProduct(p.slug, p.title);
+  const currentUrls = (p.images || []).map((img) => typeof img === 'string' ? img : img.url).filter(Boolean);
+  const coverUrl = currentUrls.find((u) => pattern.test(u) && !u.includes('/_family-sets/'))
+    || (lp?.gallery || []).find((u) => pattern.test(u))
+    || currentUrls.find((u) => pattern.test(u));
+  if (!coverUrl) continue;
+  const rest = (p.images || []).filter((img) => (typeof img === 'string' ? img : img.url) !== coverUrl);
+  p.images = [{ url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title }, ...rest];
+  p.images.forEach((img, i) => {
+    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+  });
+  p.primaryImage = p.images[0];
+  p.imageCount = p.images.length;
+  lockedReferenceCovers++;
+}
+console.log(`[locked-reference-covers] applied ${lockedReferenceCovers} tableware/serveware cover overrides`);
 
 
 

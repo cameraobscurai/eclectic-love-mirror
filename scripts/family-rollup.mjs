@@ -221,7 +221,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       mergedImages.push(img);
     };
     const urlFor = (img) => typeof img === 'string' ? img : img?.url || img?.src || '';
-    const isSetImage = (img) => /(?:^|[\s._+-])(set|collection|group|family)(?:[\s._+-]|\.|$)/i.test(keyFor(urlFor(img)));
+    const familyLead = wordTokens(g.fam.familyTitle)[0] || '';
+    const isSetImage = (img) => {
+      const key = keyFor(urlFor(img));
+      if (/(?:^|[\s._+-])(set|collection|group|family)(?:[\s._+-]|\.|$)/i.test(key)) return true;
+      // Some live serveware family covers are named as plural group shots
+      // instead of "Set" (HAZEL_Bowls, LAVANYA Bowls). Treat only the
+      // family-lead + plural noun shot as the cover; size variants remain rows.
+      if (familyLead && new RegExp(`(?:^|[\\s._+-])${familyLead}[\\s._+-]+(bowls|trays|plates|goblets)(?:[\\s._+-]|\\.|$)`, 'i').test(key)) return true;
+      return false;
+    };
     const scoreVariantImage = (img, member) => {
       const key = keyFor(urlFor(img));
       const family = new Set(wordTokens(g.fam.familyTitle));
@@ -263,7 +272,23 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
           .map((img) => img ? keyFor(urlFor(img)) : '')
           .filter(Boolean),
       );
-      let setIdx = mergedImages.findIndex(isSetImage);
+      const titleKey = keyFor(g.fam.familyTitle);
+      const coverScore = (img) => {
+        const key = keyFor(urlFor(img));
+        let score = isSetImage(img) ? 10 : 0;
+        if (/\bbowls?\b/.test(titleKey) && /\bbowls?\b/.test(key)) score += 20;
+        if (/\btrays?\b/.test(titleKey) && /\b(set|trays?)\b/.test(key)) score += 20;
+        if (/\bgoblets?\b/.test(titleKey) && /\b(goblet|collection|set)\b/.test(key)) score += 20;
+        if (/\bplates?|stoneware|flatware|glassware\b/.test(titleKey) && /\b(set|collection)\b/.test(key)) score += 15;
+        if (variantImageKeys.has(key)) score -= 30;
+        return score;
+      };
+      let setIdx = mergedImages.reduce((bestIdx, img, idx) => {
+        const bestScore = bestIdx < 0 ? -Infinity : coverScore(mergedImages[bestIdx]);
+        const score = coverScore(img);
+        return score > bestScore ? idx : bestIdx;
+      }, -1);
+      if (setIdx >= 0 && coverScore(mergedImages[setIdx]) <= 0) setIdx = -1;
       if (setIdx < 0) setIdx = mergedImages.findIndex((img) => {
         const url = typeof img === 'string' ? img : img.url || img.src || '';
         return url && !variantImageKeys.has(keyFor(url));
