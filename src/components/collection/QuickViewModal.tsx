@@ -89,10 +89,9 @@ export function QuickViewModal({
   );
   const hasScale = dims.width !== null || dims.height !== null;
 
-  // Hide scale when paging — old rule wouldn't match the new image.
-  useEffect(() => {
-    setShowScale(false);
-  }, [imgIdx]);
+  // Show Scale persists across images — `dims` re-derives from the active
+  // variant's dimensions automatically, so the rule re-renders against the
+  // new image. (Was previously force-reset on every imgIdx change.)
 
   // Jump imgIdx to the first image matching a given variant id.
   function jumpToVariant(variantId: string) {
@@ -129,7 +128,8 @@ export function QuickViewModal({
 
   useEffect(() => {
     setImgIdx(0);
-    setShowScale(false);
+    // Note: showScale intentionally NOT reset — owner wants it to persist
+    // when navigating between products with similar scale needs.
     // Fire GA4 product_viewed for each product the user opens (or pages to
     // via prev/next inside the modal).
     analytics.productViewed({
@@ -399,6 +399,17 @@ export function QuickViewModal({
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Variant label — surfaced over the image so the active piece
+                  in a multi-piece set (e.g. "7\" GOBLET") is identifiable
+                  without scrolling to the info rail on mobile. */}
+              {activeVariant && activeVariant.title !== product.title && (
+                <div className="absolute left-3 bottom-3 md:left-4 md:bottom-4 pointer-events-none">
+                  <span className="inline-block px-2.5 py-1 text-[10px] uppercase tracking-[0.24em] text-white bg-charcoal/70 backdrop-blur-sm">
+                    {activeVariant.title}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -505,11 +516,15 @@ export function QuickViewModal({
                     ref={thumbsScrollerRef}
                     className="flex gap-2 overflow-x-auto snap-x snap-mandatory px-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                   >
-                    {product.images.map((im, i) => (
+                  {product.images.map((im, i) => {
+                    const v = matchVariant(im);
+                    const tip = v && v.title !== product.title ? v.title : (im.altText ?? "");
+                    return (
                       <button
                         key={im.url}
                         onClick={() => setImgIdx(i)}
-                        aria-label={`View image ${i + 1} of ${product.images.length}${im.altText && im.altText !== product.title ? ` — ${im.altText}` : ""}`}
+                        title={tip}
+                        aria-label={`View image ${i + 1} of ${product.images.length}${tip ? ` — ${tip}` : ""}`}
                         aria-current={i === imgIdx}
                         className={cn(
                           "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
@@ -522,36 +537,38 @@ export function QuickViewModal({
                           className="absolute inset-0 w-full h-full object-contain p-1"
                         />
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-                {(thumbsOverflow.left || thumbsOverflow.right) && (
-                  <div className="mt-2 flex items-center justify-between text-charcoal/70">
-                    <button
-                      type="button"
-                      onClick={() => nudgeThumbs(-1)}
-                      disabled={!thumbsOverflow.left}
-                      aria-label="Scroll thumbnails left"
-                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                    >
-                      ← MORE
-                    </button>
-                    <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40">
-                      {imgIdx + 1} / {product.images.length}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => nudgeThumbs(1)}
-                      disabled={!thumbsOverflow.right}
-                      aria-label="Scroll thumbnails right"
-                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                    >
-                      MORE →
-                    </button>
-                  </div>
-                )}
               </div>
-            )}
+              {/* Counter + scroll chips. Counter shows whenever there are
+                  multiple images so the owner always knows position; chips
+                  enable when overflow exists. */}
+              <div className="mt-2 flex items-center justify-between text-charcoal/70">
+                <button
+                  type="button"
+                  onClick={() => nudgeThumbs(-1)}
+                  disabled={!thumbsOverflow.left}
+                  aria-label="Scroll thumbnails left"
+                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                >
+                  ← MORE
+                </button>
+                <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
+                  {imgIdx + 1} / {product.images.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => nudgeThumbs(1)}
+                  disabled={!thumbsOverflow.right}
+                  aria-label="Scroll thumbnails right"
+                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                >
+                  MORE →
+                </button>
+              </div>
+            </div>
+          )}
 
             {/* CTA — pinned to bottom of rail */}
             <div className="mt-auto pt-8">
