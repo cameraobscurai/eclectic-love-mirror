@@ -177,8 +177,21 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       finalProducts.push({ ...g.members[0], variants: [] });
       continue;
     }
-    // Sort members for stable variant order (by stocked qty desc, then title)
+    // Sort members so variant order mirrors the set hero photo: largest size
+    // first (descending). Parses a leading dimension token like `11"`, `9"`,
+    // `6.5"`, `12in`, `12 in`, or `30cm` from the title. Falls back to stocked
+    // qty desc, then alpha — preserves prior behavior when no size is present
+    // (e.g. flatware piece names).
+    const sizeOf = (title) => {
+      const t = String(title || '');
+      const m = t.match(/(\d+(?:\.\d+)?)\s*(?:"|''|”|in\b|inch(?:es)?\b|cm\b|mm\b)/i);
+      return m ? parseFloat(m[1]) : null;
+    };
     const sorted = [...g.members].sort((a, b) => {
+      const sa = sizeOf(a.title), sb = sizeOf(b.title);
+      if (sa != null && sb != null && sa !== sb) return sb - sa;
+      if (sa != null && sb == null) return -1;
+      if (sa == null && sb != null) return 1;
       const aq = parseInt(a.stockedQuantity, 10) || 0;
       const bq = parseInt(b.stockedQuantity, 10) || 0;
       if (bq !== aq) return bq - aq;
