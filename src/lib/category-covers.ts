@@ -54,4 +54,5 @@ export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, CoverPicture>> = {
   tableware: tablewareCover as unknown as CoverPicture,
   styling: stylingCover as unknown as CoverPicture,
   rugs: rugsCover as unknown as CoverPicture,
+  storage: storageCover as unknown as CoverPicture,
 };
