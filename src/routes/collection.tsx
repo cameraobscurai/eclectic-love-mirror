@@ -14,6 +14,7 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
+import { pickBatchMediaHeight } from "@/lib/collection-tile-presets";
 import {
   PARENT_ORDER,
   PARENT_LABELS,
@@ -1173,22 +1174,21 @@ function CollectionPage() {
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
                             className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
-                            style={
-                              // Cap media-box height whenever the visible
-                              // batch contains any wide-low silhouette
-                              // (sofas/loveseats/benches/beds). Tall-back
-                              // settees can't dominate a row that's only
-                              // 220px tall, and per-tile padding in
-                              // ProductTile finishes the normalization.
-                              // Content-driven so it fires in All view,
-                              // parent, sub, and search alike.
-                              visibleBatch.some((p) => {
-                                const g = getProductBrowseGroup(p);
-                                return g === "sofas" || g === "benches-ottomans";
-                              })
-                                ? ({ ["--archive-tile-media-h" as string]: "clamp(180px, 13vw, 230px)" } as React.CSSProperties)
-                                : undefined
-                            }
+                            style={(() => {
+                              // Pick the SHORTEST media-h cap among families
+                              // present in the visible batch. A mixed batch
+                              // (e.g. All view) defers to wide-low so tall
+                              // silhouettes can't crush their neighbors.
+                              // Per-tile padding in ProductTile finishes the
+                              // normalization. Content-driven so it fires in
+                              // All view, parent, sub, and search alike.
+                              const h = pickBatchMediaHeight(
+                                visibleBatch.map((p) => getProductBrowseGroup(p)),
+                              );
+                              return h
+                                ? ({ ["--archive-tile-media-h" as string]: h } as React.CSSProperties)
+                                : undefined;
+                            })()}
                             transition={
                               reduced
                                 ? { duration: 0 }

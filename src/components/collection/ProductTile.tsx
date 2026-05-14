@@ -5,14 +5,12 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { getTilePreset } from "@/lib/collection-tile-presets";
 
-// Wide-low silhouettes (sofas, benches, beds) get extra top padding so
-// tall-back settees don't visually dominate long-low siblings in the same
-// row. Asymmetric — light bottom pad keeps furniture grounded on the
-// shared optical baseline. Mirrors CollectionWallTile's per-tile model so
-// the rule fires in every view (parent All, subcategory, search) rather
-// than only when activeSubcategory matches.
-const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
+// Per-tile silhouette normalization. Each browse group maps to a "family"
+// preset (wide-low / tall-narrow / small-object / mixed) that tunes pad and
+// image anchor. Cell height is set on the grid via --archive-tile-media-h.
+// See src/lib/collection-tile-presets.ts.
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -90,8 +88,9 @@ export function ProductTile({
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
-  const isWideLow = spyGroup ? WIDE_LOW_GROUPS.has(spyGroup) : false;
-  const padClass = isWideLow ? "pt-[10%] pb-[3%] px-[8%]" : "p-3 sm:p-4";
+  const preset = getTilePreset(spyGroup);
+  const padClass = preset.pad;
+  const anchorClass = preset.anchor === "center" ? "object-center" : "object-bottom";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
@@ -190,7 +189,7 @@ export function ProductTile({
                 // optical floor — wide sofa, tall lamp, and short stool all
                 // sit on the same line. Inset padding keeps subjects from
                 // kissing the cell edges and gives the tile breathing room.
-                className={`absolute inset-0 h-full w-full object-contain object-bottom ${padClass} will-change-opacity`}
+                className={`absolute inset-0 h-full w-full object-contain ${anchorClass} ${padClass} will-change-opacity`}
                 style={{
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
