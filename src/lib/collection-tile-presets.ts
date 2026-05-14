@@ -45,6 +45,15 @@ const MIXED: TilePreset = {
   anchor: "bottom",
 };
 
+// Dining is mixed (chairs + tables) but tables dominate visually and
+// pedestal/round tables blow past the MIXED cap. Tighten cap + heavier
+// top pad so tall silhouettes shrink to the row baseline.
+const DINING: TilePreset = {
+  mediaH: "clamp(190px, 13.5vw, 240px)",
+  pad: "pt-[12%] pb-[3%] px-[7%]",
+  anchor: "bottom",
+};
+
 export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
   // Wide-low
   sofas: WIDE_LOW,
