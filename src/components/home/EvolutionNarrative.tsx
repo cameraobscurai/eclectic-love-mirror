@@ -288,12 +288,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   // No per-line marginTop, no vh font scaling, no emphasis-
                   // specific spacing. The grid is the grid.
                   ["--line-size" as string]:
-                    "clamp(1.05rem, 0.85rem + 0.55vw, 1.5rem)",
-                  ["--line-height" as string]: "1.5",
+                    "clamp(0.95rem, 0.7rem + 0.45vw, 1.25rem)",
+                  ["--line-height" as string]: "1.45",
                   ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height))",
                   fontSize: "var(--line-size)",
                   lineHeight: "var(--line-height)",
-                  maxWidth: "min(46rem, 88vw)",
+                  maxWidth: "min(42rem, 86vw)",
                 }}
               >
                 {LINES.map((line, i) => {
