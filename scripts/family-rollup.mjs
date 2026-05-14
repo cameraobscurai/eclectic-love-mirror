@@ -68,7 +68,8 @@ const hasVariantNoun = title => {
   return false;
 };
 
-export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
+export function rollupFamilies(products, liveSnapshot, forcedGroups = [], breakoutIds = []) {
+  const breakoutSet = new Set((breakoutIds || []).map(String));
   // Index live products by various keys
   const liveProducts = [];
   for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
