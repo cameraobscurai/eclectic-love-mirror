@@ -6,7 +6,7 @@ import { useInquiry } from "@/hooks/use-inquiry";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
-import { parseDimensions } from "@/lib/parse-dimensions";
+
 
 import { withCdnWidth } from "@/lib/image-url";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
@@ -83,10 +83,6 @@ export function QuickViewModal({
   const activeImg = product.images[imgIdx] ?? product.primaryImage;
   const activeVariant = matchVariant(activeImg);
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
-  const dims = useMemo(
-    () => parseDimensions(activeDimensions),
-    [activeDimensions],
-  );
 
   // Jump imgIdx to the first image matching a given variant id.
   function jumpToVariant(variantId: string) {
