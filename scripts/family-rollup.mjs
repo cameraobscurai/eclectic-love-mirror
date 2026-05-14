@@ -225,6 +225,26 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       if (m === withMostImages) continue;
       for (const img of (m.images || [])) pushImg(img);
     }
+
+    // Tableware family covers must be the SET / group shot, not whichever
+    // variant row sorted first. New owner-uploaded folders often use opaque
+    // generated filenames, so filename tokens are not reliable. Instead, use
+    // the invariant we bake for QuickView: each variant owns its row's first
+    // image; the SET shot is the first merged image not claimed by any variant.
+    if (withMostImages.categorySlug === 'tableware' && mergedImages.length > 1) {
+      const variantImageKeys = new Set(
+        sorted
+          .map((m) => (m.images || [])[0])
+          .map((img) => img ? keyFor(typeof img === 'string' ? img : img.url || img.src || '') : '')
+          .filter(Boolean),
+      );
+      const setIdx = mergedImages.findIndex((img) => {
+        const url = typeof img === 'string' ? img : img.url || img.src || '';
+        return url && !variantImageKeys.has(keyFor(url));
+      });
+      if (setIdx > 0) mergedImages.unshift(...mergedImages.splice(setIdx, 1));
+    }
+
     const family = {
       ...withMostImages,
       title: g.fam.familyTitle,
@@ -243,7 +263,7 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
         };
       }),
       // Sum imageCount across the group so callers can show "8 photos"
-      imageCount: withMostImages.images?.length || 0,
+      imageCount: mergedImages.length,
       // Mark how this family was identified
       _familySource: g.fam.source,
     };
