@@ -80,7 +80,15 @@ export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
 
   // Mixed
   chairs: MIXED,
-  dining: MIXED,
+  dining: DINING,
+};
+
+const HEIGHT_RANK: Record<string, number> = {
+  [WIDE_LOW.mediaH]: 0,
+  [DINING.mediaH]: 1,
+  [SMALL_OBJECT.mediaH]: 2,
+  [MIXED.mediaH]: 3,
+  [TALL_NARROW.mediaH]: 4,
 };
 
 const DEFAULT_PRESET = MIXED;
