@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 
 interface Props {
   product: CollectionProduct;
@@ -10,9 +11,16 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
+// Wide-low subjects need extra vertical padding so tall-back siblings
+// (e.g. settees) don't visually dominate equal-sized cells. Mirrors the
+// per-subcategory media-h override on the main grid.
+const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
+  const group = getProductBrowseGroup(product);
+  const padClass = group && WIDE_LOW_GROUPS.has(group) ? "p-[18%]" : "p-[8%]";
 
   return (
     <motion.button
@@ -35,7 +43,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
           <img
             src={url}
             alt=""
-            className="w-full h-full object-contain p-[8%] pointer-events-none select-none"
+            className={`w-full h-full object-contain ${padClass} pointer-events-none select-none`}
             loading="lazy"
             decoding="async"
             draggable={false}
