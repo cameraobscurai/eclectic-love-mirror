@@ -1173,6 +1173,22 @@ function CollectionPage() {
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
                             className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
+                            style={
+                              // Cap media-box height whenever the visible
+                              // batch contains any wide-low silhouette
+                              // (sofas/loveseats/benches/beds). Tall-back
+                              // settees can't dominate a row that's only
+                              // 220px tall, and per-tile padding in
+                              // ProductTile finishes the normalization.
+                              // Content-driven so it fires in All view,
+                              // parent, sub, and search alike.
+                              visibleBatch.some((p) => {
+                                const g = getProductBrowseGroup(p);
+                                return g === "sofas-loveseats" || g === "benches" || g === "beds";
+                              })
+                                ? ({ ["--archive-tile-media-h" as string]: "clamp(170px, 13vw, 220px)" } as React.CSSProperties)
+                                : undefined
+                            }
                             transition={
                               reduced
                                 ? { duration: 0 }
