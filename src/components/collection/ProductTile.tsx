@@ -6,6 +6,14 @@ import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
+// Wide-low silhouettes (sofas, benches, beds) get extra top padding so
+// tall-back settees don't visually dominate long-low siblings in the same
+// row. Asymmetric — light bottom pad keeps furniture grounded on the
+// shared optical baseline. Mirrors CollectionWallTile's per-tile model so
+// the rule fires in every view (parent All, subcategory, search) rather
+// than only when activeSubcategory matches.
+const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+
 interface ProductTileProps {
   product: CollectionProduct;
   index: number;
