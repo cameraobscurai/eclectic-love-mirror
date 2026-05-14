@@ -107,6 +107,10 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = [], breako
   }
 
   function familyKeyForRms(p) {
+    // -1. owner-forced break-out: never group this rms_id with siblings
+    if (breakoutSet.has(String(p.id))) {
+      return { key: 'rms:' + p.id, source: 'breakout', familyTitle: p.title, liveSlug: null };
+    }
     // 0. owner-forced override
     const forced = forcedByRms.get(String(p.id));
     if (forced) return forced;
