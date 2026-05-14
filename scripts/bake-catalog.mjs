@@ -295,7 +295,14 @@ for (const p of rolled) {
   // `inventory/` bucket (owner originals), do NOT overwrite it with the live
   // Squarespace hero. Owners explicitly choose these.
   const currentPrimaryUrl = (p.primaryImage && p.primaryImage.url) || (p.images && p.images[0] && (typeof p.images[0] === 'string' ? p.images[0] : p.images[0].url)) || '';
-  const ownerCoverWins = /\/storage\/v1\/object\/public\/inventory\//.test(currentPrimaryUrl);
+  // Owner-uploaded covers: `inventory/` (originals) OR any dedicated per-product
+  // bucket like midas/donavertortoiseflatware/adonisglassware/sageglassware/
+  // glassware/tablewear. If the cover came from one of these, the live
+  // Squarespace hero + gallery should NOT be re-merged on top — it just
+  // re-introduces the legacy variant photos we replaced.
+  const OWNER_BUCKETS = /\/storage\/v1\/object\/public\/(inventory|midas|donavertortoiseflatware|adonisglassware|sageglassware|glassware|tablewear)\//;
+  const ownerCoverWins = OWNER_BUCKETS.test(currentPrimaryUrl)
+    || (p.images || []).some(im => OWNER_BUCKETS.test(typeof im === 'string' ? im : (im.url || '')));
   if (isRolled && !ownerCoverWins && lp.gallery && lp.gallery.length) {
     const liveHero = lp.gallery[0];
     const seen = new Set();
