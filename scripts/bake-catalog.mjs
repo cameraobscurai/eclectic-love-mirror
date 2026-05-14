@@ -363,7 +363,9 @@ for (const p of rolled) {
   if (!pattern) continue;
   const lp = findLiveProduct(p.slug, p.title);
   const currentUrls = (p.images || []).map((img) => typeof img === 'string' ? img : img.url).filter(Boolean);
-  const coverUrl = currentUrls.find((u) => pattern.test(u)) || (lp?.gallery || []).find((u) => pattern.test(u));
+  const coverUrl = currentUrls.find((u) => pattern.test(u) && !u.includes('/_family-sets/'))
+    || (lp?.gallery || []).find((u) => pattern.test(u))
+    || currentUrls.find((u) => pattern.test(u));
   if (!coverUrl) continue;
   const rest = (p.images || []).filter((img) => (typeof img === 'string' ? img : img.url) !== coverUrl);
   p.images = [{ url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title }, ...rest];
