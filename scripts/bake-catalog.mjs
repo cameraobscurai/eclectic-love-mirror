@@ -350,14 +350,20 @@ console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: 
 // tableware/serveware families whose correct cover is a plural group shot
 // that is not named "Set" in the owner-uploaded inventory files.
 const LOCKED_REFERENCE_COVERS = {
-  'lavanya-riverstone-medium-bowl': /lavanya\+bowls/i,
+  'tabitha-set': /tabitha[_+\s-]*(tray[_+\s-]*)?set|tabathia[_+\s-]*tray[_+\s-]*set/i,
+  'powel-dark-brass-tray': /powell?[_+\s-]*set/i,
+  'shetani-dark-brass-tray': /shetani[_+\s-]*set/i,
+  'hazel-charred-terracotta-bowl': /hazel[_+\s-]*bowls/i,
+  'lavanya-riverstone-medium-bowl': /lavanya\+bowls|lavanya[_+\s-]*bowls/i,
+  'vintage-silver-goblets': /silver[_+\s-]*goblet.*(collection|set)|vintage[_+\s-]*silver[_+\s-]*goblet/i,
 };
 let lockedReferenceCovers = 0;
 for (const p of rolled) {
   const pattern = LOCKED_REFERENCE_COVERS[p.slug];
   if (!pattern) continue;
   const lp = findLiveProduct(p.slug, p.title);
-  const coverUrl = (lp?.gallery || []).find((u) => pattern.test(u));
+  const currentUrls = (p.images || []).map((img) => typeof img === 'string' ? img : img.url).filter(Boolean);
+  const coverUrl = currentUrls.find((u) => pattern.test(u)) || (lp?.gallery || []).find((u) => pattern.test(u));
   if (!coverUrl) continue;
   const rest = (p.images || []).filter((img) => (typeof img === 'string' ? img : img.url) !== coverUrl);
   p.images = [{ url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title }, ...rest];
