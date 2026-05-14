@@ -134,10 +134,16 @@ export function QuickViewModal({
   // map to any individual variant. First image with no variant match wins.
   // Surfaced as its own row in the rail.
   const setImageIdx = useMemo(() => {
-    const i = product.images.findIndex((im) => matchVariant(im) === null);
+    // Images already claimed by a variant (via baked imageUrl or filename
+    // heuristic) are NOT the set shot. Find the first image not claimed.
+    const claimed = new Set(variantImageIdx.values());
+    let i = product.images.findIndex(
+      (im, idx) => !claimed.has(idx) && matchVariant(im) === null,
+    );
+    if (i < 0) i = product.images.findIndex((im) => matchVariant(im) === null);
     return i >= 0 ? i : null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product.id, product.images, variantTokens]);
+  }, [product.id, product.images, variantTokens, variantImageIdx]);
 
   // Selection: 'set' for the family shot, a variant id for a specific piece,
   // or null (defer to whatever the current image maps to).
@@ -194,7 +200,9 @@ export function QuickViewModal({
   }
 
   useEffect(() => {
-    setImgIdx(0);
+    // Default to the family/SET shot when the product has one — it reads as a
+    // "hero" overview rather than landing on a single variant by accident.
+    setImgIdx(setImageIdx ?? 0);
     setSelectedKey(null);
     // Note: showScale intentionally NOT reset — owner wants it to persist
     // when navigating between products with similar scale needs.
@@ -205,7 +213,7 @@ export function QuickViewModal({
       name: product.title,
       category: product.displayCategory ?? null,
     });
-  }, [product.id, product.title, product.displayCategory]);
+  }, [product.id, product.title, product.displayCategory, setImageIdx]);
 
   useEffect(() => {
     setImgNatural(null);
