@@ -533,26 +533,30 @@ export function QuickViewModal({
                           <li key={v.id}>
                             <button
                               type="button"
-                              onClick={() => selectVariant(v.id)}
+                              onClick={hasOwnImage ? () => selectVariant(v.id) : undefined}
                               aria-current={isActive}
+                              aria-disabled={!hasOwnImage || undefined}
+                              disabled={!hasOwnImage}
+                              tabIndex={hasOwnImage ? undefined : -1}
                               className={cn(
                                 "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
-                                isActive
-                                  ? "border-charcoal bg-charcoal/[0.04]"
-                                  : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
+                                !hasOwnImage
+                                  ? "border-transparent cursor-default opacity-60"
+                                  : isActive
+                                    ? "border-charcoal bg-charcoal/[0.04]"
+                                    : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
                               )}
                             >
                               <div className="flex items-center gap-3">
-                                {/* Image chip — variant image when available, else family hero */}
+                                {/* Image chip — blank when variant has no own image */}
                                 <span
                                   className={cn(
                                     "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
-                                    isActive ? "border-charcoal" : "border-charcoal/15",
-                                    !hasOwnImage && "opacity-70",
+                                    isActive && hasOwnImage ? "border-charcoal" : "border-charcoal/15",
                                   )}
                                   aria-hidden
                                 >
-                                  {chipImg && (
+                                  {hasOwnImage && chipImg && (
                                     <img
                                       src={withCdnWidth(chipImg.url, 200)}
                                       alt=""
