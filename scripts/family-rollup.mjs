@@ -270,6 +270,13 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       });
       if (setIdx > 0) mergedImages.unshift(...mergedImages.splice(setIdx, 1));
     }
+    mergedImages.forEach((img, i) => {
+      if (typeof img !== 'string') {
+        img.position = i;
+        img.isHero = i === 0;
+        if (i === 0) img.altText = g.fam.familyTitle;
+      }
+    });
 
     const family = {
       ...withMostImages,
