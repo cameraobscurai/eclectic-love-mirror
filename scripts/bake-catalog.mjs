@@ -340,6 +340,30 @@ for (const p of rolled) {
 }
 console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`);
 
+// Locked family covers from the reference site. These are only for rolled
+// tableware/serveware families whose correct cover is a plural group shot
+// that is not named "Set" in the owner-uploaded inventory files.
+const LOCKED_REFERENCE_COVERS = {
+  'lavanya-riverstone-medium-bowl': /lavanya\+bowls/i,
+};
+let lockedReferenceCovers = 0;
+for (const p of rolled) {
+  const pattern = LOCKED_REFERENCE_COVERS[p.slug];
+  if (!pattern) continue;
+  const lp = findLiveProduct(p.slug, p.title);
+  const coverUrl = (lp?.gallery || []).find((u) => pattern.test(u));
+  if (!coverUrl) continue;
+  const rest = (p.images || []).filter((img) => (typeof img === 'string' ? img : img.url) !== coverUrl);
+  p.images = [{ url: coverUrl, position: 0, isHero: true, inferredFilename: null, altText: p.title }, ...rest];
+  p.images.forEach((img, i) => {
+    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+  });
+  p.primaryImage = p.images[0];
+  p.imageCount = p.images.length;
+  lockedReferenceCovers++;
+}
+console.log(`[locked-reference-covers] applied ${lockedReferenceCovers} tableware/serveware cover overrides`);
+
 
 
 
