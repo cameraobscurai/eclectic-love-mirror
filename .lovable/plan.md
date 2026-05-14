@@ -1,80 +1,41 @@
-## Diagnosis  
-  
-Yes, that's the right fix. The diagnosis is correct and the architecture change is sound.
+## Goal
 
-The core insight — **rule belongs on the tile, not the route** — is exactly right. Route-level overrides are always going to miss cases (All view, search, future filters) because the route doesn't know what's in the grid. The tile knows what it is.
+Apply the wide-low normalization across every category by classifying each browse group into a **silhouette family** with tuned cell height + image padding + anchor.
 
-Two small things worth double-checking when you implement:
+## Four families
 
-**1.** `getProductBrowseGroup` **returns the right value for mixed-category items** If any product is filed under a parent category rather than a subcategory (e.g. `seating` instead of `sofas-loveseats`), it'll miss the set and get default padding. Worth a quick console.log on Phillipe specifically after the change to confirm the group resolves correctly.
+| Family | Browse groups | Cap | Pad | Anchor |
+|---|---|---|---|---|
+| **WIDE_LOW** (3:1+ landscape, ground-sitting) | sofas, benches-ottomans, coffee-tables, cocktail-tables, rugs, furs-pelts | `clamp(180px, 13vw, 230px)` | `pt-[10%] pb-[3%] px-[8%]` | `object-bottom` |
+| **TALL_NARROW** (portrait, vertical) | side-tables, lighting, large-decor, bar, storage | `clamp(260px, 19vw, 340px)` | `p-[6%]` | `object-bottom` |
+| **SMALL_OBJECT** (~1:1, single piece) | pillows, throws, tableware, serveware, styling, accents | `clamp(200px, 14vw, 260px)` | `p-[14%]` | `object-center` |
+| **MIXED** (range of silhouettes) | chairs, dining | `clamp(220px, 15vw, 280px)` | `pt-[6%] pb-[3%] px-[6%]` | `object-bottom` |
 
-**2.** `object-bottom` **+ padding interaction** `p-[14%]` adds padding on all four sides, but `object-bottom` anchors the subject to the bottom. The bottom padding will create a gap between the subject and the tile floor, which might look floaty for furniture that needs a ground plane. You may want `pb-[6%] pt-[14%] px-[14%]` instead — more air on top to shrink tall-backs, less on the bottom to keep furniture grounded.
+## Implementation
 
-Otherwise ship it. The table comparison makes the case clearly — fewer lines, works everywhere, mirrors the architecture that already works in the wall view. That's a clean refactor.
+1. **`src/lib/collection-tile-presets.ts`** (new) — single source of truth:
+   ```ts
+   export type TilePreset = { mediaH: string; pad: string; anchor: "bottom" | "center" };
+   export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = { ... };
+   export function getTilePreset(group: BrowseGroupId | null): TilePreset
+   ```
+   Default fallback = MIXED preset.
 
-Earlier fix put the `--archive-tile-media-h` override on the **grid container**, gated by `activeSubcategory ∈ {sofas-loveseats, benches, beds}`. So:
+2. **`ProductTile.tsx`** — replace `WIDE_LOW_GROUPS` set + `padClass` ternary with `getTilePreset(spyGroup)`. Apply `pad` to `<img>` className, swap `object-bottom` for preset's anchor.
 
-- ✅ Works in `/collection?...&subcategory=sofas-loveseats`
-- ❌ Doesn't fire in the parent **All** view (`subcategory=all`) — Phillipe's tall-back silhouette dominates its cell
+3. **`collection.tsx`** — replace the inline `visibleBatch.some(...)` height override with: derive cap from the dominant group in `visibleBatch` (or take the smallest cap among present families, so a mixed batch still respects wide-low). Apply via `--archive-tile-media-h`.
 
-The wall view (`CollectionWallTile.tsx`) already solved this correctly: per-tile `padClass` based on the product's own browse group, not the route's subcategory.
+4. **`CollectionWallTile.tsx`** — same `getTilePreset` swap (already mirrors ProductTile's logic).
 
-## Fix — port the per-tile padding model into `ProductTile.tsx`
+## Why this won't break anything
 
-Drop the route-level CSS-var override entirely. Each tile decides its own padding from its own browse group, so it normalizes in every view (All, parent, sub, search, future filters).
+- Default preset = today's MIXED values, so any unclassified group renders identically to before.
+- Sofas/benches-ottomans keep the values we just tuned.
+- Tableware/serveware (currently using default 240–340px with `p-3`) get tighter cap + `p-[14%]` so plates/cups stop stretching tall.
+- Lighting/large-decor keep tall cap (lamps need height) but gain consistent padding.
 
-### `src/components/collection/ProductTile.tsx`
+## Out of scope
 
-```tsx
-import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
-
-const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
-```
-
-Inside the component:
-
-```tsx
-const group = getProductBrowseGroup(product);
-const padClass = group && WIDE_LOW_GROUPS.has(group) ? "p-[14%]" : "p-3 sm:p-4";
-```
-
-Apply on the `<img>` (line 183):
-
-```tsx
-className={`absolute inset-0 h-full w-full object-contain object-bottom ${padClass} will-change-opacity`}
-```
-
-Note: 14% (not 18%) because the main grid box is taller than the wall tile box, so the same visual ratio needs slightly less pad.
-
-### `src/routes/collection.tsx` (lines 1176–1184)
-
-Delete the conditional `style` block. The grid no longer needs to know about subcategory:
-
-```tsx
-className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
-```
-
-(no `style` prop)
-
-## Why this is correct, not a band-aid
-
-
-| &nbsp;                         | Old (grid-level)            | New (tile-level)                       |
-| ------------------------------ | --------------------------- | -------------------------------------- |
-| Where rule lives               | Route, gated on subcategory | Product, gated on its own browse group |
-| Works in parent All view       | No                          | Yes                                    |
-| Works in search results        | No                          | Yes                                    |
-| Works in future filters        | No                          | Yes                                    |
-| Mirrors wall-tile architecture | No                          | Yes                                    |
-| Lines of code                  | More                        | Less                                   |
-
-
-## Phillipe specifically
-
-Phillipe's loveseat in the screenshot is a tall-back silhouette in the `sofas-loveseats` browse group → after fix, it gets `p-[14%]`, subject shrinks ~25%, sits on the same optical baseline as the long-low Chesterfield + black tufted next to it.
-
-## Not changing
-
-- `--archive-tile-media-h` default (240–340px) — stays.
-- Any other category's padding — only WIDE_LOW gets the boost. If we later notice another silhouette class needs it (e.g. tall floor lamps look small), add to the set.
-- Wall tile — already correct, no change needed.
+- No taxonomy changes, no catalog edits, no business logic.
+- No per-product overrides (aspect-ratio detection at load is the next layer if still needed).
+- Mobile breakpoints unchanged — `clamp()` handles it.
