@@ -66,6 +66,11 @@ for (const r of rows) {
     // unknown filename — keep to be safe
     keep.push(u);
   }
+  // Fallback: if we'd drop everything, keep the Set photo so the row stays renderable
+  if (keep.length === 0 && drop.length) {
+    const setImg = drop.find(d => d.why === "set");
+    if (setImg) { keep.push(setImg.u); drop.splice(drop.indexOf(setImg),1); }
+  }
   if (drop.length) plan.push({ rms_id:r.rms_id, title:r.title, was:r.images.length, now:keep.length, keep, drop });
 }
 
