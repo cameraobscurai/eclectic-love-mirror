@@ -91,7 +91,7 @@ export function ProductTile({
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
   const isWideLow = spyGroup ? WIDE_LOW_GROUPS.has(spyGroup) : false;
-  const padClass = isWideLow ? "pt-[20%] pb-[5%] px-[10%]" : "p-3 sm:p-4";
+  const padClass = isWideLow ? "pt-[10%] pb-[3%] px-[8%]" : "p-3 sm:p-4";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.

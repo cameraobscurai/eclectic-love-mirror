@@ -1186,7 +1186,7 @@ function CollectionPage() {
                                 const g = getProductBrowseGroup(p);
                                 return g === "sofas" || g === "benches-ottomans";
                               })
-                                ? ({ ["--archive-tile-media-h" as string]: "clamp(150px, 11vw, 190px)" } as React.CSSProperties)
+                                ? ({ ["--archive-tile-media-h" as string]: "clamp(180px, 13vw, 230px)" } as React.CSSProperties)
                                 : undefined
                             }
                             transition={
