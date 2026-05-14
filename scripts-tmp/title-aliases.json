@@ -144,31 +144,25 @@
     {
       "rms": "3030",
       "live": "River 54\" Coffee Table"
+    },
+    {
+      "rms": "3196",
+      "live": "Blue Ombre Fringe Lumbar"
+    },
+    {
+      "rms": "3195",
+      "live": "Blue Ombre Fringe Pillow"
+    },
+    {
+      "rms": "2895",
+      "live": "Green Tassel Pillow"
     }
   ],
   "groups": [
     {
-      "live": "Blue Ombre Fringe Lumbar",
-      "rms": [
-        "3196"
-      ]
-    },
-    {
-      "live": "Blue Ombre Fringe Pillow",
-      "rms": [
-        "3195"
-      ]
-    },
-    {
       "live": "Green Sage Tassel Lumbar Pillow",
       "rms": [
         "2316"
-      ]
-    },
-    {
-      "live": "Green Tassel Pillow",
-      "rms": [
-        "2895"
       ]
     },
     {
