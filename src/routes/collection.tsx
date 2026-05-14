@@ -1172,7 +1172,7 @@ function CollectionPage() {
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
-                            className={`grid ${gridCols} ${gridGapClasses}`}
+                            className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
                             transition={
                               reduced
                                 ? { duration: 0 }
