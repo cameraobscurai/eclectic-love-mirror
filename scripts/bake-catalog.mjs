@@ -455,7 +455,7 @@ const imageBaseKey = (url) => {
   } catch { return String(url || '').toLowerCase(); }
 };
 const storageRank = (url) => {
-  if (/\/storage\/v1\/object\/public\/midas\//.test(url)) return 6;
+  if (/\/storage\/v1\/object\/public\/(midas|adonisglassware|sageglassware|donavertortoiseflatware)\//.test(url)) return 6;
   if (/\/storage\/v1\/object\/public\/glassware\//.test(url)) return 5;
   if (/\/storage\/v1\/object\/public\/tablewear\//.test(url)) return 4;
   if (/\/storage\/v1\/object\/public\/inventory\//.test(url)) return 3;
