@@ -29,6 +29,10 @@ const INVENTORY_PUBLIC_MARKER = '/storage/v1/object/public/inventory/';
 // Source: scripts-tmp/title-aliases.json (curated against live Squarespace).
 let titleAliasByRms = new Map();
 let forcedFamilyGroups = [];
+// Owner-forced break-out: rms_ids that should NEVER roll up into a family —
+// each variant becomes its own tile (the live site lists them as separate
+// products too). Source of truth: scripts-tmp/family-breakouts.json.
+let breakoutRmsIds = [];
 try {
   const aliases = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/title-aliases.json', 'utf8'));
   for (const p of aliases.pairs || []) {
@@ -38,6 +42,13 @@ try {
   console.log(`[bake] loaded ${titleAliasByRms.size} title aliases, ${forcedFamilyGroups.length} forced family groups`);
 } catch {
   console.warn('[bake] no title-aliases.json — skipping alias overrides');
+}
+try {
+  const bo = JSON.parse(fs.readFileSync('/dev-server/scripts-tmp/family-breakouts.json', 'utf8'));
+  breakoutRmsIds = (bo.rms_ids || []).map(String);
+  console.log(`[bake] loaded ${breakoutRmsIds.length} family-breakout rms_ids`);
+} catch {
+  console.warn('[bake] no family-breakouts.json — every variant rolls up by default');
 }
 
 // Slugs that live at the ROOT of the `inventory` bucket (no `inventory/` prefix).
@@ -195,7 +206,7 @@ const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups);
+const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups, breakoutRmsIds);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
