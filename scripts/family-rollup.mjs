@@ -278,8 +278,8 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       images: mergedImages,
       primaryImage: mergedImages[0] || withMostImages.primaryImage,
       variants: sorted.map(m => {
-        const firstImg = (m.images || [])[0];
-        const imageUrl = firstImg ? (typeof firstImg === 'string' ? firstImg : firstImg.url) : null;
+        const variantImg = imageForVariant(m);
+        const imageUrl = variantImg ? (typeof variantImg === 'string' ? variantImg : variantImg.url || variantImg.src || null) : null;
         return {
           id: m.id,
           title: m.title,
