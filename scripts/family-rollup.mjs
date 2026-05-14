@@ -220,6 +220,31 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       seen.add(url); seenKeys.add(k);
       mergedImages.push(img);
     };
+    const urlFor = (img) => typeof img === 'string' ? img : img?.url || img?.src || '';
+    const isSetImage = (img) => /(?:^|[\s._+-])(set|collection|group|family)(?:[\s._+-]|\.|$)/i.test(keyFor(urlFor(img)));
+    const scoreVariantImage = (img, member) => {
+      const key = keyFor(urlFor(img));
+      const family = new Set(wordTokens(g.fam.familyTitle));
+      const tokens = wordTokens(member.title).filter(t => !family.has(t) || VARIANT_NOUN_STEMS.has(t));
+      const nums = String(member.title || '').match(/\d+(?:\.\d+)?/g) || [];
+      let score = 0;
+      for (const n of nums) if (key.includes(n)) score += 3;
+      for (const t of tokens) if (key.includes(t)) score += VARIANT_NOUN_STEMS.has(t) ? 2 : 1;
+      return score;
+    };
+    const imageForVariant = (member) => {
+      const imgs = member.images || [];
+      if (!imgs.length) return null;
+      const first = imgs[0];
+      if (!isSetImage(first)) return first;
+      let best = null;
+      for (const img of imgs.slice(1)) {
+        if (isSetImage(img)) continue;
+        const score = scoreVariantImage(img, member);
+        if (score > 0 && (!best || score > best.score)) best = { img, score };
+      }
+      return best?.img || null;
+    };
     for (const img of (withMostImages.images || [])) pushImg(img);
     for (const m of sorted) {
       if (m === withMostImages) continue;
@@ -231,14 +256,15 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
     // generated filenames, so filename tokens are not reliable. Instead, use
     // the invariant we bake for QuickView: each variant owns its row's first
     // image; the SET shot is the first merged image not claimed by any variant.
-    if (withMostImages.categorySlug === 'tableware' && mergedImages.length > 1) {
+    if ((withMostImages.categorySlug === 'tableware' || withMostImages.categorySlug === 'serveware') && mergedImages.length > 1) {
       const variantImageKeys = new Set(
         sorted
-          .map((m) => (m.images || [])[0])
-          .map((img) => img ? keyFor(typeof img === 'string' ? img : img.url || img.src || '') : '')
+          .map((m) => imageForVariant(m))
+          .map((img) => img ? keyFor(urlFor(img)) : '')
           .filter(Boolean),
       );
-      const setIdx = mergedImages.findIndex((img) => {
+      let setIdx = mergedImages.findIndex(isSetImage);
+      if (setIdx < 0) setIdx = mergedImages.findIndex((img) => {
         const url = typeof img === 'string' ? img : img.url || img.src || '';
         return url && !variantImageKeys.has(keyFor(url));
       });
