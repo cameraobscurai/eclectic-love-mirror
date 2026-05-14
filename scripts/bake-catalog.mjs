@@ -262,6 +262,10 @@ console.log(`[rank] assigned ownerSiteRank+liveCategory to ${ranked}/${rolled.le
 const MANUAL_RANK_OVERRIDES = {
   // Giesel Green Fringe Lamp → after Jana Matte Bronze Cabaret (25), before Winona Silver Trophy (27)
   'giesel-green-fringe-lamp-3535': { ownerSiteRank: 26, liveCategory: 'lighting' },
+  // Merged dinnerware families absent from live snapshot — slot into the
+  // tableware dinnerware band (Lavanya Stoneware=10, Evita Charger=11).
+  'marina-plate': { ownerSiteRank: 10.5, liveCategory: 'tableware' },
+  'dover-matte-oyster-plates-bowl': { ownerSiteRank: 10.7, liveCategory: 'tableware' },
 };
 for (const p of rolled) {
   const ov = MANUAL_RANK_OVERRIDES[p.slug];
