@@ -24,7 +24,6 @@ import throwsCover from "@/assets/category-covers/throws.png?preset=editorial";
 import tablewareCover from "@/assets/category-covers/tableware.png?preset=editorial";
 import stylingCover from "@/assets/category-covers/styling.png?preset=editorial";
 import rugsCover from "@/assets/category-covers/rugs.png?preset=editorial";
-import storageCover from "@/assets/category-covers/storage.png?preset=editorial";
 
 /** Picture-shaped object returned by vite-imagetools `as=picture`. */
 export interface CoverPicture {
@@ -54,5 +53,4 @@ export const CATEGORY_COVERS: Partial<Record<BrowseGroupId, CoverPicture>> = {
   tableware: tablewareCover as unknown as CoverPicture,
   styling: stylingCover as unknown as CoverPicture,
   rugs: rugsCover as unknown as CoverPicture,
-  storage: storageCover as unknown as CoverPicture,
 };

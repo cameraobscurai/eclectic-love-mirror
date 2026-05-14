@@ -306,7 +306,7 @@ for (const p of rolled) {
   // glassware/tablewear. If the cover came from one of these, the live
   // Squarespace hero + gallery should NOT be re-merged on top — it just
   // re-introduces the legacy variant photos we replaced.
-  const OWNER_BUCKETS = /\/storage\/v1\/object\/public\/(inventory|midas|donavertortoiseflatware|adonisglassware|sageglassware|glassware|tablewear|incoming-photos)\//;
+  const OWNER_BUCKETS = /\/storage\/v1\/object\/public\/(inventory|midas|donavertortoiseflatware|adonisglassware|sageglassware|glassware|tablewear)\//;
   const ownerCoverWins = OWNER_BUCKETS.test(currentPrimaryUrl)
     || (p.images || []).some(im => OWNER_BUCKETS.test(typeof im === 'string' ? im : (im.url || '')));
   if (isRolled && !ownerCoverWins && lp.gallery && lp.gallery.length) {

@@ -180,16 +180,8 @@ export function ProductTile({
                 // optical floor — wide sofa, tall lamp, and short stool all
                 // sit on the same line. Inset padding keeps subjects from
                 // kissing the cell edges and gives the tile breathing room.
-                className="absolute inset-x-0 bottom-0 mx-auto object-contain object-bottom p-3 sm:p-4 will-change-opacity"
+                className="absolute inset-0 h-full w-full object-contain object-bottom p-3 sm:p-4 will-change-opacity"
                 style={{
-                  // Cap subject height so square/tall silhouettes (settees,
-                  // votives, lamps) don't dominate over wide silhouettes
-                  // (sofas, benches) that are width-constrained. This is the
-                  // visual-weight normalizer — every subject occupies roughly
-                  // the same vertical band regardless of native aspect ratio.
-                  maxHeight: "78%",
-                  width: "100%",
-                  height: "100%",
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
                 }}
