@@ -1,28 +1,21 @@
-# QuickView configuration labels — show the variant suffix
+# No-image variants → blank thumb + non-clickable
 
-## Problem
-In the right-hand Configurations list, rows render as `ANASTASIA ANTIQUE SILVER DINNER …` and truncate the only piece that matters (DINNER FORK / TEA SPOON / SALAD FORK).
+## Change (single file, presentation only)
+`src/components/collection/QuickViewModal.tsx` ~L529–595
 
-Root cause in `src/components/collection/QuickViewModal.tsx` (~L434):
-the prefix-strip regex anchors on the full `product.title` ("ANASTASIA ANTIQUE SILVER FLATWARE"). Variant titles don't contain "FLATWARE", so the regex never matches and the label falls back to the full variant title. Combined with `truncate` on the row, the visible text becomes the family prefix + "…".
+For each variant row where `hasOwnImage === false`:
+- Render the 40×40 thumb chip empty (no `<img>`, no family-hero fallback). Keep the bordered white square so the row layout doesn't shift.
+- Disable the `<button>`: add `disabled`, `aria-disabled="true"`, `tabIndex={-1}`, swap hover classes for `cursor-default opacity-60`, and skip the `selectVariant(v.id)` onClick.
+- Keep the qty pill + label visible so the owner still sees what's missing.
 
-## Fix (single file, presentation only)
-`src/components/collection/QuickViewModal.tsx`
+Also tweak the main image area: when the user lands on a variant with no own image (e.g. via the SET row's deep-link), show the family hero as today — only the row chip itself goes blank. No catalog/data changes.
 
-1. Replace the regex with a longest-common-word-prefix strip:
-   - Tokenize `product.title` and `v.title` on whitespace.
-   - Drop the leading tokens of `v.title` that case-insensitively match the corresponding tokens of `product.title`.
-   - Also drop a leading family-category word that's a known synonym (FLATWARE/GLASSWARE/GLASS/CHINA) when the remainder is non-empty — handles "FLATWARE" vs piece names cleanly.
-   - Trim trailing " GLASS" / " FLATWARE" as today.
-   - Fallback to `v.title` if the result is empty.
+## Logic preserved
+- `rows`, `chipImg`, `hasOwnImage` already exist; just branch on `hasOwnImage`.
+- SET row stays clickable (it always has the family hero).
+- Keyboard nav still works — disabled rows are skipped naturally.
 
-2. Keep the row's `truncate` but allow two lines as a safety net:
-   - Swap `truncate` → `line-clamp-2 break-words` on the label span (L501 SET row stays single-line; L564 variant row gets `line-clamp-2`).
-   - This way even an unusually long suffix (e.g. "BUTTER SPREADER") stays readable.
-
-No data, schema, or catalog changes. No bake step needed.
-
-## Verification
-- ANASTASIA: rows should read DINNER FORK, SALAD FORK, STEAK KNIFE, BUTTER SPREADER, DINNER KNIFE, TEA SPOON, etc.
-- KIMORA / ALLIRA glassware: rows should read RED WINE, WHITE WINE, COUPE, etc.
-- Spot-check a single-word family (e.g. NISHA MATTE BLACK FLATWARE) to confirm fallback still produces a sensible label.
+## Verify
+- PINK QUARTZ TEA SPOON row: blank thumb, greyed text, not clickable.
+- Other PINK QUARTZ pieces with photos: unchanged.
+- ANASTASIA / KIMORA / SHETANI: rows that already have photos unchanged.
