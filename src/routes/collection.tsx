@@ -1173,6 +1173,15 @@ function CollectionPage() {
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
                             className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
+                            style={
+                              // Wide-low subjects (sofas, benches, beds) get a
+                              // shorter media box so tall-back settees can't
+                              // dominate the row optically. See ProductTile —
+                              // this var drives the fixed media height.
+                              ["sofas-loveseats", "benches", "beds"].includes(activeSubcategory ?? "")
+                                ? ({ ["--archive-tile-media-h" as string]: "clamp(170px, 13vw, 220px)" } as React.CSSProperties)
+                                : undefined
+                            }
                             transition={
                               reduced
                                 ? { duration: 0 }
