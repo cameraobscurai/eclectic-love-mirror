@@ -45,6 +45,15 @@ const MIXED: TilePreset = {
   anchor: "bottom",
 };
 
+// Dining is mixed (chairs + tables) but tables dominate visually and
+// pedestal/round tables blow past the MIXED cap. Tighten cap + heavier
+// top pad so tall silhouettes shrink to the row baseline.
+const DINING: TilePreset = {
+  mediaH: "clamp(190px, 13.5vw, 240px)",
+  pad: "pt-[12%] pb-[3%] px-[7%]",
+  anchor: "bottom",
+};
+
 export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
   // Wide-low
   sofas: WIDE_LOW,
@@ -71,7 +80,15 @@ export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
 
   // Mixed
   chairs: MIXED,
-  dining: MIXED,
+  dining: DINING,
+};
+
+const HEIGHT_RANK: Record<string, number> = {
+  [WIDE_LOW.mediaH]: 0,
+  [DINING.mediaH]: 1,
+  [SMALL_OBJECT.mediaH]: 2,
+  [MIXED.mediaH]: 3,
+  [TALL_NARROW.mediaH]: 4,
 };
 
 const DEFAULT_PRESET = MIXED;
@@ -86,12 +103,6 @@ export function getTilePreset(group: BrowseGroupId | null | undefined): TilePres
  * multiple families, the grid picks the SHORTEST cap among present families
  * so wide-low silhouettes don't get visually crushed by tall-narrow neighbors.
  */
-const HEIGHT_RANK: Record<string, number> = {
-  [WIDE_LOW.mediaH]: 0,
-  [SMALL_OBJECT.mediaH]: 1,
-  [MIXED.mediaH]: 2,
-  [TALL_NARROW.mediaH]: 3,
-};
 
 export function pickBatchMediaHeight(
   groups: Array<BrowseGroupId | null | undefined>,
