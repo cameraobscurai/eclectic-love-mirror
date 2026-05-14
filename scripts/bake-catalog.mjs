@@ -524,8 +524,26 @@ for (const p of rolled) {
       return SET_FILENAME_RE.test(base);
     } catch { return false; }
   });
-  if (setIdx <= 0) continue;
-  const [setImg] = p.images.splice(setIdx, 1);
+  let promoteIdx = setIdx;
+  // Fallback: when filenames are opaque (e.g. ChatGPT-generated names), the
+  // SET image is whichever image is NOT claimed by any variant.imageUrl —
+  // mirrors the QuickView modal's setImageIdx heuristic.
+  if (promoteIdx <= 0) {
+    const claimed = new Set(
+      p.variants
+        .map((v) => v && v.imageUrl)
+        .filter(Boolean),
+    );
+    if (claimed.size > 0) {
+      const unclaimedIdx = p.images.findIndex((img) => {
+        const url = typeof img === 'string' ? img : img.url || '';
+        return url && !claimed.has(url);
+      });
+      if (unclaimedIdx > 0) promoteIdx = unclaimedIdx;
+    }
+  }
+  if (promoteIdx <= 0) continue;
+  const [setImg] = p.images.splice(promoteIdx, 1);
   p.images.unshift(setImg);
   p.images.forEach((img, i) => {
     if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
