@@ -12,7 +12,7 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 // shared optical baseline. Mirrors CollectionWallTile's per-tile model so
 // the rule fires in every view (parent All, subcategory, search) rather
 // than only when activeSubcategory matches.
-const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -91,7 +91,7 @@ export function ProductTile({
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
   const isWideLow = spyGroup ? WIDE_LOW_GROUPS.has(spyGroup) : false;
-  const padClass = isWideLow ? "pt-[14%] pb-[4%] px-[10%]" : "p-3 sm:p-4";
+  const padClass = isWideLow ? "pt-[20%] pb-[5%] px-[10%]" : "p-3 sm:p-4";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.

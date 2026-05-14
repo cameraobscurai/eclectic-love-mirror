@@ -1184,9 +1184,9 @@ function CollectionPage() {
                               // parent, sub, and search alike.
                               visibleBatch.some((p) => {
                                 const g = getProductBrowseGroup(p);
-                                return g === "sofas-loveseats" || g === "benches" || g === "beds";
+                                return g === "sofas" || g === "benches-ottomans";
                               })
-                                ? ({ ["--archive-tile-media-h" as string]: "clamp(170px, 13vw, 220px)" } as React.CSSProperties)
+                                ? ({ ["--archive-tile-media-h" as string]: "clamp(150px, 11vw, 190px)" } as React.CSSProperties)
                                 : undefined
                             }
                             transition={
