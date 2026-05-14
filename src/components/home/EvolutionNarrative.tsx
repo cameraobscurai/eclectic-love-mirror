@@ -300,25 +300,13 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               >
                 {LINES.map((line, i) => {
                   const delta = reveal - i;
-                  // Three-state opacity model:
-                  //  - upcoming (delta < -WINDOW): DIM_OPACITY, quiet but present
-                  //  - reveal wave (delta in [-WINDOW, 0]): dim → 1.0 ease-out
-                  //  - settled but not active (delta > ACTIVE_BAND): pulls back to 0.78
-                  //  - active (|delta| within ACTIVE_BAND of 0): full 1.0
-                  // The settle-back creates a clear "currently reading" focal
-                  // point without dropping read lines into ghost territory.
+                  // Read-through accumulation: dim → 1.0 over WINDOW line-units,
+                  // then locks bright. WINDOW widened to 2.4 so the wave reads
+                  // as prose unfolding rather than a hard cursor; DIM raised
+                  // to 0.32 so upcoming copy is "quiet, present" not ghosted.
                   const raw = delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
                   const eased = easeOut(raw);
-                  const baseOpacity = DIM_OPACITY + (1 - DIM_OPACITY) * eased;
-
-                  // Active falloff: 1.0 at delta=0, eases down to 0.78 by delta=ACTIVE_BAND
-                  const settledFloor = 0.78;
-                  const activeT = delta > 0 ? clamp01(delta / ACTIVE_BAND) : 0;
-                  const activeAdjust = delta > 0
-                    ? 1 - smooth(activeT) * (1 - settledFloor)
-                    : 1;
-                  const opacity = Math.min(baseOpacity, activeAdjust);
-
+                  const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * eased;
                   const lift = (1 - eased) * REVEAL_LIFT_PX;
 
                   const isClose = line.emphasis === "closer";
@@ -340,7 +328,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                         opacity,
                         letterSpacing: closerTracking,
                         transform: `translateY(${lift}px)`,
-                        transition: "opacity 280ms ease-out, transform 280ms ease-out",
                       }}
                     >
                       {line.text}
