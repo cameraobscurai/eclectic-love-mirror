@@ -109,13 +109,26 @@ export function QuickViewModal({
   // variant list and chips don't recompute O(n*m) per render.
   const variantImageIdx = useMemo(() => {
     const map = new Map<string, number>();
+    // 1. Direct URL match — variants baked with `imageUrl` (the variant's own
+    //    primary image) win over filename heuristics. This makes recently
+    //    touched flatware/glassware sets (Midas, Donaver, Adonis, Sage, …)
+    //    map cleanly even when filenames are opaque ("ChatGPT Image …png").
+    const urlIndex = new Map<string, number>();
+    product.images.forEach((im, i) => {
+      if (im?.url && !urlIndex.has(im.url)) urlIndex.set(im.url, i);
+    });
+    for (const v of variants) {
+      const url = (v as { imageUrl?: string | null }).imageUrl;
+      if (url && urlIndex.has(url)) map.set(v.id, urlIndex.get(url)!);
+    }
+    // 2. Filename heuristic fallback for variants without a baked imageUrl.
     product.images.forEach((im, i) => {
       const v = matchVariant(im);
       if (v && !map.has(v.id)) map.set(v.id, i);
     });
     return map;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product.id, product.images, variantTokens]);
+  }, [product.id, product.images, variants, variantTokens]);
 
   // The "set" image — family group shot (e.g. "AKOYA+Set.png") that doesn't
   // map to any individual variant. First image with no variant match wins.
