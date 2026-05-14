@@ -2,7 +2,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
-import { getTilePreset } from "@/lib/collection-tile-presets";
+
 
 interface Props {
   product: CollectionProduct;
