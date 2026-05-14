@@ -364,42 +364,66 @@ export function QuickViewModal({
 
             {/* Specs */}
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
-              {Array.isArray(product.variants) && product.variants.length > 1 ? (
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
-                    Stocked Quantity
-                  </span>
-                  <ul className="text-[14px] leading-[1.55] text-charcoal space-y-1">
-                    {product.variants.map((v) => {
-                      const label = String(v.title || "")
-                        .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
-                        .replace(/\s+glass$/i, "")
-                        .trim() || v.title;
-                      const targetIdx = product.images.findIndex((im) => matchVariant(im)?.id === v.id);
-                      const clickable = targetIdx >= 0;
-                      const isActive = activeVariant?.id === v.id;
-                      return (
-                        <li key={v.id}>
-                          <button
-                            type="button"
-                            onClick={clickable ? () => setImgIdx(targetIdx) : undefined}
-                            disabled={!clickable}
-                            className={cn(
-                              "uppercase tracking-[0.06em] text-left w-full transition-colors",
-                              clickable ? "hover:text-charcoal/60 cursor-pointer" : "cursor-default",
-                              isActive ? "text-charcoal font-medium" : "text-charcoal",
+              {Array.isArray(product.variants) && product.variants.length > 1 ? (() => {
+                const rows = product.variants.map((v) => {
+                  const label = String(v.title || "")
+                    .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
+                    .replace(/\s+glass$/i, "")
+                    .trim() || v.title;
+                  const targetIdx = product.images.findIndex((im) => matchVariant(im)?.id === v.id);
+                  return { v, label, targetIdx, clickable: targetIdx >= 0 };
+                });
+                const anyClickable = rows.some((r) => r.clickable);
+                const anyLabel = rows.some((r) => r.label && r.label.trim() !== "");
+                const anyDims = rows.some((r) => !!r.v.dimensions);
+                const heading = anyLabel ? "Configurations" : anyDims ? "Sizes" : "Stocked Quantity";
+                return (
+                  <div className="flex flex-col gap-3">
+                    <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
+                      {heading}
+                    </span>
+                    <ul className="text-[14px] leading-[1.45] text-charcoal divide-y divide-charcoal/10">
+                      {rows.map(({ v, label, targetIdx, clickable }) => {
+                        const isActive = activeVariant?.id === v.id;
+                        const qty = v.stockedQuantity || "—";
+                        const inner = (
+                          <div className="flex items-baseline gap-3 py-2">
+                            <span className="shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] text-charcoal/80 bg-charcoal/[0.06] tabular-nums">
+                              {qty}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <div className={cn("uppercase tracking-[0.06em]", isActive ? "font-medium" : "")}>
+                                {label}
+                              </div>
+                              {v.dimensions ? (
+                                <div className="mt-0.5 text-[12px] text-charcoal/60">
+                                  {v.dimensions}
+                                </div>
+                              ) : null}
+                            </div>
+                          </div>
+                        );
+                        return (
+                          <li key={v.id}>
+                            {anyClickable && clickable ? (
+                              <button
+                                type="button"
+                                onClick={() => setImgIdx(targetIdx)}
+                                className="block w-full text-left transition-colors hover:bg-charcoal/[0.03]"
+                                aria-current={isActive}
+                              >
+                                {inner}
+                              </button>
+                            ) : (
+                              <div aria-current={isActive || undefined}>{inner}</div>
                             )}
-                            aria-current={isActive}
-                          >
-                            ({v.stockedQuantity || "—"}) {label}
-                            {v.dimensions ? <span className="text-charcoal/60 normal-case tracking-normal"> , {v.dimensions}</span> : null}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : (
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                );
+              })() : (
                 <>
                   {activeDimensions && (
                     <SpecCol label="Dimensions" value={activeDimensions} />
