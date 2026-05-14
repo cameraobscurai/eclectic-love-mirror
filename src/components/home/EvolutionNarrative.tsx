@@ -243,7 +243,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       <div className="sticky top-0 h-screen w-full flex flex-col">
         {/* Pull manifesto above geometric center — optical center sits ~42%
             from the top, and it closes the gap to the filmstrip tail. */}
-        <div className="flex-1 min-h-0 flex items-end md:items-start w-full pb-[2vh] md:pb-0 pt-0 md:pt-[5vh]">
+        <div className="flex-1 min-h-0 flex items-end md:items-center w-full pb-[2vh] md:pb-0 pt-0 md:pt-0">
           <div className="fluid-canvas w-full">
             <div
               className="mx-auto flex flex-col items-center text-center"
@@ -288,12 +288,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   // No per-line marginTop, no vh font scaling, no emphasis-
                   // specific spacing. The grid is the grid.
                   ["--line-size" as string]:
-                    "clamp(1.05rem, 0.85rem + 0.55vw, 1.5rem)",
-                  ["--line-height" as string]: "1.5",
+                    "clamp(0.95rem, 0.7rem + 0.45vw, 1.25rem)",
+                  ["--line-height" as string]: "1.45",
                   ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height))",
                   fontSize: "var(--line-size)",
                   lineHeight: "var(--line-height)",
-                  maxWidth: "min(46rem, 88vw)",
+                  maxWidth: "min(42rem, 86vw)",
                 }}
               >
                 {LINES.map((line, i) => {
