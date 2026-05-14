@@ -1,53 +1,28 @@
-## What's broken
+# QuickView configuration labels — show the variant suffix
 
-Variant rows in the QuickView modal only react when filename heuristics map a variant to a specific image. So:
+## Problem
+In the right-hand Configurations list, rows render as `ANASTASIA ANTIQUE SILVER DINNER …` and truncate the only piece that matters (DINNER FORK / TEA SPOON / SALAD FORK).
 
-- **Anastasia, Akoya, Lapis, Lavanya, Thistle** → clicking rows swaps the hero image (works today).
-- **Nima Banquette** (and any product with 1 photo / N configs) → rows render as inert `<div>`s. Clicking does nothing. The user sees a list that looks selectable but isn't.
-- Even on products that work, the affordance is weak: rows are full-width invisible buttons with no visible swatch or active state beyond a font-weight bump.
+Root cause in `src/components/collection/QuickViewModal.tsx` (~L434):
+the prefix-strip regex anchors on the full `product.title` ("ANASTASIA ANTIQUE SILVER FLATWARE"). Variant titles don't contain "FLATWARE", so the regex never matches and the label falls back to the full variant title. Combined with `truncate` on the row, the visible text becomes the family prefix + "…".
 
-## Fix — `src/components/collection/QuickViewModal.tsx` only
+## Fix (single file, presentation only)
+`src/components/collection/QuickViewModal.tsx`
 
-### 1. Decouple selection from image index
-Add `selectedVariantId` state, default = variant matched by current `imgIdx` (or first variant). The variant rail drives:
-- Image swap when a per-variant image exists.
-- The on-image badge ("DINNER FORK").
-- The variant name under the title.
-- The dimensions line in the info rail.
+1. Replace the regex with a longest-common-word-prefix strip:
+   - Tokenize `product.title` and `v.title` on whitespace.
+   - Drop the leading tokens of `v.title` that case-insensitively match the corresponding tokens of `product.title`.
+   - Also drop a leading family-category word that's a known synonym (FLATWARE/GLASSWARE/GLASS/CHINA) when the remainder is non-empty — handles "FLATWARE" vs piece names cleanly.
+   - Trim trailing " GLASS" / " FLATWARE" as today.
+   - Fallback to `v.title` if the result is empty.
 
-When no image maps to a variant, the family hero stays put — but the **badge, title line, and dimensions still update**. Selection is always meaningful.
+2. Keep the row's `truncate` but allow two lines as a safety net:
+   - Swap `truncate` → `line-clamp-2 break-words` on the label span (L501 SET row stays single-line; L564 variant row gets `line-clamp-2`).
+   - This way even an unusually long suffix (e.g. "BUTTER SPREADER") stays readable.
 
-### 2. Add a thumbnail swatch on every variant row
-Left edge of each row gets a 36×36 image chip:
-- If the variant has a matched image → show that image.
-- If not → show the family hero (so the row reads "this config, this look").
+No data, schema, or catalog changes. No bake step needed.
 
-This is the core best-practice change: a visual chip turns the row into an obviously-clickable swatch + label pair (Aesop / Apple Store config picker pattern). The qty pill moves next to the label.
-
-### 3. Active-state treatment
-Selected row gets:
-- 2px charcoal left border (or filled chip outline).
-- Qty pill flips to charcoal-on-cream.
-- Label gains `font-medium`.
-
-Unselected rows: subtle hover bg only. No fake button shells when nothing is interactive — but with the chip, every row IS interactive now.
-
-### 4. Hover preview on desktop
-Hovering a variant row briefly previews its matched image in the main stage (250ms crossfade), reverting on mouseleave unless clicked. Disabled on touch + reduced-motion. This is the standard e-com config-picker behavior (Nike, Aesop, SSENSE).
-
-### 5. Tighten the matcher
-Small additions to `matchVariant` so more rows wire to real images automatically:
-- Fraction-aware numeric match (already present, keep).
-- Synonym map: `CHARGER`, `BOWL`, `PLATE`, `LOW BOWL`, `COUPE`, `ROCKS`, `TUMBLER`, `WHITE WINE`, `RED WINE` → recognized as multi-word tokens, not split.
-- Tie-breaker: when multiple variants score equally, prefer the one whose dimension number appears in the filename.
-
-### 6. Keep the heading logic
-"Configurations" / "Sizes" / "Stocked Quantity" auto-pick (already in place). No copy changes to owner data.
-
-## Out of scope
-- No DB or catalog changes. Owner text untouched.
-- No new components, no new routes.
-- Thumbnails strip below stays as-is for full image browsing.
-
-## Files
-- `src/components/collection/QuickViewModal.tsx` — only file edited.
+## Verification
+- ANASTASIA: rows should read DINNER FORK, SALAD FORK, STEAK KNIFE, BUTTER SPREADER, DINNER KNIFE, TEA SPOON, etc.
+- KIMORA / ALLIRA glassware: rows should read RED WINE, WHITE WINE, COUPE, etc.
+- Spot-check a single-word family (e.g. NISHA MATTE BLACK FLATWARE) to confirm fallback still produces a sensible label.

@@ -430,11 +430,26 @@ export function QuickViewModal({
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
               {Array.isArray(product.variants) && product.variants.length > 1 ? (() => {
                 const familyHero = product.primaryImage;
-                const rows = product.variants.map((v) => {
-                  const label = String(v.title || "")
-                    .replace(new RegExp(`^${(product.title || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/glassware/i, "glass")}\\s*`, "i"), "")
-                    .replace(/\s+glass$/i, "")
-                    .trim() || v.title;
+                 const FAMILY_WORDS = /^(flatware|glassware|glass|china|dinnerware|serveware)$/i;
+                 const familyTokens = String(product.title || "").trim().split(/\s+/);
+                 const rows = product.variants.map((v) => {
+                  const variantTokens = String(v.title || "").trim().split(/\s+/);
+                  let i = 0;
+                  while (
+                    i < variantTokens.length &&
+                    i < familyTokens.length &&
+                    variantTokens[i].toLowerCase() === familyTokens[i].toLowerCase()
+                  ) {
+                    i++;
+                  }
+                  // Drop a leading family-category word (FLATWARE/GLASS/etc.) if present
+                  while (i < variantTokens.length - 1 && FAMILY_WORDS.test(variantTokens[i])) {
+                    i++;
+                  }
+                  let label = variantTokens.slice(i).join(" ")
+                    .replace(/\s+(glass|flatware)$/i, "")
+                    .trim();
+                  if (!label) label = v.title;
                   const targetIdx = variantImageIdx.get(v.id);
                   const chipImg =
                     typeof targetIdx === "number" ? product.images[targetIdx] : familyHero;
@@ -561,7 +576,7 @@ export function QuickViewModal({
                                     </span>
                                     <span
                                       className={cn(
-                                        "uppercase tracking-[0.06em] truncate",
+                                        "uppercase tracking-[0.06em] line-clamp-2 break-words",
                                         isActive ? "font-medium" : "",
                                       )}
                                     >
