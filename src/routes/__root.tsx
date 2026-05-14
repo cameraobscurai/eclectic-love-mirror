@@ -65,6 +65,7 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
+      { name: "google-site-verification", content: "uiC6Uylte-uDMLi1vmcTQZ4b3s3Om3rnI4v-vTDl-uk" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
