@@ -299,10 +299,26 @@ for (const p of rolled) {
   if (isRolled && !ownerCoverWins && lp.gallery && lp.gallery.length) {
     const liveHero = lp.gallery[0];
     const seen = new Set();
+    const seenKeys = new Set();
     const merged = [];
+    // Dedup key: lowercased basename, ignoring '+' vs '%20' vs ' ', so the
+    // live Squarespace CDN copy and our squarespace-mirror copy of the same
+    // file collapse into one slot.
+    const keyFor = (url) => {
+      try {
+        const path = new URL(url).pathname;
+        const base = decodeURIComponent(path.split('/').pop() || '')
+          .replace(/\+/g, ' ')
+          .trim()
+          .toLowerCase();
+        return base || url;
+      } catch { return url; }
+    };
     const pushUrl = (url) => {
-      if (!url || seen.has(url)) return;
-      seen.add(url);
+      if (!url) return;
+      const k = keyFor(url);
+      if (seen.has(url) || seenKeys.has(k)) return;
+      seen.add(url); seenKeys.add(k);
       merged.push({ url, position: merged.length, isHero: merged.length===0, inferredFilename: null, altText: p.title });
     };
     pushUrl(liveHero);
