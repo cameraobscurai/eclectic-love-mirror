@@ -88,8 +88,9 @@ export function ProductTile({
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
-  const isWideLow = spyGroup ? WIDE_LOW_GROUPS.has(spyGroup) : false;
-  const padClass = isWideLow ? "pt-[10%] pb-[3%] px-[8%]" : "p-3 sm:p-4";
+  const preset = getTilePreset(spyGroup);
+  const padClass = preset.pad;
+  const anchorClass = preset.anchor === "center" ? "object-center" : "object-bottom";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
