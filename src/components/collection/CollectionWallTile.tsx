@@ -2,6 +2,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { getTilePreset } from "@/lib/collection-tile-presets";
 
 interface Props {
   product: CollectionProduct;
@@ -11,10 +12,10 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
-// Wide-low subjects need extra vertical padding so tall-back siblings
-// (e.g. settees) don't visually dominate equal-sized cells. Mirrors the
-// per-subcategory media-h override on the main grid.
-const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
+// Wall tile uses a chunkier base pad (p-[8%]) than the grid tile because
+// cells are larger; per-family presets only adjust top/bottom asymmetry
+// for wide-low silhouettes so settees and chesterfields share a baseline.
+const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans", "coffee-tables", "cocktail-tables", "rugs", "furs-pelts"]);
 
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
