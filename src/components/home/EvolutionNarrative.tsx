@@ -278,8 +278,19 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "clamp(0.1rem, 0.35vh, 0.4rem)",
                   width: "100%",
+                  // Strict vertical grid: one line-height (1.5) governs every
+                  // line. Stanza breaks are the ONLY rhythm break — implemented
+                  // as a single extra line of whitespace above flagged lines.
+                  // No per-line marginTop, no vh font scaling, no emphasis-
+                  // specific spacing. The grid is the grid.
+                  ["--line-size" as string]:
+                    "clamp(1.05rem, 0.85rem + 0.55vw, 1.5rem)",
+                  ["--line-height" as string]: "1.5",
+                  ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height))",
+                  fontSize: "var(--line-size)",
+                  lineHeight: "var(--line-height)",
+                  maxWidth: "min(46rem, 88vw)",
                 }}
               >
                 {LINES.map((line, i) => {
@@ -291,32 +302,23 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   const lift = (1 - eased) * REVEAL_LIFT_PX;
 
                   const isClose = line.emphasis === "closer";
-                  const isBrand = line.emphasis === "brand";
                   const closerTracking = isClose
                     ? `${(0.2 - 0.04 * eased).toFixed(3)}em`
-                    : isBrand
-                      ? "0.04em"
-                      : undefined;
+                    : undefined;
 
                   return (
                     <p
                       key={i}
                       className={cn(
-                        "font-brand text-charcoal will-change-[opacity,transform]",
+                        "font-brand text-charcoal will-change-[opacity,transform] text-center",
                         isClose && "uppercase",
                       )}
                       style={{
                         fontWeight: 400,
                         fontStyle: isClose ? "normal" : "italic",
-                        // vh-based sizing keeps the entire 17-line manifesto
-                        // inside the sticky viewport regardless of breakpoint.
-                        // Bumped 2026-05-08 per owner — script reads a touch
-                        // larger; closer line still slightly smaller for rhythm.
-                        fontSize: isClose
-                          ? "clamp(1rem, 1.98vh, 1.68rem)"
-                          : "clamp(1.05rem, 2.14vh, 1.83rem)",
-                        lineHeight: 1.25,
-                        marginTop: isClose ? "0.6rem" : isBrand ? "0.4rem" : 0,
+                        // Stanza break = one full line of whitespace above.
+                        // First line never gets a stanza gap.
+                        marginTop: line.stanzaBreak && i > 0 ? "var(--stanza-gap)" : 0,
                         opacity,
                         letterSpacing: closerTracking,
                         transform: `translateY(${lift}px)`,
