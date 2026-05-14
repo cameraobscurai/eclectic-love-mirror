@@ -200,7 +200,9 @@ export function QuickViewModal({
   }
 
   useEffect(() => {
-    setImgIdx(0);
+    // Default to the family/SET shot when the product has one — it reads as a
+    // "hero" overview rather than landing on a single variant by accident.
+    setImgIdx(setImageIdx ?? 0);
     setSelectedKey(null);
     // Note: showScale intentionally NOT reset — owner wants it to persist
     // when navigating between products with similar scale needs.
@@ -211,7 +213,7 @@ export function QuickViewModal({
       name: product.title,
       category: product.displayCategory ?? null,
     });
-  }, [product.id, product.title, product.displayCategory]);
+  }, [product.id, product.title, product.displayCategory, setImageIdx]);
 
   useEffect(() => {
     setImgNatural(null);
