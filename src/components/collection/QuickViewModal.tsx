@@ -399,6 +399,17 @@ export function QuickViewModal({
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Variant label — surfaced over the image so the active piece
+                  in a multi-piece set (e.g. "7\" GOBLET") is identifiable
+                  without scrolling to the info rail on mobile. */}
+              {activeVariant && activeVariant.title !== product.title && (
+                <div className="absolute left-3 bottom-3 md:left-4 md:bottom-4 pointer-events-none">
+                  <span className="inline-block px-2.5 py-1 text-[10px] uppercase tracking-[0.24em] text-white bg-charcoal/70 backdrop-blur-sm">
+                    {activeVariant.title}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
