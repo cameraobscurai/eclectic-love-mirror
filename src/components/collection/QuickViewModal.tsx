@@ -117,31 +117,38 @@ export function QuickViewModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id, product.images, variantTokens]);
 
-  // Selection: the variant the user chose in the rail. Defaults to whatever
-  // the current image maps to, or the first variant when nothing maps.
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
-  // Hover preview (desktop only) — temporarily swaps the stage image while
-  // the cursor sits on a variant row whose matched image exists.
-  const [hoverVariantId, setHoverVariantId] = useState<string | null>(null);
+  // The "set" image — family group shot (e.g. "AKOYA+Set.png") that doesn't
+  // map to any individual variant. First image with no variant match wins.
+  // Surfaced as its own row in the rail.
+  const setImageIdx = useMemo(() => {
+    const i = product.images.findIndex((im) => matchVariant(im) === null);
+    return i >= 0 ? i : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id, product.images, variantTokens]);
+
+  // Selection: 'set' for the family shot, a variant id for a specific piece,
+  // or null (defer to whatever the current image maps to).
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const imgFromIdx = product.images[imgIdx] ?? product.primaryImage;
   const imageDerivedVariant = matchVariant(imgFromIdx);
+
   const selectedVariant =
-    variants.find((v) => v.id === selectedVariantId) ?? imageDerivedVariant ?? variants[0] ?? null;
+    selectedKey === "set"
+      ? null
+      : variants.find((v) => v.id === selectedKey) ?? imageDerivedVariant ?? null;
 
-  // Stage image: hover preview > selected variant's image > current imgIdx image.
-  const hoverIdx = hoverVariantId ? variantImageIdx.get(hoverVariantId) : undefined;
-  const previewImg = typeof hoverIdx === "number" ? product.images[hoverIdx] : null;
-  const activeImg = previewImg ?? imgFromIdx;
-
-  // Specs follow selection (not the image), so rows without per-variant
-  // images still produce a meaningful response when clicked.
+  const activeImg = imgFromIdx;
   const activeVariant = selectedVariant;
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
+  const isSetActive = selectedKey === "set" || (selectedKey === null && imageDerivedVariant === null);
 
-  // Click handler — select variant, swap image when one exists for it.
+  function selectSet() {
+    setSelectedKey("set");
+    if (setImageIdx !== null) setImgIdx(setImageIdx);
+  }
   function selectVariant(variantId: string) {
-    setSelectedVariantId(variantId);
+    setSelectedKey(variantId);
     const idx = variantImageIdx.get(variantId);
     if (typeof idx === "number") setImgIdx(idx);
   }
@@ -175,8 +182,7 @@ export function QuickViewModal({
 
   useEffect(() => {
     setImgIdx(0);
-    setSelectedVariantId(null);
-    setHoverVariantId(null);
+    setSelectedKey(null);
     // Note: showScale intentionally NOT reset — owner wants it to persist
     // when navigating between products with similar scale needs.
     // Fire GA4 product_viewed for each product the user opens (or pages to
@@ -443,6 +449,68 @@ export function QuickViewModal({
                       {heading}
                     </span>
                     <ul className="text-[14px] leading-[1.45] text-charcoal flex flex-col gap-1">
+                      {/* SET row — the family group shot, distinct from any
+                          single variant. Only when a set image actually exists. */}
+                      {setImageIdx !== null && (() => {
+                        const setImg = product.images[setImageIdx];
+                        return (
+                          <li>
+                            <button
+                              type="button"
+                              onClick={selectSet}
+                              aria-current={isSetActive}
+                              className={cn(
+                                "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
+                                isSetActive
+                                  ? "border-charcoal bg-charcoal/[0.04]"
+                                  : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
+                              )}
+                            >
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={cn(
+                                    "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
+                                    isSetActive ? "border-charcoal" : "border-charcoal/15",
+                                  )}
+                                  aria-hidden
+                                >
+                                  {setImg && (
+                                    <img
+                                      src={withCdnWidth(setImg.url, 200)}
+                                      alt=""
+                                      className="absolute inset-0 w-full h-full object-contain p-1"
+                                      loading="lazy"
+                                      decoding="async"
+                                    />
+                                  )}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={cn(
+                                        "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
+                                        isSetActive
+                                          ? "bg-charcoal text-cream"
+                                          : "bg-charcoal/[0.06] text-charcoal/80",
+                                      )}
+                                    >
+                                      SET
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        "uppercase tracking-[0.06em] truncate",
+                                        isSetActive ? "font-medium" : "",
+                                      )}
+                                    >
+                                      Full Collection
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })()}
                       {rows.map(({ v, label, chipImg, hasOwnImage }) => {
                         const isActive = activeVariant?.id === v.id;
                         const qty = v.stockedQuantity || "—";
@@ -451,14 +519,6 @@ export function QuickViewModal({
                             <button
                               type="button"
                               onClick={() => selectVariant(v.id)}
-                              onMouseEnter={() => {
-                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
-                              }}
-                              onMouseLeave={() => setHoverVariantId(null)}
-                              onFocus={() => {
-                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
-                              }}
-                              onBlur={() => setHoverVariantId(null)}
                               aria-current={isActive}
                               className={cn(
                                 "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
