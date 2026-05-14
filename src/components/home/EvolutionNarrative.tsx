@@ -93,8 +93,13 @@ const CONTINUE_VH_DESKTOP = 0.12;
 const CONTINUE_VH_MOBILE = 0.05;
 
 // Line-wave shape inside READ band.
-const WINDOW = 1.5;          // line-units of crossfade overlap
-const DIM_OPACITY = 0.16;    // resting brightness for upcoming lines
+// WINDOW widened so the dim → bright transition feels like prose unfolding,
+// not a hard cursor. DIM raised so upcoming copy reads as "quiet, present"
+// rather than ghosted — the latter looks like a layout bug at first glance.
+const WINDOW = 2.4;          // line-units of crossfade overlap
+const DIM_OPACITY = 0.32;    // resting brightness for upcoming lines
+const ACTIVE_BOOST = 0.0;    // unused — see ACTIVE_BAND below
+const ACTIVE_BAND = 0.7;     // line-units around the read centroid that get the "active" peak
 const REVEAL_LIFT_PX = 6;    // baseline shift during a line's reveal
 
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
