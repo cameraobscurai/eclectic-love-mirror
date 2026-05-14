@@ -5,14 +5,12 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { getTilePreset } from "@/lib/collection-tile-presets";
 
-// Wide-low silhouettes (sofas, benches, beds) get extra top padding so
-// tall-back settees don't visually dominate long-low siblings in the same
-// row. Asymmetric — light bottom pad keeps furniture grounded on the
-// shared optical baseline. Mirrors CollectionWallTile's per-tile model so
-// the rule fires in every view (parent All, subcategory, search) rather
-// than only when activeSubcategory matches.
-const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
+// Per-tile silhouette normalization. Each browse group maps to a "family"
+// preset (wide-low / tall-narrow / small-object / mixed) that tunes pad and
+// image anchor. Cell height is set on the grid via --archive-tile-media-h.
+// See src/lib/collection-tile-presets.ts.
 
 interface ProductTileProps {
   product: CollectionProduct;
