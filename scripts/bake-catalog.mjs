@@ -323,15 +323,7 @@ for (const p of rolled) {
     };
     pushUrl(liveHero);
     for (const img of (p.images || [])) pushUrl(typeof img === 'string' ? img : img.url);
-    // Only append the live gallery's other images when the owner doesn't
-    // already have per-variant uploads. If the family has at least as many
-    // owner images as variants, the live gallery would just duplicate each
-    // piece (e.g. inventory "LAPIS 11in.png" + squarespace "LAPIS Blue 11.png").
-    const ownerImgCount = (p.images || []).length;
-    const variantCount = (p.variants || []).length;
-    if (ownerImgCount < variantCount) {
-      for (const u of lp.gallery.slice(1)) pushUrl(u);
-    }
+    for (const u of lp.gallery.slice(1)) pushUrl(u);
     p.images = merged;
     p.primaryImage = merged[0];
     p.imageCount = merged.length;
