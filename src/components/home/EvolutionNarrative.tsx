@@ -93,8 +93,11 @@ const CONTINUE_VH_DESKTOP = 0.12;
 const CONTINUE_VH_MOBILE = 0.05;
 
 // Line-wave shape inside READ band.
-const WINDOW = 1.5;          // line-units of crossfade overlap
-const DIM_OPACITY = 0.16;    // resting brightness for upcoming lines
+// WINDOW widened so the dim → bright transition feels like prose unfolding,
+// not a hard cursor. DIM raised so upcoming copy reads as "quiet, present"
+// rather than ghosted — the latter looks like a layout bug at first glance.
+const WINDOW = 2.4;          // line-units of crossfade overlap
+const DIM_OPACITY = 0.32;    // resting brightness for upcoming lines
 const REVEAL_LIFT_PX = 6;    // baseline shift during a line's reveal
 
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
@@ -295,9 +298,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               >
                 {LINES.map((line, i) => {
                   const delta = reveal - i;
+                  // Read-through accumulation: dim → 1.0 over WINDOW line-units,
+                  // then locks bright. WINDOW widened to 2.4 so the wave reads
+                  // as prose unfolding rather than a hard cursor; DIM raised
+                  // to 0.32 so upcoming copy is "quiet, present" not ghosted.
                   const raw = delta >= 0 ? 1 : clamp01(1 + delta / WINDOW);
                   const eased = easeOut(raw);
-
                   const opacity = DIM_OPACITY + (1 - DIM_OPACITY) * eased;
                   const lift = (1 - eased) * REVEAL_LIFT_PX;
 
@@ -316,8 +322,6 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                       style={{
                         fontWeight: 400,
                         fontStyle: isClose ? "normal" : "italic",
-                        // Stanza break = one full line of whitespace above.
-                        // First line never gets a stanza gap.
                         marginTop: line.stanzaBreak && i > 0 ? "var(--stanza-gap)" : 0,
                         opacity,
                         letterSpacing: closerTracking,
