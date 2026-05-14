@@ -1,15 +1,23 @@
 import { getCollectionCatalog } from '../src/lib/phase3-catalog.ts';
+import { classify } from '../src/lib/collection-taxonomy.ts';
 const cat = await getCollectionCatalog();
 const products = cat.products;
-console.log('sample product keys:', Object.keys(products[0]));
-// Find products that are bucketed at parent but have no subcategory tag
-const noSub = products.filter(p => !p.browseSubcategories || p.browseSubcategories.length===0);
-console.log('no subcategory:', noSub.length);
-const byParent = {};
-for (const p of noSub) {
-  const k = p.parentBrowseGroup || '(none)';
-  byParent[k] = (byParent[k]||0)+1;
+
+let unclassified = [];
+let lowConf = [];
+let multiByParent = {};
+for (const p of products) {
+  const c = classify(p);
+  if (!c.winner || c.winner.score === 0) {
+    unclassified.push(p);
+  } else if (c.confidence < 50) {
+    lowConf.push({p, c});
+  }
 }
-console.log(JSON.stringify(byParent,null,2));
-console.log('\nExamples:');
-noSub.slice(0,30).forEach(p=>console.log(' -',p.rmsId,'|',p.parentBrowseGroup,'|',p.title));
+console.log('total:', products.length);
+console.log('unclassified (no rule fired):', unclassified.length);
+console.log('low-confidence (winner - 2nd < 50):', lowConf.length);
+console.log('\nUnclassified:');
+unclassified.slice(0,40).forEach(p=>console.log(' -',p.id,'|',p.title,'|',p.categorySlug));
+console.log('\nLow-confidence sample:');
+lowConf.slice(0,20).forEach(({p,c})=>console.log(' -',p.title,'→',c.winner?.parent,'/',c.winner?.subcategory,'conf',c.confidence));
