@@ -117,31 +117,38 @@ export function QuickViewModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id, product.images, variantTokens]);
 
-  // Selection: the variant the user chose in the rail. Defaults to whatever
-  // the current image maps to, or the first variant when nothing maps.
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
-  // Hover preview (desktop only) — temporarily swaps the stage image while
-  // the cursor sits on a variant row whose matched image exists.
-  const [hoverVariantId, setHoverVariantId] = useState<string | null>(null);
+  // The "set" image — family group shot (e.g. "AKOYA+Set.png") that doesn't
+  // map to any individual variant. First image with no variant match wins.
+  // Surfaced as its own row in the rail.
+  const setImageIdx = useMemo(() => {
+    const i = product.images.findIndex((im) => matchVariant(im) === null);
+    return i >= 0 ? i : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id, product.images, variantTokens]);
+
+  // Selection: 'set' for the family shot, a variant id for a specific piece,
+  // or null (defer to whatever the current image maps to).
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const imgFromIdx = product.images[imgIdx] ?? product.primaryImage;
   const imageDerivedVariant = matchVariant(imgFromIdx);
+
   const selectedVariant =
-    variants.find((v) => v.id === selectedVariantId) ?? imageDerivedVariant ?? variants[0] ?? null;
+    selectedKey === "set"
+      ? null
+      : variants.find((v) => v.id === selectedKey) ?? imageDerivedVariant ?? null;
 
-  // Stage image: hover preview > selected variant's image > current imgIdx image.
-  const hoverIdx = hoverVariantId ? variantImageIdx.get(hoverVariantId) : undefined;
-  const previewImg = typeof hoverIdx === "number" ? product.images[hoverIdx] : null;
-  const activeImg = previewImg ?? imgFromIdx;
-
-  // Specs follow selection (not the image), so rows without per-variant
-  // images still produce a meaningful response when clicked.
+  const activeImg = imgFromIdx;
   const activeVariant = selectedVariant;
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
+  const isSetActive = selectedKey === "set" || (selectedKey === null && imageDerivedVariant === null);
 
-  // Click handler — select variant, swap image when one exists for it.
+  function selectSet() {
+    setSelectedKey("set");
+    if (setImageIdx !== null) setImgIdx(setImageIdx);
+  }
   function selectVariant(variantId: string) {
-    setSelectedVariantId(variantId);
+    setSelectedKey(variantId);
     const idx = variantImageIdx.get(variantId);
     if (typeof idx === "number") setImgIdx(idx);
   }
