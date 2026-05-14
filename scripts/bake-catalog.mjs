@@ -454,6 +454,7 @@ const imageBaseKey = (url) => {
   } catch { return String(url || '').toLowerCase(); }
 };
 const storageRank = (url) => {
+  if (/\/storage\/v1\/object\/public\/tablewear\//.test(url)) return 4;
   if (/\/storage\/v1\/object\/public\/inventory\//.test(url)) return 3;
   if (/\/storage\/v1\/object\/public\/squarespace-mirror\//.test(url)) return 2;
   if (/\/storage\/v1\/object\/public\//.test(url)) return 1;
