@@ -55,6 +55,12 @@ const INVENTORY_ROOT_SLUGS = new Set([
   'kohl-round-black-dining-table',
   'elgin-pony-bronze-bookend-set',
   'elgin-pony-silver-bookend-set',
+  'HAZEL_Bowls.png',
+  'HAZEL_Small.png',
+  'HAZEL_Large.png',
+  'POWELL_Set.png',
+  'POWELL_18in_Tray.png',
+  'POWELL_14in_Tray.png',
 ]);
 
 function restoredInventoryUrl(url) {
