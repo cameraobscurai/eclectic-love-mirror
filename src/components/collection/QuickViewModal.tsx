@@ -128,7 +128,8 @@ export function QuickViewModal({
 
   useEffect(() => {
     setImgIdx(0);
-    setShowScale(false);
+    // Note: showScale intentionally NOT reset — owner wants it to persist
+    // when navigating between products with similar scale needs.
     // Fire GA4 product_viewed for each product the user opens (or pages to
     // via prev/next inside the modal).
     analytics.productViewed({
