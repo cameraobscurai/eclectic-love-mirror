@@ -307,11 +307,11 @@ export function QuickViewModal({
         className="relative w-full h-[100dvh] md:h-[86dvh] md:max-h-[860px] md:max-w-[1200px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
-          // Stage panel: 92% white so the grid only ghosts faintly through
-          // the chrome rows; product imagery in the middle row stays crisp.
-          background: "rgba(255,255,255,0.92)",
-          backdropFilter: "blur(14px) saturate(1.05)",
-          WebkitBackdropFilter: "blur(14px) saturate(1.05)",
+          // Temporary hard reset to a pure white product stage until the new
+          // non-cutout uploads are cleaned up.
+          background: "#ffffff",
+          backdropFilter: "none",
+          WebkitBackdropFilter: "none",
         }}
       >
         {/* Mobile drag handle pill — visual affordance for swipe-to-dismiss */}
