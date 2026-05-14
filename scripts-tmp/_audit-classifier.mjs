@@ -1,20 +1,15 @@
 import { getCollectionCatalog } from '../src/lib/phase3-catalog.ts';
-import { getProductBrowseGroup } from '../src/lib/collection-browse-groups.ts';
 const cat = await getCollectionCatalog();
-console.log('keys:', Object.keys(cat));
-const products = cat.products || [];
-console.log('total:', products.length);
-const stats = { noLive: 0, fellThrough: 0, byParent: {} };
-const fell = [];
-const noTitleKeyword = [];
-for (const p of products) {
-  if (!p.liveCategory) {
-    stats.noLive++;
-    const g = getProductBrowseGroup(p);
-    if (!g) { stats.fellThrough++; fell.push(p); }
-    else stats.byParent[g] = (stats.byParent[g]||0)+1;
-  }
+const products = cat.products;
+console.log('sample product keys:', Object.keys(products[0]));
+// Find products that are bucketed at parent but have no subcategory tag
+const noSub = products.filter(p => !p.browseSubcategories || p.browseSubcategories.length===0);
+console.log('no subcategory:', noSub.length);
+const byParent = {};
+for (const p of noSub) {
+  const k = p.parentBrowseGroup || '(none)';
+  byParent[k] = (byParent[k]||0)+1;
 }
-console.log(JSON.stringify(stats,null,2));
-console.log('\nFell through:', fell.length);
-fell.slice(0,50).forEach(p=>console.log(' -',p.rmsId,'|',p.title));
+console.log(JSON.stringify(byParent,null,2));
+console.log('\nExamples:');
+noSub.slice(0,30).forEach(p=>console.log(' -',p.rmsId,'|',p.parentBrowseGroup,'|',p.title));
