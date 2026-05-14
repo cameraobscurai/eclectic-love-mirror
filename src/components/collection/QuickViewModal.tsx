@@ -449,6 +449,68 @@ export function QuickViewModal({
                       {heading}
                     </span>
                     <ul className="text-[14px] leading-[1.45] text-charcoal flex flex-col gap-1">
+                      {/* SET row — the family group shot, distinct from any
+                          single variant. Only when a set image actually exists. */}
+                      {setImageIdx !== null && (() => {
+                        const setImg = product.images[setImageIdx];
+                        return (
+                          <li>
+                            <button
+                              type="button"
+                              onClick={selectSet}
+                              aria-current={isSetActive}
+                              className={cn(
+                                "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
+                                isSetActive
+                                  ? "border-charcoal bg-charcoal/[0.04]"
+                                  : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
+                              )}
+                            >
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={cn(
+                                    "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
+                                    isSetActive ? "border-charcoal" : "border-charcoal/15",
+                                  )}
+                                  aria-hidden
+                                >
+                                  {setImg && (
+                                    <img
+                                      src={withCdnWidth(setImg.url, 200)}
+                                      alt=""
+                                      className="absolute inset-0 w-full h-full object-contain p-1"
+                                      loading="lazy"
+                                      decoding="async"
+                                    />
+                                  )}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={cn(
+                                        "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
+                                        isSetActive
+                                          ? "bg-charcoal text-cream"
+                                          : "bg-charcoal/[0.06] text-charcoal/80",
+                                      )}
+                                    >
+                                      SET
+                                    </span>
+                                    <span
+                                      className={cn(
+                                        "uppercase tracking-[0.06em] truncate",
+                                        isSetActive ? "font-medium" : "",
+                                      )}
+                                    >
+                                      Full Collection
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })()}
                       {rows.map(({ v, label, chipImg, hasOwnImage }) => {
                         const isActive = activeVariant?.id === v.id;
                         const qty = v.stockedQuantity || "—";
@@ -457,14 +519,6 @@ export function QuickViewModal({
                             <button
                               type="button"
                               onClick={() => selectVariant(v.id)}
-                              onMouseEnter={() => {
-                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
-                              }}
-                              onMouseLeave={() => setHoverVariantId(null)}
-                              onFocus={() => {
-                                if (!reduced && hasOwnImage) setHoverVariantId(v.id);
-                              }}
-                              onBlur={() => setHoverVariantId(null)}
                               aria-current={isActive}
                               className={cn(
                                 "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
