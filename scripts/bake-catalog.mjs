@@ -506,53 +506,6 @@ for (const p of rolled) {
 tablewareExactDupesRemoved = rolled.reduce((sum, p) => sum + (p.categorySlug === 'tableware' && Array.isArray(p.images) ? 0 : 0), tablewareExactDupesRemoved);
 console.log(`[tableware-exact-image-dedupe] removed duplicate storage/CDN image slots where exact basenames matched`);
 
-// SET-cover promotion: for any rolled family (variants present), promote the
-// first image whose filename indicates a group/family shot ("…Set.png",
-// "…+set.png", "…_set.png") to position 0. Without this, families baked from
-// owner-uploaded folders default to whichever single-utensil shot sorted
-// first, and the collection tile shows a lone fork instead of the set hero.
-let setCoversPromoted = 0;
-const SET_FILENAME_RE = /(?:^|[\s_+\-])set(?=[\s_+\-.]|$)/i;
-for (const p of rolled) {
-  if (!Array.isArray(p.variants) || p.variants.length === 0) continue;
-  if (!Array.isArray(p.images) || p.images.length < 2) continue;
-  const setIdx = p.images.findIndex((img) => {
-    const url = typeof img === 'string' ? img : img.url || '';
-    try {
-      const base = decodeURIComponent(new URL(url).pathname.split('/').pop() || '')
-        .replace(/\+/g, ' ');
-      return SET_FILENAME_RE.test(base);
-    } catch { return false; }
-  });
-  let promoteIdx = setIdx;
-  // Fallback: when filenames are opaque (e.g. ChatGPT-generated names), the
-  // SET image is whichever image is NOT claimed by any variant.imageUrl —
-  // mirrors the QuickView modal's setImageIdx heuristic.
-  if (promoteIdx <= 0) {
-    const claimed = new Set(
-      p.variants
-        .map((v) => v && v.imageUrl)
-        .filter(Boolean),
-    );
-    if (claimed.size > 0) {
-      const unclaimedIdx = p.images.findIndex((img) => {
-        const url = typeof img === 'string' ? img : img.url || '';
-        return url && !claimed.has(url);
-      });
-      if (unclaimedIdx > 0) promoteIdx = unclaimedIdx;
-    }
-  }
-  if (promoteIdx <= 0) continue;
-  const [setImg] = p.images.splice(promoteIdx, 1);
-  p.images.unshift(setImg);
-  p.images.forEach((img, i) => {
-    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
-  });
-  p.primaryImage = typeof p.images[0] === 'string' ? { url: p.images[0] } : p.images[0];
-  setCoversPromoted++;
-}
-console.log(`[set-cover-promotion] promoted ${setCoversPromoted} family SET shots to cover position`);
-
 const payload = {
   products: rolled, facets, total: rolled.length,
   meta: {
