@@ -189,7 +189,7 @@ export function ProductTile({
                 // optical floor — wide sofa, tall lamp, and short stool all
                 // sit on the same line. Inset padding keeps subjects from
                 // kissing the cell edges and gives the tile breathing room.
-                className={`absolute inset-0 h-full w-full object-contain object-bottom ${padClass} will-change-opacity`}
+                className={`absolute inset-0 h-full w-full object-contain ${anchorClass} ${padClass} will-change-opacity`}
                 style={{
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
