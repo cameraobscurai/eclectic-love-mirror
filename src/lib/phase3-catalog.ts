@@ -67,6 +67,7 @@ export interface CollectionProduct {
     title: string;
     dimensions: string | null;
     stockedQuantity: string | null;
+    imageUrl?: string | null;
   }>;
   /** AI-tagged primary material color, hex (e.g. "#8b6f4a"). Null when untagged. */
   colorHex?: string | null;
