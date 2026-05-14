@@ -367,6 +367,44 @@ for (const p of rolled) {
   }
 }
 
+// Per-product image blocklist — surgical fix for known duplicate images that
+// slip through the basename dedupe (live Squarespace gallery uses different
+// filenames than the owner-uploaded inventory PNGs of the same plate).
+// Patterns are matched as case-insensitive substrings against the image URL.
+// Add only after eyeballing the modal; do NOT use this to mass-prune.
+const IMAGE_BLOCKLIST = {
+  'anastasia-antique-silver-collection': [
+    '0c5b546f9f84-anastasia_set.png', // mirror dup of squarespace ANASTASIA+Set.png
+  ],
+  'lapis-deep-blue-plates': [
+    'lapis+blue+11.png',   // dup of inventory LAPIS 11in.png
+    'lapis+blue+10.png',   // dup of inventory LAPIS 10in.png
+    'lapis+blue+8.25.png', // dup of inventory LAPIS 8.25in.png
+  ],
+  'lavanya-stoneware-collection': [
+    'lavanya+12+charger.png', // dup of inventory LAVANYA 12.png
+    'lavanya+10++plate.png',  // dup of inventory LAVANYA 10.png
+  ],
+};
+let blocklistRemoved = 0;
+for (const p of rolled) {
+  const patterns = IMAGE_BLOCKLIST[p.slug];
+  if (!patterns || !Array.isArray(p.images)) continue;
+  const before = p.images.length;
+  p.images = p.images.filter((img) => {
+    const url = (typeof img === 'string' ? img : img.url || '').toLowerCase();
+    return !patterns.some((pat) => url.includes(pat));
+  });
+  // Reindex positions + isHero flag after removals.
+  p.images.forEach((img, i) => {
+    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+  });
+  if (p.images.length > 0) p.primaryImage = typeof p.images[0] === 'string' ? { url: p.images[0] } : p.images[0];
+  p.imageCount = p.images.length;
+  blocklistRemoved += (before - p.images.length);
+}
+console.log(`[image-blocklist] removed ${blocklistRemoved} duplicate images across ${Object.keys(IMAGE_BLOCKLIST).length} products`);
+
 const payload = {
   products: rolled, facets, total: rolled.length,
   meta: {
