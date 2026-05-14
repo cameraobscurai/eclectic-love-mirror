@@ -221,7 +221,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       mergedImages.push(img);
     };
     const urlFor = (img) => typeof img === 'string' ? img : img?.url || img?.src || '';
-    const isSetImage = (img) => /(?:^|[\s._+-])(set|collection|group|family)(?:[\s._+-]|\.|$)/i.test(keyFor(urlFor(img)));
+    const familyLead = wordTokens(g.fam.familyTitle)[0] || '';
+    const isSetImage = (img) => {
+      const key = keyFor(urlFor(img));
+      if (/(?:^|[\s._+-])(set|collection|group|family)(?:[\s._+-]|\.|$)/i.test(key)) return true;
+      // Some live serveware family covers are named as plural group shots
+      // instead of "Set" (HAZEL_Bowls, LAVANYA Bowls). Treat only the
+      // family-lead + plural noun shot as the cover; size variants remain rows.
+      if (familyLead && new RegExp(`(?:^|[\\s._+-])${familyLead}[\\s._+-]+(bowls|trays|plates|goblets)(?:[\\s._+-]|\\.|$)`, 'i').test(key)) return true;
+      return false;
+    };
     const scoreVariantImage = (img, member) => {
       const key = keyFor(urlFor(img));
       const family = new Set(wordTokens(g.fam.familyTitle));
