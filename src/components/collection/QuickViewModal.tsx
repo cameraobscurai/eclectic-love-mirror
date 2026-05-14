@@ -53,41 +53,97 @@ export function QuickViewModal({
   const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
 
   // Match an image to a variant by filename heuristic — numeric ("AKOYA 7.png" → 7"
-  // variant) then word match (Fork/Knife/Bowl/etc.). Lets the title, scale rule,
-  // and dimensions follow the active image when paging through a family listing.
+  // variant) then distinguishing-token match (Fork/Knife/Bowl/etc.). Distinguishing
+  // = tokens that appear in this variant's title but not in every other variant.
+  // Score-based so the strongest match wins on filenames that contain partial
+  // tokens shared across variants.
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const familyToken = (product.title ?? "").split(/\s+/)[0] ?? "";
+
+  const variantTokens = useMemo(() => {
+    const stripFamily = (t: string) =>
+      t.replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
+        .trim()
+        .toUpperCase();
+    const all = variants.map((v) => {
+      const tail = stripFamily(v.title ?? "");
+      const toks = tail.split(/\s+/).filter((t) => t.length >= 2 && !/["\d.]/.test(t));
+      return { id: v.id, tokens: toks };
+    });
+    // Distinguishing = token not present in EVERY other variant
+    return all.map(({ id, tokens }) => {
+      const others = all.filter((o) => o.id !== id);
+      const distinguishing = tokens.filter(
+        (t) => !others.every((o) => o.tokens.includes(t)),
+      );
+      return { id, tokens, distinguishing };
+    });
+  }, [variants, familyToken]);
+
   function matchVariant(img: { url: string } | null | undefined) {
     if (!img || variants.length === 0) return null;
     const fname = decodeURIComponent(img.url.split("/").pop() ?? "").toUpperCase();
+    // Numeric size match wins outright
     const numMatch = fname.match(/(\d+(?:\.\d+)?)/);
     if (numMatch) {
       const v = variants.find((vv) => vv.title?.includes(`${numMatch[1]}"`));
       if (v) return v;
     }
+    // Score by distinguishing tokens present in filename
+    let best: { v: typeof variants[number]; score: number } | null = null;
     for (const v of variants) {
-      const tail = (v.title ?? "")
-        .replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
-        .trim();
-      if (!tail) continue;
-      const tokens = tail
-        .toUpperCase()
-        .split(/\s+/)
-        .filter((t) => t.length > 2 && !/["\d.]/.test(t));
-      if (tokens.length && tokens.every((t) => fname.includes(t))) return v;
+      const meta = variantTokens.find((m) => m.id === v.id);
+      if (!meta || meta.distinguishing.length === 0) continue;
+      const hit = meta.distinguishing.filter((t) => fname.includes(t)).length;
+      if (hit === 0) continue;
+      // Require all distinguishing tokens present (full match) OR a single
+      // distinguishing token that is unique to this variant.
+      const full = hit === meta.distinguishing.length;
+      const score = full ? hit + 1 : hit;
+      if (!best || score > best.score) best = { v, score };
     }
-    return null;
+    return best?.v ?? null;
   }
 
-  // Per-image dimensions: use matched variant's, fall back to product-level.
-  const activeImg = product.images[imgIdx] ?? product.primaryImage;
-  const activeVariant = matchVariant(activeImg);
+  // Find first image that maps to a given variant. Memoized lookup so the
+  // variant list and chips don't recompute O(n*m) per render.
+  const variantImageIdx = useMemo(() => {
+    const map = new Map<string, number>();
+    product.images.forEach((im, i) => {
+      const v = matchVariant(im);
+      if (v && !map.has(v.id)) map.set(v.id, i);
+    });
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id, product.images, variantTokens]);
+
+  // Selection: the variant the user chose in the rail. Defaults to whatever
+  // the current image maps to, or the first variant when nothing maps.
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
+  // Hover preview (desktop only) — temporarily swaps the stage image while
+  // the cursor sits on a variant row whose matched image exists.
+  const [hoverVariantId, setHoverVariantId] = useState<string | null>(null);
+
+  const imgFromIdx = product.images[imgIdx] ?? product.primaryImage;
+  const imageDerivedVariant = matchVariant(imgFromIdx);
+  const selectedVariant =
+    variants.find((v) => v.id === selectedVariantId) ?? imageDerivedVariant ?? variants[0] ?? null;
+
+  // Stage image: hover preview > selected variant's image > current imgIdx image.
+  const hoverIdx = hoverVariantId ? variantImageIdx.get(hoverVariantId) : undefined;
+  const previewImg = typeof hoverIdx === "number" ? product.images[hoverIdx] : null;
+  const activeImg = previewImg ?? imgFromIdx;
+
+  // Specs follow selection (not the image), so rows without per-variant
+  // images still produce a meaningful response when clicked.
+  const activeVariant = selectedVariant;
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
 
-  // Jump imgIdx to the first image matching a given variant id.
-  function jumpToVariant(variantId: string) {
-    const idx = product.images.findIndex((im) => matchVariant(im)?.id === variantId);
-    if (idx >= 0) setImgIdx(idx);
+  // Click handler — select variant, swap image when one exists for it.
+  function selectVariant(variantId: string) {
+    setSelectedVariantId(variantId);
+    const idx = variantImageIdx.get(variantId);
+    if (typeof idx === "number") setImgIdx(idx);
   }
 
   // Thumbs-scroll affordance — show prev/next chips when overflowing on desktop.
