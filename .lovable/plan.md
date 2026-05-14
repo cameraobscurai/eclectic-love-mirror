@@ -1,63 +1,21 @@
-# QuickView UX fixes
+Cross-checked our DB against the owner's Squarespace export. Three actual mismatches; rest already match.
 
-All three fixes live in one file: `src/components/collection/QuickViewModal.tsx`.
+| Squarespace (truth) | Our DB | Action |
+|---|---|---|
+| Eagan Decanter | Eagan Decanter | none |
+| Evren 8x10 Kilim Rug | Evren 8x10 Kilim Rug | none |
+| Alumina (plates) | Alumina (×4) | none |
+| **Dialni** Iridescent Ivory Leather Charger | Dilani 13" Iridescent Ivory Leather Charger | rename Dilani → Dialni |
+| **Powel** Dark Brass Tray | Powell 14"/18" Round Dark Brass Tray | rename Powell → Powel (×2) |
+| Olive Green Leather **Cahrger** | Olive 13" Leather Charger | rename to "Olive Green 13" Leather Cahrger" |
 
----
+## Execution
 
-## 1. Thumbnail strip — make overflow obvious
+1. SQL update on `inventory_items.title` for the 4 affected rows (rms_ids: 2810, 3170, 3168, 3982).
+2. Rebake catalog (`bun scripts/bake-catalog.mjs`) so `current_catalog.json` reflects new titles.
 
-**Owner's words:** "How do you scroll to see images that 'bleed' off the page?"
+No image, slug, or rms_id changes — titles only. The owner's typos (Powel, Dialni, Cahrger) are preserved intentionally to match their RMS/Squarespace source of truth.
 
-**Now:** thumbs row has hidden scrollbars + prev/next chips that only appear on desktop hover. On touch / first glance there's no signal more thumbs exist.
+## Open question
 
-**Fix:**
-- Add a soft fade gradient on the right (and left when scrolled) edge of the thumb strip so clipped thumbs visibly fade rather than hard-cut.
-- Show the prev/next chevron chips whenever overflow exists (not gated on hover). Keep them subtle — charcoal/40, no background.
-- Show the existing `n / total` counter unconditionally when `images.length > 1` (today it's tucked in only on certain states).
-- Mobile: leave the swipe gesture alone; the fade edge is the affordance.
-
-No layout change, no new components.
-
----
-
-## 2. "Show Scale" should follow the active image
-
-**Owner's words:** "Show Scale for Tableware does not change with images."
-
-**Now:** lines 93-95 explicitly turn it OFF every time `imgIdx` changes:
-```ts
-useEffect(() => { setShowScale(false); }, [imgIdx]);
-```
-That was added because the rule was hard-coded to product-level dims. But `activeDimensions` (line 85) already resolves per-variant from `matchVariant(activeImg)`. The reset is no longer needed.
-
-**Fix:**
-- Delete the reset effect.
-- The `dims` memo (line 86-89) already keys off `activeDimensions`, so the rule re-renders against the new image's width/height automatically.
-- Edge case: if the new image has no matched dims (`hasScale === false`), hide the rule for that image only and keep `showScale=true` so it returns when you page back. Button label switches to disabled state ("No scale") rather than toggling off.
-
----
-
-## 3. Per-image variant label
-
-**Owner's words:** "For Vintage Silver Goblets… how would a client know which is which if the name does not change when the image does?"
-
-**Now:** when `activeVariant.title !== product.title`, line 416-418 shows the variant name as a small caption in the right info column. On mobile that column is below the fold — owner can't see what they're looking at.
-
-**Fix:**
-- Add a small badge **on the stage**, bottom-left of the image, when `activeVariant` exists and differs from product title. Style: charcoal/70 backdrop-blur, white uppercase 10px tracked text, e.g. `7"  ·  GOBLET`.
-- Keep the existing right-column caption — they reinforce each other on desktop.
-- Also add the variant title to each thumbnail's `title` attribute and `aria-label` (already partially there via `altText`) so hover tooltips on desktop confirm what each thumb is.
-
-Family token / numeric matcher already in place (lines 60-80) — this is purely surfacing what the modal already knows.
-
----
-
-## Out of scope
-
-- Variant clicking from the variant row (line 432-447) already jumps to that image — no change.
-- Lightbox, swipe gestures, footer CTA — untouched.
-- No DB / catalog changes.
-
-## Files touched
-
-- `src/components/collection/QuickViewModal.tsx` — only file.
+"Olive Green Leather Cahrger" — owner's title omits the size. Their other chargers all include it ("Dilani 13"…", "Olive 13"…"). Want me to keep "13"" in our title or strip it to mirror SQ exactly? Default = keep "13"" since size matters for rental decisions.
