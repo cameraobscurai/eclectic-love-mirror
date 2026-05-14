@@ -231,12 +231,17 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       slug: g.fam.liveSlug || `${withMostImages.slug}-family`,
       images: mergedImages,
       primaryImage: mergedImages[0] || withMostImages.primaryImage,
-      variants: sorted.map(m => ({
-        id: m.id,
-        title: m.title,
-        dimensions: m.dimensions,
-        stockedQuantity: m.stockedQuantity,
-      })),
+      variants: sorted.map(m => {
+        const firstImg = (m.images || [])[0];
+        const imageUrl = firstImg ? (typeof firstImg === 'string' ? firstImg : firstImg.url) : null;
+        return {
+          id: m.id,
+          title: m.title,
+          dimensions: m.dimensions,
+          stockedQuantity: m.stockedQuantity,
+          imageUrl,
+        };
+      }),
       // Sum imageCount across the group so callers can show "8 photos"
       imageCount: withMostImages.images?.length || 0,
       // Mark how this family was identified
