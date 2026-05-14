@@ -14,6 +14,7 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
+import { pickBatchMediaHeight } from "@/lib/collection-tile-presets";
 import {
   PARENT_ORDER,
   PARENT_LABELS,
