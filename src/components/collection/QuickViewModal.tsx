@@ -516,11 +516,15 @@ export function QuickViewModal({
                     ref={thumbsScrollerRef}
                     className="flex gap-2 overflow-x-auto snap-x snap-mandatory px-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                   >
-                    {product.images.map((im, i) => (
+                  {product.images.map((im, i) => {
+                    const v = matchVariant(im);
+                    const tip = v && v.title !== product.title ? v.title : (im.altText ?? "");
+                    return (
                       <button
                         key={im.url}
                         onClick={() => setImgIdx(i)}
-                        aria-label={`View image ${i + 1} of ${product.images.length}${im.altText && im.altText !== product.title ? ` — ${im.altText}` : ""}`}
+                        title={tip}
+                        aria-label={`View image ${i + 1} of ${product.images.length}${tip ? ` — ${tip}` : ""}`}
                         aria-current={i === imgIdx}
                         className={cn(
                           "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
@@ -533,36 +537,38 @@ export function QuickViewModal({
                           className="absolute inset-0 w-full h-full object-contain p-1"
                         />
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-                {(thumbsOverflow.left || thumbsOverflow.right) && (
-                  <div className="mt-2 flex items-center justify-between text-charcoal/70">
-                    <button
-                      type="button"
-                      onClick={() => nudgeThumbs(-1)}
-                      disabled={!thumbsOverflow.left}
-                      aria-label="Scroll thumbnails left"
-                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                    >
-                      ← MORE
-                    </button>
-                    <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40">
-                      {imgIdx + 1} / {product.images.length}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => nudgeThumbs(1)}
-                      disabled={!thumbsOverflow.right}
-                      aria-label="Scroll thumbnails right"
-                      className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                    >
-                      MORE →
-                    </button>
-                  </div>
-                )}
               </div>
-            )}
+              {/* Counter + scroll chips. Counter shows whenever there are
+                  multiple images so the owner always knows position; chips
+                  enable when overflow exists. */}
+              <div className="mt-2 flex items-center justify-between text-charcoal/70">
+                <button
+                  type="button"
+                  onClick={() => nudgeThumbs(-1)}
+                  disabled={!thumbsOverflow.left}
+                  aria-label="Scroll thumbnails left"
+                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                >
+                  ← MORE
+                </button>
+                <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
+                  {imgIdx + 1} / {product.images.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => nudgeThumbs(1)}
+                  disabled={!thumbsOverflow.right}
+                  aria-label="Scroll thumbnails right"
+                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                >
+                  MORE →
+                </button>
+              </div>
+            </div>
+          )}
 
             {/* CTA — pinned to bottom of rail */}
             <div className="mt-auto pt-8">
