@@ -103,12 +103,6 @@ export function getTilePreset(group: BrowseGroupId | null | undefined): TilePres
  * multiple families, the grid picks the SHORTEST cap among present families
  * so wide-low silhouettes don't get visually crushed by tall-narrow neighbors.
  */
-const HEIGHT_RANK: Record<string, number> = {
-  [WIDE_LOW.mediaH]: 0,
-  [SMALL_OBJECT.mediaH]: 1,
-  [MIXED.mediaH]: 2,
-  [TALL_NARROW.mediaH]: 3,
-};
 
 export function pickBatchMediaHeight(
   groups: Array<BrowseGroupId | null | undefined>,
