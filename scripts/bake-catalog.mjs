@@ -345,6 +345,28 @@ const facets = ORDER.filter(s=>facetsMap[s]).map(s=>facetsMap[s]).concat(
   Object.values(facetsMap).filter(f=>!ORDER.includes(f.slug))
 );
 
+// Owner directive (Tableware notes 2026-05): every inventory proper name
+// must render ALL CAPS. CSS `text-transform: uppercase` is applied at every
+// render site, but normalize the source data too so contact-form summaries,
+// JSON-LD, alt text, and any future surface stay consistent.
+const upperTitle = (s) => (typeof s === 'string' ? s.toUpperCase() : s);
+for (const p of rolled) {
+  if (p.title) p.title = upperTitle(p.title);
+  if (Array.isArray(p.variants)) {
+    for (const v of p.variants) {
+      if (v && v.title) v.title = upperTitle(v.title);
+    }
+  }
+  if (Array.isArray(p.images)) {
+    for (const img of p.images) {
+      if (img && img.altText) img.altText = upperTitle(img.altText);
+    }
+  }
+  if (p.primaryImage && p.primaryImage.altText) {
+    p.primaryImage.altText = upperTitle(p.primaryImage.altText);
+  }
+}
+
 const payload = {
   products: rolled, facets, total: rolled.length,
   meta: {
