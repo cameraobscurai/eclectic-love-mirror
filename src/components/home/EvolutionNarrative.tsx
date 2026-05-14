@@ -13,26 +13,29 @@ import { cn } from "@/lib/utils";
  * obscura's restraint (no flashy transforms).
  */
 
-type Line = { text: string; emphasis?: "section" | "brand" | "closer" };
+type Line = { text: string; emphasis?: "closer"; stanzaBreak?: boolean };
 
+// Stanza breaks define where the manifesto takes a breath. Anything that
+// isn't flagged sits on the standard line-rhythm. No other per-line spacing
+// overrides anywhere — the grid is the grid.
 const LINES: Line[] = [
   { text: "Growth doesn't happen all at once." },
   { text: "It happens in phases." },
-  { text: "There's a beginning that's rooted in curiosity." },
+  { text: "There's a beginning that's rooted in curiosity.", stanzaBreak: true },
   { text: "A time where things expand" },
   { text: "and start to take shape." },
-  { text: "A shift toward refining what actually matters." },
+  { text: "A shift toward refining what actually matters.", stanzaBreak: true },
   { text: "A moment where letting go becomes necessary." },
   { text: "And space to step back" },
-  { text: "and see all of it clearly." },
+  { text: "and see all of it clearly.", stanzaBreak: true },
   { text: "This isn't a reinvention." },
   { text: "It's a refinement." },
   { text: "A deeper understanding of what holds weight." },
-  { text: "Of what lasts." },
+  { text: "Of what lasts.", stanzaBreak: true },
   { text: "We are artists." },
   { text: "Designers." },
   { text: "Craftsmen." },
-  { text: "This is our evolution.", emphasis: "closer" },
+  { text: "This is our evolution.", emphasis: "closer", stanzaBreak: true },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────
