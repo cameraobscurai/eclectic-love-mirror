@@ -309,6 +309,7 @@ for (const p of rolled) {
         const path = new URL(url).pathname;
         const base = decodeURIComponent(path.split('/').pop() || '')
           .replace(/\+/g, ' ')
+          .replace(/[_\s]+/g, ' ')
           .trim()
           .toLowerCase();
         return base || url;
