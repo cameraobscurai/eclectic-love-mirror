@@ -272,7 +272,23 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
           .map((img) => img ? keyFor(urlFor(img)) : '')
           .filter(Boolean),
       );
-      let setIdx = mergedImages.findIndex(isSetImage);
+      const titleKey = keyFor(g.fam.familyTitle);
+      const coverScore = (img) => {
+        const key = keyFor(urlFor(img));
+        let score = isSetImage(img) ? 10 : 0;
+        if (/\bbowls?\b/.test(titleKey) && /\bbowls?\b/.test(key)) score += 20;
+        if (/\btrays?\b/.test(titleKey) && /\b(set|trays?)\b/.test(key)) score += 20;
+        if (/\bgoblets?\b/.test(titleKey) && /\b(goblet|collection|set)\b/.test(key)) score += 20;
+        if (/\bplates?|stoneware|flatware|glassware\b/.test(titleKey) && /\b(set|collection)\b/.test(key)) score += 15;
+        if (variantImageKeys.has(key)) score -= 30;
+        return score;
+      };
+      let setIdx = mergedImages.reduce((bestIdx, img, idx) => {
+        const bestScore = bestIdx < 0 ? -Infinity : coverScore(mergedImages[bestIdx]);
+        const score = coverScore(img);
+        return score > bestScore ? idx : bestIdx;
+      }, -1);
+      if (setIdx >= 0 && coverScore(mergedImages[setIdx]) <= 0) setIdx = -1;
       if (setIdx < 0) setIdx = mergedImages.findIndex((img) => {
         const url = typeof img === 'string' ? img : img.url || img.src || '';
         return url && !variantImageKeys.has(keyFor(url));
