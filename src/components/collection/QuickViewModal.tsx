@@ -89,10 +89,9 @@ export function QuickViewModal({
   );
   const hasScale = dims.width !== null || dims.height !== null;
 
-  // Hide scale when paging — old rule wouldn't match the new image.
-  useEffect(() => {
-    setShowScale(false);
-  }, [imgIdx]);
+  // Show Scale persists across images — `dims` re-derives from the active
+  // variant's dimensions automatically, so the rule re-renders against the
+  // new image. (Was previously force-reset on every imgIdx change.)
 
   // Jump imgIdx to the first image matching a given variant id.
   function jumpToVariant(variantId: string) {
