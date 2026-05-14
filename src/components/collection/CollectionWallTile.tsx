@@ -14,7 +14,7 @@ interface Props {
 // Wide-low subjects need extra vertical padding so tall-back siblings
 // (e.g. settees) don't visually dominate equal-sized cells. Mirrors the
 // per-subcategory media-h override on the main grid.
-const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
 
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
