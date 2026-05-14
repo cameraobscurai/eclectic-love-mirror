@@ -164,7 +164,11 @@ const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
 };
 
 export function productParent(p: CollectionProduct): ParentId | null {
-  // Consoles always belong to Lounge Tables — never Dining.
+  // Owner-assigned category wins over any title-keyword shortcut.
+  // (e.g. an "Anathema Console" filed under category=storage stays in Storage,
+  // not pulled into Lounge Tables by the "console" keyword rule below.)
+  if (p.categorySlug === "storage") return "cocktail-bar";
+  // Consoles otherwise belong to Lounge Tables — never Dining.
   if ((p.title || "").toLowerCase().includes("console")) return "lounge-tables";
   if (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory])
     return LIVE_CAT_TO_PARENT[p.liveCategory];
