@@ -6,6 +6,14 @@ import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
+// Wide-low silhouettes (sofas, benches, beds) get extra top padding so
+// tall-back settees don't visually dominate long-low siblings in the same
+// row. Asymmetric — light bottom pad keeps furniture grounded on the
+// shared optical baseline. Mirrors CollectionWallTile's per-tile model so
+// the rule fires in every view (parent All, subcategory, search) rather
+// than only when activeSubcategory matches.
+const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+
 interface ProductTileProps {
   product: CollectionProduct;
   index: number;
@@ -82,6 +90,8 @@ export function ProductTile({
   // Spy section id — drives the right-rail segmented progress and left-rail
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
+  const isWideLow = spyGroup ? WIDE_LOW_GROUPS.has(spyGroup) : false;
+  const padClass = isWideLow ? "pt-[14%] pb-[4%] px-[10%]" : "p-3 sm:p-4";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
@@ -180,7 +190,7 @@ export function ProductTile({
                 // optical floor — wide sofa, tall lamp, and short stool all
                 // sit on the same line. Inset padding keeps subjects from
                 // kissing the cell edges and gives the tile breathing room.
-                className="absolute inset-0 h-full w-full object-contain object-bottom p-3 sm:p-4 will-change-opacity"
+                className={`absolute inset-0 h-full w-full object-contain object-bottom ${padClass} will-change-opacity`}
                 style={{
                   opacity: loaded ? 1 : 0,
                   transition: "opacity 240ms ease-out",
