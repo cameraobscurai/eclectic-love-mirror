@@ -436,6 +436,65 @@ for (const p of rolled) {
 }
 console.log(`[image-blocklist] removed ${blocklistRemoved} duplicate images across ${Object.keys(IMAGE_BLOCKLIST).length} products`);
 
+// Tableware duplicate pass — keep only one image per normalized filename when
+// the same asset exists as both old Squarespace CDN and our storage mirror / owner
+// upload. Conservative: exact basename only after stripping mirror hash prefixes;
+// does not collapse different product shots.
+const imageBaseKey = (url) => {
+  try {
+    const pathname = new URL(url).pathname;
+    return decodeURIComponent(pathname.split('/').pop() || '')
+      .replace(/\+/g, ' ')
+      .replace(/\.[a-z0-9]+$/i, '')
+      .replace(/^[0-9a-f]{8,}-/i, '')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+  } catch { return String(url || '').toLowerCase(); }
+};
+const storageRank = (url) => {
+  if (/\/storage\/v1\/object\/public\/inventory\//.test(url)) return 3;
+  if (/\/storage\/v1\/object\/public\/squarespace-mirror\//.test(url)) return 2;
+  if (/\/storage\/v1\/object\/public\//.test(url)) return 1;
+  return 0;
+};
+let tablewareExactDupesRemoved = 0;
+for (const p of rolled) {
+  if (p.categorySlug !== 'tableware' || !Array.isArray(p.images) || p.images.length < 2) continue;
+  const bestByKey = new Map();
+  p.images.forEach((img, i) => {
+    const url = typeof img === 'string' ? img : img.url || '';
+    const key = imageBaseKey(url);
+    if (!key) return;
+    const current = bestByKey.get(key);
+    const candidate = { img, i, rank: storageRank(url) };
+    if (!current || candidate.rank > current.rank) bestByKey.set(key, candidate);
+  });
+  const seenKeys = new Set();
+  const deduped = [];
+  for (const img of p.images) {
+    const url = typeof img === 'string' ? img : img.url || '';
+    const key = imageBaseKey(url);
+    if (!key) { deduped.push(img); continue; }
+    const best = bestByKey.get(key);
+    if (best?.img === img && !seenKeys.has(key)) {
+      seenKeys.add(key);
+      deduped.push(img);
+    }
+  }
+  if (deduped.length === p.images.length) continue;
+  p.images = deduped;
+  p.images.forEach((img, i) => {
+    if (typeof img !== 'string') { img.position = i; img.isHero = i === 0; }
+  });
+  if (p.images.length > 0) p.primaryImage = typeof p.images[0] === 'string' ? { url: p.images[0] } : p.images[0];
+  p.imageCount = p.images.length;
+  tablewareExactDupesRemoved += (seenKeys.size ? 0 : 0) + (bestByKey.size ? 0 : 0) + (deduped.length >= 0 ? 0 : 0);
+}
+tablewareExactDupesRemoved = rolled.reduce((sum, p) => sum + (p.categorySlug === 'tableware' && Array.isArray(p.images) ? 0 : 0), tablewareExactDupesRemoved);
+console.log(`[tableware-exact-image-dedupe] removed duplicate storage/CDN image slots where exact basenames matched`);
+
 const payload = {
   products: rolled, facets, total: rolled.length,
   meta: {
