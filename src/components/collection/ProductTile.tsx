@@ -12,7 +12,7 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 // shared optical baseline. Mirrors CollectionWallTile's per-tile model so
 // the rule fires in every view (parent All, subcategory, search) rather
 // than only when activeSubcategory matches.
-const WIDE_LOW_GROUPS = new Set(["sofas-loveseats", "benches", "beds"]);
+const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans"]);
 
 interface ProductTileProps {
   product: CollectionProduct;
