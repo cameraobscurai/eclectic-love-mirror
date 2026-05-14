@@ -7,7 +7,7 @@ import { useInquiry } from "@/hooks/use-inquiry";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { parseDimensions } from "@/lib/parse-dimensions";
-import { ScaleRuleWidth, ScaleRuleHeight } from "./ScaleRule";
+
 import { withCdnWidth } from "@/lib/image-url";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 import { analytics } from "@/lib/analytics";
@@ -87,11 +87,6 @@ export function QuickViewModal({
     () => parseDimensions(activeDimensions),
     [activeDimensions],
   );
-  const hasScale = dims.width !== null || dims.height !== null;
-
-  // Show Scale persists across images — `dims` re-derives from the active
-  // variant's dimensions automatically, so the rule re-renders against the
-  // new image. (Was previously force-reset on every imgIdx change.)
 
   // Jump imgIdx to the first image matching a given variant id.
   function jumpToVariant(variantId: string) {
@@ -169,27 +164,6 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-  // Compute the rendered image box inside the zone given object-contain.
-  // This is the actual furniture footprint — what the rules should wrap.
-  const imageBox = useMemo(() => {
-    if (!imgNatural || zoneSize.w === 0 || zoneSize.h === 0) return null;
-    const zoneAR = zoneSize.w / zoneSize.h;
-    const imgAR = imgNatural.w / imgNatural.h;
-    let w: number, h: number;
-    if (imgAR > zoneAR) {
-      // image is wider than zone — pinned to width
-      w = zoneSize.w;
-      h = zoneSize.w / imgAR;
-    } else {
-      // image is taller — pinned to height
-      h = zoneSize.h;
-      w = zoneSize.h * imgAR;
-    }
-    // object-contain centered: image sits in the middle of the zone
-    const left = (zoneSize.w - w) / 2;
-    const top = (zoneSize.h - h) / 2;
-    return { left, top, width: w, height: h };
-  }, [imgNatural, zoneSize]);
 
   // Title is now small and inline — no fit-to-lines billboard.
 
