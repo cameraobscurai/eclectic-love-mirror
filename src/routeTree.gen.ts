@@ -23,6 +23,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
+import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
@@ -97,6 +98,11 @@ const AdminInsightsRoute = AdminInsightsRouteImport.update({
   path: '/insights',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminIncomingRoute = AdminIncomingRouteImport.update({
+  id: '/incoming',
+  path: '/incoming',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminImageQaRoute = AdminImageQaRouteImport.update({
   id: '/image-qa',
   path: '/image-qa',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
+  '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
 }
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
+  '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
 }
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
+  '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
 }
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
+    | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
   fileRoutesByTo: FileRoutesByTo
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
+    | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
   id:
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
+    | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
   fileRoutesById: FileRoutesById
@@ -346,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInsightsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/incoming': {
+      id: '/admin/incoming'
+      path: '/incoming'
+      fullPath: '/admin/incoming'
+      preLoaderRoute: typeof AdminIncomingRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/image-qa': {
       id: '/admin/image-qa'
       path: '/image-qa'
@@ -374,6 +393,7 @@ interface AdminRouteChildren {
   AdminColorsRoute: typeof AdminColorsRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
+  AdminIncomingRoute: typeof AdminIncomingRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
   AdminStudioRoute: typeof AdminStudioRoute
 }
@@ -382,6 +402,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminColorsRoute: AdminColorsRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
+  AdminIncomingRoute: AdminIncomingRoute,
   AdminInsightsRoute: AdminInsightsRoute,
   AdminStudioRoute: AdminStudioRoute,
 }
@@ -405,3 +426,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -7,6 +7,7 @@ import {
   ImageIcon,
   ScanEye,
   Palette,
+  Upload,
   Link2,
   ExternalLink,
   LogOut,
@@ -55,6 +56,7 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
+  { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
   { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
   { to: "/admin/image-qa", label: "Image QA", icon: ImageIcon },
   { to: "/admin/colors", label: "Color QA", icon: Palette },
@@ -73,6 +75,7 @@ const CRUMB_LABELS: Record<string, string> = {
   "/admin/colors": "Color QA",
   "/admin/image-qa": "Image QA",
   "/admin/image-health": "Image health",
+  "/admin/incoming": "Incoming photos",
 };
 
 function useBreadcrumbs(pathname: string) {
