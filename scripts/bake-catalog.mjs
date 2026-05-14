@@ -372,6 +372,37 @@ for (const p of rolled) {
 // filenames than the owner-uploaded inventory PNGs of the same plate).
 // Patterns are matched as case-insensitive substrings against the image URL.
 // Add only after eyeballing the modal; do NOT use this to mass-prune.
+const storagePublicBase = `${process.env.SUPABASE_URL}/storage/v1/object/public`;
+const storageUrl = (bucket, key) => encodeURI(`${storagePublicBase}/${bucket}/${key}`);
+const IMAGE_URL_OVERRIDES = {
+  'anastasia-antique-silver-collection': [
+    ['anastasia+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/ANASTASIA Set.png')],
+  ],
+  'lapis-deep-blue-plates': [
+    ['lapis+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/LAPIS Set.png')],
+    ['lapis+blue+10.5.png', storageUrl('squarespace-mirror', 'squarespace/_extras/893a473043ba-LAPIS_Blue_10.5.png')],
+  ],
+  'lavanya-stoneware-collection': [
+    ['lavanya+set.png', storageUrl('inventory', 'inventory/TABLEWEAR/LAVANYA Set.png')],
+    ['lavanya+6+plate.png', storageUrl('squarespace-mirror', 'squarespace/_extras/5d1461f72f25-LAVANYA_6_Plate.png')],
+  ],
+};
+let storageOverridesApplied = 0;
+for (const p of rolled) {
+  const overrides = IMAGE_URL_OVERRIDES[p.slug];
+  if (!overrides || !Array.isArray(p.images)) continue;
+  for (const img of p.images) {
+    const url = typeof img === 'string' ? img : img.url || '';
+    const match = overrides.find(([pat]) => url.toLowerCase().includes(pat));
+    if (!match) continue;
+    if (typeof img === 'string') continue;
+    img.url = match[1];
+    storageOverridesApplied++;
+  }
+  if (p.primaryImage && p.images[0] && typeof p.images[0] !== 'string') p.primaryImage = p.images[0];
+}
+console.log(`[image-storage-overrides] rewired ${storageOverridesApplied} flagged images to storage bucket URLs`);
+
 const IMAGE_BLOCKLIST = {
   'anastasia-antique-silver-collection': [
     '0c5b546f9f84-anastasia_set.png', // mirror dup of squarespace ANASTASIA+Set.png
