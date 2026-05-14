@@ -188,12 +188,23 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
     // hero member's images first, then any additional ones from siblings).
     const withMostImages = [...sorted].sort((a, b) => (b.images?.length || 0) - (a.images?.length || 0))[0];
     const seen = new Set();
+    const seenKeys = new Set();
     const mergedImages = [];
+    const keyFor = (url) => {
+      try {
+        const path = new URL(url).pathname;
+        const base = decodeURIComponent(path.split('/').pop() || '')
+          .replace(/\+/g, ' ').trim().toLowerCase();
+        return base || url;
+      } catch { return url; }
+    };
     const pushImg = (img) => {
       if (!img) return;
       const url = typeof img === 'string' ? img : img.url || img.src || '';
-      if (!url || seen.has(url)) return;
-      seen.add(url);
+      if (!url) return;
+      const k = keyFor(url);
+      if (seen.has(url) || seenKeys.has(k)) return;
+      seen.add(url); seenKeys.add(k);
       mergedImages.push(img);
     };
     for (const img of (withMostImages.images || [])) pushImg(img);
