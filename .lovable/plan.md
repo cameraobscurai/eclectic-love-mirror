@@ -1,63 +1,23 @@
-# Server-side 301 redirects for legacy slugs
+# Mobile fix — Evolution manifesto vertical centering
 
-Replace the 7 client-side `<Navigate>` redirect files with TanStack Start **server route handlers** that return a real HTTP `301 Moved Permanently` + `Location` header. This is what Google needs to consolidate the old URLs into the canonical ones.
+## Problem
+On mobile, the manifesto column uses `items-end ... pb-[2vh]`, pinning the text to the bottom of the available area above the destination cards. Result: big gap above, no gap below.
 
-## Why it's safe
+## Fix (one file: `src/components/home/EvolutionNarrative.tsx`)
 
-- Ripgrep confirms **zero internal `<Link to=...>` references** to any of these slugs. They exist only as inbound URLs from Google / GBP.
-- No layout impact — these files don't render any UI today (just `<Navigate>`), and they won't render any UI after.
-- Sitemap, root layout, header/footer untouched.
+1. **Line 246** — drop the mobile-only bottom alignment so the column centers on every breakpoint:
+   ```diff
+   - <div className="flex-1 min-h-0 flex items-end md:items-center w-full pb-[2vh] md:pb-0 pt-0 md:pt-0">
+   + <div className="flex-1 min-h-0 flex items-center w-full">
+   ```
 
-## Slug → destination map (unchanged)
+2. **Line 291** — tighten the mobile line-size floor so 17 lines + 4 stanza gaps don't clip on short phones (iPhone SE / 13 mini, 568–667pt tall):
+   ```diff
+   - "clamp(0.95rem, 0.7rem + 0.45vw, 1.25rem)"
+   + "clamp(0.85rem, 0.65rem + 0.45vw, 1.25rem)"
+   ```
 
-| Legacy slug       | 301 to        |
-| ----------------- | ------------- |
-| `/colorado-1`     | `/collection` |
-| `/inventory`      | `/collection` |
-| `/event-gallery`  | `/gallery`    |
-| `/about`          | `/`           |
-| `/the-hive`       | `/`           |
-| `/the-hive3`      | `/`           |
-| `/careers`        | `/`           |
+That's it. Desktop schedule untouched (clamp upper bound and all phase math unchanged).
 
-## Files to rewrite
-
-Each of these becomes a server-only route (no `component`, no `Navigate`):
-
-- `src/routes/colorado-1.tsx`
-- `src/routes/inventory.tsx`
-- `src/routes/event-gallery.tsx`
-- `src/routes/about.tsx`
-- `src/routes/the-hive.tsx`
-- `src/routes/the-hive3.tsx`
-- `src/routes/careers.tsx`
-
-## Pattern (technical)
-
-```ts
-import { createFileRoute } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/colorado-1")({
-  server: {
-    handlers: {
-      GET: () =>
-        new Response(null, {
-          status: 301,
-          headers: { Location: "/collection" },
-        }),
-    },
-  },
-});
-```
-
-The server handler runs before SSR, so the browser never gets HTML or JS — just a 301 + `Location` header. Crawlers treat this as canonical signal transfer.
-
-## Verification after build
-
-1. `curl -I https://eclectichive.com/colorado-1` → expect `HTTP/2 301` + `location: /collection`
-2. Spot-check 2 more (`/about`, `/event-gallery`)
-3. Once confirmed live, request reindex of the 7 URLs in Google Search Console (Inspect → Request Indexing)
-
-## Out of scope
-
-- The GBP listing menu links (`Colorado inventory`, `Careers`, etc.) — still need to be fixed in business.google.com once you have access. 301s help SEO consolidation but the user-visible labels in Maps come from GBP, not from your site.
+## Verify
+Mobile screenshot at 390×844 + 375×667 — confirm equal gap above manifesto and above destination cards, no clipping.
