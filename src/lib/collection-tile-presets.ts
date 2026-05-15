@@ -62,12 +62,12 @@ export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
   "cocktail-tables": WIDE_LOW,
   rugs: WIDE_LOW,
   "furs-pelts": WIDE_LOW,
+  bar: WIDE_LOW,
 
   // Tall-narrow
   "side-tables": TALL_NARROW,
   lighting: TALL_NARROW,
   "large-decor": TALL_NARROW,
-  bar: TALL_NARROW,
   storage: TALL_NARROW,
 
   // Small object
