@@ -242,6 +242,7 @@ export function useStyleBoard(inquiryId: string) {
           status: status ?? state.status,
           inspo: state.inspo.map(({ id, name, storage_path }) => ({ id, name, storage_path })),
           pinned: state.pinned,
+          pinNotes: state.pinNotes,
           palette: state.palette as unknown[],
           tones: (state.tones ?? {}) as Record<string, unknown>,
           insights: state.insights as unknown[],
@@ -252,13 +253,36 @@ export function useStyleBoard(inquiryId: string) {
         ...s,
         boardId: row.id,
         status: row.status as BoardStatus,
+        shareToken: row.share_token ?? s.shareToken,
         saving: false,
         dirty: false,
       }));
+      return row;
     } catch (e) {
       setState((s) => ({ ...s, saving: false, error: (e as Error).message }));
+      return null;
     }
-  }, [inquiryId, state.boardId, state.status, state.inspo, state.pinned, state.palette, state.tones, state.insights, state.curatorNotes]);
+  }, [inquiryId, state.boardId, state.status, state.inspo, state.pinned, state.pinNotes, state.palette, state.tones, state.insights, state.curatorNotes]);
+
+  const send = useCallback(async () => {
+    setState((s) => ({ ...s, sending: true, error: null }));
+    try {
+      const saved = await save();
+      const boardId = saved?.id ?? state.boardId;
+      if (!boardId) throw new Error("Save first");
+      const row = (await markBoardSent({ data: { boardId } })) as import("@/server/studio.functions").StyleBoardRow;
+      setState((s) => ({
+        ...s,
+        sending: false,
+        status: "sent",
+        shareToken: row.share_token,
+      }));
+      return row.share_token;
+    } catch (e) {
+      setState((s) => ({ ...s, sending: false, error: (e as Error).message }));
+      return null;
+    }
+  }, [save, state.boardId]);
 
   return {
     state,
@@ -267,8 +291,10 @@ export function useStyleBoard(inquiryId: string) {
     removeInspo,
     pin,
     unpin,
+    setPinNote,
     setNotes,
     analyze,
     save,
+    send,
   };
 }
