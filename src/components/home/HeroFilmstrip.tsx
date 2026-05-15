@@ -236,6 +236,8 @@ interface FrameProps {
   reduced: boolean;
   isHover: boolean;
   className?: string;
+  /** Whether this frame is part of the always-visible viewport (eager poster). */
+  priority?: boolean;
   onHoverChange: (id: string | null) => void;
   onOpen: (rect: DOMRect) => void;
   onManualPlay: (id: string) => void;
