@@ -300,13 +300,11 @@ function FilmstripFrame({
           style={{ y: innerY, willChange: "transform" }}
         >
           {clip.poster && (
-            <img
-              src={clip.poster}
-              alt=""
-              aria-hidden
-              loading="eager"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
+            <PosterPicture
+              clip={clip}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              className="absolute inset-0"
             />
           )}
 
