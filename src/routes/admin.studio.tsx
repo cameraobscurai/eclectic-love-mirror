@@ -219,15 +219,15 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               <Save className="h-3.5 w-3.5" />
               {state.saving ? "Saving…" : "Save"}
             </button>
-            {state.status !== "ready" && (
+            {state.status !== "sent" && (
               <button
                 type="button"
-                onClick={() => save("ready")}
-                disabled={state.saving}
-                className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+                onClick={async () => { const t = await send(); if (t) setCopied(false); }}
+                disabled={state.sending || state.saving || totalImages === 0}
+                className="px-4 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
               >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Mark ready
+                {state.sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                {state.sending ? "Sending…" : "Send to client"}
               </button>
             )}
             {state.error && (
@@ -237,6 +237,28 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               </span>
             )}
           </div>
+
+          {state.shareToken && (
+            <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-2">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">Share link</p>
+              <code className="flex-1 text-[11px] font-sans normal-case truncate text-charcoal/80">
+                {typeof window !== "undefined" ? `${window.location.origin}/studio/${state.shareToken}` : `/studio/${state.shareToken}`}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window === "undefined") return;
+                  navigator.clipboard.writeText(`${window.location.origin}/studio/${state.shareToken}`);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 hover:text-charcoal inline-flex items-center gap-1"
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          )}
 
           <div className="mt-8 pt-6 border-t border-charcoal/10">
             <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">
