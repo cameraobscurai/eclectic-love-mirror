@@ -2,6 +2,7 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { getTilePreset } from "@/lib/collection-tile-presets";
 
 
 interface Props {
@@ -22,6 +23,10 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
   const dim = isAnyHovered && !isHovered;
   const group = getProductBrowseGroup(product);
   const padClass = group && WIDE_LOW_GROUPS.has(group) ? "p-[18%]" : "p-[8%]";
+  // Carry the dining width-cap into wall view so banquettes/wide tables
+  // don't blow out next to chairs/pedestals.
+  const preset = getTilePreset(group);
+  const maxAspect = preset.maxAspect;
 
   return (
     <motion.button
@@ -39,12 +44,13 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       style={{ willChange: "opacity" }}
       aria-label={product.title}
     >
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 flex items-end justify-center">
         {url && (
           <img
             src={url}
             alt=""
-            className={`w-full h-full object-contain ${padClass} pointer-events-none select-none`}
+            className={`h-full w-full object-contain ${padClass} pointer-events-none select-none`}
+            style={maxAspect ? { maxWidth: `calc(100% * ${maxAspect} / 1.6)`, margin: "0 auto" } : undefined}
             loading="lazy"
             decoding="async"
             draggable={false}
