@@ -126,17 +126,18 @@ const suggestionGroupLabel: React.CSSProperties = {
 export const Route = createFileRoute("/collection")({
   head: () => ({
     meta: [
-      { title: "Hive Signature Collection — Inventory | Eclectic Hive" },
+      { title: "Event Furniture & Decor Rentals — Denver, CO | Eclectic Hive" },
       {
         name: "description",
         content:
-          "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental from Eclectic Hive.",
+          "Browse 600+ event rental pieces — sofas, lounge seating, tables, bars, lighting, tableware, rugs, and bespoke decor. Curated for weddings and brand events across Denver and Colorado.",
       },
-      { property: "og:title", content: "Hive Signature Collection — Eclectic Hive" },
+      { name: "keywords", content: "event furniture rental denver, wedding rentals denver, lounge furniture rental colorado, bar rental denver, tableware rental denver" },
+      { property: "og:title", content: "Event Rentals — Hive Signature Collection" },
       {
         property: "og:description",
         content:
-          "A living inventory of furniture, lighting, tableware, and bespoke objects available for rental.",
+          "600+ pieces of curated event furniture, lighting, and tableware available for rental in Denver and beyond.",
       },
       { property: "og:url", content: "https://eclectichive.com/collection" },
     ],

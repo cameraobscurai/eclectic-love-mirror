@@ -10,13 +10,16 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Eclectic Hive — Luxury Event Design | Denver" },
+      { title: "Eclectic Hive — Denver Event Rentals, Wedding Furniture & Design" },
       {
         name: "description",
         content:
-          "Two parts luxe, one part regal, a dash of edge. Full-service event design, custom fabrication, and furniture rentals in Denver, Colorado.",
+          "Denver's luxury event rental house. Furniture, lighting & tableware for weddings, galas, and brand events — plus full-service design and custom fabrication across Colorado.",
       },
-      { property: "og:title", content: "Eclectic Hive — Luxury Event Design | Denver" },
+      { name: "keywords", content: "denver event rentals, denver wedding rentals, colorado event furniture rental, luxury event design denver, wedding furniture rental denver, custom fabrication colorado, event production denver" },
+      { name: "geo.region", content: "US-CO" },
+      { name: "geo.placename", content: "Denver" },
+      { property: "og:title", content: "Eclectic Hive — Denver Event Rentals & Luxury Design" },
       {
         property: "og:description",
         content:
@@ -43,8 +46,10 @@ export const Route = createFileRoute("/")({
               "@id": "https://eclectichive.com/#org",
               name: "Eclectic Hive",
               url: "https://eclectichive.com/",
+              logo: "https://eclectichive.com/favicon.ico",
               email: "info@eclectichive.com",
               areaServed: "Worldwide",
+              sameAs: ["https://www.instagram.com/eclectichive/"],
             },
             {
               "@type": "LocalBusiness",
@@ -52,13 +57,35 @@ export const Route = createFileRoute("/")({
               name: "Eclectic Hive",
               url: "https://eclectichive.com/",
               email: "info@eclectichive.com",
+              image: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+              priceRange: "$$$",
               description:
-                "Full-service luxury event design, custom fabrication, and furniture rentals based in Denver, Colorado.",
+                "Full-service luxury event design, custom fabrication, and furniture rentals based in Denver, Colorado. Weddings, galas, and brand events.",
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Denver",
                 addressRegion: "CO",
                 addressCountry: "US",
+              },
+              geo: { "@type": "GeoCoordinates", latitude: 39.7392, longitude: -104.9903 },
+              areaServed: [
+                { "@type": "City", name: "Denver" },
+                { "@type": "City", name: "Boulder" },
+                { "@type": "City", name: "Aspen" },
+                { "@type": "City", name: "Vail" },
+                { "@type": "City", name: "Telluride" },
+                { "@type": "State", name: "Colorado" },
+              ],
+              sameAs: ["https://www.instagram.com/eclectichive/"],
+              hasOfferCatalog: {
+                "@type": "OfferCatalog",
+                name: "Services",
+                itemListElement: [
+                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Event Design" } },
+                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Custom Fabrication" } },
+                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Furniture & Decor Rentals" } },
+                  { "@type": "Offer", itemOffered: { "@type": "Service", name: "Wedding Production" } },
+                ],
               },
             },
           ],

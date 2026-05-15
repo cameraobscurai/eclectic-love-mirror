@@ -96,20 +96,20 @@ export const Route = createFileRoute("/atelier")({
   head: () => ({
     meta: [
       {
-        title: "Atelier by The Hive — Design + Fabrication",
+        title: "Event Design & Custom Fabrication — Denver | Eclectic Hive Atelier",
       },
       {
         name: "description",
         content:
-          "Atelier by The Hive: designers, producers, and a fabrication house. Imagined. Designed. Realized.",
+          "The Atelier is our Denver design house and fabrication studio — concept, design, and build for weddings, galas, and brand environments. Imagined. Designed. Realized.",
       },
       {
         property: "og:title",
-        content: "Atelier by The Hive — Eclectic Hive",
+        content: "Atelier — Event Design & Fabrication, Denver",
       },
       {
         property: "og:description",
-        content: "Imagined. Designed. Realized. Design + fabrication studio.",
+        content: "Design + fabrication studio for weddings, galas, and brand events. Denver, Colorado.",
       },
       { property: "og:url", content: "https://eclectichive.com/atelier" },
       {
