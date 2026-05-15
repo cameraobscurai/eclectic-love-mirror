@@ -49,14 +49,14 @@ const RATE_LIMIT_MS = 30_000;
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Eclectic Hive" },
+      { title: "Inquire — Denver Event Rentals & Design | Eclectic Hive" },
       {
         name: "description",
         content:
-          "Inquire about luxury event design, custom fabrication, and rentals with Eclectic Hive — Denver, Colorado.",
+          "Plan your wedding, gala, or brand event with Eclectic Hive — Denver's luxury event design and rental studio. Tell us about your project.",
       },
-      { property: "og:title", content: "Contact — Eclectic Hive" },
-      { property: "og:description", content: `Inquiries: ${SUPPORT_EMAIL}` },
+      { property: "og:title", content: "Inquire — Eclectic Hive, Denver" },
+      { property: "og:description", content: `Denver event design + rentals · ${SUPPORT_EMAIL}` },
       { property: "og:url", content: "https://eclectichive.com/contact" },
     ],
     links: [{ rel: "canonical", href: "https://eclectichive.com/contact" }],
