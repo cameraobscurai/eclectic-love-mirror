@@ -251,6 +251,7 @@ function FilmstripFrame({
   reduced,
   isHover,
   className,
+  priority = false,
   onHoverChange,
   onOpen,
   onManualPlay,
