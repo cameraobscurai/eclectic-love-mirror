@@ -177,7 +177,14 @@ export function useStyleBoard(inquiryId: string) {
   }, []);
 
   const unpin = useCallback((rmsId: string) => {
-    setState((s) => ({ ...s, pinned: s.pinned.filter((x) => x !== rmsId), dirty: true }));
+    setState((s) => {
+      const { [rmsId]: _drop, ...rest } = s.pinNotes;
+      return { ...s, pinned: s.pinned.filter((x) => x !== rmsId), pinNotes: rest, dirty: true };
+    });
+  }, []);
+
+  const setPinNote = useCallback((rmsId: string, note: string) => {
+    setState((s) => ({ ...s, pinNotes: { ...s.pinNotes, [rmsId]: note }, dirty: true }));
   }, []);
 
   const setNotes = useCallback((notes: string) => {
