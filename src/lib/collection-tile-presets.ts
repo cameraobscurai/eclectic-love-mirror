@@ -51,10 +51,10 @@ const MIXED: TilePreset = {
 // pedestal/round tables blow past the MIXED cap. Tighten cap + heavier
 // top pad so tall silhouettes shrink to the row baseline.
 const DINING: TilePreset = {
-  mediaH: "clamp(190px, 13.5vw, 240px)",
-  pad: "pt-[12%] pb-[3%] px-[7%]",
+  mediaH: "clamp(170px, 12vw, 215px)",
+  pad: "pt-[14%] pb-[3%] px-[7%]",
   anchor: "bottom",
-  maxAspect: 1.25,
+  maxAspect: 1.35,
 };
 
 export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
