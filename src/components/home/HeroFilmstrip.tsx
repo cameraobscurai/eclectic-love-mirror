@@ -5,6 +5,7 @@ import { Play, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
+import { PosterPicture } from "./PosterPicture";
 
 /**
  * HeroFilmstrip
