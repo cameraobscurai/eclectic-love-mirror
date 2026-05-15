@@ -8,14 +8,23 @@ const STORAGE_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/pub
 export type FilmstripClip = {
   id: string;       // "01" … "05"
   season: string;   // "Spring", "Summer", …
+  /** Legacy single-format poster (JPG). Kept for `<video poster>` attribute
+   *  which only accepts a single URL. */
   poster: string;
+  /** Modern format siblings for `<picture>` source order (AVIF → WebP → JPG). */
+  posterAvif?: string;
+  posterWebp?: string;
   src?: { mp4?: string; webm?: string };
   label?: string;   // sr-only caption
-  /** Width / height of the source clip. Used to seed the lightbox figure
-   *  before video metadata loads, so the zoom-in target matches the real
-   *  aspect from frame zero (no letterbox flash). Defaults to 3/4. */
+  /** Width / height of the source clip. Defaults to 3/4. */
   aspect?: number;
 };
+
+const posterSet = (id: string) => ({
+  poster: `/media/home/${id}-poster.jpg`,
+  posterWebp: `/media/home/${id}-poster.webp`,
+  posterAvif: `/media/home/${id}-poster.avif`,
+});
 
 // Source clips are portrait phone footage (9:16).
 const PORTRAIT = 9 / 16;
