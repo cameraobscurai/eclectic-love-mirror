@@ -1,5 +1,10 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/event-gallery")({
-  component: () => <Navigate to="/gallery" replace />,
+  server: {
+    handlers: {
+      GET: () =>
+        new Response(null, { status: 301, headers: { Location: "/gallery" } }),
+    },
+  },
 });
