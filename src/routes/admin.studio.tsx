@@ -2,10 +2,10 @@
 // Not in the admin nav yet; reach it via /admin/insights row "Studio →" link
 // or by URL: /admin/studio?inquiry=<uuid>.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, Save, Send, AlertCircle, Copy, Check } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { useStyleBoard } from "@/hooks/use-style-board";
@@ -15,6 +15,7 @@ import { PaletteTab } from "@/components/studio/PaletteTab";
 import { TonesTab } from "@/components/studio/TonesTab";
 import { InsightsTab } from "@/components/studio/InsightsTab";
 import { CatalogPickerTab } from "@/components/studio/CatalogPickerTab";
+import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.functions";
 
 const search = z.object({ inquiry: z.string().uuid().optional() });
 
