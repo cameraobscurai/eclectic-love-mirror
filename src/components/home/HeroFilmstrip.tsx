@@ -206,13 +206,10 @@ function MobilePosterTile({
         className="relative block w-full overflow-hidden bg-[#f1f1f1] aspect-[3/4] focus:outline-none"
       >
         {clip.poster && (
-          <img
-            src={clip.poster}
-            alt=""
-            aria-hidden
+          <PosterPicture
+            clip={clip}
             loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0"
           />
         )}
       </button>
