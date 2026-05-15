@@ -41,21 +41,65 @@ function StudioPage() {
 }
 
 function NoInquiry() {
+  const [boards, setBoards] = useState<StudioBoardSummary[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    listStudioBoards()
+      .then((rows) => { if (alive) setBoards(rows as StudioBoardSummary[]); })
+      .catch((e: Error) => { if (alive) setErr(e.message); });
+    return () => { alive = false; };
+  }, []);
+
+  const groups: Record<"draft" | "ready" | "sent", StudioBoardSummary[]> = { draft: [], ready: [], sent: [] };
+  for (const b of boards ?? []) groups[b.status].push(b);
+
   return (
-    <div className="min-h-[calc(100vh-3rem)] grid place-items-center bg-cream text-charcoal p-12 text-center">
-      <div className="max-w-md">
+    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal p-8 lg:p-12">
+      <header className="mb-8">
         <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Studio · Internal</p>
-        <h1 className="mt-3 font-display text-3xl uppercase tracking-[0.04em]">No inquiry selected</h1>
-        <p className="mt-4 text-[12px] uppercase tracking-[0.18em] text-charcoal/60 leading-relaxed">
-          Open the inbox and click "Studio →" on any inquiry to begin a style board.
+        <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.04em]">Style boards</h1>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
+          Open a board, or start one from the inbox →{" "}
+          <Link to="/admin/insights" className="underline underline-offset-4">Inbox</Link>
         </p>
-        <Link
-          to="/admin/insights"
-          className="mt-6 inline-block text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4"
-        >
-          Open inbox
-        </Link>
-      </div>
+      </header>
+
+      {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
+      {boards === null && !err && (
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">Loading…</p>
+      )}
+
+      {boards && boards.length === 0 && (
+        <p className="text-[12px] uppercase tracking-[0.18em] text-charcoal/50">No boards yet.</p>
+      )}
+
+      {boards && (["draft", "ready", "sent"] as const).map((status) => groups[status].length > 0 && (
+        <section key={status} className="mb-10">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-3">{status} · {groups[status].length}</h2>
+          <ul className="divide-y divide-charcoal/10 border-y border-charcoal/10">
+            {groups[status].map((b) => (
+              <li key={b.id}>
+                <Link
+                  to="/admin/studio"
+                  search={{ inquiry: b.inquiry_id }}
+                  className="grid grid-cols-12 items-center gap-3 py-3 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
+                >
+                  <span className="col-span-3 text-[12px] font-display truncate normal-case">{b.inquiry_name}</span>
+                  <span className="col-span-5 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 tabular-nums">
+                    {b.pinned_count}p · {b.inspo_count}i
+                  </span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right">
+                    {new Date(b.updated_at).toLocaleDateString()}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }
@@ -63,8 +107,9 @@ function NoInquiry() {
 type Tab = "palette" | "tones" | "insights" | "catalog";
 
 function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
-  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setNotes, analyze, save } = useStyleBoard(inquiryId);
+  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send } = useStyleBoard(inquiryId);
   const [tab, setTab] = useState<Tab>("palette");
+  const [copied, setCopied] = useState(false);
 
   if (!state.ready) {
     return (
