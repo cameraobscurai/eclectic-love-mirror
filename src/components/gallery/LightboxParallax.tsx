@@ -17,7 +17,7 @@ import { useEffect, useRef, type ReactNode } from "react";
  *    the in-flight image from being thrown sideways mid-decode.
  */
 
-const MAX_PX = 10; // ±10px on either axis. Whisper, not gimmick.
+const MAX_PX = 0; // Disabled — pointer drift was making viewers motion-sick.
 const SCALE = 1.04; // 4% overscale hides the drift at the frame edge.
 const SETTLE_MS = 700; // ease-back to center after pointer leaves.
 const SWIPE_DECAY_MS = 800; // mobile drift fades back to rest.
