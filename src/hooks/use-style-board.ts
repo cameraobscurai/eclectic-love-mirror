@@ -120,10 +120,12 @@ export function useStyleBoard(inquiryId: string) {
           inquiry: ws.inquiry,
           inspo: hydrated,
           pinned,
+          pinNotes: (board?.pin_notes as Record<string, string>) ?? {},
           palette: (board?.palette as ColorInfo[]) ?? [],
           tones: ((board?.tones as unknown) as ToneAnalysis) ?? null,
           insights: (board?.insights as DesignInsight[]) ?? [],
           curatorNotes: board?.curator_notes ?? "",
+          shareToken: board?.share_token ?? null,
           dirty: false,
         }));
       } catch (e) {
