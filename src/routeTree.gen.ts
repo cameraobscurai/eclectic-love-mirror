@@ -28,6 +28,7 @@ import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudioTokenRouteImport } from './routes/studio.$token'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
@@ -130,6 +131,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioTokenRoute = StudioTokenRouteImport.update({
+  id: '/studio/$token',
+  path: '/studio/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/studio/$token': typeof StudioTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/studio/$token': typeof StudioTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/studio/$token': typeof StudioTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/studio/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/studio/$token'
   id:
     | '__root__'
     | '/'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/studio/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
+  StudioTokenRoute: typeof StudioTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -484,6 +497,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio/$token': {
+      id: '/studio/$token'
+      path: '/studio/$token'
+      fullPath: '/studio/$token'
+      preLoaderRoute: typeof StudioTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -569,6 +589,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
+  StudioTokenRoute: StudioTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
