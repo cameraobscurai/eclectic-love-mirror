@@ -221,8 +221,8 @@ function HomePage() {
           )}
           style={{
             paddingTop: "var(--fold-strip)",
-            transitionDuration: "1200ms",
-            transitionDelay: loaded ? "650ms" : "0ms",
+            transitionDuration: "650ms",
+            transitionDelay: loaded ? "200ms" : "0ms",
           }}
         >
           <HeroFilmstrip />
