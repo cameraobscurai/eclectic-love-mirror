@@ -13,6 +13,7 @@ import {
   getInspoSignedUrls,
   saveStyleBoard,
   deleteInspoFile,
+  markBoardSent,
   type InspoImageRecord,
   type StudioInquiry,
 } from "@/server/studio.functions";
@@ -31,13 +32,16 @@ interface State {
   inquiry: StudioInquiry | null;
   inspo: InspoTile[];
   pinned: string[];
+  pinNotes: Record<string, string>;
   palette: ColorInfo[];
   tones: ToneAnalysis | null;
   insights: DesignInsight[];
   perImage: AnalysisResult["perImage"];
   curatorNotes: string;
+  shareToken: string | null;
   analyzing: boolean;
   saving: boolean;
+  sending: boolean;
   dirty: boolean;
   error: string | null;
 }
@@ -49,13 +53,16 @@ const empty = (): State => ({
   inquiry: null,
   inspo: [],
   pinned: [],
+  pinNotes: {},
   palette: [],
   tones: null,
   insights: [],
   perImage: [],
   curatorNotes: "",
+  shareToken: null,
   analyzing: false,
   saving: false,
+  sending: false,
   dirty: false,
   error: null,
 });
@@ -113,10 +120,12 @@ export function useStyleBoard(inquiryId: string) {
           inquiry: ws.inquiry,
           inspo: hydrated,
           pinned,
+          pinNotes: (board?.pin_notes as Record<string, string>) ?? {},
           palette: (board?.palette as ColorInfo[]) ?? [],
           tones: ((board?.tones as unknown) as ToneAnalysis) ?? null,
           insights: (board?.insights as DesignInsight[]) ?? [],
           curatorNotes: board?.curator_notes ?? "",
+          shareToken: board?.share_token ?? null,
           dirty: false,
         }));
       } catch (e) {
@@ -168,7 +177,14 @@ export function useStyleBoard(inquiryId: string) {
   }, []);
 
   const unpin = useCallback((rmsId: string) => {
-    setState((s) => ({ ...s, pinned: s.pinned.filter((x) => x !== rmsId), dirty: true }));
+    setState((s) => {
+      const { [rmsId]: _drop, ...rest } = s.pinNotes;
+      return { ...s, pinned: s.pinned.filter((x) => x !== rmsId), pinNotes: rest, dirty: true };
+    });
+  }, []);
+
+  const setPinNote = useCallback((rmsId: string, note: string) => {
+    setState((s) => ({ ...s, pinNotes: { ...s.pinNotes, [rmsId]: note }, dirty: true }));
   }, []);
 
   const setNotes = useCallback((notes: string) => {
@@ -226,6 +242,7 @@ export function useStyleBoard(inquiryId: string) {
           status: status ?? state.status,
           inspo: state.inspo.map(({ id, name, storage_path }) => ({ id, name, storage_path })),
           pinned: state.pinned,
+          pinNotes: state.pinNotes,
           palette: state.palette as unknown[],
           tones: (state.tones ?? {}) as Record<string, unknown>,
           insights: state.insights as unknown[],
@@ -236,13 +253,36 @@ export function useStyleBoard(inquiryId: string) {
         ...s,
         boardId: row.id,
         status: row.status as BoardStatus,
+        shareToken: row.share_token ?? s.shareToken,
         saving: false,
         dirty: false,
       }));
+      return row;
     } catch (e) {
       setState((s) => ({ ...s, saving: false, error: (e as Error).message }));
+      return null;
     }
-  }, [inquiryId, state.boardId, state.status, state.inspo, state.pinned, state.palette, state.tones, state.insights, state.curatorNotes]);
+  }, [inquiryId, state.boardId, state.status, state.inspo, state.pinned, state.pinNotes, state.palette, state.tones, state.insights, state.curatorNotes]);
+
+  const send = useCallback(async () => {
+    setState((s) => ({ ...s, sending: true, error: null }));
+    try {
+      const saved = await save();
+      const boardId = saved?.id ?? state.boardId;
+      if (!boardId) throw new Error("Save first");
+      const row = (await markBoardSent({ data: { boardId } })) as import("@/server/studio.functions").StyleBoardRow;
+      setState((s) => ({
+        ...s,
+        sending: false,
+        status: "sent",
+        shareToken: row.share_token,
+      }));
+      return row.share_token;
+    } catch (e) {
+      setState((s) => ({ ...s, sending: false, error: (e as Error).message }));
+      return null;
+    }
+  }, [save, state.boardId]);
 
   return {
     state,
@@ -251,8 +291,10 @@ export function useStyleBoard(inquiryId: string) {
     removeInspo,
     pin,
     unpin,
+    setPinNote,
     setNotes,
     analyze,
     save,
+    send,
   };
 }

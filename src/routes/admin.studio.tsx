@@ -2,10 +2,10 @@
 // Not in the admin nav yet; reach it via /admin/insights row "Studio →" link
 // or by URL: /admin/studio?inquiry=<uuid>.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, Save, Send, AlertCircle, Copy, Check } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { useStyleBoard } from "@/hooks/use-style-board";
@@ -15,6 +15,7 @@ import { PaletteTab } from "@/components/studio/PaletteTab";
 import { TonesTab } from "@/components/studio/TonesTab";
 import { InsightsTab } from "@/components/studio/InsightsTab";
 import { CatalogPickerTab } from "@/components/studio/CatalogPickerTab";
+import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.functions";
 
 const search = z.object({ inquiry: z.string().uuid().optional() });
 
@@ -40,21 +41,65 @@ function StudioPage() {
 }
 
 function NoInquiry() {
+  const [boards, setBoards] = useState<StudioBoardSummary[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    listStudioBoards()
+      .then((rows) => { if (alive) setBoards(rows as StudioBoardSummary[]); })
+      .catch((e: Error) => { if (alive) setErr(e.message); });
+    return () => { alive = false; };
+  }, []);
+
+  const groups: Record<"draft" | "ready" | "sent", StudioBoardSummary[]> = { draft: [], ready: [], sent: [] };
+  for (const b of boards ?? []) groups[b.status].push(b);
+
   return (
-    <div className="min-h-[calc(100vh-3rem)] grid place-items-center bg-cream text-charcoal p-12 text-center">
-      <div className="max-w-md">
+    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal p-8 lg:p-12">
+      <header className="mb-8">
         <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Studio · Internal</p>
-        <h1 className="mt-3 font-display text-3xl uppercase tracking-[0.04em]">No inquiry selected</h1>
-        <p className="mt-4 text-[12px] uppercase tracking-[0.18em] text-charcoal/60 leading-relaxed">
-          Open the inbox and click "Studio →" on any inquiry to begin a style board.
+        <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.04em]">Style boards</h1>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
+          Open a board, or start one from the inbox →{" "}
+          <Link to="/admin/insights" className="underline underline-offset-4">Inbox</Link>
         </p>
-        <Link
-          to="/admin/insights"
-          className="mt-6 inline-block text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4"
-        >
-          Open inbox
-        </Link>
-      </div>
+      </header>
+
+      {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
+      {boards === null && !err && (
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">Loading…</p>
+      )}
+
+      {boards && boards.length === 0 && (
+        <p className="text-[12px] uppercase tracking-[0.18em] text-charcoal/50">No boards yet.</p>
+      )}
+
+      {boards && (["draft", "ready", "sent"] as const).map((status) => groups[status].length > 0 && (
+        <section key={status} className="mb-10">
+          <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-3">{status} · {groups[status].length}</h2>
+          <ul className="divide-y divide-charcoal/10 border-y border-charcoal/10">
+            {groups[status].map((b) => (
+              <li key={b.id}>
+                <Link
+                  to="/admin/studio"
+                  search={{ inquiry: b.inquiry_id }}
+                  className="grid grid-cols-12 items-center gap-3 py-3 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
+                >
+                  <span className="col-span-3 text-[12px] font-display truncate normal-case">{b.inquiry_name}</span>
+                  <span className="col-span-5 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 tabular-nums">
+                    {b.pinned_count}p · {b.inspo_count}i
+                  </span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right">
+                    {new Date(b.updated_at).toLocaleDateString()}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </div>
   );
 }
@@ -62,8 +107,9 @@ function NoInquiry() {
 type Tab = "palette" | "tones" | "insights" | "catalog";
 
 function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
-  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setNotes, analyze, save } = useStyleBoard(inquiryId);
+  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send } = useStyleBoard(inquiryId);
   const [tab, setTab] = useState<Tab>("palette");
+  const [copied, setCopied] = useState(false);
 
   if (!state.ready) {
     return (
@@ -107,14 +153,23 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               {state.pinned.map((rms) => {
                 const p = catalog.get(rms);
                 return (
-                  <li key={rms} className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-charcoal/75">
-                    {p?.primaryImage?.url ? (
-                      <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
-                    ) : (
-                      <span className="w-7 h-7 bg-charcoal/5" />
-                    )}
-                    <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
-                    <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+                  <li key={rms} className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {p?.primaryImage?.url ? (
+                        <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
+                      ) : (
+                        <span className="w-7 h-7 bg-charcoal/5" />
+                      )}
+                      <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
+                      <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+                    </div>
+                    <input
+                      type="text"
+                      value={state.pinNotes[rms] ?? ""}
+                      onChange={(e) => setPinNote(rms, e.target.value)}
+                      placeholder="why this piece…"
+                      className="w-full bg-transparent border-b border-charcoal/10 px-0 py-1 text-[11px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/50"
+                    />
                   </li>
                 );
               })}
@@ -164,15 +219,15 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               <Save className="h-3.5 w-3.5" />
               {state.saving ? "Saving…" : "Save"}
             </button>
-            {state.status !== "ready" && (
+            {state.status !== "sent" && (
               <button
                 type="button"
-                onClick={() => save("ready")}
-                disabled={state.saving}
-                className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+                onClick={async () => { const t = await send(); if (t) setCopied(false); }}
+                disabled={state.sending || state.saving || totalImages === 0}
+                className="px-4 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
               >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Mark ready
+                {state.sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                {state.sending ? "Sending…" : "Send to client"}
               </button>
             )}
             {state.error && (
@@ -182,6 +237,28 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               </span>
             )}
           </div>
+
+          {state.shareToken && (
+            <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-2">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">Share link</p>
+              <code className="flex-1 text-[11px] font-sans normal-case truncate text-charcoal/80">
+                {typeof window !== "undefined" ? `${window.location.origin}/studio/${state.shareToken}` : `/studio/${state.shareToken}`}
+              </code>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof window === "undefined") return;
+                  navigator.clipboard.writeText(`${window.location.origin}/studio/${state.shareToken}`);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1500);
+                }}
+                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 hover:text-charcoal inline-flex items-center gap-1"
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          )}
 
           <div className="mt-8 pt-6 border-t border-charcoal/10">
             <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">

@@ -1053,6 +1053,7 @@ export type Database = {
       }
       style_boards: {
         Row: {
+          client_view_count: number
           created_at: string
           created_by: string | null
           curator_notes: string | null
@@ -1060,13 +1061,18 @@ export type Database = {
           inquiry_id: string
           insights: Json
           inspo_images: Json
+          last_viewed_at: string | null
           palette: Json
+          pin_notes: Json
           pinned_rms_ids: string[]
+          sent_at: string | null
+          share_token: string | null
           status: string
           tones: Json
           updated_at: string
         }
         Insert: {
+          client_view_count?: number
           created_at?: string
           created_by?: string | null
           curator_notes?: string | null
@@ -1074,13 +1080,18 @@ export type Database = {
           inquiry_id: string
           insights?: Json
           inspo_images?: Json
+          last_viewed_at?: string | null
           palette?: Json
+          pin_notes?: Json
           pinned_rms_ids?: string[]
+          sent_at?: string | null
+          share_token?: string | null
           status?: string
           tones?: Json
           updated_at?: string
         }
         Update: {
+          client_view_count?: number
           created_at?: string
           created_by?: string | null
           curator_notes?: string | null
@@ -1088,8 +1099,12 @@ export type Database = {
           inquiry_id?: string
           insights?: Json
           inspo_images?: Json
+          last_viewed_at?: string | null
           palette?: Json
+          pin_notes?: Json
           pinned_rms_ids?: string[]
+          sent_at?: string | null
+          share_token?: string | null
           status?: string
           tones?: Json
           updated_at?: string
