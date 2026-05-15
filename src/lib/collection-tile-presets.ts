@@ -19,6 +19,8 @@ export type TilePreset = {
   mediaH: string;
   pad: string;
   anchor: "bottom" | "center";
+  /** Optional max image width as multiple of cell height. Caps wide silhouettes inside mixed groups. */
+  maxAspect?: number;
 };
 
 const WIDE_LOW: TilePreset = {
