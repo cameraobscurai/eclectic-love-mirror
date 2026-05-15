@@ -283,7 +283,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       .maybeSingle();
 
     // Sign inspo URLs.
-    const inspoRecords = (board.inspo_images ?? []) as InspoImageRecord[];
+    const inspoRecords = ((board.inspo_images ?? []) as unknown) as InspoImageRecord[];
     const paths = inspoRecords.map((i) => i.storage_path);
     let signedMap: Record<string, string> = {};
     if (paths.length) {
