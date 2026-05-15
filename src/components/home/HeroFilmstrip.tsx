@@ -5,6 +5,7 @@ import { Play, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
+import { PosterPicture } from "./PosterPicture";
 
 /**
  * HeroFilmstrip
@@ -157,6 +158,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               clip={clip}
               reduced={!!reduced}
               isHover={hoverId === clip.id}
+              priority={i >= 1 && i <= 3}
               onHoverChange={setHoverId}
               onOpen={(rect) => handleOpen(clip.id, rect)}
               onManualPlay={handleManualPlay}
@@ -205,13 +207,10 @@ function MobilePosterTile({
         className="relative block w-full overflow-hidden bg-[#f1f1f1] aspect-[3/4] focus:outline-none"
       >
         {clip.poster && (
-          <img
-            src={clip.poster}
-            alt=""
-            aria-hidden
+          <PosterPicture
+            clip={clip}
             loading="lazy"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0"
           />
         )}
       </button>
@@ -238,6 +237,8 @@ interface FrameProps {
   reduced: boolean;
   isHover: boolean;
   className?: string;
+  /** Whether this frame is part of the always-visible viewport (eager poster). */
+  priority?: boolean;
   onHoverChange: (id: string | null) => void;
   onOpen: (rect: DOMRect) => void;
   onManualPlay: (id: string) => void;
@@ -251,6 +252,7 @@ function FilmstripFrame({
   reduced,
   isHover,
   className,
+  priority = false,
   onHoverChange,
   onOpen,
   onManualPlay,
@@ -299,13 +301,11 @@ function FilmstripFrame({
           style={{ y: innerY, willChange: "transform" }}
         >
           {clip.poster && (
-            <img
-              src={clip.poster}
-              alt=""
-              aria-hidden
-              loading="eager"
-              decoding="async"
-              className="absolute inset-0 h-full w-full object-cover"
+            <PosterPicture
+              clip={clip}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
+              className="absolute inset-0"
             />
           )}
 

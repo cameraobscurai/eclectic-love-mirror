@@ -24,7 +24,14 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "https://eclectichive.com/" },
     ],
-    links: [{ rel: "canonical", href: "https://eclectichive.com/" }],
+    links: [
+      { rel: "canonical", href: "https://eclectichive.com/" },
+      // Preload the desktop LCP poster (frame 02 — leftmost always-visible
+      // frame on md screens) and the mobile LCP poster set. AVIF first; the
+      // browser falls back if it can't decode it.
+      { rel: "preload", as: "image", href: "/media/home/02-poster.avif", type: "image/avif", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: "/media/home/01-poster.avif", type: "image/avif", fetchpriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -69,17 +76,16 @@ const DESTINATIONS = [
 ] as const;
 
 function HomePage() {
+  // Posters paint instantly now (preloaded AVIF). Skip the double-rAF gate
+  // and let the loaded state be true on first render — the heading + tagline
+  // + filmstrip animations still play their own transitions.
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    let r2 = 0;
-    const r1 = requestAnimationFrame(() => {
-      r2 = requestAnimationFrame(() => setLoaded(true));
-    });
-    return () => {
-      cancelAnimationFrame(r1);
-      cancelAnimationFrame(r2);
-    };
+    // Flip on the next frame so the CSS transition still fires from the
+    // initial state (otherwise the entrance animation never plays).
+    const r = requestAnimationFrame(() => setLoaded(true));
+    return () => cancelAnimationFrame(r);
   }, []);
 
   return (
@@ -215,8 +221,8 @@ function HomePage() {
           )}
           style={{
             paddingTop: "var(--fold-strip)",
-            transitionDuration: "1200ms",
-            transitionDelay: loaded ? "650ms" : "0ms",
+            transitionDuration: "650ms",
+            transitionDelay: loaded ? "200ms" : "0ms",
           }}
         >
           <HeroFilmstrip />
