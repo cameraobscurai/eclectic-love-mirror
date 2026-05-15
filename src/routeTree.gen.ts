@@ -9,17 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TheHive3RouteImport } from './routes/the-hive3'
+import { Route as TheHiveRouteImport } from './routes/the-hive'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EventGalleryRouteImport } from './routes/event-gallery'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as Colorado1RouteImport } from './routes/colorado-1'
 import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
@@ -28,6 +35,16 @@ import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 
+const TheHive3Route = TheHive3RouteImport.update({
+  id: '/the-hive3',
+  path: '/the-hive3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TheHiveRoute = TheHiveRouteImport.update({
+  id: '/the-hive',
+  path: '/the-hive',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -53,6 +70,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -63,14 +85,29 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventGalleryRoute = EventGalleryRouteImport.update({
+  id: '/event-gallery',
+  path: '/event-gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Colorado1Route = Colorado1RouteImport.update({
+  id: '/colorado-1',
+  path: '/colorado-1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollectionRoute = CollectionRouteImport.update({
   id: '/collection',
   path: '/collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AtelierRoute = AtelierRouteImport.update({
@@ -81,6 +118,11 @@ const AtelierRoute = AtelierRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -121,17 +163,24 @@ const AdminColorsRoute = AdminColorsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
+  '/careers': typeof CareersRoute
   '/collection': typeof CollectionRoute
+  '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-hive': typeof TheHiveRoute
+  '/the-hive3': typeof TheHive3Route
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -141,17 +190,24 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
+  '/careers': typeof CareersRoute
   '/collection': typeof CollectionRoute
+  '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-hive': typeof TheHiveRoute
+  '/the-hive3': typeof TheHive3Route
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -162,17 +218,24 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
+  '/careers': typeof CareersRoute
   '/collection': typeof CollectionRoute
+  '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-hive': typeof TheHiveRoute
+  '/the-hive3': typeof TheHive3Route
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -184,17 +247,24 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/admin'
     | '/atelier'
+    | '/careers'
     | '/collection'
+    | '/colorado-1'
     | '/contact'
+    | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/inventory'
     | '/login'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/the-hive'
+    | '/the-hive3'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -204,17 +274,24 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/admin'
     | '/atelier'
+    | '/careers'
     | '/collection'
+    | '/colorado-1'
     | '/contact'
+    | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/inventory'
     | '/login'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/the-hive'
+    | '/the-hive3'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -224,17 +301,24 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/admin'
     | '/atelier'
+    | '/careers'
     | '/collection'
+    | '/colorado-1'
     | '/contact'
+    | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/inventory'
     | '/login'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/the-hive'
+    | '/the-hive3'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -245,21 +329,42 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   AtelierRoute: typeof AtelierRoute
+  CareersRoute: typeof CareersRoute
   CollectionRoute: typeof CollectionRoute
+  Colorado1Route: typeof Colorado1Route
   ContactRoute: typeof ContactRoute
+  EventGalleryRoute: typeof EventGalleryRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  InventoryRoute: typeof InventoryRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TheHiveRoute: typeof TheHiveRoute
+  TheHive3Route: typeof TheHive3Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/the-hive3': {
+      id: '/the-hive3'
+      path: '/the-hive3'
+      fullPath: '/the-hive3'
+      preLoaderRoute: typeof TheHive3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/the-hive': {
+      id: '/the-hive'
+      path: '/the-hive'
+      fullPath: '/the-hive'
+      preLoaderRoute: typeof TheHiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -295,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gallery': {
       id: '/gallery'
       path: '/gallery'
@@ -309,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/event-gallery': {
+      id: '/event-gallery'
+      path: '/event-gallery'
+      fullPath: '/event-gallery'
+      preLoaderRoute: typeof EventGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -316,11 +435,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/colorado-1': {
+      id: '/colorado-1'
+      path: '/colorado-1'
+      fullPath: '/colorado-1'
+      preLoaderRoute: typeof Colorado1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collection': {
       id: '/collection'
       path: '/collection'
       fullPath: '/collection'
       preLoaderRoute: typeof CollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/atelier': {
@@ -335,6 +468,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -411,17 +551,24 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   AtelierRoute: AtelierRoute,
+  CareersRoute: CareersRoute,
   CollectionRoute: CollectionRoute,
+  Colorado1Route: Colorado1Route,
   ContactRoute: ContactRoute,
+  EventGalleryRoute: EventGalleryRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  InventoryRoute: InventoryRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TheHiveRoute: TheHiveRoute,
+  TheHive3Route: TheHive3Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
