@@ -64,7 +64,7 @@ function PublicBoardPage() {
           <section className="mb-12">
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-4">Inspiration</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {board.inspo.map((i) => (
+              {board.inspo.map((i: PublicStyleBoard["inspo"][number]) => (
                 <figure key={i.id} className="aspect-[4/3] bg-charcoal/5 overflow-hidden">
                   <img src={i.url} alt="" loading="lazy" className="w-full h-full object-cover" />
                 </figure>
@@ -77,7 +77,7 @@ function PublicBoardPage() {
           <section>
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-4">Selected pieces</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
-              {board.pinned.map((p) => (
+              {board.pinned.map((p: PublicStyleBoard["pinned"][number]) => (
                 <article key={p.id}>
                   <div className="aspect-[4/5] bg-charcoal/5 overflow-hidden">
                     {p.image_url ? (

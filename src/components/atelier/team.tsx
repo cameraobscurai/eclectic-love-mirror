@@ -61,8 +61,8 @@ export const TEAM: TeamMember[] = [
   { name: "Ryan Kankowski", role: "Project Manager", image: portrait("Ryan.jpg", "Ryan Kankowski") },
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
 
-  // { name: "Regina Mennig", role: "Accounting & Business Manager" }, // temp hidden — awaiting portrait
   { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
+  { name: "Regina Mennig", role: "Accounting & Business Manager", image: portrait("Regina.jpg", "Regina Mennig") },
 ];
 
 export function AtelierTeam() {
