@@ -168,33 +168,42 @@ export function ProductTile({
             />
 
             {product.primaryImage ? (
-              <img
-                src={withCdnWidth(product.primaryImage.url, 600)}
-                srcSet={
-                  buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
-                  undefined
+              <div
+                className="absolute inset-0 mx-auto"
+                style={
+                  preset.maxAspect
+                    ? { maxWidth: `calc(var(--archive-tile-media-h) * ${preset.maxAspect})` }
+                    : undefined
                 }
-                sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
-                alt={product.primaryImage.altText ?? product.title}
-                width={800}
-                height={800}
-                loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
-                decoding="async"
-                // Inline so the preload scanner sees it before mount.
-                // Cast: React's types don't yet include fetchpriority.
-                {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
-                onLoad={() => setLoaded(true)}
-                onError={() => onImageFailed?.(product.id)}
-                // Shared bottom baseline anchors every silhouette to one
-                // optical floor — wide sofa, tall lamp, and short stool all
-                // sit on the same line. Inset padding keeps subjects from
-                // kissing the cell edges and gives the tile breathing room.
-                className={`absolute inset-0 h-full w-full object-contain ${anchorClass} ${padClass} will-change-opacity`}
-                style={{
-                  opacity: loaded ? 1 : 0,
-                  transition: "opacity 240ms ease-out",
-                }}
-              />
+              >
+                <img
+                  src={withCdnWidth(product.primaryImage.url, 600)}
+                  srcSet={
+                    buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
+                    undefined
+                  }
+                  sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
+                  alt={product.primaryImage.altText ?? product.title}
+                  width={800}
+                  height={800}
+                  loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
+                  decoding="async"
+                  // Inline so the preload scanner sees it before mount.
+                  // Cast: React's types don't yet include fetchpriority.
+                  {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
+                  onLoad={() => setLoaded(true)}
+                  onError={() => onImageFailed?.(product.id)}
+                  // Shared bottom baseline anchors every silhouette to one
+                  // optical floor — wide sofa, tall lamp, and short stool all
+                  // sit on the same line. Inset padding keeps subjects from
+                  // kissing the cell edges and gives the tile breathing room.
+                  className={`absolute inset-0 h-full w-full object-contain ${anchorClass} ${padClass} will-change-opacity`}
+                  style={{
+                    opacity: loaded ? 1 : 0,
+                    transition: "opacity 240ms ease-out",
+                  }}
+                />
+              </div>
             ) : null}
 
             {/* Desktop-only object label — frosted plate anchored inside the

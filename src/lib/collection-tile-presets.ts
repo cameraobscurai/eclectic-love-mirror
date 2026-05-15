@@ -19,6 +19,8 @@ export type TilePreset = {
   mediaH: string;
   pad: string;
   anchor: "bottom" | "center";
+  /** Optional max image width as multiple of cell height. Caps wide silhouettes inside mixed groups. */
+  maxAspect?: number;
 };
 
 const WIDE_LOW: TilePreset = {
@@ -52,6 +54,7 @@ const DINING: TilePreset = {
   mediaH: "clamp(190px, 13.5vw, 240px)",
   pad: "pt-[12%] pb-[3%] px-[7%]",
   anchor: "bottom",
+  maxAspect: 1.25,
 };
 
 export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
