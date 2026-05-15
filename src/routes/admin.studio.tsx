@@ -153,14 +153,23 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               {state.pinned.map((rms) => {
                 const p = catalog.get(rms);
                 return (
-                  <li key={rms} className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-charcoal/75">
-                    {p?.primaryImage?.url ? (
-                      <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
-                    ) : (
-                      <span className="w-7 h-7 bg-charcoal/5" />
-                    )}
-                    <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
-                    <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+                  <li key={rms} className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      {p?.primaryImage?.url ? (
+                        <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
+                      ) : (
+                        <span className="w-7 h-7 bg-charcoal/5" />
+                      )}
+                      <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
+                      <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+                    </div>
+                    <input
+                      type="text"
+                      value={state.pinNotes[rms] ?? ""}
+                      onChange={(e) => setPinNote(rms, e.target.value)}
+                      placeholder="why this piece…"
+                      className="w-full bg-transparent border-b border-charcoal/10 px-0 py-1 text-[11px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/50"
+                    />
                   </li>
                 );
               })}
