@@ -44,17 +44,21 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       style={{ willChange: "opacity" }}
       aria-label={product.title}
     >
-      <div className="absolute inset-0 flex items-end justify-center">
+      <div className="absolute inset-0 flex items-center justify-center">
         {url && (
-          <img
-            src={url}
-            alt=""
-            className={`h-full w-full object-contain ${padClass} pointer-events-none select-none`}
-            style={maxAspect ? { maxWidth: `calc(100% * ${maxAspect} / 1.6)`, margin: "0 auto" } : undefined}
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-          />
+          <div
+            className="h-full max-w-full"
+            style={maxAspect ? { aspectRatio: String(maxAspect) } : { width: "100%" }}
+          >
+            <img
+              src={url}
+              alt=""
+              className={`w-full h-full object-contain ${padClass} pointer-events-none select-none`}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+          </div>
         )}
       </div>
     </motion.button>
