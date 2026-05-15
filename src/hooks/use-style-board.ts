@@ -32,13 +32,16 @@ interface State {
   inquiry: StudioInquiry | null;
   inspo: InspoTile[];
   pinned: string[];
+  pinNotes: Record<string, string>;
   palette: ColorInfo[];
   tones: ToneAnalysis | null;
   insights: DesignInsight[];
   perImage: AnalysisResult["perImage"];
   curatorNotes: string;
+  shareToken: string | null;
   analyzing: boolean;
   saving: boolean;
+  sending: boolean;
   dirty: boolean;
   error: string | null;
 }
@@ -50,13 +53,16 @@ const empty = (): State => ({
   inquiry: null,
   inspo: [],
   pinned: [],
+  pinNotes: {},
   palette: [],
   tones: null,
   insights: [],
   perImage: [],
   curatorNotes: "",
+  shareToken: null,
   analyzing: false,
   saving: false,
+  sending: false,
   dirty: false,
   error: null,
 });
