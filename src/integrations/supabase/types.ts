@@ -31,6 +31,7 @@ export type Database = {
           outcome_updated_by: string | null
           phone: string | null
           quote_value: number | null
+          source: string
           status: Database["public"]["Enums"]["inquiry_status"]
           subject: string | null
         }
@@ -50,6 +51,7 @@ export type Database = {
           outcome_updated_by?: string | null
           phone?: string | null
           quote_value?: number | null
+          source?: string
           status?: Database["public"]["Enums"]["inquiry_status"]
           subject?: string | null
         }
@@ -69,6 +71,7 @@ export type Database = {
           outcome_updated_by?: string | null
           phone?: string | null
           quote_value?: number | null
+          source?: string
           status?: Database["public"]["Enums"]["inquiry_status"]
           subject?: string | null
         }
@@ -1047,6 +1050,50 @@ export type Database = {
             columns: ["run_id"]
             isOneToOne: false
             referencedRelation: "scrape_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      studio_briefs: {
+        Row: {
+          client_notes: string | null
+          created_at: string
+          id: string
+          inquiry_id: string
+          inspo_paths: string[]
+          palette: Json
+          pinned_rms_ids: string[]
+          share_token: string
+          updated_at: string
+        }
+        Insert: {
+          client_notes?: string | null
+          created_at?: string
+          id?: string
+          inquiry_id: string
+          inspo_paths?: string[]
+          palette?: Json
+          pinned_rms_ids?: string[]
+          share_token?: string
+          updated_at?: string
+        }
+        Update: {
+          client_notes?: string | null
+          created_at?: string
+          id?: string
+          inquiry_id?: string
+          inspo_paths?: string[]
+          palette?: Json
+          pinned_rms_ids?: string[]
+          share_token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "studio_briefs_inquiry_id_fkey"
+            columns: ["inquiry_id"]
+            isOneToOne: false
+            referencedRelation: "inquiries"
             referencedColumns: ["id"]
           },
         ]
