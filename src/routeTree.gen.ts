@@ -29,6 +29,8 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as StudioThreeRouteImport } from './routes/studio.three'
+import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
@@ -136,6 +138,16 @@ const StudioIndexRoute = StudioIndexRouteImport.update({
   path: '/studio/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioThreeRoute = StudioThreeRouteImport.update({
+  id: '/studio/three',
+  path: '/studio/three',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioLabRoute = StudioLabRouteImport.update({
+  id: '/studio/lab',
+  path: '/studio/lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioTokenRoute = StudioTokenRouteImport.update({
   id: '/studio/$token',
   path: '/studio/$token',
@@ -193,6 +205,8 @@ export interface FileRoutesByFullPath {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/studio/$token': typeof StudioTokenRoute
+  '/studio/lab': typeof StudioLabRoute
+  '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
 }
 export interface FileRoutesByTo {
@@ -221,6 +235,8 @@ export interface FileRoutesByTo {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/studio/$token': typeof StudioTokenRoute
+  '/studio/lab': typeof StudioLabRoute
+  '/studio/three': typeof StudioThreeRoute
   '/studio': typeof StudioIndexRoute
 }
 export interface FileRoutesById {
@@ -250,6 +266,8 @@ export interface FileRoutesById {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/studio/$token': typeof StudioTokenRoute
+  '/studio/lab': typeof StudioLabRoute
+  '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
 }
 export interface FileRouteTypes {
@@ -280,6 +298,8 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/studio/$token'
+    | '/studio/lab'
+    | '/studio/three'
     | '/studio/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -308,6 +328,8 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/studio/$token'
+    | '/studio/lab'
+    | '/studio/three'
     | '/studio'
   id:
     | '__root__'
@@ -336,6 +358,8 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/studio/$token'
+    | '/studio/lab'
+    | '/studio/three'
     | '/studio/'
   fileRoutesById: FileRoutesById
 }
@@ -360,6 +384,8 @@ export interface RootRouteChildren {
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
   StudioTokenRoute: typeof StudioTokenRoute
+  StudioLabRoute: typeof StudioLabRoute
+  StudioThreeRoute: typeof StudioThreeRoute
   StudioIndexRoute: typeof StudioIndexRoute
 }
 
@@ -505,6 +531,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio/three': {
+      id: '/studio/three'
+      path: '/studio/three'
+      fullPath: '/studio/three'
+      preLoaderRoute: typeof StudioThreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio/lab': {
+      id: '/studio/lab'
+      path: '/studio/lab'
+      fullPath: '/studio/lab'
+      preLoaderRoute: typeof StudioLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio/$token': {
       id: '/studio/$token'
       path: '/studio/$token'
@@ -589,8 +629,19 @@ const rootRouteChildren: RootRouteChildren = {
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
   StudioTokenRoute: StudioTokenRoute,
+  StudioLabRoute: StudioLabRoute,
+  StudioThreeRoute: StudioThreeRoute,
   StudioIndexRoute: StudioIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
