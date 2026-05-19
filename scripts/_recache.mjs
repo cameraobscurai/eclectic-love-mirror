@@ -63,7 +63,7 @@ async function processBucket({ bucket, cacheControl }) {
         const { data: blob, error: dlErr } = await sb.storage.from(bucket).download(f.path);
         if (dlErr) throw new Error('dl: ' + dlErr.message);
         const buf = Buffer.from(await blob.arrayBuffer());
-        const { error: upErr } = await sb.storage.from(bucket).update(f.path, buf, {
+        const { error: upErr } = await sb.storage.from(bucket).upload(f.path, buf, {
           cacheControl, contentType: f.contentType, upsert: true,
         });
         if (upErr) throw new Error('up: ' + upErr.message);
