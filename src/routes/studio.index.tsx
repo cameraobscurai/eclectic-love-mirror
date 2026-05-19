@@ -4,7 +4,7 @@
 // Submission lands in public.inquiries (same table as /contact).
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
 
 import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
@@ -481,44 +481,133 @@ function StudioPage() {
             className="absolute -left-[9999px] w-0 h-0 opacity-0"
           />
 
-          {/* BRIEF PREVIEW — verify everything before sending */}
-          <div className="mt-12 border-t border-charcoal/15 pt-8 max-w-2xl">
-            <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-5">
-              Brief Preview · What we'll receive
-            </p>
-            <dl className="grid grid-cols-[140px_1fr] gap-x-6 gap-y-3 text-[11px] uppercase tracking-[0.18em]">
-              <dt className="text-charcoal/45">Name</dt>
-              <dd className="text-charcoal">{name.trim() || <span className="text-charcoal/30">— required —</span>}</dd>
-              <dt className="text-charcoal/45">Email</dt>
-              <dd className="text-charcoal normal-case tracking-normal">{email.trim() || <span className="text-charcoal/30 uppercase tracking-[0.18em]">— required —</span>}</dd>
-              {phone.trim() && (<><dt className="text-charcoal/45">Phone</dt><dd className="text-charcoal normal-case tracking-normal">{phone.trim()}</dd></>)}
-              {eventDate.trim() && (<><dt className="text-charcoal/45">Event date</dt><dd className="text-charcoal">{eventDate.trim()}</dd></>)}
-              {scope && (<><dt className="text-charcoal/45">Scope</dt><dd className="text-charcoal">{scope}</dd></>)}
-              {budget && (<><dt className="text-charcoal/45">Budget</dt><dd className="text-charcoal">{budget}</dd></>)}
-              <dt className="text-charcoal/45">Inspo images</dt>
-              <dd className="text-charcoal tabular-nums">{inspo.length}</dd>
-              <dt className="text-charcoal/45">Pinned pieces</dt>
-              <dd className="text-charcoal tabular-nums">{pinnedIds.length}</dd>
-              <dt className="text-charcoal/45">Palette</dt>
-              <dd>
-                {analysis?.palette.length ? (
-                  <div className="flex gap-0.5">
-                    {analysis.palette.slice(0, 8).map((c, i) => (
-                      <span key={i} className="w-6 h-6 inline-block" style={{ background: c.hex }} title={c.hex} />
-                    ))}
+          {/* BRIEF PREVIEW — editorial proposal sheet */}
+          {(() => {
+            const stamp = new Intl.DateTimeFormat("en-US", {
+              month: "2-digit", day: "2-digit", year: "2-digit",
+            }).format(new Date()).replace(/\//g, ".");
+            const palette = analysis?.palette.slice(0, 8) ?? [];
+            const inspoThumbs = inspo.slice(0, 6);
+            const pinnedThumbs = pinnedIds.slice(0, 6).map((id) => catalog.get(id)).filter(Boolean) as CollectionProduct[];
+            const Ghost = () => (
+              <span className="text-charcoal/30 border-b border-dashed border-charcoal/25 pb-0.5">— REQUIRED —</span>
+            );
+            const rows: Array<{ label: string; node: React.ReactNode; alignTop?: boolean }> = [
+              { label: "For", node: name.trim() ? <span className="text-charcoal">{name.trim()}</span> : <Ghost /> },
+              { label: "Email", node: email.trim()
+                ? <span className="text-charcoal normal-case tracking-normal">{email.trim()}</span>
+                : <Ghost /> },
+            ];
+            if (phone.trim()) rows.push({ label: "Phone", node: <span className="text-charcoal tabular-nums tracking-normal normal-case">{phone.trim()}</span> });
+            if (eventDate.trim()) rows.push({ label: "Event Date", node: <span className="text-charcoal tabular-nums">{eventDate.trim()}</span> });
+            if (scope) rows.push({ label: "Scope", node: <span className="text-charcoal">{scope}</span> });
+            if (budget) rows.push({ label: "Budget", node: <span className="text-charcoal">{budget}</span> });
+            rows.push({
+              label: "References",
+              node: (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-charcoal tabular-nums">{String(inspo.length).padStart(2, "0")}</span>
+                  {inspoThumbs.length > 0 && (
+                    <div className="flex gap-1">
+                      {inspoThumbs.map((i) => (
+                        <img key={i.id} src={i.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10" />
+                      ))}
+                      {inspo.length > 6 && (
+                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">+{inspo.length - 6}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ),
+            });
+            rows.push({
+              label: "Pinned",
+              node: (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-charcoal tabular-nums">{String(pinnedIds.length).padStart(2, "0")}</span>
+                  {pinnedThumbs.length > 0 && (
+                    <div className="flex gap-1">
+                      {pinnedThumbs.map((p) => (
+                        p.primaryImage?.url
+                          ? <img key={p.id} src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5 border border-charcoal/10" />
+                          : <span key={p.id} className="w-7 h-7 bg-charcoal/5 border border-charcoal/10" />
+                      ))}
+                      {pinnedIds.length > 6 && (
+                        <span className="text-[9px] tracking-[0.18em] text-charcoal/45 self-center pl-1 tabular-nums">+{pinnedIds.length - 6}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ),
+            });
+            rows.push({
+              label: "Palette",
+              alignTop: true,
+              node: (
+                <div>
+                  <div className="flex">
+                    {palette.length > 0
+                      ? palette.map((c, i) => (
+                          <span key={i} className="w-10 h-10 inline-block" style={{ background: c.hex }} title={c.hex} />
+                        ))
+                      : Array.from({ length: 8 }).map((_, i) => (
+                          <span key={i} className="w-10 h-10 inline-block border border-charcoal/10 -ml-px first:ml-0" />
+                        ))}
                   </div>
-                ) : (
-                  <span className="text-charcoal/30">Not generated</span>
-                )}
-              </dd>
-              {vibe.trim() && (
-                <>
-                  <dt className="text-charcoal/45 self-start">Notes</dt>
-                  <dd className="text-charcoal normal-case tracking-normal whitespace-pre-wrap">{vibe.trim()}</dd>
-                </>
-              )}
-            </dl>
-          </div>
+                  {palette.length > 0 && (
+                    <div className="flex mt-1.5">
+                      {palette.map((c, i) => (
+                        <span key={i} className="w-10 text-center text-[9px] tracking-[0.06em] tabular-nums text-charcoal/45 normal-case">
+                          {c.hex.replace("#", "").toUpperCase()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ),
+            });
+            if (vibe.trim()) {
+              rows.push({
+                label: "Vision",
+                alignTop: true,
+                node: (
+                  <blockquote className="border-l border-charcoal/25 pl-4 italic font-display text-[15px] normal-case tracking-normal leading-snug text-charcoal">
+                    {vibe.trim()}
+                  </blockquote>
+                ),
+              });
+            }
+            return (
+              <article className="mt-12 relative border border-charcoal/15 bg-cream px-8 lg:px-14 py-12 lg:py-16 max-w-2xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {/* Top chrome */}
+                <div className="absolute top-4 left-8 right-8 lg:left-14 lg:right-14 flex justify-between text-[10px] tracking-[0.32em] text-charcoal/45 tabular-nums">
+                  <span>STYLE BRIEF · DRAFT</span>
+                  <span>{stamp}</span>
+                </div>
+                {/* Bottom chrome */}
+                <div className="absolute bottom-4 left-8 right-8 lg:left-14 lg:right-14 flex justify-between text-[10px] tracking-[0.32em] text-charcoal/45 tabular-nums">
+                  <span>ECLECTIC HIVE · STUDIO</span>
+                  <span>01 / 01</span>
+                </div>
+
+                <dl className="grid grid-cols-[150px_1fr] gap-x-6 text-[11px] uppercase tracking-[0.18em]">
+                  {rows.map((row, i) => {
+                    const n = String(i + 1).padStart(2, "0");
+                    const border = i === 0 ? "" : "border-t border-charcoal/10 pt-3 mt-3";
+                    return (
+                      <Fragment key={row.label}>
+                        <dt className={`text-charcoal/45 ${border} ${row.alignTop ? "self-start" : ""}`}>
+                          <span className="tabular-nums tracking-normal text-charcoal/30 mr-2">{n}</span>
+                          {row.label}
+                        </dt>
+                        <dd className={border}>{row.node}</dd>
+                      </Fragment>
+                    );
+                  })}
+                </dl>
+              </article>
+            );
+          })()}
 
           <div className="mt-10 flex items-center gap-4 flex-wrap">
             <button
