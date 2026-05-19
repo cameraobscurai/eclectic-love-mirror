@@ -1,86 +1,43 @@
+## Diagnosis
 
-## Gallery restructure — 15 projects, owner-confirmed order
+Mapping is healthy. The broken tiles are a **delivery** problem, not a data problem.
 
-### Title format (site-wide)
-- **Primary**: `LOCATION, ST` (e.g. "AMANGIRI, AZ")
-- **Eyebrow / subtitle**: planner name (e.g. "EASTON EVENTS")
-- Index, hero card, lightbox header all use the same shape.
+| Check | Result |
+|---|---|
+| DB inventory_items public_ready | 864 |
+| DB with at least one image | 860 (99.5%) |
+| DB public_ready missing images | 4 (2 large-decor, 1 styling, 1 tables) |
+| Baked catalog products | 630 (after family rollup) |
+| Baked catalog with image URLs | 630 / 630 (100%) |
+| Random sample of 40 live image URLs | **11 returned HTTP 429** (Supabase Storage rate-limited) |
 
-### Final order + cover shot intent
-Dark/moody → pastels. Cover shot distance cycles **far → medium → close** so the filmstrip has rhythm. Each cover respects owner's specific picks where given (Lynden 1143, Cassie feature, Anguilla feature, Montana feature, Amangiri Chinle dinner, etc).
+What's happening: the Collection wall renders 100–155 tiles for a single category in one pass. They all hit `wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/...` in parallel. Supabase Storage's public origin throttles bursts → 429 → browser paints a broken-image icon and never retries. Pillows look worst because the category is the largest (155).
 
-| # | LOCATION, ST | PLANNER | Cover intent | Shot |
-|---|---|---|---|---|
-| 01 | AMANGIRI, AZ | EASTON EVENTS | Chinle long-table at dusk, sandstone backdrop | far |
-| 02 | BRUSH CREEK RANCH, WY | LOVE THIS DAY | Westworld/Americana wide — color-arranged favorites | far |
-| 03 | DUNTON HOT SPRINGS, CO | BROOKE KEEGAN EVENTS | MKSadler-4118 candlelit interior (moody pivot) | medium |
-| 04 | DUNTON HOT SPRINGS, CO | EASTON EVENTS (*Dos Mas*) | Long meadow table, saturated | medium |
-| 05 | BLACKBERRY FARMS, TN | EASTON EVENTS | Wood-paneled dining, lantern light | close |
-| 06 | PRIVATE RESIDENCE, TX | CINERGY WORKS | Tablescape detail, deep tones | close |
-| 07 | BIG SKY, MT | EASTON EVENTS | Tent at dusk — Montana feature shot | far |
-| 08 | BRUSH CREEK RANCH, WY | DIWAN BY DESIGN | Wedding ceremony wide (sangeet excluded) | far |
-| 09 | BISHOP'S LODGE, NM | 42 NORTH | Tent interior, Santa Fe earth tones | medium |
-| 10 | THE ENCORE, MA | DIWAN BY DESIGN | Ballroom architectural wide | far |
-| 11 | FOUR SEASONS VAIL, CO | CASSIE LAMERE EVENTS | Cassie-feature hero | medium |
-| 12 | ASPEN, CO (private ranch) | ASPEN EVENT WORKS | Tent 2, day→evening pivot | medium |
-| 13 | TELLURIDE, CO | LYNDEN LANE | nb-25-1143 (modernist outdoor lounge) | medium |
-| 14 | ANGUILLA, CARIBBEAN | MICHELLE RAGO DESTINATIONS | Wedding-day lounge by sea — Anguilla feature | far |
-| 15 | HOTEL JEROME, CO | BIRCH DESIGN STUDIO | Welcome lounge / pastel rehearsal detail | close |
+This is why it "used to be 99%" — the catalog **is** still 99%+; it's the bytes that aren't arriving.
 
-VanderWeide removed. Thomas NDA respected (never referenced). Tonal arc starts at Amangiri's red-sandstone mood and resolves at Jerome's pastels/disco.
+## Fix plan
 
-### Data layer changes
+### 1. Stop the bleed today (low-risk, no schema change)
+- **`src/components/collection/CollectionWallTile.tsx`** — add a single retry-with-backoff on `<img onError>` (one retry after 1.5–3s jitter). Catches 429s without spamming.
+- **Lazy + decode async on every tile** — confirm `loading="lazy"` and `decoding="async"` are set everywhere catalog images render (CollectionWallTile, CollectionGridTile, lightbox thumb strip). This alone cuts initial burst dramatically.
 
-**`src/content/gallery-projects.ts`**
-- Add fields to `GalleryProject`:
-  - `planner: string` — required, displayed as eyebrow
-  - `pending?: boolean` — true when storage folder isn't uploaded yet
-- Repurpose `name` → `LOCATION, ST` string. Brand goes to `planner`.
-- Replace `galleryProjects` array with the 15 entries above in order.
+### 2. Throttle the burst (small refactor)
+- Cap concurrent in-flight image loads to ~12 via an IntersectionObserver gate in the wall component, so off-screen tiles wait their turn. No virtualization library — just don't set `src` until the tile is within ~1.5 viewports.
 
-**`src/content/gallery-manifests.ts`**
-- Keep the 6 real manifests: Amangiri, Aspen, Birch, Easton-Montana, Brooke-Keegan-Dunton, Lynden Lane.
-- Drop the VanderWeide and Dos Mas Lamesa exports (not used in new order; Dos Mas folder name doesn't match owner's Dunton/Dos Mas pairing — owner re-confirmed Dunton×2, so I'll wire Easton-Dunton as a pending slot).
-- Add **pending manifest stubs** for the 9 not-yet-uploaded folders. Each stub exports:
-  ```ts
-  export const brushCreekLoveThisDayPending = {
-    folder: "BRUSH-CREEK-LOVE-THIS-DAY",   // canonical slug
-    hero: { src: PLACEHOLDER_HERO, alt: "..." },
-    images: [],
-  };
-  ```
-- `PLACEHOLDER_HERO` = a single neutral charcoal SVG data URI bundled in the file (no broken image). Lightbox will read `pending` and show "Imagery loading — folder being prepared" instead of an empty filmstrip.
+### 3. Cure the root cause (next pass)
+- Route images through **Supabase Storage's image transform endpoint** (`/render/image/public/...?width=...`). Transform responses are cached aggressively at the edge and don't share the raw-object rate bucket.
+- Or: put Cloudflare in front of `wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/*` and let the CDN absorb bursts. Free tier handles this trivially.
 
-### Presentation layer changes
+### 4. Backfill the genuinely missing 4
+- Tag the 4 DB rows in `/admin/bind` for owner review. Either drop them from public or upload an image. Not urgent — 4 of 864 is 0.5%.
 
-**`src/components/gallery/GalleryIndex.tsx`**
-- Add planner row beneath the name (small caps, `text-cream/40`, tracking-wide).
-- Pending rows render the same but with a tiny `· coming soon` glyph and disabled click.
+## What I am NOT proposing
+- No catalog rebake. The catalog is fine.
+- No bucket churn. The buckets and URLs are correct.
+- No removing the family rollup or changing display counts.
 
-**`src/components/gallery/GalleryFilmstrip.tsx`** & **`GalleryProjectCard.tsx`**
-- Card shows `LOCATION, ST` as display name, planner as eyebrow.
-- Pending cards: tile gets a subtle film-grain overlay, "ARRIVING SOON" micro-label, hover disabled, no lightbox open.
-
-**`GalleryLightbox.tsx`**
-- Sidebar header: planner eyebrow → location name → year/kind line.
-- If `pending`, render a single hero plate + short note instead of filmstrip.
-
-**`src/routes/gallery.tsx`**
-- Region filters stay hidden (already are).
-- SEO `itemListLd` updated: `name` = location, `creator` adds planner as `contributor`.
-
-### Out of scope (this pass)
-- Uploading new folders to storage — owner is doing that next; once folders exist, swapping `pending: true` → real `*Paths` array is a one-line flip per project.
-- Region/category filter UI restoration.
-- Cover image final picks for newly-uploaded folders (will choose specific filenames once images land, using the close/medium/far rhythm noted above).
-
-### Files touched
-1. `src/content/gallery-projects.ts` — new schema + 15 entries
-2. `src/content/gallery-manifests.ts` — keep 6 real, add 9 pending stubs, drop VanderWeide
-3. `src/components/gallery/GalleryIndex.tsx` — planner eyebrow, pending state
-4. `src/components/gallery/GalleryFilmstrip.tsx` — planner eyebrow, pending tile
-5. `src/components/gallery/GalleryProjectCard.tsx` — same
-6. `src/components/gallery/GalleryLightbox.tsx` — header shape, pending body
-7. `src/routes/gallery.tsx` — SEO JSON-LD reshape
-
-No DB, no storage writes, no migrations.
+## Order of operations
+1. Step 1 today (15 min, ship immediately).
+2. Step 2 same session (30 min).
+3. Step 3 as a follow-up after we confirm Steps 1–2 dropped the 429 rate on a live sample.
+4. Step 4 whenever the owner has 4 photos.
