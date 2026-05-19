@@ -123,50 +123,55 @@ function StudioPage() {
     if (!inspo.length && !pinnedIds.length) return;
     setAnalyzing(true);
     setAnalyzeError(null);
+    const blobUrls: string[] = [];
     try {
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
 
-      // Build the full image set: inspo uploads + pinned product photos.
-      // Sampling pixels off the actual furniture photo gives us a palette
-      // even when the catalog row has no AI-tagged colorHex.
+      // Pull the actual primary photo for every pinned piece and analyze it
+      // pixel-by-pixel — never rely on pre-tagged colorHex. Fetch as a blob
+      // so the canvas is guaranteed CORS-clean (the collection grid may have
+      // cached the same URL without crossOrigin, which would taint a direct
+      // <img> load).
       const pinnedProducts = pinnedIds
         .map((id) => catalog.get(id))
         .filter((p): p is CollectionProduct => Boolean(p?.primaryImage?.url));
 
+      const pinnedFetches = await Promise.all(
+        pinnedProducts.map(async (p) => {
+          try {
+            const res = await fetch(p.primaryImage!.url, { mode: "cors", cache: "reload" });
+            if (!res.ok) return null;
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            blobUrls.push(url);
+            return { id: `pin:${p.id}`, name: p.title, url };
+          } catch {
+            return null;
+          }
+        }),
+      );
+
       const moodImages = [
         ...inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
-        ...pinnedProducts.map((p) => ({
-          id: `pin:${p.id}`,
-          name: p.title,
-          url: p.primaryImage!.url,
-        })),
+        ...pinnedFetches.filter((x): x is { id: string; name: string; url: string } => Boolean(x)),
       ];
 
-      const moodResult = moodImages.length
-        ? await analyzeMoodboard(moodImages, canvasRef.current)
-        : null;
-
-      // Add any pre-tagged hex values as extra hints (boosts confidence on
-      // tagged items without overriding the sampled palette).
-      const taggedColors: ColorInfo[] = [];
-      for (const p of pinnedProducts) {
-        if (p.colorHex) taggedColors.push(hexToColorInfo(p.colorHex, 3));
-        if (p.colorHexSecondary) taggedColors.push(hexToColorInfo(p.colorHexSecondary, 2));
+      if (!moodImages.length) {
+        setAnalyzeError("Could not load selected images for analysis.");
+        return;
       }
 
-      const merged = mergePalettes(moodResult?.palette ?? [], taggedColors);
-      const tones = moodResult?.tones ?? computeTones(merged);
-      const insights = moodResult?.insights ?? generateInsights(merged, tones);
-
+      const result = await analyzeMoodboard(moodImages, canvasRef.current);
       setAnalysis({
-        palette: merged.slice(0, 8),
-        tones,
-        insights,
-        perImage: moodResult?.perImage ?? [],
+        palette: result.palette.slice(0, 8),
+        tones: result.tones,
+        insights: result.insights,
+        perImage: result.perImage,
       });
     } catch (e) {
       setAnalyzeError((e as Error).message);
     } finally {
+      blobUrls.forEach((u) => URL.revokeObjectURL(u));
       setAnalyzing(false);
     }
   }
