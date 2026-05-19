@@ -1,374 +1,454 @@
-// /studio — Internal style builder anchored to one inquiry.
-// Reach it via /admin/insights row "Studio →" link or /studio?inquiry=<uuid>.
+// Public /studio — client-facing Style Brief.
+// Visitor drops 1–8 inspo images, generates a palette client-side via
+// analyzeMoodboard(), fills basic event details, and submits.
+// Submission lands in public.inquiries (same table as /contact).
 
-import { useState, useEffect } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { z } from "zod";
-import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, Sparkles, ArrowUpRight } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
 
-import { useStyleBoard } from "@/hooks/use-style-board";
-import { InspoDropZone } from "@/components/studio/InspoDropZone";
-import { StyleBoardCanvas } from "@/components/studio/StyleBoardCanvas";
-import { PaletteTab } from "@/components/studio/PaletteTab";
-import { TonesTab } from "@/components/studio/TonesTab";
-import { InsightsTab } from "@/components/studio/InsightsTab";
-import { CatalogPickerTab } from "@/components/studio/CatalogPickerTab";
-import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.functions";
-
-const search = z.object({ inquiry: z.string().uuid().optional() });
+import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
+import { useInquiry } from "@/hooks/use-inquiry";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
+import { signPublicInspoUpload, submitStyleBrief } from "@/server/style-brief.functions";
 
 export const Route = createFileRoute("/studio/")({
-  validateSearch: (s) => search.parse(s),
   head: () => ({
     meta: [
-      { title: "Studio · Eclectic Hive" },
-      { name: "robots", content: "noindex, nofollow" },
+      { title: "Studio · Build Your Style Brief — Eclectic Hive" },
+      {
+        name: "description",
+        content:
+          "Drop inspiration images, see your palette, send your vision to Eclectic Hive — Denver's luxury event design studio.",
+      },
+      { property: "og:title", content: "Studio — Eclectic Hive" },
+      { property: "og:description", content: "Build your style brief in minutes." },
     ],
   }),
   component: StudioPage,
 });
 
-function StudioPage() {
-  const { inquiry } = Route.useSearch();
-  return inquiry ? <StudioWorkspace inquiryId={inquiry} /> : <NoInquiry />;
+interface InspoLocal {
+  id: string;
+  file: File;
+  url: string; // local object URL
 }
 
-function NoInquiry() {
-  const [boards, setBoards] = useState<StudioBoardSummary[] | null>(null);
-  const [err, setErr] = useState<string | null>(null);
+const SCOPE_OPTIONS = [
+  "Full-service design + production",
+  "Design + fabrication",
+  "Rental from Collection",
+  "Not sure yet",
+] as const;
+const BUDGET_RANGES = [
+  "Under $25k",
+  "$25k – $75k",
+  "$75k – $150k",
+  "$150k – $300k",
+  "$300k+",
+  "Not sure yet",
+] as const;
 
+const MAX_INSPO = 8;
+const MAX_FILE_BYTES = 8 * 1024 * 1024;
+
+function StudioPage() {
+  const navigate = useNavigate();
+  const { ids: pinnedIds, remove: unpin, clear: clearInquiry } = useInquiry();
+
+  const [inspo, setInspo] = useState<InspoLocal[]>([]);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analyzeError, setAnalyzeError] = useState<string | null>(null);
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Form fields
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [scope, setScope] = useState<string>("");
+  const [budget, setBudget] = useState<string>("");
+  const [vibe, setVibe] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
+
+  // Resolve pinned pieces to titles + thumbnails for the strip.
+  const [catalog, setCatalog] = useState<Map<string, CollectionProduct>>(new Map());
   useEffect(() => {
     let alive = true;
-    listStudioBoards()
-      .then((rows) => {
-        if (!alive) return;
-        const arr = Array.isArray(rows)
-          ? rows
-          : Array.isArray((rows as { result?: unknown })?.result)
-          ? ((rows as { result: unknown }).result as StudioBoardSummary[])
-          : Array.isArray((rows as { data?: unknown })?.data)
-          ? ((rows as { data: unknown }).data as StudioBoardSummary[])
-          : [];
-        setBoards(arr as StudioBoardSummary[]);
-      })
-      .catch((e: Error) => { if (alive) setErr(e.message); });
+    getCollectionCatalog().then(({ products }) => {
+      if (!alive) return;
+      const m = new Map<string, CollectionProduct>();
+      for (const p of products) m.set(String(p.id), p);
+      setCatalog(m);
+    });
     return () => { alive = false; };
   }, []);
 
-  const recent = Array.isArray(boards) ? boards.slice(0, 8) : [];
+  // Cleanup object URLs.
+  useEffect(() => {
+    return () => { inspo.forEach((i) => URL.revokeObjectURL(i.url)); };
+  }, [inspo]);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function addFiles(files: FileList | File[]) {
+    const arr = Array.from(files)
+      .filter((f) => f.type.startsWith("image/") && f.size <= MAX_FILE_BYTES)
+      .slice(0, MAX_INSPO - inspo.length);
+    if (!arr.length) return;
+    const next = arr.map((f) => ({
+      id: crypto.randomUUID(),
+      file: f,
+      url: URL.createObjectURL(f),
+    }));
+    setInspo((s) => [...s, ...next]);
+    setAnalysis(null); // palette stale once images change
+  }
+
+  function removeInspo(id: string) {
+    setInspo((s) => {
+      const t = s.find((x) => x.id === id);
+      if (t) URL.revokeObjectURL(t.url);
+      return s.filter((x) => x.id !== id);
+    });
+    setAnalysis(null);
+  }
+
+  async function generate() {
+    if (!inspo.length) return;
+    setAnalyzing(true);
+    setAnalyzeError(null);
+    try {
+      if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
+      const result = await analyzeMoodboard(
+        inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
+        canvasRef.current,
+      );
+      setAnalysis(result);
+    } catch (e) {
+      setAnalyzeError((e as Error).message);
+    } finally {
+      setAnalyzing(false);
+    }
+  }
+
+  const canSubmit = name.trim() && /^\S+@\S+\.\S+$/.test(email) && !submitting;
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      // 1. Upload each inspo file via signed URL.
+      const inspoPaths: string[] = [];
+      for (const i of inspo) {
+        const ext = (i.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const { uploadUrl, storage_path } = await signPublicInspoUpload({ data: { ext } });
+        const put = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": i.file.type, "x-upsert": "true" },
+          body: i.file,
+        });
+        if (!put.ok) throw new Error(`Upload failed (${put.status})`);
+        inspoPaths.push(storage_path);
+      }
+
+      // 2. Insert inquiry row.
+      const { inquiryId } = await submitStyleBrief({
+        data: {
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          eventDate: eventDate.trim(),
+          scope,
+          budget,
+          vibe: vibe.trim(),
+          paletteHex: (analysis?.palette ?? []).slice(0, 8).map((c) => c.hex),
+          tones: (analysis?.tones ?? {}) as Record<string, number>,
+          insightTitles: (analysis?.insights ?? []).slice(0, 6).map((i) => i.title),
+          inspoPaths,
+          pinnedIds,
+          website,
+        },
+      });
+
+      clearInquiry();
+      navigate({ to: "/studio/thanks", search: { inquiry: inquiryId } });
+    } catch (e) {
+      setSubmitError((e as Error).message);
+      setSubmitting(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
       {/* MASTHEAD */}
-      <header className="px-6 lg:px-16 pt-10 pb-8 border-b border-charcoal/10 flex items-baseline justify-between">
-        <h1 className="font-display text-3xl uppercase tracking-[0.04em]">Studio</h1>
-        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Internal</p>
+      <header className="px-6 lg:px-16 pt-20 pb-10 border-b border-charcoal/10">
+        <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">Studio</p>
+        <h1 className="mt-3 font-display text-4xl lg:text-5xl uppercase tracking-[0.04em]">
+          Build Your Style Brief
+        </h1>
+        <p className="mt-4 max-w-xl text-[11px] uppercase tracking-[0.18em] text-charcoal/55 leading-relaxed">
+          Drop the images that move you. See your palette. Send us your vision.
+        </p>
       </header>
 
-      {/* TOOLS */}
-      <section className="px-6 lg:px-16 py-10 border-b border-charcoal/10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-charcoal/10 border border-charcoal/10">
-          <ToolCard
-            to="/admin/insights"
-            icon={<PaletteIcon className="h-5 w-5" />}
-            label="Style builder"
-            status="Live"
+      <form onSubmit={submit} className="px-6 lg:px-16 pb-24">
+        {/* STEP 1 — INSPO */}
+        <Step n={1} title="Drop Inspiration">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => { if (e.target.files) { addFiles(e.target.files); e.target.value = ""; } }}
           />
-          <ToolCard
-            to="/studio/three"
-            icon={<Box className="h-5 w-5" />}
-            label="3D"
-            status="Live"
-          />
-          <ToolCard
-            to="/studio/lab"
-            icon={<Sparkles className="h-5 w-5" />}
-            label="Lab"
-            status="Soon"
-          />
-        </div>
-      </section>
-
-
-      {/* RECENT BOARDS */}
-      <section className="px-6 lg:px-16 py-10">
-        <div className="flex items-baseline justify-between mb-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Recent</p>
-          <Link to="/admin/insights" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal inline-flex items-center gap-1">
-            Inbox <ArrowUpRight className="h-3 w-3" />
-          </Link>
-        </div>
-
-
-        {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
-        {boards === null && !err && (
-          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</p>
-        )}
-        {boards && boards.length === 0 && (
-          <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal/40">No boards yet.</p>
-        )}
-
-        {recent.length > 0 && (
-          <ul className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-            {recent.map((b) => (
-              <li key={b.id}>
-                <Link
-                  to="/studio"
-                  search={{ inquiry: b.inquiry_id }}
-                  className="grid grid-cols-12 items-center gap-3 py-4 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
-                >
-                  <span className="col-span-3 text-[13px] font-display truncate normal-case">{b.inquiry_name}</span>
-                  <span className="col-span-4 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
-                  <span className="col-span-2 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">{b.status}</span>
-                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 tabular-nums">
-                    {b.pinned_count}p · {b.inspo_count}i
-                  </span>
-                  <span className="col-span-1 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right tabular-nums">
-                    {new Date(b.updated_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </div>
-  );
-}
-
-function ToolCard({
-  to, icon, label, status,
-}: { to: string; icon: React.ReactNode; label: string; status: "Live" | "Soon" }) {
-  const disabled = status === "Soon";
-  const inner = (
-    <div className="group bg-cream p-8 h-full flex flex-col justify-between min-h-[160px] transition-colors hover:bg-charcoal/[0.02]">
-      <div className="flex items-start justify-between">
-        <span className="text-charcoal/70">{icon}</span>
-        <span className={`text-[9px] uppercase tracking-[0.28em] px-2 py-1 border ${disabled ? "border-charcoal/15 text-charcoal/40" : "border-charcoal text-charcoal"}`}>
-          {status}
-        </span>
-      </div>
-      <div className="flex items-baseline justify-between">
-        <h3 className="font-display text-xl uppercase tracking-[0.04em]">{label}</h3>
-        <ArrowUpRight className="h-3.5 w-3.5 text-charcoal/40 group-hover:text-charcoal transition-colors" />
-      </div>
-    </div>
-  );
-  return <Link to={to} preload="intent">{inner}</Link>;
-}
-
-
-
-type Tab = "palette" | "tones" | "insights" | "catalog";
-
-function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
-  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send } = useStyleBoard(inquiryId);
-  const [tab, setTab] = useState<Tab>("palette");
-  const [copied, setCopied] = useState(false);
-
-  if (!state.ready) {
-    return (
-      <div className="min-h-[calc(100vh-3rem)] grid place-items-center bg-cream text-charcoal/55 text-[11px] uppercase tracking-[0.22em]">
-        Loading workspace…
-      </div>
-    );
-  }
-
-  const inq = state.inquiry!;
-  const totalImages = state.inspo.length + state.pinned.length;
-
-  return (
-    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-charcoal/10 border-b border-charcoal/10">
-        {/* LEFT — Inquiry context */}
-        <aside className="lg:col-span-3 bg-cream p-6 lg:sticky lg:top-12 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Inquiry</p>
-          <h1 className="mt-2 font-display text-2xl leading-tight">{inq.name}</h1>
-          <a href={`mailto:${inq.email}`} className="mt-1 block text-[11px] uppercase tracking-[0.16em] text-charcoal/60 underline-offset-4 hover:underline truncate">
-            {inq.email}
-          </a>
-          {inq.subject && (
-            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">{inq.subject}</p>
-          )}
-          <div className="mt-5 pt-5 border-t border-charcoal/10">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">Message</p>
-            <p className="text-[13px] leading-relaxed text-charcoal/80 whitespace-pre-wrap font-sans normal-case">
-              {inq.message}
-            </p>
-          </div>
-          <div className="mt-6 pt-5 border-t border-charcoal/10">
-            <div className="flex items-baseline justify-between">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">Pinned</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">{state.pinned.length}</p>
+          <div
+            onClick={() => inspo.length < MAX_INSPO && fileInputRef.current?.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
+            className={`border border-dashed border-charcoal/25 min-h-[140px] grid place-items-center cursor-pointer transition-colors hover:border-charcoal/50 hover:bg-charcoal/[0.02] ${inspo.length >= MAX_INSPO ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <div className="flex flex-col items-center gap-2 py-6">
+              <ImagePlus className="h-6 w-6 text-charcoal/40" />
+              <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/65">
+                Drop images or click to browse
+              </p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+                {inspo.length} / {MAX_INSPO} · 8MB max each
+              </p>
             </div>
-            <ul className="mt-2 space-y-1.5">
-              {state.pinned.length === 0 && (
-                <li className="text-[11px] uppercase tracking-[0.18em] text-charcoal/40">No pieces yet</li>
-              )}
-              {state.pinned.map((rms) => {
-                const p = catalog.get(rms);
-                return (
-                  <li key={rms} className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      {p?.primaryImage?.url ? (
-                        <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
-                      ) : (
-                        <span className="w-7 h-7 bg-charcoal/5" />
-                      )}
-                      <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
-                      <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+          </div>
+
+          {inspo.length > 0 && (
+            <div className="mt-4 grid grid-cols-4 md:grid-cols-8 gap-2">
+              {inspo.map((i) => (
+                <div key={i.id} className="relative aspect-square bg-charcoal/5 overflow-hidden group">
+                  <img src={i.url} alt="" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeInspo(i.id)}
+                    className="absolute top-1 right-1 w-5 h-5 bg-charcoal/80 text-cream grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-label="Remove"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={generate}
+            disabled={!inspo.length || analyzing}
+            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
+          >
+            {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            {analyzing ? "Reading…" : analysis ? "Re-generate Palette" : "Generate Palette"}
+          </button>
+          {analyzeError && (
+            <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{analyzeError}</p>
+          )}
+        </Step>
+
+        {/* STEP 2 — PALETTE (only after generate) */}
+        {analysis && (
+          <Step n={2} title="Your Palette">
+            <div className="flex gap-1">
+              {analysis.palette.slice(0, 8).map((c, i) => (
+                <div key={i} className="flex-1 group">
+                  <div
+                    className="h-20 w-full"
+                    style={{ background: c.hex }}
+                    aria-label={c.hex}
+                  />
+                  <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
+                    {c.hex}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 max-w-xl">
+              <ToneBar label="Warm" v={analysis.tones.warm} />
+              <ToneBar label="Cool" v={analysis.tones.cool} />
+              <ToneBar label="Light" v={analysis.tones.light} />
+              <ToneBar label="Muted" v={analysis.tones.muted} />
+            </div>
+
+            {analysis.insights.slice(0, 2).length > 0 && (
+              <div className="mt-6 space-y-2 max-w-xl">
+                {analysis.insights.slice(0, 2).map((ins, i) => (
+                  <div key={i} className="flex items-start gap-3 py-2 border-t border-charcoal/10">
+                    <span className="text-base leading-none mt-0.5">{ins.icon}</span>
+                    <div className="text-[11px] leading-relaxed text-charcoal/75">
+                      <span className="font-display uppercase tracking-[0.14em] text-[12px] text-charcoal">{ins.title}</span>
+                      <span className="block mt-0.5 normal-case font-sans text-charcoal/70">{ins.text}</span>
                     </div>
-                    <input
-                      type="text"
-                      value={state.pinNotes[rms] ?? ""}
-                      onChange={(e) => setPinNote(rms, e.target.value)}
-                      placeholder="why this piece…"
-                      className="w-full bg-transparent border-b border-charcoal/10 px-0 py-1 text-[11px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/50"
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </aside>
-
-        {/* CENTER — board */}
-        <section className="lg:col-span-6 bg-cream p-6 min-w-0">
-          <header className="flex items-baseline justify-between mb-4">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Style board</p>
-              <h2 className="mt-1 font-display text-xl uppercase tracking-[0.04em]">Inspiration + pieces</h2>
-            </div>
-            <div className="flex items-center gap-2">
-              <StatusBadge status={state.status} dirty={state.dirty} />
-            </div>
-          </header>
-
-          <div className="space-y-4">
-            <InspoDropZone onFiles={addInspoFiles} count={state.inspo.length} />
-            <StyleBoardCanvas
-              inspo={state.inspo}
-              pinned={state.pinned}
-              catalog={catalog}
-              onRemoveInspo={removeInspo}
-              onUnpin={unpin}
-            />
-          </div>
-
-          <div className="mt-6 flex items-center gap-3 flex-wrap">
-            <button
-              type="button"
-              onClick={analyze}
-              disabled={state.analyzing || totalImages === 0}
-              className="px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
-            >
-              {state.analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
-              {state.analyzing ? "Analyzing" : "Analyze palette"}
-            </button>
-            <button
-              type="button"
-              onClick={() => save()}
-              disabled={state.saving || !state.dirty}
-              className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
-            >
-              <Save className="h-3.5 w-3.5" />
-              {state.saving ? "Saving…" : "Save"}
-            </button>
-            {state.status !== "sent" && (
-              <button
-                type="button"
-                onClick={async () => { const t = await send(); if (t) setCopied(false); }}
-                disabled={state.sending || state.saving || totalImages === 0}
-                className="px-4 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
-              >
-                {state.sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-                {state.sending ? "Sending…" : "Send to client"}
-              </button>
+                  </div>
+                ))}
+              </div>
             )}
-            {state.error && (
-              <span className="text-[11px] uppercase tracking-[0.18em] text-red-700/80 inline-flex items-center gap-1.5">
-                <AlertCircle className="h-3.5 w-3.5" />
-                {state.error}
-              </span>
-            )}
+          </Step>
+        )}
+
+        {/* STEP 3 — DETAILS */}
+        <Step n={analysis ? 3 : 2} title="Your Details">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 max-w-2xl">
+            <Field label="Name *">
+              <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
+            </Field>
+            <Field label="Email *">
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className={inputCls} />
+            </Field>
+            <Field label="Phone">
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} />
+            </Field>
+            <Field label="Event date">
+              <input
+                type="text"
+                placeholder="Approx — e.g. Sept 2026"
+                value={eventDate}
+                onChange={(e) => setEventDate(e.target.value)}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Scope">
+              <select value={scope} onChange={(e) => setScope(e.target.value)} className={inputCls}>
+                <option value="">—</option>
+                {SCOPE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </Field>
+            <Field label="Budget">
+              <select value={budget} onChange={(e) => setBudget(e.target.value)} className={inputCls}>
+                <option value="">—</option>
+                {BUDGET_RANGES.map((b) => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </Field>
           </div>
 
-          {state.shareToken && (
-            <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-2">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">Share link</p>
-              <code className="flex-1 text-[11px] font-sans normal-case truncate text-charcoal/80">
-                {typeof window !== "undefined" ? `${window.location.origin}/studio/${state.shareToken}` : `/studio/${state.shareToken}`}
-              </code>
-              <button
-                type="button"
-                onClick={() => {
-                  if (typeof window === "undefined") return;
-                  navigator.clipboard.writeText(`${window.location.origin}/studio/${state.shareToken}`);
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1500);
-                }}
-                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 hover:text-charcoal inline-flex items-center gap-1"
-              >
-                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                {copied ? "Copied" : "Copy"}
-              </button>
+          <div className="mt-6 max-w-2xl">
+            <Field label="Vision Notes">
+              <textarea
+                value={vibe}
+                onChange={(e) => setVibe(e.target.value)}
+                rows={5}
+                placeholder="Mood, references, must-haves, no-gos…"
+                className={`${inputCls} resize-none normal-case`}
+              />
+            </Field>
+          </div>
+
+          {/* Pinned pieces strip */}
+          {pinnedIds.length > 0 && (
+            <div className="mt-8 max-w-2xl">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-3">
+                Pieces You Pinned ({pinnedIds.length})
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                {pinnedIds.map((id) => {
+                  const p = catalog.get(id);
+                  return (
+                    <div key={id} className="flex items-center gap-2 border border-charcoal/15 pl-1 pr-2 py-1">
+                      {p?.primaryImage?.url ? (
+                        <img src={p.primaryImage.url} alt="" className="w-8 h-8 object-cover bg-charcoal/5" />
+                      ) : (
+                        <span className="w-8 h-8 bg-charcoal/5" />
+                      )}
+                      <span className="text-[11px] font-sans normal-case max-w-[160px] truncate">
+                        {p?.title ?? id.slice(0, 8)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => unpin(id)}
+                        className="text-charcoal/40 hover:text-charcoal text-xs ml-1"
+                        aria-label="Unpin"
+                      >×</button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          <div className="mt-8 pt-6 border-t border-charcoal/10">
-            <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">
-              Curator notes
-            </label>
-            <textarea
-              value={state.curatorNotes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={5}
-              placeholder="What to send back to the client…"
-              className="w-full bg-transparent border border-charcoal/15 p-3 text-[13px] leading-relaxed font-sans normal-case focus:outline-none focus:border-charcoal/50 resize-none"
-            />
-          </div>
-        </section>
+          {/* Honeypot */}
+          <input
+            type="text"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="absolute -left-[9999px] w-0 h-0 opacity-0"
+          />
 
-        {/* RIGHT — analysis tabs */}
-        <aside className="lg:col-span-3 bg-cream lg:sticky lg:top-12 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto flex flex-col">
-          <div className="flex border-b border-charcoal/10">
-            {(["palette", "tones", "insights", "catalog"] as Tab[]).map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`flex-1 py-3 text-[10px] uppercase tracking-[0.22em] transition-colors ${
-                  tab === t ? "text-charcoal border-b border-charcoal" : "text-charcoal/50 hover:text-charcoal/80"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
+          <div className="mt-10 flex items-center gap-4 flex-wrap">
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-charcoal text-cream text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
+            >
+              {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
+              {submitting ? "Sending…" : "Submit Brief"}
+            </button>
+            <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
+              Or use the standard contact form
+            </Link>
           </div>
-          <div className="flex-1 overflow-y-auto">
-            {tab === "palette" && (
-              <PaletteTab result={{ palette: state.palette, tones: state.tones ?? defaultTones(), insights: state.insights, perImage: state.perImage }} />
-            )}
-            {tab === "tones" && <TonesTab tones={state.tones} imageCount={totalImages} />}
-            {tab === "insights" && <InsightsTab insights={state.insights} />}
-            {tab === "catalog" && (
-              <CatalogPickerTab catalog={catalog} pinned={state.pinned} onPin={pin} onUnpin={unpin} />
-            )}
-          </div>
-        </aside>
-      </div>
+          {submitError && (
+            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{submitError}</p>
+          )}
+        </Step>
+      </form>
     </div>
   );
 }
 
-function StatusBadge({ status, dirty }: { status: string; dirty: boolean }) {
-  const label = dirty ? `${status} · unsaved` : status;
+// ── presentational ──────────────────────────────────────────────────────
+
+const inputCls =
+  "w-full bg-transparent border-b border-charcoal/20 px-0 py-2 text-[13px] font-sans normal-case placeholder:text-charcoal/35 focus:outline-none focus:border-charcoal/60 transition-colors";
+
+function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 border border-charcoal/15 px-2 py-1">
-      {label}
-    </span>
+    <section className="pt-12">
+      <div className="flex items-baseline gap-4 mb-6">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-charcoal/40 tabular-nums">
+          {String(n).padStart(2, "0")}
+        </span>
+        <h2 className="font-display text-xl uppercase tracking-[0.06em]">{title}</h2>
+      </div>
+      {children}
+    </section>
   );
 }
 
-function defaultTones() {
-  return { warm: 0, cool: 0, neutral: 0, light: 0, dark: 0, saturated: 0, muted: 0 };
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50">{label}</span>
+      <div className="mt-1">{children}</div>
+    </label>
+  );
+}
+
+function ToneBar({ label, v }: { label: string; v: number }) {
+  return (
+    <div>
+      <div className="flex justify-between text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-1">
+        <span>{label}</span>
+        <span className="tabular-nums">{v}%</span>
+      </div>
+      <div className="h-1 bg-charcoal/10">
+        <div className="h-full bg-charcoal" style={{ width: `${v}%` }} />
+      </div>
+    </div>
+  );
 }

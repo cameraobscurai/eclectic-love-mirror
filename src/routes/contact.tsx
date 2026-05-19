@@ -355,6 +355,12 @@ function ContactPage() {
               your needs. Every inquiry is personally reviewed and will be
               answered within 24 hours. Thank you for reaching out to us!
             </p>
+            <a
+              href="/studio"
+              className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/75 hover:text-charcoal border-b border-charcoal/30 hover:border-charcoal pb-1"
+            >
+              Have a vision board? Build a style brief →
+            </a>
             <div className="mt-12 space-y-5">
               <p>
                 <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
