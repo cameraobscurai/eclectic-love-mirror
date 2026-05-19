@@ -92,6 +92,7 @@ function IncomingPage() {
               .upload(path, file, {
                 contentType: file.type || "application/octet-stream",
                 upsert: false,
+                cacheControl: "31536000",
               });
             if (error) failures.push(`${file.name}: ${error.message}`);
             done += 1;
