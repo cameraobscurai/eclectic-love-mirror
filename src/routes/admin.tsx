@@ -191,7 +191,7 @@ function AdminDashboard() {
             >
               {inqError ? (
                 <p className="text-sm text-charcoal/60">Couldn't load: {inqError}</p>
-              ) : inq ? (
+              ) : inq && Array.isArray(inq.daily) ? (
                 <Sparkline data={inq.daily.map((d) => d.count)} labels={inq.daily.map((d) => d.date)} />
               ) : (
                 <SkeletonBlock h={120} />
@@ -199,7 +199,7 @@ function AdminDashboard() {
             </Panel>
 
             <Panel eyebrow="Recent submissions" title="Inbox">
-              {inq ? (
+              {inq && Array.isArray(inq.recent) ? (
                 inq.recent.length === 0 ? (
                   <p className="text-sm text-charcoal/55">No submissions yet.</p>
                 ) : (
