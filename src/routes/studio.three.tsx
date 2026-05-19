@@ -155,6 +155,9 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
           shadow-intensity="1"
           exposure="1"
           environment-image="neutral"
+          loading="eager"
+          reveal="auto"
+          poster-color="transparent"
           style={{ width: "100%", height: "100%", background: "transparent" }}
         />
       ) : (
