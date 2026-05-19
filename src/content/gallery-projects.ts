@@ -56,6 +56,8 @@ import {
   eastonEventsMontanaGalleryImages,
   lyndenLaneGalleryHero,
   lyndenLaneGalleryImages,
+  vanderWeideGalleryHero,
+  vanderWeideGalleryImages,
 } from "./gallery-manifests";
 
 export const galleryProjects: GalleryProject[] = [
@@ -142,5 +144,18 @@ export const galleryProjects: GalleryProject[] = [
     summary:
       "A private residence celebration — outdoor lounges set against modernist architecture, layered florals, and a quietly composed evening that unfolds across the property.",
     coords: [-118.4912, 34.0259],
+  },
+  {
+    number: "07",
+    name: "VanderWeide",
+    region: "TBD",
+    kind: "Wedding",
+    location: "TBD",
+    year: "TBD",
+    category: "Luxury Weddings",
+    heroImage: vanderWeideGalleryHero,
+    detailImages: vanderWeideGalleryImages,
+    summary: "",
+    coords: [0, 0],
   },
 ];

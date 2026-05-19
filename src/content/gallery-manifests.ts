@@ -274,3 +274,60 @@ export const lyndenLaneGalleryHero: GalleryImage = {
 
 export const lyndenLaneGalleryImages = createGalleryImages([...lyndenLaneGalleryPaths], "Lynden Lane");
 
+export const vanderWeideGalleryPaths = [
+  "VanderWeideK/001_DSC02335.JPG",
+  "VanderWeideK/002_486174_0006.jpg",
+  "VanderWeideK/003_486154_0005.jpg",
+  "VanderWeideK/003_DSC02346.JPG",
+  "VanderWeideK/005_486175_0005.jpg",
+  "VanderWeideK/007_486154_0012.jpg",
+  "VanderWeideK/007_486175_0008.jpg",
+  "VanderWeideK/007_DSC02360.JPG",
+  "VanderWeideK/008_486154_0015.jpg",
+  "VanderWeideK/009_486155_0001.jpg",
+  "VanderWeideK/009_486175_0013.jpg",
+  "VanderWeideK/010_486155_0008.jpg",
+  "VanderWeideK/012_486155_0011.jpg",
+  "VanderWeideK/012_486173_0001.jpg",
+  "VanderWeideK/013_486173_0002.jpg",
+  "VanderWeideK/014_486173_0004.jpg",
+  "VanderWeideK/017_486156_0003.jpg",
+  "VanderWeideK/017_486173_0012.jpg",
+  "VanderWeideK/278_DSC01191.JPG",
+  "VanderWeideK/320_DSC01354.JPG",
+  "VanderWeideK/330_DSC01401.JPG",
+  "VanderWeideK/335_DSC01414.JPG",
+  "VanderWeideK/337_DSC01422.JPG",
+  "VanderWeideK/338_DSC01435.JPG",
+  "VanderWeideK/408_DSC09136.JPG",
+  "VanderWeideK/458_DSC09395.JPG",
+  "VanderWeideK/473_DSC02301.JPG",
+  "VanderWeideK/571_DSC09427.JPG",
+  "VanderWeideK/572_DSC09431.JPG",
+  "VanderWeideK/577_DSC09467.JPG",
+  "VanderWeideK/627_DSC02464.JPG",
+  "VanderWeideK/DSC00378.jpg",
+  "VanderWeideK/DSC00384.jpg",
+  "VanderWeideK/DSC00491.jpg",
+  "VanderWeideK/DSC00720.jpg",
+  "VanderWeideK/DSC00933.jpg",
+  "VanderWeideK/DSC04512.jpg",
+  "VanderWeideK/DSC04524.jpg",
+  "VanderWeideK/DSC04545.jpg",
+  "VanderWeideK/DSC04552.jpg",
+  "VanderWeideK/DSC04579.jpg",
+  "VanderWeideK/DSC04605.jpg",
+  "VanderWeideK/DSC04631.jpg",
+  "VanderWeideK/DSC05194.jpg",
+  "VanderWeideK/DSC05356.jpg",
+  "VanderWeideK/DSC05364.jpg",
+] as const;
+
+export const vanderWeideGalleryHero: GalleryImage = {
+  src: galleriesUrl("VanderWeideK/001_DSC02335.JPG"),
+  alt: "VanderWeide wedding environment by Eclectic Hive",
+};
+
+export const vanderWeideGalleryImages = createGalleryImages([...vanderWeideGalleryPaths], "VanderWeide");
+
+
