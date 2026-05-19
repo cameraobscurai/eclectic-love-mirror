@@ -1,43 +1,66 @@
-## Diagnosis
+## Root cause (confirmed)
 
-Mapping is healthy. The broken tiles are a **delivery** problem, not a data problem.
+The catalog isn't broken. Image **delivery** is. Across the four image buckets:
 
-| Check | Result |
-|---|---|
-| DB inventory_items public_ready | 864 |
-| DB with at least one image | 860 (99.5%) |
-| DB public_ready missing images | 4 (2 large-decor, 1 styling, 1 tables) |
-| Baked catalog products | 630 (after family rollup) |
-| Baked catalog with image URLs | 630 / 630 (100%) |
-| Random sample of 40 live image URLs | **11 returned HTTP 429** (Supabase Storage rate-limited) |
+| Bucket | Files | Cache-Control |
+|---|---|---|
+| `incoming-photos` | 1,267 | **all `no-cache`** |
+| `inventory` | 1,332 | almost all `no-cache` |
+| `missing-gaps` | 12 | all `no-cache` |
+| `squarespace-mirror` | 1,373 | mixed (`no-cache`, 1h, 1y) |
 
-What's happening: the Collection wall renders 100–155 tiles for a single category in one pass. They all hit `wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/...` in parallel. Supabase Storage's public origin throttles bursts → 429 → browser paints a broken-image icon and never retries. Pillows look worst because the category is the largest (155).
+`no-cache` tells the Supabase CDN to revalidate origin on every request. So even routing through the `/render/image/public/` transform endpoint doesn't help — the CDN re-fetches every time, origin throttles, browser paints broken-image icons. That's the 429s I sampled.
 
-This is why it "used to be 99%" — the catalog **is** still 99%+; it's the bytes that aren't arriving.
+This is also why nothing here will be solved by clever React. The fix has to land on the storage objects themselves.
 
-## Fix plan
+## Plan — best-practice, non-aggressive, site-wide
 
-### 1. Stop the bleed today (low-risk, no schema change)
-- **`src/components/collection/CollectionWallTile.tsx`** — add a single retry-with-backoff on `<img onError>` (one retry after 1.5–3s jitter). Catches 429s without spamming.
-- **Lazy + decode async on every tile** — confirm `loading="lazy"` and `decoding="async"` are set everywhere catalog images render (CollectionWallTile, CollectionGridTile, lightbox thumb strip). This alone cuts initial burst dramatically.
+### 1. Fix the headers (the actual fix)
+SQL migration to set `Cache-Control: max-age=31536000` on every existing object in the four image buckets. One-time, idempotent, reversible.
 
-### 2. Throttle the burst (small refactor)
-- Cap concurrent in-flight image loads to ~12 via an IntersectionObserver gate in the wall component, so off-screen tiles wait their turn. No virtualization library — just don't set `src` until the tile is within ~1.5 viewports.
+```text
+incoming-photos      → max-age=31536000   (1,267 rows)
+inventory            → max-age=31536000   (1,332 rows)
+missing-gaps         → max-age=31536000   (12 rows)
+squarespace-mirror   → max-age=31536000   (1,373 rows; normalize the mixed entries)
+```
 
-### 3. Cure the root cause (next pass)
-- Route images through **Supabase Storage's image transform endpoint** (`/render/image/public/...?width=...`). Transform responses are cached aggressively at the edge and don't share the raw-object rate bucket.
-- Or: put Cloudflare in front of `wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/*` and let the CDN absorb bursts. Free tier handles this trivially.
+Effect: Supabase's CDN starts actually caching. Origin requests drop ~99%. 429s effectively retire. Browsers serve from disk cache on repeat views.
 
-### 4. Backfill the genuinely missing 4
-- Tag the 4 DB rows in `/admin/bind` for owner review. Either drop them from public or upload an image. Not urgent — 4 of 864 is 0.5%.
+Filenames are content-addressable for the most part, but if owner ever needs to replace a file at the same path, she'd re-upload through the admin tool, which we'll wire to set the same header on write (Step 2). For safety we can drop max-age to 1 day for `inventory` (owner-edited bucket) — still wipes the 429 problem, gives same-day refresh on edits. I recommend 1 year on the catalog mirrors, 1 day on `inventory`.
 
-## What I am NOT proposing
-- No catalog rebake. The catalog is fine.
-- No bucket churn. The buckets and URLs are correct.
-- No removing the family rollup or changing display counts.
+### 2. Make future uploads correct by default
+- Audit every `supabase.storage.from(...).upload(...)` call in the repo and add `cacheControl: '31536000'` (or `'86400'` for the editable inventory bucket).
+- Targets: scripts in `scripts/`, the `/admin/bind` tool, `/admin/image-qa`, any owner-upload component. ~6 call sites.
+
+### 3. Revert the over-engineering I just shipped
+The previous turn added two things that are too aggressive once Step 1 lands:
+- **IntersectionObserver gate (`useNearViewport`) in `CollectionWallTile`** — native `loading="lazy"` already does this. Doubling up adds blank-flash on fast scroll and breaks SSR snapshots. Drop it.
+- **Cache-busting retry (`?_r=1`)** — defeats the CDN we just turned on. Drop it. Keep the single retry, but reload the SAME url after backoff; the browser will revalidate cleanly.
+
+Net `CollectionWallTile` keeps the only two changes that are actually best practice:
+- `withCdnWidth` to route through the transform endpoint
+- `srcset` + `sizes` so each tile fetches the right size
+
+### 4. Centralize for the future (small, deferred)
+Pull catalog image rendering into one `<CatalogImage>` component used by `ProductTile`, `CollectionWallTile`, `QuickViewModal`, `CategoryOverview`, `CategoryGalleryOverview`, `CategoryTonalGrid`, `CollectionRail`. Today the same `withCdnWidth + srcset + lazy + decoding=async` pattern is copy-pasted in 7 places — when this comes up again (and it will), we'll want one switch to flip. No behavior change.
+
+Not required for the fix. Worth doing in the same PR because the code is already in everyone's head.
+
+### 5. What I'm explicitly NOT doing
+- ❌ No Cloudflare in front of Supabase (Step 1 makes it unnecessary; we keep the architecture simple).
+- ❌ No service worker / fetch interceptor (over-engineering; opaque failure modes).
+- ❌ No catalog rebake (catalog is fine).
+- ❌ No bucket consolidation (separate concern; risky).
+- ❌ No new dependencies.
 
 ## Order of operations
-1. Step 1 today (15 min, ship immediately).
-2. Step 2 same session (30 min).
-3. Step 3 as a follow-up after we confirm Steps 1–2 dropped the 429 rate on a live sample.
-4. Step 4 whenever the owner has 4 photos.
+1. **SQL migration** (Step 1) — instant effect on live the moment it runs, no deploy needed.
+2. **Revert the IO gate + cache-bust** in `CollectionWallTile` (Step 3).
+3. **Upload defaults** in admin tools + scripts (Step 2).
+4. **Centralize component** (Step 4) — optional, same PR.
+
+## Risk
+- Step 1 is reversible (same migration with `no-cache` reverts it). Worst case: cached version of a replaced image shows for up to 1y; mitigated by Step 2 setting shorter TTL on `inventory` and by the existing admin tools doing `upsert: true` + new filenames for fresh uploads.
+- Step 3 is removing risk, not adding it.
+- Steps 2 and 4 are mechanical.
