@@ -32,11 +32,7 @@ export const Route = createFileRoute("/studio/")({
 
 function StudioPage() {
   const { inquiry } = Route.useSearch();
-  return (
-    <AdminShell>
-      {inquiry ? <StudioWorkspace inquiryId={inquiry} /> : <NoInquiry />}
-    </AdminShell>
-  );
+  return inquiry ? <StudioWorkspace inquiryId={inquiry} /> : <NoInquiry />;
 }
 
 function NoInquiry() {
