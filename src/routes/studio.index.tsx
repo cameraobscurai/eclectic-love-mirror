@@ -520,24 +520,3 @@ function ToneBar({ label, v }: { label: string; v: number }) {
   );
 }
 
-// ── color helpers ──────────────────────────────────────────────────────
-
-function hexToColorInfo(hex: string, weight: number): ColorInfo {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return { r, g, b, hex, count: weight, hsl: rgbToHsl(r, g, b) };
-}
-
-function mergePalettes(a: ColorInfo[], b: ColorInfo[], threshold = 35): ColorInfo[] {
-  const out: ColorInfo[] = [];
-  for (const c of [...a, ...b]) {
-    const hit = out.find((m) => {
-      const dr = m.r - c.r, dg = m.g - c.g, db = m.b - c.b;
-      return Math.sqrt(dr * dr + dg * dg + db * db) < threshold;
-    });
-    if (hit) hit.count += c.count;
-    else out.push({ ...c });
-  }
-  return out.sort((x, y) => y.count - x.count);
-}
