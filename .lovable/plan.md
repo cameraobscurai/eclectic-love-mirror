@@ -1,66 +1,77 @@
-## Root cause (confirmed)
+## What "liability" means here
 
-The catalog isn't broken. Image **delivery** is. Across the four image buckets:
+Three real risks. The plan addresses all three.
 
-| Bucket | Files | Cache-Control |
+| Risk | Today | Fix |
 |---|---|---|
-| `incoming-photos` | 1,267 | **all `no-cache`** |
-| `inventory` | 1,332 | almost all `no-cache` |
-| `missing-gaps` | 12 | all `no-cache` |
-| `squarespace-mirror` | 1,373 | mixed (`no-cache`, 1h, 1y) |
+| **Delivery breaks** (429s, broken thumbnails) | 1 of 4 buckets fully recached; 2 still serve `no-cache` | Finish the recache job |
+| **Photos get lost** (accidental delete, my mistake, owner mistake) | No backups. If `incoming-photos/` is wiped, it's gone | Nightly manifest + photo archive bucket |
+| **Catalog silently drifts** (DB ≠ baked JSON ≠ what's on live) | No automated check. Owner notices broken tiles before we do | Inventory health page + drift detector |
 
-`no-cache` tells the Supabase CDN to revalidate origin on every request. So even routing through the `/render/image/public/` transform endpoint doesn't help — the CDN re-fetches every time, origin throttles, browser paints broken-image icons. That's the 429s I sampled.
+## Plan
 
-This is also why nothing here will be solved by clever React. The fix has to land on the storage objects themselves.
+### 1. Finish the cache job (10 min)
+Two buckets still need the re-upload pass:
+- `squarespace-mirror` (1,373 files) → 1y cache
+- `inventory` (1,332 files) → 1d cache
+- Retry 5 stragglers from `incoming-photos` that hit a db-connection limit
 
-## Plan — best-practice, non-aggressive, site-wide
+Then delete `scripts/_recache.mjs` (one-shot tool, not a permanent script).
 
-### 1. Fix the headers (the actual fix)
-SQL migration to set `Cache-Control: max-age=31536000` on every existing object in the four image buckets. One-time, idempotent, reversible.
+### 2. Backups — the actual liability fix
 
-```text
-incoming-photos      → max-age=31536000   (1,267 rows)
-inventory            → max-age=31536000   (1,332 rows)
-missing-gaps         → max-age=31536000   (12 rows)
-squarespace-mirror   → max-age=31536000   (1,373 rows; normalize the mixed entries)
-```
+**2a. Nightly DB manifest** (cheap, high-value)
+A server function runs daily and writes a timestamped JSON snapshot of `inventory_items` to a new private bucket `inventory-backups/`. 14-day retention. ~2 MB/day. If the catalog ever gets corrupted I (or owner) can restore exactly which `rms_id` had which `images[]` on any given day.
 
-Effect: Supabase's CDN starts actually caching. Origin requests drop ~99%. 429s effectively retire. Browsers serve from disk cache on repeat views.
+**2b. Photo archive bucket** (one-time + on-write mirror)
+New private bucket `inventory-photo-archive/` that holds a copy of every owner-uploaded original. One-time backfill from `incoming-photos` (~2 GB). Then a tiny server function the `/admin/incoming` uploader calls right after a successful upload to mirror the file. Doubles storage cost; gives true accidental-delete recovery.
 
-Filenames are content-addressable for the most part, but if owner ever needs to replace a file at the same path, she'd re-upload through the admin tool, which we'll wire to set the same header on write (Step 2). For safety we can drop max-age to 1 day for `inventory` (owner-edited bucket) — still wipes the 429 problem, gives same-day refresh on edits. I recommend 1 year on the catalog mirrors, 1 day on `inventory`.
+**2c. Storage object inventory** (audit trail)
+Same nightly job writes a manifest of every object path + size + cacheControl across the 4 image buckets to `inventory-backups/`. Lets us answer "what files existed last Tuesday?" without restoring anything.
 
-### 2. Make future uploads correct by default
-- Audit every `supabase.storage.from(...).upload(...)` call in the repo and add `cacheControl: '31536000'` (or `'86400'` for the editable inventory bucket).
-- Targets: scripts in `scripts/`, the `/admin/bind` tool, `/admin/image-qa`, any owner-upload component. ~6 call sites.
+### 3. Inventory health page (so we see problems before owner does)
 
-### 3. Revert the over-engineering I just shipped
-The previous turn added two things that are too aggressive once Step 1 lands:
-- **IntersectionObserver gate (`useNearViewport`) in `CollectionWallTile`** — native `loading="lazy"` already does this. Doubling up adds blank-flash on fast scroll and breaks SSR snapshots. Drop it.
-- **Cache-busting retry (`?_r=1`)** — defeats the CDN we just turned on. Drop it. Keep the single retry, but reload the SAME url after backoff; the browser will revalidate cleanly.
+`/admin/inventory-health` — a single read-only dashboard pulling live numbers:
+- DB row count, public-ready count, with-images count
+- Baked-catalog row count + `generatedAt`
+- **Drift alert** if DB count > catalog count by more than 5 rows (signals bake is stale)
+- List of the rows that are public-ready but `images = []` (today: 4)
+- Random HEAD-check on 30 catalog image URLs → red row if any returns 4xx/5xx
+- Bucket file counts vs last night's manifest → red if shrinkage detected
+- Last backup timestamp
 
-Net `CollectionWallTile` keeps the only two changes that are actually best practice:
-- `withCdnWidth` to route through the transform endpoint
-- `srcset` + `sizes` so each tile fetches the right size
+No interactive controls. Pure observability.
 
-### 4. Centralize for the future (small, deferred)
-Pull catalog image rendering into one `<CatalogImage>` component used by `ProductTile`, `CollectionWallTile`, `QuickViewModal`, `CategoryOverview`, `CategoryGalleryOverview`, `CategoryTonalGrid`, `CollectionRail`. Today the same `withCdnWidth + srcset + lazy + decoding=async` pattern is copy-pasted in 7 places — when this comes up again (and it will), we'll want one switch to flip. No behavior change.
+### 4. Guardrails on me (memory rules)
 
-Not required for the fix. Worth doing in the same PR because the code is already in everyone's head.
+Add to project memory `mem://constraints/inventory-safety.md`:
+- Never call `storage.remove()` on more than 5 files without first writing the file list to `/mnt/documents/` and getting explicit approval
+- Never re-run a bulk re-upload without a dry-run count first
+- Catalog rebake requires confirming DB-vs-baked counts match within ±2 before publishing
+- `incoming-photos` is the canonical originals bucket. Never delete a folder there without a manifest. `squarespace-mirror` is legacy/secondary. `inventory` is owner-edit space.
+- If I'm ever unsure which bucket a tile pulls from, stop and read `inventory_items.images[0]` for that row instead of guessing
+
+Reference this from `mem://index.md` Core.
 
 ### 5. What I'm explicitly NOT doing
-- ❌ No Cloudflare in front of Supabase (Step 1 makes it unnecessary; we keep the architecture simple).
-- ❌ No service worker / fetch interceptor (over-engineering; opaque failure modes).
-- ❌ No catalog rebake (catalog is fine).
-- ❌ No bucket consolidation (separate concern; risky).
-- ❌ No new dependencies.
+- ❌ No CDN swap (Cache-Control fix made this unnecessary)
+- ❌ No bucket consolidation (high-risk, low-reward)
+- ❌ No move off Supabase Storage
+- ❌ No new dependencies
+- ❌ No image-bytes deduplication (premature)
+- ❌ No centralized `<CatalogImage>` component yet (deferred from last plan — not a liability item)
 
-## Order of operations
-1. **SQL migration** (Step 1) — instant effect on live the moment it runs, no deploy needed.
-2. **Revert the IO gate + cache-bust** in `CollectionWallTile` (Step 3).
-3. **Upload defaults** in admin tools + scripts (Step 2).
-4. **Centralize component** (Step 4) — optional, same PR.
+## Order
+1. Finish cache job — silences current symptoms (10 min)
+2. Add memory guardrails — protects against future me (2 min)
+3. Build `/admin/inventory-health` page — gives visibility (30 min)
+4. Wire DB manifest backup server fn + cron — protects catalog (30 min)
+5. Photo archive bucket + on-write mirror — protects pixels (45 min)
+
+Items 1–3 in this session. Items 4–5 are the bigger lifts and can ship in the next session if you want to keep this turn tight.
 
 ## Risk
-- Step 1 is reversible (same migration with `no-cache` reverts it). Worst case: cached version of a replaced image shows for up to 1y; mitigated by Step 2 setting shorter TTL on `inventory` and by the existing admin tools doing `upsert: true` + new filenames for fresh uploads.
-- Step 3 is removing risk, not adding it.
-- Steps 2 and 4 are mechanical.
+- Step 1 is mechanical. Already proven on `missing-gaps` and `incoming-photos`.
+- Steps 2 + 3 are additive (new file, new route). Cannot break existing flows.
+- Step 4 needs a server-fn cron — no schema change, no migration. Worst case: backup fails silently and we notice in the health page.
+- Step 5 doubles photo storage cost. Few GB. Cheap insurance against the scenario that actually scares you.
