@@ -3,7 +3,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Maximize2, RotateCw } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 type ModelEntry = {
   id: string;
@@ -31,7 +30,6 @@ const MODELS: ModelEntry[] = [
 ];
 
 export const Route = createFileRoute("/studio/three")({
-  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "3D · Studio" },
