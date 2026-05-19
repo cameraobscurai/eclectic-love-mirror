@@ -122,7 +122,14 @@ function AdminDashboard() {
   useEffect(() => {
     let alive = true;
     getInquirySummary()
-      .then((d) => alive && setInq(d))
+      .then((d) => {
+        if (!alive) return;
+        if (d && Array.isArray((d as InquirySummary).daily)) {
+          setInq(d as InquirySummary);
+        } else {
+          setInqError("Unauthorized or malformed response");
+        }
+      })
       .catch((e) => alive && setInqError(e?.message ?? "Failed to load inquiries"));
     return () => {
       alive = false;
