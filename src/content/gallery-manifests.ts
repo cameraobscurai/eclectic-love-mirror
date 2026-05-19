@@ -306,11 +306,35 @@ export const vanderWeideGalleryPaths = [
   "VanderWeideK/572_DSC09431.JPG",
   "VanderWeideK/577_DSC09467.JPG",
   "VanderWeideK/627_DSC02464.JPG",
+  "VanderWeideK/DSC00274.JPG",
+  "VanderWeideK/DSC00278.JPG",
+  "VanderWeideK/DSC00338.JPG",
+  "VanderWeideK/DSC00343.JPG",
   "VanderWeideK/DSC00378.jpg",
   "VanderWeideK/DSC00384.jpg",
   "VanderWeideK/DSC00491.jpg",
+  "VanderWeideK/DSC00524.JPG",
+  "VanderWeideK/DSC00579-2.JPG",
+  "VanderWeideK/DSC00579.JPG",
+  "VanderWeideK/DSC00611.JPG",
   "VanderWeideK/DSC00720.jpg",
   "VanderWeideK/DSC00933.jpg",
+  "VanderWeideK/DSC01008.JPG",
+  "VanderWeideK/DSC01150.JPG",
+  "VanderWeideK/DSC01199.JPG",
+  "VanderWeideK/DSC01224.jpg",
+  "VanderWeideK/DSC01229 (1).JPG",
+  "VanderWeideK/DSC01229.JPG",
+  "VanderWeideK/DSC01249.jpg",
+  "VanderWeideK/DSC01261.jpg",
+  "VanderWeideK/DSC01281.jpg",
+  "VanderWeideK/DSC01348.jpg",
+  "VanderWeideK/DSC01397.JPG",
+  "VanderWeideK/DSC01521.JPG",
+  "VanderWeideK/DSC01522.jpg",
+  "VanderWeideK/DSC02289.jpg",
+  "VanderWeideK/DSC02415.jpg",
+  "VanderWeideK/DSC02694.jpg",
   "VanderWeideK/DSC04512.jpg",
   "VanderWeideK/DSC04524.jpg",
   "VanderWeideK/DSC04545.jpg",
@@ -318,9 +342,24 @@ export const vanderWeideGalleryPaths = [
   "VanderWeideK/DSC04579.jpg",
   "VanderWeideK/DSC04605.jpg",
   "VanderWeideK/DSC04631.jpg",
+  "VanderWeideK/DSC04720.JPG",
+  "VanderWeideK/DSC04752.JPG",
+  "VanderWeideK/DSC04779.JPG",
+  "VanderWeideK/DSC04792.JPG",
+  "VanderWeideK/DSC04808.JPG",
+  "VanderWeideK/DSC04839.JPG",
+  "VanderWeideK/DSC04876.JPG",
+  "VanderWeideK/DSC04886.JPG",
+  "VanderWeideK/DSC04918.JPG",
+  "VanderWeideK/DSC04920 (1).JPG",
   "VanderWeideK/DSC05194.jpg",
   "VanderWeideK/DSC05356.jpg",
   "VanderWeideK/DSC05364.jpg",
+  "VanderWeideK/DSC05704.jpg",
+  "VanderWeideK/DSC09690.JPG",
+  "VanderWeideK/DSC09923.JPG",
+  "VanderWeideK/DSC09943.JPG",
+  "VanderWeideK/DSC09953.JPG",
 ] as const;
 
 export const vanderWeideGalleryHero: GalleryImage = {
@@ -329,5 +368,35 @@ export const vanderWeideGalleryHero: GalleryImage = {
 };
 
 export const vanderWeideGalleryImages = createGalleryImages([...vanderWeideGalleryPaths], "VanderWeide");
+
+export const dosMasEnLaMesaGalleryPaths = [
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-59.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-67.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-158.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-163.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-166.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-173.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-218.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-219.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-244.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-246.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-261.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-271.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-272.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-274.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-327.jpg",
+  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-331.jpg",
+  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-7.jpg",
+  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-15.jpg",
+  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-28.jpg",
+  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-33.jpg",
+] as const;
+
+export const dosMasEnLaMesaGalleryHero: GalleryImage = {
+  src: galleriesUrl("dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-158.jpg"),
+  alt: "Dos Mas En La Mesa wedding environment in Colorado by Eclectic Hive",
+};
+
+export const dosMasEnLaMesaGalleryImages = createGalleryImages([...dosMasEnLaMesaGalleryPaths], "Dos Mas En La Mesa");
 
 
