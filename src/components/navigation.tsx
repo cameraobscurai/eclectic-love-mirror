@@ -86,8 +86,12 @@ export function Navigation() {
     return () => ro.disconnect();
   }, []);
 
-  const isLightPage = LIGHT_BG_PAGES.includes(pathname);
-  const isWhitePage = WHITE_BG_PAGES.includes(pathname);
+  const isLightPage =
+    LIGHT_BG_PAGES.includes(pathname) ||
+    LIGHT_BG_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isWhitePage =
+    WHITE_BG_PAGES.includes(pathname) ||
+    WHITE_BG_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
   useEffect(() => {
     const onScroll = () => {
