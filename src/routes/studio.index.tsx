@@ -77,7 +77,7 @@ function NoInquiry() {
             {groups[status].map((b) => (
               <li key={b.id}>
                 <Link
-                  to="/admin/studio"
+                  to="/studio"
                   search={{ inquiry: b.inquiry_id }}
                   className="grid grid-cols-12 items-center gap-3 py-3 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
                 >
