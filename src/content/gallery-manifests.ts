@@ -268,11 +268,15 @@ export const lyndenLaneGalleryPaths = [
 ] as const;
 
 export const lyndenLaneGalleryHero: GalleryImage = {
-  src: galleriesUrl("LYNDEN-LANE/nb-25-taylor&brenden-1083.webp"),
-  alt: "Outdoor lounge and cocktail setting outside a modernist residence",
+  src: galleriesUrl("LYNDEN-LANE/nb-25-taylor&brenden-1143.webp"),
+  alt: "Modernist outdoor lounge against architectural lines, Telluride",
 };
 
-export const lyndenLaneGalleryImages = createGalleryImages([...lyndenLaneGalleryPaths], "Lynden Lane");
+// Owner-excluded plate (:1083) filtered before mapping.
+export const lyndenLaneGalleryImages = createGalleryImages(
+  lyndenLaneGalleryPaths.filter((p) => !p.includes("1083")),
+  "Lynden Lane",
+);
 
 export const vanderWeideGalleryPaths = [
   "VanderWeideK/001_DSC02335.JPG",
