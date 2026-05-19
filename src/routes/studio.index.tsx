@@ -284,7 +284,7 @@ function StudioPage() {
           <button
             type="button"
             onClick={generate}
-            disabled={!inspo.length || analyzing}
+            disabled={(!inspo.length && !pinnedIds.length) || analyzing}
             className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
           >
             {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
