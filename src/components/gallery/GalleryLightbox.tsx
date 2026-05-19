@@ -259,18 +259,29 @@ export function GalleryLightbox({
 
           <div className="mt-2 lg:mt-12">
             <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
-              {(plateIndex + 1).toString().padStart(2, "0")}
-              <span className="mx-2 text-cream/20">/</span>
-              {plates.length.toString().padStart(2, "0")}
+              {pending
+                ? "—"
+                : `${(plateIndex + 1).toString().padStart(2, "0")}`}
+              {!pending && <span className="mx-2 text-cream/20">/</span>}
+              {!pending && plates.length.toString().padStart(2, "0")}
             </p>
-            <h2 className="mt-10 font-display text-[clamp(2.25rem,3.4vw,3.25rem)] leading-[1.02] tracking-[-0.005em]">
+            <p className="mt-10 text-[10px] uppercase tracking-[0.32em] text-cream/55">
+              {project.planner}
+            </p>
+            <h2 className="mt-3 font-display text-[clamp(2.25rem,3.4vw,3.25rem)] leading-[1.02] tracking-[-0.005em]">
               {project.name}
             </h2>
             <div className="mt-6 h-px w-10 bg-cream/25" aria-hidden />
             <p className="mt-5 text-[10px] uppercase tracking-[0.32em] text-cream/55 tabular-nums">
-              {project.year}
+              {project.kind} · {project.year}
             </p>
+            {project.summary && (
+              <p className="mt-6 text-sm leading-relaxed text-cream/65 normal-case max-w-[42ch]">
+                {project.summary}
+              </p>
+            )}
           </div>
+
 
           <div className="mt-auto pt-12 flex items-center justify-between gap-6 border-t border-cream/10 -mx-8 lg:-mx-12 px-8 lg:px-12 pt-6">
             <button
