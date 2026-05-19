@@ -39,8 +39,8 @@ export const amangiriGalleryPaths = [
 ] as const;
 
 export const amangiriGalleryHero: GalleryImage = {
-  src: galleriesUrl("AMANGIRI/C631CFB9-BE43-465B-BB80-0AEF41D4210E.jpeg"),
-  alt: "Concrete console with sculptural vessels in the Amangiri desert",
+  src: galleriesUrl("AMANGIRI/COVER_amangiri_night_dinner.jpg"),
+  alt: "Long-table dinner lit by lanterns beneath the Amangiri sandstone at night",
 };
 
 export const amangiriGalleryImages = createGalleryImages([...amangiriGalleryPaths], "Amangiri");
