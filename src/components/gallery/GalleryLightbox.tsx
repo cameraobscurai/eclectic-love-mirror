@@ -31,9 +31,11 @@ export function GalleryLightbox({
   const [plateChanging, setPlateChanging] = useState(false);
 
   const project = projects[projectIndex];
+  const pending = !!project.pending;
   const plates =
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const plate = plates[plateIndex];
+  const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
 
   // Lock body scroll while open. Shared ref-counted lock; safe under
   // overlapping owners (e.g. nav menu opening over the lightbox).
