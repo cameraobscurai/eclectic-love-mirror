@@ -11,6 +11,7 @@ import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/server/style-brief.functions";
+import { StudioBrowser } from "@/components/studio/StudioBrowser";
 
 export const Route = createFileRoute("/studio/")({
   head: () => ({
@@ -310,8 +311,16 @@ function StudioPage() {
           </Step>
         )}
 
-        {/* STEP 3 — DETAILS */}
-        <Step n={analysis ? 3 : 2} title="Your Details">
+        {/* STEP — BROWSE INVENTORY */}
+        <Step n={analysis ? 3 : 2} title="Browse The Collection">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
+            Pin pieces that fit your vision. Search by name, browse by category, or match by image.
+          </p>
+          <StudioBrowser seedPalette={analysis?.palette ?? null} />
+        </Step>
+
+        {/* STEP — DETAILS */}
+        <Step n={analysis ? 4 : 3} title="Your Details">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 max-w-2xl">
             <Field label="Name *">
               <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
