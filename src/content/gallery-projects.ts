@@ -52,6 +52,8 @@ import {
   birchDesignGalleryImages,
   brookeKeganDuntonGalleryHero,
   brookeKeganDuntonGalleryImages,
+  dosMasEnLaMesaGalleryHero,
+  dosMasEnLaMesaGalleryImages,
   eastonEventsMontanaGalleryHero,
   eastonEventsMontanaGalleryImages,
   lyndenLaneGalleryHero,
