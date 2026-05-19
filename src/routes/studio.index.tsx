@@ -42,12 +42,22 @@ function NoInquiry() {
   useEffect(() => {
     let alive = true;
     listStudioBoards()
-      .then((rows) => { if (alive) setBoards(rows as StudioBoardSummary[]); })
+      .then((rows) => {
+        if (!alive) return;
+        const arr = Array.isArray(rows)
+          ? rows
+          : Array.isArray((rows as { result?: unknown })?.result)
+          ? ((rows as { result: unknown }).result as StudioBoardSummary[])
+          : Array.isArray((rows as { data?: unknown })?.data)
+          ? ((rows as { data: unknown }).data as StudioBoardSummary[])
+          : [];
+        setBoards(arr as StudioBoardSummary[]);
+      })
       .catch((e: Error) => { if (alive) setErr(e.message); });
     return () => { alive = false; };
   }, []);
 
-  const recent = (boards ?? []).slice(0, 8);
+  const recent = Array.isArray(boards) ? boards.slice(0, 8) : [];
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
