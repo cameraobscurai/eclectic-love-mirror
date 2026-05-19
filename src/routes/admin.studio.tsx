@@ -115,7 +115,7 @@ function NoInquiry() {
             {recent.map((b) => (
               <li key={b.id}>
                 <Link
-                  to="/studio"
+                  to="/admin/studio"
                   search={{ inquiry: b.inquiry_id }}
                   className="grid grid-cols-12 items-center gap-3 py-4 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
                 >

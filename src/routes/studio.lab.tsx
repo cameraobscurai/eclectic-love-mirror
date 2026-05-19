@@ -15,7 +15,7 @@ function LabPage() {
   return (
     <div className="min-h-screen bg-cream text-charcoal">
       <header className="px-6 lg:px-16 pt-10 pb-6 border-b border-charcoal/10 flex items-center justify-between">
-        <Link to="/studio" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50 hover:text-charcoal inline-flex items-center gap-1.5">
+        <Link to="/admin/studio" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50 hover:text-charcoal inline-flex items-center gap-1.5">
           <ArrowLeft className="h-3 w-3" /> Studio
         </Link>
         <div className="flex items-baseline gap-3">

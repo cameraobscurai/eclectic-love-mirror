@@ -319,7 +319,7 @@ function InquiryRow({ row, onSaved }: { row: InsightsInquiry; onSaved: () => voi
             {formatDate(row.created_at)}
           </span>
           <a
-            href={`/studio?inquiry=${row.id}`}
+            href={`/admin/studio?inquiry=${row.id}`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
