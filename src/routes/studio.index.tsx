@@ -1,13 +1,12 @@
-// /admin/studio — Internal style builder anchored to one inquiry.
-// Not in the admin nav yet; reach it via /admin/insights row "Studio →" link
-// or by URL: /admin/studio?inquiry=<uuid>.
+// /studio — Internal style builder anchored to one inquiry.
+// Reach it via /admin/insights row "Studio →" link or /studio?inquiry=<uuid>.
 
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Loader2, Save, Send, AlertCircle, Copy, Check } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
-import { AdminShell } from "@/components/admin/admin-shell";
+
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";
 import { StyleBoardCanvas } from "@/components/studio/StyleBoardCanvas";
@@ -19,7 +18,7 @@ import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.funct
 
 const search = z.object({ inquiry: z.string().uuid().optional() });
 
-export const Route = createFileRoute("/admin/studio")({
+export const Route = createFileRoute("/studio/")({
   validateSearch: (s) => search.parse(s),
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
@@ -33,11 +32,7 @@ export const Route = createFileRoute("/admin/studio")({
 
 function StudioPage() {
   const { inquiry } = Route.useSearch();
-  return (
-    <AdminShell>
-      {inquiry ? <StudioWorkspace inquiryId={inquiry} /> : <NoInquiry />}
-    </AdminShell>
-  );
+  return inquiry ? <StudioWorkspace inquiryId={inquiry} /> : <NoInquiry />;
 }
 
 function NoInquiry() {
@@ -82,7 +77,7 @@ function NoInquiry() {
             {groups[status].map((b) => (
               <li key={b.id}>
                 <Link
-                  to="/admin/studio"
+                  to="/studio"
                   search={{ inquiry: b.inquiry_id }}
                   className="grid grid-cols-12 items-center gap-3 py-3 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
                 >
