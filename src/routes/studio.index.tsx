@@ -120,16 +120,41 @@ function StudioPage() {
   }
 
   async function generate() {
-    if (!inspo.length) return;
+    if (!inspo.length && !pinnedIds.length) return;
     setAnalyzing(true);
     setAnalyzeError(null);
     try {
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
-      const result = await analyzeMoodboard(
-        inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
-        canvasRef.current,
-      );
-      setAnalysis(result);
+
+      // 1. Extract colors from inspo images (if any).
+      const inspoResult = inspo.length
+        ? await analyzeMoodboard(
+            inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
+            canvasRef.current,
+          )
+        : null;
+
+      // 2. Pull pre-tagged colors from pinned catalog pieces.
+      const pinnedColors: ColorInfo[] = [];
+      for (const id of pinnedIds) {
+        const p = catalog.get(id);
+        if (!p) continue;
+        if (p.colorHex) pinnedColors.push(hexToColorInfo(p.colorHex, 3));
+        if (p.colorHexSecondary) pinnedColors.push(hexToColorInfo(p.colorHexSecondary, 2));
+      }
+
+      // 3. Merge — inspo palette + pinned colors, dedupe by proximity.
+      const merged = mergePalettes(inspoResult?.palette ?? [], pinnedColors);
+
+      // 4. Recompute tones + insights on the merged palette so downstream UI
+      //    reflects the full picture (uploads + selections).
+      const finalAnalysis: AnalysisResult = {
+        palette: merged.slice(0, 8),
+        tones: inspoResult?.tones ?? computeTones(merged),
+        insights: inspoResult?.insights ?? generateInsights(merged, computeTones(merged)),
+        perImage: inspoResult?.perImage ?? [],
+      };
+      setAnalysis(finalAnalysis);
     } catch (e) {
       setAnalyzeError((e as Error).message);
     } finally {
