@@ -304,12 +304,14 @@ export function GalleryLightbox({
         </aside>
       </div>
 
-      {/* Filmstrip */}
-      <GalleryLightboxRail
-        images={plates}
-        currentIndex={plateIndex}
-        onSelect={setPlateIndex}
-      />
+      {/* Filmstrip — hidden for pending projects (no real plates yet) */}
+      {!pending && (
+        <GalleryLightboxRail
+          images={plates}
+          currentIndex={plateIndex}
+          onSelect={setPlateIndex}
+        />
+      )}
     </div>
   );
 }
