@@ -225,25 +225,29 @@ export function GalleryLightbox({
             );
           })}
 
-          {/* Plate paddles */}
-          <button
-            type="button"
-            aria-label="Previous plate"
-            onClick={() => stepPlate(-1)}
-            disabled={plateIndex === 0}
-            className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next plate"
-            onClick={() => stepPlate(1)}
-            disabled={plateIndex === plates.length - 1}
-            className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+          {/* Plate paddles — hidden for pending projects */}
+          {!pending && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous plate"
+                onClick={() => stepPlate(-1)}
+                disabled={plateIndex === 0}
+                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next plate"
+                onClick={() => stepPlate(1)}
+                disabled={plateIndex === plates.length - 1}
+                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Sidebar */}
