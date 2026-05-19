@@ -54,6 +54,10 @@ const LIGHT_BG_PAGES = [
 
 const WHITE_BG_PAGES = ["/", "/collection"];
 
+// Prefix matches for entire route trees (e.g. all /studio/* pages share a light bg)
+const LIGHT_BG_PREFIXES = ["/studio"];
+const WHITE_BG_PREFIXES = ["/studio"];
+
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
