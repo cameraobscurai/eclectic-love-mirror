@@ -23,12 +23,8 @@ export const Route = createFileRoute("/studio/three")({
         type: "model/gltf-binary",
       },
     ],
-    scripts: [
-      // Modulepreload the viewer + its KTX2/meshopt decoders from the CDN
-      // so the JS chunk lands in parallel with the GLB.
-      { rel: "modulepreload", href: "https://cdn.jsdelivr.net/npm/@google/model-viewer@4/dist/model-viewer.min.js" },
-    ],
   }),
+
   component: ThreePage,
 });
 
