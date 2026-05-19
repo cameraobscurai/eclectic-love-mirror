@@ -10,22 +10,24 @@ type ModelEntry = {
   src: string;
 };
 
-// Real models only. Add entries as .glb files land in public/studio/models/.
+// Real models only. Sourced from the public `3dfiles` storage bucket.
+import { publicStorageUrl } from "@/lib/storage-image";
+
 const MODELS: ModelEntry[] = [
   {
     id: "directors-chair",
     name: "Director's Chair",
-    src: "/studio/models/directors-chair.glb",
+    src: publicStorageUrl("3dfiles", "directorschair.glb"),
   },
   {
-    id: "chair-curved-back",
-    name: "Curved-Back Chair",
-    src: "/studio/models/chair-curved-back.glb",
+    id: "bleached-oak",
+    name: "Bleached Oak",
+    src: publicStorageUrl("3dfiles", "bleachedoak.glb"),
   },
   {
-    id: "chair-armrest",
-    name: "Armrest Lounge",
-    src: "/studio/models/chair-armrest.glb",
+    id: "black-chair",
+    name: "Black Chair",
+    src: publicStorageUrl("3dfiles", "blackchair.glb"),
   },
 ];
 
