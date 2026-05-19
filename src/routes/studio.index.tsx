@@ -88,10 +88,14 @@ function StudioPage() {
     return () => { alive = false; };
   }, []);
 
-  // Cleanup object URLs.
+  // Cleanup object URLs only on unmount. Using a ref + empty-deps effect
+  // avoids the React 19 StrictMode double-mount issue where a deps-based
+  // cleanup would revoke URLs immediately after creation, breaking previews.
+  const inspoRef = useRef<InspoLocal[]>([]);
+  useEffect(() => { inspoRef.current = inspo; }, [inspo]);
   useEffect(() => {
-    return () => { inspo.forEach((i) => URL.revokeObjectURL(i.url)); };
-  }, [inspo]);
+    return () => { inspoRef.current.forEach((i) => URL.revokeObjectURL(i.url)); };
+  }, []);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -476,6 +480,45 @@ function StudioPage() {
             aria-hidden="true"
             className="absolute -left-[9999px] w-0 h-0 opacity-0"
           />
+
+          {/* BRIEF PREVIEW — verify everything before sending */}
+          <div className="mt-12 border-t border-charcoal/15 pt-8 max-w-2xl">
+            <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-5">
+              Brief Preview · What we'll receive
+            </p>
+            <dl className="grid grid-cols-[140px_1fr] gap-x-6 gap-y-3 text-[11px] uppercase tracking-[0.18em]">
+              <dt className="text-charcoal/45">Name</dt>
+              <dd className="text-charcoal">{name.trim() || <span className="text-charcoal/30">— required —</span>}</dd>
+              <dt className="text-charcoal/45">Email</dt>
+              <dd className="text-charcoal normal-case tracking-normal">{email.trim() || <span className="text-charcoal/30 uppercase tracking-[0.18em]">— required —</span>}</dd>
+              {phone.trim() && (<><dt className="text-charcoal/45">Phone</dt><dd className="text-charcoal normal-case tracking-normal">{phone.trim()}</dd></>)}
+              {eventDate.trim() && (<><dt className="text-charcoal/45">Event date</dt><dd className="text-charcoal">{eventDate.trim()}</dd></>)}
+              {scope && (<><dt className="text-charcoal/45">Scope</dt><dd className="text-charcoal">{scope}</dd></>)}
+              {budget && (<><dt className="text-charcoal/45">Budget</dt><dd className="text-charcoal">{budget}</dd></>)}
+              <dt className="text-charcoal/45">Inspo images</dt>
+              <dd className="text-charcoal tabular-nums">{inspo.length}</dd>
+              <dt className="text-charcoal/45">Pinned pieces</dt>
+              <dd className="text-charcoal tabular-nums">{pinnedIds.length}</dd>
+              <dt className="text-charcoal/45">Palette</dt>
+              <dd>
+                {analysis?.palette.length ? (
+                  <div className="flex gap-0.5">
+                    {analysis.palette.slice(0, 8).map((c, i) => (
+                      <span key={i} className="w-6 h-6 inline-block" style={{ background: c.hex }} title={c.hex} />
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-charcoal/30">Not generated</span>
+                )}
+              </dd>
+              {vibe.trim() && (
+                <>
+                  <dt className="text-charcoal/45 self-start">Notes</dt>
+                  <dd className="text-charcoal normal-case tracking-normal whitespace-pre-wrap">{vibe.trim()}</dd>
+                </>
+              )}
+            </dl>
+          </div>
 
           <div className="mt-10 flex items-center gap-4 flex-wrap">
             <button
