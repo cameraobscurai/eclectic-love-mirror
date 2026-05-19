@@ -15,7 +15,7 @@ const BUCKETS = [
   { bucket: 'missing-gaps',       cacheControl: '31536000' },
   { bucket: 'inventory',          cacheControl: '86400'    },
 ];
-const CONCURRENCY = 8;
+const CONCURRENCY = 4;
 const DRY_RUN = process.argv.includes('--dry');
 const BUCKET_FILTER = process.argv.find(a => a.startsWith('--bucket='))?.split('=')[1];
 
