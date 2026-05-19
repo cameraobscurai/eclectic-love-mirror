@@ -46,19 +46,27 @@ const MODELS: ModelEntry[] = [
 
 const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 
+// Kick the viewer module off the moment this route's JS evaluates
+// (parallel with the GLB preload), not after the component mounts.
+const viewerReady: Promise<unknown> =
+  typeof window === "undefined"
+    ? Promise.resolve()
+    : import("@google/model-viewer");
+
 function ThreePage() {
   const [active, setActive] = useState<ModelEntry>(MODELS[0]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    import("@google/model-viewer").then(() => {
+    viewerReady.then(() => {
       if (mounted) setReady(true);
     });
     return () => {
       mounted = false;
     };
   }, []);
+
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
