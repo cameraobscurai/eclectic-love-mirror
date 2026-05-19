@@ -164,7 +164,7 @@ for (const [fam, info] of uniqueSets) {
     if (!res.ok) throw new Error(`fetch ${res.status}`);
     const buf = Buffer.from(await res.arrayBuffer());
     const ct = res.headers.get('content-type') || 'image/png';
-    const { error: upErr } = await supa.storage.from(BUCKET).upload(info.targetPath, buf, { contentType: ct, upsert: false });
+    const { error: upErr } = await supa.storage.from(BUCKET).upload(info.targetPath, buf, { contentType: ct, upsert: false, cacheControl: '31536000' });
     if (upErr && !/already exists/i.test(upErr.message)) throw upErr;
     upOk++;
   } catch (err) {

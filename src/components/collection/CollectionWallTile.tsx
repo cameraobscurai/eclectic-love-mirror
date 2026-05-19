@@ -1,9 +1,8 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { getTilePreset } from "@/lib/collection-tile-presets";
-import { useNearViewport } from "@/hooks/useNearViewport";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 
@@ -27,30 +26,19 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
   const dim = isAnyHovered && !isHovered;
   const group = getProductBrowseGroup(product);
   const padClass = group && WIDE_LOW_GROUPS.has(group) ? "p-[18%]" : "p-[8%]";
+  // Carry the dining width-cap into wall view so banquettes/wide tables
+  // don't blow out next to chairs/pedestals.
   const preset = getTilePreset(group);
   const maxAspect = preset.maxAspect;
 
-  // Gate src on near-viewport so a 100+ tile category doesn't all hit
-  // Supabase Storage in one burst (429 throttling cause).
-  const { ref, near } = useNearViewport<HTMLButtonElement>({ rootMargin: "800px" });
-
-  // Retry once on error after jittered backoff — covers transient 429s
-  // from Supabase Storage's public origin.
-  const [retry, setRetry] = useState(0);
-  const baseSrc = url ? withCdnWidth(url, 1200) : "";
-  const baseSet = url ? buildCdnSrcSet(url, WALL_WIDTHS) : "";
-  const cacheBust = retry > 0 ? (baseSrc.includes("?") ? "&" : "?") + "_r=" + retry : "";
-  const finalSrc = baseSrc ? baseSrc + cacheBust : "";
-
-  const handleError = () => {
-    if (retry >= 1) return;
-    const delay = 1500 + Math.random() * 1500;
-    window.setTimeout(() => setRetry((r) => r + 1), delay);
-  };
+  // Route through Supabase's /render/image transform endpoint via withCdnWidth
+  // so the CDN can serve right-sized variants and cache them properly. Native
+  // loading="lazy" already gates off-screen requests — no IO observer needed.
+  const src = url ? withCdnWidth(url, 1200) : "";
+  const srcSet = url ? buildCdnSrcSet(url, WALL_WIDTHS) : "";
 
   return (
     <motion.button
-      ref={ref}
       type="button"
       onMouseEnter={() => onHover(product.id)}
       onMouseLeave={() => onHover(null)}
@@ -66,21 +54,20 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       aria-label={product.title}
     >
       <div className="absolute inset-0 flex items-center justify-center">
-        {url && near && (
+        {url && (
           <div
             className="h-full max-w-full"
             style={maxAspect ? { aspectRatio: String(maxAspect) } : { width: "100%" }}
           >
             <img
-              src={finalSrc}
-              srcSet={baseSet}
+              src={src}
+              srcSet={srcSet}
               sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
               alt=""
               className={`w-full h-full object-contain ${padClass} pointer-events-none select-none`}
               loading="lazy"
               decoding="async"
               draggable={false}
-              onError={handleError}
             />
           </div>
         )}

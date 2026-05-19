@@ -130,7 +130,7 @@ for (const e of manifest) {
     const buf = Buffer.from(await res.arrayBuffer());
     const contentType = res.headers.get('content-type') || 'application/octet-stream';
     const { error } = await supa.storage.from(TARGET_BUCKET).upload(e.targetPath, buf, {
-      contentType, upsert: false,
+      contentType, upsert: false, cacheControl: '31536000',
     });
     if (error && !/already exists/i.test(error.message)) throw error;
     ok++;
