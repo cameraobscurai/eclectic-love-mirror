@@ -12,9 +12,26 @@ export const Route = createFileRoute("/studio/three")({
       { title: "3D · Studio" },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [
+      // Warm the first model + the viewer bundle before React mounts.
+      // `as: "fetch"` matches model-viewer's internal fetch and reuses cache.
+      {
+        rel: "preload",
+        as: "fetch",
+        href: "/studio/models/directors-chair.glb",
+        crossOrigin: "anonymous",
+        type: "model/gltf-binary",
+      },
+    ],
+    scripts: [
+      // Modulepreload the viewer + its KTX2/meshopt decoders from the CDN
+      // so the JS chunk lands in parallel with the GLB.
+      { rel: "modulepreload", href: "https://cdn.jsdelivr.net/npm/@google/model-viewer@4/dist/model-viewer.min.js" },
+    ],
   }),
   component: ThreePage,
 });
+
 
 type ModelEntry = {
   id: string;
