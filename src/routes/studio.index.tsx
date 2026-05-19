@@ -88,10 +88,14 @@ function StudioPage() {
     return () => { alive = false; };
   }, []);
 
-  // Cleanup object URLs.
+  // Cleanup object URLs only on unmount. Using a ref + empty-deps effect
+  // avoids the React 19 StrictMode double-mount issue where a deps-based
+  // cleanup would revoke URLs immediately after creation, breaking previews.
+  const inspoRef = useRef<InspoLocal[]>([]);
+  useEffect(() => { inspoRef.current = inspo; }, [inspo]);
   useEffect(() => {
-    return () => { inspo.forEach((i) => URL.revokeObjectURL(i.url)); };
-  }, [inspo]);
+    return () => { inspoRef.current.forEach((i) => URL.revokeObjectURL(i.url)); };
+  }, []);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
