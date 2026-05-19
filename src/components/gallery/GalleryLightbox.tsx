@@ -181,23 +181,38 @@ export function GalleryLightbox({
           }}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
-          <LightboxParallax plateKey={plate.src} disabled={plateChanging}>
+          <LightboxParallax plateKey={plate.src} disabled={plateChanging || pending}>
             <CrossfadeImage
               srcKey={plate.src}
-              src={renderUrl(plate.src, { width: 1600, quality: 78 })}
-              srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
+              src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+              srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
               sizes="(min-width: 1024px) 66vw, 100vw"
               alt={plate.alt}
               onLoadingChange={handleLoadingChange}
             />
           </LightboxParallax>
 
-          {/* Preload neighbors (±2) for instant decode on next/prev. The
-              browser dedupes against in-flight requests, so widening past
-              the immediate neighbor costs nothing once those have landed. */}
-          {plates.map((p, i) => {
+          {pending && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="text-center px-8">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-cream/45">
+                  Imagery In Preparation
+                </p>
+                <p className="mt-6 font-display text-[clamp(1.5rem,2vw,2rem)] text-cream/80 leading-tight">
+                  {project.name}
+                </p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.32em] text-cream/40">
+                  {project.planner}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Preload neighbors (±2) for instant decode on next/prev. */}
+          {!pending && plates.map((p, i) => {
             if (i === plateIndex) return null;
             if (Math.abs(i - plateIndex) > 2) return null;
+            if (!p.src.includes("/storage/v1/object/public/")) return null;
             return (
               <link
                 key={p.src}
