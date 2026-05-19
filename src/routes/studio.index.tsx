@@ -330,36 +330,57 @@ function StudioPage() {
           )}
 
           {analysis && (
-            <div className="mt-8">
-              <div className="flex gap-1">
-                {analysis.palette.slice(0, 8).map((c, i) => (
-                  <div key={i} className="flex-1 group">
-                    <div className="h-20 w-full" style={{ background: c.hex }} aria-label={c.hex} />
-                    <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
-                      {c.hex}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 max-w-xl">
-                <ToneBar label="Warm" v={analysis.tones.warm} />
-                <ToneBar label="Cool" v={analysis.tones.cool} />
-                <ToneBar label="Light" v={analysis.tones.light} />
-                <ToneBar label="Muted" v={analysis.tones.muted} />
-              </div>
-
-              {analysis.insights.slice(0, 2).length > 0 && (
-                <div className="mt-6 space-y-2 max-w-xl">
-                  {analysis.insights.slice(0, 2).map((ins, i) => (
-                    <div key={i} className="flex items-start gap-3 py-2 border-t border-charcoal/10">
-                      <span className="text-base leading-none mt-0.5">{ins.icon}</span>
-                      <div className="text-[11px] leading-relaxed text-charcoal/75">
-                        <span className="font-display uppercase tracking-[0.14em] text-[12px] text-charcoal">{ins.title}</span>
-                        <span className="block mt-0.5 normal-case font-sans text-charcoal/70">{ins.text}</span>
-                      </div>
+            <div className="mt-8 space-y-10">
+              {/* COMBINED PALETTE */}
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-3">
+                  Combined Palette
+                </p>
+                <div className="flex gap-1">
+                  {analysis.palette.slice(0, 8).map((c, i) => (
+                    <div key={i} className="flex-1">
+                      <div className="h-20 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                      <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
+                        {c.hex}
+                      </p>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* PER-IMAGE PALETTES */}
+              {analysis.perImage.length > 1 && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-3">
+                    Per Image
+                  </p>
+                  <div className="space-y-4">
+                    {analysis.perImage.map((pi) => {
+                      const inspoHit = inspo.find((i) => i.id === pi.id);
+                      const pinId = pi.id.startsWith("pin:") ? pi.id.slice(4) : null;
+                      const pinHit = pinId ? catalog.get(pinId) : null;
+                      const thumb = inspoHit?.url ?? pinHit?.primaryImage?.url ?? null;
+                      return (
+                        <div key={pi.id} className="flex items-center gap-3">
+                          {thumb ? (
+                            <img src={thumb} alt="" className="w-14 h-14 object-cover bg-charcoal/5 flex-shrink-0" />
+                          ) : (
+                            <span className="w-14 h-14 bg-charcoal/5 flex-shrink-0" />
+                          )}
+                          <div className="flex gap-1 flex-1">
+                            {pi.colors.slice(0, 5).map((c, i) => (
+                              <div key={i} className="flex-1">
+                                <div className="h-10 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                                <p className="mt-1 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
+                                  {c.hex}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
