@@ -126,35 +126,44 @@ function StudioPage() {
     try {
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
 
-      // 1. Extract colors from inspo images (if any).
-      const inspoResult = inspo.length
-        ? await analyzeMoodboard(
-            inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
-            canvasRef.current,
-          )
+      // Build the full image set: inspo uploads + pinned product photos.
+      // Sampling pixels off the actual furniture photo gives us a palette
+      // even when the catalog row has no AI-tagged colorHex.
+      const pinnedProducts = pinnedIds
+        .map((id) => catalog.get(id))
+        .filter((p): p is CollectionProduct => Boolean(p?.primaryImage?.url));
+
+      const moodImages = [
+        ...inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
+        ...pinnedProducts.map((p) => ({
+          id: `pin:${p.id}`,
+          name: p.title,
+          url: p.primaryImage!.url,
+        })),
+      ];
+
+      const moodResult = moodImages.length
+        ? await analyzeMoodboard(moodImages, canvasRef.current)
         : null;
 
-      // 2. Pull pre-tagged colors from pinned catalog pieces.
-      const pinnedColors: ColorInfo[] = [];
-      for (const id of pinnedIds) {
-        const p = catalog.get(id);
-        if (!p) continue;
-        if (p.colorHex) pinnedColors.push(hexToColorInfo(p.colorHex, 3));
-        if (p.colorHexSecondary) pinnedColors.push(hexToColorInfo(p.colorHexSecondary, 2));
+      // Add any pre-tagged hex values as extra hints (boosts confidence on
+      // tagged items without overriding the sampled palette).
+      const taggedColors: ColorInfo[] = [];
+      for (const p of pinnedProducts) {
+        if (p.colorHex) taggedColors.push(hexToColorInfo(p.colorHex, 3));
+        if (p.colorHexSecondary) taggedColors.push(hexToColorInfo(p.colorHexSecondary, 2));
       }
 
-      // 3. Merge — inspo palette + pinned colors, dedupe by proximity.
-      const merged = mergePalettes(inspoResult?.palette ?? [], pinnedColors);
+      const merged = mergePalettes(moodResult?.palette ?? [], taggedColors);
+      const tones = moodResult?.tones ?? computeTones(merged);
+      const insights = moodResult?.insights ?? generateInsights(merged, tones);
 
-      // 4. Recompute tones + insights on the merged palette so downstream UI
-      //    reflects the full picture (uploads + selections).
-      const finalAnalysis: AnalysisResult = {
+      setAnalysis({
         palette: merged.slice(0, 8),
-        tones: inspoResult?.tones ?? computeTones(merged),
-        insights: inspoResult?.insights ?? generateInsights(merged, computeTones(merged)),
-        perImage: inspoResult?.perImage ?? [],
-      };
-      setAnalysis(finalAnalysis);
+        tones,
+        insights,
+        perImage: moodResult?.perImage ?? [],
+      });
     } catch (e) {
       setAnalyzeError((e as Error).message);
     } finally {
