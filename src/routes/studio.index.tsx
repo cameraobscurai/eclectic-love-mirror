@@ -1,13 +1,12 @@
-// /admin/studio — Internal style builder anchored to one inquiry.
-// Not in the admin nav yet; reach it via /admin/insights row "Studio →" link
-// or by URL: /admin/studio?inquiry=<uuid>.
+// /studio — Internal style builder anchored to one inquiry.
+// Reach it via /admin/insights row "Studio →" link or /studio?inquiry=<uuid>.
 
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Loader2, Save, Send, AlertCircle, Copy, Check } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
-import { AdminShell } from "@/components/admin/admin-shell";
+
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";
 import { StyleBoardCanvas } from "@/components/studio/StyleBoardCanvas";
