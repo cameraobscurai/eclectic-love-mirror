@@ -173,12 +173,17 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
           auto-rotate-delay="1500"
           rotation-per-second="18deg"
           interaction-prompt="none"
+          interpolation-decay="80"
           shadow-intensity="1.1"
           shadow-softness="0.9"
-          exposure="1"
+          exposure="1.05"
+          tone-mapping="neutral"
           environment-image="neutral"
           loading="eager"
           reveal="auto"
+          disable-tap
+          min-camera-orbit="auto auto 0.5m"
+          max-camera-orbit="auto auto 4m"
           poster-color="transparent"
           style={{
             width: "100%",
@@ -188,6 +193,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
             "--progress-bar-height": "1px",
           } as React.CSSProperties}
         />
+
       ) : (
         <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/35">
           Loading
