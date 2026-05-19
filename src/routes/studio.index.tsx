@@ -7,7 +7,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
 
-import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
+import { analyzeMoodboard, computeTones, generateInsights, rgbToHsl, type AnalysisResult, type ColorInfo } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/server/style-brief.functions";
