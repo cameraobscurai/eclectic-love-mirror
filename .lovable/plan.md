@@ -1,169 +1,165 @@
-# Studio → Client-Facing Design Service
 
-## Goal
-`/studio` becomes a public, no-login tool where a visitor builds a personal style brief — drops inspiration images, gets an auto-generated color palette + tone read, fills basic event info, optionally pulls in pinned Collection pieces — and submits it. Submission lands in `public.inquiries` (same table contact.tsx uses) with full style-brief payload attached, and the contact page can deep-link back to a draft brief.
+# Studio — Client-Facing Build Plan
 
-The existing admin Style Builder UI is preserved but moved behind `/admin/studio` so it stays internal. `/studio/$token` (client-facing send) and `/studio/three` (3D viewer) stay as-is.
+## Stack in play (already in the repo, nothing new to install)
 
----
+| Layer | Tool | Where it lives |
+|---|---|---|
+| Routing | TanStack Router (file-based) | `src/routes/studio.*.tsx` |
+| Server logic | `createServerFn` (TanStack Start) | `src/server/*.functions.ts` |
+| DB / Auth / Storage | Supabase via Lovable Cloud | `src/integrations/supabase/*` |
+| Forms + validation | `react-hook-form` + `zod` | already used in `/contact` |
+| UI | shadcn/ui + Tailwind v4 tokens | `src/components/ui/*`, `src/styles.css` |
+| Color extraction | `src/lib/color-engine.ts` (custom, exists) | already powers `/admin/colors` |
+| Catalog read | `src/data/inventory/current_catalog.json` | baked, has `color_tags` |
+| 3D | `@google/model-viewer` + GLB in `3dfiles` bucket | `studio.three.tsx`, `studio.lab.tsx` |
+| Inquiry storage | `public.inquiries` table | feeds `/admin/insights` + `/admin/studio` |
 
-## Route map (after)
-
-```
-/studio                  PUBLIC  → new client intake (StyleBrief)
-/studio/three            PUBLIC  → 3D viewer (unchanged)
-/studio/$token           PUBLIC  → admin-sent board view (unchanged)
-/admin/studio            ADMIN   → existing internal workspace (moved)
-/admin/studio?inquiry=…  ADMIN   → existing per-inquiry editor (moved)
-```
-
-Move = rename file `src/routes/studio.index.tsx` → `src/routes/admin.studio.tsx`, keep `requireAdminOrRedirect` guard on the admin version. Update the one `<Link to="/studio">` inside `admin.insights.tsx` (and anywhere else) to `/admin/studio`.
-
----
-
-## Data flow
+## Route map (final shape)
 
 ```text
-Visitor at /studio
-  │
-  ├─ Step A: Inspo drop (1–8 images)         → in-memory File[] + object URLs
-  ├─ Step B: "Generate palette" button       → analyzeMoodboard() client-side
-  │                                            (existing src/lib/color-engine.ts)
-  │                                            yields palette + tones + insights
-  ├─ Step C: Basic info form                 → name, email, event date, scope,
-  │                                            budget, vibe notes
-  ├─ Step D: Optional pinned pieces          → reads useInquiry() store +
-  │                                            ?items= URL param (same source
-  │                                            as /contact)
-  │
-  └─ Submit
-       │
-       ├─ Upload each inspo File to storage bucket `studio-inspo`
-       │    via new public createServerFn signPublicInspoUpload({ ext })
-       │    (server returns signedUploadUrl + storage_path)
-       │    [no auth required — bucket already exists, currently private]
-       │
-       ├─ Call new public createServerFn submitStyleBrief({
-       │      name, email, eventDate, scope, budget, message,
-       │      paletteHex[], tones, insights,
-       │      inspoPaths[], pinnedRmsIds[]
-       │    })
-       │    Server writes one row to public.inquiries with:
-       │      • name, email, message (visible plain text summary)
-       │      • subject = "Style Brief"
-       │      • item_ids = pinnedRmsIds (existing column)
-       │      • metadata = { source: "studio", palette, tones, insights,
-       │                     inspo_paths, event_date, scope, budget }
-       │      • item_snapshots = resolved {id, title, image} for pinned pieces
-       │
-       └─ On success → redirect to /studio/thanks?inquiry=<id>
-                       (or inline confirmation card)
+/studio              → public, the actual product. Form + palette + match.
+/studio/lab          → public, 3D pieces marquee (already works)
+/studio/three        → public, full 3D viewer (already works)
+/studio/thanks       → public, post-submit confirmation (exists)
+/studio/$token       → public, view a saved brief by share token
+/admin/studio        → admin only, internal style builder anchored to inquiry
 ```
 
-No new tables. No new buckets. RLS on `inquiries` already permits anon insert; we'll re-confirm the column shape before writing the migration (likely none needed).
+`/studio/index.tsx` becomes the client product. The 3D nav band stays at the top as discovery.
 
----
+## The /studio workflow (one page, three steps stacked)
 
-## File plan
+```text
+┌─ HERO ────────────────────────────────────────┐
+│  "Start your style brief"                     │
+│  (3D Viewer · Lab links in top utility bar)   │
+├─ STEP 1 · INSPIRATION ────────────────────────┤
+│  Drop 1–8 images → upload to studio-inspo     │
+│  bucket (anonymous, prefixed by session uuid) │
+├─ STEP 2 · PALETTE (auto) ─────────────────────┤
+│  Client-side color extraction via             │
+│  color-engine.ts → 5 swatches + tone words    │
+│  Editable: rename palette, remove a swatch    │
+├─ STEP 3 · PIECES (auto) ──────────────────────┤
+│  Query current_catalog.json in-memory:        │
+│  products whose color_tags intersect palette  │
+│  → 6–12 tiles, click to pin (max 8)           │
+├─ STEP 4 · DETAILS + SEND ─────────────────────┤
+│  Name · Email · Event date · Location ·       │
+│  Budget band · Notes                          │
+│  Submit → createServerFn → inquiries row +    │
+│  studio_briefs row → redirect /studio/thanks  │
+│  Bonus: share-token URL emailed back          │
+└───────────────────────────────────────────────┘
+```
 
-### New files
-
-- `src/routes/studio.index.tsx` — **REWRITTEN** as `StyleBriefPage` (client-facing).
-- `src/routes/studio.thanks.tsx` — short confirmation screen, "we'll reach out within 24h", CTA to `/collection`.
-- `src/components/studio/client/StyleBriefForm.tsx` — basic info fields (name, email, date, scope, budget, vibe notes). Reuses styling tokens from `/contact`.
-- `src/components/studio/client/InspoUploader.tsx` — drag-drop wrapper around existing `InspoDropZone` plus thumbnail strip with remove buttons. Purely client-side until submit.
-- `src/components/studio/client/PaletteReveal.tsx` — renders palette swatches + tone bars + 2–3 insight chips. Pure presentation; consumes `AnalysisResult` from `color-engine.ts`.
-- `src/components/studio/client/PinnedPiecesStrip.tsx` — small horizontal list of pieces from `useInquiry()` + URL `?items=` with unpin. Mirrors the pinned-pieces logic from `/contact`.
-- `src/server/style-brief.functions.ts` — two public server functions:
-  - `signPublicInspoUpload({ ext })` — anon-allowed, generates a one-off signed upload URL into `studio-inspo` under a `public/<uuid>/<uuid>.<ext>` prefix. Rate-limited by simple per-IP bucket header check.
-  - `submitStyleBrief(payload)` — Zod-validated; uses `supabaseAdmin` to insert into `inquiries`. Returns `{ inquiryId }`. Honeypot field rejected. Reuses the same client-side rate-limit key pattern from `/contact` (`RATE_LIMIT_MS`).
-
-### Modified files
-
-- `src/routes/admin.studio.tsx` — **MOVED** from `src/routes/studio.index.tsx`. Keep `requireAdminOrRedirect` (restore the guard removed last turn for THIS file only). All current functionality intact: `?inquiry=…` workspace, recent boards list, send-to-client flow.
-- `src/routes/studio.three.tsx` — no functional change; update the "back" link target from `/studio` → `/studio` (still the public hub, intentionally).
-- `src/routes/studio.lab.tsx` — update back link from `/studio` to `/admin/studio` (lab is internal).
-- `src/routes/admin.insights.tsx` — change "Studio →" row links from `/studio?inquiry=…` to `/admin/studio?inquiry=…`.
-- `src/routes/contact.tsx` — add a small banner above the form: *"Have a vision board? Build a style brief →"* linking to `/studio`. Optional: accept `?fromStudio=<inquiry-id>` to pre-fill name/email/message from the just-submitted brief (read once from query, no server fetch needed since we just submitted).
-- `src/components/navigation.tsx` — `/studio` is already in `LIGHT_BG_PAGES` / `WHITE_BG_PAGES` from prior turn. No change. Optionally surface "Studio" in the public nav under "Tools" or footer.
-- `src/server/studio.functions.ts` — no behavior change; only callers move. `requireAdmin` middleware on existing functions is unchanged.
-
-### Storage
-
-- Bucket `studio-inspo` already exists (private). Add storage policy via migration so:
-  - **public role can INSERT** into `public/*` prefix (capped object size ~8 MB).
-  - **public role can SELECT** from `public/*` (so the visitor can preview their own upload via signed URL we return).
-  - Admin already has full access via service role.
-
-### Migration (only what's needed)
+## Data model (one new table, reuses inquiries)
 
 ```sql
--- Allow anonymous uploads into the public/ prefix of studio-inspo,
--- max ~8MB, only image/* mime types.
-create policy "studio_inspo_public_insert"
-on storage.objects for insert to anon, authenticated
-with check (
-  bucket_id = 'studio-inspo'
-  and (storage.foldername(name))[1] = 'public'
-  and (metadata->>'size')::int < 8 * 1024 * 1024
+-- new table only
+create table public.studio_briefs (
+  id uuid primary key default gen_random_uuid(),
+  inquiry_id uuid references public.inquiries(id) on delete cascade,
+  share_token text unique not null default encode(gen_random_bytes(12),'base64url'),
+  palette jsonb not null,            -- [{hex,name?}]
+  inspo_paths text[] not null default '{}',  -- studio-inspo bucket keys
+  pinned_rms_ids text[] not null default '{}',
+  client_notes text,
+  created_at timestamptz default now()
 );
+alter table public.studio_briefs enable row level security;
 
-create policy "studio_inspo_public_read"
-on storage.objects for select to anon, authenticated
-using (
-  bucket_id = 'studio-inspo'
-  and (storage.foldername(name))[1] = 'public'
-);
+-- public can INSERT (anonymous brief) but not read others
+create policy "anyone can submit a brief"
+  on public.studio_briefs for insert to anon, authenticated with check (true);
+
+-- public read only by share_token (handled in server fn, not RLS)
+-- admins read all via has_role(auth.uid(),'admin')
+create policy "admins read all briefs"
+  on public.studio_briefs for select to authenticated
+  using (public.has_role(auth.uid(),'admin'));
 ```
 
-No changes to `public.inquiries` — column shape (`name, email, message, subject, item_ids, item_snapshots, metadata`) already covers everything we need to stuff in.
+Storage: `studio-inspo` bucket already exists (private). Add a public-insert + admin-read policy. Reads from client side use signed URLs returned by the server fn.
 
----
-
-## Page layout — `/studio` (client view)
-
-Single scroll, three bands, matches editorial/all-caps voice from the rest of the site. Charcoal-on-cream, no glass, no chrome.
+## Server functions (new file: `src/server/studio-brief.functions.ts`)
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│  STUDIO · BUILD YOUR STYLE BRIEF        (small intro line) │
-├─────────────────────────────────────────────────────────────┤
-│  1 · DROP INSPIRATION                                       │
-│  [ drop zone — 1–8 images ]                                 │
-│  [ thumb · thumb · thumb · + ]                              │
-│  → button: "GENERATE PALETTE"  (disabled until ≥1 image)    │
-├─────────────────────────────────────────────────────────────┤
-│  2 · YOUR PALETTE  (only after Generate)                    │
-│  [ ███ ███ ███ ███ ███ ]  ← swatches with hex on hover     │
-│  WARM ████░░░░ · COOL ░░██░░░░ · MUTED ██████░░             │
-│  Two short insight chips                                    │
-├─────────────────────────────────────────────────────────────┤
-│  3 · YOUR DETAILS                                           │
-│  Name · Email · Event date · Scope · Budget · Vibe notes    │
-│  [ pinned pieces strip — if any ]                           │
-│  [ SUBMIT BRIEF ]                                           │
-└─────────────────────────────────────────────────────────────┘
+submitStudioBrief({ inquiry, palette, inspoPaths, pinned, notes })
+  → validates with zod
+  → inserts inquiries row (source: 'studio')
+  → inserts studio_briefs row
+  → returns { shareToken }
+
+uploadInspoImage(formData) [admin-middleware not required]
+  → rate-limited per IP, max 8 files per session
+  → writes to studio-inspo/<sessionId>/<uuid>.jpg
+  → returns { path, signedUrl }
+
+getBriefByToken({ token })
+  → reads studio_briefs by share_token
+  → returns palette + signed inspo URLs + hydrated pinned products
 ```
 
-All copy ALL CAPS per project memory. Long-form (insights, notes) stays sentence case. Body uses existing tokens — no new colors.
+## Security + abuse guard rails
+
+- Zod on every input: name ≤100, email RFC, message ≤2000, palette = 3–8 hex `/^#[0-9a-f]{6}$/i`, max 8 images, max 8 pins.
+- Upload server fn enforces MIME `image/*`, size ≤8MB, count ≤8 per IP/hour (in-memory bucket; good enough for v1).
+- No service-role key on client; uploads go through server fn so we control bucket path.
+- `/studio/$token` is public by design — token is the secret. 96 bits of entropy.
+- Honeypot field on the submit form. Submission requires palette OR pins (blocks empty-spam).
+
+## Client-side palette extraction
+
+Use existing `src/lib/color-engine.ts` (already powers admin tagging). Run in the browser on uploaded image blobs, never re-extract on server. Show a skeleton while the worker pass runs. Cache result on the file blob hash so re-renders don't recompute.
+
+## Catalog match (zero new infra)
+
+```text
+const palettePool = new Set(palette.map(toClosestNamedTone))
+products
+  .filter(p => p.color_tags?.some(t => palettePool.has(t)))
+  .sort(by overlap count desc)
+  .slice(0, 12)
+```
+
+All client-side. Catalog is already imported via `current_catalog.json`. No DB round-trip.
+
+## Best practices we are NOT going to violate
+
+1. **Caps everywhere.** Brand voice. Headings, labels, buttons. Only product names from catalog stay mixed case. (Project memory rule.)
+2. **Design tokens only.** `bg-cream`, `text-charcoal`, `border-charcoal/15`. No raw hex in JSX. (`src/styles.css`.)
+3. **Server fns, not edge functions.** Per stack rule. Read `process.env.LOVABLE_API_KEY` inside `.handler()` only if we add AI later.
+4. **`/contact` stays the convert page.** Studio is a separate funnel that produces inquiries with `source='studio'` so they sort distinctly in `/admin/insights`.
+5. **No nav surgery yet.** Add Studio link to footer first. Promote to main nav only after we see real submissions.
+6. **No FAQ on /studio.** Single FAQ remains on `/atelier#working-with-the-hive`.
+7. **Bake before publish.** Catalog match relies on `current_catalog.json` — if we change taxonomy we re-run `scripts/bake-catalog.mjs` first.
+8. **No new deps.** `react-hook-form`, `zod`, `color-engine`, shadcn — all already in the tree.
+
+## Build order (smallest shippable slice first)
+
+```text
+1. Migration: studio_briefs table + RLS + studio-inspo bucket policy
+2. Server fn: submitStudioBrief + uploadInspoImage
+3. /studio rewrite: form skeleton (name/email/details only) → submit works end-to-end
+4. Add inspiration uploader (reuse InspoDropZone component)
+5. Wire palette extraction via color-engine
+6. Wire catalog match grid with pin toggle
+7. /studio/$token read-only view of the saved brief
+8. Footer link → /studio. Email confirmation (post-MVP).
+```
+
+Each step is independently deployable. Each step is reviewable before the next. We do not batch.
+
+## Out of scope for v1 (call out so we don't drift)
+
+- AI-generated mood board summaries
+- AR / "place in room" on `/studio/lab`
+- Multi-collaborator briefs
+- Pricing engine / quote calculator
+- Email delivery of the share-token (next iteration; needs custom domain wiring)
 
 ---
 
-## Implementation order
-
-1. Move `studio.index.tsx` → `admin.studio.tsx`, restore admin guard on it, update internal links in `admin.insights.tsx`, `studio.lab.tsx`.
-2. Migration for public storage policies on `studio-inspo`.
-3. New server functions `signPublicInspoUpload` + `submitStyleBrief` in `src/server/style-brief.functions.ts`.
-4. New components in `src/components/studio/client/`.
-5. New `src/routes/studio.index.tsx` (public StyleBriefPage) + `src/routes/studio.thanks.tsx`.
-6. Banner on `/contact` linking to `/studio`.
-7. Verify: drop image → generate palette → submit → row appears in `inquiries` with metadata populated → admin sees it at `/admin/studio?inquiry=<id>` and the inspo + palette are pre-populated.
-
----
-
-## Open questions before I build
-
-1. **Email/auth on submit** — keep current contact pattern (no email verification, just collect name+email and rate-limit)? Or send a confirmation email to the visitor with their palette?
-2. **Inspo upload cap** — 8 images / 8 MB each OK, or tighter?
-3. **Contact ↔ Studio direction** — should `/contact` keep its own "selected pieces + vision" path AND link to `/studio`, or should `/studio` eventually replace `/contact` as the single intake? (I'm assuming both exist side-by-side.)
-4. **Palette engine** — stick with the existing client-side canvas/k-means extractor (free, instant, no API), or upgrade to Lovable AI for richer insights ("evokes Amalfi terraces" etc.)? Client-side is faster and ships today; AI is a v2.
+Approve and I start with step 1: the migration.
