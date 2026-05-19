@@ -30,7 +30,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
-import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
@@ -142,11 +141,6 @@ const StudioTokenRoute = StudioTokenRouteImport.update({
   path: '/studio/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminStudioRoute = AdminStudioRouteImport.update({
-  id: '/studio',
-  path: '/studio',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminInsightsRoute = AdminInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -198,7 +192,6 @@ export interface FileRoutesByFullPath {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
-  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/': typeof StudioIndexRoute
 }
@@ -227,7 +220,6 @@ export interface FileRoutesByTo {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
-  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio': typeof StudioIndexRoute
 }
@@ -257,7 +249,6 @@ export interface FileRoutesById {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
-  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/': typeof StudioIndexRoute
 }
@@ -288,7 +279,6 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
-    | '/admin/studio'
     | '/studio/$token'
     | '/studio/'
   fileRoutesByTo: FileRoutesByTo
@@ -317,7 +307,6 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
-    | '/admin/studio'
     | '/studio/$token'
     | '/studio'
   id:
@@ -346,7 +335,6 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
-    | '/admin/studio'
     | '/studio/$token'
     | '/studio/'
   fileRoutesById: FileRoutesById
@@ -524,13 +512,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/studio': {
-      id: '/admin/studio'
-      path: '/studio'
-      fullPath: '/admin/studio'
-      preLoaderRoute: typeof AdminStudioRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/insights': {
       id: '/admin/insights'
       path: '/insights'
@@ -575,7 +556,6 @@ interface AdminRouteChildren {
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
-  AdminStudioRoute: typeof AdminStudioRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -584,7 +564,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
   AdminInsightsRoute: AdminInsightsRoute,
-  AdminStudioRoute: AdminStudioRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -615,3 +594,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
