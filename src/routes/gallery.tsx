@@ -43,36 +43,49 @@ export const Route = createFileRoute("/gallery")({
         "@type": "ItemList",
         numberOfItems: galleryProjects.length,
         itemListOrder: "https://schema.org/ItemListOrderAscending",
-        itemListElement: galleryProjects.map((p, i) => ({
-          "@type": "ListItem",
-          position: i + 1,
-          item: {
-            "@type": "CreativeWork",
-            "@id": `${GALLERY_URL}#project-${p.number}`,
-            name: p.name,
-            description: p.summary,
-            url: `${GALLERY_URL}#project-${p.number}`,
-            image: renderUrl(p.heroImage.src, { width: 1600, quality: 80 }),
-            dateCreated: p.year,
-            genre: p.category,
-            locationCreated: {
-              "@type": "Place",
-              name: p.location,
-              address: { "@type": "PostalAddress", addressRegion: p.region },
-              geo: {
-                "@type": "GeoCoordinates",
-                longitude: p.coords[0],
-                latitude: p.coords[1],
+        itemListElement: galleryProjects.map((p, i) => {
+          const heroIsStorage = p.heroImage.src.includes("/storage/v1/object/public/");
+          return {
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "CreativeWork",
+              "@id": `${GALLERY_URL}#project-${p.number}`,
+              name: p.name,
+              description: p.summary,
+              url: `${GALLERY_URL}#project-${p.number}`,
+              ...(heroIsStorage
+                ? { image: renderUrl(p.heroImage.src, { width: 1600, quality: 80 }) }
+                : {}),
+              dateCreated: p.year,
+              genre: p.category,
+              locationCreated: {
+                "@type": "Place",
+                name: p.location,
+                address: { "@type": "PostalAddress", addressRegion: p.region },
+                ...(p.coords[0] !== 0 || p.coords[1] !== 0
+                  ? {
+                      geo: {
+                        "@type": "GeoCoordinates",
+                        longitude: p.coords[0],
+                        latitude: p.coords[1],
+                      },
+                    }
+                  : {}),
+              },
+              additionalType: p.kind,
+              creator: {
+                "@type": "Organization",
+                name: "Eclectic Hive",
+                url: SITE_URL,
+              },
+              contributor: {
+                "@type": "Organization",
+                name: p.planner,
               },
             },
-            additionalType: p.kind,
-            creator: {
-              "@type": "Organization",
-              name: "Eclectic Hive",
-              url: SITE_URL,
-            },
-          },
-        })),
+          };
+        }),
       },
     };
 
