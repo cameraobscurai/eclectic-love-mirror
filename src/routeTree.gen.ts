@@ -30,6 +30,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioThreeRouteImport } from './routes/studio.three'
+import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
@@ -144,6 +145,11 @@ const StudioThreeRoute = StudioThreeRouteImport.update({
   path: '/studio/three',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioThanksRoute = StudioThanksRouteImport.update({
+  id: '/studio/thanks',
+  path: '/studio/thanks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioLabRoute = StudioLabRouteImport.update({
   id: '/studio/lab',
   path: '/studio/lab',
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
+  '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
 }
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
+  '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio': typeof StudioIndexRoute
 }
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
+  '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
 }
@@ -309,6 +318,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
+    | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
   fileRoutesByTo: FileRoutesByTo
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
+    | '/studio/thanks'
     | '/studio/three'
     | '/studio'
   id:
@@ -371,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
+    | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
   fileRoutesById: FileRoutesById
@@ -397,6 +409,7 @@ export interface RootRouteChildren {
   TheHive3Route: typeof TheHive3Route
   StudioTokenRoute: typeof StudioTokenRoute
   StudioLabRoute: typeof StudioLabRoute
+  StudioThanksRoute: typeof StudioThanksRoute
   StudioThreeRoute: typeof StudioThreeRoute
   StudioIndexRoute: typeof StudioIndexRoute
 }
@@ -550,6 +563,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioThreeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/studio/thanks': {
+      id: '/studio/thanks'
+      path: '/studio/thanks'
+      fullPath: '/studio/thanks'
+      preLoaderRoute: typeof StudioThanksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio/lab': {
       id: '/studio/lab'
       path: '/studio/lab'
@@ -651,6 +671,7 @@ const rootRouteChildren: RootRouteChildren = {
   TheHive3Route: TheHive3Route,
   StudioTokenRoute: StudioTokenRoute,
   StudioLabRoute: StudioLabRoute,
+  StudioThanksRoute: StudioThanksRoute,
   StudioThreeRoute: StudioThreeRoute,
   StudioIndexRoute: StudioIndexRoute,
 }
