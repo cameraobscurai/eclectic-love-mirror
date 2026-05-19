@@ -146,7 +146,7 @@ function ToolCard({
       </div>
     </div>
   );
-  return <Link to={to}>{inner}</Link>;
+  return <Link to={to} preload="intent">{inner}</Link>;
 }
 
 
