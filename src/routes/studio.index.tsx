@@ -4,7 +4,7 @@
 // Submission lands in public.inquiries (same table as /contact).
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
 
 import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
