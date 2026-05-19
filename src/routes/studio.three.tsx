@@ -12,9 +12,22 @@ export const Route = createFileRoute("/studio/three")({
       { title: "3D · Studio" },
       { name: "robots", content: "noindex, nofollow" },
     ],
+    links: [
+      // Warm the first model + the viewer bundle before React mounts.
+      // `as: "fetch"` matches model-viewer's internal fetch and reuses cache.
+      {
+        rel: "preload",
+        as: "fetch",
+        href: "/studio/models/directors-chair.glb",
+        crossOrigin: "anonymous",
+        type: "model/gltf-binary",
+      },
+    ],
   }),
+
   component: ThreePage,
 });
+
 
 type ModelEntry = {
   id: string;
@@ -33,19 +46,27 @@ const MODELS: ModelEntry[] = [
 
 const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 
+// Kick the viewer module off the moment this route's JS evaluates
+// (parallel with the GLB preload), not after the component mounts.
+const viewerReady: Promise<unknown> =
+  typeof window === "undefined"
+    ? Promise.resolve()
+    : import("@google/model-viewer");
+
 function ThreePage() {
   const [active, setActive] = useState<ModelEntry>(MODELS[0]);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let mounted = true;
-    import("@google/model-viewer").then(() => {
+    viewerReady.then(() => {
       if (mounted) setReady(true);
     });
     return () => {
       mounted = false;
     };
   }, []);
+
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
@@ -152,12 +173,17 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
           auto-rotate-delay="1500"
           rotation-per-second="18deg"
           interaction-prompt="none"
+          interpolation-decay="80"
           shadow-intensity="1.1"
           shadow-softness="0.9"
-          exposure="1"
+          exposure="1.05"
+          tone-mapping="neutral"
           environment-image="neutral"
           loading="eager"
           reveal="auto"
+          disable-tap
+          min-camera-orbit="auto auto 0.5m"
+          max-camera-orbit="auto auto 4m"
           poster-color="transparent"
           style={{
             width: "100%",
@@ -167,6 +193,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
             "--progress-bar-height": "1px",
           } as React.CSSProperties}
         />
+
       ) : (
         <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/35">
           Loading
