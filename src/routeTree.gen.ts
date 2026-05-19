@@ -32,6 +32,7 @@ import { Route as StudioIndexRouteImport } from './routes/studio.index'
 import { Route as StudioThreeRouteImport } from './routes/studio.three'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
+import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
@@ -153,6 +154,11 @@ const StudioTokenRoute = StudioTokenRouteImport.update({
   path: '/studio/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStudioRoute = AdminStudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInsightsRoute = AdminInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -204,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/three': typeof StudioThreeRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/three': typeof StudioThreeRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/studio': typeof AdminStudioRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/three': typeof StudioThreeRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/three'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/three'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/studio'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/three'
@@ -552,6 +564,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/studio': {
+      id: '/admin/studio'
+      path: '/studio'
+      fullPath: '/admin/studio'
+      preLoaderRoute: typeof AdminStudioRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/insights': {
       id: '/admin/insights'
       path: '/insights'
@@ -596,6 +615,7 @@ interface AdminRouteChildren {
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
+  AdminStudioRoute: typeof AdminStudioRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -604,6 +624,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
   AdminInsightsRoute: AdminInsightsRoute,
+  AdminStudioRoute: AdminStudioRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

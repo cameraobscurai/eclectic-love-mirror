@@ -17,7 +17,7 @@ import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.funct
 
 const search = z.object({ inquiry: z.string().uuid().optional() });
 
-export const Route = createFileRoute("/studio/")({
+export const Route = createFileRoute("/admin/studio")({
   validateSearch: (s) => search.parse(s),
   head: () => ({
     meta: [
