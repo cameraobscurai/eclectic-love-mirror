@@ -95,14 +95,11 @@ function LabTile({ model, ready }: { model: { id: string; name: string; src: str
           </div>
         )}
       </div>
-              <div className="mt-2 flex items-baseline justify-between">
-                <span className="font-display text-[14px] tracking-[0.06em] normal-case">{m.name}</span>
-                <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40 group-hover:text-charcoal transition-colors">Open →</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-    </div>
+      <div className="mt-2 flex items-baseline justify-between">
+        <span className="font-display text-[14px] tracking-[0.06em] normal-case">{model.name}</span>
+        <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40 group-hover:text-charcoal transition-colors">Open →</span>
+      </div>
+    </Link>
   );
 }
+
