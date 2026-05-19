@@ -7,7 +7,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
 
-import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
+import { analyzeMoodboard, computeTones, generateInsights, rgbToHsl, type AnalysisResult, type ColorInfo } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/server/style-brief.functions";
@@ -120,16 +120,41 @@ function StudioPage() {
   }
 
   async function generate() {
-    if (!inspo.length) return;
+    if (!inspo.length && !pinnedIds.length) return;
     setAnalyzing(true);
     setAnalyzeError(null);
     try {
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
-      const result = await analyzeMoodboard(
-        inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
-        canvasRef.current,
-      );
-      setAnalysis(result);
+
+      // 1. Extract colors from inspo images (if any).
+      const inspoResult = inspo.length
+        ? await analyzeMoodboard(
+            inspo.map((i) => ({ id: i.id, name: i.file.name, url: i.url })),
+            canvasRef.current,
+          )
+        : null;
+
+      // 2. Pull pre-tagged colors from pinned catalog pieces.
+      const pinnedColors: ColorInfo[] = [];
+      for (const id of pinnedIds) {
+        const p = catalog.get(id);
+        if (!p) continue;
+        if (p.colorHex) pinnedColors.push(hexToColorInfo(p.colorHex, 3));
+        if (p.colorHexSecondary) pinnedColors.push(hexToColorInfo(p.colorHexSecondary, 2));
+      }
+
+      // 3. Merge — inspo palette + pinned colors, dedupe by proximity.
+      const merged = mergePalettes(inspoResult?.palette ?? [], pinnedColors);
+
+      // 4. Recompute tones + insights on the merged palette so downstream UI
+      //    reflects the full picture (uploads + selections).
+      const finalAnalysis: AnalysisResult = {
+        palette: merged.slice(0, 8),
+        tones: inspoResult?.tones ?? computeTones(merged),
+        insights: inspoResult?.insights ?? generateInsights(merged, computeTones(merged)),
+        perImage: inspoResult?.perImage ?? [],
+      };
+      setAnalysis(finalAnalysis);
     } catch (e) {
       setAnalyzeError((e as Error).message);
     } finally {
@@ -259,7 +284,7 @@ function StudioPage() {
           <button
             type="button"
             onClick={generate}
-            disabled={!inspo.length || analyzing}
+            disabled={(!inspo.length && !pinnedIds.length) || analyzing}
             className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
           >
             {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
@@ -471,4 +496,26 @@ function ToneBar({ label, v }: { label: string; v: number }) {
       </div>
     </div>
   );
+}
+
+// ── color helpers ──────────────────────────────────────────────────────
+
+function hexToColorInfo(hex: string, weight: number): ColorInfo {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return { r, g, b, hex, count: weight, hsl: rgbToHsl(r, g, b) };
+}
+
+function mergePalettes(a: ColorInfo[], b: ColorInfo[], threshold = 35): ColorInfo[] {
+  const out: ColorInfo[] = [];
+  for (const c of [...a, ...b]) {
+    const hit = out.find((m) => {
+      const dr = m.r - c.r, dg = m.g - c.g, db = m.b - c.b;
+      return Math.sqrt(dr * dr + dg * dg + db * db) < threshold;
+    });
+    if (hit) hit.count += c.count;
+    else out.push({ ...c });
+  }
+  return out.sort((x, y) => y.count - x.count);
 }
