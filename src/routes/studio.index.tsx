@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, Send, AlertCircle, Copy, Check } from "lucide-react";
+import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, Sparkles, ArrowUpRight } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 import { useStyleBoard } from "@/hooks/use-style-board";
@@ -47,57 +47,118 @@ function NoInquiry() {
     return () => { alive = false; };
   }, []);
 
-  const groups: Record<"draft" | "ready" | "sent", StudioBoardSummary[]> = { draft: [], ready: [], sent: [] };
-  for (const b of boards ?? []) groups[b.status].push(b);
+  const recent = (boards ?? []).slice(0, 8);
 
   return (
-    <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal p-8 lg:p-12">
-      <header className="mb-8">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Studio · Internal</p>
-        <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.04em]">Style boards</h1>
-        <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-          Open a board, or start one from the inbox →{" "}
-          <Link to="/admin/insights" className="underline underline-offset-4">Inbox</Link>
+    <div className="min-h-screen bg-cream text-charcoal">
+      {/* HERO */}
+      <header className="px-6 lg:px-16 pt-20 pb-16 border-b border-charcoal/10">
+        <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">Internal · Studio</p>
+        <h1 className="mt-4 font-display text-5xl lg:text-7xl uppercase tracking-[0.02em] leading-[0.95]">
+          The Studio
+        </h1>
+        <p className="mt-6 max-w-xl text-[12px] uppercase tracking-[0.18em] text-charcoal/60 leading-relaxed">
+          A working room. Build with clients, model in space, and chase the thread.
         </p>
       </header>
 
-      {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
-      {boards === null && !err && (
-        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45">Loading…</p>
-      )}
+      {/* TOOLS */}
+      <section className="px-6 lg:px-16 py-16 border-b border-charcoal/10">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-8">Tools</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-charcoal/10 border border-charcoal/10">
+          <ToolCard
+            to="/admin/insights"
+            icon={<PaletteIcon className="h-5 w-5" />}
+            label="Style builder"
+            blurb="Pin pieces, drop inspiration, send a board."
+            status="Live"
+          />
+          <ToolCard
+            to="/studio/three"
+            icon={<Box className="h-5 w-5" />}
+            label="3D models"
+            blurb="Drop in a glTF, walk the piece in space."
+            status="Soon"
+          />
+          <ToolCard
+            to="/studio/lab"
+            icon={<Sparkles className="h-5 w-5" />}
+            label="Creative lab"
+            blurb="Mood, palette, generative exploration."
+            status="Soon"
+          />
+        </div>
+      </section>
 
-      {boards && boards.length === 0 && (
-        <p className="text-[12px] uppercase tracking-[0.18em] text-charcoal/50">No boards yet.</p>
-      )}
+      {/* RECENT BOARDS */}
+      <section className="px-6 lg:px-16 py-16">
+        <div className="flex items-baseline justify-between mb-6">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Recent boards</p>
+          <Link to="/admin/insights" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal inline-flex items-center gap-1">
+            New from inbox <ArrowUpRight className="h-3 w-3" />
+          </Link>
+        </div>
 
-      {boards && (["draft", "ready", "sent"] as const).map((status) => groups[status].length > 0 && (
-        <section key={status} className="mb-10">
-          <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-3">{status} · {groups[status].length}</h2>
+        {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
+        {boards === null && !err && (
+          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</p>
+        )}
+        {boards && boards.length === 0 && (
+          <p className="text-[11px] uppercase tracking-[0.18em] text-charcoal/40">No boards yet.</p>
+        )}
+
+        {recent.length > 0 && (
           <ul className="divide-y divide-charcoal/10 border-y border-charcoal/10">
-            {groups[status].map((b) => (
+            {recent.map((b) => (
               <li key={b.id}>
                 <Link
                   to="/studio"
                   search={{ inquiry: b.inquiry_id }}
-                  className="grid grid-cols-12 items-center gap-3 py-3 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
+                  className="grid grid-cols-12 items-center gap-3 py-4 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-3 text-[12px] font-display truncate normal-case">{b.inquiry_name}</span>
-                  <span className="col-span-5 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
+                  <span className="col-span-3 text-[13px] font-display truncate normal-case">{b.inquiry_name}</span>
+                  <span className="col-span-4 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">{b.status}</span>
                   <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 tabular-nums">
                     {b.pinned_count}p · {b.inspo_count}i
                   </span>
-                  <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right">
-                    {new Date(b.updated_at).toLocaleDateString()}
+                  <span className="col-span-1 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right tabular-nums">
+                    {new Date(b.updated_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
-        </section>
-      ))}
+        )}
+      </section>
     </div>
   );
 }
+
+function ToolCard({
+  to, icon, label, blurb, status,
+}: { to: string; icon: React.ReactNode; label: string; blurb: string; status: "Live" | "Soon" }) {
+  const disabled = status === "Soon";
+  const inner = (
+    <div className="group bg-cream p-8 lg:p-10 h-full flex flex-col justify-between min-h-[220px] transition-colors hover:bg-charcoal/[0.02]">
+      <div className="flex items-start justify-between">
+        <span className="text-charcoal/70">{icon}</span>
+        <span className={`text-[9px] uppercase tracking-[0.28em] px-2 py-1 border ${disabled ? "border-charcoal/15 text-charcoal/40" : "border-charcoal text-charcoal"}`}>
+          {status}
+        </span>
+      </div>
+      <div>
+        <h3 className="font-display text-2xl uppercase tracking-[0.04em]">{label}</h3>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 leading-relaxed">{blurb}</p>
+        <span className="mt-4 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.24em] text-charcoal/70 group-hover:text-charcoal">
+          {disabled ? "Preview" : "Open"} <ArrowUpRight className="h-3 w-3" />
+        </span>
+      </div>
+    </div>
+  );
+  return <Link to={to}>{inner}</Link>;
+}
+
 
 type Tab = "palette" | "tones" | "insights" | "catalog";
 
