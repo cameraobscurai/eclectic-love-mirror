@@ -51,53 +51,46 @@ function NoInquiry() {
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
-      {/* HERO */}
-      <header className="px-6 lg:px-16 pt-20 pb-16 border-b border-charcoal/10">
-        <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">Internal · Studio</p>
-        <h1 className="mt-4 font-display text-5xl lg:text-7xl uppercase tracking-[0.02em] leading-[0.95]">
-          The Studio
-        </h1>
-        <p className="mt-6 max-w-xl text-[12px] uppercase tracking-[0.18em] text-charcoal/60 leading-relaxed">
-          A working room. Build with clients, model in space, and chase the thread.
-        </p>
+      {/* MASTHEAD */}
+      <header className="px-6 lg:px-16 pt-10 pb-8 border-b border-charcoal/10 flex items-baseline justify-between">
+        <h1 className="font-display text-3xl uppercase tracking-[0.04em]">Studio</h1>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Internal</p>
       </header>
 
       {/* TOOLS */}
-      <section className="px-6 lg:px-16 py-16 border-b border-charcoal/10">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-8">Tools</p>
+      <section className="px-6 lg:px-16 py-10 border-b border-charcoal/10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-charcoal/10 border border-charcoal/10">
           <ToolCard
             to="/admin/insights"
             icon={<PaletteIcon className="h-5 w-5" />}
             label="Style builder"
-            blurb="Pin pieces, drop inspiration, send a board."
             status="Live"
           />
           <ToolCard
             to="/studio/three"
             icon={<Box className="h-5 w-5" />}
-            label="3D models"
-            blurb="Drop in a glTF, walk the piece in space."
-            status="Soon"
+            label="3D"
+            status="Live"
           />
           <ToolCard
             to="/studio/lab"
             icon={<Sparkles className="h-5 w-5" />}
-            label="Creative lab"
-            blurb="Mood, palette, generative exploration."
+            label="Lab"
             status="Soon"
           />
         </div>
       </section>
 
+
       {/* RECENT BOARDS */}
-      <section className="px-6 lg:px-16 py-16">
-        <div className="flex items-baseline justify-between mb-6">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Recent boards</p>
+      <section className="px-6 lg:px-16 py-10">
+        <div className="flex items-baseline justify-between mb-4">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Recent</p>
           <Link to="/admin/insights" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal inline-flex items-center gap-1">
-            New from inbox <ArrowUpRight className="h-3 w-3" />
+            Inbox <ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
+
 
         {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
         {boards === null && !err && (
@@ -136,28 +129,26 @@ function NoInquiry() {
 }
 
 function ToolCard({
-  to, icon, label, blurb, status,
-}: { to: string; icon: React.ReactNode; label: string; blurb: string; status: "Live" | "Soon" }) {
+  to, icon, label, status,
+}: { to: string; icon: React.ReactNode; label: string; status: "Live" | "Soon" }) {
   const disabled = status === "Soon";
   const inner = (
-    <div className="group bg-cream p-8 lg:p-10 h-full flex flex-col justify-between min-h-[220px] transition-colors hover:bg-charcoal/[0.02]">
+    <div className="group bg-cream p-8 h-full flex flex-col justify-between min-h-[160px] transition-colors hover:bg-charcoal/[0.02]">
       <div className="flex items-start justify-between">
         <span className="text-charcoal/70">{icon}</span>
         <span className={`text-[9px] uppercase tracking-[0.28em] px-2 py-1 border ${disabled ? "border-charcoal/15 text-charcoal/40" : "border-charcoal text-charcoal"}`}>
           {status}
         </span>
       </div>
-      <div>
-        <h3 className="font-display text-2xl uppercase tracking-[0.04em]">{label}</h3>
-        <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 leading-relaxed">{blurb}</p>
-        <span className="mt-4 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.24em] text-charcoal/70 group-hover:text-charcoal">
-          {disabled ? "Preview" : "Open"} <ArrowUpRight className="h-3 w-3" />
-        </span>
+      <div className="flex items-baseline justify-between">
+        <h3 className="font-display text-xl uppercase tracking-[0.04em]">{label}</h3>
+        <ArrowUpRight className="h-3.5 w-3.5 text-charcoal/40 group-hover:text-charcoal transition-colors" />
       </div>
     </div>
   );
   return <Link to={to}>{inner}</Link>;
 }
+
 
 
 type Tab = "palette" | "tones" | "insights" | "catalog";
