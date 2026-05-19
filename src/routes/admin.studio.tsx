@@ -1,5 +1,5 @@
-// /studio — Internal style builder anchored to one inquiry.
-// Reach it via /admin/insights row "Studio →" link or /studio?inquiry=<uuid>.
+// /admin/studio — Internal style builder anchored to one inquiry.
+// Reach it via /admin/insights row "Studio →" link or /admin/studio?inquiry=<uuid>.
 
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -14,14 +14,16 @@ import { TonesTab } from "@/components/studio/TonesTab";
 import { InsightsTab } from "@/components/studio/InsightsTab";
 import { CatalogPickerTab } from "@/components/studio/CatalogPickerTab";
 import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.functions";
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 const search = z.object({ inquiry: z.string().uuid().optional() });
 
 export const Route = createFileRoute("/admin/studio")({
   validateSearch: (s) => search.parse(s),
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
-      { title: "Studio · Eclectic Hive" },
+      { title: "Studio · Admin · Eclectic Hive" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
