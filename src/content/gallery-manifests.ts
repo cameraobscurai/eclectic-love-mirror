@@ -268,11 +268,15 @@ export const lyndenLaneGalleryPaths = [
 ] as const;
 
 export const lyndenLaneGalleryHero: GalleryImage = {
-  src: galleriesUrl("LYNDEN-LANE/nb-25-taylor&brenden-1083.webp"),
-  alt: "Outdoor lounge and cocktail setting outside a modernist residence",
+  src: galleriesUrl("LYNDEN-LANE/nb-25-taylor&brenden-1143.webp"),
+  alt: "Modernist outdoor lounge against architectural lines, Telluride",
 };
 
-export const lyndenLaneGalleryImages = createGalleryImages([...lyndenLaneGalleryPaths], "Lynden Lane");
+// Owner-excluded plate (:1083) filtered before mapping.
+export const lyndenLaneGalleryImages = createGalleryImages(
+  lyndenLaneGalleryPaths.filter((p) => !p.includes("1083")),
+  "Lynden Lane",
+);
 
 export const vanderWeideGalleryPaths = [
   "VanderWeideK/001_DSC02335.JPG",
@@ -398,5 +402,35 @@ export const dosMasEnLaMesaGalleryHero: GalleryImage = {
 };
 
 export const dosMasEnLaMesaGalleryImages = createGalleryImages([...dosMasEnLaMesaGalleryPaths], "Dos Mas En La Mesa");
+
+// ---------------------------------------------------------------------------
+// Pending placeholder — used for galleries whose storage folders are still
+// being prepared by the owner. Renders as a quiet charcoal plate (no broken
+// image) so the index, filmstrip, and lightbox can ship the new 15-project
+// order before every folder is uploaded.
+// ---------------------------------------------------------------------------
+
+// 4:5 charcoal swatch with a thin warm hairline. Inlined so it never hits
+// the network and never depends on storage availability.
+const PENDING_PLATE_SVG = encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1a1a1a"/>
+        <stop offset="100%" stop-color="#101010"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="1000" fill="url(#g)"/>
+    <line x1="80" y1="920" x2="180" y2="920" stroke="rgba(245,242,237,0.35)" stroke-width="1"/>
+  </svg>`,
+);
+
+export const PENDING_HERO_SRC = `data:image/svg+xml;charset=utf-8,${PENDING_PLATE_SVG}`;
+
+export const pendingGalleryHero = (label: string): GalleryImage => ({
+  src: PENDING_HERO_SRC,
+  alt: `${label} — imagery in preparation`,
+});
+
 
 

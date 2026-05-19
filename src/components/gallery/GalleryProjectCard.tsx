@@ -16,6 +16,11 @@ export function GalleryProjectCard({
   onOpen,
   registerRef,
 }: GalleryProjectCardProps) {
+  const pending = !!project.pending;
+  // Storage URLs go through the render endpoint; data: URIs (pending placeholders)
+  // are returned untouched by renderUrl, so the same call is safe for both.
+  const isStorage = project.heroImage.src.includes("/storage/v1/object/public/");
+
   return (
     <li
       ref={registerRef}
@@ -43,9 +48,9 @@ export function GalleryProjectCard({
           ].join(" ")}
         >
           <img
-            src={renderUrl(project.heroImage.src, { width: 1200, quality: 72 })}
-            srcSet={renderSrcSet(project.heroImage.src, [800, 1200, 1600], 72)}
-            sizes="(min-width: 1280px) 40vw, (min-width: 1024px) 45vw, (min-width: 768px) 60vw, 85vw"
+            src={isStorage ? renderUrl(project.heroImage.src, { width: 1200, quality: 72 }) : project.heroImage.src}
+            srcSet={isStorage ? renderSrcSet(project.heroImage.src, [800, 1200, 1600], 72) : undefined}
+            sizes={isStorage ? "(min-width: 1280px) 40vw, (min-width: 1024px) 45vw, (min-width: 768px) 60vw, 85vw" : undefined}
             alt={project.heroImage.alt}
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
@@ -53,16 +58,30 @@ export function GalleryProjectCard({
             className="absolute inset-0 w-full h-full object-cover"
             draggable={false}
           />
+
+          {pending && (
+            <div className="absolute inset-0 flex items-end justify-start p-6 pointer-events-none">
+              <span className="inline-flex items-center gap-2 text-[9px] uppercase tracking-[0.32em] text-cream/55">
+                <span className="h-px w-6 bg-cream/30" aria-hidden />
+                Arriving Soon
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Minimal caption — title + year only */}
-        <div className="mt-5 flex items-baseline justify-between gap-6 text-cream">
-          <h3 className="text-[11px] uppercase tracking-[0.24em] text-cream/85 truncate">
-            {project.name}
-          </h3>
-          <span className="text-cream/35 text-[10px] uppercase tracking-[0.28em] tabular-nums shrink-0">
-            {project.year}
-          </span>
+        {/* Caption — planner eyebrow → location → year */}
+        <div className="mt-5 text-cream">
+          <p className="text-[9px] uppercase tracking-[0.32em] text-cream/40 truncate">
+            {project.planner}
+          </p>
+          <div className="mt-1.5 flex items-baseline justify-between gap-6">
+            <h3 className="text-[11px] uppercase tracking-[0.24em] text-cream/85 truncate">
+              {project.name}
+            </h3>
+            <span className="text-cream/35 text-[10px] uppercase tracking-[0.28em] tabular-nums shrink-0">
+              {project.year}
+            </span>
+          </div>
         </div>
       </button>
     </li>

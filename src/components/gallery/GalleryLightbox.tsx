@@ -31,9 +31,11 @@ export function GalleryLightbox({
   const [plateChanging, setPlateChanging] = useState(false);
 
   const project = projects[projectIndex];
+  const pending = !!project.pending;
   const plates =
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const plate = plates[plateIndex];
+  const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
 
   // Lock body scroll while open. Shared ref-counted lock; safe under
   // overlapping owners (e.g. nav menu opening over the lightbox).
@@ -179,23 +181,38 @@ export function GalleryLightbox({
           }}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
-          <LightboxParallax plateKey={plate.src} disabled={plateChanging}>
+          <LightboxParallax plateKey={plate.src} disabled={plateChanging || pending}>
             <CrossfadeImage
               srcKey={plate.src}
-              src={renderUrl(plate.src, { width: 1600, quality: 78 })}
-              srcSet={renderSrcSet(plate.src, [1200, 1600, 2000], 78)}
+              src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+              srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
               sizes="(min-width: 1024px) 66vw, 100vw"
               alt={plate.alt}
               onLoadingChange={handleLoadingChange}
             />
           </LightboxParallax>
 
-          {/* Preload neighbors (±2) for instant decode on next/prev. The
-              browser dedupes against in-flight requests, so widening past
-              the immediate neighbor costs nothing once those have landed. */}
-          {plates.map((p, i) => {
+          {pending && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="text-center px-8">
+                <p className="text-[10px] uppercase tracking-[0.4em] text-cream/45">
+                  Imagery In Preparation
+                </p>
+                <p className="mt-6 font-display text-[clamp(1.5rem,2vw,2rem)] text-cream/80 leading-tight">
+                  {project.name}
+                </p>
+                <p className="mt-3 text-[10px] uppercase tracking-[0.32em] text-cream/40">
+                  {project.planner}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Preload neighbors (±2) for instant decode on next/prev. */}
+          {!pending && plates.map((p, i) => {
             if (i === plateIndex) return null;
             if (Math.abs(i - plateIndex) > 2) return null;
+            if (!p.src.includes("/storage/v1/object/public/")) return null;
             return (
               <link
                 key={p.src}
@@ -208,25 +225,29 @@ export function GalleryLightbox({
             );
           })}
 
-          {/* Plate paddles */}
-          <button
-            type="button"
-            aria-label="Previous plate"
-            onClick={() => stepPlate(-1)}
-            disabled={plateIndex === 0}
-            className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Next plate"
-            onClick={() => stepPlate(1)}
-            disabled={plateIndex === plates.length - 1}
-            className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+          {/* Plate paddles — hidden for pending projects */}
+          {!pending && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous plate"
+                onClick={() => stepPlate(-1)}
+                disabled={plateIndex === 0}
+                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Next plate"
+                onClick={() => stepPlate(1)}
+                disabled={plateIndex === plates.length - 1}
+                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -242,18 +263,29 @@ export function GalleryLightbox({
 
           <div className="mt-2 lg:mt-12">
             <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
-              {(plateIndex + 1).toString().padStart(2, "0")}
-              <span className="mx-2 text-cream/20">/</span>
-              {plates.length.toString().padStart(2, "0")}
+              {pending
+                ? "—"
+                : `${(plateIndex + 1).toString().padStart(2, "0")}`}
+              {!pending && <span className="mx-2 text-cream/20">/</span>}
+              {!pending && plates.length.toString().padStart(2, "0")}
             </p>
-            <h2 className="mt-10 font-display text-[clamp(2.25rem,3.4vw,3.25rem)] leading-[1.02] tracking-[-0.005em]">
+            <p className="mt-10 text-[10px] uppercase tracking-[0.32em] text-cream/55">
+              {project.planner}
+            </p>
+            <h2 className="mt-3 font-display text-[clamp(2.25rem,3.4vw,3.25rem)] leading-[1.02] tracking-[-0.005em]">
               {project.name}
             </h2>
             <div className="mt-6 h-px w-10 bg-cream/25" aria-hidden />
             <p className="mt-5 text-[10px] uppercase tracking-[0.32em] text-cream/55 tabular-nums">
-              {project.year}
+              {project.kind} · {project.year}
             </p>
+            {project.summary && (
+              <p className="mt-6 text-sm leading-relaxed text-cream/65 normal-case max-w-[42ch]">
+                {project.summary}
+              </p>
+            )}
           </div>
+
 
           <div className="mt-auto pt-12 flex items-center justify-between gap-6 border-t border-cream/10 -mx-8 lg:-mx-12 px-8 lg:px-12 pt-6">
             <button
@@ -276,12 +308,14 @@ export function GalleryLightbox({
         </aside>
       </div>
 
-      {/* Filmstrip */}
-      <GalleryLightboxRail
-        images={plates}
-        currentIndex={plateIndex}
-        onSelect={setPlateIndex}
-      />
+      {/* Filmstrip — hidden for pending projects (no real plates yet) */}
+      {!pending && (
+        <GalleryLightboxRail
+          images={plates}
+          currentIndex={plateIndex}
+          onSelect={setPlateIndex}
+        />
+      )}
     </div>
   );
 }
