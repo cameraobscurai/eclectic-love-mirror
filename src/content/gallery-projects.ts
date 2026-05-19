@@ -160,4 +160,17 @@ export const galleryProjects: GalleryProject[] = [
     summary: "",
     coords: [0, 0],
   },
+  {
+    number: "08",
+    name: "Dos Mas En La Mesa",
+    region: "Colorado",
+    kind: "Wedding",
+    location: "Colorado",
+    year: "2022",
+    category: "Luxury Weddings",
+    heroImage: dosMasEnLaMesaGalleryHero,
+    detailImages: dosMasEnLaMesaGalleryImages,
+    summary: "",
+    coords: [0, 0],
+  },
 ];
