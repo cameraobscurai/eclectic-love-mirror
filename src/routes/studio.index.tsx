@@ -281,11 +281,32 @@ function StudioPage() {
             </div>
           )}
 
+        </Step>
+
+        {/* STEP 2 — BROWSE INVENTORY */}
+        <Step n={2} title="Browse The Collection">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
+            Pin pieces that fit your vision. Search by name, browse by category, or match by image.
+          </p>
+          <StudioBrowser seedPalette={analysis?.palette ?? null} />
+        </Step>
+
+        {/* STEP 3 — GENERATE PALETTE (from inspo + pinned furniture) */}
+        <Step n={3} title="Generate Your Palette">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-4 max-w-xl">
+            {pinnedIds.length > 0 && inspo.length > 0
+              ? `Pulling colors from ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"} + ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
+              : pinnedIds.length > 0
+              ? `Pulling colors from your ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
+              : inspo.length > 0
+              ? `Pulling colors from your ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"}.`
+              : "Pin pieces above or drop inspiration images to generate a palette."}
+          </p>
           <button
             type="button"
             onClick={generate}
             disabled={(!inspo.length && !pinnedIds.length) || analyzing}
-            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
           >
             {analyzing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
             {analyzing ? "Reading…" : analysis ? "Re-generate Palette" : "Generate Palette"}
@@ -293,59 +314,46 @@ function StudioPage() {
           {analyzeError && (
             <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{analyzeError}</p>
           )}
-        </Step>
 
-        {/* STEP 2 — PALETTE (only after generate) */}
-        {analysis && (
-          <Step n={2} title="Your Palette">
-            <div className="flex gap-1">
-              {analysis.palette.slice(0, 8).map((c, i) => (
-                <div key={i} className="flex-1 group">
-                  <div
-                    className="h-20 w-full"
-                    style={{ background: c.hex }}
-                    aria-label={c.hex}
-                  />
-                  <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
-                    {c.hex}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 max-w-xl">
-              <ToneBar label="Warm" v={analysis.tones.warm} />
-              <ToneBar label="Cool" v={analysis.tones.cool} />
-              <ToneBar label="Light" v={analysis.tones.light} />
-              <ToneBar label="Muted" v={analysis.tones.muted} />
-            </div>
-
-            {analysis.insights.slice(0, 2).length > 0 && (
-              <div className="mt-6 space-y-2 max-w-xl">
-                {analysis.insights.slice(0, 2).map((ins, i) => (
-                  <div key={i} className="flex items-start gap-3 py-2 border-t border-charcoal/10">
-                    <span className="text-base leading-none mt-0.5">{ins.icon}</span>
-                    <div className="text-[11px] leading-relaxed text-charcoal/75">
-                      <span className="font-display uppercase tracking-[0.14em] text-[12px] text-charcoal">{ins.title}</span>
-                      <span className="block mt-0.5 normal-case font-sans text-charcoal/70">{ins.text}</span>
-                    </div>
+          {analysis && (
+            <div className="mt-8">
+              <div className="flex gap-1">
+                {analysis.palette.slice(0, 8).map((c, i) => (
+                  <div key={i} className="flex-1 group">
+                    <div className="h-20 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                    <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
+                      {c.hex}
+                    </p>
                   </div>
                 ))}
               </div>
-            )}
-          </Step>
-        )}
 
-        {/* STEP — BROWSE INVENTORY */}
-        <Step n={analysis ? 3 : 2} title="Browse The Collection">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
-            Pin pieces that fit your vision. Search by name, browse by category, or match by image.
-          </p>
-          <StudioBrowser seedPalette={analysis?.palette ?? null} />
+              <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 max-w-xl">
+                <ToneBar label="Warm" v={analysis.tones.warm} />
+                <ToneBar label="Cool" v={analysis.tones.cool} />
+                <ToneBar label="Light" v={analysis.tones.light} />
+                <ToneBar label="Muted" v={analysis.tones.muted} />
+              </div>
+
+              {analysis.insights.slice(0, 2).length > 0 && (
+                <div className="mt-6 space-y-2 max-w-xl">
+                  {analysis.insights.slice(0, 2).map((ins, i) => (
+                    <div key={i} className="flex items-start gap-3 py-2 border-t border-charcoal/10">
+                      <span className="text-base leading-none mt-0.5">{ins.icon}</span>
+                      <div className="text-[11px] leading-relaxed text-charcoal/75">
+                        <span className="font-display uppercase tracking-[0.14em] text-[12px] text-charcoal">{ins.title}</span>
+                        <span className="block mt-0.5 normal-case font-sans text-charcoal/70">{ins.text}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </Step>
 
-        {/* STEP — DETAILS */}
-        <Step n={analysis ? 4 : 3} title="Your Details">
+        {/* STEP 4 — DETAILS */}
+        <Step n={4} title="Your Details">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 max-w-2xl">
             <Field label="Name *">
               <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
