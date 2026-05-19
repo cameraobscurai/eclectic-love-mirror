@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Sparkles } from "lucide-react";
-import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 export const Route = createFileRoute("/studio/lab")({
-  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "Creative Lab · Studio" },

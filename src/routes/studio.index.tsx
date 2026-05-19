@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, Sparkles, ArrowUpRight } from "lucide-react";
-import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";
@@ -20,7 +19,6 @@ const search = z.object({ inquiry: z.string().uuid().optional() });
 
 export const Route = createFileRoute("/studio/")({
   validateSearch: (s) => search.parse(s),
-  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "Studio · Eclectic Hive" },
