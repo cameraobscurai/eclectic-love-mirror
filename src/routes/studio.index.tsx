@@ -527,17 +527,4 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function ToneBar({ label, v }: { label: string; v: number }) {
-  return (
-    <div>
-      <div className="flex justify-between text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-1">
-        <span>{label}</span>
-        <span className="tabular-nums">{v}%</span>
-      </div>
-      <div className="h-1 bg-charcoal/10">
-        <div className="h-full bg-charcoal" style={{ width: `${v}%` }} />
-      </div>
-    </div>
-  );
-}
 
