@@ -52,38 +52,49 @@ function LabPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {MODELS.map((m) => (
-            <Link
-              key={m.id}
-              to="/studio/three"
-              className="group block"
-            >
-              <div className="aspect-square bg-white border border-charcoal/10 overflow-hidden relative">
-                {ready ? (
-                  // @ts-expect-error - custom element
-                  <model-viewer
-                    src={m.src}
-                    alt={m.name}
-                    auto-rotate
-                    auto-rotate-delay="0"
-                    rotation-per-second="22deg"
-                    interaction-prompt="none"
-                    disable-zoom
-                    disable-pan
-                    disable-tap
-                    camera-controls={false}
-                    shadow-intensity="1"
-                    exposure="1.05"
-                    environment-image="neutral"
-                    loading="lazy"
-                    reveal="auto"
-                    style={{ width: "100%", height: "100%", background: "transparent" }}
-                  />
-                ) : (
-                  <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/30">
-                    Loading
-                  </div>
-                )}
-              </div>
+            <LabTile key={m.id} model={m} ready={ready} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function LabTile({ model, ready }: { model: { id: string; name: string; src: string }; ready: boolean }) {
+  const [load, setLoad] = useState(false);
+  return (
+    <Link to="/studio/three" className="group block">
+      <div
+        className="aspect-square bg-white border border-charcoal/10 overflow-hidden relative"
+        onPointerEnter={() => setLoad(true)}
+        onFocus={() => setLoad(true)}
+      >
+        {ready && load ? (
+          // @ts-expect-error - custom element
+          <model-viewer
+            src={model.src}
+            alt={model.name}
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="22deg"
+            interaction-prompt="none"
+            disable-zoom
+            disable-pan
+            disable-tap
+            camera-controls={false}
+            shadow-intensity="1"
+            exposure="1.05"
+            environment-image="neutral"
+            loading="lazy"
+            reveal="auto"
+            style={{ width: "100%", height: "100%", background: "transparent" }}
+          />
+        ) : (
+          <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/30">
+            {ready ? "Hover to preview" : "Loading"}
+          </div>
+        )}
+      </div>
               <div className="mt-2 flex items-baseline justify-between">
                 <span className="font-display text-[14px] tracking-[0.06em] normal-case">{m.name}</span>
                 <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40 group-hover:text-charcoal transition-colors">Open →</span>
