@@ -48,7 +48,11 @@ export const updateItemImages = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("inventory_items")
-      .update({ images: data.images, images_archive: nextArchive })
+      .update({
+        images: data.images,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        images_archive: nextArchive as any,
+      })
       .eq("id", data.id);
     if (error) throw error;
     return { ok: true, length: data.images.length };
