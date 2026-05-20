@@ -1,14 +1,19 @@
 // ---------------------------------------------------------------------------
 // Gallery — project content
 //
-// Storage-backed selected projects for the editorial gallery.
-// 15 projects in owner-confirmed order. Title shape: LOCATION, ST as the
-// display name with the event planner as the eyebrow/subtitle.
+// Owner-locked 15-slot sequence (notes 2026-05-19). Title shape is
+// LOCATION, ST as the display name with the event planner as the eyebrow.
 //
-// `pending: true` means the storage folder hasn't been uploaded yet — the
-// project still appears in the index + filmstrip with a neutral charcoal
-// placeholder, but the lightbox renders a quiet "in preparation" plate.
-// Flip `pending` off + wire a real hero/manifest once the folder lands.
+// `pending: true` = storage folder not yet uploaded; tile renders a charcoal
+// placeholder via `pendingGalleryHero(...)`. Flip off + wire a real manifest
+// when the folder lands.
+//
+// `coverDirective` encodes owner intent for the future bake/pick script:
+//   - filenameHint / excludeHints — hard picks + drops from owner notes
+//   - distance — close/medium/far rotation so adjacent tiles never repeat
+//   - toneSlot — 1 (darkest/moodiest) → 15 (pastels), enforces the cover arc
+//
+// `curationNotes` are the owner's per-gallery directives, verbatim shorthand.
 // ---------------------------------------------------------------------------
 
 export type GalleryCategory =
@@ -21,10 +26,21 @@ export interface GalleryImage {
   alt: string;
 }
 
+export interface CoverDirective {
+  /** Owner's hard pick — substring matched against filenames. */
+  filenameHint?: string;
+  /** Filenames containing any of these substrings are excluded. */
+  excludeHints?: string[];
+  /** Cover distance preference for cross-gallery variety. */
+  distance: "close" | "medium" | "far";
+  /** 1 (darkest/moodiest) → 15 (pastels) — owner's dark→pastel cover arc. */
+  toneSlot: number;
+}
+
 export interface GalleryProject {
   /** Two-digit slot number, drives the numbered rhythm. */
   number: string;
-  /** Display name — LOCATION, ST (or LOCATION, REGION for international). */
+  /** Display name — LOCATION, ST. */
   name: string;
   /** Event planner / design partner — rendered as eyebrow above the name. */
   planner: string;
@@ -46,6 +62,10 @@ export interface GalleryProject {
   pending?: boolean;
   href?: string;
   note?: string;
+  /** Owner's per-gallery directives (verbatim shorthand). */
+  curationNotes?: string;
+  /** Cover-pick rules consumed by the bake script when folders land. */
+  coverDirective?: CoverDirective;
 }
 
 import {
@@ -63,6 +83,18 @@ import {
   lyndenLaneGalleryImages,
   pendingGalleryHero,
 } from "./gallery-manifests";
+import { galleriesUrl } from "@/lib/storage-image";
+
+// Planners hard-excluded from the gallery surface.
+export const GALLERY_EXCLUDE_PLANNERS = ["VanderWeide"] as const;
+// Planners under NDA — referenced but never published.
+export const GALLERY_NDA_PLANNERS = ["Thomas"] as const;
+
+// Brooke Keegan cover: owner specified MKSadler 4118.
+const brookeKeganDuntonHero4118: GalleryImage = {
+  src: galleriesUrl("JL-BROOKE-KEGAN-DUNTON-HOT-SPRINGS/MKSADLER-4118-2.jpg"),
+  alt: "Candlelit detail at Dunton Hot Springs — MKSadler 4118",
+};
 
 export const galleryProjects: GalleryProject[] = [
   {
@@ -79,102 +111,30 @@ export const galleryProjects: GalleryProject[] = [
     summary:
       "Long-table Chinle dinner against the sandstone, lounge moments from the amphitheater, and the landscape framing every plate.",
     coords: [-111.4357, 37.0306],
+    curationNotes:
+      "Feature. Chinle dinner; lounge from amphitheater; landscape; Fireside all 5. Skip pool deck.",
+    coverDirective: { distance: "far", toneSlot: 1 },
   },
   {
     number: "02",
-    name: "BRUSH CREEK RANCH, WY",
-    planner: "LOVE THIS DAY",
-    region: "Wyoming",
-    kind: "Wedding Weekend",
-    location: "Saratoga, Wyoming",
+    name: "PRIVATE RESIDENCE ASPEN, CO",
+    planner: "ASPEN EVENT WORKS",
+    region: "Colorado",
+    kind: "Wedding",
+    location: "Aspen, Colorado — Private Ranch",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Brush Creek Ranch — Love This Day"),
-    detailImages: [],
+    heroImage: aspenEventWorksGalleryHero,
+    detailImages: aspenEventWorksGalleryImages,
     summary:
-      "Westworld Americana — color-blocked favorites, Carrie King Americana plus wedding, Ralph red-white-denim throughline.",
-    coords: [-106.8083, 41.4549],
-    pending: true,
+      "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
+    coords: [-106.8175, 39.1911],
+    curationNotes:
+      "Tent 2. Day → personal interleaved → end at night.",
+    coverDirective: { filenameHint: "Tent 2", distance: "close", toneSlot: 2 },
   },
   {
     number: "03",
-    name: "DUNTON HOT SPRINGS, CO",
-    planner: "BROOKE KEEGAN EVENTS",
-    region: "Colorado",
-    kind: "Wedding",
-    location: "Dunton, Colorado",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: brookeKeganDuntonGalleryHero,
-    detailImages: brookeKeganDuntonGalleryImages,
-    summary:
-      "A candlelit weekend at Dunton — long meadow tables, the historic saloon interior, and intimate detail across every hour.",
-    coords: [-108.0728, 37.7669],
-  },
-  {
-    number: "04",
-    name: "DUNTON HOT SPRINGS, CO",
-    planner: "EASTON EVENTS",
-    region: "Colorado",
-    kind: "Wedding",
-    location: "Dunton, Colorado",
-    year: "2022",
-    category: "Luxury Weddings",
-    heroImage: dosMasEnLaMesaGalleryHero,
-    detailImages: dosMasEnLaMesaGalleryImages,
-    summary:
-      "Dos Mas en la Mesa — a saturated mountain wedding staged across the Dunton property over a long Colorado weekend.",
-    coords: [-108.0728, 37.7669],
-  },
-  {
-    number: "05",
-    name: "BLACKBERRY FARMS, TN",
-    planner: "EASTON EVENTS",
-    region: "Tennessee",
-    kind: "Wedding Weekend",
-    location: "Walland, Tennessee",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Blackberry Farms — Easton Events"),
-    detailImages: [],
-    summary:
-      "A December weekend at Blackberry Farms — wood-paneled dining, lantern light, layered hospitality detail.",
-    coords: [-83.8090, 35.7434],
-    pending: true,
-  },
-  {
-    number: "06",
-    name: "PRIVATE RESIDENCE, TX",
-    planner: "CINERGY WORKS",
-    region: "Texas",
-    kind: "Private Celebration",
-    location: "Texas",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Private Residence, TX — Cinergy Works"),
-    detailImages: [],
-    summary:
-      "A private residence celebration — tablescape detail and deep evening tones across the property.",
-    coords: [-97.7431, 30.2672],
-    pending: true,
-  },
-  {
-    number: "07",
-    name: "BIG SKY, MT",
-    planner: "EASTON EVENTS",
-    region: "Montana",
-    kind: "Wedding",
-    location: "Big Sky, Montana",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: eastonEventsMontanaGalleryHero,
-    detailImages: eastonEventsMontanaGalleryImages,
-    summary:
-      "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, reception running late into the evening.",
-    coords: [-111.3088, 45.2841],
-  },
-  {
-    number: "08",
     name: "BRUSH CREEK RANCH, WY",
     planner: "DIWAN BY DESIGN",
     region: "Wyoming",
@@ -188,6 +148,105 @@ export const galleryProjects: GalleryProject[] = [
       "Wedding day on the ranch — open ceremony in the meadow, reception staged against the Wyoming horizon.",
     coords: [-106.8083, 41.4549],
     pending: true,
+    curationNotes: "Start with wedding. Sangeet folder = 0s.",
+    coverDirective: { distance: "medium", toneSlot: 3 },
+  },
+  {
+    number: "04",
+    name: "TELLURIDE, CO",
+    planner: "LYNDEN LANE",
+    region: "Colorado",
+    kind: "Private Celebration",
+    location: "Telluride, Colorado",
+    year: "2025",
+    category: "Luxury Weddings",
+    heroImage: lyndenLaneGalleryHero,
+    detailImages: lyndenLaneGalleryImages,
+    summary:
+      "A modernist outdoor program — sculptural lounges set against the architecture, layered florals through the evening.",
+    coords: [-107.8123, 37.9375],
+    curationNotes: "Exclude :1083. Cover = 1143.",
+    coverDirective: {
+      filenameHint: "1143",
+      excludeHints: ["1083"],
+      distance: "far",
+      toneSlot: 4,
+    },
+  },
+  {
+    number: "05",
+    name: "ANGUILLA, CARIBBEAN",
+    planner: "MICHELLE RAGO DESTINATIONS",
+    region: "Caribbean",
+    kind: "Destination Wedding",
+    location: "Anguilla, British West Indies",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: pendingGalleryHero("Anguilla — Michelle Rago Destinations"),
+    detailImages: [],
+    summary:
+      "Wedding-day lounge by the sea — a destination program built around the water with quiet detail throughout.",
+    coords: [-63.0686, 18.2206],
+    pending: true,
+    curationNotes: "Feature Anguilla folder. Wedding day lounge by the sea.",
+    coverDirective: { distance: "medium", toneSlot: 5 },
+  },
+  {
+    number: "06",
+    name: "BIG SKY, MT",
+    planner: "EASTON EVENTS",
+    region: "Montana",
+    kind: "Wedding",
+    location: "Big Sky, Montana",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: eastonEventsMontanaGalleryHero,
+    detailImages: eastonEventsMontanaGalleryImages,
+    summary:
+      "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, reception running late into the evening.",
+    coords: [-111.3088, 45.2841],
+    curationNotes: "Feature Montana folder.",
+    coverDirective: { distance: "close", toneSlot: 6 },
+  },
+  {
+    number: "07",
+    name: "DUNTON HOT SPRINGS, CO",
+    planner: "BROOKE KEEGAN EVENTS",
+    region: "Colorado",
+    kind: "Wedding",
+    location: "Dunton, Colorado",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: brookeKeganDuntonHero4118,
+    detailImages: brookeKeganDuntonGalleryImages,
+    summary:
+      "A candlelit weekend at Dunton — long meadow tables, the historic saloon interior, and intimate detail across every hour.",
+    coords: [-108.0728, 37.7669],
+    curationNotes: "Feature 06.15 — all pics. MKSadler 4118.",
+    coverDirective: {
+      filenameHint: "MKSADLER-4118",
+      distance: "medium",
+      toneSlot: 7,
+    },
+  },
+  {
+    number: "08",
+    name: "BRUSH CREEK RANCH, WY",
+    planner: "LOVE THIS DAY",
+    region: "Wyoming",
+    kind: "Wedding Weekend",
+    location: "Saratoga, Wyoming",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: pendingGalleryHero("Brush Creek Ranch — Love This Day"),
+    detailImages: [],
+    summary:
+      "Westworld Americana — color-blocked favorites, Carrie King Americana plus wedding, Ralph red-white-denim throughline.",
+    coords: [-106.8083, 41.4549],
+    pending: true,
+    curationNotes:
+      "LTD favorites — open, arrange on color (Westworld). Carrie King: Americana + N+B wedding (3). Ralph: red/white/denim. Westworld. Erich add-ons: Westworld.",
+    coverDirective: { distance: "far", toneSlot: 8 },
   },
   {
     number: "09",
@@ -204,6 +263,9 @@ export const galleryProjects: GalleryProject[] = [
       "Cocktail hour to ceremony to tent, with Santa Fe earth tones running through Friday's details.",
     coords: [-105.9378, 35.6870],
     pending: true,
+    curationNotes:
+      "Feature Santa Fe. Cocktail hour → ceremony → tent (10) → Friday details (5).",
+    coverDirective: { distance: "close", toneSlot: 9 },
   },
   {
     number: "10",
@@ -220,9 +282,45 @@ export const galleryProjects: GalleryProject[] = [
       "A ballroom wedding at The Encore — architectural scale, layered floral, evening dance program.",
     coords: [-71.0589, 42.3601],
     pending: true,
+    coverDirective: { distance: "medium", toneSlot: 10 },
   },
   {
     number: "11",
+    name: "PRIVATE RESIDENCE, TX",
+    planner: "CINERGY WORKS",
+    region: "Texas",
+    kind: "Private Celebration",
+    location: "Texas",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: pendingGalleryHero("Private Residence, TX — Cinergy Works"),
+    detailImages: [],
+    summary:
+      "A private residence celebration — tablescape detail and deep evening tones across the property.",
+    coords: [-97.7431, 30.2672],
+    pending: true,
+    coverDirective: { distance: "close", toneSlot: 11 },
+  },
+  {
+    number: "12",
+    name: "BLACKBERRY FARMS, TN",
+    planner: "EASTON EVENTS",
+    region: "Tennessee",
+    kind: "Wedding Weekend",
+    location: "Walland, Tennessee",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: pendingGalleryHero("Blackberry Farms — Easton Events"),
+    detailImages: [],
+    summary:
+      "A December weekend at Blackberry Farms — wood-paneled dining, lantern light, layered hospitality detail.",
+    coords: [-83.8090, 35.7434],
+    pending: true,
+    curationNotes: "Folder: December Blackberry Farms.",
+    coverDirective: { distance: "far", toneSlot: 12 },
+  },
+  {
+    number: "13",
     name: "FOUR SEASONS VAIL, CO",
     planner: "CASSIE LAMERE EVENTS",
     region: "Colorado",
@@ -236,52 +334,25 @@ export const galleryProjects: GalleryProject[] = [
       "An alpine weekend at Four Seasons Vail with Cassie Lamere — feature program across welcome, ceremony, reception.",
     coords: [-106.3742, 39.6403],
     pending: true,
-  },
-  {
-    number: "12",
-    name: "ASPEN, CO",
-    planner: "ASPEN EVENT WORKS",
-    region: "Colorado",
-    kind: "Wedding",
-    location: "Aspen, Colorado — Private Ranch",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: aspenEventWorksGalleryHero,
-    detailImages: aspenEventWorksGalleryImages,
-    summary:
-      "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
-    coords: [-106.8175, 39.1911],
-  },
-  {
-    number: "13",
-    name: "TELLURIDE, CO",
-    planner: "LYNDEN LANE",
-    region: "Colorado",
-    kind: "Private Celebration",
-    location: "Telluride, Colorado",
-    year: "2025",
-    category: "Luxury Weddings",
-    heroImage: lyndenLaneGalleryHero,
-    detailImages: lyndenLaneGalleryImages,
-    summary:
-      "A modernist outdoor program — sculptural lounges set against the architecture, layered florals through the evening.",
-    coords: [-107.8123, 37.9375],
+    curationNotes: "Feature Cassie. Folder: Cassime Lamere.",
+    coverDirective: { distance: "medium", toneSlot: 13 },
   },
   {
     number: "14",
-    name: "ANGUILLA, CARIBBEAN",
-    planner: "MICHELLE RAGO DESTINATIONS",
-    region: "Caribbean",
-    kind: "Destination Wedding",
-    location: "Anguilla, British West Indies",
-    year: "2024",
+    name: "DUNTON HOT SPRINGS, CO",
+    planner: "EASTON EVENTS",
+    region: "Colorado",
+    kind: "Wedding",
+    location: "Dunton, Colorado",
+    year: "2022",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Anguilla — Michelle Rago Destinations"),
-    detailImages: [],
+    heroImage: dosMasEnLaMesaGalleryHero,
+    detailImages: dosMasEnLaMesaGalleryImages,
     summary:
-      "Wedding-day lounge by the sea — a destination program built around the water with quiet detail throughout.",
-    coords: [-63.0686, 18.2206],
-    pending: true,
+      "Dos Mas en la Mesa — a saturated mountain wedding staged across the Dunton property over a long Colorado weekend.",
+    coords: [-108.0728, 37.7669],
+    curationNotes: "Folder: Dos Mas en la Mesa.",
+    coverDirective: { distance: "close", toneSlot: 14 },
   },
   {
     number: "15",
@@ -298,5 +369,7 @@ export const galleryProjects: GalleryProject[] = [
       "Sapna and Ari at Hotel Jerome — pastel welcome, rehearsal detail, and a celebratory program across Aspen.",
     coords: [-106.8231, 39.1880],
     pending: true,
+    curationNotes: "Folder: Sapna + Ari. Move closer to the end.",
+    coverDirective: { distance: "far", toneSlot: 15 },
   },
 ];

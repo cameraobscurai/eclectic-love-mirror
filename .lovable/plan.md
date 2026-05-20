@@ -1,62 +1,87 @@
-## Two things, scoped tight
 
-### 1. Photo archive — right-sized, not overdone
+# Gallery — lock owner's 15-slot order, titles, and cover rules
 
-**What it is:** A private `inventory-photo-archive` bucket that holds a copy of every owner-uploaded original. If `incoming-photos/` ever gets wiped or a row's `images[]` gets clobbered, the original PNG still exists somewhere safe.
+Yes, I remember. Confirmed inputs: both Dunton galleries real, #10 is Boston **MA**, I pick covers (respecting owner's named moments) with close/medium/far variety. Storage folders for the 7 net-new galleries don't exist yet — this pass is logic + scaffolding only.
 
-**What it is NOT:** Not a full Supabase backup. Not versioned history. Not nightly DB dumps. One copy per file, write-once, never deleted by app code.
+## Scope
 
-**Scope (3 pieces):**
+Single source of truth edit: `src/content/gallery-projects.ts`. No component or route changes; the gallery page already reads order/title/planner from this file. No storage writes.
 
-| Piece | Lift | What it does |
-|---|---|---|
-| New private bucket `inventory-photo-archive` | migration | Service-role write, no public read, no client access |
-| One-time backfill `scripts/archive-backfill.mjs` | ~30 min, ~2 GB copy | Mirrors every file currently in `incoming-photos/` + `inventory/` into the archive. Skips files already there. Idempotent — safe to re-run |
-| `/admin/incoming` upload hook | tiny edit | After a successful upload, fire-and-forget copy to archive. If archive write fails, log it — never block the primary upload |
+## The 15, locked order
 
-**What we are NOT doing:**
-- ❌ Nightly DB JSON snapshots (skipped per your call — Supabase already does daily PITR backups on its side)
-- ❌ Storage object manifest job
-- ❌ Mirroring `squarespace-mirror/` (we can re-harvest from her live site; not original-source material)
-- ❌ Mirroring legacy buckets (`tablewear`, `glassware`, `midas`, etc.) — superseded, will retire
-- ❌ Restore UI — if we ever need to restore, it's a manual script run, not a feature
+| # | LOCATION, ST | PLANNER | Status |
+|---|---|---|---|
+| 01 | AMANGIRI, AZ | EASTON EVENTS | live |
+| 02 | PRIVATE RESIDENCE ASPEN, CO | ASPEN EVENT WORKS | live (retitle) |
+| 03 | BRUSH CREEK RANCH, WY | DIWAN BY DESIGN | pending |
+| 04 | TELLURIDE, CO | LYNDEN LANE | live |
+| 05 | ANGUILLA, CARIBBEAN | MICHELLE RAGO DESTINATIONS | pending |
+| 06 | BIG SKY, MT | EASTON EVENTS | live |
+| 07 | DUNTON HOT SPRINGS, CO | BROOKE KEEGAN EVENTS | live |
+| 08 | BRUSH CREEK RANCH, WY | LOVE THIS DAY | pending |
+| 09 | BISHOP'S LODGE, NM | 42 NORTH | pending |
+| 10 | THE ENCORE, MA | DIWAN BY DESIGN | pending (Boston, MA — fixed) |
+| 11 | PRIVATE RESIDENCE, TX | CINERGY WORKS | pending |
+| 12 | BLACKBERRY FARMS, TN | EASTON EVENTS | pending |
+| 13 | FOUR SEASONS VAIL, CO | CASSIE LAMERE EVENTS | pending |
+| 14 | DUNTON HOT SPRINGS, CO | EASTON EVENTS (Dos Mas) | live |
+| 15 | HOTEL JEROME, CO | BIRCH DESIGN STUDIO (Sapna + Ari) | pending |
 
-**Cost:** ~2 GB doubled. Pennies per month.
+## Edits to `gallery-projects.ts`
 
-**Recovery story:** If row 2894's images get blown away, owner pings me. I run `scripts/archive-restore.mjs --rms-id 2894` which finds files in archive by filename pattern and re-uploads to `incoming-photos`. Manual, but the bytes never went away.
+- Re-sequence array to the table above; renumber `number` `01`–`15`.
+- Retitle #2 from `BRUSH CREEK RANCH, WY` (Love This Day) entry's current name to **`PRIVATE RESIDENCE ASPEN, CO`** for the Aspen Event Works slot (currently named `ASPEN, CO`).
+- Verify Encore entry reads `THE ENCORE, MA` + `location: "Boston, Massachusetts"`.
+- Embed owner's per-gallery directives in a new optional `curationNotes` field on each project (string). Examples:
+  - 01: "Chinle dinner; lounge from amphitheater; landscape; Fireside all 5; skip pool deck."
+  - 02: "Tent 2. Day → personal interleaved → end at night."
+  - 04: "Exclude :1083. Cover = 1143."
+  - 07: "Feature 06.15 — all pics. MKSadler 4118."
+  - 08: "LTD favorites, arrange on color (Westworld). Carrie King Americana + N+B wedding (3). Ralph red/white/denim. Erich add-ons: Westworld."
+  - 09: "Cocktail → ceremony → tent (10) → Friday details (5)."
+  - 14: "Dos Mas en la Mesa folder."
+  - 15: "Sapna + Ari folder."
+- Add module-level exclusion constants (documented, not used yet — read by future ingest scripts):
+  ```ts
+  export const GALLERY_EXCLUDE_PLANNERS = ["VanderWeide"] as const;
+  export const GALLERY_NDA_PLANNERS = ["Thomas"] as const;
+  ```
 
----
+## Cover selection rules
 
-### 2. Owner hide toggle on `/admin/incoming`
+Add a typed `coverDirective` field per project so when folders land, the bake/pick script has owner intent encoded:
 
-**What it does:** Owner can hide any tile from the public catalog without my help. Already works in the DB — `public_ready=false` now actually drops the tile on next bake (fixed this turn). Just needs a UI.
+```ts
+coverDirective?: {
+  // owner's hard pick if any
+  filenameHint?: string;       // e.g. "1143" for Telluride
+  excludeHints?: string[];     // e.g. ["1083"] for Telluride
+  // distance preference for the *cover* relative to subject
+  distance: "close" | "medium" | "far";
+  // tonal slot in the dark→pastel arc (1 = darkest, 15 = lightest)
+  toneSlot: number;
+};
+```
 
-**Scope:**
+Assign `distance` across the 15 to guarantee variety (no two adjacent same): rough rotation `far, close, medium, far, medium, close, medium, far, close, medium, close, far, medium, close, far`.
 
-| Piece | Lift | What it does |
-|---|---|---|
-| Eye/eye-off button on each tile in `/admin/incoming` | small | Click toggles `inventory_items.public_ready`. Hidden tiles show dimmed with "HIDDEN" badge |
-| Optional `hidden_note` text input | tiny | Owner can record why ("damaged", "sold", "needs reshoot"). Column already exists |
-| "Rebake catalog" button at top of page | small | Calls a server fn that runs the bake. Without this, hide changes don't show on the live site until I run the script |
+Assign `toneSlot` linearly 1→15 (dark/moody at top, pastels at the back of the line). This matches the owner's "dark moody → pastels" arc; the existing order already roughly satisfies it (Amangiri sandstone-dark up front, Hotel Jerome pastels at 15).
 
-**Server fn:**
-- `toggleItemVisibility({ id, publicReady, hiddenNote? })` — admin-only via `requireSupabaseAuth` + `has_role(admin)`
-- `rebakeCatalog()` — admin-only, runs the same logic as `scripts/bake-catalog.mjs`, writes the JSON back to disk. **CAVEAT:** server can't write to the repo on Cloudflare Workers. Two options:
-  - **(a) Simpler:** rebake writes to a `inventory_catalog_snapshots` table; catalog accessor reads latest row. Removes the static-file step entirely. Owner click = instant publish.
-  - **(b) Defer:** skip the rebake button this round. I run bake manually when she pings me. Toggle still works in DB.
+For live galleries with manifests, also set `heroImage` to the picked filename now:
+- **04 Telluride**: pick file matching `1143`, exclude any `1083` from `detailImages`.
+- **07 Dunton / Brooke Keegan**: pick `4118` (MKSadler).
+- **01 / 02 / 06 / 14**: keep current hero unless it violates distance variety; if it does, swap to the closest manifest entry matching the directive.
 
-**Recommendation:** Ship hide toggle + hidden_note now (option b). Defer the rebake button until we decide between snapshot-in-DB vs keep-static-file. The toggle has value even if I'm the one rebaking.
+## Pending entries
 
----
+Keep `pending: true` + `pendingGalleryHero(...)` plates. When you upload a folder later, removing `pending` and adding the manifest is a 2-line change per gallery — no schema migration.
 
-## Order
-1. Migration: create `inventory-photo-archive` bucket + admin-only RLS
-2. Run `archive-backfill.mjs` (one-shot, scriptable, ~30 min wall time)
-3. Wire upload hook in `/admin/incoming`
-4. Add hide toggle + hidden_note input to `/admin/incoming`
+## Out of scope (next pass, after images land)
 
-## Risk
-- Bucket is private, no public surface — can't accidentally expose anything
-- Backfill is read-from-source + write-to-archive only, never touches source
-- Hide toggle is reversible per-row, no bulk operation
-- Rebake question is deferred — no decision needed today
+- Storage folder creation in `image-galleries` for the 7 pending galleries.
+- Bake script that reads `coverDirective` + manifest to auto-pick hero (close/medium/far enforcement, exclude filter, tonal arc validation).
+- VanderWeide removal from storage (the existing folder stays untouched until you say drop it).
+
+## Verification
+
+After the edit: load `/gallery`, confirm filmstrip + index render 15 tiles in the new order with correct titles + planners, Telluride hero swapped to 1143, no console errors. Pending tiles still show charcoal placeholder.
