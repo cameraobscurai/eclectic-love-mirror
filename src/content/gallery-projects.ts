@@ -254,12 +254,11 @@ export const galleryProjects: GalleryProject[] = [
     location: "Saratoga, Wyoming",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Brush Creek Ranch — Love This Day"),
-    detailImages: [],
+    heroImage: brushCreekLoveThisDayGalleryHero,
+    detailImages: brushCreekLoveThisDayGalleryImages,
     summary:
       "Westworld Americana — color-blocked favorites, Carrie King Americana plus wedding, Ralph red-white-denim throughline.",
     coords: [-106.8083, 41.4549],
-    pending: true,
     curationNotes:
       "LTD favorites — open, arrange on color (Westworld). Carrie King: Americana + N+B wedding (3). Ralph: red/white/denim. Westworld. Erich add-ons: Westworld.",
     coverDirective: { distance: "far", toneSlot: 8 },
