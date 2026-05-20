@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { toggleItemVisibility } from "@/server/archive.functions";
+import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 export const Route = createFileRoute("/admin/image-qa")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -26,6 +27,7 @@ type Item = {
   images: string[];
   public_ready: boolean;
   hidden_note: string | null;
+  card_background_url: string | null;
 };
 
 type Status = "ok" | "missing" | "broken" | "loading";
@@ -36,13 +38,14 @@ function ImageQA() {
   const [filter, setFilter] = useState<string>("pillows-throws");
   const [showOnly, setShowOnly] = useState<"all" | "issues" | "hidden">("issues");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
+  const [editing, setEditing] = useState<Item | null>(null);
   const toggleVis = useServerFn(toggleItemVisibility);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("inventory_items")
-        .select("id,rms_id,title,category,images,public_ready,hidden_note")
+        .select("id,rms_id,title,category,images,public_ready,hidden_note,card_background_url")
         .neq("status", "draft")
         .order("category")
         .order("title")
