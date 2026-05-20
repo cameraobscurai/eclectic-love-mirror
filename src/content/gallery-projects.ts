@@ -84,6 +84,22 @@ import {
   lyndenLaneGalleryHero,
   lyndenLaneGalleryImages,
   pendingGalleryHero,
+  anguillaMicheleRagoGalleryHero,
+  anguillaMicheleRagoGalleryImages,
+  brushCreekLoveThisDayGalleryHero,
+  brushCreekLoveThisDayGalleryImages,
+  brushCreekDiwanGalleryHero,
+  brushCreekDiwanGalleryImages,
+  bishopsLodge42NorthGalleryHero,
+  bishopsLodge42NorthGalleryImages,
+  encoreBostonDiwanGalleryHero,
+  encoreBostonDiwanGalleryImages,
+  privateResidenceTxCinergyGalleryHero,
+  privateResidenceTxCinergyGalleryImages,
+  blackberryFarmsEastonGalleryHero,
+  blackberryFarmsEastonGalleryImages,
+  fourSeasonsVailCassieLamereGalleryHero,
+  fourSeasonsVailCassieLamereGalleryImages,
 } from "./gallery-manifests";
 import { galleriesUrl } from "@/lib/storage-image";
 
