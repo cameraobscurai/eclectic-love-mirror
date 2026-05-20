@@ -9,12 +9,62 @@ function createGalleryImages(paths: string[], projectName: string): GalleryImage
 }
 
 // AMANGIRI — re-mirrored from Drive "FEATURE Amangiri" + "Easton - Gahan Wedding at Amangiri".
-// Pool deck subfolder intentionally skipped per owner note. Order: Chinle dinner → amphitheater/Raven's Nest → Fireside → gahan tablescapes → add-on context.
+// Pool deck subfolder intentionally skipped per owner note.
+// Flow: Amangiri daylight → amphitheater/Raven's Nest welcome (day) → tablescapes/tablesettings (day) → Fireside (dusk) → Chinle long-table dinner (night finale) → Raven's Nest at night → property at night.
 export const amangiriGalleryPaths = [
-  // Chinle long-table night dinner — named hero shots first, UUIDs follow.
+  // Day — landscape & gahan daylight
+  "AMANGIRI/gahan__Amangiri_daylight.jpg",
+  // Amphitheater / Raven's Nest — day welcome, bar, lounge
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Welcome.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Bar.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_On_Bar_2.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Lounge.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Lounge_+_floral.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Petite_Lounge.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up_Lounge.jpg",
+  "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up.jpg",
+  "AMANGIRI/amphitheaterravensnest__F756DB53-AEA0-48F7-87F5-6A65E580DCA9.jpeg",
+  "AMANGIRI/amphitheaterravensnest__9D0CDD36-2379-485A-95AC-D1002BB7270D.jpeg",
+  "AMANGIRI/amphitheaterravensnest__98171ECC-C860-4911-BC61-6FD36A14E85E.jpeg",
+  "AMANGIRI/amphitheaterravensnest__AD86EF2A-10FA-4656-938D-5001FF32CC0E.jpeg",
+  "AMANGIRI/amphitheaterravensnest__3E9A02E2-E2B5-48CD-ADD1-CA72696EB7ED.jpeg",
+  "AMANGIRI/amphitheaterravensnest__39503C36-4ACA-4044-8769-4C6A3A54024A.jpeg",
+  "AMANGIRI/amphitheaterravensnest__876CAB81-E83E-4D52-9C11-A7324AE6D3D5.jpeg",
+  "AMANGIRI/amphitheaterravensnest__9E9035E0-E84F-4079-B303-B815CC5F99F9.jpeg",
+  "AMANGIRI/amphitheaterravensnest__A4B28427-D41D-4FE6-94E5-D96D5EAE6C65.jpeg",
+  "AMANGIRI/amphitheaterravensnest__923B893B-128A-4F0F-B4D7-2A1FD93D42B7.jpeg",
+  "AMANGIRI/amphitheaterravensnest__4D7CEAAF-3AB9-4FDE-8816-3E2F48884B2F.jpeg",
+  "AMANGIRI/amphitheaterravensnest__8D3495B8-561D-4F8C-BA93-EE46B40063ED.jpeg",
+  "AMANGIRI/amphitheaterravensnest__18A2F936-BF79-4B89-85B5-CD4A21DEF869.jpeg",
+  "AMANGIRI/amphitheaterravensnest__3123EA4B-F726-4905-8E0A-D4B72CFE124F.jpeg",
+  "AMANGIRI/amphitheaterravensnest__7D28AF40-82DD-44AE-B61F-09E6B70710E8.jpeg",
+  "AMANGIRI/amphitheaterravensnest__52F22DC9-772E-4E6C-AC83-A410C9872E57.jpeg",
+  "AMANGIRI/amphitheaterravensnest__F48C68F1-2D4F-42FC-A6C2-16F90B2E8730.jpeg",
+  "AMANGIRI/amphitheaterravensnest__C631CFB9-BE43-465B-BB80-0AEF41D4210E.jpeg",
+  "AMANGIRI/amphitheaterravensnest__4AD5F098-D518-4F88-BF74-DD99FB94F7C6.jpeg",
+  // Gahan — day tablescapes / tablesettings / lounge / bar in amp
+  "AMANGIRI/gahan__Lounge_in_Amp.jpg",
+  "AMANGIRI/gahan__Lounge_2.jpg",
+  "AMANGIRI/gahan__Lounge_3_with_Floral.jpg",
+  "AMANGIRI/gahan__Bar_in_Amp.jpg",
+  "AMANGIRI/gahan__Tablesetting.jpg",
+  "AMANGIRI/gahan__Tablesetting_2.jpg",
+  "AMANGIRI/gahan__Tablescape_1.jpg",
+  "AMANGIRI/gahan__Tablescape_2.jpg",
+  "AMANGIRI/gahan__Tablescape_3.jpg",
+  "AMANGIRI/gahan__Tablescape_4.jpg",
+  "AMANGIRI/gahan__Tablescape_5.jpg",
+  "AMANGIRI/gahan__Tablescape_6.jpg",
+  // Fireside — dusk transitional
+  "AMANGIRI/Fireside__Lounge.jpg",
+  "AMANGIRI/Fireside__Lounge_2.jpg",
+  "AMANGIRI/Fireside__Lounge_3.jpg",
+  "AMANGIRI/Fireside__Lounge_Close_Up.jpg",
+  "AMANGIRI/Fireside__Lounge_+_Floral_Close_Up.jpg",
+  // Chinle long-table — night finale
   "AMANGIRI/chinledinner__ADD_Night_Shot_2.jpg",
-  "AMANGIRI/chinledinner__ADD_ON_Night_Shot_3.jpg",
   "AMANGIRI/chinledinner__ADD_ON_Night_Shot.jpg",
+  "AMANGIRI/chinledinner__ADD_ON_Night_Shot_3.jpg",
   "AMANGIRI/chinledinner__6789D72F-6EB7-44D8-84EE-86BCA7508F40.jpeg",
   "AMANGIRI/chinledinner__7647E845-F536-4FA2-B8D9-413235469B93.jpeg",
   "AMANGIRI/chinledinner__9FA43D2A-18B6-47DD-BC32-4C5954652A03.jpeg",
@@ -54,58 +104,11 @@ export const amangiriGalleryPaths = [
   "AMANGIRI/chinledinner__172CFD8F-EF0D-4A51-8B39-56B2BE28D2F8.jpeg",
   "AMANGIRI/chinledinner__2086C4C4-EBE4-479F-A95D-A40BA7C8C37D.jpeg",
   "AMANGIRI/chinledinner__17A871EE-E270-4F0C-8F7F-39B4058D9B21.jpeg",
-  // Amphitheater / Raven's Nest — named first, UUIDs follow.
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Welcome.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_On_Bar_2.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Bar.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up_Lounge.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Petite_Lounge.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Lounge.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Lounge_+_floral.jpg",
-  "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up.jpg",
-  "AMANGIRI/amphitheaterravensnest__F756DB53-AEA0-48F7-87F5-6A65E580DCA9.jpeg",
-  "AMANGIRI/amphitheaterravensnest__9D0CDD36-2379-485A-95AC-D1002BB7270D.jpeg",
-  "AMANGIRI/amphitheaterravensnest__98171ECC-C860-4911-BC61-6FD36A14E85E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__AD86EF2A-10FA-4656-938D-5001FF32CC0E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__3E9A02E2-E2B5-48CD-ADD1-CA72696EB7ED.jpeg",
-  "AMANGIRI/amphitheaterravensnest__39503C36-4ACA-4044-8769-4C6A3A54024A.jpeg",
-  "AMANGIRI/amphitheaterravensnest__876CAB81-E83E-4D52-9C11-A7324AE6D3D5.jpeg",
-  "AMANGIRI/amphitheaterravensnest__9E9035E0-E84F-4079-B303-B815CC5F99F9.jpeg",
-  "AMANGIRI/amphitheaterravensnest__A4B28427-D41D-4FE6-94E5-D96D5EAE6C65.jpeg",
-  "AMANGIRI/amphitheaterravensnest__923B893B-128A-4F0F-B4D7-2A1FD93D42B7.jpeg",
-  "AMANGIRI/amphitheaterravensnest__4D7CEAAF-3AB9-4FDE-8816-3E2F48884B2F.jpeg",
-  "AMANGIRI/amphitheaterravensnest__8D3495B8-561D-4F8C-BA93-EE46B40063ED.jpeg",
-  "AMANGIRI/amphitheaterravensnest__18A2F936-BF79-4B89-85B5-CD4A21DEF869.jpeg",
-  "AMANGIRI/amphitheaterravensnest__3123EA4B-F726-4905-8E0A-D4B72CFE124F.jpeg",
-  "AMANGIRI/amphitheaterravensnest__7D28AF40-82DD-44AE-B61F-09E6B70710E8.jpeg",
-  "AMANGIRI/amphitheaterravensnest__52F22DC9-772E-4E6C-AC83-A410C9872E57.jpeg",
-  "AMANGIRI/amphitheaterravensnest__F48C68F1-2D4F-42FC-A6C2-16F90B2E8730.jpeg",
-  "AMANGIRI/amphitheaterravensnest__C631CFB9-BE43-465B-BB80-0AEF41D4210E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__4AD5F098-D518-4F88-BF74-DD99FB94F7C6.jpeg",
-  // Fireside — all 5 per owner note.
-  "AMANGIRI/Fireside__Lounge.jpg",
-  "AMANGIRI/Fireside__Lounge_2.jpg",
-  "AMANGIRI/Fireside__Lounge_3.jpg",
-  "AMANGIRI/Fireside__Lounge_Close_Up.jpg",
-  "AMANGIRI/Fireside__Lounge_+_Floral_Close_Up.jpg",
-  // Gahan companion — Raven's Nest at night, tablescapes, lounge in amp.
+  // Raven's Nest at Night — late night
   "AMANGIRI/gahan__Raven_s_Nest_at_Night.jpg",
   "AMANGIRI/gahan__Raven_s_Nest_at_Night2_.jpg",
   "AMANGIRI/gahan__Raven_s_Nest_at_Night_3_.jpg",
-  "AMANGIRI/gahan__Lounge_in_Amp.jpg",
-  "AMANGIRI/gahan__Lounge_2.jpg",
-  "AMANGIRI/gahan__Lounge_3_with_Floral.jpg",
-  "AMANGIRI/gahan__Bar_in_Amp.jpg",
-  "AMANGIRI/gahan__Tablescape_1.jpg",
-  "AMANGIRI/gahan__Tablescape_2.jpg",
-  "AMANGIRI/gahan__Tablescape_3.jpg",
-  "AMANGIRI/gahan__Tablescape_4.jpg",
-  "AMANGIRI/gahan__Tablescape_5.jpg",
-  "AMANGIRI/gahan__Tablescape_6.jpg",
-  "AMANGIRI/gahan__Tablesetting.jpg",
-  "AMANGIRI/gahan__Tablesetting_2.jpg",
-  "AMANGIRI/gahan__Amangiri_daylight.jpg",
-  // Add-On context (property at night).
+  // Property at night — closing
   "AMANGIRI/Add_On__Property_At_Night.jpg",
   "AMANGIRI/Add_On__Property_and_Pool.jpg",
 ] as const;
@@ -117,50 +120,54 @@ export const amangiriGalleryHero: GalleryImage = {
 
 export const amangiriGalleryImages = createGalleryImages([...amangiriGalleryPaths], "Amangiri");
 
+// Flow: day setup (tent + tablescapes + ceremony) → personal day moments → night (toast → first dance → night tent)
 export const aspenEventWorksGalleryPaths = [
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride and her horse 2.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride and her horse.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride at Night B+W.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Cake with a view.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony 2.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony Favorite.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Champagne Tower.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Cheers B+W.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 2.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 3 with horse.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 3.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple at Toast.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple Black and White.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Dinner Service B+W.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Escort Display.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/First Dance.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Guests.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Hold Photo.png",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Horse.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Lounge Close Up.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Nature Hike.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Nighttime Tablescape.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Our Bride.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Pretty Little Details.jpg",
+  // Daytime tent + setup
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 3.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 4.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Seating with Views.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Stone Plates.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up 2.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up 3.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up 4.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 2.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 3.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 4.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night 2.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Stone Plates.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Pretty Little Details.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Escort Display.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Lounge Close Up.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Cake with a view.jpg",
+  // Personal day moments
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Bride.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Bride 2.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Bride 3.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Bride.jpg",
-  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Couple 2.jpg",
   "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Couple.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Wedding Day Couple 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride and her horse.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride and her horse 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Horse.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Nature Hike.jpg",
+  // Ceremony
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony Favorite.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Our Bride.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 3.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple 3 with horse.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Guests.jpg",
+  // Night reception
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple at Toast.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Cheers B+W.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Champagne Tower.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Dinner Service B+W.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Nighttime Tablescape.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/First Dance.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Couple Black and White.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night 2.jpg",
+  "ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Bride at Night B+W.jpg",
 ] as const;
 
 export const aspenEventWorksGalleryHero: GalleryImage = {
@@ -170,19 +177,20 @@ export const aspenEventWorksGalleryHero: GalleryImage = {
 
 export const aspenEventWorksGalleryImages = createGalleryImages([...aspenEventWorksGalleryPaths], "Aspen Event Works");
 
+// Flow: Aspen landscape → Welcome Party (day) → Rehearsal Dinner → After-party (night)
 export const birchDesignGalleryPaths = [
-  "BIRCH-DESIGN/Antler Bar.jpg",
   "BIRCH-DESIGN/Aspen.jpg",
-  "BIRCH-DESIGN/Caribou Rehearsal Dinner Close Up 2.jpg",
-  "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 2.jpg",
-  "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 3.jpg",
-  "BIRCH-DESIGN/Disco After Party 2.jpg",
-  "BIRCH-DESIGN/Disco After Party.jpg",
-  "BIRCH-DESIGN/Disco Detail.jpg",
-  "BIRCH-DESIGN/Disco Lounge.jpg",
   "BIRCH-DESIGN/Welcome Hat Branding.jpg",
   "BIRCH-DESIGN/Welcome Lounge Detail .jpg",
   "BIRCH-DESIGN/Welcome Party Aspen Art Museum.jpg",
+  "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 2.jpg",
+  "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 3.jpg",
+  "BIRCH-DESIGN/Caribou Rehearsal Dinner Close Up 2.jpg",
+  "BIRCH-DESIGN/Antler Bar.jpg",
+  "BIRCH-DESIGN/Disco Lounge.jpg",
+  "BIRCH-DESIGN/Disco Detail.jpg",
+  "BIRCH-DESIGN/Disco After Party.jpg",
+  "BIRCH-DESIGN/Disco After Party 2.jpg",
 ] as const;
 
 export const birchDesignGalleryHero: GalleryImage = {
@@ -192,38 +200,45 @@ export const birchDesignGalleryHero: GalleryImage = {
 
 export const birchDesignGalleryImages = createGalleryImages([...birchDesignGalleryPaths], "Birch Design Studio");
 
+// Flow: Montana landscape → Welcome Alpine (day) → Cocktail Hour → Ceremony → Reception → Tent (night)
 export const eastonEventsMontanaGalleryPaths = [
-  "EASTON-EVENTS-MONTANA/Bride.jpg",
-  "EASTON-EVENTS-MONTANA/Ceremony 3.jpg",
-  "EASTON-EVENTS-MONTANA/Ceremony Chairs 2.jpg",
-  "EASTON-EVENTS-MONTANA/Ceremony Chairs.jpg",
-  "EASTON-EVENTS-MONTANA/Ceremony.jpg",
-  "EASTON-EVENTS-MONTANA/Cocktail Hour 2.jpg",
-  "EASTON-EVENTS-MONTANA/Cocktail Hour 3.jpg",
-  "EASTON-EVENTS-MONTANA/Cocktail HOur.jpg",
+  // Landscape opener
+  "EASTON-EVENTS-MONTANA/Montana.jpg",
   "EASTON-EVENTS-MONTANA/Montana 2.jpg",
   "EASTON-EVENTS-MONTANA/Montana 3.jpg",
-  "EASTON-EVENTS-MONTANA/Montana.jpg",
-  "EASTON-EVENTS-MONTANA/Reception 2.jpg",
-  "EASTON-EVENTS-MONTANA/Reception 3.jpg",
-  "EASTON-EVENTS-MONTANA/Reception 4.jpg",
-  "EASTON-EVENTS-MONTANA/Reception 5.jpg",
-  "EASTON-EVENTS-MONTANA/Reception 6.jpg",
-  "EASTON-EVENTS-MONTANA/Reception.jpg",
-  "EASTON-EVENTS-MONTANA/Tent 2.jpg",
-  "EASTON-EVENTS-MONTANA/Tent 3.jpg",
-  "EASTON-EVENTS-MONTANA/Tent.jpg",
-  "EASTON-EVENTS-MONTANA/Wedding Lounge 2.jpg",
-  "EASTON-EVENTS-MONTANA/Wedding Lounge.jpg",
-  "EASTON-EVENTS-MONTANA/Welcome Alpine Party Dining.jpg",
+  // Welcome Alpine Party (day setup → dining)
+  "EASTON-EVENTS-MONTANA/Welcome Party.jpg",
+  "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 2.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 3.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 4.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 5.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 6.jpg",
   "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge 7.jpg",
-  "EASTON-EVENTS-MONTANA/Welcome Alpine Party Lounge.jpg",
-  "EASTON-EVENTS-MONTANA/Welcome Party.jpg",
+  "EASTON-EVENTS-MONTANA/Welcome Alpine Party Dining.jpg",
+  // Personal moment
+  "EASTON-EVENTS-MONTANA/Bride.jpg",
+  // Ceremony architecture
+  "EASTON-EVENTS-MONTANA/Ceremony Chairs.jpg",
+  "EASTON-EVENTS-MONTANA/Ceremony Chairs 2.jpg",
+  "EASTON-EVENTS-MONTANA/Ceremony.jpg",
+  "EASTON-EVENTS-MONTANA/Ceremony 3.jpg",
+  // Cocktail hour
+  "EASTON-EVENTS-MONTANA/Cocktail HOur.jpg",
+  "EASTON-EVENTS-MONTANA/Cocktail Hour 2.jpg",
+  "EASTON-EVENTS-MONTANA/Cocktail Hour 3.jpg",
+  "EASTON-EVENTS-MONTANA/Wedding Lounge.jpg",
+  "EASTON-EVENTS-MONTANA/Wedding Lounge 2.jpg",
+  // Tent reveal → reception → night
+  "EASTON-EVENTS-MONTANA/Tent.jpg",
+  "EASTON-EVENTS-MONTANA/Tent 2.jpg",
+  "EASTON-EVENTS-MONTANA/Reception.jpg",
+  "EASTON-EVENTS-MONTANA/Reception 2.jpg",
+  "EASTON-EVENTS-MONTANA/Reception 3.jpg",
+  "EASTON-EVENTS-MONTANA/Reception 4.jpg",
+  "EASTON-EVENTS-MONTANA/Reception 5.jpg",
+  "EASTON-EVENTS-MONTANA/Reception 6.jpg",
+  "EASTON-EVENTS-MONTANA/Tent 3.jpg",
 ] as const;
 
 export const eastonEventsMontanaGalleryHero: GalleryImage = {
@@ -509,56 +524,66 @@ export const pendingGalleryHero = (label: string): GalleryImage => ({
 
 // === Mirrored from Drive 2026-05-20 ===
 
+// Flow: landscape/arrival (day) → Mehndi/Sangeet day → wedding day décor → ceremony → reception → Bankie Banks/Casino (night)
 export const anguillaMicheleRagoGalleryPaths = [
-  "ANGUILLA-MICHELLE-RAGO/Sangeet_Dining_Close_Up.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea_Close_Up.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Casino_Night_2.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Casino_Night_3.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Casino_Night_4.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Casino_Night.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Bar_by_the_Sea.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Ceremony_Lounge.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Gifting_Room.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Tent_Entrance.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Cocktail_Hour.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Lounge.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Reception_2.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Wedding_Reception.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_Bar.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_Lounge.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Mehndi_2.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Mehndi.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_2.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_3.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_4.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime.jpg",
+  // Landscape & arrival
   "ANGUILLA-MICHELLE-RAGO/Anguilla.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Beach_Day_Island.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Beach_Day.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Host_Property_2.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Host_Property_3.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Host_Property_4.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Host_Property.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Landscape_2.jpg",
   "ANGUILLA-MICHELLE-RAGO/Landscape.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Landscape_2.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Private_Island_Arrival.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Private_Island.jpg",
   "ANGUILLA-MICHELLE-RAGO/Private_Island_2.jpg",
   "ANGUILLA-MICHELLE-RAGO/Private_Island_3.jpg",
   "ANGUILLA-MICHELLE-RAGO/Private_Island_4.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Private_Island_Arrival.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Private_Island.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Sofa_by_the_sea.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Beach_Day.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Beach_Day_Island.jpg",
   "ANGUILLA-MICHELLE-RAGO/The_Shipwreck.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Ceremony_2.jpg",
+  // Host property
+  "ANGUILLA-MICHELLE-RAGO/Host_Property.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Host_Property_2.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Host_Property_3.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Host_Property_4.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Gifting_Room.jpg",
+  // Mehndi (day)
+  "ANGUILLA-MICHELLE-RAGO/Mehndi.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Mehndi_2.jpg",
+  // Sangeet daytime
+  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_2.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_3.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Sangeet_Daytime_4.jpg",
+  // Wedding day — lounge by the sea / bar / sofa
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea_Close_Up.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Sofa_by_the_sea.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Bar_by_the_Sea.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Ceremony_Lounge.jpg",
+  // Ceremony
   "ANGUILLA-MICHELLE-RAGO/Ceremony_Favorite.jpg",
   "ANGUILLA-MICHELLE-RAGO/Ceremony.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Ceremony_2.jpg",
   "ANGUILLA-MICHELLE-RAGO/Islamic_Ceremony.jpg",
+  // Cocktail → tent → reception
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Cocktail_Hour.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Tent_Entrance.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Lounge.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Reception.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Wedding_Reception_2.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Sangeet_Dining_Close_Up.jpg",
+  // Bankie Banks night
   "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_Flag.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks.jpg",
   "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_2.jpg",
   "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_3_Favorite_.jpg",
   "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_4_Favorite_.jpg",
-  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_Bar.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Bankie_Banks_Lounge.jpg",
   "ANGUILLA-MICHELLE-RAGO/DJ.jpg",
+  // Casino Night (late night)
+  "ANGUILLA-MICHELLE-RAGO/Casino_Night.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Casino_Night_2.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Casino_Night_3.jpg",
+  "ANGUILLA-MICHELLE-RAGO/Casino_Night_4.jpg",
 ] as const;
 
 export const anguillaMicheleRagoGalleryHero: GalleryImage = {
@@ -568,41 +593,22 @@ export const anguillaMicheleRagoGalleryHero: GalleryImage = {
 
 export const anguillaMicheleRagoGalleryImages = createGalleryImages([...anguillaMicheleRagoGalleryPaths], "Anguilla — Michelle Rago Destinations");
 
+// Flow: Daytime activities (lunch + ride) → Carrie King Americana (day) → Hat branding/Westworld day → wedding party (N+B day shots) → Westworld Bar → Westworld Dinner Tablescape → Reception (evening) → Westworld Night → After Party
 export const brushCreekLoveThisDayGalleryPaths = [
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Lounge_Close_Up.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Wedding_Vintage_Trays.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Dinner_Tablescape.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Tunnel_Shot_Close_Up.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Hat_Branding.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__00019-Natalie_BenLunchandActivities.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Tunnel_Shot.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__bride_and_the_flag.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__After_Party_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__After_Party.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bar_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bar.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_3.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_4.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_5.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_6.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Couple_3.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party_Bride1.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Daytime_Ride_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Daytime_Ride.jpg",
+  // Daytime activities
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Westworld_Day_Event.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Lunch.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Lunch_2.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Lunch_3.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Lunch.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Night.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__00019-Natalie_BenLunchandActivities.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Daytime_Ride.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Daytime_Ride_2.jpg",
+  // Carrie King — Americana Sweet Zion (day)
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-55.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-421.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-448.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-450.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-529.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-55.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-614.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-615.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-625.jpg",
@@ -616,7 +622,21 @@ export const brushCreekLoveThisDayGalleryPaths = [
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-762.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-786.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Carrie_King_Favorites__Sweet_Zion_BCR-787.jpg",
+  // Westworld day → personal
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Hat_Branding.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__bride_and_the_flag.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bride.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Couple.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Westworld_Couple_2.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Couple_3.jpg",
+  // N+B wedding sequence
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_1.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_2.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_3.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_5.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_7.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_8.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_9.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_10.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_11.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_12.jpg",
@@ -625,16 +645,29 @@ export const brushCreekLoveThisDayGalleryPaths = [
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_15.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_17jpg.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_18.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_3.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_5.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_7.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_8.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__N_B_9.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bride.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__Westworld_Couple_2.jpg",
-  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Couple.jpg",
   "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Natalie_and_Be.jpg",
+  // Westworld bar + lounge (cocktail)
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bar.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Bar_2.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Lounge_Close_Up.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Wedding_Vintage_Trays.jpg",
+  // Dinner / reception
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Dinner_Tablescape.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Tunnel_Shot.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Tunnel_Shot_Close_Up.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_2.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_3.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_4.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_5.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Reception_6.jpg",
+  // Night / after party
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_Night.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party_2.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__WestWorld_After_Party_Bride1.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__After_Party.jpg",
+  "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_s_Main_Photos__After_Party_2.jpg",
 ] as const;
 
 export const brushCreekLoveThisDayGalleryHero: GalleryImage = {
@@ -644,8 +677,9 @@ export const brushCreekLoveThisDayGalleryHero: GalleryImage = {
 
 export const brushCreekLoveThisDayGalleryImages = createGalleryImages([...brushCreekLoveThisDayGalleryPaths], "Brush Creek Ranch — Love This Day");
 
+// Flow: Sangeet (day → evening) → Wedding day finale
 export const brushCreekDiwanGalleryPaths = [
-  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
+  // Sangeet — day program
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0049.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0050.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0051.jpg",
@@ -656,6 +690,7 @@ export const brushCreekDiwanGalleryPaths = [
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0069.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0071.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0072.jpg",
+  // Sangeet large — evening décor
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0073.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0079.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0083.jpg",
@@ -667,6 +702,8 @@ export const brushCreekDiwanGalleryPaths = [
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0130.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0134.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0139.jpg",
+  // Wedding day finale
+  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
 ] as const;
 
 export const brushCreekDiwanGalleryHero: GalleryImage = {
@@ -676,7 +713,39 @@ export const brushCreekDiwanGalleryHero: GalleryImage = {
 
 export const brushCreekDiwanGalleryImages = createGalleryImages([...brushCreekDiwanGalleryPaths], "Brush Creek Ranch — Diwan by Design");
 
+// Flow: Friday details (day prep) → Ceremony details → Cocktail Hour → Tent (night)
 export const bishopsLodge42NorthGalleryPaths = [
+  // Friday — day-of details
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
+  // Ceremony details
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
+  // Cocktail Hour — golden hour ascending
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1980.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1983.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1984.jpg",
@@ -711,29 +780,7 @@ export const bishopsLodge42NorthGalleryPaths = [
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2286.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2288.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2293.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
+  // Tent — night reception finale
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2295.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2296.jpg",
@@ -744,11 +791,6 @@ export const bishopsLodge42NorthGalleryPaths = [
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2301.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2302.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2303.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
 ] as const;
 
 export const bishopsLodge42NorthGalleryHero: GalleryImage = {
@@ -813,20 +855,21 @@ export const privateResidenceTxCinergyGalleryHero: GalleryImage = {
 
 export const privateResidenceTxCinergyGalleryImages = createGalleryImages([...privateResidenceTxCinergyGalleryPaths], "Private Residence, TX — Cinergy Works");
 
+// Flow: Property/setup (day-lit Blackberry series) → reception sequence (numbered) → night close
 export const blackberryFarmsEastonGalleryPaths = [
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2200.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2203.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2218.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2258.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2259.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2267.jpg",
-  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_sp_0240.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_1.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_2.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_3.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_4.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_5.jpg",
   "BLACKBERRY-FARMS-EASTON/Blackberry_6.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_sp_0240.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2200.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2203.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2218.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2258.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2259.jpg",
+  "BLACKBERRY-FARMS-EASTON/2022_12_03_victoriasean_2267.jpg",
 ] as const;
 
 export const blackberryFarmsEastonGalleryHero: GalleryImage = {
@@ -836,7 +879,19 @@ export const blackberryFarmsEastonGalleryHero: GalleryImage = {
 
 export const blackberryFarmsEastonGalleryImages = createGalleryImages([...blackberryFarmsEastonGalleryPaths], "Blackberry Farms — Easton Events");
 
+// Flow: Wellness (morning) → Welcome Party (day) → Rehearsal Dinner (evening) → Wedding Day (climax → night)
 export const fourSeasonsVailCassieLamereGalleryPaths = [
+  // Wellness — morning
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness01.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness02.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness03.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness13.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness19.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness23.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25__1_.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness28.jpg",
+  // Welcome Party — day/evening
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty113.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty115.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty127.jpg",
@@ -845,6 +900,21 @@ export const fourSeasonsVailCassieLamereGalleryPaths = [
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty156.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty166.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty221.jpg",
+  // Rehearsal Dinner — evening
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner001.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner004.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner005.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner009.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner011.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner054.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner066.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner105.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner106.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner109.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner112.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner113.jpg",
+  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner144.jpg",
+  // Wedding Day — ascending through ceremony / reception / night
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay0311.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay0314.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay0316.jpg",
@@ -896,28 +966,6 @@ export const fourSeasonsVailCassieLamereGalleryPaths = [
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay1000.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay1009.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_WeddingDay1012.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness01.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness02.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness03.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness13.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness19.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness23.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25__1_.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness28.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner001.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner004.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner005.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner009.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner011.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner054.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner066.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner105.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner106.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner109.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner112.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner113.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/RehearsalDinner144.jpg",
 ] as const;
 
 export const fourSeasonsVailCassieLamereGalleryHero: GalleryImage = {
