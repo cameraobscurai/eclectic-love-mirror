@@ -680,8 +680,8 @@ export const bishopsLodge42NorthGalleryPaths = [
 ] as const;
 
 export const bishopsLodge42NorthGalleryHero: GalleryImage = {
-  src: galleriesUrl("BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg"),
-  alt: "Tent details, Bishop's Lodge",
+  src: galleriesUrl("BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2005.jpg"),
+  alt: "Cocktail hour detail, Bishop's Lodge",
 };
 
 export const bishopsLodge42NorthGalleryImages = createGalleryImages([...bishopsLodge42NorthGalleryPaths], "Bishop's Lodge — 42 North");
