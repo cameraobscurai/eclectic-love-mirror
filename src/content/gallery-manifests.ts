@@ -490,7 +490,7 @@ export const anguillaMicheleRagoGalleryPaths = [
 ] as const;
 
 export const anguillaMicheleRagoGalleryHero: GalleryImage = {
-  src: galleriesUrl("ANGUILLA-MICHELLE-RAGO/Sangeet_Dining_Close_Up.jpg"),
+  src: galleriesUrl("ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea.jpg"),
   alt: "Sangeet long-table dining detail by the sea, Anguilla",
 };
 
