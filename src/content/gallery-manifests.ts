@@ -958,7 +958,6 @@ export const fourSeasonsVailCassieLamereGalleryPaths = [
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness19.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness23.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25.jpg",
-  "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness25__1_.jpg",
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/AP_Wellness28.jpg",
   // Welcome Party — day/evening
   "FOUR-SEASONS-VAIL-CASSIE-LAMERE/WelcomeParty113.jpg",
