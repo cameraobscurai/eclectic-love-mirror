@@ -158,16 +158,41 @@ export const aspenEventWorksGalleryHero: GalleryImage = {
 
 export const aspenEventWorksGalleryImages = createGalleryImages([...aspenEventWorksGalleryPaths], "Aspen Event Works");
 
-// Flow: Aspen landscape → Welcome Party (day) → Rehearsal Dinner → After-party (night)
+// Flow: Aspen landscape → Welcome Party at Aspen Art Museum (day → cocktail → reception) → Caribou Rehearsal Dinner → Disco after-party (night)
 export const birchDesignGalleryPaths = [
+  // Landscape opener
   "BIRCH-DESIGN/Aspen.jpg",
+  // Welcome Party — Aspen Art Museum (Gold Leaf Events): courtyard → lounges → bar → cocktail → food → reception
+  "BIRCH-DESIGN/AAM__Aspen_Art_Museum.jpg",
+  "BIRCH-DESIGN/AAM__Courtyard.jpg",
+  "BIRCH-DESIGN/AAM__Outside.jpg",
   "BIRCH-DESIGN/Welcome Hat Branding.jpg",
   "BIRCH-DESIGN/Welcome Lounge Detail .jpg",
   "BIRCH-DESIGN/Welcome Party Aspen Art Museum.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Favorite.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Favorite_2.jpg",
+  "BIRCH-DESIGN/AAM__Lounge.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_2.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_3.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_4.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Close_Up.jpg",
+  "BIRCH-DESIGN/AAM__Petite_Lounge.jpg",
+  "BIRCH-DESIGN/AAM__Bar_+_Bellow_Wall.jpg",
+  "BIRCH-DESIGN/AAM__Bar_2.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables_2.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables_3.jpg",
+  "BIRCH-DESIGN/AAM__Food_Station.jpg",
+  "BIRCH-DESIGN/AAM__Food_Station_2.jpg",
+  "BIRCH-DESIGN/AAM__Stone_Plates.jpg",
+  "BIRCH-DESIGN/AAM__Reception.jpg",
+  "BIRCH-DESIGN/AAM__Reception_2.jpg",
+  // Caribou Rehearsal Dinner — dark green tablescape
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 2.jpg",
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 3.jpg",
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Close Up 2.jpg",
   "BIRCH-DESIGN/Antler Bar.jpg",
+  // Disco after-party (night finale)
   "BIRCH-DESIGN/Disco Lounge.jpg",
   "BIRCH-DESIGN/Disco Detail.jpg",
   "BIRCH-DESIGN/Disco After Party.jpg",
@@ -180,6 +205,7 @@ export const birchDesignGalleryHero: GalleryImage = {
 };
 
 export const birchDesignGalleryImages = createGalleryImages([...birchDesignGalleryPaths], "Birch Design Studio");
+
 
 // Flow: Montana landscape → Welcome Alpine (day) → Cocktail Hour → Ceremony → Reception → Tent (night)
 export const eastonEventsMontanaGalleryPaths = [
