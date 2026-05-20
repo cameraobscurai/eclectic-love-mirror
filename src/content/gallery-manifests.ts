@@ -92,7 +92,7 @@ export const aspenEventWorksGalleryPaths = [
 ] as const;
 
 export const aspenEventWorksGalleryHero: GalleryImage = {
-  src: galleriesUrl("ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony Favorite.jpg"),
+  src: galleriesUrl("ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 2.jpg"),
   alt: "Ceremony aisle framed by meadow flowers with mountain views beyond",
 };
 
@@ -490,7 +490,7 @@ export const anguillaMicheleRagoGalleryPaths = [
 ] as const;
 
 export const anguillaMicheleRagoGalleryHero: GalleryImage = {
-  src: galleriesUrl("ANGUILLA-MICHELLE-RAGO/Sangeet_Dining_Close_Up.jpg"),
+  src: galleriesUrl("ANGUILLA-MICHELLE-RAGO/Wedding_Day_Lounge_by_the_Sea.jpg"),
   alt: "Sangeet long-table dining detail by the sea, Anguilla",
 };
 
@@ -573,6 +573,7 @@ export const brushCreekLoveThisDayGalleryHero: GalleryImage = {
 export const brushCreekLoveThisDayGalleryImages = createGalleryImages([...brushCreekLoveThisDayGalleryPaths], "Brush Creek Ranch — Love This Day");
 
 export const brushCreekDiwanGalleryPaths = [
+  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0049.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0050.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0051.jpg",
@@ -594,55 +595,16 @@ export const brushCreekDiwanGalleryPaths = [
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0130.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0134.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0139.jpg",
-  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
 ] as const;
 
 export const brushCreekDiwanGalleryHero: GalleryImage = {
-  src: galleriesUrl("BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0049.jpg"),
+  src: galleriesUrl("BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg"),
   alt: "Sangeet décor, Brush Creek Ranch",
 };
 
 export const brushCreekDiwanGalleryImages = createGalleryImages([...brushCreekDiwanGalleryPaths], "Brush Creek Ranch — Diwan by Design");
 
 export const bishopsLodge42NorthGalleryPaths = [
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2295.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2296.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2297.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2298.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2299.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2300.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2301.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2302.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2303.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1980.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1983.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1984.jpg",
@@ -677,11 +639,49 @@ export const bishopsLodge42NorthGalleryPaths = [
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2286.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2288.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2293.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2295.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2296.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2297.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2298.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2299.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2300.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2301.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2302.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2303.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
 ] as const;
 
 export const bishopsLodge42NorthGalleryHero: GalleryImage = {
-  src: galleriesUrl("BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg"),
-  alt: "Tent details, Bishop's Lodge",
+  src: galleriesUrl("BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2005.jpg"),
+  alt: "Cocktail hour detail, Bishop's Lodge",
 };
 
 export const bishopsLodge42NorthGalleryImages = createGalleryImages([...bishopsLodge42NorthGalleryPaths], "Bishop's Lodge — 42 North");
