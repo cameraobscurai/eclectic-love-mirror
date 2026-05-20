@@ -209,10 +209,17 @@ function ImageQA() {
                     {s}
                   </span>
                   {hidden && (
-                    <span className="absolute top-1 right-9 px-2 py-0.5 text-[10px] uppercase tracking-widest text-white bg-neutral-800">
+                    <span className="absolute top-1 right-[4.25rem] px-2 py-0.5 text-[10px] uppercase tracking-widest text-white bg-neutral-800">
                       HIDDEN
                     </span>
                   )}
+                  <button
+                    onClick={() => setEditing(it)}
+                    title="Edit images"
+                    className="absolute top-1 right-9 p-1 bg-white/90 hover:bg-white border border-neutral-300"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={() => onToggleHidden(it)}
                     disabled={busy[it.id]}
