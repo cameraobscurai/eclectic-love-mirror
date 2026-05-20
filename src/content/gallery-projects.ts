@@ -306,12 +306,11 @@ export const galleryProjects: GalleryProject[] = [
     location: "Texas",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Private Residence, TX — Cinergy Works"),
-    detailImages: [],
+    heroImage: privateResidenceTxCinergyGalleryHero,
+    detailImages: privateResidenceTxCinergyGalleryImages,
     summary:
       "A private residence celebration — tablescape detail and deep evening tones across the property.",
     coords: [-97.7431, 30.2672],
-    pending: true,
     coverDirective: { distance: "close", toneSlot: 11 },
   },
   {
