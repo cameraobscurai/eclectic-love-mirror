@@ -290,12 +290,11 @@ export const galleryProjects: GalleryProject[] = [
     location: "Boston, Massachusetts",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("The Encore — Diwan by Design"),
-    detailImages: [],
+    heroImage: encoreBostonDiwanGalleryHero,
+    detailImages: encoreBostonDiwanGalleryImages,
     summary:
       "A ballroom wedding at The Encore — architectural scale, layered floral, evening dance program.",
     coords: [-71.0589, 42.3601],
-    pending: true,
     coverDirective: { distance: "medium", toneSlot: 10 },
   },
   {
