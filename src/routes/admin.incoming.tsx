@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Trash2, Upload, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { publicStorageUrl } from "@/lib/storage-image";
+import { archiveIncomingFile } from "@/server/archive.functions";
 
 // ---------------------------------------------------------------------------
 // /admin/incoming — Giant intake bucket for designer photo drops.
@@ -39,6 +41,7 @@ function IncomingPage() {
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const archive = useServerFn(archiveIncomingFile);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -95,6 +98,13 @@ function IncomingPage() {
                 cacheControl: "31536000",
               });
             if (error) failures.push(`${file.name}: ${error.message}`);
+            else {
+              // Fire-and-forget mirror to private archive. Never blocks the
+              // upload UX; archive failures are logged to the console only.
+              archive({ data: { sourceBucket: BUCKET, path } }).catch((e) => {
+                console.warn("[archive]", path, e);
+              });
+            }
             done += 1;
             setProgress({ done, total: arr.length });
           }),
