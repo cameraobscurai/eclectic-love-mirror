@@ -598,7 +598,7 @@ export const brushCreekDiwanGalleryPaths = [
 ] as const;
 
 export const brushCreekDiwanGalleryHero: GalleryImage = {
-  src: galleriesUrl("BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0049.jpg"),
+  src: galleriesUrl("BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg"),
   alt: "Sangeet décor, Brush Creek Ranch",
 };
 
