@@ -160,13 +160,12 @@ export const galleryProjects: GalleryProject[] = [
     location: "Saratoga, Wyoming",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Brush Creek Ranch — Diwan by Design"),
-    detailImages: [],
+    heroImage: brushCreekDiwanGalleryHero,
+    detailImages: brushCreekDiwanGalleryImages,
     summary:
       "Wedding day on the ranch — open ceremony in the meadow, reception staged against the Wyoming horizon.",
     coords: [-106.8083, 41.4549],
-    pending: true,
-    curationNotes: "Start with wedding. Sangeet folder = 0s.",
+    curationNotes: "Sapna + Ari — Sangeet + Wedding favorites.",
     coverDirective: { distance: "medium", toneSlot: 3 },
   },
   {
