@@ -272,12 +272,11 @@ export const galleryProjects: GalleryProject[] = [
     location: "Santa Fe, New Mexico",
     year: "2024",
     category: "Luxury Weddings",
-    heroImage: pendingGalleryHero("Bishop's Lodge — 42 North"),
-    detailImages: [],
+    heroImage: bishopsLodge42NorthGalleryHero,
+    detailImages: bishopsLodge42NorthGalleryImages,
     summary:
       "Cocktail hour to ceremony to tent, with Santa Fe earth tones running through Friday's details.",
     coords: [-105.9378, 35.6870],
-    pending: true,
     curationNotes:
       "Feature Santa Fe. Cocktail hour → ceremony → tent (10) → Friday details (5).",
     coverDirective: { distance: "close", toneSlot: 9 },
