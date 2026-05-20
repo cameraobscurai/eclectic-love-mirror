@@ -158,16 +158,41 @@ export const aspenEventWorksGalleryHero: GalleryImage = {
 
 export const aspenEventWorksGalleryImages = createGalleryImages([...aspenEventWorksGalleryPaths], "Aspen Event Works");
 
-// Flow: Aspen landscape → Welcome Party (day) → Rehearsal Dinner → After-party (night)
+// Flow: Aspen landscape → Welcome Party at Aspen Art Museum (day → cocktail → reception) → Caribou Rehearsal Dinner → Disco after-party (night)
 export const birchDesignGalleryPaths = [
+  // Landscape opener
   "BIRCH-DESIGN/Aspen.jpg",
+  // Welcome Party — Aspen Art Museum (Gold Leaf Events): courtyard → lounges → bar → cocktail → food → reception
+  "BIRCH-DESIGN/AAM__Aspen_Art_Museum.jpg",
+  "BIRCH-DESIGN/AAM__Courtyard.jpg",
+  "BIRCH-DESIGN/AAM__Outside.jpg",
   "BIRCH-DESIGN/Welcome Hat Branding.jpg",
   "BIRCH-DESIGN/Welcome Lounge Detail .jpg",
   "BIRCH-DESIGN/Welcome Party Aspen Art Museum.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Favorite.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Favorite_2.jpg",
+  "BIRCH-DESIGN/AAM__Lounge.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_2.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_3.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_4.jpg",
+  "BIRCH-DESIGN/AAM__Lounge_Close_Up.jpg",
+  "BIRCH-DESIGN/AAM__Petite_Lounge.jpg",
+  "BIRCH-DESIGN/AAM__Bar_+_Bellow_Wall.jpg",
+  "BIRCH-DESIGN/AAM__Bar_2.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables_2.jpg",
+  "BIRCH-DESIGN/AAM__Cocktail_Tables_3.jpg",
+  "BIRCH-DESIGN/AAM__Food_Station.jpg",
+  "BIRCH-DESIGN/AAM__Food_Station_2.jpg",
+  "BIRCH-DESIGN/AAM__Stone_Plates.jpg",
+  "BIRCH-DESIGN/AAM__Reception.jpg",
+  "BIRCH-DESIGN/AAM__Reception_2.jpg",
+  // Caribou Rehearsal Dinner — dark green tablescape
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 2.jpg",
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Tablescape 3.jpg",
   "BIRCH-DESIGN/Caribou Rehearsal Dinner Close Up 2.jpg",
   "BIRCH-DESIGN/Antler Bar.jpg",
+  // Disco after-party (night finale)
   "BIRCH-DESIGN/Disco Lounge.jpg",
   "BIRCH-DESIGN/Disco Detail.jpg",
   "BIRCH-DESIGN/Disco After Party.jpg",
@@ -180,6 +205,7 @@ export const birchDesignGalleryHero: GalleryImage = {
 };
 
 export const birchDesignGalleryImages = createGalleryImages([...birchDesignGalleryPaths], "Birch Design Studio");
+
 
 // Flow: Montana landscape → Welcome Alpine (day) → Cocktail Hour → Ceremony → Reception → Tent (night)
 export const eastonEventsMontanaGalleryPaths = [
@@ -441,35 +467,97 @@ export const vanderWeideGalleryHero: GalleryImage = {
 
 export const vanderWeideGalleryImages = createGalleryImages([...vanderWeideGalleryPaths], "VanderWeide");
 
+// DOS MAS EN LA MESA — re-mirrored from Drive "FEATURE Easton Events - Dunton Hot Springs" (71 files).
+// Flow: Welcome day (lounges → fireside → dinner) → wedding-day setup/architecture → tablescapes/details →
+//       reception (bar/lounge/tent) → personal portraits → night finale (casino + cake).
 export const dosMasEnLaMesaGalleryPaths = [
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-59.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-67.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-158.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-163.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-166.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-173.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-218.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-219.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-244.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-246.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-261.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-271.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-272.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-274.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-327.jpg",
-  "dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-331.jpg",
-  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-7.jpg",
-  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-15.jpg",
-  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-28.jpg",
-  "dosmasenlamesalittrell/dosmasenlamesa_Alisson&Alexwedding_Colorado-33.jpg",
+  // Welcome Party — daylight lounges + fireside
+  "EASTON-DUNTON-DOS-MAS/Welcome_Lounge.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Lounge_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Party_Lounge_Detail_.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Night_Lounge.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Party_Fireside.jpg",
+  // Welcome Dinner — tablescape + service
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_Tablescape.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_Tablescape_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_Detail_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_Lounge_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_4.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_dinner_5.jpg",
+  "EASTON-DUNTON-DOS-MAS/Welcome_Dinner_with_Guests.jpg",
+  // Wedding Day — architecture, drapery, escort wall
+  "EASTON-DUNTON-DOS-MAS/Walk_to_ceremony.jpg",
+  "EASTON-DUNTON-DOS-MAS/Drape.jpg",
+  "EASTON-DUNTON-DOS-MAS/Drape_Details.jpg",
+  "EASTON-DUNTON-DOS-MAS/Escort_Wall.jpg",
+  "EASTON-DUNTON-DOS-MAS/Flemish_Renaissance_Artwork.jpg",
+  "EASTON-DUNTON-DOS-MAS/Floral.jpg",
+  "EASTON-DUNTON-DOS-MAS/Lighting.jpg",
+  "EASTON-DUNTON-DOS-MAS/Lighting_2.jpg",
+  // Reception tent + bar + lounges
+  "EASTON-DUNTON-DOS-MAS/Reception_Tent.jpg",
+  "EASTON-DUNTON-DOS-MAS/Reception_Tent_2jpg.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tent_Bar.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tent_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Wedding_Bar.jpg",
+  "EASTON-DUNTON-DOS-MAS/Wedding_Lounge.jpg",
+  "EASTON-DUNTON-DOS-MAS/Wedding_Reception.jpg",
+  "EASTON-DUNTON-DOS-MAS/Lounge_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Lounge_Details.jpg",
+  "EASTON-DUNTON-DOS-MAS/Layered_Rus.jpg",
+  // Tablescapes + dinner detail
+  "EASTON-DUNTON-DOS-MAS/Tablescape.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_2jpg.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_4.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_5.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_Close_Up.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_Close_Up_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Tablescape_Close_Up_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Dinner_Plate.jpg",
+  "EASTON-DUNTON-DOS-MAS/Dinner_Plate_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Stone_Plate_Detail.jpg",
+  "EASTON-DUNTON-DOS-MAS/Details.jpg",
+  "EASTON-DUNTON-DOS-MAS/Details_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Details_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Dinner_by_the_River.jpg",
+  // Personal — couple + family
+  "EASTON-DUNTON-DOS-MAS/Our_Bride.jpg",
+  "EASTON-DUNTON-DOS-MAS/Our_Couple_B+W.jpg",
+  "EASTON-DUNTON-DOS-MAS/Couple.jpg",
+  "EASTON-DUNTON-DOS-MAS/Couple_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Guests.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_4.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_5.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_6.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_7.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_8.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_9.jpg",
+  "EASTON-DUNTON-DOS-MAS/Littrell_10.jpg",
+  // Night finale — cake + casino
+  "EASTON-DUNTON-DOS-MAS/Cake.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Loungge.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Bride.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Night.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Night_2.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Night_3.jpg",
+  "EASTON-DUNTON-DOS-MAS/Casino_Night_4.jpg",
 ] as const;
 
 export const dosMasEnLaMesaGalleryHero: GalleryImage = {
-  src: galleriesUrl("dosmasenlamesalittrell/20220917_Dosmasenlamesa_AlisonAlex_colorado-158.jpg"),
-  alt: "Dos Mas En La Mesa wedding environment in Colorado by Eclectic Hive",
+  src: galleriesUrl("EASTON-DUNTON-DOS-MAS/Tablescape.jpg"),
+  alt: "Dos Mas en la Mesa tablescape under tented drapery at Dunton Hot Springs",
 };
 
 export const dosMasEnLaMesaGalleryImages = createGalleryImages([...dosMasEnLaMesaGalleryPaths], "Dos Mas En La Mesa");
+
 
 // ---------------------------------------------------------------------------
 // Pending placeholder — used for galleries whose storage folders are still
