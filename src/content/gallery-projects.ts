@@ -135,6 +135,24 @@ export const galleryProjects: GalleryProject[] = [
   },
   {
     number: "02",
+    name: "PRIVATE RESIDENCE ASPEN, CO",
+    planner: "ASPEN EVENT WORKS",
+    region: "Colorado",
+    kind: "Wedding",
+    location: "Aspen, Colorado — Private Ranch",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: aspenEventWorksGalleryHero,
+    detailImages: aspenEventWorksGalleryImages,
+    summary:
+      "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
+    coords: [-106.8175, 39.1911],
+    curationNotes:
+      "Tent 2. Day → personal interleaved → end at night.",
+    coverDirective: { filenameHint: "Tent 2", distance: "close", toneSlot: 2 },
+  },
+  {
+    number: "03",
     name: "DUNTON HOT SPRINGS, CO",
     planner: "BROOKE KEEGAN EVENTS",
     region: "Colorado",
@@ -151,11 +169,11 @@ export const galleryProjects: GalleryProject[] = [
     coverDirective: {
       filenameHint: "MKSADLER-4118",
       distance: "medium",
-      toneSlot: 2,
+      toneSlot: 3,
     },
   },
   {
-    number: "03",
+    number: "04",
     name: "BRUSH CREEK RANCH, WY",
     planner: "DIWAN BY DESIGN",
     region: "Wyoming",
@@ -169,10 +187,10 @@ export const galleryProjects: GalleryProject[] = [
       "Wedding day on the ranch — open ceremony in the meadow, reception staged against the Wyoming horizon.",
     coords: [-106.8083, 41.4549],
     curationNotes: "Sapna + Ari — Sangeet + Wedding favorites.",
-    coverDirective: { distance: "medium", toneSlot: 3 },
+    coverDirective: { distance: "medium", toneSlot: 4 },
   },
   {
-    number: "04",
+    number: "05",
     name: "TELLURIDE, CO",
     planner: "LYNDEN LANE",
     region: "Colorado",
@@ -190,25 +208,8 @@ export const galleryProjects: GalleryProject[] = [
       filenameHint: "1143",
       excludeHints: ["1083"],
       distance: "far",
-      toneSlot: 4,
+      toneSlot: 5,
     },
-  },
-  {
-    number: "05",
-    name: "BIG SKY, MT",
-    planner: "EASTON EVENTS",
-    region: "Montana",
-    kind: "Wedding",
-    location: "Big Sky, Montana",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: eastonEventsMontanaGalleryHero,
-    detailImages: eastonEventsMontanaGalleryImages,
-    summary:
-      "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, reception running late into the evening.",
-    coords: [-111.3088, 45.2841],
-    curationNotes: "Feature Montana folder.",
-    coverDirective: { distance: "close", toneSlot: 5 },
   },
   {
     number: "06",
@@ -225,10 +226,27 @@ export const galleryProjects: GalleryProject[] = [
       "An alpine weekend at Four Seasons Vail with Cassie Lamere — feature program across welcome, ceremony, reception.",
     coords: [-106.3742, 39.6403],
     curationNotes: "Feature Cassie. Folder: Cassime Lamere.",
-    coverDirective: { distance: "medium", toneSlot: 6 },
+    coverDirective: { distance: "medium", toneSlot: 1 },
   },
   {
     number: "07",
+    name: "BIG SKY, MT",
+    planner: "EASTON EVENTS",
+    region: "Montana",
+    kind: "Wedding",
+    location: "Big Sky, Montana",
+    year: "2024",
+    category: "Luxury Weddings",
+    heroImage: eastonEventsMontanaGalleryHero,
+    detailImages: eastonEventsMontanaGalleryImages,
+    summary:
+      "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, reception running late into the evening.",
+    coords: [-111.3088, 45.2841],
+    curationNotes: "Feature Montana folder.",
+    coverDirective: { distance: "close", toneSlot: 2 },
+  },
+  {
+    number: "08",
     name: "DUNTON HOT SPRINGS, CO",
     planner: "EASTON EVENTS",
     region: "Colorado",
@@ -242,10 +260,10 @@ export const galleryProjects: GalleryProject[] = [
       "Dos Mas en la Mesa — a saturated mountain wedding staged across the Dunton property over a long Colorado weekend.",
     coords: [-108.0728, 37.7669],
     curationNotes: "Folder: Dos Mas en la Mesa.",
-    coverDirective: { distance: "close", toneSlot: 7 },
+    coverDirective: { distance: "close", toneSlot: 3 },
   },
   {
-    number: "08",
+    number: "09",
     name: "BISHOP'S LODGE, NM",
     planner: "42 NORTH",
     region: "New Mexico",
@@ -260,10 +278,10 @@ export const galleryProjects: GalleryProject[] = [
     coords: [-105.9378, 35.6870],
     curationNotes:
       "Feature Santa Fe. Cocktail hour → ceremony → tent (10) → Friday details (5).",
-    coverDirective: { distance: "close", toneSlot: 8 },
+    coverDirective: { distance: "close", toneSlot: 4 },
   },
   {
-    number: "09",
+    number: "10",
     name: "BLACKBERRY FARMS, TN",
     planner: "EASTON EVENTS",
     region: "Tennessee",
@@ -277,10 +295,10 @@ export const galleryProjects: GalleryProject[] = [
       "A December weekend at Blackberry Farms — wood-paneled dining, lantern light, layered hospitality detail.",
     coords: [-83.8090, 35.7434],
     curationNotes: "Folder: December Blackberry Farms.",
-    coverDirective: { distance: "far", toneSlot: 9 },
+    coverDirective: { distance: "far", toneSlot: 5 },
   },
   {
-    number: "10",
+    number: "11",
     name: "BRUSH CREEK RANCH, WY",
     planner: "LOVE THIS DAY",
     region: "Wyoming",
@@ -295,10 +313,10 @@ export const galleryProjects: GalleryProject[] = [
     coords: [-106.8083, 41.4549],
     curationNotes:
       "LTD favorites — open, arrange on color (Westworld). Carrie King: Americana + N+B wedding (3). Ralph: red/white/denim. Westworld. Erich add-ons: Westworld.",
-    coverDirective: { distance: "far", toneSlot: 10 },
+    coverDirective: { distance: "far", toneSlot: 1 },
   },
   {
-    number: "11",
+    number: "12",
     name: "THE ENCORE, MA",
     planner: "DIWAN BY DESIGN",
     region: "Massachusetts",
@@ -311,25 +329,7 @@ export const galleryProjects: GalleryProject[] = [
     summary:
       "A ballroom wedding at The Encore — architectural scale, layered floral, evening dance program.",
     coords: [-71.0589, 42.3601],
-    coverDirective: { distance: "medium", toneSlot: 11 },
-  },
-  {
-    number: "12",
-    name: "PRIVATE RESIDENCE ASPEN, CO",
-    planner: "ASPEN EVENT WORKS",
-    region: "Colorado",
-    kind: "Wedding",
-    location: "Aspen, Colorado — Private Ranch",
-    year: "2024",
-    category: "Luxury Weddings",
-    heroImage: aspenEventWorksGalleryHero,
-    detailImages: aspenEventWorksGalleryImages,
-    summary:
-      "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
-    coords: [-106.8175, 39.1911],
-    curationNotes:
-      "Tent 2. Day → personal interleaved → end at night.",
-    coverDirective: { filenameHint: "Tent 2", distance: "close", toneSlot: 12 },
+    coverDirective: { distance: "medium", toneSlot: 2 },
   },
   {
     number: "13",
@@ -346,7 +346,7 @@ export const galleryProjects: GalleryProject[] = [
       "Wedding-day lounge by the sea — a destination program built around the water with quiet detail throughout.",
     coords: [-63.0686, 18.2206],
     curationNotes: "Feature Anguilla folder. Wedding day lounge by the sea.",
-    coverDirective: { distance: "medium", toneSlot: 13 },
+    coverDirective: { distance: "medium", toneSlot: 3 },
   },
   {
     number: "14",
@@ -362,7 +362,7 @@ export const galleryProjects: GalleryProject[] = [
     summary:
       "A private residence celebration — tablescape detail and deep evening tones across the property.",
     coords: [-97.7431, 30.2672],
-    coverDirective: { distance: "close", toneSlot: 14 },
+    coverDirective: { distance: "close", toneSlot: 4 },
   },
   {
     number: "15",
@@ -379,7 +379,7 @@ export const galleryProjects: GalleryProject[] = [
       "Aspen weekend with Birch — Caribou rehearsal dinner, Aspen Art Museum welcome party, disco after-party in pastel light.",
     coords: [-106.8231, 39.1880],
     curationNotes: "Folder: BIRCH-DESIGN. Slot moved to end of sequence.",
-    coverDirective: { distance: "far", toneSlot: 15 },
+    coverDirective: { distance: "far", toneSlot: 5 },
   }
 ];
 
