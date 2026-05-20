@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { toggleItemVisibility } from "@/server/archive.functions";
+import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 export const Route = createFileRoute("/admin/image-qa")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -26,6 +27,7 @@ type Item = {
   images: string[];
   public_ready: boolean;
   hidden_note: string | null;
+  card_background_url: string | null;
 };
 
 type Status = "ok" | "missing" | "broken" | "loading";
@@ -36,13 +38,14 @@ function ImageQA() {
   const [filter, setFilter] = useState<string>("pillows-throws");
   const [showOnly, setShowOnly] = useState<"all" | "issues" | "hidden">("issues");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
+  const [editing, setEditing] = useState<Item | null>(null);
   const toggleVis = useServerFn(toggleItemVisibility);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("inventory_items")
-        .select("id,rms_id,title,category,images,public_ready,hidden_note")
+        .select("id,rms_id,title,category,images,public_ready,hidden_note,card_background_url")
         .neq("status", "draft")
         .order("category")
         .order("title")
@@ -206,10 +209,17 @@ function ImageQA() {
                     {s}
                   </span>
                   {hidden && (
-                    <span className="absolute top-1 right-9 px-2 py-0.5 text-[10px] uppercase tracking-widest text-white bg-neutral-800">
+                    <span className="absolute top-1 right-[4.25rem] px-2 py-0.5 text-[10px] uppercase tracking-widest text-white bg-neutral-800">
                       HIDDEN
                     </span>
                   )}
+                  <button
+                    onClick={() => setEditing(it)}
+                    title="Edit images"
+                    className="absolute top-1 right-9 p-1 bg-white/90 hover:bg-white border border-neutral-300"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={() => onToggleHidden(it)}
                     disabled={busy[it.id]}
@@ -235,6 +245,26 @@ function ImageQA() {
           })}
         </div>
       </div>
+      {editing && (
+        <ImageOrderEditor
+          item={editing}
+          onClose={() => setEditing(null)}
+          onSaved={(next) => {
+            setItems((arr) =>
+              arr.map((x) =>
+                x.id === editing.id
+                  ? { ...x, images: next.images, card_background_url: next.card_background_url }
+                  : x,
+              ),
+            );
+            setEditing((prev) =>
+              prev
+                ? { ...prev, images: next.images, card_background_url: next.card_background_url }
+                : prev,
+            );
+          }}
+        />
+      )}
     </div>
   );
 }
