@@ -92,7 +92,7 @@ export const aspenEventWorksGalleryPaths = [
 ] as const;
 
 export const aspenEventWorksGalleryHero: GalleryImage = {
-  src: galleriesUrl("ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Ceremony Favorite.jpg"),
+  src: galleriesUrl("ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent 2.jpg"),
   alt: "Ceremony aisle framed by meadow flowers with mountain views beyond",
 };
 
