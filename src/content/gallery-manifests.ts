@@ -12,9 +12,9 @@ function createGalleryImages(paths: string[], projectName: string): GalleryImage
 // Pool deck subfolder intentionally skipped per owner note.
 // Flow: Amangiri daylight → amphitheater/Raven's Nest welcome (day) → tablescapes/tablesettings (day) → Fireside (dusk) → Chinle long-table dinner (night finale) → Raven's Nest at night → property at night.
 export const amangiriGalleryPaths = [
-  // Day — landscape & gahan daylight
-  "AMANGIRI/gahan__Amangiri_daylight.jpg",
-  // Amphitheater / Raven's Nest — day welcome, bar, lounge
+  // Lead with the owner-picked hero scene: Chinle long-table at dusk against the sandstone
+  "AMANGIRI/chinledinner__D9D9D665-C36F-4654-9687-7303B1A05765.jpeg",
+  // Amphitheater / Raven's Nest — day welcome bar + lounges (furniture-forward only; sparse ceremony-rim shots dropped per owner)
   "AMANGIRI/amphitheaterravensnest__ADD_ON_Welcome.jpg",
   "AMANGIRI/amphitheaterravensnest__ADD_ON_Bar.jpg",
   "AMANGIRI/amphitheaterravensnest__ADD_On_Bar_2.jpg",
@@ -23,30 +23,12 @@ export const amangiriGalleryPaths = [
   "AMANGIRI/amphitheaterravensnest__ADD_ON_Petite_Lounge.jpg",
   "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up_Lounge.jpg",
   "AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up.jpg",
-  "AMANGIRI/amphitheaterravensnest__F756DB53-AEA0-48F7-87F5-6A65E580DCA9.jpeg",
-  "AMANGIRI/amphitheaterravensnest__9D0CDD36-2379-485A-95AC-D1002BB7270D.jpeg",
-  "AMANGIRI/amphitheaterravensnest__98171ECC-C860-4911-BC61-6FD36A14E85E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__AD86EF2A-10FA-4656-938D-5001FF32CC0E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__3E9A02E2-E2B5-48CD-ADD1-CA72696EB7ED.jpeg",
-  "AMANGIRI/amphitheaterravensnest__39503C36-4ACA-4044-8769-4C6A3A54024A.jpeg",
-  "AMANGIRI/amphitheaterravensnest__876CAB81-E83E-4D52-9C11-A7324AE6D3D5.jpeg",
-  "AMANGIRI/amphitheaterravensnest__9E9035E0-E84F-4079-B303-B815CC5F99F9.jpeg",
-  "AMANGIRI/amphitheaterravensnest__A4B28427-D41D-4FE6-94E5-D96D5EAE6C65.jpeg",
-  "AMANGIRI/amphitheaterravensnest__923B893B-128A-4F0F-B4D7-2A1FD93D42B7.jpeg",
-  "AMANGIRI/amphitheaterravensnest__4D7CEAAF-3AB9-4FDE-8816-3E2F48884B2F.jpeg",
-  "AMANGIRI/amphitheaterravensnest__8D3495B8-561D-4F8C-BA93-EE46B40063ED.jpeg",
-  "AMANGIRI/amphitheaterravensnest__18A2F936-BF79-4B89-85B5-CD4A21DEF869.jpeg",
-  "AMANGIRI/amphitheaterravensnest__3123EA4B-F726-4905-8E0A-D4B72CFE124F.jpeg",
-  "AMANGIRI/amphitheaterravensnest__7D28AF40-82DD-44AE-B61F-09E6B70710E8.jpeg",
-  "AMANGIRI/amphitheaterravensnest__52F22DC9-772E-4E6C-AC83-A410C9872E57.jpeg",
-  "AMANGIRI/amphitheaterravensnest__F48C68F1-2D4F-42FC-A6C2-16F90B2E8730.jpeg",
-  "AMANGIRI/amphitheaterravensnest__C631CFB9-BE43-465B-BB80-0AEF41D4210E.jpeg",
-  "AMANGIRI/amphitheaterravensnest__4AD5F098-D518-4F88-BF74-DD99FB94F7C6.jpeg",
   // Gahan — day tablescapes / tablesettings / lounge / bar in amp
   "AMANGIRI/gahan__Lounge_in_Amp.jpg",
   "AMANGIRI/gahan__Lounge_2.jpg",
   "AMANGIRI/gahan__Lounge_3_with_Floral.jpg",
   "AMANGIRI/gahan__Bar_in_Amp.jpg",
+  "AMANGIRI/gahan__Event_photo.jpg",
   "AMANGIRI/gahan__Tablesetting.jpg",
   "AMANGIRI/gahan__Tablesetting_2.jpg",
   "AMANGIRI/gahan__Tablescape_1.jpg",
@@ -77,7 +59,6 @@ export const amangiriGalleryPaths = [
   "AMANGIRI/chinledinner__EA58C3FF-60AD-421A-8A91-BB60858346B2.jpeg",
   "AMANGIRI/chinledinner__9F0C6607-29FC-4EBC-99B7-93660C1548EC.jpeg",
   "AMANGIRI/chinledinner__B4D1117D-A51C-4F41-A764-E54F09A62D9E.jpeg",
-  "AMANGIRI/chinledinner__D9D9D665-C36F-4654-9687-7303B1A05765.jpeg",
   "AMANGIRI/chinledinner__436169D8-B014-4008-9423-D46FF099ED0E.jpeg",
   "AMANGIRI/chinledinner__DDE504F0-DD80-4535-B5AD-3B9EDD1F7BD4.jpeg",
   "AMANGIRI/chinledinner__FB1B4745-4D26-47AB-8758-5794A21024AF.jpeg",
@@ -110,13 +91,13 @@ export const amangiriGalleryPaths = [
   "AMANGIRI/gahan__Raven_s_Nest_at_Night_3_.jpg",
   // Property at night — closing
   "AMANGIRI/Add_On__Property_At_Night.jpg",
-  "AMANGIRI/Add_On__Property_and_Pool.jpg",
 ] as const;
 
 export const amangiriGalleryHero: GalleryImage = {
-  src: galleriesUrl("AMANGIRI/chinledinner__ADD_Night_Shot_2.jpg"),
-  alt: "Chinle long-table dinner lit by lanterns against the Amangiri sandstone at night",
+  src: galleriesUrl("AMANGIRI/chinledinner__D9D9D665-C36F-4654-9687-7303B1A05765.jpeg"),
+  alt: "Chinle long-table dinner with woven Hive chairs against the Amangiri sandstone cliffs",
 };
+
 
 export const amangiriGalleryImages = createGalleryImages([...amangiriGalleryPaths], "Amangiri");
 
