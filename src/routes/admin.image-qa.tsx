@@ -245,6 +245,26 @@ function ImageQA() {
           })}
         </div>
       </div>
+      {editing && (
+        <ImageOrderEditor
+          item={editing}
+          onClose={() => setEditing(null)}
+          onSaved={(next) => {
+            setItems((arr) =>
+              arr.map((x) =>
+                x.id === editing.id
+                  ? { ...x, images: next.images, card_background_url: next.card_background_url }
+                  : x,
+              ),
+            );
+            setEditing((prev) =>
+              prev
+                ? { ...prev, images: next.images, card_background_url: next.card_background_url }
+                : prev,
+            );
+          }}
+        />
+      )}
     </div>
   );
 }
