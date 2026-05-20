@@ -573,6 +573,7 @@ export const brushCreekLoveThisDayGalleryHero: GalleryImage = {
 export const brushCreekLoveThisDayGalleryImages = createGalleryImages([...brushCreekLoveThisDayGalleryPaths], "Brush Creek Ranch — Love This Day");
 
 export const brushCreekDiwanGalleryPaths = [
+  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0049.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0050.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__2021_09_05_sapnaari-sp-0051.jpg",
@@ -594,7 +595,6 @@ export const brushCreekDiwanGalleryPaths = [
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0130.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0134.jpg",
   "BRUSH-CREEK-DIWAN/Sangeet__Large_Images__2021_09_05_sapnaari-sp-0139.jpg",
-  "BRUSH-CREEK-DIWAN/Wedding__2021_09_05_sapnaari-sp-0130.jpg",
 ] as const;
 
 export const brushCreekDiwanGalleryHero: GalleryImage = {
