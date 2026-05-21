@@ -282,15 +282,15 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   flexDirection: "column",
                   alignItems: "center",
                   width: "100%",
-                  // Strict vertical grid: one line-height (1.5) governs every
-                  // line. Stanza breaks are the ONLY rhythm break — implemented
-                  // as a single extra line of whitespace above flagged lines.
-                  // No per-line marginTop, no vh font scaling, no emphasis-
-                  // specific spacing. The grid is the grid.
+                  // Size against BOTH width and HEIGHT. The vh cap guarantees
+                  // the 17-line manifesto + 5 stanza breaks always fit above
+                  // the destination cards on short viewports — no clipping
+                  // under the footer. Stanza gap is 0.8 of a line so breaks
+                  // read as breath without adding a full extra line per stanza.
                   ["--line-size" as string]:
-                    "clamp(0.85rem, 0.65rem + 0.45vw, 1.25rem)",
-                  ["--line-height" as string]: "1.45",
-                  ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height))",
+                    "min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), 1.55vh)",
+                  ["--line-height" as string]: "1.4",
+                  ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height) * 0.8)",
                   fontSize: "var(--line-size)",
                   lineHeight: "var(--line-height)",
                   maxWidth: "min(42rem, 86vw)",
