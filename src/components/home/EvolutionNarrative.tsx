@@ -109,15 +109,53 @@ const smooth = (t: number) => {
   return x * x * (3 - 2 * x);
 };
 
+// Total vertical "line-units" the poem occupies: one per line + 0.8 per
+// stanza break (matches --stanza-gap below). Used to derive the max
+// per-line font-size that still clears the footer on short viewports.
+const STANZA_BREAKS = LINES.filter((l) => l.stanzaBreak).length;
+const POEM_LINE_UNITS = LINES.length + 0.8 * STANZA_BREAKS;
+
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
   // Scroll position expressed in VIEWPORT HEIGHTS past the moment the
   // section top reaches the viewport top. 0 = section just pinned;
   // (sectionHeight - vh) / vh = sticky about to release.
   const [metrics, setMetrics] = useState({ scrolledVh: 0, travelVh: 1 });
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
   const [mounted, setMounted] = useState(false);
+  // Max font-size (px) the poem can use without overflowing the available
+  // area between the eyebrow rule and the footer links. Measured live so
+  // the manifesto stays fluid on any viewport — never clips behind cards.
+  const [poemMaxPx, setPoemMaxPx] = useState(20);
   const lastRef = useRef({ scrolledVh: 0, travelVh: 1 });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const recompute = () => {
+      const vh = window.innerHeight;
+      const footerH = footerRef.current?.offsetHeight ?? 0;
+      const eyebrowH = eyebrowRef.current?.offsetHeight ?? 0;
+      // Available vertical space for the poem block, with a small safety
+      // margin so descenders + lift transform never kiss the cards.
+      const SAFETY_PX = 24;
+      const available = Math.max(vh - footerH - eyebrowH - SAFETY_PX, 120);
+      // line-height multiplier is 1.4 (see --line-height below). Each
+      // line-unit costs (fontSize * 1.4) px.
+      const maxPx = available / (POEM_LINE_UNITS * 1.4);
+      setPoemMaxPx(maxPx);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    if (footerRef.current) ro.observe(footerRef.current);
+    if (eyebrowRef.current) ro.observe(eyebrowRef.current);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
+  }, [mounted]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
