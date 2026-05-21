@@ -292,7 +292,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               }}
             >
               {/* Centered EVOLUTION label with hairline rules on either side */}
-              <div className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full">
+              <div
+                ref={eyebrowRef}
+                className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full"
+              >
                 <div
                   className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"
                   style={{ transform: `scaleX(${enterT})` }}
@@ -320,13 +323,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   flexDirection: "column",
                   alignItems: "center",
                   width: "100%",
-                  // Size against BOTH width and HEIGHT. The vh cap guarantees
-                  // the 17-line manifesto + 5 stanza breaks always fit above
-                  // the destination cards on short viewports — no clipping
-                  // under the footer. Stanza gap is 0.8 of a line so breaks
-                  // read as breath without adding a full extra line per stanza.
-                  ["--line-size" as string]:
-                    "min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), 1.55vh)",
+                  // Size against width AND a live JS-measured height cap.
+                  // poemMaxPx is derived from real footer + eyebrow heights
+                  // each resize, so the 17-line manifesto + 5 stanza breaks
+                  // always clear the destination cards on any viewport — no
+                  // clipping. Never grows past the original clamp ceiling.
+                  ["--line-size" as string]: `min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), ${poemMaxPx}px)`,
                   ["--line-height" as string]: "1.4",
                   ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height) * 0.8)",
                   fontSize: "var(--line-size)",
