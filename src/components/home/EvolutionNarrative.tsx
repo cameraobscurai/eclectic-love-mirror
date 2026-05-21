@@ -109,15 +109,53 @@ const smooth = (t: number) => {
   return x * x * (3 - 2 * x);
 };
 
+// Total vertical "line-units" the poem occupies: one per line + 0.8 per
+// stanza break (matches --stanza-gap below). Used to derive the max
+// per-line font-size that still clears the footer on short viewports.
+const STANZA_BREAKS = LINES.filter((l) => l.stanzaBreak).length;
+const POEM_LINE_UNITS = LINES.length + 0.8 * STANZA_BREAKS;
+
 export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
   // Scroll position expressed in VIEWPORT HEIGHTS past the moment the
   // section top reaches the viewport top. 0 = section just pinned;
   // (sectionHeight - vh) / vh = sticky about to release.
   const [metrics, setMetrics] = useState({ scrolledVh: 0, travelVh: 1 });
   const [stepVh, setStepVh] = useState(STEP_VH_DESKTOP);
   const [mounted, setMounted] = useState(false);
+  // Max font-size (px) the poem can use without overflowing the available
+  // area between the eyebrow rule and the footer links. Measured live so
+  // the manifesto stays fluid on any viewport — never clips behind cards.
+  const [poemMaxPx, setPoemMaxPx] = useState(20);
   const lastRef = useRef({ scrolledVh: 0, travelVh: 1 });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const recompute = () => {
+      const vh = window.innerHeight;
+      const footerH = footerRef.current?.offsetHeight ?? 0;
+      const eyebrowH = eyebrowRef.current?.offsetHeight ?? 0;
+      // Available vertical space for the poem block, with a small safety
+      // margin so descenders + lift transform never kiss the cards.
+      const SAFETY_PX = 24;
+      const available = Math.max(vh - footerH - eyebrowH - SAFETY_PX, 120);
+      // line-height multiplier is 1.4 (see --line-height below). Each
+      // line-unit costs (fontSize * 1.4) px.
+      const maxPx = available / (POEM_LINE_UNITS * 1.4);
+      setPoemMaxPx(maxPx);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    if (footerRef.current) ro.observe(footerRef.current);
+    if (eyebrowRef.current) ro.observe(eyebrowRef.current);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
+  }, [mounted]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -254,7 +292,10 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               }}
             >
               {/* Centered EVOLUTION label with hairline rules on either side */}
-              <div className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full">
+              <div
+                ref={eyebrowRef}
+                className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full"
+              >
                 <div
                   className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"
                   style={{ transform: `scaleX(${enterT})` }}
@@ -282,13 +323,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   flexDirection: "column",
                   alignItems: "center",
                   width: "100%",
-                  // Size against BOTH width and HEIGHT. The vh cap guarantees
-                  // the 17-line manifesto + 5 stanza breaks always fit above
-                  // the destination cards on short viewports — no clipping
-                  // under the footer. Stanza gap is 0.8 of a line so breaks
-                  // read as breath without adding a full extra line per stanza.
-                  ["--line-size" as string]:
-                    "min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), 1.55vh)",
+                  // Size against width AND a live JS-measured height cap.
+                  // poemMaxPx is derived from real footer + eyebrow heights
+                  // each resize, so the 17-line manifesto + 5 stanza breaks
+                  // always clear the destination cards on any viewport — no
+                  // clipping. Never grows past the original clamp ceiling.
+                  ["--line-size" as string]: `min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), ${poemMaxPx}px)`,
                   ["--line-height" as string]: "1.4",
                   ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height) * 0.8)",
                   fontSize: "var(--line-size)",
@@ -341,7 +381,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
             here; it would compete with the sticky release and produce a
             visible hitch. Cards are simply present under the manifesto. */}
         {footer && (
-          <div className="shrink-0 pb-6 md:pb-10 mt-0">
+          <div ref={footerRef} className="shrink-0 pb-6 md:pb-10 mt-0">
             <div className="fluid-canvas">{footer}</div>
           </div>
         )}
