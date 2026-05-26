@@ -77,12 +77,31 @@ const visibilityInput = z.object({
   id: z.string().uuid(),
   publicReady: z.boolean(),
   hiddenNote: z.string().max(500).nullable().optional(),
+  // Optional for back-compat; once all call sites pass it, make required.
+  expectedUpdatedAt: z.string().datetime({ offset: true }).optional(),
 });
 
 export const toggleItemVisibility = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((input) => visibilityInput.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // 1. Read once — drives both concurrency check AND audit `before`.
+    const { data: current, error: readErr } = await supabaseAdmin
+      .from("inventory_items")
+      .select("updated_at, public_ready, hidden_note, status")
+      .eq("id", data.id)
+      .single();
+    if (readErr || !current) throw new Error("NOT_FOUND: item missing");
+
+    // 2. Concurrency check.
+    if (
+      data.expectedUpdatedAt &&
+      current.updated_at !== data.expectedUpdatedAt
+    ) {
+      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+    }
+
+    // 3. Mutate.
     const patch: { public_ready: boolean; hidden_note?: string | null } = {
       public_ready: data.publicReady,
     };
@@ -92,5 +111,23 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
       .update(patch)
       .eq("id", data.id);
     if (error) throw new Error(error.message);
+
+    // 4. Audit. Race-window note: a concurrent writer could have landed
+    // between read and write; the audit row reflects the handler's view.
+    void audit({
+      actorId: context.userId,
+      entity: "inventory_items",
+      entityId: data.id,
+      action: "toggle_visibility",
+      before: {
+        public_ready: current.public_ready,
+        ...(data.hiddenNote !== undefined ? { hidden_note: current.hidden_note } : {}),
+      },
+      after: {
+        public_ready: data.publicReady,
+        ...(data.hiddenNote !== undefined ? { hidden_note: data.hiddenNote } : {}),
+      },
+    });
+
     return { ok: true, publicReady: data.publicReady };
   });
