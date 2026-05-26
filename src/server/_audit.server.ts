@@ -35,15 +35,17 @@ export async function audit(args: AuditArgs): Promise<void> {
     // Outside a request context — fine, leave nulls.
   }
 
-  const { error } = await supabaseAdmin.from("admin_audit_log").insert({
-    actor_id: args.actorId,
-    entity: args.entity,
-    entity_id: args.entityId,
-    action: args.action,
-    before: args.before ?? null,
-    after: args.after ?? null,
-    metadata: { ip, ua, ...(args.metadata ?? {}) },
-  });
+  const { error } = await supabaseAdmin.from("admin_audit_log").insert([
+    {
+      actor_id: args.actorId,
+      entity: args.entity,
+      entity_id: args.entityId,
+      action: args.action,
+      before: (args.before ?? null) as never,
+      after: (args.after ?? null) as never,
+      metadata: { ip, ua, ...(args.metadata ?? {}) } as never,
+    },
+  ]);
 
   if (error) {
     console.error("[audit] failed to write audit row", {
