@@ -16,7 +16,7 @@ import {
   type InsightsPayload,
   type InsightsInquiry,
   type InquiryStatus,
-} from "@/lib/insights.functions";
+} from "@/server/insights.functions";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 export const Route = createFileRoute("/admin/insights")({

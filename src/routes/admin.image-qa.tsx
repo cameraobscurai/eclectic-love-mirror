@@ -5,7 +5,7 @@ import { Eye, EyeOff, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
-import { toggleItemVisibility } from "@/lib/archive.functions";
+import { toggleItemVisibility } from "@/server/archive.functions";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 export const Route = createFileRoute("/admin/image-qa")({

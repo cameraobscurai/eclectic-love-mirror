@@ -5,7 +5,7 @@ import { Loader2, Trash2, Upload, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { publicStorageUrl } from "@/lib/storage-image";
-import { archiveIncomingFile } from "@/lib/archive.functions";
+import { archiveIncomingFile } from "@/server/archive.functions";
 
 // ---------------------------------------------------------------------------
 // /admin/incoming — Giant intake bucket for designer photo drops.

@@ -6,7 +6,7 @@ import {
   setColorLocked,
   clearColorTag,
   type ColorRow,
-} from "@/lib/colors.functions";
+} from "@/server/colors.functions";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 

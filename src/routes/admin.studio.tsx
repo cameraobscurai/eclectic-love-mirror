@@ -13,7 +13,7 @@ import { PaletteTab } from "@/components/studio/PaletteTab";
 import { TonesTab } from "@/components/studio/TonesTab";
 import { InsightsTab } from "@/components/studio/InsightsTab";
 import { CatalogPickerTab } from "@/components/studio/CatalogPickerTab";
-import { listStudioBoards, type StudioBoardSummary } from "@/lib/studio.functions";
+import { listStudioBoards, type StudioBoardSummary } from "@/server/studio.functions";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 const search = z.object({ inquiry: z.string().uuid().optional() });

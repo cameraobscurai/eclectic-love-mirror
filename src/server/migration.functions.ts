@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import Firecrawl from '@mendable/firecrawl-js'
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware'
-import { getServiceSupabase, requireFirecrawlKey, urlToPath } from '@/server/migration.server'
+import { getServiceSupabase, requireFirecrawlKey, urlToPath } from './migration.server'
 
 const SOURCE_URL = 'https://eclectichive.com'
 
