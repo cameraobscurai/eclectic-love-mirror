@@ -14,6 +14,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireAdmin } from "@/integrations/supabase/admin-middleware";
+import { audit } from "@/server/_audit.server";
 
 
 const ARCHIVE_BUCKET = "inventory-photo-archive";
