@@ -16,7 +16,7 @@ import {
   markBoardSent,
   type InspoImageRecord,
   type StudioInquiry,
-} from "@/server/studio.functions";
+} from "@/lib/studio.functions";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 
 export type BoardStatus = "draft" | "ready" | "sent";
@@ -89,7 +89,7 @@ export function useStyleBoard(inquiryId: string) {
     let alive = true;
     (async () => {
       try {
-        const ws = (await getStudioWorkspace({ data: { inquiryId } })) as { inquiry: StudioInquiry; board: import("@/server/studio.functions").StyleBoardRow | null };
+        const ws = (await getStudioWorkspace({ data: { inquiryId } })) as { inquiry: StudioInquiry; board: import("@/lib/studio.functions").StyleBoardRow | null };
         if (!alive) return;
         const board = ws.board;
         let pinned: string[];
@@ -248,7 +248,7 @@ export function useStyleBoard(inquiryId: string) {
           insights: state.insights as unknown[],
           curatorNotes: state.curatorNotes || null,
         },
-      })) as import("@/server/studio.functions").StyleBoardRow;
+      })) as import("@/lib/studio.functions").StyleBoardRow;
       setState((s) => ({
         ...s,
         boardId: row.id,
@@ -270,7 +270,7 @@ export function useStyleBoard(inquiryId: string) {
       const saved = await save();
       const boardId = saved?.id ?? state.boardId;
       if (!boardId) throw new Error("Save first");
-      const row = (await markBoardSent({ data: { boardId } })) as import("@/server/studio.functions").StyleBoardRow;
+      const row = (await markBoardSent({ data: { boardId } })) as import("@/lib/studio.functions").StyleBoardRow;
       setState((s) => ({
         ...s,
         sending: false,
