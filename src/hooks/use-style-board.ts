@@ -16,7 +16,7 @@ import {
   markBoardSent,
   type InspoImageRecord,
   type StudioInquiry,
-} from "@/server/studio.functions";
+} from "@/lib/studio.functions";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 
 export type BoardStatus = "draft" | "ready" | "sent";

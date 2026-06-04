@@ -13,7 +13,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireAdmin } from "@/integrations/supabase/admin-middleware";
-import { audit } from "./_audit.server";
+import { audit } from "@/server/_audit.server";
 
 const urlSchema = z.string().url().max(2000);
 

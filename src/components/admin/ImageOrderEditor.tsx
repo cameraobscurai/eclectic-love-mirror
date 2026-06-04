@@ -25,7 +25,7 @@ import {
   updateItemImages,
   setCardBackground,
   uploadItemImage,
-} from "@/server/inventory-images.functions";
+} from "@/lib/inventory-images.functions";
 
 type Item = {
   id: string;
