@@ -29,7 +29,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
-import { getInquirySummary } from "@/server/admin.functions";
+import { getInquirySummary } from "@/lib/admin.functions";
 
 // ---------------------------------------------------------------------------
 // AdminShell — single chrome wrapper for every /admin/* page.

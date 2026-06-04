@@ -7,7 +7,7 @@ import {
 import {
   getInquirySummary,
   type InquirySummary,
-} from "@/server/admin.functions";
+} from "@/lib/admin.functions";
 import { AdminShell } from "@/components/admin/admin-shell";
 
 // ---------------------------------------------------------------------------
