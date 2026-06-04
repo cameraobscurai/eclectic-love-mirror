@@ -14,7 +14,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireAdmin } from "@/integrations/supabase/admin-middleware";
-import { audit } from "./_audit.server";
+
 
 const ARCHIVE_BUCKET = "inventory-photo-archive";
 
@@ -114,7 +114,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
 
     // 4. Audit. Race-window note: a concurrent writer could have landed
     // between read and write; the audit row reflects the handler's view.
-    void audit({
+    void import("./_audit.server").then(({ audit }) => audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
@@ -127,7 +127,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
         public_ready: data.publicReady,
         ...(data.hiddenNote !== undefined ? { hidden_note: data.hiddenNote } : {}),
       },
-    });
+    }));
 
     return { ok: true, publicReady: data.publicReady };
   });
