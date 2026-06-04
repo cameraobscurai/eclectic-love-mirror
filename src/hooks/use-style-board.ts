@@ -105,8 +105,19 @@ export function useStyleBoard(inquiryId: string) {
             .map(String);
           pinned = Array.from(new Set([...fromSnaps, ...fromMeta]));
         }
-        const inspo = (board?.inspo_images ?? []) as InspoTile[];
-        // Hydrate signed URLs for any existing inspo tiles.
+        let inspo: InspoTile[] = (board?.inspo_images ?? []) as InspoTile[];
+        // If no board yet, seed inspo from the inquiry's uploaded paths.
+        if (!board) {
+          const seedPaths = ((ws.inquiry.metadata?.inspo_paths as string[] | undefined) ?? [])
+            .filter((p): p is string => typeof p === "string" && p.length > 0);
+          if (seedPaths.length) {
+            inspo = seedPaths.map((p) => {
+              const name = p.split("/").pop() ?? "inspiration";
+              return { id: crypto.randomUUID(), name, storage_path: p };
+            });
+          }
+        }
+        // Hydrate signed URLs for any inspo tiles.
         let hydrated = inspo;
         if (inspo.length) {
           const map = await getInspoSignedUrls({ data: { paths: inspo.map((i) => i.storage_path) } });
@@ -144,7 +155,7 @@ export function useStyleBoard(inquiryId: string) {
       const { uploadUrl, storage_path } = await signInspoUploadUrl({ data: { inquiryId, ext } });
       const put = await fetch(uploadUrl, {
         method: "PUT",
-        headers: { "Content-Type": f.type, "x-upsert": "true" },
+        headers: { "Content-Type": f.type, "x-upsert": "false" },
         body: f,
       });
       if (!put.ok) throw new Error(`Upload failed: ${put.status}`);
