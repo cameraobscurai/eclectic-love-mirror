@@ -31,7 +31,13 @@ export const Route = createFileRoute("/studio/$token")({
 
 function PublicBoardPage() {
   const board = Route.useLoaderData();
-  const palette = (board.palette ?? []) as Array<{ hex?: string }>;
+  const palette = (board.palette ?? []) as Array<{ hex?: string; name?: string }>;
+  const tones = (board.tones ?? {}) as Record<string, unknown>;
+  const insights = (board.insights ?? []) as Array<{ title?: string; description?: string } | string>;
+
+  const toneEntries = Object.entries(tones)
+    .filter(([, v]) => typeof v === "number" || typeof v === "string")
+    .slice(0, 6);
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
@@ -60,6 +66,41 @@ function PublicBoardPage() {
       </header>
 
       <main className="px-6 lg:px-12 py-10">
+        {(insights.length > 0 || toneEntries.length > 0) && (
+          <section className="mb-12 grid gap-8 md:grid-cols-2">
+            {insights.length > 0 && (
+              <div>
+                <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-4">Direction</h2>
+                <ul className="space-y-3">
+                  {insights.slice(0, 6).map((ins, i) => {
+                    const title = typeof ins === "string" ? ins : (ins.title ?? "");
+                    const desc = typeof ins === "string" ? "" : (ins.description ?? "");
+                    return (
+                      <li key={i} className="text-[13px] font-sans normal-case text-charcoal/80">
+                        {title && <span className="uppercase tracking-[0.18em] text-[11px] text-charcoal/70 mr-2">{title}</span>}
+                        {desc}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+            {toneEntries.length > 0 && (
+              <div>
+                <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-4">Tone</h2>
+                <dl className="grid grid-cols-2 gap-x-6 gap-y-2 text-[12px] font-sans normal-case">
+                  {toneEntries.map(([k, v]) => (
+                    <div key={k} className="flex justify-between border-b border-charcoal/10 py-1">
+                      <dt className="uppercase tracking-[0.16em] text-[10px] text-charcoal/60">{k}</dt>
+                      <dd className="text-charcoal/85">{typeof v === "number" ? v.toFixed(2) : String(v)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            )}
+          </section>
+        )}
+
         {board.inspo.length > 0 && (
           <section className="mb-12">
             <h2 className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-4">Inspiration</h2>

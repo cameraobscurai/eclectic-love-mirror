@@ -269,7 +269,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id")
+      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count")
       .eq("share_token", data.token)
       .eq("status", "sent")
       .maybeSingle();
