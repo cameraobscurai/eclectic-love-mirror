@@ -127,7 +127,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
         public_ready: data.publicReady,
         ...(data.hiddenNote !== undefined ? { hidden_note: data.hiddenNote } : {}),
       },
-    });
+    }));
 
     return { ok: true, publicReady: data.publicReady };
   });
