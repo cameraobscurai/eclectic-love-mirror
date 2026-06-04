@@ -1,7 +1,9 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap");
+@source "../src";
+/* Google Fonts loaded via <link> in src/routes/__root.tsx — remote @import
+ * in a Tailwind v4 stylesheet ends up after generated rules in the bundled
+ * output and trips LightningCSS's "@import must precede all rules" check. */
 
 /* Saol Display — owner-supplied OTFs bundled as Vite assets from
  * src/assets/fonts. Vite rewrites url(...) to hashed, cache-friendly URLs
