@@ -1,6 +1,6 @@
 // Public client-facing style board view. Token in the URL is the only secret.
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { getStyleBoardByToken, type PublicStyleBoard } from "@/server/studio.functions";
+import { getStyleBoardByToken, type PublicStyleBoard } from "@/lib/studio.functions";
 
 export const Route = createFileRoute("/studio/$token")({
   head: () => ({

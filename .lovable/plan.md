@@ -1,103 +1,49 @@
-## W1.2 wiring — four admin handlers + concurrency guard + audit
+## Problem
 
-Continuing the same PR as W1.1 (audit table + `_audit.server.ts` helper). Goal: wire `audit()` + `expectedUpdatedAt` concurrency guard into the four privileged inventory mutations, following the read-once snapshot pattern you specified.
+Template's import-protection plugin denies any client-reachable import from `src/server/**`. All eight `*.functions.ts` files under `src/server/` are imported by routes/hooks/components → every one is breaking the build. Confirmed in dev-server log: `Denied by file pattern: **/server/**`.
 
-### Pattern (applied identically to all four handlers)
+## Fix
 
-```ts
-// 1. Read once — snapshot drives both concurrency check AND audit `before`
-const { data: current, error: readErr } = await supabaseAdmin
-  .from("inventory_items")
-  .select("id, updated_at, <fields touched by this handler>")
-  .eq("id", data.id)
-  .single();
-if (readErr || !current) throw new AppError("NOT_FOUND", "Item not found", 404);
+Move every `*.functions.ts` out of `src/server/` into `src/lib/` (client-safe location, where `createServerFn` splitting works). Keep `*.server.ts` helpers where they are — those are server-only and only imported by the functions files.
 
-// 2. Concurrency check against the snapshot
-if (data.expectedUpdatedAt && current.updated_at !== data.expectedUpdatedAt) {
-  throw new AppError("STALE", "Someone else edited this. Reload.", 409);
-}
+### Files to move
 
-// 3. Mutate
-const { data: updated, error: writeErr } = await supabaseAdmin
-  .from("inventory_items")
-  .update({ <new shape> })
-  .eq("id", data.id)
-  .select("id, updated_at, <same fields>")
-  .single();
-if (writeErr) throw writeErr;
-
-// 4. Audit — `before` is the snapshot we read, `after` is mutated fields only
-await audit({
-  actorId: context.userId,
-  entity: "inventory_items",
-  entityId: data.id,
-  action: "<handler-specific>",
-  before: pick(current, [<touched fields>]),
-  after: pick(updated, [<touched fields>]),
-});
-
-return updated;
+```text
+src/server/admin.functions.ts             → src/lib/admin.functions.ts
+src/server/archive.functions.ts           → src/lib/archive.functions.ts
+src/server/colors.functions.ts            → src/lib/colors.functions.ts
+src/server/insights.functions.ts          → src/lib/insights.functions.ts
+src/server/inventory-images.functions.ts  → src/lib/inventory-images.functions.ts
+src/server/migration.functions.ts         → src/lib/migration.functions.ts
+src/server/studio.functions.ts            → src/lib/studio.functions.ts
+src/server/style-brief.functions.ts       → src/lib/style-brief.functions.ts
 ```
 
-Note: `AppError` doesn't exist yet (W2.2). For W1.2 throw plain `Error("STALE: ...")` / `Error("NOT_FOUND: ...")` with a TODO comment to swap in `AppError` during W2. Avoids cross-week coupling.
+### Files staying put
 
-### Race-window acknowledgement
+`src/server/_audit.server.ts` and `src/server/migration.server.ts` stay — they're not client-reachable. Update the relative imports inside the moved functions files from `./_audit.server` → `@/server/_audit.server` (and same for migration.server).
 
-Read and update are NOT in a transaction. A concurrent writer could land between step 1 and step 3. Accepted: `before` reflects what the handler saw, not necessarily what was in the DB the instant before the write. Snapshot wins. Documented as a code comment above each `audit()` call so future readers don't "fix" it by re-reading after the update.
+### Update import sites
 
-### The four handlers
+Rewrite `@/server/<name>.functions` → `@/lib/<name>.functions` in:
+- `src/routes/admin.incoming.tsx`
+- `src/routes/admin.image-qa.tsx`
+- `src/routes/admin.tsx`
+- `src/routes/admin.colors.tsx`
+- `src/routes/admin.insights.tsx`
+- `src/routes/admin.studio.tsx`
+- `src/routes/studio.index.tsx`
+- `src/routes/studio.$token.tsx`
+- `src/hooks/use-style-board.ts`
+- `src/components/admin/admin-shell.tsx`
+- `src/components/admin/ImageOrderEditor.tsx`
 
-All live in admin server-fn modules (currently called from `useEffect`-driven admin UI — loader migration is W3, out of scope here).
+(Plus any other hits from a final ripgrep sweep.)
 
-1. **`updateItemImages`** (`src/lib/admin/items.functions.ts`)
-   - Snapshot fields: `updated_at, images, images_meta`
-   - Action: `"update_images"`
-   - Input gains: `expectedUpdatedAt: string`
+### Revert archive.functions.ts audit shape
 
-2. **`setCardBackground`** (same file)
-   - Snapshot fields: `updated_at, card_background_url`
-   - Action: `"set_card_background"`
-   - Input gains: `expectedUpdatedAt: string`
+While moving, restore the simpler `import { audit } from "@/server/_audit.server"` at top-level (matches sibling `inventory-images.functions.ts`). The dynamic-import workaround from the previous turn isn't needed once the file is in `src/lib/`.
 
-3. **`uploadItemImage`** (same file — the post-storage-upload DB write)
-   - Snapshot fields: `updated_at, images`
-   - Action: `"upload_image"`
-   - Metadata: `{ storage_path, bucket }` for forensics
-   - Input gains: `expectedUpdatedAt: string` (the array append needs the stale check too — concurrent uploads otherwise lose one)
+## Verify
 
-4. **`toggleItemVisibility`** (same file)
-   - Snapshot fields: `updated_at, status, public_ready`
-   - Action: `"toggle_visibility"`
-   - Input gains: `expectedUpdatedAt: string`
-
-### Client-side plumbing
-
-Each admin form/mutation site that calls these four functions needs to pass `expectedUpdatedAt` from the row it loaded. Minimal touch:
-- `/admin/image-qa` row actions → already have `item.updated_at` in scope
-- `/admin/items/[id]` edit page → already have it
-- Card background picker → already in scope
-
-If a 409 STALE is thrown, the client mutation handler shows a toast (`"Someone else edited this. Refresh and try again."`) and calls `queryClient.invalidateQueries({ queryKey: [...] })` to pull the fresh row. No auto-merge — explicit reload only. This is the safe boring choice.
-
-### Small helper
-
-Add a tiny `pick(obj, keys)` util to `src/lib/utils.ts` (or inline if it already exists) so the `before`/`after` snapshots stay narrow — never dump the whole row into the audit log. Keeps `admin_audit_log` rows small and forensically focused.
-
-### Acceptance
-
-- All four handlers read-once, check `expectedUpdatedAt`, then write, then audit
-- Stale write returns 409 with `STALE` code (Error-wrapped for now, AppError later)
-- `admin_audit_log` gets one row per successful mutation with `before`/`after` containing ONLY mutated fields
-- Audit failure logs to console but never cancels the mutation (already done in W1.1 helper)
-- Smoke test: open same item in two tabs, edit in tab A, try to edit in tab B → tab B shows stale toast + reloads
-- `select * from admin_audit_log order by at desc limit 10` shows the last 10 mutations with sensible diffs
-
-### Out of scope (deferred)
-
-- `AppError` class + `safeHandler` wrapper → W2.2
-- Loader migration for admin routes → W3
-- Vitest coverage of audit writes + 409 path → W1.4 (same PR, next step after handler wiring)
-- Inquiry/style_board mutations → W4 (they need different snapshot shapes)
-
-When the four handlers + client plumbing are in, I'll surface the diff for review before starting W1.3 (`rate_limits` + pg_cron).
+After moves + rewrites: dev server should transform all three failing routes cleanly. No more `Denied by file pattern: **/server/**`.
