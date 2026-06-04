@@ -1,103 +1,70 @@
-## W1.2 wiring — four admin handlers + concurrency guard + audit
+## Lock down studio-inspo uploads
 
-Continuing the same PR as W1.1 (audit table + `_audit.server.ts` helper). Goal: wire `audit()` + `expectedUpdatedAt` concurrency guard into the four privileged inventory mutations, following the read-once snapshot pattern you specified.
+Current state: `studio-inspo` bucket has an anon insert policy ("Anyone can upload studio inspo"). Anyone with the publishable key can write directly to storage. Fix at the storage layer; tighten the signing fn as defense-in-depth.
 
-### Pattern (applied identically to all four handlers)
+### 1. Migration: `supabase/migrations/20260604000000_lock_down_studio_inspo_uploads.sql`
 
-```ts
-// 1. Read once — snapshot drives both concurrency check AND audit `before`
-const { data: current, error: readErr } = await supabaseAdmin
-  .from("inventory_items")
-  .select("id, updated_at, <fields touched by this handler>")
-  .eq("id", data.id)
-  .single();
-if (readErr || !current) throw new AppError("NOT_FOUND", "Item not found", 404);
+Bucket upsert uses `on conflict (id) do update` — the existing `do nothing` pattern would silently no-op against an already-existing bucket and leave the caps off.
 
-// 2. Concurrency check against the snapshot
-if (data.expectedUpdatedAt && current.updated_at !== data.expectedUpdatedAt) {
-  throw new AppError("STALE", "Someone else edited this. Reload.", 409);
-}
+```sql
+begin;
 
-// 3. Mutate
-const { data: updated, error: writeErr } = await supabaseAdmin
-  .from("inventory_items")
-  .update({ <new shape> })
-  .eq("id", data.id)
-  .select("id, updated_at, <same fields>")
-  .single();
-if (writeErr) throw writeErr;
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'studio-inspo', 'studio-inspo', false,
+  8388608,
+  array['image/jpeg','image/png','image/webp','image/avif']::text[]
+)
+on conflict (id) do update set
+  public = false,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types,
+  updated_at = now();
 
-// 4. Audit — `before` is the snapshot we read, `after` is mutated fields only
-await audit({
-  actorId: context.userId,
-  entity: "inventory_items",
-  entityId: data.id,
-  action: "<handler-specific>",
-  before: pick(current, [<touched fields>]),
-  after: pick(updated, [<touched fields>]),
-});
+-- Drop public insert + any stale admin policy name variants
+drop policy if exists "Anyone can upload studio inspo" on storage.objects;
+drop policy if exists "Admins read studio-inspo" on storage.objects;
+drop policy if exists "Admins write studio-inspo" on storage.objects;
+drop policy if exists "Admins update studio-inspo" on storage.objects;
+drop policy if exists "Admins delete studio-inspo" on storage.objects;
+drop policy if exists "Admins can read studio inspo" on storage.objects;
+drop policy if exists "Admins can manage studio inspo" on storage.objects;
 
-return updated;
+-- Admin-only CRUD via authenticated session. Anon visitors use signed upload URLs (no policy needed).
+create policy "studio-inspo admin read" on storage.objects for select to authenticated
+  using (bucket_id = 'studio-inspo' and public.has_role(auth.uid(), 'admin'::public.app_role));
+create policy "studio-inspo admin insert" on storage.objects for insert to authenticated
+  with check (bucket_id = 'studio-inspo' and public.has_role(auth.uid(), 'admin'::public.app_role));
+create policy "studio-inspo admin update" on storage.objects for update to authenticated
+  using (bucket_id = 'studio-inspo' and public.has_role(auth.uid(), 'admin'::public.app_role))
+  with check (bucket_id = 'studio-inspo' and public.has_role(auth.uid(), 'admin'::public.app_role));
+create policy "studio-inspo admin delete" on storage.objects for delete to authenticated
+  using (bucket_id = 'studio-inspo' and public.has_role(auth.uid(), 'admin'::public.app_role));
+
+commit;
 ```
 
-Note: `AppError` doesn't exist yet (W2.2). For W1.2 throw plain `Error("STALE: ...")` / `Error("NOT_FOUND: ...")` with a TODO comment to swap in `AppError` during W2. Avoids cross-week coupling.
+Post-migration verify: `select public, file_size_limit, allowed_mime_types from storage.buckets where id='studio-inspo'` shows `false / 8388608 / {image/jpeg,image/png,image/webp,image/avif}`.
 
-### Race-window acknowledgement
+### 2. `src/lib/style-brief.functions.ts` — tighten `signPublicInspoUpload`
 
-Read and update are NOT in a transaction. A concurrent writer could land between step 1 and step 3. Accepted: `before` reflects what the handler saw, not necessarily what was in the DB the instant before the write. Snapshot wins. Documented as a code comment above each `audit()` call so future readers don't "fix" it by re-reading after the update.
+- Ext allowlist: `jpg`, `jpeg`, `png`, `webp`, `avif` (HEIC dropped — browsers don't set Content-Type reliably and Safari often converts on upload anyway).
+- Normalize `jpg → jpeg`.
+- MIME check is **advisory** for early UX fail; the bucket `allowed_mime_types` is the real gate.
+- Size check is **advisory** for early UX fail; the bucket `file_size_limit` (8 MB) is the real gate.
+- Inputs: `{ ext: string, mime: string, size: number }`.
 
-### The four handlers
+### 3. `src/routes/studio.index.tsx` (call site ~line 194)
 
-All live in admin server-fn modules (currently called from `useEffect`-driven admin UI — loader migration is W3, out of scope here).
+- Pass `ext`, `mime: i.file.type`, `size: i.file.size`.
+- Change PUT header `x-upsert: "true"` → `"false"` (random UUID paths make upsert pointless and it's free hardening).
 
-1. **`updateItemImages`** (`src/lib/admin/items.functions.ts`)
-   - Snapshot fields: `updated_at, images, images_meta`
-   - Action: `"update_images"`
-   - Input gains: `expectedUpdatedAt: string`
+### Security boundary
 
-2. **`setCardBackground`** (same file)
-   - Snapshot fields: `updated_at, card_background_url`
-   - Action: `"set_card_background"`
-   - Input gains: `expectedUpdatedAt: string`
+Real enforcement: bucket private + `file_size_limit` + `allowed_mime_types` + no anon insert policy. Server-fn validation is UX/early-fail only — caller-supplied size/mime are untrusted.
 
-3. **`uploadItemImage`** (same file — the post-storage-upload DB write)
-   - Snapshot fields: `updated_at, images`
-   - Action: `"upload_image"`
-   - Metadata: `{ storage_path, bucket }` for forensics
-   - Input gains: `expectedUpdatedAt: string` (the array append needs the stale check too — concurrent uploads otherwise lose one)
+### Files touched
 
-4. **`toggleItemVisibility`** (same file)
-   - Snapshot fields: `updated_at, status, public_ready`
-   - Action: `"toggle_visibility"`
-   - Input gains: `expectedUpdatedAt: string`
-
-### Client-side plumbing
-
-Each admin form/mutation site that calls these four functions needs to pass `expectedUpdatedAt` from the row it loaded. Minimal touch:
-- `/admin/image-qa` row actions → already have `item.updated_at` in scope
-- `/admin/items/[id]` edit page → already have it
-- Card background picker → already in scope
-
-If a 409 STALE is thrown, the client mutation handler shows a toast (`"Someone else edited this. Refresh and try again."`) and calls `queryClient.invalidateQueries({ queryKey: [...] })` to pull the fresh row. No auto-merge — explicit reload only. This is the safe boring choice.
-
-### Small helper
-
-Add a tiny `pick(obj, keys)` util to `src/lib/utils.ts` (or inline if it already exists) so the `before`/`after` snapshots stay narrow — never dump the whole row into the audit log. Keeps `admin_audit_log` rows small and forensically focused.
-
-### Acceptance
-
-- All four handlers read-once, check `expectedUpdatedAt`, then write, then audit
-- Stale write returns 409 with `STALE` code (Error-wrapped for now, AppError later)
-- `admin_audit_log` gets one row per successful mutation with `before`/`after` containing ONLY mutated fields
-- Audit failure logs to console but never cancels the mutation (already done in W1.1 helper)
-- Smoke test: open same item in two tabs, edit in tab A, try to edit in tab B → tab B shows stale toast + reloads
-- `select * from admin_audit_log order by at desc limit 10` shows the last 10 mutations with sensible diffs
-
-### Out of scope (deferred)
-
-- `AppError` class + `safeHandler` wrapper → W2.2
-- Loader migration for admin routes → W3
-- Vitest coverage of audit writes + 409 path → W1.4 (same PR, next step after handler wiring)
-- Inquiry/style_board mutations → W4 (they need different snapshot shapes)
-
-When the four handlers + client plumbing are in, I'll surface the diff for review before starting W1.3 (`rate_limits` + pg_cron).
+- `supabase/migrations/20260604000000_lock_down_studio_inspo_uploads.sql` (new)
+- `src/lib/style-brief.functions.ts` (edit `signPublicInspoUpload`)
+- `src/routes/studio.index.tsx` (call site + upsert header)

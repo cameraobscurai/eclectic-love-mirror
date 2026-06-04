@@ -11,14 +11,35 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 const INSPO_PREFIX = "public";
 
 // ── 1. Sign one upload URL ───────────────────────────────────────────────
+// Real enforcement lives at the storage bucket: private + file_size_limit (8MB)
+// + allowed_mime_types. These server-fn checks are advisory / early-fail UX —
+// caller-supplied size and mime are untrusted.
+const ALLOWED_INSPO_EXTENSIONS = new Set(["jpeg", "png", "webp", "avif"]);
+const ALLOWED_INSPO_MIME = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+]);
+const MAX_INSPO_BYTES = 8 * 1024 * 1024;
+
 export const signPublicInspoUpload = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z.object({
-      ext: z.string().regex(/^[a-z0-9]{1,8}$/i),
+      ext: z.string().trim().toLowerCase().max(8),
+      mime: z.string().trim().toLowerCase().max(80),
+      size: z.number().int().positive().max(MAX_INSPO_BYTES),
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    const path = `${INSPO_PREFIX}/${crypto.randomUUID()}/${crypto.randomUUID()}.${data.ext.toLowerCase()}`;
+    const ext = data.ext === "jpg" ? "jpeg" : data.ext;
+    if (!ALLOWED_INSPO_EXTENSIONS.has(ext)) {
+      throw new Error("Unsupported inspiration image type.");
+    }
+    if (!ALLOWED_INSPO_MIME.has(data.mime)) {
+      throw new Error("Unsupported inspiration image MIME type.");
+    }
+    const path = `${INSPO_PREFIX}/${crypto.randomUUID()}/${crypto.randomUUID()}.${ext}`;
     const { data: signed, error } = await supabaseAdmin
       .storage.from("studio-inspo")
       .createSignedUploadUrl(path);

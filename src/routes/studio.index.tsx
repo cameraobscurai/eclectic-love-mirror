@@ -192,10 +192,12 @@ function StudioPage() {
       const inspoPaths: string[] = [];
       for (const i of inspo) {
         const ext = (i.file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-        const { uploadUrl, storage_path } = await signPublicInspoUpload({ data: { ext } });
+        const { uploadUrl, storage_path } = await signPublicInspoUpload({
+          data: { ext, mime: i.file.type || "application/octet-stream", size: i.file.size },
+        });
         const put = await fetch(uploadUrl, {
           method: "PUT",
-          headers: { "Content-Type": i.file.type, "x-upsert": "true" },
+          headers: { "Content-Type": i.file.type, "x-upsert": "false" },
           body: i.file,
         });
         if (!put.ok) throw new Error(`Upload failed (${put.status})`);
