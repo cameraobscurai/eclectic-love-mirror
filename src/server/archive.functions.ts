@@ -114,7 +114,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
 
     // 4. Audit. Race-window note: a concurrent writer could have landed
     // between read and write; the audit row reflects the handler's view.
-    void audit({
+    void import("./_audit.server").then(({ audit }) => audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
