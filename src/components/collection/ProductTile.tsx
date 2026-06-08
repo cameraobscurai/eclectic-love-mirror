@@ -112,14 +112,21 @@ export function ProductTile({
       style={{
         background: "#ffffff",
         overflow: "hidden",
-        // Skip layout/paint/decode for offscreen tiles. Placeholder height
-        // matches the rendered tile so scroll position never jumps as tiles
-        // enter/leave the rendered set. Eager tiles opt out (they're always
-        // on screen at first paint, no benefit to gating them).
+        // Per-tile media height. Each tile owns its family's clamp value so a
+        // wide-low sofa no longer crushes a tall lamp in the same row. The
+        // grid's [grid-auto-rows:max-content] lets each row take its tallest
+        // cell naturally; rows are mildly ragged on purpose (printed
+        // contact-sheet rhythm), not collapsed to the shortest family.
+        ["--archive-tile-media-h" as string]: preset.mediaH,
+        // Skip layout/paint/decode for offscreen tiles. Intrinsic size now
+        // matches the actual cell height (not a hardcoded 480px) so the
+        // reserved box is correct for every family — eliminates the
+        // 480px→real-height snap that caused row-collapse on scroll.
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
-        containIntrinsicSize: "1px 480px",
+        containIntrinsicSize: `auto ${preset.mediaH}`,
       }}
     >
+
       {/* Reveal wrapper — opacity/transform/blur cascade keyed off `entered`.
           Lives inside the layout-projected <li> so motion.layout still owns
           position transitions when filters change; this only animates the
@@ -243,18 +250,11 @@ export function ProductTile({
           </p>
         </button>
       ) : (
-        // Deferred shell — pure white, no shimmer plate. content-visibility
-        // lets the browser skip layout/paint entirely while off-screen, and
-        // contain-intrinsic-size reserves stable space so scrollbar position
-        // and layout don't shift when the shell hydrates.
-        <div
-          aria-hidden
-          className="block w-full bg-white"
-          style={{
-            contentVisibility: "auto",
-            containIntrinsicSize: "var(--archive-tile-media-h, 320px)",
-          }}
-        >
+        // Deferred shell — pure white, no shimmer plate. The outer <li>
+        // already carries content-visibility:auto + containIntrinsicSize, so
+        // this inner shell does NOT redeclare them (nested content-visibility
+        // is a no-op and creates a second containment context).
+        <div aria-hidden className="block w-full bg-white">
           <div
             className="w-full bg-white"
             style={{ height: "var(--archive-tile-media-h)" }}
@@ -262,9 +262,9 @@ export function ProductTile({
           {/* Caption spacer mirrors hydrated state: only present on mobile,
               where the visible caption lives below the image. */}
           <div className="md:hidden mt-3 h-[34px]" />
-          <div className="md:hidden mt-3 h-[34px]" />
         </div>
       )}
+
       </div>
     </motion.li>
   );

@@ -1175,21 +1175,15 @@ function CollectionPage() {
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
                             className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
-                            style={(() => {
-                              // Pick the SHORTEST media-h cap among families
-                              // present in the visible batch. A mixed batch
-                              // (e.g. All view) defers to wide-low so tall
-                              // silhouettes can't crush their neighbors.
-                              // Per-tile padding in ProductTile finishes the
-                              // normalization. Content-driven so it fires in
-                              // All view, parent, sub, and search alike.
-                              const h = pickBatchMediaHeight(
-                                visibleBatch.map((p) => getProductBrowseGroup(p)),
-                              );
-                              return h
-                                ? ({ ["--archive-tile-media-h" as string]: h } as React.CSSProperties)
-                                : undefined;
-                            })()}
+                            // Cell height is set PER TILE (on each <li> via
+                            // --archive-tile-media-h from its family preset).
+                            // The old batch-collapse strategy (shortest family
+                            // wins for the whole batch) crushed tall silhouettes
+                            // when one wide-low product entered the visible set.
+                            // grid-auto-rows:max-content lets each row settle on
+                            // its tallest cell naturally — mildly ragged rows
+                            // read as deliberate printed-contact-sheet rhythm
+                            // in dense, and as proportional scale in editorial.
                             transition={
                               reduced
                                 ? { duration: 0 }
@@ -1207,6 +1201,7 @@ function CollectionPage() {
                             ))}
                           </motion.ul>
                         </LayoutGroup>
+
 
                         {hasMore && (
                           <div
