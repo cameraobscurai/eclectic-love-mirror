@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import Lenis from "lenis";
+// Lenis is loaded dynamically inside the effect so it only ships on non-touch,
+// non-reduced-motion desktop sessions (where smooth scroll actually runs).
+// Type-only import keeps TS happy at zero runtime cost.
+import type Lenis from "lenis";
 
 /**
  * Cinematic smooth scroll. Mounts once at the root.
@@ -61,24 +64,30 @@ export function SmoothScroll(overrides: Partial<SmoothScrollConfig> = {}) {
     const easingFn =
       typeof cfg.easing === "function" ? cfg.easing : EASINGS[cfg.easing];
 
-    const lenis = new Lenis({
-      duration: cfg.duration,
-      easing: easingFn,
-      smoothWheel: cfg.smoothWheel,
-      wheelMultiplier: cfg.wheelMultiplier,
-      lerp: cfg.lerp,
+    let rafId = 0;
+    let lenisInstance: Lenis | null = null;
+    let cancelled = false;
+
+    import("lenis").then(({ default: LenisClass }) => {
+      if (cancelled) return;
+      lenisInstance = new LenisClass({
+        duration: cfg.duration,
+        easing: easingFn,
+        smoothWheel: cfg.smoothWheel,
+        wheelMultiplier: cfg.wheelMultiplier,
+        lerp: cfg.lerp,
+      });
+      const raf = (time: number) => {
+        lenisInstance!.raf(time);
+        rafId = requestAnimationFrame(raf);
+      };
+      rafId = requestAnimationFrame(raf);
     });
 
-    let rafId = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
-
     return () => {
+      cancelled = true;
       cancelAnimationFrame(rafId);
-      lenis.destroy();
+      lenisInstance?.destroy();
     };
     // Re-init when any tuning value changes.
   }, [cfg.duration, cfg.easing, cfg.lerp, cfg.wheelMultiplier, cfg.smoothWheel]);

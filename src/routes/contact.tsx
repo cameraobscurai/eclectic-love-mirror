@@ -210,6 +210,8 @@ function ContactPage() {
     }
 
     setSubmitting(true);
+    try {
+
 
     const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
@@ -289,7 +291,7 @@ function ContactPage() {
       .insert(payload)
       .select("id")
       .single();
-    setSubmitting(false);
+
 
     if (error) {
       setErrorMsg(
@@ -352,6 +354,9 @@ function ContactPage() {
     setRemovedIds(new Set());
     setSubmittedCount(effectiveIds.length);
     setSuccess(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
