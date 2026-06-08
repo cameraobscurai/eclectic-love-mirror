@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone can upload studio inspo" ON storage.objects;
