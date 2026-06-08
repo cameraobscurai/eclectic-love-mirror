@@ -12,11 +12,12 @@ import { PosterPicture } from "./PosterPicture";
  */
 export function SequentialHeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Randomize the opening clip per visit so repeat viewers don't always
-  // land on the same season (mobile-only component).
-  const [index, setIndex] = useState(() =>
-    Math.floor(Math.random() * HERO_CLIPS.length),
-  );
+  // Start at 0 for SSR/hydration parity; randomize after mount so repeat
+  // viewers don't always land on the same season (mobile-only component).
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    setIndex(Math.floor(Math.random() * HERO_CLIPS.length));
+  }, []);
   const [videoReady, setVideoReady] = useState(false);
 
   const current = HERO_CLIPS[index];
