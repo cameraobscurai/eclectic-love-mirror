@@ -284,7 +284,11 @@ function ContactPage() {
       },
     };
 
-    const { error } = await supabase.from("inquiries").insert(payload);
+    const { data: inserted, error } = await supabase
+      .from("inquiries")
+      .insert(payload)
+      .select("id")
+      .single();
     setSubmitting(false);
 
     if (error) {
@@ -293,6 +297,28 @@ function ContactPage() {
       );
       return;
     }
+
+    // Fire-and-forget owner notification to info@eclectichive.com.
+    // Failure here doesn't block the user — the inquiry is already saved
+    // and visible in the admin inbox.
+    fetch("/api/public/notify-inquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        subject: payload.subject,
+        message: payload.message,
+        project_date: projectDate || null,
+        budget: budget || null,
+        scope: scope || null,
+        items: itemSnapshots,
+        inquiry_id: inserted?.id ?? null,
+      }),
+    }).catch((err) => {
+      console.warn("Inquiry notification failed", err);
+    });
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));

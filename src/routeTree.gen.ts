@@ -33,12 +33,17 @@ import { Route as StudioThreeRouteImport } from './routes/studio.three'
 import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as ApiPublicNotifyInquiryRouteImport } from './routes/api/public/notify-inquiry'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const TheHive3Route = TheHive3RouteImport.update({
@@ -161,6 +166,11 @@ const StudioTokenRoute = StudioTokenRouteImport.update({
   path: '/studio/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -191,6 +201,28 @@ const AdminColorsRoute = AdminColorsRouteImport.update({
   path: '/colors',
   getParentRoute: () => AdminRoute,
 } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNotifyInquiryRoute = ApiPublicNotifyInquiryRouteImport.update({
+  id: '/api/public/notify-inquiry',
+  path: '/api/public/notify-inquiry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -224,12 +256,17 @@ export interface FileRoutesByFullPath {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -257,12 +294,17 @@ export interface FileRoutesByTo {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio': typeof StudioIndexRoute
+  '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -291,12 +333,17 @@ export interface FileRoutesById {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -326,12 +373,17 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/api/public/notify-inquiry'
+    | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -359,12 +411,17 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
     | '/studio'
+    | '/api/public/notify-inquiry'
+    | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   id:
     | '__root__'
     | '/'
@@ -392,12 +449,17 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/api/public/notify-inquiry'
+    | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -420,12 +482,17 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   StudioTokenRoute: typeof StudioTokenRoute
   StudioLabRoute: typeof StudioLabRoute
   StudioThanksRoute: typeof StudioThanksRoute
   StudioThreeRoute: typeof StudioThreeRoute
   StudioIndexRoute: typeof StudioIndexRoute
+  ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -598,6 +665,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -639,6 +713,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/colors'
       preLoaderRoute: typeof AdminColorsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/notify-inquiry': {
+      id: '/api/public/notify-inquiry'
+      path: '/api/public/notify-inquiry'
+      fullPath: '/api/public/notify-inquiry'
+      preLoaderRoute: typeof ApiPublicNotifyInquiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -690,12 +792,17 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   StudioTokenRoute: StudioTokenRoute,
   StudioLabRoute: StudioLabRoute,
   StudioThanksRoute: StudioThanksRoute,
   StudioThreeRoute: StudioThreeRoute,
   StudioIndexRoute: StudioIndexRoute,
+  ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
