@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Trash2, Upload, ImagePlus } from "lucide-react";
+import { Loader2, Trash2, ImagePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { publicStorageUrl } from "@/lib/storage-image";
@@ -257,5 +257,3 @@ function IncomingPage() {
     </div>
   );
 }
-
-export default IncomingPage;

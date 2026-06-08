@@ -33,8 +33,7 @@ export function PosterPicture({
         height={1440}
         loading={loading}
         decoding="async"
-        // @ts-expect-error — React 19 supports lowercase attr; types lag
-        fetchpriority={fetchPriority}
+        fetchPriority={fetchPriority}
         className={cn("h-full w-full object-cover", className)}
       />
     </picture>

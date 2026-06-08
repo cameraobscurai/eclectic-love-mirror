@@ -127,7 +127,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   }, []);
 
   return (
-    <div ref={containerRef} className={cn("w-full bg-paper", className)}>
+    <div ref={containerRef} className={cn("relative w-full bg-paper", className)}>
       {/* Mobile (<md): poster-only strip, all 5 visible at once. No video
           mounts — tap a poster to open the lightbox. */}
       <div className="md:hidden w-full flex gap-px px-3">
