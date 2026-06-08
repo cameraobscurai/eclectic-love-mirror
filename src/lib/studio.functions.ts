@@ -262,6 +262,7 @@ export interface PublicStyleBoard {
   inspo: Array<{ id: string; name: string; url: string }>;
   pinned: PublicPinnedItem[];
   client_name: string;
+  cover_pinned_rms_id: string | null;
 }
 
 export const getStyleBoardByToken = createServerFn({ method: "GET" })
@@ -269,7 +270,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count")
+      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id")
       .eq("share_token", data.token)
       .eq("status", "sent")
       .maybeSingle();
@@ -346,5 +347,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       })).filter((i) => i.url),
       pinned: items,
       client_name: inq?.name ?? "",
+      cover_pinned_rms_id:
+        (board as unknown as { cover_pinned_rms_id?: string | null }).cover_pinned_rms_id ?? null,
     } satisfies PublicStyleBoard;
   });
