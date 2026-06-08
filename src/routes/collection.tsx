@@ -196,7 +196,7 @@ function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
-  const { group, subcategory, q, sort, density, layout, view } = search;
+  const { group, subcategory, q, sort, layout, view } = search;
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
