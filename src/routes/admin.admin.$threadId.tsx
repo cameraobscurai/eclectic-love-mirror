@@ -14,8 +14,7 @@ const threadMessagesOptions = (threadId: string) =>
   });
 
 export const Route = createFileRoute("/admin/admin/$threadId")({
-  loader: ({ context, params }) =>
-    context.queryClient.ensureQueryData(threadMessagesOptions(params.threadId)),
+  loader: ({ params }) => getAdminThreadMessages({ data: { threadId: params.threadId } }),
   errorComponent: ({ error }) => (
     <div className="text-sm text-destructive">Failed to load thread: {error.message}</div>
   ),

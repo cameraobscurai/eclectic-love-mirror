@@ -41,8 +41,10 @@ import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
+import { Route as AdminAdminRouteImport } from './routes/admin.admin'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicNotifyInquiryRouteImport } from './routes/api/public/notify-inquiry'
+import { Route as AdminAdminThreadIdRouteImport } from './routes/admin.admin.$threadId'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -207,6 +209,11 @@ const AdminColorsRoute = AdminColorsRouteImport.update({
   path: '/colors',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdminRoute = AdminAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AdminRoute,
+} as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -216,6 +223,11 @@ const ApiPublicNotifyInquiryRoute = ApiPublicNotifyInquiryRouteImport.update({
   id: '/api/public/notify-inquiry',
   path: '/api/public/notify-inquiry',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAdminThreadIdRoute = AdminAdminThreadIdRouteImport.update({
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => AdminAdminRoute,
 } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
@@ -256,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -269,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -295,6 +309,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -308,6 +323,7 @@ export interface FileRoutesByTo {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio': typeof StudioIndexRoute
+  '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -335,6 +351,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -348,6 +365,7 @@ export interface FileRoutesById {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -376,6 +394,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/admin/admin'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -389,6 +408,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -415,6 +435,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/admin/admin'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -428,6 +449,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio'
+    | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -454,6 +476,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/admin/admin'
     | '/admin/colors'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -467,6 +490,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
     | '/lovable/email/queue/process'
@@ -734,6 +758,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminColorsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/admin': {
+      id: '/admin/admin'
+      path: '/admin'
+      fullPath: '/admin/admin'
+      preLoaderRoute: typeof AdminAdminRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -747,6 +778,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/notify-inquiry'
       preLoaderRoute: typeof ApiPublicNotifyInquiryRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/admin/$threadId': {
+      id: '/admin/admin/$threadId'
+      path: '/$threadId'
+      fullPath: '/admin/admin/$threadId'
+      preLoaderRoute: typeof AdminAdminThreadIdRouteImport
+      parentRoute: typeof AdminAdminRoute
     }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
@@ -772,7 +810,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminAdminRouteChildren {
+  AdminAdminThreadIdRoute: typeof AdminAdminThreadIdRoute
+}
+
+const AdminAdminRouteChildren: AdminAdminRouteChildren = {
+  AdminAdminThreadIdRoute: AdminAdminThreadIdRoute,
+}
+
+const AdminAdminRouteWithChildren = AdminAdminRoute._addFileChildren(
+  AdminAdminRouteChildren,
+)
+
 interface AdminRouteChildren {
+  AdminAdminRoute: typeof AdminAdminRouteWithChildren
   AdminColorsRoute: typeof AdminColorsRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
@@ -782,6 +833,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminRoute: AdminAdminRouteWithChildren,
   AdminColorsRoute: AdminColorsRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
