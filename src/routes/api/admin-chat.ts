@@ -73,7 +73,7 @@ export const Route = createFileRoute("/api/admin-chat")({
             await supabaseAdmin.from("admin_messages").insert({
               thread_id: body.threadId,
               role: "user",
-              parts: lastUser.parts,
+              parts: lastUser.parts as unknown as never,
               ai_sdk_message_id: lastUser.id,
             });
           }
@@ -82,6 +82,7 @@ export const Route = createFileRoute("/api/admin-chat")({
         // 5. Stream from Lovable AI Gateway.
         const apiKey = process.env.LOVABLE_API_KEY;
         if (!apiKey) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const threadId = body.threadId;
 
         const gateway = createLovableAiGatewayProvider(apiKey);
         const model = gateway("google/gemini-2.5-flash");
@@ -89,7 +90,7 @@ export const Route = createFileRoute("/api/admin-chat")({
         const result = streamText({
           model,
           system: SYSTEM_PROMPT,
-          messages: convertToModelMessages(body.messages),
+          messages: await convertToModelMessages(body.messages),
         });
 
         return result.toUIMessageStreamResponse({
@@ -98,15 +99,15 @@ export const Route = createFileRoute("/api/admin-chat")({
             const assistant = messages[messages.length - 1];
             if (!assistant || assistant.role !== "assistant") return;
             await supabaseAdmin.from("admin_messages").insert({
-              thread_id: body.threadId,
+              thread_id: threadId,
               role: "assistant",
-              parts: assistant.parts,
+              parts: assistant.parts as unknown as never,
               ai_sdk_message_id: assistant.id,
             });
             await supabaseAdmin
               .from("admin_threads")
               .update({ updated_at: new Date().toISOString() })
-              .eq("id", body.threadId);
+              .eq("id", threadId);
           },
         });
       },

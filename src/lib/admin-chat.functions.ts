@@ -52,14 +52,14 @@ export const getAdminThreadMessages = createServerFn({ method: "GET" })
   .inputValidator((d: { threadId: string }) =>
     z.object({ threadId: z.string().uuid() }).parse(d),
   )
-  .handler(async ({ data, context }): Promise<AdminMessageRow[]> => {
+  .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("admin_messages")
       .select("id, thread_id, role, parts, created_at")
       .eq("thread_id", data.threadId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return (rows ?? []) as AdminMessageRow[];
+    return (rows ?? []) as unknown as AdminMessageRow[];
   });
 
 export const deleteAdminThread = createServerFn({ method: "POST" })
