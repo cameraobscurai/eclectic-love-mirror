@@ -90,7 +90,6 @@ const InquiryNotification = ({
               <Text key={item.rms_id ?? idx} style={body}>
                 • {item.title ?? 'Untitled'}
                 {item.category ? ` — ${item.category}` : ''}
-                {item.rms_id ? ` [${item.rms_id}]` : ''}
               </Text>
             ))}
           </Section>
