@@ -12,6 +12,7 @@ import {
   ExternalLink,
   LogOut,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import {
   Sidebar,
@@ -49,6 +50,7 @@ type NavItem = {
 
 const OVERVIEW: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/admin", label: "ADMIN", icon: Sparkles },
 ];
 
 const INBOX: NavItem[] = [

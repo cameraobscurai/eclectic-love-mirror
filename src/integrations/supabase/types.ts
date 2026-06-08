@@ -25,6 +25,8 @@ export type Database = {
           entity_id: string
           id: string
           metadata: Json
+          task_id: string | null
+          thread_id: string | null
         }
         Insert: {
           action: string
@@ -36,6 +38,8 @@ export type Database = {
           entity_id: string
           id?: string
           metadata?: Json
+          task_id?: string | null
+          thread_id?: string | null
         }
         Update: {
           action?: string
@@ -47,6 +51,165 @@ export type Database = {
           entity_id?: string
           id?: string
           metadata?: Json
+          task_id?: string | null
+          thread_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "admin_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_log_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "admin_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_memory: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      admin_messages: {
+        Row: {
+          ai_sdk_message_id: string | null
+          created_at: string
+          id: string
+          parts: Json
+          role: string
+          thread_id: string
+        }
+        Insert: {
+          ai_sdk_message_id?: string | null
+          created_at?: string
+          id?: string
+          parts?: Json
+          role: string
+          thread_id: string
+        }
+        Update: {
+          ai_sdk_message_id?: string | null
+          created_at?: string
+          id?: string
+          parts?: Json
+          role?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "admin_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_tasks: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          manifest: Json
+          result: Json | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          summary: string | null
+          thread_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          manifest?: Json
+          result?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          summary?: string | null
+          thread_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          manifest?: Json
+          result?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          summary?: string | null
+          thread_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_tasks_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "admin_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_threads: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
