@@ -75,7 +75,7 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
 
         const recipient = template.to!
         const messageId = crypto.randomUUID()
-        const idempotencyKey = `inquiry-${inquiry.id}`
+        const idempotencyKey = body.inquiry_id ? `inquiry-${body.inquiry_id}` : `inquiry-${messageId}`
         const normalizedEmail = recipient.toLowerCase()
 
         // Suppression check
@@ -144,7 +144,7 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
             message_id: messageId,
             to: recipient,
             from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-            reply_to: inquiry.email,
+            reply_to: body.email,
             sender_domain: SENDER_DOMAIN,
             subject,
             html,
