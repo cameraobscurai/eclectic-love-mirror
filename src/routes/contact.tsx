@@ -284,7 +284,11 @@ function ContactPage() {
       },
     };
 
-    const { error } = await supabase.from("inquiries").insert(payload);
+    const { data: inserted, error } = await supabase
+      .from("inquiries")
+      .insert(payload)
+      .select("id")
+      .single();
     setSubmitting(false);
 
     if (error) {
@@ -292,6 +296,19 @@ function ContactPage() {
         `We couldn't send that just now. Please email ${SUPPORT_EMAIL} and we'll respond directly.`,
       );
       return;
+    }
+
+    // Fire-and-forget owner notification. Failure here doesn't block the
+    // user — the inquiry is already saved and visible in the admin inbox.
+    if (inserted?.id) {
+      fetch("/api/public/notify-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inquiry_id: inserted.id }),
+      }).catch((err) => {
+        // Non-fatal — log so we can debug if notifications stop arriving.
+        console.warn("Inquiry notification failed", err);
+      });
     }
 
     if (typeof window !== "undefined") {
