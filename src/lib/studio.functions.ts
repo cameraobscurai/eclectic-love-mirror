@@ -303,10 +303,10 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       const { data: rows } = await supabaseAdmin
         .from("inventory_items")
         .select("id,rms_id,title,images,category")
-        .in("id", pinnedIds);
-      const byId = new Map((rows ?? []).map((r) => [String(r.id), r]));
-      for (const id of pinnedIds) {
-        const r = byId.get(id);
+        .in("rms_id", pinnedIds);
+      const byRms = new Map((rows ?? []).map((r) => [String(r.rms_id), r]));
+      for (const rmsId of pinnedIds) {
+        const r = byRms.get(rmsId);
         if (!r) continue;
         const imgs = (r.images ?? []) as string[];
         items.push({
@@ -315,10 +315,11 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
           title: r.title,
           image_url: imgs[0] ?? null,
           category: r.category ?? null,
-          note: pinNotes[id] ?? "",
+          note: pinNotes[rmsId] ?? "",
         });
       }
     }
+
 
     // Increment view count (non-fatal).
     void supabaseAdmin
