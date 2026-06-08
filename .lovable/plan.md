@@ -1,52 +1,51 @@
-## One test send to info@eclectichive.com
+# Polish pass — 5 fixes, one at a time
 
-Direct POST to `/api/public/notify-inquiry` (same route the contact form uses) with a realistic payload. No loops, no batches — one call, one email.
+All five are narrow code-level fixes. None changes layout or visual design, so no design directions are needed. I'll do them in order, verify each before moving on.
 
-### What gets sent
+## 1. Footer FAQ link → atelier anchor
+**Files:** `src/components/footer.tsx`, `src/routes/atelier.tsx`
 
-- **To:** info@eclectichive.com
-- **Reply-To:** the test client email below (so hitting Reply looks real)
-- **Subject:** `[TEST] New Hive inquiry — Sarah Whitman (4 pieces)`
-- **Eyebrow in body:** `ECLECTIC HIVE — [TEST] NEW INQUIRY`
+- Change footer entry from `{ href: "/contact", label: "FAQ", hash: "faq" }` to `{ href: "/atelier", label: "FAQ", hash: "working-with-the-atelier" }`.
+- Add `id="working-with-the-atelier"` to the `<Section>` wrapping the FAQ accordion (atelier.tsx line ~376).
+- Verify: click footer FAQ → lands on /atelier, scrolls to section.
 
-To get "TEST" into the subject + header without changing template code, I'll prepend `[TEST]` to the `name` field on this one send only (template builds subject from name, and the heading renders the name). Clean, no code edit, no permanent template change.
+## 2. Home hero SSR hydration mismatch
+**File:** `src/components/home/SequentialHeroVideo.tsx`
 
-Actually cleaner: pass `subject: "[TEST] Please ignore — pipeline check"` so the italic subject line in the email body reads as TEST, and prepend `[TEST]` to name so the email subject line also reads TEST. Both surfaces flagged.
+- Replace `useState(() => Math.floor(Math.random() * HERO_CLIPS.length))` with `useState(0)`.
+- Add `useEffect(() => { setIndex(Math.floor(Math.random() * HERO_CLIPS.length)); }, [])` so the random rotation still happens, but only after mount.
+- Verify: reload home, console clean of hydration warnings, video still rotates.
 
-### Realistic payload
+## 3. Invalid DOM prop `fetchpriority` → `fetchPriority`
+**Files:** `src/components/home/PosterPicture.tsx`, `src/components/home/HeroFilmstrip.tsx`, `src/components/hero-image.tsx`
 
-```text
-name:         [TEST] Sarah Whitman
-email:        sarah.whitman@example.com
-phone:        +1 (310) 555-0142
-subject:      [TEST] Please ignore — pipeline check
-project_date: October 18, 2026
-budget:       $18,000 – $25,000
-scope:        Full styling + tablescape for 48-person desert dinner at Amangiri
-message:      Hi Hive — planning an intimate sunset dinner for 48 in the
-              Amangiri pavilion the weekend of Oct 17–19. Looking for warm,
-              low, candlelit textures — lots of pampas, bone, raw linen,
-              hammered brass. Open to your full point of view on tabletop.
-              Would love to walk through the pieces below on a call next week.
-items:        4 real pieces pulled from current_catalog.json
-              (seating + tableware + styling + candlelight, one each,
-               with real rms_id, title, category)
-inquiry_id:   test-<timestamp>
-```
+- Rename JSX attribute from lowercase `fetchpriority` to camelCase `fetchPriority` in all three files. React 19 emits the correct lowercase HTML attribute internally.
+- Verify: console clean of "Invalid DOM property" warnings.
 
-### How I'll pick the 4 real items
+## 4. Framer Motion scroll container warning on /contact
+**File:** likely `src/routes/contact.tsx` (sticky left column wrapper)
 
-Read `src/data/inventory/current_catalog.json`, grab the first public-ready product from each of: seating, tableware, styling, candlelight. Use their real `rms_id`, `title`, `displayCategory`. No fabricated SKUs.
+- Locate the sticky/scroll-tracked wrapper Framer is measuring.
+- Add `position: relative` (or `className="relative"`) to its container.
+- Verify: load /contact, console clean of the "non-static position" warning.
 
-### Execution
+## 5. Route file leaks non-route export
+**File:** `src/routes/admin.incoming.tsx`
 
-One shell call: `curl -X POST https://eclectichivedraft.lovable.app/api/public/notify-inquiry` (published URL, since that's where mail infra runs in prod) with the JSON body above.
+- Move the `IncomingPage` component to `src/components/admin/incoming-page.tsx` (new file) and import it into the route.
+- Drop the named export from the route file so only the `Route` export remains.
+- Verify: console clean of the tanstack-router code-split warning.
 
-Then one `email_send_log` query to confirm exactly one new row with `status=sent` and `template_name=inquiry-notification`. Report back the message_id.
+## Sequencing & verification
 
-### Not doing
+After each fix:
+1. Reload the affected route in the preview.
+2. Read console logs for that route.
+3. Move to the next fix only after the prior one is clean.
 
-- No template code changes
-- No new routes
-- No DB inserts into `inquiries` (this is a notification test, not a form submission test — keeps your admin inbox clean)
-- No repeat sends
+If any fix breaks something visual, revert that single change and re-plan before continuing — no batching, per the project's perf/dead-code memory rule.
+
+## Out of scope (flagged earlier, not in this plan)
+
+- Missing Collection facets (candlelight, chandeliers, serveware, large-decor, furs-pelts). Needs your call on intent before any UI change.
+- Mixed-case "build a style brief →" CTA on /contact. Cosmetic; decide caps vs mixed.
