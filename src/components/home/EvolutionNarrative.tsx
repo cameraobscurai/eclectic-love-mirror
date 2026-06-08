@@ -204,14 +204,15 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
         ticking = false;
       });
     };
-    window.addEventListener("scroll", handler, { passive: true });
-    window.addEventListener("resize", () => {
+    const onResize = () => {
       syncBreakpoint();
       handler();
-    });
+    };
+    window.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", handler);
-      window.removeEventListener("resize", handler);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 

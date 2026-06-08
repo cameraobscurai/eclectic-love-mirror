@@ -63,6 +63,8 @@ export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const pathname = location.pathname;
   const burgerRef = useRef<HTMLButtonElement>(null);
@@ -118,7 +120,25 @@ export function Navigation() {
 
   useEffect(() => {
     setIsOpen(false);
+    setDropdownOpen(false);
   }, [pathname]);
+
+  // Touch / outside-click handler so the desktop dropdown also works on iOS
+  // Safari and touch laptops (where :hover never persists on a non-anchor).
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const close = (e: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
+  }, [dropdownOpen]);
 
   // Hover/focus warmup for the Atelier route. Fires once per session — the
   // hero + first row of THE HIVE portraits start downloading the moment a
@@ -198,11 +218,33 @@ export function Navigation() {
                 ? { onMouseEnter: warmAtelier, onFocus: warmAtelier, onTouchStart: warmAtelier }
                 : {};
               return (
-                <div key={link.href} className="relative group/navitem">
+                <div
+                  key={link.href}
+                  ref={isCollection ? dropdownRef : undefined}
+                  className="relative group/navitem"
+                  onMouseEnter={isCollection ? () => setDropdownOpen(true) : undefined}
+                  onMouseLeave={isCollection ? () => setDropdownOpen(false) : undefined}
+                >
                   <Link
                     to={link.href}
                     preload="intent"
                     {...warmHandlers}
+                    onClick={
+                      isCollection
+                        ? (e) => {
+                            // Touch devices: first tap opens dropdown instead of
+                            // navigating, so users can pick a subcategory.
+                            if (
+                              !dropdownOpen &&
+                              typeof window !== "undefined" &&
+                              window.matchMedia("(hover: none)").matches
+                            ) {
+                              e.preventDefault();
+                              setDropdownOpen(true);
+                            }
+                          }
+                        : undefined
+                    }
                     className={cn(
                       "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
@@ -226,7 +268,11 @@ export function Navigation() {
                   </Link>
                   {isCollection && (
                     <div
-                      className="absolute left-1/2 -translate-x-1/2 top-full pt-4 opacity-0 invisible group-hover/navitem:opacity-100 group-hover/navitem:visible focus-within:opacity-100 focus-within:visible transition-opacity duration-200 z-50"
+                      className={cn(
+                        "absolute left-1/2 -translate-x-1/2 top-full pt-4 transition-opacity duration-200 z-50",
+                        "focus-within:opacity-100 focus-within:visible",
+                        dropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                      )}
                     >
                       <ul
                         className="bg-white border border-charcoal/10 shadow-xl py-2 min-w-[220px]"
@@ -239,7 +285,8 @@ export function Navigation() {
                               search={{ group: pid, subcategory: "all", q: "", sort: "type", density: "comfortable", view: "" }}
                               preload="intent"
                               role="menuitem"
-                              className="block px-5 py-2 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap"
+                              onClick={() => setDropdownOpen(false)}
+                              className="block px-5 py-3 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap"
                             >
                               {PARENT_LABELS[pid]}
                             </Link>
