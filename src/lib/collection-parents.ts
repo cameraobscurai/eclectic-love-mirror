@@ -161,6 +161,11 @@ const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
   "styling": "styling",
   "large-decor": "large-decor",
   "light": "lighting",
+  // Some products use the full word "lighting" as their liveCategory; map
+  // both spellings so neither slug silently falls through to the taxonomy
+  // fallback path.
+  "lighting": "lighting",
+
 };
 
 export function productParent(p: CollectionProduct): ParentId | null {

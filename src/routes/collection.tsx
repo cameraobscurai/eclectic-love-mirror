@@ -579,11 +579,15 @@ function CollectionPage() {
     }
     navigate({
       search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
-      replace: false,
+      // Opening pushes a history entry so the back button closes the modal.
+      // Closing REPLACES that entry so the back button leaves the page
+      // entirely instead of reopening the modal (open→close→back = ghost).
+      replace: id === null,
       // Opening / closing Quick View must never scroll the underlying grid.
       resetScroll: false,
     });
   };
+
   const quickViewIndex = useMemo(() => {
     if (!view) return -1;
     return visibleProducts.findIndex((p) => p.id === view || p.slug === view);
