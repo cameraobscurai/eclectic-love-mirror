@@ -628,7 +628,6 @@ function CollectionPage() {
         subcategory: "all",
         q: "",
         sort: "type" as SortKey,
-        density,
         layout: "grid" as Layout,
         view: "",
       }),
@@ -646,13 +645,16 @@ function CollectionPage() {
     });
   };
 
-  // Selecting a parent always resets subcategory to "all".
+  // Selecting a parent always resets subcategory to "all" AND clears any
+  // stale Quick View id (`view`) — a modal from the previous filter set
+  // would otherwise resolve to a product no longer in scope.
   const selectParent = (parent: ParentId | "") => {
     navigate({
       search: (prev: CollectionSearch) => ({
         ...prev,
         group: parent,
         subcategory: "all",
+        view: "",
       }),
       replace: true,
       resetScroll: false,
@@ -660,33 +662,30 @@ function CollectionPage() {
     setSheetOpen(false);
   };
 
-  // Selecting a subcategory updates only `subcategory`, never `group`.
+  // Selecting a subcategory updates `subcategory` and clears `view`.
   const selectSubcategory = (sub: string) => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub }),
+      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub, view: "" }),
       replace: true,
       resetScroll: false,
     });
   };
 
   // Landing tile → translate BrowseGroupId into { parent, sub } and push both.
+  // Clears `q` and `view` so a leftover search string or modal id from a
+  // previous browse never silently filters / re-opens on the destination.
   const selectFromTile = (tileId: BrowseGroupId) => {
     const mapping = TILE_TO_PARENT_SUB[tileId];
     if (!mapping) return;
+    setQLocal("");
     navigate({
       search: (prev: CollectionSearch) => ({
         ...prev,
         group: mapping.parent,
         subcategory: mapping.sub,
+        q: "",
+        view: "",
       }),
-      replace: true,
-      resetScroll: false,
-    });
-  };
-
-  const setDensity = (next: Density) => {
-    navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, density: next }),
       replace: true,
       resetScroll: false,
     });
@@ -707,7 +706,7 @@ function CollectionPage() {
   // Grid mode is a single comfortable preset — big tiles. Wall is the dense option.
   const gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
-  void density;
+
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
