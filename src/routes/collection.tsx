@@ -65,9 +65,6 @@ const SEARCH_DEBOUNCE_MS = 280;
 const SORTS = ["type", "az", "tonal"] as const;
 type SortKey = (typeof SORTS)[number];
 
-const DENSITIES = ["comfortable", "dense"] as const;
-type Density = (typeof DENSITIES)[number];
-
 const LAYOUTS = ["grid", "wall"] as const;
 type Layout = (typeof LAYOUTS)[number];
 
@@ -76,7 +73,6 @@ interface CollectionSearch {
   subcategory: string; // sub id within parent, or "all"
   q: string;
   sort: SortKey;
-  density: Density;
   layout: Layout;
   view: string;
 }
@@ -86,10 +82,10 @@ const searchSchema = z.object({
   subcategory: fallback(z.string(), "all").default("all"),
   q: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(SORTS), "type").default("type"),
-  density: fallback(z.enum(DENSITIES), "comfortable").default("comfortable"),
   layout: fallback(z.enum(LAYOUTS), "grid").default("grid"),
   view: fallback(z.string(), "").default(""),
 });
+
 
 const LEGACY_GROUP_ALIASES: Record<string, { parent: ParentId | ""; sub: string }> = {
   seating: { parent: "lounge-seating", sub: "all" },
