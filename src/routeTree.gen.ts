@@ -39,6 +39,7 @@ import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const TheHive3Route = TheHive3RouteImport.update({
   id: '/the-hive3',
@@ -190,6 +191,12 @@ const AdminColorsRoute = AdminColorsRouteImport.update({
   path: '/colors',
   getParentRoute: () => AdminRoute,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -254,6 +262,7 @@ export interface FileRoutesByTo {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio': typeof StudioIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -287,6 +296,7 @@ export interface FileRoutesById {
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
   '/studio/': typeof StudioIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -321,6 +331,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -353,6 +364,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -385,6 +397,7 @@ export interface FileRouteTypes {
     | '/studio/thanks'
     | '/studio/three'
     | '/studio/'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -412,6 +425,7 @@ export interface RootRouteChildren {
   StudioThanksRoute: typeof StudioThanksRoute
   StudioThreeRoute: typeof StudioThreeRoute
   StudioIndexRoute: typeof StudioIndexRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -626,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminColorsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -674,6 +695,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioThanksRoute: StudioThanksRoute,
   StudioThreeRoute: StudioThreeRoute,
   StudioIndexRoute: StudioIndexRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
