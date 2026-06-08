@@ -373,7 +373,7 @@ function AtelierPage() {
       </Section>
 
       {/* 5. WORKING WITH THE ATELIER — FAQ accordion */}
-      <Section>
+      <Section id="working-with-the-atelier">
         <div>
           <h2 className="font-display text-[clamp(1.5rem,1rem+0.9vw,2.125rem)] leading-[1.1] uppercase tracking-[0.04em]">
             WORKING WITH THE ATELIER
@@ -446,12 +446,14 @@ function AtelierPage() {
 function Section({
   eyebrow,
   children,
+  id,
 }: {
   eyebrow?: string;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
-    <section style={{ marginTop: "var(--section-gap)" }}>
+    <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
         <div
           className="border-t pt-10"
