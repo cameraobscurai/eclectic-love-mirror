@@ -282,7 +282,7 @@ export function Navigation() {
                           <li key={pid} role="none">
                             <Link
                               to="/collection"
-                              search={{ group: pid, subcategory: "all", q: "", sort: "type", density: "comfortable", view: "" }}
+                              search={{ group: pid, subcategory: "all", q: "", sort: "type", layout: "grid", view: "" }}
                               preload="intent"
                               role="menuitem"
                               onClick={() => setDropdownOpen(false)}
