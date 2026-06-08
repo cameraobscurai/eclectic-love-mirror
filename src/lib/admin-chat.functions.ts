@@ -16,7 +16,7 @@ export interface AdminMessageRow {
   id: string;
   thread_id: string;
   role: "user" | "assistant" | "system" | "tool";
-  parts: unknown;
+  parts: any;
   created_at: string;
 }
 
