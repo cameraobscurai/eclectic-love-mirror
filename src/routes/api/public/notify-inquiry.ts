@@ -10,8 +10,24 @@ const SENDER_DOMAIN = 'notify.eclectichive.com'
 const FROM_DOMAIN = 'eclectichive.com'
 const TEMPLATE_NAME = 'inquiry-notification'
 
+const ItemSnapshotSchema = z.object({
+  rms_id: z.string().max(100).optional().nullable(),
+  title: z.string().max(300).optional().nullable(),
+  category: z.string().max(100).optional().nullable(),
+  image_url: z.string().url().max(2000).optional().nullable(),
+})
+
 const BodySchema = z.object({
-  inquiry_id: z.string().uuid(),
+  name: z.string().min(1).max(200),
+  email: z.string().email().max(320),
+  phone: z.string().max(50).optional().nullable(),
+  subject: z.string().max(250).optional().nullable(),
+  message: z.string().max(5000).optional().nullable(),
+  project_date: z.string().max(100).optional().nullable(),
+  budget: z.string().max(100).optional().nullable(),
+  scope: z.string().max(500).optional().nullable(),
+  items: z.array(ItemSnapshotSchema).max(50).optional().default([]),
+  inquiry_id: z.string().max(100).optional().nullable(),
 })
 
 function generateToken(): string {
@@ -30,42 +46,31 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           return Response.json({ error: 'Server misconfigured' }, { status: 500 })
         }
 
-        let parsed: z.infer<typeof BodySchema>
+        let body: z.infer<typeof BodySchema>
         try {
-          parsed = BodySchema.parse(await request.json())
+          body = BodySchema.parse(await request.json())
         } catch {
           return Response.json({ error: 'Invalid body' }, { status: 400 })
         }
 
         const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-        const { data: inquiry, error: fetchError } = await supabase
-          .from('inquiries')
-          .select('id, name, email, phone, subject, message, item_snapshots, metadata')
-          .eq('id', parsed.inquiry_id)
-          .maybeSingle()
-
-        if (fetchError || !inquiry) {
-          return Response.json({ error: 'Inquiry not found' }, { status: 404 })
-        }
-
         const template = TEMPLATES[TEMPLATE_NAME]
         if (!template) {
           return Response.json({ error: 'Template missing' }, { status: 500 })
         }
 
-        const meta = (inquiry.metadata ?? {}) as Record<string, any>
         const templateData = {
-          name: inquiry.name,
-          email: inquiry.email,
-          phone: inquiry.phone,
-          subject: inquiry.subject,
-          message: inquiry.message,
-          projectDate: meta.project_date ?? null,
-          budget: meta.budget ?? null,
-          scope: meta.scope ?? null,
-          items: Array.isArray(inquiry.item_snapshots) ? inquiry.item_snapshots : [],
-          inquiryId: inquiry.id,
+          name: body.name,
+          email: body.email,
+          phone: body.phone,
+          subject: body.subject,
+          message: body.message,
+          projectDate: body.project_date,
+          budget: body.budget,
+          scope: body.scope,
+          items: body.items ?? [],
+          inquiryId: body.inquiry_id ?? undefined,
         }
 
         const recipient = template.to!
