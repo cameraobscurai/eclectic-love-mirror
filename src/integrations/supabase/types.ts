@@ -1137,6 +1137,7 @@ export type Database = {
       style_boards: {
         Row: {
           client_view_count: number
+          cover_pinned_rms_id: string | null
           created_at: string
           created_by: string | null
           curator_notes: string | null
@@ -1156,6 +1157,7 @@ export type Database = {
         }
         Insert: {
           client_view_count?: number
+          cover_pinned_rms_id?: string | null
           created_at?: string
           created_by?: string | null
           curator_notes?: string | null
@@ -1175,6 +1177,7 @@ export type Database = {
         }
         Update: {
           client_view_count?: number
+          cover_pinned_rms_id?: string | null
           created_at?: string
           created_by?: string | null
           curator_notes?: string | null
