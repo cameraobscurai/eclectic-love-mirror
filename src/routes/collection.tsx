@@ -14,7 +14,10 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
-import { pickBatchMediaHeight } from "@/lib/collection-tile-presets";
+// pickBatchMediaHeight retired — cell height is now per-tile (set on each
+// <li> from its family preset). The function remains exported in
+// collection-tile-presets for future use; the route no longer needs it.
+
 import {
   PARENT_ORDER,
   PARENT_LABELS,
