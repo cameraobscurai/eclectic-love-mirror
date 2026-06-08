@@ -34,6 +34,7 @@ import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
@@ -171,6 +172,11 @@ const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   path: '/email/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
+  id: '/api/admin-chat',
+  path: '/api/admin-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
@@ -373,6 +382,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/api/admin-chat'
     | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
@@ -411,6 +421,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/api/admin-chat'
     | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/admin/incoming'
     | '/admin/insights'
     | '/admin/studio'
+    | '/api/admin-chat'
     | '/email/unsubscribe'
     | '/studio/$token'
     | '/studio/lab'
@@ -482,6 +494,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
+  ApiAdminChatRoute: typeof ApiAdminChatRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   StudioTokenRoute: typeof StudioTokenRoute
   StudioLabRoute: typeof StudioLabRoute
@@ -672,6 +685,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin-chat': {
+      id: '/api/admin-chat'
+      path: '/api/admin-chat'
+      fullPath: '/api/admin-chat'
+      preLoaderRoute: typeof ApiAdminChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -792,6 +812,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
+  ApiAdminChatRoute: ApiAdminChatRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   StudioTokenRoute: StudioTokenRoute,
   StudioLabRoute: StudioLabRoute,
@@ -807,3 +828,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
