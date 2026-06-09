@@ -18,6 +18,9 @@ interface ProductTileProps {
   onOpen: () => void;
   /** Mark image as failed so the parent can hide this product for the session. */
   onImageFailed?: (productId: string) => void;
+  /** Optional override for the cell height — used by single-parent views to
+   *  enforce a uniform row baseline (dense editorial rhythm). */
+  mediaHOverride?: string;
 }
 
 // Eager render = first three full rows on wide desktops, two on smaller.
@@ -58,6 +61,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
+  mediaHOverride,
 }: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
@@ -117,13 +121,13 @@ export function ProductTile({
         // grid's [grid-auto-rows:max-content] lets each row take its tallest
         // cell naturally; rows are mildly ragged on purpose (printed
         // contact-sheet rhythm), not collapsed to the shortest family.
-        ["--archive-tile-media-h" as string]: preset.mediaH,
+        ["--archive-tile-media-h" as string]: mediaHOverride ?? preset.mediaH,
         // Skip layout/paint/decode for offscreen tiles. Intrinsic size now
         // matches the actual cell height (not a hardcoded 480px) so the
         // reserved box is correct for every family — eliminates the
         // 480px→real-height snap that caused row-collapse on scroll.
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
-        containIntrinsicSize: `auto ${preset.mediaH}`,
+        containIntrinsicSize: `auto ${mediaHOverride ?? preset.mediaH}`,
       }}
     >
 

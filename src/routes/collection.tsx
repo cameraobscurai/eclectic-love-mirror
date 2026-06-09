@@ -14,9 +14,11 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
-// pickBatchMediaHeight retired — cell height is now per-tile (set on each
-// <li> from its family preset). The function remains exported in
-// collection-tile-presets for future use; the route no longer needs it.
+// Single-parent views (e.g. /collection?group=cocktail-bar) opt into a
+// uniform row baseline via getParentUniformMediaH — restores the dense,
+// editorial row rhythm of the live site without re-introducing the cross-
+// parent crush that pickBatchMediaHeight used to cause.
+import { getParentUniformMediaH } from "@/lib/collection-tile-presets";
 
 import {
   PARENT_ORDER,
@@ -1192,15 +1194,20 @@ function CollectionPage() {
                                 : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
                             }
                           >
-                            {visibleBatch.map((p, i) => (
-                              <ProductTile
-                                key={p.id}
-                                product={p}
-                                index={i}
-                                onOpen={() => setQuickViewId(p.id)}
-                                onImageFailed={markFailed}
-                              />
-                            ))}
+                            {(() => {
+                              const uniformMediaH =
+                                getParentUniformMediaH(activeParent || null);
+                              return visibleBatch.map((p, i) => (
+                                <ProductTile
+                                  key={p.id}
+                                  product={p}
+                                  index={i}
+                                  onOpen={() => setQuickViewId(p.id)}
+                                  onImageFailed={markFailed}
+                                  mediaHOverride={uniformMediaH ?? undefined}
+                                />
+                              ));
+                            })()}
                           </motion.ul>
                         </LayoutGroup>
 
