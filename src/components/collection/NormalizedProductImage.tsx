@@ -8,20 +8,56 @@ type Fit = {
 
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
+  frameAspect?: number;
 };
 
 const fitCache = new Map<string, Fit | null>();
 
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, scale: 1 };
+const FRAME_ASPECT = 4 / 5;
+const TILE_IMAGE_INSET = 0.84;
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, scale: 0.68 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function measureImage(img: HTMLImageElement): Fit | null {
+function fitFromVisualBox(
+  cx: number,
+  cy: number,
+  bw: number,
+  bh: number,
+  naturalAspect: number,
+  frameAspect = FRAME_ASPECT,
+): Fit | null {
+  if (!bw || !bh || !naturalAspect) return null;
+
+  const renderedW = naturalAspect >= frameAspect ? bw : (naturalAspect / frameAspect) * bw;
+  const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
+  if (!renderedW || !renderedH) return null;
+
+  const silhouette = renderedW / renderedH;
+  const targetArea = silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2;
+  const maxW = silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56;
+  const maxH = silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56;
+  const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
+  const scaleByArea = Math.sqrt(targetArea / currentArea);
+  const scaleByCaps = Math.min(
+    maxW / Math.max(0.001, TILE_IMAGE_INSET * renderedW),
+    maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
+  );
+
+  return {
+    cx: clamp(cx, 0.05, 0.95),
+    cy: clamp(cy, 0.05, 0.95),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.52, 1.55),
+  };
+}
+
+function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
+  const naturalAspect = w / h;
 
   const maxSide = 180;
   const scale = Math.min(1, maxSide / Math.max(w, h));
@@ -38,7 +74,7 @@ function measureImage(img: HTMLImageElement): Fit | null {
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return null;
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect);
   }
 
   let minX = cw;
@@ -54,7 +90,8 @@ function measureImage(img: HTMLImageElement): Fit | null {
       const r = px[i];
       const g = px[i + 1];
       const b = px[i + 2];
-      if (r > 248 && g > 248 && b > 248) continue;
+      // Wider white/near-white threshold catches slightly off-white studio backgrounds
+      if (r > 242 && g > 242 && b > 242) continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
@@ -70,22 +107,18 @@ function measureImage(img: HTMLImageElement): Fit | null {
 
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
-  const scaleToFrame = 0.84 / Math.max(bw, bh);
 
-  return {
-    cx: clamp(cx, 0.05, 0.95),
-    cy: clamp(cy, 0.05, 0.95),
-    scale: clamp(scaleToFrame, 1, 2.35),
-  };
+  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect);
 }
 
-export function NormalizedProductImage({ src, className, style, ...props }: Props) {
-  const cached = fitCache.get(src);
+export function NormalizedProductImage({ src, frameAspect = FRAME_ASPECT, className, style, ...props }: Props) {
+  const cacheKey = `${src}|${frameAspect}`;
+  const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
   useEffect(() => {
-    if (fitCache.has(src)) {
-      setFit(fitCache.get(src));
+    if (fitCache.has(cacheKey)) {
+      setFit(fitCache.get(cacheKey));
       return;
     }
     let cancelled = false;
@@ -93,19 +126,19 @@ export function NormalizedProductImage({ src, className, style, ...props }: Prop
     probe.crossOrigin = "anonymous";
     probe.decoding = "async";
     probe.onload = () => {
-      const next = measureImage(probe);
-      fitCache.set(src, next);
+      const next = measureImage(probe, frameAspect);
+      fitCache.set(cacheKey, next);
       if (!cancelled) setFit(next);
     };
     probe.onerror = () => {
-      fitCache.set(src, null);
+      fitCache.set(cacheKey, null);
       if (!cancelled) setFit(null);
     };
     probe.src = src;
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [cacheKey, frameAspect, src]);
 
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;

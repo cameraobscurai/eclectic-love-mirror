@@ -51,7 +51,13 @@ import {
   getCollectionCatalog,
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
-import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+import {
+  PRODUCT_TILE_ASPECT,
+  PRODUCT_TILE_FRAME_ASPECT,
+  PRODUCT_TILE_IMAGE_CLASS,
+  PRODUCT_TILE_WIDE_ASPECT,
+  PRODUCT_TILE_WIDE_FRAME_ASPECT,
+} from "@/lib/collection-tile-presets";
 
 
 export const Route = createFileRoute("/admin/photos")({
@@ -294,6 +300,9 @@ function CategoryGrid({
   );
 
   const loading = allProducts === null;
+  const useWideProductFrame = parent === "cocktail-bar";
+  const tileAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
+  const frameAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
 
   return (
     <div className="px-6 lg:px-10 py-8 max-w-[1500px]">
@@ -421,6 +430,8 @@ function CategoryGrid({
                   item={item}
                   index={idx}
                   dense={view === "wall"}
+                  tileAspect={tileAspect}
+                  frameAspect={frameAspect}
                   draggable={!subActive}
                   onOpen={() => setEditing(item)}
                 />
@@ -430,8 +441,11 @@ function CategoryGrid({
 
           <DragOverlay>
             {activeItem && (
-              <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
-                <TileMedia item={activeItem} dense={view === "wall"} />
+              <div
+                className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
+                style={{ aspectRatio: tileAspect }}
+              >
+                <TileMedia item={activeItem} dense={view === "wall"} frameAspect={frameAspect} />
               </div>
             )}
           </DragOverlay>
@@ -481,12 +495,16 @@ function Tile({
   item,
   index,
   dense,
+  tileAspect,
+  frameAspect,
   draggable = true,
   onOpen,
 }: {
   item: Item;
   index: number;
   dense: boolean;
+  tileAspect: string;
+  frameAspect: number;
   draggable?: boolean;
   onOpen: () => void;
 }) {
@@ -504,24 +522,24 @@ function Tile({
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
       onClick={(e) => {
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border transition-colors ${
+      className={`group relative bg-white border transition-colors ${
         draggable ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
       } ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
+      style={{ ...style, aspectRatio: tileAspect }}
       title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
 
-      <TileMedia item={item} dense={dense} />
+      <TileMedia item={item} dense={dense} frameAspect={frameAspect} />
 
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
         {index + 1}
@@ -557,7 +575,7 @@ function Tile({
   );
 }
 
-function TileMedia({ item }: { item: Item; dense?: boolean }) {
+function TileMedia({ item, frameAspect }: { item: Item; dense?: boolean; frameAspect: number }) {
   const hero = item.images[0];
   if (!hero) {
     return (
@@ -570,6 +588,7 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
     <div className="h-full w-full">
       <NormalizedProductImage
         src={hero}
+        frameAspect={frameAspect}
         alt=""
         loading="lazy"
         draggable={false}
