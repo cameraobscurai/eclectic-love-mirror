@@ -247,12 +247,25 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex items-center border-b border-neutral-200 px-5">
+          <TabBtn active={tab === "manage"} onClick={() => setTab("manage")}>
+            <LayoutGrid className="h-3.5 w-3.5" /> Manage
+          </TabBtn>
+          <TabBtn active={tab === "pick"} onClick={() => setTab("pick")}>
+            <FolderOpen className="h-3.5 w-3.5" /> Pick from storage
+          </TabBtn>
+        </div>
+
         {/* Body */}
         <div
           className={`flex-1 overflow-auto p-5 ${
-            dropActive ? "bg-emerald-50/50 ring-2 ring-emerald-400 ring-inset" : ""
+            tab === "manage" && dropActive
+              ? "bg-emerald-50/50 ring-2 ring-emerald-400 ring-inset"
+              : ""
           }`}
           onDragOver={(e) => {
+            if (tab !== "manage") return;
             if (e.dataTransfer.types.includes("Files")) {
               e.preventDefault();
               setDropActive(true);
@@ -260,6 +273,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
           }}
           onDragLeave={() => setDropActive(false)}
           onDrop={(e) => {
+            if (tab !== "manage") return;
             if (e.dataTransfer.files.length) {
               e.preventDefault();
               setDropActive(false);
@@ -267,9 +281,19 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
             }
           }}
         >
-          {urls.length === 0 ? (
+          {tab === "pick" ? (
+            <StoragePicker
+              rmsId={item.rms_id}
+              existingUrls={urls}
+              onPick={(picked) => {
+                const next = [...urls, ...picked.filter((u) => !urls.includes(u))];
+                apply(next);
+                setTab("manage");
+              }}
+            />
+          ) : urls.length === 0 ? (
             <div className="text-center py-16 text-neutral-500 text-sm">
-              No images yet. Drop files here or use upload below.
+              No images yet. Drop files here, upload below, or pick from storage.
             </div>
           ) : (
             <DndContext
@@ -308,6 +332,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
             </DndContext>
           )}
         </div>
+
 
         {/* Footer */}
         <div className="border-t border-neutral-200 px-5 py-3 flex items-center justify-between">
