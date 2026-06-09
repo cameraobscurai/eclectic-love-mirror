@@ -54,7 +54,8 @@ function measureImage(img: HTMLImageElement): Fit | null {
       const r = px[i];
       const g = px[i + 1];
       const b = px[i + 2];
-      if (r > 248 && g > 248 && b > 248) continue;
+      // Wider white/near-white threshold catches slightly off-white studio backgrounds
+      if (r > 242 && g > 242 && b > 242) continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
@@ -70,12 +71,18 @@ function measureImage(img: HTMLImageElement): Fit | null {
 
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
-  const scaleToFrame = 0.84 / Math.max(bw, bh);
+
+  // Target: subject fills 82% of the tile's effective area.
+  // min clamp reduced to 0.8 (allow slight shrink for subjects that nearly fill the canvas).
+  // max clamp raised to 4.0 so small subjects (≥20% of canvas) still hit the target.
+  // Result: subjects in the 20–90% canvas fill range all appear ~75% of tile width/height.
+  const scaleToFrame = 0.82 / Math.max(bw, bh);
 
   return {
-    cx: clamp(cx, 0.05, 0.95),
-    cy: clamp(cy, 0.05, 0.95),
-    scale: clamp(scaleToFrame, 1, 2.35),
+    // Tighter center clamp prevents extreme off-center translations at high scale
+    cx: clamp(cx, 0.1, 0.9),
+    cy: clamp(cy, 0.1, 0.9),
+    scale: clamp(scaleToFrame, 0.8, 4.0),
   };
 }
 
