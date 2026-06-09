@@ -44,6 +44,7 @@ import {
   PARENT_LABELS,
   PARENT_SUBS,
   productParent,
+  productMatchesSub,
   type ParentId,
 } from "@/lib/collection-parents";
 import {
@@ -51,6 +52,7 @@ import {
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
 import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -195,11 +197,27 @@ function CategoryGrid({
     return inParent.map(adapt);
   }, [allProducts, parent]);
 
-  // Local items state so drag-reorder feels instant.
+  // Local items state so drag-reorder feels instant. Holds the FULL parent
+  // list — the sub filter is purely a display filter (see `visibleItems`).
   const [items, setItems] = useState<Item[]>([]);
   useEffect(() => {
     setItems(baseItems);
   }, [baseItems]);
+
+  // Sub filter is visual only. Reorder is disabled while filtered so we
+  // never persist a partial parent list.
+  const subActive = sub !== "all";
+  const visibleItems = useMemo(
+    () =>
+      subActive
+        ? items.filter((i) => {
+            const p = (allProducts ?? []).find((pp) => pp.id === i.id);
+            return p ? productMatchesSub(p, parent, sub) : false;
+          })
+        : items,
+    [items, subActive, allProducts, parent, sub],
+  );
+
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
@@ -256,6 +274,9 @@ function CategoryGrid({
   const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
   const handleDragEnd = (e: DragEndEvent) => {
     setActiveId(null);
+    // Reorder is disabled when filtered to a sub — we'd otherwise persist
+    // a partial parent list.
+    if (subActive) return;
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const oldIdx = items.findIndex((i) => i.id === active.id);
@@ -265,6 +286,7 @@ function CategoryGrid({
     setItems(next);
     scheduleSave(next);
   };
+
 
   const activeItem = useMemo(
     () => (items ?? []).find((i) => i.id === activeId) ?? null,
@@ -285,8 +307,11 @@ function CategoryGrid({
             {PARENT_LABELS[parent]}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {items.length} items · Drag to reorder · Click to edit
+            {subActive
+              ? `${visibleItems.length} of ${items.length} shown · Reorder disabled while filtered`
+              : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
+
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} />
@@ -342,8 +367,11 @@ function CategoryGrid({
             </button>
           ))}
           <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40 self-center">
-            Sub filter is visual only — reorder still writes the full parent list
+            {subActive
+              ? "Filtered view · clear sub to reorder"
+              : "Reorder writes the full parent list"}
           </span>
+
         </div>
       )}
 
@@ -370,7 +398,7 @@ function CategoryGrid({
           modifiers={[restrictToParentElement]}
         >
           <SortableContext
-            items={items.map((i) => i.id)}
+            items={visibleItems.map((i) => i.id)}
             strategy={rectSortingStrategy}
           >
             <div
@@ -382,22 +410,24 @@ function CategoryGrid({
               style={
                 view === "wall"
                   ? {
-                      gridTemplateColumns: `repeat(${wallCols(items.length)}, minmax(0, 1fr))`,
+                      gridTemplateColumns: `repeat(${wallCols(visibleItems.length)}, minmax(0, 1fr))`,
                     }
                   : undefined
               }
             >
-              {items.map((item, idx) => (
+              {visibleItems.map((item, idx) => (
                 <Tile
                   key={item.id}
                   item={item}
                   index={idx}
                   dense={view === "wall"}
+                  draggable={!subActive}
                   onOpen={() => setEditing(item)}
                 />
               ))}
             </div>
           </SortableContext>
+
           <DragOverlay>
             {activeItem && (
               <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
@@ -451,15 +481,17 @@ function Tile({
   item,
   index,
   dense,
+  draggable = true,
   onOpen,
 }: {
   item: Item;
   index: number;
   dense: boolean;
+  draggable?: boolean;
   onOpen: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: item.id });
+    useSortable({ id: item.id, disabled: !draggable });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -473,19 +505,22 @@ function Tile({
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
+      {...(draggable ? attributes : {})}
+      {...(draggable ? listeners : {})}
       onClick={(e) => {
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-colors ${
+      className={`group relative aspect-[4/5] bg-white border transition-colors ${
+        draggable ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+      } ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
-      title={`${item.title} · click to edit · drag to reorder`}
+      title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
+
       <TileMedia item={item} dense={dense} />
 
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
