@@ -197,11 +197,27 @@ function CategoryGrid({
     return inParent.map(adapt);
   }, [allProducts, parent]);
 
-  // Local items state so drag-reorder feels instant.
+  // Local items state so drag-reorder feels instant. Holds the FULL parent
+  // list — the sub filter is purely a display filter (see `visibleItems`).
   const [items, setItems] = useState<Item[]>([]);
   useEffect(() => {
     setItems(baseItems);
   }, [baseItems]);
+
+  // Sub filter is visual only. Reorder is disabled while filtered so we
+  // never persist a partial parent list.
+  const subActive = sub !== "all";
+  const visibleItems = useMemo(
+    () =>
+      subActive
+        ? items.filter((i) => {
+            const p = (allProducts ?? []).find((pp) => pp.id === i.id);
+            return p ? productMatchesSub(p, parent, sub) : false;
+          })
+        : items,
+    [items, subActive, allProducts, parent, sub],
+  );
+
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
