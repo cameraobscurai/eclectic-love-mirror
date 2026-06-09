@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET public_ready = false, hidden_note = COALESCE(hidden_note, 'hidden per owner 2026-06-09') WHERE rms_id = '2744';
