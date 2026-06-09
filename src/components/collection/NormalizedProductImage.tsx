@@ -9,6 +9,7 @@ type Fit = {
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
+  visualOffsetY?: number;
 };
 
 const fitCache = new Map<string, Fit | null>();
@@ -111,7 +112,14 @@ function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | 
   return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect);
 }
 
-export function NormalizedProductImage({ src, frameAspect = FRAME_ASPECT, className, style, ...props }: Props) {
+export function NormalizedProductImage({
+  src,
+  frameAspect = FRAME_ASPECT,
+  visualOffsetY = 0,
+  className,
+  style,
+  ...props
+}: Props) {
   const cacheKey = `${src}|${frameAspect}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
@@ -143,9 +151,9 @@ export function NormalizedProductImage({ src, frameAspect = FRAME_ASPECT, classN
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
-    const ty = (0.5 - f.cy) * 100;
+    const ty = (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit]);
+  }, [fit, visualOffsetY]);
 
   return (
     <img
