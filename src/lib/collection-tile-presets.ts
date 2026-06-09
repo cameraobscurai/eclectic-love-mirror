@@ -133,3 +133,31 @@ export function pickBatchMediaHeight(
   }
   return bestH;
 }
+
+/**
+ * Uniform row baseline per parent. When viewing a single parent (e.g.
+ * Cocktail & Bar), all tiles share one cell height so the dense rows read
+ * as one editorial baseline instead of ragged max-content rows that crush
+ * shorter silhouettes (bars) under taller neighbors (storage / stools).
+ *
+ * Mixed-parent landings (overview, search) keep per-tile presets — variance
+ * across 11 parents is too wide for a single number to flatter all of them.
+ */
+const PARENT_UNIFORM_MEDIA_H: Record<string, string> = {
+  "cocktail-bar":  "clamp(170px, 12vw, 215px)",
+  "lounge-seating":"clamp(210px, 14.5vw, 260px)",
+  "lounge-tables": "clamp(180px, 12.5vw, 220px)",
+  "dining":        "clamp(190px, 13vw, 230px)",
+  "tableware":     "clamp(190px, 13vw, 230px)",
+  "lighting":      "clamp(240px, 17vw, 310px)",
+  "textiles":      "clamp(200px, 13.5vw, 240px)",
+  "rugs":          "clamp(170px, 12vw, 210px)",
+  "styling":       "clamp(200px, 13.5vw, 240px)",
+  "large-decor":   "clamp(240px, 17vw, 300px)",
+  "furs-pelts":    "clamp(180px, 12vw, 220px)",
+};
+
+export function getParentUniformMediaH(parent: string | null | undefined): string | null {
+  if (!parent) return null;
+  return PARENT_UNIFORM_MEDIA_H[parent] ?? null;
+}
