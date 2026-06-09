@@ -17,10 +17,11 @@ import {
   rectSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { X, Upload, Loader2 } from "lucide-react";
+import { X, Upload, Loader2, FolderOpen, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { SortableThumb } from "./SortableThumb";
+import { StoragePicker } from "./StoragePicker";
 import {
   updateItemImages,
   setCardBackground,
@@ -51,6 +52,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [dropActive, setDropActive] = useState(false);
+  const [tab, setTab] = useState<"manage" | "pick">("manage");
 
   const lastSavedRef = useRef<string[]>(item.images ?? []);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
