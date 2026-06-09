@@ -86,6 +86,7 @@ export function ProductTile({
     <motion.li
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
+      className={isWide ? "col-span-2" : undefined}
       layout
       transition={{
         layout: reduced ? { duration: 0 } : layoutSpring,
