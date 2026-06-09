@@ -481,15 +481,17 @@ function Tile({
   item,
   index,
   dense,
+  draggable = true,
   onOpen,
 }: {
   item: Item;
   index: number;
   dense: boolean;
+  draggable?: boolean;
   onOpen: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: item.id });
+    useSortable({ id: item.id, disabled: !draggable });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -503,19 +505,22 @@ function Tile({
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
+      {...(draggable ? attributes : {})}
+      {...(draggable ? listeners : {})}
       onClick={(e) => {
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-colors ${
+      className={`group relative aspect-[4/5] bg-white border transition-colors ${
+        draggable ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+      } ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
-      title={`${item.title} · click to edit · drag to reorder`}
+      title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
+
       <TileMedia item={item} dense={dense} />
 
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
