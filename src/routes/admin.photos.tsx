@@ -44,6 +44,7 @@ import {
   PARENT_LABELS,
   PARENT_SUBS,
   productParent,
+  productMatchesSub,
   type ParentId,
 } from "@/lib/collection-parents";
 import {
@@ -51,6 +52,7 @@ import {
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
 import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
