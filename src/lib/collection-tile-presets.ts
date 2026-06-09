@@ -144,7 +144,7 @@ export function pickBatchMediaHeight(
  * across 11 parents is too wide for a single number to flatter all of them.
  */
 const PARENT_UNIFORM_MEDIA_H: Record<string, string> = {
-  "cocktail-bar":  "clamp(170px, 12vw, 215px)",
+  "cocktail-bar":  "clamp(185px, 13vw, 230px)",
   "lounge-seating":"clamp(210px, 14.5vw, 260px)",
   "lounge-tables": "clamp(180px, 12.5vw, 220px)",
   "dining":        "clamp(190px, 13vw, 230px)",
@@ -160,4 +160,24 @@ const PARENT_UNIFORM_MEDIA_H: Record<string, string> = {
 export function getParentUniformMediaH(parent: string | null | undefined): string | null {
   if (!parent) return null;
   return PARENT_UNIFORM_MEDIA_H[parent] ?? null;
+}
+
+const PARENT_DOMINANT_GROUP: Record<string, BrowseGroupId> = {
+  "lounge-seating": "sofas",
+  "cocktail-bar": "bar",
+  "lounge-tables": "coffee-tables",
+  "dining": "dining",
+  "tableware": "tableware",
+  "lighting": "lighting",
+  "textiles": "pillows",
+  "rugs": "rugs",
+  "styling": "styling",
+  "large-decor": "large-decor",
+  "furs-pelts": "furs-pelts",
+};
+
+export function getParentTilePreset(parent: string | null | undefined): TilePreset | null {
+  if (!parent) return null;
+  const group = PARENT_DOMINANT_GROUP[parent];
+  return group ? getTilePreset(group) : null;
 }
