@@ -168,8 +168,109 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           return Response.json({ error: 'Failed to enqueue' }, { status: 500 })
         }
 
+        // --- Submitter confirmation (fire-and-forget; failures don't break admin flow) ---
+        try {
+          const CONFIRM_TEMPLATE = 'inquiry-confirmation'
+          const confirmTpl = TEMPLATES[CONFIRM_TEMPLATE]
+          if (confirmTpl && body.email) {
+            const submitterEmail = body.email.toLowerCase()
+            const { data: subSuppressed } = await supabase
+              .from('suppressed_emails')
+              .select('id')
+              .eq('email', submitterEmail)
+              .maybeSingle()
+
+            if (!subSuppressed) {
+              const confirmData = {
+                name: body.name,
+                projectDate: body.project_date,
+                budget: body.budget,
+                scope: body.scope,
+                items: body.items ?? [],
+                inquiryId: body.inquiry_id ?? undefined,
+              }
+              const confirmMessageId = crypto.randomUUID()
+              const confirmIdempotency = body.inquiry_id
+                ? `inquiry-confirm-${body.inquiry_id}`
+                : `inquiry-confirm-${confirmMessageId}`
+
+              // Unsubscribe token for submitter
+              let subToken: string
+              const { data: existingSubToken } = await supabase
+                .from('email_unsubscribe_tokens')
+                .select('token, used_at')
+                .eq('email', submitterEmail)
+                .maybeSingle()
+              if (existingSubToken && !existingSubToken.used_at) {
+                subToken = existingSubToken.token
+              } else {
+                subToken = generateToken()
+                await supabase
+                  .from('email_unsubscribe_tokens')
+                  .upsert(
+                    { token: subToken, email: submitterEmail },
+                    { onConflict: 'email', ignoreDuplicates: true },
+                  )
+                const { data: storedSub } = await supabase
+                  .from('email_unsubscribe_tokens')
+                  .select('token')
+                  .eq('email', submitterEmail)
+                  .maybeSingle()
+                if (storedSub?.token) subToken = storedSub.token
+              }
+
+              const confirmElement = React.createElement(confirmTpl.component, confirmData)
+              const confirmHtml = await render(confirmElement)
+              const confirmText = await render(confirmElement, { plainText: true })
+              const confirmSubject =
+                typeof confirmTpl.subject === 'function'
+                  ? confirmTpl.subject(confirmData)
+                  : confirmTpl.subject
+
+              await supabase.from('email_send_log').insert({
+                message_id: confirmMessageId,
+                template_name: CONFIRM_TEMPLATE,
+                recipient_email: body.email,
+                status: 'pending',
+              })
+
+              const { error: confirmEnqueueError } = await supabase.rpc('enqueue_email', {
+                queue_name: 'transactional_emails',
+                payload: {
+                  message_id: confirmMessageId,
+                  to: body.email,
+                  from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+                  reply_to: `info@${FROM_DOMAIN}`,
+                  sender_domain: SENDER_DOMAIN,
+                  subject: confirmSubject,
+                  html: confirmHtml,
+                  text: confirmText,
+                  purpose: 'transactional',
+                  label: CONFIRM_TEMPLATE,
+                  idempotency_key: confirmIdempotency,
+                  unsubscribe_token: subToken,
+                  queued_at: new Date().toISOString(),
+                },
+              })
+
+              if (confirmEnqueueError) {
+                await supabase.from('email_send_log').insert({
+                  message_id: confirmMessageId,
+                  template_name: CONFIRM_TEMPLATE,
+                  recipient_email: body.email,
+                  status: 'failed',
+                  error_message: confirmEnqueueError.message,
+                })
+              }
+            }
+          }
+        } catch (err) {
+          console.warn('Submitter confirmation failed:', err)
+        }
+
         return Response.json({ success: true, queued: true })
       },
     },
   },
 })
+
