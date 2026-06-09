@@ -31,7 +31,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
-import { PRODUCT_TILE_WIDE_ASPECT, PRODUCT_TILE_WIDE_FRAME_ASPECT } from "@/lib/collection-tile-presets";
+
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 // Art-directed Hive hero: square plate for desktop aside (object-cover so the
@@ -711,7 +711,6 @@ function CollectionPage() {
     ? "grid-cols-3 sm:grid-cols-4 lg:grid-cols-5"
     : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
-  const useWideProductFrame = activeParent === "cocktail-bar";
 
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
@@ -1193,7 +1192,8 @@ function CollectionPage() {
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
-                            className={`grid ${gridCols} ${gridGapClasses} items-start`}
+                          className={`grid ${gridCols} ${gridGapClasses} items-start`}
+                            style={{ gridAutoFlow: "dense" }}
                             transition={
                               reduced
                                 ? { duration: 0 }
@@ -1208,8 +1208,6 @@ function CollectionPage() {
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
                                   onImageFailed={markFailed}
-                                  tileAspect={useWideProductFrame ? PRODUCT_TILE_WIDE_ASPECT : undefined}
-                                  frameAspect={useWideProductFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : undefined}
                                 />
                               ));
                             })()}
