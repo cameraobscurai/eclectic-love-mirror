@@ -18,6 +18,9 @@ interface ProductTileProps {
   onOpen: () => void;
   /** Mark image as failed so the parent can hide this product for the session. */
   onImageFailed?: (productId: string) => void;
+  /** Optional override for the cell height — used by single-parent views to
+   *  enforce a uniform row baseline (dense editorial rhythm). */
+  mediaHOverride?: string;
 }
 
 // Eager render = first three full rows on wide desktops, two on smaller.
