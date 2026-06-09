@@ -57,6 +57,17 @@ const DINING: TilePreset = {
   maxAspect: 1.35,
 };
 
+// Bars: 63% wide/ultra-wide (low flat bars up to 3.78:1), with a handful of
+// trunk-style bar carts (~0.8:1) as outliers. Default WIDE_LOW let the trunks
+// fill the full 230px while wide bars displayed as short strips, so the row
+// scale looked broken. Shorter cell + heavier top pad pulls the trunks down
+// toward the wide-bar visual mass without compressing the dominant silhouette.
+const BARS: TilePreset = {
+  mediaH: "clamp(160px, 11vw, 200px)",
+  pad: "pt-[16%] pb-[3%] px-[8%]",
+  anchor: "bottom",
+};
+
 export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
   // Wide-low
   sofas: WIDE_LOW,
@@ -65,7 +76,7 @@ export const TILE_PRESETS: Record<BrowseGroupId, TilePreset> = {
   "cocktail-tables": WIDE_LOW,
   rugs: WIDE_LOW,
   "furs-pelts": WIDE_LOW,
-  bar: WIDE_LOW,
+  bar: BARS,
 
   // Tall-narrow
   "side-tables": TALL_NARROW,
