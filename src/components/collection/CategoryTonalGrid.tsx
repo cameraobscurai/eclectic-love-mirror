@@ -49,24 +49,24 @@ const TONES = ["#ffffff", "#ebebeb"] as const;
 // Bottom is always larger to clear the label.
 const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   // Wide, frame-filling — minimal padding so they read as fabric.
-  rugs: "6% 6% 22% 6%",
-  pillows: "8% 12% 24% 12%",
-  throws: "6% 10% 22% 10%",
+  rugs: "0.75rem 1rem 3rem 1rem",
+  pillows: "1rem 1.5rem 3.25rem 1.5rem",
+  throws: "0.75rem 1.25rem 3rem 1.25rem",
   // Vertical, sparse silhouettes — extra side padding so they don't tower.
-  "side-tables": "10% 22% 22% 22%",
-  lighting: "8% 22% 22% 22%",
-  "cocktail-tables": "10% 18% 22% 18%",
+  "side-tables": "1.25rem 3rem 3rem 3rem",
+  lighting: "1rem 3rem 3rem 3rem",
+  "cocktail-tables": "1.25rem 2.25rem 3rem 2.25rem",
   // Wide horizontal furniture — give the silhouette room.
-  sofas: "10% 8% 22% 8%",
-  "coffee-tables": "12% 10% 22% 10%",
-  "benches-ottomans": "10% 10% 22% 10%",
-  bar: "10% 12% 22% 12%",
-  dining: "10% 12% 22% 12%",
-  storage: "10% 10% 22% 10%",
+  sofas: "1.25rem 1rem 3rem 1rem",
+  "coffee-tables": "1.5rem 1.25rem 3rem 1.25rem",
+  "benches-ottomans": "1.25rem 1.25rem 3rem 1.25rem",
+  bar: "1.25rem 1.5rem 3rem 1.5rem",
+  dining: "1.25rem 1.5rem 3rem 1.5rem",
+  storage: "1.25rem 1.25rem 3rem 1.25rem",
   // Default for the rest (chairs, tableware, styling, large-decor).
   // Falls through to the inline default below.
 };
-const DEFAULT_PADDING = "10% 14% 22% 14%";
+const DEFAULT_PADDING = "1.25rem 2rem 3rem 2rem";
 
 // The category grid waits for one shared preload/decode batch, then releases
 // all tiles together. This bounded fallback prevents one stubborn CDN decode
@@ -195,13 +195,13 @@ export function CategoryTonalGrid({
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          grid-auto-rows: minmax(180px, 1fr);
+          grid-auto-rows: minmax(260px, 1fr);
           width: 100%;
           height: 100%;
           gap: 0;
           padding: 0;
         }
-        [data-tonal-grid] > button { min-height: 180px; }
+        [data-tonal-grid] > button { min-height: 260px; }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
