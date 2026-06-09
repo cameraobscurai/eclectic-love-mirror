@@ -364,3 +364,27 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
     </div>
   );
 }
+
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 px-3 py-2 text-[11px] uppercase tracking-widest border-b-2 -mb-px transition-colors ${
+        active
+          ? "border-neutral-900 text-neutral-900"
+          : "border-transparent text-neutral-500 hover:text-neutral-800"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
