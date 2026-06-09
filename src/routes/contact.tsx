@@ -268,7 +268,18 @@ function ContactPage() {
       }
     }
 
+    // Client-generated ID so we don't depend on RLS SELECT to read the row
+    // back after insert. Anon users have INSERT-only access; .select().single()
+    // returned empty under RLS and threw a false "couldn't send" error even
+    // when the row actually saved. We assign the UUID, insert, and forward
+    // the same id to the notify endpoint.
+    const inquiryId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : null;
+
     const payload = {
+      ...(inquiryId ? { id: inquiryId } : {}),
       name: name.trim().slice(0, 200),
       email: email.trim().slice(0, 320),
       phone: phone.trim() ? phone.trim().slice(0, 50) : null,
@@ -286,19 +297,20 @@ function ContactPage() {
       },
     };
 
-    const { data: inserted, error } = await supabase
-      .from("inquiries")
-      .insert(payload)
-      .select("id")
-      .single();
-
+    const { error } = await supabase.from("inquiries").insert(payload);
 
     if (error) {
+      // Log full detail so admin can diagnose RLS / WITH CHECK failures
+      // (e.g. item_snapshots > 16KB, item_ids > 50).
+      console.error("Inquiry insert failed:", error);
       setErrorMsg(
         `We couldn't send that just now. Please email ${SUPPORT_EMAIL} and we'll respond directly.`,
       );
       return;
     }
+
+    const inserted = { id: inquiryId };
+
 
     // Fire-and-forget owner notification to info@eclectichive.com.
     // Failure here doesn't block the user — the inquiry is already saved
