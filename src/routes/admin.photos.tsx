@@ -495,12 +495,16 @@ function Tile({
   item,
   index,
   dense,
+  tileAspect,
+  frameAspect,
   draggable = true,
   onOpen,
 }: {
   item: Item;
   index: number;
   dense: boolean;
+  tileAspect: string;
+  frameAspect: number;
   draggable?: boolean;
   onOpen: () => void;
 }) {
@@ -525,17 +529,18 @@ function Tile({
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border transition-colors ${
+      className={`group relative bg-white border transition-colors ${
         draggable ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
       } ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
+      style={{ ...style, aspectRatio: tileAspect }}
       title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
 
-      <TileMedia item={item} dense={dense} />
+      <TileMedia item={item} dense={dense} frameAspect={frameAspect} />
 
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
         {index + 1}
@@ -571,7 +576,7 @@ function Tile({
   );
 }
 
-function TileMedia({ item }: { item: Item; dense?: boolean }) {
+function TileMedia({ item, frameAspect }: { item: Item; dense?: boolean; frameAspect: number }) {
   const hero = item.images[0];
   if (!hero) {
     return (
@@ -584,6 +589,7 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
     <div className="h-full w-full">
       <NormalizedProductImage
         src={hero}
+        frameAspect={frameAspect}
         alt=""
         loading="lazy"
         draggable={false}
