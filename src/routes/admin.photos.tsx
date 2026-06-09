@@ -307,8 +307,11 @@ function CategoryGrid({
             {PARENT_LABELS[parent]}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {items.length} items · Drag to reorder · Click to edit
+            {subActive
+              ? `${visibleItems.length} of ${items.length} shown · Reorder disabled while filtered`
+              : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
+
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} />
