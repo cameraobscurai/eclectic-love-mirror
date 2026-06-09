@@ -48,25 +48,20 @@ const TONES = ["#ffffff", "#ebebeb"] as const;
 // half look marooned. Values are CSS shorthand "T R B L".
 // Bottom is always larger to clear the label.
 const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
-  // Wide, frame-filling — minimal padding so they read as fabric.
-  rugs: "0.75rem 1rem 3rem 1rem",
-  pillows: "1rem 1.5rem 3.25rem 1.5rem",
-  throws: "0.75rem 1.25rem 3rem 1.25rem",
-  // Vertical, sparse silhouettes — extra side padding so they don't tower.
-  "side-tables": "1.25rem 3rem 3rem 3rem",
-  lighting: "1rem 3rem 3rem 3rem",
-  "cocktail-tables": "1.25rem 2.25rem 3rem 2.25rem",
-  // Wide horizontal furniture — give the silhouette room.
-  sofas: "1.25rem 1rem 3rem 1rem",
-  "coffee-tables": "1.5rem 1.25rem 3rem 1.25rem",
-  "benches-ottomans": "1.25rem 1.25rem 3rem 1.25rem",
-  bar: "1.25rem 1.5rem 3rem 1.5rem",
-  dining: "1.25rem 1.5rem 3rem 1.5rem",
-  storage: "1.25rem 1.25rem 3rem 1.25rem",
-  // Default for the rest (chairs, tableware, styling, large-decor).
-  // Falls through to the inline default below.
+  rugs: "2rem 2rem 3rem 2rem",
+  pillows: "2rem 2.5rem 3rem 2.5rem",
+  throws: "2rem 2rem 3rem 2rem",
+  "side-tables": "2rem 3rem 3rem 3rem",
+  lighting: "2rem 3rem 3rem 3rem",
+  "cocktail-tables": "2rem 2.5rem 3rem 2.5rem",
+  sofas: "2rem 2rem 3rem 2rem",
+  "coffee-tables": "2rem 2rem 3rem 2rem",
+  "benches-ottomans": "2rem 2rem 3rem 2rem",
+  bar: "2rem 2rem 3rem 2rem",
+  dining: "2rem 2rem 3rem 2rem",
+  storage: "2rem 2rem 3rem 2rem",
 };
-const DEFAULT_PADDING = "1.25rem 2rem 3rem 2rem";
+const DEFAULT_PADDING = "2rem 2.5rem 3rem 2.5rem";
 
 // The category grid waits for one shared preload/decode batch, then releases
 // all tiles together. This bounded fallback prevents one stubborn CDN decode
@@ -308,7 +303,7 @@ function TonalCell({
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
-            objectPosition: "center bottom",
+            objectPosition: "center center",
             opacity: gridReady ? 1 : 0,
             transition: "opacity 640ms ease-out, transform 500ms ease-out",
           }}
