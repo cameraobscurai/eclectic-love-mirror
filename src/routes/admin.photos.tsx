@@ -1,11 +1,15 @@
-// /admin/photos — Squarespace-style admin photo manager.
+// /admin/photos — admin photo manager that MIRRORS the public Collection.
 //
-// Mirrors the public Collection grid visually. Sidebar = 14 categories.
-// Drag tiles to reorder (persists to inventory_items.manual_order).
-// Click a tile to open the existing per-product editor.
+// Data source: src/data/inventory/current_catalog.json (same baked catalog
+// /collection consumes). That guarantees identical taxonomy, family rollup,
+// and order. Reorder writes manual_order to inventory_items by rms_id; the
+// public site reflects the change on the next bake.
 //
-// Live DB reads (not the baked catalog) so reorders show immediately.
-// /collection reflects changes after the next `bun scripts/bake-catalog.mjs`.
+// Taxonomy: PARENT_ORDER + PARENT_SUBS from src/lib/collection-parents.ts —
+// the single source of truth shared with /collection.
+//
+// Tile sizing: per-family pad from getTilePreset() normalizes silhouettes
+// so banquettes don't dwarf ottomans inside the same row.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -30,14 +34,24 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2 } from "lucide-react";
+import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
+import { reorderItems } from "@/lib/photos-admin.functions";
 import {
-  listCategoryItems,
-  reorderItems,
-} from "@/lib/photos-admin.functions";
+  PARENT_ORDER,
+  PARENT_LABELS,
+  PARENT_SUBS,
+  productParent,
+  type ParentId,
+} from "@/lib/collection-parents";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { getTilePreset } from "@/lib/collection-tile-presets";
+import {
+  getCollectionCatalog,
+  type CollectionProduct,
+} from "@/lib/phase3-catalog";
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -50,89 +64,153 @@ export const Route = createFileRoute("/admin/photos")({
   component: AdminPhotosPage,
 });
 
-// 14 categorySlug values from baked catalog (mem://index.md INVENTORY TRUTH).
-const CATEGORIES: Array<{ slug: string; label: string; count: number }> = [
-  { slug: "seating", label: "Seating", count: 101 },
-  { slug: "tables", label: "Tables", count: 77 },
-  { slug: "bars", label: "Bars", count: 36 },
-  { slug: "tableware", label: "Tableware", count: 41 },
-  { slug: "serveware", label: "Serveware", count: 41 },
-  { slug: "pillows-throws", label: "Pillows & Throws", count: 155 },
-  { slug: "rugs", label: "Rugs", count: 26 },
-  { slug: "lighting", label: "Lighting", count: 29 },
-  { slug: "candlelight", label: "Candlelight", count: 10 },
-  { slug: "chandeliers", label: "Chandeliers", count: 12 },
-  { slug: "large-decor", label: "Large Decor", count: 24 },
-  { slug: "styling", label: "Styling", count: 61 },
-  { slug: "storage", label: "Storage", count: 11 },
-  { slug: "furs-pelts", label: "Furs & Pelts", count: 6 },
-];
-
+// ─── Admin item shape — adapter over CollectionProduct ──────────────────────
 type Item = {
   id: string;
-  rms_id: string | null;
+  rms_id: string;
   title: string;
-  slug: string | null;
-  category: string | null;
-  images: string[] | null;
+  images: string[];
   card_background_url: string | null;
-  manual_order: number | null;
-  owner_site_rank: number | null;
+  variantCount: number;
+  /** Browse group drives the per-family tile-preset padding. */
+  browseGroup: ReturnType<typeof getProductBrowseGroup>;
 };
 
+function adapt(p: CollectionProduct): Item {
+  return {
+    id: p.id,
+    rms_id: p.id,
+    title: p.title,
+    images: p.images.map((i) => i.url),
+    card_background_url: null,
+    variantCount: p.variants?.length ?? 0,
+    browseGroup: getProductBrowseGroup(p),
+  };
+}
+
 function AdminPhotosPage() {
-  // Parent route /admin already wraps children in <AdminShell>.
   return <PhotosManager />;
 }
 
 function PhotosManager() {
-  const [category, setCategory] = useState(CATEGORIES[0].slug);
+  const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
+  const [sub, setSub] = useState<string>("all");
+  const [view, setView] = useState<"grid" | "wall">("grid");
+
+  // Load baked catalog once.
+  const [allProducts, setAllProducts] = useState<CollectionProduct[] | null>(null);
+  const [catalogErr, setCatalogErr] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog()
+      .then((c) => alive && setAllProducts(c.products))
+      .catch((e) => alive && setCatalogErr((e as Error).message));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Reset sub when parent changes.
+  useEffect(() => {
+    setSub("all");
+  }, [parent]);
+
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal flex">
-      {/* Category sidebar */}
+      {/* Sidebar — parents in canonical PARENT_ORDER */}
       <aside className="w-56 shrink-0 border-r border-charcoal/10 py-6 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto">
         <p className="px-5 text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-3">
           Categories
         </p>
         <nav className="flex flex-col">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c.slug}
-              onClick={() => setCategory(c.slug)}
-              className={`text-left px-5 py-2 text-[11px] uppercase tracking-[0.18em] border-l-2 transition-all ${
-                category === c.slug
-                  ? "border-charcoal bg-charcoal/5 text-charcoal"
-                  : "border-transparent text-charcoal/55 hover:text-charcoal hover:bg-charcoal/3"
-              }`}
-            >
-              <span>{c.label}</span>
-              <span className="ml-2 text-charcoal/35 tabular-nums">{c.count}</span>
-            </button>
-          ))}
+          {PARENT_ORDER.map((pid) => {
+            const count = allProducts
+              ? allProducts.filter((p) => productParent(p) === pid).length
+              : null;
+            return (
+              <button
+                key={pid}
+                onClick={() => setParent(pid)}
+                className={`text-left px-5 py-2 text-[11px] uppercase tracking-[0.18em] border-l-2 transition-all ${
+                  parent === pid
+                    ? "border-charcoal bg-charcoal/5 text-charcoal"
+                    : "border-transparent text-charcoal/55 hover:text-charcoal hover:bg-charcoal/3"
+                }`}
+              >
+                <span>{PARENT_LABELS[pid]}</span>
+                {count !== null && (
+                  <span className="ml-2 text-charcoal/35 tabular-nums">{count}</span>
+                )}
+              </button>
+            );
+          })}
         </nav>
       </aside>
 
-      {/* Grid */}
       <main className="flex-1 min-w-0">
-        <CategoryGrid category={category} />
+        {catalogErr ? (
+          <div className="m-6 border border-red-300 bg-red-50 px-4 py-3 text-xs uppercase tracking-widest text-red-700">
+            Catalog load failed: {catalogErr}
+          </div>
+        ) : (
+          <CategoryGrid
+            parent={parent}
+            sub={sub}
+            onSub={setSub}
+            view={view}
+            onView={setView}
+            allProducts={allProducts}
+          />
+        )}
       </main>
     </div>
   );
 }
 
-function CategoryGrid({ category }: { category: string }) {
-  const listFn = useServerFn(listCategoryItems);
+function CategoryGrid({
+  parent,
+  sub,
+  onSub,
+  view,
+  onView,
+  allProducts,
+}: {
+  parent: ParentId;
+  sub: string;
+  onSub: (s: string) => void;
+  view: "grid" | "wall";
+  onView: (v: "grid" | "wall") => void;
+  allProducts: CollectionProduct[] | null;
+}) {
   const reorderFn = useServerFn(reorderItems);
 
+  // Source items for this parent (and optional sub).
+  // Use the SAME classifier the front-end uses for sub filtering.
+  const baseItems = useMemo<Item[]>(() => {
+    if (!allProducts) return [];
+    const inParent = allProducts.filter((p) => productParent(p) === parent);
+    // Sort by ownerSiteRank — primary key for /collection's by-type sort.
+    inParent.sort((a, b) => {
+      const ar = a.ownerSiteRank ?? 9e9;
+      const br = b.ownerSiteRank ?? 9e9;
+      if (ar !== br) return ar - br;
+      return a.title.localeCompare(b.title);
+    });
+    return inParent.map(adapt);
+  }, [allProducts, parent]);
+
+  // Local items state so drag-reorder feels instant.
   const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
+  useEffect(() => {
+    setItems(baseItems);
+  }, [baseItems]);
+
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
-  const [view, setView] = useState<"grid" | "wall">("grid");
-  const [saveState, setSaveState] = useState<"idle" | "syncing" | "synced" | "error">(
-    "idle",
-  );
+  const [err, setErr] = useState<string | null>(null);
+  const [saveState, setSaveState] = useState<
+    "idle" | "syncing" | "synced" | "error"
+  >("idle");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSaved = useRef<string>("");
 
@@ -141,42 +219,22 @@ function CategoryGrid({ category }: { category: string }) {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  // Load on category switch.
-  useEffect(() => {
-    let alive = true;
-    setLoading(true);
-    setErr(null);
-    setItems([]);
-    listFn({ data: { category } })
-      .then((r) => {
-        if (!alive) return;
-        const next = (r?.items ?? []) as Item[];
-        setItems(next);
-        lastSaved.current = next.map((i) => i.rms_id).join("|");
-      })
-      .catch((e) => {
-        if (!alive) return;
-        const msg = e instanceof Response
-          ? `${e.status} ${e.statusText || "Request failed"} — try signing out and back in`
-          : (e as Error)?.message ?? "Failed to load";
-        setErr(msg);
-      })
-      .finally(() => alive && setLoading(false));
-    return () => {
-      alive = false;
-    };
-  }, [category, listFn]);
+  const subs = PARENT_SUBS[parent];
+  const subList = useMemo(() => [{ id: "all", label: "All" }, ...subs], [subs]);
 
   const scheduleSave = useCallback(
     (next: Item[]) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      const ids = next.map((i) => i.rms_id).filter(Boolean) as string[];
+      const ids = next.map((i) => i.rms_id).filter(Boolean);
       const sig = ids.join("|");
       if (sig === lastSaved.current) return;
       setSaveState("syncing");
       saveTimer.current = setTimeout(async () => {
         try {
-          await reorderFn({ data: { category, ids } });
+          // `category` field on the serverFn is now the parent id — used for
+          // audit metadata. The actual update is per-rms_id, so this works
+          // identically for parents AND the old raw category slugs.
+          await reorderFn({ data: { category: parent, ids } });
           lastSaved.current = sig;
           setSaveState("synced");
           setTimeout(
@@ -189,7 +247,7 @@ function CategoryGrid({ category }: { category: string }) {
         }
       }, 800);
     },
-    [category, reorderFn],
+    [parent, reorderFn],
   );
 
   useEffect(
@@ -217,16 +275,18 @@ function CategoryGrid({ category }: { category: string }) {
     [items, activeId],
   );
 
+  const loading = allProducts === null;
+
   return (
     <div className="px-6 lg:px-10 py-8 max-w-[1500px]">
       {/* Header */}
-      <header className="mb-6 flex items-end justify-between gap-6 border-b border-charcoal/10 pb-4">
+      <header className="mb-4 flex items-end justify-between gap-6 border-b border-charcoal/10 pb-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">
             Admin · Photos
           </p>
           <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.02em]">
-            {CATEGORIES.find((c) => c.slug === category)?.label ?? category}
+            {PARENT_LABELS[parent]}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
             {items.length} items · Drag to reorder · Click to edit
@@ -234,14 +294,13 @@ function CategoryGrid({ category }: { category: string }) {
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} />
-          {/* View toggle — mirrors /collection. Grid = rows of 3, Wall = fit all. */}
           <div
             className="flex items-center border border-charcoal/15"
             role="group"
             aria-label="View"
           >
             <button
-              onClick={() => setView("grid")}
+              onClick={() => onView("grid")}
               className={`h-9 w-9 inline-flex items-center justify-center transition-colors ${
                 view === "grid"
                   ? "text-charcoal bg-charcoal/[0.05]"
@@ -254,7 +313,7 @@ function CategoryGrid({ category }: { category: string }) {
               <Grid2x2 className="h-4 w-4" />
             </button>
             <button
-              onClick={() => setView("wall")}
+              onClick={() => onView("wall")}
               className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
                 view === "wall"
                   ? "text-charcoal bg-charcoal/[0.05]"
@@ -269,6 +328,28 @@ function CategoryGrid({ category }: { category: string }) {
           </div>
         </div>
       </header>
+
+      {/* Subcategory rail — mirrors /collection's SubcategoryRail. */}
+      {subs.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {subList.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => onSub(s.id)}
+              className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] border transition-colors ${
+                sub === s.id
+                  ? "border-charcoal bg-charcoal text-white"
+                  : "border-charcoal/15 text-charcoal/65 hover:border-charcoal/40 hover:text-charcoal"
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+          <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40 self-center">
+            Sub filter is visual only — reorder still writes the full parent list
+          </span>
+        </div>
+      )}
 
       {err && (
         <div className="mb-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-2 text-xs uppercase tracking-widest text-red-700">
@@ -305,7 +386,6 @@ function CategoryGrid({ category }: { category: string }) {
               style={
                 view === "wall"
                   ? {
-                      // Auto-fit wall: solve cols so cols*rows >= N with near-square cells.
                       gridTemplateColumns: `repeat(${wallCols(items.length)}, minmax(0, 1fr))`,
                     }
                   : undefined
@@ -332,14 +412,13 @@ function CategoryGrid({ category }: { category: string }) {
         </DndContext>
       )}
 
-      {/* Per-product editor modal — existing component, reused. */}
       {editing && (
         <ImageOrderEditor
           item={{
             id: editing.id,
             rms_id: editing.rms_id,
             title: editing.title,
-            images: editing.images ?? [],
+            images: editing.images,
             card_background_url: editing.card_background_url,
           }}
           onClose={() => setEditing(null)}
@@ -356,7 +435,7 @@ function CategoryGrid({ category }: { category: string }) {
       )}
 
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
-        Changes save live. /collection updates after next bake:
+        Changes save live to the DB. /collection updates after next bake:
         <code className="ml-2 normal-case tracking-normal bg-charcoal/5 px-2 py-0.5">
           bun scripts/bake-catalog.mjs
         </code>
@@ -365,12 +444,10 @@ function CategoryGrid({ category }: { category: string }) {
   );
 }
 
-// Solve cols × rows ≥ N where the cell aspect stays close to the viewport's.
-// Cheap loop, runs once per items.length change at the call site.
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
 function wallCols(n: number): number {
   if (n <= 0) return 1;
-  // Bias toward the public Collection's "rows of 3" feel: floor of sqrt(N*1.4).
-  // Caps at 10 so huge categories (pillows-throws ~155) stay readable.
   return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
 }
 
@@ -393,7 +470,7 @@ function Tile({
     opacity: isDragging ? 0.4 : 1,
   };
 
-  const imageCount = item.images?.length ?? 0;
+  const imageCount = item.images.length;
   const needsAttention = imageCount === 0;
 
   return (
@@ -415,21 +492,28 @@ function Tile({
     >
       <TileMedia item={item} dense={dense} />
 
-      {/* Position pill */}
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
         {index + 1}
       </span>
 
+      {item.variantCount > 0 && (
+        <span
+          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-charcoal/85 text-white text-[9px] uppercase tracking-widest px-1.5 py-0.5"
+          title={`${item.variantCount + 1} variants — edits apply to the primary record`}
+        >
+          <Layers className="h-2.5 w-2.5" /> {item.variantCount + 1}
+        </span>
+      )}
+
       {needsAttention && (
         <span
-          className="absolute top-2 right-2 bg-amber-500 text-white p-1"
+          className="absolute bottom-2 right-2 bg-amber-500 text-white p-1"
           title="No images"
         >
           <ImageOff className="h-3 w-3" />
         </span>
       )}
 
-      {/* Hover plate — matches Collection's editorial reveal. */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <p className="text-white text-[10px] uppercase tracking-widest truncate">
           {item.title}
@@ -443,7 +527,7 @@ function Tile({
 }
 
 function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
-  const hero = item.images?.[0];
+  const hero = item.images[0];
   if (!hero) {
     return (
       <div className="h-full w-full bg-charcoal/5 flex items-center justify-center">
@@ -451,10 +535,14 @@ function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
       </div>
     );
   }
-  // White bg + padded object-contain = identical silhouette treatment to the
-  // public Collection tiles. Wall view uses tighter pad like CollectionWall.
+  // Per-family padding from the same preset /collection uses — normalizes
+  // tight headshots vs loose room shots so silhouettes share a baseline.
+  const preset = getTilePreset(item.browseGroup);
+  const padClass = dense ? "p-[6%]" : preset.pad;
+  const anchorClass =
+    preset.anchor === "bottom" ? "items-end" : "items-center";
   return (
-    <div className={`h-full w-full flex items-center justify-center ${dense ? "p-[8%]" : "p-[10%]"}`}>
+    <div className={`h-full w-full flex justify-center ${anchorClass} ${padClass}`}>
       <img
         src={hero}
         alt=""
@@ -465,7 +553,6 @@ function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
     </div>
   );
 }
-
 
 function SaveBadge({
   state,
