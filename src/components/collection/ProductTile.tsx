@@ -5,7 +5,7 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { PRODUCT_TILE_ASPECT, PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+import { PRODUCT_TILE_ASPECT, PRODUCT_TILE_FRAME_ASPECT, PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
 // All tiles use one fixed portrait frame. The image floats inside it; the grid
@@ -16,6 +16,8 @@ interface ProductTileProps {
   index: number;
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
+  tileAspect?: string;
+  frameAspect?: number;
 }
 
 const EAGER_RENDER_COUNT = 18;
@@ -34,7 +36,14 @@ const preloadQuickView = () => {
   void import("@/components/collection/QuickViewModal");
 };
 
-export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTileProps) {
+export function ProductTile({
+  product,
+  index,
+  onOpen,
+  onImageFailed,
+  tileAspect = PRODUCT_TILE_ASPECT,
+  frameAspect = PRODUCT_TILE_FRAME_ASPECT,
+}: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
@@ -103,7 +112,7 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
             {/* Media frame — fixed aspect ratio, no per-category height logic. */}
             <div
               className="relative w-full bg-white overflow-hidden"
-              style={{ aspectRatio: PRODUCT_TILE_ASPECT }}
+              style={{ aspectRatio: tileAspect }}
             >
               {/* Skeleton overlay — fades on load */}
               <div
@@ -118,6 +127,7 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
               {product.primaryImage ? (
                 <NormalizedProductImage
                   src={withCdnWidth(product.primaryImage.url, 600)}
+                  frameAspect={frameAspect}
                   srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
@@ -173,7 +183,7 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
           </button>
         ) : (
           <div aria-hidden className="block w-full bg-white">
-            <div className="w-full bg-white" style={{ aspectRatio: PRODUCT_TILE_ASPECT }} />
+            <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
             <div className="md:hidden mt-3 h-[34px]" />
           </div>
         )}
