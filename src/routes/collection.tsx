@@ -31,7 +31,7 @@ import { ProductTile } from "@/components/collection/ProductTile";
 import { InquiryTray } from "@/components/collection/InquiryTray";
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
-import { PRODUCT_TILE_WIDE_ASPECT, PRODUCT_TILE_WIDE_FRAME_ASPECT } from "@/lib/collection-tile-presets";
+
 
 import { CategoryTonalGrid } from "@/components/collection/CategoryTonalGrid";
 // Art-directed Hive hero: square plate for desktop aside (object-cover so the
