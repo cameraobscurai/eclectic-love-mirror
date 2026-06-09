@@ -21,6 +21,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   arrayMove,
@@ -29,7 +30,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff } from "lucide-react";
+import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2 } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
@@ -128,6 +129,7 @@ function CategoryGrid({ category }: { category: string }) {
   const [err, setErr] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
+  const [view, setView] = useState<"grid" | "wall">("grid");
   const [saveState, setSaveState] = useState<"idle" | "syncing" | "synced" | "error">(
     "idle",
   );
@@ -227,10 +229,45 @@ function CategoryGrid({ category }: { category: string }) {
             {CATEGORIES.find((c) => c.slug === category)?.label ?? category}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {items.length} items · Drag tiles to reorder · Click to edit
+            {items.length} items · Drag to reorder · Click to edit
           </p>
         </div>
-        <SaveBadge state={saveState} />
+        <div className="flex items-center gap-3">
+          <SaveBadge state={saveState} />
+          {/* View toggle — mirrors /collection. Grid = rows of 3, Wall = fit all. */}
+          <div
+            className="flex items-center border border-charcoal/15"
+            role="group"
+            aria-label="View"
+          >
+            <button
+              onClick={() => setView("grid")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors ${
+                view === "grid"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Grid view"
+              aria-pressed={view === "grid"}
+              title="Grid — rows of 3"
+            >
+              <Grid2x2 className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setView("wall")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
+                view === "wall"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Wall view"
+              aria-pressed={view === "wall"}
+              title="Wall — every piece at once"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </header>
 
       {err && (
@@ -253,17 +290,33 @@ function CategoryGrid({ category }: { category: string }) {
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          modifiers={[restrictToParentElement]}
         >
           <SortableContext
             items={items.map((i) => i.id)}
             strategy={rectSortingStrategy}
           >
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div
+              className={
+                view === "grid"
+                  ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
+                  : "grid gap-1"
+              }
+              style={
+                view === "wall"
+                  ? {
+                      // Auto-fit wall: solve cols so cols*rows >= N with near-square cells.
+                      gridTemplateColumns: `repeat(${wallCols(items.length)}, minmax(0, 1fr))`,
+                    }
+                  : undefined
+              }
+            >
               {items.map((item, idx) => (
                 <Tile
                   key={item.id}
                   item={item}
                   index={idx}
+                  dense={view === "wall"}
                   onOpen={() => setEditing(item)}
                 />
               ))}
@@ -272,7 +325,7 @@ function CategoryGrid({ category }: { category: string }) {
           <DragOverlay>
             {activeItem && (
               <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
-                <TileMedia item={activeItem} />
+                <TileMedia item={activeItem} dense={view === "wall"} />
               </div>
             )}
           </DragOverlay>
@@ -312,13 +365,24 @@ function CategoryGrid({ category }: { category: string }) {
   );
 }
 
+// Solve cols × rows ≥ N where the cell aspect stays close to the viewport's.
+// Cheap loop, runs once per items.length change at the call site.
+function wallCols(n: number): number {
+  if (n <= 0) return 1;
+  // Bias toward the public Collection's "rows of 3" feel: floor of sqrt(N*1.4).
+  // Caps at 10 so huge categories (pillows-throws ~155) stay readable.
+  return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
+}
+
 function Tile({
   item,
   index,
+  dense,
   onOpen,
 }: {
   item: Item;
   index: number;
+  dense: boolean;
   onOpen: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -339,26 +403,23 @@ function Tile({
       {...attributes}
       {...listeners}
       onClick={(e) => {
-        // PointerSensor distance:8 separates drag from click. If a real drag
-        // occurred dnd-kit suppresses click; otherwise this fires.
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-all ${
+      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-colors ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
       title={`${item.title} · click to edit · drag to reorder`}
     >
-      <TileMedia item={item} />
+      <TileMedia item={item} dense={dense} />
 
       {/* Position pill */}
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
         {index + 1}
       </span>
 
-      {/* Health badge */}
       {needsAttention && (
         <span
           className="absolute top-2 right-2 bg-amber-500 text-white p-1"
@@ -368,7 +429,7 @@ function Tile({
         </span>
       )}
 
-      {/* Title overlay */}
+      {/* Hover plate — matches Collection's editorial reveal. */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <p className="text-white text-[10px] uppercase tracking-widest truncate">
           {item.title}
@@ -381,7 +442,7 @@ function Tile({
   );
 }
 
-function TileMedia({ item }: { item: Item }) {
+function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
   const hero = item.images?.[0];
   if (!hero) {
     return (
@@ -390,16 +451,21 @@ function TileMedia({ item }: { item: Item }) {
       </div>
     );
   }
+  // White bg + padded object-contain = identical silhouette treatment to the
+  // public Collection tiles. Wall view uses tighter pad like CollectionWall.
   return (
-    <img
-      src={hero}
-      alt=""
-      loading="lazy"
-      draggable={false}
-      className="h-full w-full object-cover select-none"
-    />
+    <div className={`h-full w-full flex items-center justify-center ${dense ? "p-[8%]" : "p-[10%]"}`}>
+      <img
+        src={hero}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        className="max-h-full max-w-full object-contain select-none"
+      />
+    </div>
   );
 }
+
 
 function SaveBadge({
   state,
