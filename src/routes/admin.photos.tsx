@@ -51,7 +51,13 @@ import {
   getCollectionCatalog,
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
-import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+import {
+  PRODUCT_TILE_ASPECT,
+  PRODUCT_TILE_FRAME_ASPECT,
+  PRODUCT_TILE_IMAGE_CLASS,
+  PRODUCT_TILE_WIDE_ASPECT,
+  PRODUCT_TILE_WIDE_FRAME_ASPECT,
+} from "@/lib/collection-tile-presets";
 
 
 export const Route = createFileRoute("/admin/photos")({
@@ -294,6 +300,9 @@ function CategoryGrid({
   );
 
   const loading = allProducts === null;
+  const useWideProductFrame = parent === "cocktail-bar";
+  const tileAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
+  const frameAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
 
   return (
     <div className="px-6 lg:px-10 py-8 max-w-[1500px]">
@@ -421,6 +430,8 @@ function CategoryGrid({
                   item={item}
                   index={idx}
                   dense={view === "wall"}
+                  tileAspect={tileAspect}
+                  frameAspect={frameAspect}
                   draggable={!subActive}
                   onOpen={() => setEditing(item)}
                 />
@@ -430,8 +441,11 @@ function CategoryGrid({
 
           <DragOverlay>
             {activeItem && (
-              <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
-                <TileMedia item={activeItem} dense={view === "wall"} />
+              <div
+                className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
+                style={{ aspectRatio: tileAspect }}
+              >
+                <TileMedia item={activeItem} dense={view === "wall"} frameAspect={frameAspect} />
               </div>
             )}
           </DragOverlay>
