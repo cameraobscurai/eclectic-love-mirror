@@ -21,6 +21,7 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   arrayMove,
@@ -29,7 +30,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff } from "lucide-react";
+import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2 } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
