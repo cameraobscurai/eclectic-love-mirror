@@ -148,10 +148,17 @@ function CategoryGrid({ category }: { category: string }) {
     listFn({ data: { category } })
       .then((r) => {
         if (!alive) return;
-        setItems(r.items as Item[]);
-        lastSaved.current = (r.items as Item[]).map((i) => i.rms_id).join("|");
+        const next = (r?.items ?? []) as Item[];
+        setItems(next);
+        lastSaved.current = next.map((i) => i.rms_id).join("|");
       })
-      .catch((e) => alive && setErr((e as Error).message))
+      .catch((e) => {
+        if (!alive) return;
+        const msg = e instanceof Response
+          ? `${e.status} ${e.statusText || "Request failed"} — try signing out and back in`
+          : (e as Error)?.message ?? "Failed to load";
+        setErr(msg);
+      })
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
