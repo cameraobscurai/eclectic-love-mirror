@@ -1,0 +1,925 @@
+[
+  {
+    "id": "3452",
+    "sourceUrl": "https://www.eclectichive.com/light/amina-15-pendant-lantern",
+    "slug": "amina-15-pendant-lantern-3452",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "AMINA 15\" PENDANT LANTERN",
+    "description": null,
+    "dimensions": "12\"Dia x 15\"H + 8' Cord",
+    "stockedQuantity": "12",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/AMINA%2015in.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AMINA 15\" PENDANT LANTERN"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/AMINA%2015in.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "AMINA 15\" PENDANT LANTERN"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 41,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 8,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "4046",
+    "sourceUrl": "https://www.eclectichive.com/light/annu-40-hoop-chandelier",
+    "slug": "annu-40-walnut-hoop-chandelier-4046",
+    "categorySlug": "lighting",
+    "displayCategory": "Lighting",
+    "title": "ANNU 40\" WALNUT HOOP CHANDELIER",
+    "description": null,
+    "dimensions": "40\"Dia x 5\"H + Cord",
+    "stockedQuantity": "10",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ANNU%2040in%20Hoop.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ANNU 40\" WALNUT HOOP CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ANNU%2040in%20Hoop.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "ANNU 40\" WALNUT HOOP CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 53,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 1,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "3451",
+    "sourceUrl": "https://www.eclectichive.com/light/ardelia-24-pendant-lantern",
+    "slug": "ardelia-24-pendant-lantern-3451",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "ARDELIA 24\" PENDANT LANTERN",
+    "description": null,
+    "dimensions": "12\"Dia x 24\"H + 8' Cord",
+    "stockedQuantity": "6",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ARDELIA%2024in.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ARDELIA 24\" PENDANT LANTERN"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ARDELIA%2024in.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "ARDELIA 24\" PENDANT LANTERN"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 62,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 7,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "4041",
+    "sourceUrl": "https://www.eclectichive.com/large-decor/arius-chandelier-stand",
+    "slug": "arius-chandelier-stand-4041",
+    "categorySlug": "large-decor",
+    "displayCategory": "Large Decor",
+    "title": "ARIUS CHANDELIER STAND",
+    "description": null,
+    "dimensions": "48\"W x 120\"H - Base 24\"W x 24\"D",
+    "stockedQuantity": "3",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/largedecor/ARIUS%20Stand.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ARIUS CHANDELIER STAND"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/largedecor/ARIUS%20Stand.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "ARIUS CHANDELIER STAND"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 69,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 8,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "large-decor",
+    "liveSubcategories": [
+      "Other"
+    ]
+  },
+  {
+    "id": "4047",
+    "sourceUrl": "https://www.eclectichive.com/light/botond-87-walnut-rod-chandelier",
+    "slug": "botond-87-walnut-rod-chandelier-4047",
+    "categorySlug": "lighting",
+    "displayCategory": "Lighting",
+    "title": "BOTOND 87\" WALNUT ROD CHANDELIER",
+    "description": null,
+    "dimensions": "87\"W x 3\"Dia",
+    "stockedQuantity": "9",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/BOTOND%2087in%20Walnut%20Rod.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "BOTOND 87\" WALNUT ROD CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/BOTOND%2087in%20Walnut%20Rod.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "BOTOND 87\" WALNUT ROD CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 150,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 2,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "3026",
+    "sourceUrl": "https://www.eclectichive.com/light/casey-leather-brass-chandelier",
+    "slug": "casey-leather-brass-chandelier-3026",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "CASEY LEATHER + BRASS CHANDELIER",
+    "description": null,
+    "dimensions": "33\"Dia x 31\"H",
+    "stockedQuantity": "10",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/CASEY%20Chandelier.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CASEY LEATHER + BRASS CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/CASEY%20Chandelier.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "CASEY LEATHER + BRASS CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 202,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 9,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "2487",
+    "sourceUrl": "https://www.eclectichive.com/light/dezmelda-black-crystal-chandelier",
+    "slug": "dezmelda-24-smoke-crystal-chandelier-2487",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "DEZMELDA 24\" SMOKE CRYSTAL CHANDELIER",
+    "description": null,
+    "dimensions": "24\"Dia x 18\"H",
+    "stockedQuantity": "5",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/DEZMELDA%20Smoke%20Crystal%20Chandelier%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "DEZMELDA 24\" SMOKE CRYSTAL CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/DEZMELDA%20Smoke%20Crystal%20Chandelier%200.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "DEZMELDA 24\" SMOKE CRYSTAL CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 248,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 6,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "4165",
+    "sourceUrl": "https://www.eclectichive.com/light/emile-vintage-microphone-pendant-light",
+    "slug": "emile-vintage-microphone-pendant-light-4165",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "EMILE VINTAGE MICROPHONE PENDANT LIGHT",
+    "description": null,
+    "dimensions": "7.5\"H Microphone x 15' Cord with Plug",
+    "stockedQuantity": "24",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/EMILE%20Microphone.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "EMILE VINTAGE MICROPHONE PENDANT LIGHT"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/EMILE%20Microphone.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "EMILE VINTAGE MICROPHONE PENDANT LIGHT"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 291,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 3,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "3877",
+    "sourceUrl": "",
+    "slug": "erizo-leather-chandelier-3877",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "ERIZO LEATHER CHANDELIER",
+    "description": null,
+    "dimensions": "63\"W x 28\"D x 71\"H - Not including hanging mechanism",
+    "stockedQuantity": "1",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ERIZO%20Leather%20Chandelier%20XL.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ERIZO LEATHER CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/ERIZO%20Leather%20Chandelier%20XL.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "ERIZO LEATHER CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 296,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 0,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "2485",
+    "sourceUrl": "",
+    "slug": "eustace-36-white-cast-antler-chandelier-2485",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "EUSTACE 36\" WHITE CAST ANTLER CHANDELIER",
+    "description": null,
+    "dimensions": "36\"Dia x 20\"H  12' Chain",
+    "stockedQuantity": "8",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/EUSTACE%20White%20Antler%20Chandelier%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "EUSTACE 36\" WHITE CAST ANTLER CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/EUSTACE%20White%20Antler%20Chandelier%200.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "EUSTACE 36\" WHITE CAST ANTLER CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 306,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 11,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "2464",
+    "sourceUrl": "https://www.eclectichive.com/light/gideon-bamboo-pendant-light",
+    "slug": "gideon-bamboo-pendant-light",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "GIDEON BAMBOO PENDANT LIGHT",
+    "description": null,
+    "dimensions": "11\"W x 24\"H",
+    "stockedQuantity": "12",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60342b23ea3c8164bfa197a4/1759341610135/",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Medium.png",
+        "position": 1,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Shape%20Option.png",
+        "position": 2,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Small.png",
+        "position": 3,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Large.png",
+        "position": 4,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20XL.png",
+        "position": 5,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032078263-FTHV0AEJHDO92QM183SL/GIDEON+2+Bamboo+Pendant+0.png",
+        "position": 6,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032239397-6KG0L6J0VW8ZB1T8FQ30/GIDEON+3+Bamboo+Pendant+0.png",
+        "position": 7,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032380954-939I433SAV578J2R30DH/GIDEON+Bamboo+Pendant+0.png",
+        "position": 8,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      },
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/1614032278515-BQBXNENP1JFSI9ORE1WD/GIDEON+4+Bamboo+Pendant+0.png",
+        "position": 9,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "GIDEON BAMBOO PENDANT LIGHT"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://static1.squarespace.com/static/57239bd5f8baf385ff553066/5f988a5c052c1d360d5861f2/60342b23ea3c8164bfa197a4/1759341610135/",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "GIDEON BAMBOO PENDANT LIGHT"
+    },
+    "imageCount": 10,
+    "publicReady": true,
+    "scrapedOrder": 369,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 10,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [
+      {
+        "id": "2472",
+        "title": "GIDEON LARGE BAMBOO MESH PENDANT LIGHT",
+        "dimensions": "12\"W x 28\"H",
+        "stockedQuantity": "13",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Large.png"
+      },
+      {
+        "id": "2464",
+        "title": "GIDEON MEDIUM BAMBOO MESH PENDANT LIGHT",
+        "dimensions": "11\"W x 24\"H",
+        "stockedQuantity": "12",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20Medium.png"
+      },
+      {
+        "id": "2808",
+        "title": "GIDEON XL BAMBOO MESH PENDANT LIGHT",
+        "dimensions": "19\"W x 39\"H",
+        "stockedQuantity": "8",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/GIDEON%20XL.png"
+      }
+    ],
+    "_familySource": "tokens-subset",
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "2864",
+    "sourceUrl": "",
+    "slug": "gideon-small-bamboo-mesh-pendant-2864",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "GIDEON SMALL BAMBOO MESH PENDANT",
+    "description": null,
+    "dimensions": "8\"Dia x 16\"H",
+    "stockedQuantity": "15",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/missing-gaps/GIDEON%20Small.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GIDEON SMALL BAMBOO MESH PENDANT"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/missing-gaps/GIDEON%20Small.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "GIDEON SMALL BAMBOO MESH PENDANT"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 370,
+    "subcategory": null,
+    "imagesVersion": 1778792616,
+    "ownerSiteRank": 10,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "3535",
+    "sourceUrl": "",
+    "slug": "giesel-green-fringe-lamp-3535",
+    "categorySlug": "lighting",
+    "displayCategory": "Lighting",
+    "title": "GIESEL GREEN FRINGE LAMP",
+    "description": null,
+    "dimensions": "8\"Dia Base x 23\" H with Shade",
+    "stockedQuantity": "3",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/GIESEL Lamp.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GIESEL GREEN FRINGE LAMP"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/inventory/LIGHTING/GIESEL Lamp.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "GIESEL GREEN FRINGE LAMP"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 372,
+    "subcategory": null,
+    "imagesVersion": 1777966033,
+    "ownerSiteRank": 26,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "lighting"
+  },
+  {
+    "id": "4077",
+    "sourceUrl": "https://www.eclectichive.com/light/mallow-pendant-light",
+    "slug": "mallow-pendant-light-4077",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "MALLOW PENDANT LIGHT",
+    "description": null,
+    "dimensions": "9\"Dia x 12\"H",
+    "stockedQuantity": "6",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/MALLOW%20Pendant.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "MALLOW PENDANT LIGHT"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/MALLOW%20Pendant.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "MALLOW PENDANT LIGHT"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 556,
+    "subcategory": null,
+    "imagesVersion": 1778790198,
+    "ownerSiteRank": 5,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [],
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  },
+  {
+    "id": "3227",
+    "sourceUrl": "",
+    "slug": "namiah-24-smoke-crystal-black-chandelier-3227",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "NAMIAH 24\" SMOKE CRYSTAL BLACK CHANDELIER",
+    "description": null,
+    "dimensions": "24\"Dia x 18\"H",
+    "stockedQuantity": "3",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/manual/namiah-chandelier.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NAMIAH 24\" SMOKE CRYSTAL BLACK CHANDELIER"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/manual/namiah-chandelier.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "NAMIAH 24\" SMOKE CRYSTAL BLACK CHANDELIER"
+    },
+    "imageCount": 1,
+    "publicReady": true,
+    "scrapedOrder": 601,
+    "subcategory": null,
+    "imagesVersion": 1778793996,
+    "ownerSiteRank": null,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": []
+  },
+  {
+    "id": "4049",
+    "sourceUrl": "https://www.eclectichive.com/light/noya-sand-pendants",
+    "slug": "noya-sand-pendants",
+    "categorySlug": "chandeliers",
+    "displayCategory": "Chandeliers",
+    "title": "NOYA SAND PENDANTS",
+    "description": null,
+    "dimensions": "10\"Dia x 18\"H",
+    "stockedQuantity": "6",
+    "isCustomOrder": false,
+    "confidence": 1,
+    "needsManualReview": false,
+    "images": [
+      {
+        "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/3adcbef1-bc39-4ec7-93b9-26f780d79f97/NOYA+Set.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NOYA SAND PENDANTS"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Mid%20Pendant.png",
+        "position": 1,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "NOYA SAND PENDANTS"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Large%20Pendant.png",
+        "position": 2,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "NOYA SAND PENDANTS"
+      },
+      {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Narrow%20Pendant.png",
+        "position": 3,
+        "isHero": false,
+        "inferredFilename": null,
+        "altText": "NOYA SAND PENDANTS"
+      }
+    ],
+    "primaryImage": {
+      "url": "https://images.squarespace-cdn.com/content/v1/57239bd5f8baf385ff553066/3adcbef1-bc39-4ec7-93b9-26f780d79f97/NOYA+Set.png",
+      "position": 0,
+      "isHero": true,
+      "inferredFilename": null,
+      "altText": "NOYA SAND PENDANTS"
+    },
+    "imageCount": 4,
+    "publicReady": true,
+    "scrapedOrder": 636,
+    "subcategory": null,
+    "imagesVersion": 1778790893,
+    "ownerSiteRank": 4,
+    "colorHex": null,
+    "colorHexSecondary": null,
+    "colorLightness": null,
+    "colorHue": null,
+    "colorChroma": null,
+    "colorFamily": null,
+    "colorTemperature": null,
+    "colorNeedsReview": false,
+    "tonalRank": null,
+    "variants": [
+      {
+        "id": "4049",
+        "title": "NOYA SAND PENDANT LIGHT - MID",
+        "dimensions": "10\"Dia x 18\"H",
+        "stockedQuantity": "6",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Mid%20Pendant.png"
+      },
+      {
+        "id": "4050",
+        "title": "NOYA SAND PENDANT LIGHT - LARGE",
+        "dimensions": "13.5\"Dia 20\"H",
+        "stockedQuantity": "5",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Large%20Pendant.png"
+      },
+      {
+        "id": "4048",
+        "title": "NOYA SAND PENDANT LIGHT - NARROW",
+        "dimensions": "7\"Dia x 19.5\"H",
+        "stockedQuantity": "2",
+        "imageUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/lighting/hanging/NOYA%20Narrow%20Pendant.png"
+      }
+    ],
+    "_familySource": "family-first-token",
+    "liveCategory": "light",
+    "liveSubcategories": [
+      "Chandeliers"
+    ]
+  }
+]
