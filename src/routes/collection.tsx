@@ -1193,7 +1193,6 @@ function CollectionPage() {
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
                           className={`grid ${gridCols} ${gridGapClasses} items-start`}
-                            style={{ gridAutoFlow: "dense" }}
                             transition={
                               reduced
                                 ? { duration: 0 }

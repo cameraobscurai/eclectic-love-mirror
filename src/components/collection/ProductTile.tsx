@@ -2,24 +2,19 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
-import { useImageSilhouette } from "@/hooks/useImageSilhouette";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import {
   PRODUCT_TILE_ASPECT,
   PRODUCT_TILE_FRAME_ASPECT,
-  PRODUCT_TILE_WIDE_ASPECT,
-  PRODUCT_TILE_WIDE_FRAME_ASPECT,
   PRODUCT_TILE_IMAGE_CLASS,
 } from "@/lib/collection-tile-presets";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
-// Each tile picks its own frame from the product's natural silhouette:
-//   wide  → 5/4 landscape, spans 2 columns
-//   else  → 4/5 portrait,  spans 1 column
-// The grid container uses `grid-auto-flow: dense` so portraits backfill the
-// holes wide tiles leave. No per-category overrides, no whitespace outliers.
+// One invariant portrait frame for every tile. The grid is always 3 across at
+// lg, 2/3 at sm/md. NormalizedProductImage handles fit inside the frame; no
+// per-product or per-category aspect overrides.
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -50,10 +45,8 @@ export function ProductTile({
   onOpen,
   onImageFailed,
 }: ProductTileProps) {
-  const silhouette = useImageSilhouette(product.primaryImage?.url);
-  const isWide = silhouette === "wide";
-  const tileAspect = isWide ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
-  const frameAspect = isWide ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
+  const tileAspect = PRODUCT_TILE_ASPECT;
+  const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
@@ -86,7 +79,6 @@ export function ProductTile({
     <motion.li
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
-      className={isWide ? "col-span-2" : undefined}
       layout
       transition={{
         layout: reduced ? { duration: 0 } : layoutSpring,
