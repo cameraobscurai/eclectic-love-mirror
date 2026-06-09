@@ -229,10 +229,45 @@ function CategoryGrid({ category }: { category: string }) {
             {CATEGORIES.find((c) => c.slug === category)?.label ?? category}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {items.length} items · Drag tiles to reorder · Click to edit
+            {items.length} items · Drag to reorder · Click to edit
           </p>
         </div>
-        <SaveBadge state={saveState} />
+        <div className="flex items-center gap-3">
+          <SaveBadge state={saveState} />
+          {/* View toggle — mirrors /collection. Grid = rows of 3, Wall = fit all. */}
+          <div
+            className="flex items-center border border-charcoal/15"
+            role="group"
+            aria-label="View"
+          >
+            <button
+              onClick={() => setView("grid")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors ${
+                view === "grid"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Grid view"
+              aria-pressed={view === "grid"}
+              title="Grid — rows of 3"
+            >
+              <Grid2x2 className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setView("wall")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
+                view === "wall"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Wall view"
+              aria-pressed={view === "wall"}
+              title="Wall — every piece at once"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </header>
 
       {err && (
@@ -255,17 +290,33 @@ function CategoryGrid({ category }: { category: string }) {
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          modifiers={[restrictToParentElement]}
         >
           <SortableContext
             items={items.map((i) => i.id)}
             strategy={rectSortingStrategy}
           >
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div
+              className={
+                view === "grid"
+                  ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
+                  : "grid gap-1"
+              }
+              style={
+                view === "wall"
+                  ? {
+                      // Auto-fit wall: solve cols so cols*rows >= N with near-square cells.
+                      gridTemplateColumns: `repeat(${wallCols(items.length)}, minmax(0, 1fr))`,
+                    }
+                  : undefined
+              }
+            >
               {items.map((item, idx) => (
                 <Tile
                   key={item.id}
                   item={item}
                   index={idx}
+                  dense={view === "wall"}
                   onOpen={() => setEditing(item)}
                 />
               ))}
@@ -274,7 +325,7 @@ function CategoryGrid({ category }: { category: string }) {
           <DragOverlay>
             {activeItem && (
               <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
-                <TileMedia item={activeItem} />
+                <TileMedia item={activeItem} dense={view === "wall"} />
               </div>
             )}
           </DragOverlay>
