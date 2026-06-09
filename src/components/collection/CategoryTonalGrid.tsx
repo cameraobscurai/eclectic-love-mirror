@@ -197,6 +197,8 @@ export function CategoryTonalGrid({
           grid-template-columns: repeat(5, 1fr);
           grid-auto-rows: minmax(260px, 1fr);
           width: 100%;
+          max-width: 1600px;
+          margin-inline: auto;
           height: 100%;
           gap: 0;
           padding: 0;
@@ -206,6 +208,7 @@ export function CategoryTonalGrid({
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
             grid-auto-rows: minmax(140px, 1fr);
+            max-width: none;
             height: 100%;
             padding: 0;
             gap: 0;
@@ -305,6 +308,7 @@ function TonalCell({
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
+            objectPosition: "center bottom",
             opacity: gridReady ? 1 : 0,
             transition: "opacity 640ms ease-out, transform 500ms ease-out",
           }}
