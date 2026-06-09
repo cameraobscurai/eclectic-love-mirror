@@ -129,6 +129,7 @@ function CategoryGrid({ category }: { category: string }) {
   const [err, setErr] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [editing, setEditing] = useState<Item | null>(null);
+  const [view, setView] = useState<"grid" | "wall">("grid");
   const [saveState, setSaveState] = useState<"idle" | "syncing" | "synced" | "error">(
     "idle",
   );
