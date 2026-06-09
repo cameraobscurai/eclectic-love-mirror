@@ -25,7 +25,8 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
   const group = getProductBrowseGroup(product);
-  const padClass = group && WIDE_LOW_GROUPS.has(group) ? "p-[18%]" : "p-[8%]";
+  const isWideLow = group && WIDE_LOW_GROUPS.has(group);
+  const padClass = isWideLow ? "pt-[22%] pb-[6%] px-[10%]" : "p-[10%]";
   // Carry the dining width-cap into wall view so banquettes/wide tables
   // don't blow out next to chairs/pedestals.
   const preset = getTilePreset(group);
