@@ -398,7 +398,7 @@ function CategoryGrid({
           modifiers={[restrictToParentElement]}
         >
           <SortableContext
-            items={items.map((i) => i.id)}
+            items={visibleItems.map((i) => i.id)}
             strategy={rectSortingStrategy}
           >
             <div
@@ -410,22 +410,24 @@ function CategoryGrid({
               style={
                 view === "wall"
                   ? {
-                      gridTemplateColumns: `repeat(${wallCols(items.length)}, minmax(0, 1fr))`,
+                      gridTemplateColumns: `repeat(${wallCols(visibleItems.length)}, minmax(0, 1fr))`,
                     }
                   : undefined
               }
             >
-              {items.map((item, idx) => (
+              {visibleItems.map((item, idx) => (
                 <Tile
                   key={item.id}
                   item={item}
                   index={idx}
                   dense={view === "wall"}
+                  draggable={!subActive}
                   onOpen={() => setEditing(item)}
                 />
               ))}
             </div>
           </SortableContext>
+
           <DragOverlay>
             {activeItem && (
               <div className="aspect-[4/5] bg-white border-2 border-charcoal shadow-xl overflow-hidden">
