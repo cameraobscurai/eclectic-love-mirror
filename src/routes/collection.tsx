@@ -1192,7 +1192,8 @@ function CollectionPage() {
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
-                            className={`grid ${gridCols} ${gridGapClasses} items-start`}
+                          className={`grid ${gridCols} ${gridGapClasses} items-start`}
+                            style={{ gridAutoFlow: "dense" }}
                             transition={
                               reduced
                                 ? { duration: 0 }
@@ -1207,8 +1208,6 @@ function CollectionPage() {
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
                                   onImageFailed={markFailed}
-                                  tileAspect={useWideProductFrame ? PRODUCT_TILE_WIDE_ASPECT : undefined}
-                                  frameAspect={useWideProductFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : undefined}
                                 />
                               ));
                             })()}
