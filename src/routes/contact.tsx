@@ -357,7 +357,7 @@ function ContactPage() {
         project_date: projectDate || null,
         budget: budget || null,
         scope: scope || null,
-        items: itemSnapshots,
+        items: emailItemSnapshots,
         inquiry_id: inserted?.id ?? null,
       }),
     }).catch((err) => {
