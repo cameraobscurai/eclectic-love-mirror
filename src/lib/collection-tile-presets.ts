@@ -8,8 +8,11 @@
 
 export const PRODUCT_TILE_ASPECT = "4 / 5";
 export const PRODUCT_TILE_FRAME_ASPECT = 4 / 5;
-export const PRODUCT_TILE_WIDE_ASPECT = "5 / 4";
-export const PRODUCT_TILE_WIDE_FRAME_ASPECT = 5 / 4;
+// Wide tile spans 2 columns. Aspect chosen so its rendered height matches a
+// 1-column portrait tile (portrait 4/5 → row height = colW × 1.25;
+// wide spans 2 cols → width = 2·colW, so aspect 2 / 1.25 = 8/5).
+export const PRODUCT_TILE_WIDE_ASPECT = "8 / 5";
+export const PRODUCT_TILE_WIDE_FRAME_ASPECT = 8 / 5;
 // Reduced padding from 8% → 4%: NormalizedProductImage already normalises
 // subject fill to ~75% of tile via canvas-measured bounding box + scale clamp.
 // The old 8% doubled up the inset and made small/zoomed subjects appear tiny.
