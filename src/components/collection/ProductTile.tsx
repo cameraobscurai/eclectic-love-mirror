@@ -131,7 +131,7 @@ export function ProductTile({
                 <NormalizedProductImage
                   src={withCdnWidth(product.primaryImage.url, 600)}
                   frameAspect={frameAspect}
-                  visualOffsetY={spyGroup === "bar" ? 0.08 : 0}
+                  visualOffsetY={0}
                   srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
