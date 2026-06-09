@@ -325,7 +325,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-[86dvh] md:max-h-[860px] md:max-w-[1200px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:h-[73dvh] md:max-h-[730px] md:max-w-[1020px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
