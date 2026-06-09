@@ -58,9 +58,10 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
+  { to: "/admin/photos", label: "Photos", icon: ImageIcon },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
   { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
-  { to: "/admin/image-qa", label: "Image QA", icon: ImageIcon },
+  { to: "/admin/image-qa", label: "Image QA", icon: ScanEye },
   { to: "/admin/colors", label: "Color QA", icon: Palette },
 ];
 
@@ -73,6 +74,7 @@ const SITE: NavItem[] = [
 // Crumb labels keyed off the path. Falls back to last segment if missing.
 const CRUMB_LABELS: Record<string, string> = {
   "/admin": "Dashboard",
+  "/admin/photos": "Photos",
   "/admin/insights": "Inquiries & insights",
   "/admin/colors": "Color QA",
   "/admin/image-qa": "Image QA",

@@ -32,7 +32,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { Loader2, AlertCircle, ImageOff } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
-import { AdminShell } from "@/components/admin/admin-shell";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import {
   listCategoryItems,
@@ -81,11 +80,8 @@ type Item = {
 };
 
 function AdminPhotosPage() {
-  return (
-    <AdminShell>
-      <PhotosManager />
-    </AdminShell>
-  );
+  // Parent route /admin already wraps children in <AdminShell>.
+  return <PhotosManager />;
 }
 
 function PhotosManager() {
