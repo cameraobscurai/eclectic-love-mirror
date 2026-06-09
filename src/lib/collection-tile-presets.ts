@@ -64,7 +64,7 @@ const DINING: TilePreset = {
 // toward the wide-bar visual mass without compressing the dominant silhouette.
 const BARS: TilePreset = {
   mediaH: "clamp(160px, 11vw, 200px)",
-  pad: "pt-[16%] pb-[3%] px-[8%]",
+  pad: "pt-[6%] pb-[2%] px-[4%]",
   anchor: "bottom",
 };
 
