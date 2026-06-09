@@ -18,7 +18,7 @@ import {
 // uniform row baseline via getParentUniformMediaH — restores the dense,
 // editorial row rhythm of the live site without re-introducing the cross-
 // parent crush that pickBatchMediaHeight used to cause.
-import { getParentUniformMediaH } from "@/lib/collection-tile-presets";
+import { getParentTilePreset, getParentUniformMediaH } from "@/lib/collection-tile-presets";
 
 import {
   PARENT_ORDER,
@@ -1124,7 +1124,7 @@ function CollectionPage() {
               ) : layout === "wall" ? (
                 <div
                   className="relative w-full"
-                  style={{ height: "calc(100dvh - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))" }}
+                    style={{ height: "calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-bar-h, var(--archive-utility-h)))" }}
                 >
                   {visibleProducts.length === 0 ? (
                     <div className="py-32 px-6">
@@ -1197,6 +1197,9 @@ function CollectionPage() {
                             {(() => {
                               const uniformMediaH =
                                 getParentUniformMediaH(activeParent || null);
+                              const parentPreset = uniformMediaH
+                                ? getParentTilePreset(activeParent || null)
+                                : null;
                               return visibleBatch.map((p, i) => (
                                 <ProductTile
                                   key={p.id}
@@ -1205,6 +1208,8 @@ function CollectionPage() {
                                   onOpen={() => setQuickViewId(p.id)}
                                   onImageFailed={markFailed}
                                   mediaHOverride={uniformMediaH ?? undefined}
+                                  padOverride={parentPreset?.pad}
+                                  anchorOverride={parentPreset?.anchor}
                                 />
                               ));
                             })()}
