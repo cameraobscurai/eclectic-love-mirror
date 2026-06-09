@@ -400,6 +400,7 @@ export type Database = {
           images_meta: Json
           live_subcategories: string[] | null
           manual_injection: boolean
+          manual_order: number | null
           materials: string[] | null
           meta_description: string | null
           meta_title: string | null
@@ -446,6 +447,7 @@ export type Database = {
           images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
+          manual_order?: number | null
           materials?: string[] | null
           meta_description?: string | null
           meta_title?: string | null
@@ -492,6 +494,7 @@ export type Database = {
           images_meta?: Json
           live_subcategories?: string[] | null
           manual_injection?: boolean
+          manual_order?: number | null
           materials?: string[] | null
           meta_description?: string | null
           meta_title?: string | null

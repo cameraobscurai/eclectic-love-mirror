@@ -36,6 +36,7 @@ import { Route as StudioTokenRouteImport } from './routes/studio.$token'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
+import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
@@ -184,6 +185,11 @@ const AdminStudioRoute = AdminStudioRouteImport.update({
   path: '/studio',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPhotosRoute = AdminPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInsightsRoute = AdminInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -274,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -315,6 +322,7 @@ export interface FileRoutesByTo {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -357,6 +365,7 @@ export interface FileRoutesById {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -400,6 +409,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
     | '/email/unsubscribe'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
     | '/email/unsubscribe'
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
     | '/email/unsubscribe'
@@ -723,6 +735,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStudioRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/photos': {
+      id: '/admin/photos'
+      path: '/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AdminPhotosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/insights': {
       id: '/admin/insights'
       path: '/insights'
@@ -829,6 +848,7 @@ interface AdminRouteChildren {
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
+  AdminPhotosRoute: typeof AdminPhotosRoute
   AdminStudioRoute: typeof AdminStudioRoute
 }
 
@@ -839,6 +859,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
   AdminInsightsRoute: AdminInsightsRoute,
+  AdminPhotosRoute: AdminPhotosRoute,
   AdminStudioRoute: AdminStudioRoute,
 }
 

@@ -142,10 +142,10 @@ const uploadInput = z.object({
   base64: z.string().min(1).max(15_000_000), // ~10MB raw before base64 inflation
 });
 
-// Storage-only: writes to the `squarespace-mirror` bucket and returns the URL.
-// Does NOT modify inventory_items — the caller appends the URL via
-// updateItemImages, which has its own concurrency guard + audit. So this
-// handler gets audit only (no row-level snapshot needed), entity=storage.
+// Storage-only: writes to `squarespace-mirror` and returns the URL.
+// Does NOT modify inventory_items — caller appends via updateItemImages,
+// which has its own concurrency guard + audit. Hash-based path = automatic
+// dedup: same bytes uploaded twice resolve to the same URL with no waste.
 export const uploadItemImage = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d: unknown) => uploadInput.parse(d))
@@ -154,33 +154,61 @@ export const uploadItemImage = createServerFn({ method: "POST" })
     if (bytes.byteLength > 10 * 1024 * 1024) {
       throw new Error("File exceeds 10MB limit");
     }
-    const ext = data.filename.split(".").pop()?.toLowerCase() || "jpg";
-    const safeExt = ["jpg", "jpeg", "png", "webp", "avif"].includes(ext) ? ext : "jpg";
+
+    const rawExt = data.filename.split(".").pop()?.toLowerCase() || "jpg";
+    // HEIC/HEIF: reject explicitly so iPhone users get a clear message.
+    if (["heic", "heif"].includes(rawExt)) {
+      throw new Error("HEIC not supported — export as JPG or PNG and re-upload.");
+    }
+    const safeExt = ["jpg", "jpeg", "png", "webp", "avif"].includes(rawExt) ? rawExt : "jpg";
     const folder = data.rmsId || data.id;
-    const path = `inventory/${folder}/${crypto.randomUUID()}.${safeExt}`;
 
-    const { error: upErr } = await supabaseAdmin.storage
-      .from("squarespace-mirror")
-      .upload(path, bytes, { contentType: data.contentType, upsert: false });
-    if (upErr) throw upErr;
+    // Content-hash the bytes (SHA-256, first 16 hex chars = 64 bits, ample
+    // for dedup within a single item folder). Same image = same path, so
+    // re-uploading the identical file simply returns the existing URL.
+    const hashBuf = await crypto.subtle.digest("SHA-256", bytes);
+    const hashHex = Array.from(new Uint8Array(hashBuf))
+      .slice(0, 8)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    const path = `inventory/${folder}/${hashHex}.${safeExt}`;
 
-    const { data: pub } = supabaseAdmin.storage
-      .from("squarespace-mirror")
-      .getPublicUrl(path);
+    const bucket = supabaseAdmin.storage.from("squarespace-mirror");
+    const { error: upErr } = await bucket.upload(path, bytes, {
+      contentType: data.contentType,
+      upsert: false,
+    });
+
+    let deduped = false;
+    if (upErr) {
+      // Supabase returns "The resource already exists" / status 409 when the
+      // path is taken. Treat that as a successful dedup hit.
+      const msg = upErr.message?.toLowerCase() ?? "";
+      if (msg.includes("already exists") || msg.includes("duplicate")) {
+        deduped = true;
+      } else {
+        throw upErr;
+      }
+    }
+
+    const { data: pub } = bucket.getPublicUrl(path);
 
     void audit({
       actorId: context.userId,
       entity: "storage",
       entityId: data.id,
-      action: "upload_image",
+      action: deduped ? "upload_image_deduped" : "upload_image",
       metadata: {
         bucket: "squarespace-mirror",
         path,
         bytes: bytes.byteLength,
         contentType: data.contentType,
         filename: data.filename,
+        hash: hashHex,
+        deduped,
       },
     });
 
-    return { url: pub.publicUrl, path };
+    return { url: pub.publicUrl, path, deduped };
   });
+
