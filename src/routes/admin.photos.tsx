@@ -274,6 +274,9 @@ function CategoryGrid({
   const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
   const handleDragEnd = (e: DragEndEvent) => {
     setActiveId(null);
+    // Reorder is disabled when filtered to a sub — we'd otherwise persist
+    // a partial parent list.
+    if (subActive) return;
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const oldIdx = items.findIndex((i) => i.id === active.id);
@@ -283,6 +286,7 @@ function CategoryGrid({
     setItems(next);
     scheduleSave(next);
   };
+
 
   const activeItem = useMemo(
     () => (items ?? []).find((i) => i.id === activeId) ?? null,
