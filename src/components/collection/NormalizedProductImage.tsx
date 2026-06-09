@@ -8,6 +8,7 @@ type Fit = {
 
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
+  frameAspect?: number;
 };
 
 const fitCache = new Map<string, Fit | null>();
@@ -26,11 +27,12 @@ function fitFromVisualBox(
   bw: number,
   bh: number,
   naturalAspect: number,
+  frameAspect = FRAME_ASPECT,
 ): Fit | null {
   if (!bw || !bh || !naturalAspect) return null;
 
-  const renderedW = naturalAspect >= FRAME_ASPECT ? bw : (naturalAspect / FRAME_ASPECT) * bw;
-  const renderedH = naturalAspect >= FRAME_ASPECT ? (FRAME_ASPECT / naturalAspect) * bh : bh;
+  const renderedW = naturalAspect >= frameAspect ? bw : (naturalAspect / frameAspect) * bw;
+  const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
   if (!renderedW || !renderedH) return null;
 
   const silhouette = renderedW / renderedH;
@@ -51,7 +53,7 @@ function fitFromVisualBox(
   };
 }
 
-function measureImage(img: HTMLImageElement): Fit | null {
+function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
@@ -72,7 +74,7 @@ function measureImage(img: HTMLImageElement): Fit | null {
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect);
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect);
   }
 
   let minX = cw;
@@ -106,16 +108,17 @@ function measureImage(img: HTMLImageElement): Fit | null {
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect);
+  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect);
 }
 
-export function NormalizedProductImage({ src, className, style, ...props }: Props) {
-  const cached = fitCache.get(src);
+export function NormalizedProductImage({ src, frameAspect = FRAME_ASPECT, className, style, ...props }: Props) {
+  const cacheKey = `${src}|${frameAspect}`;
+  const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
   useEffect(() => {
-    if (fitCache.has(src)) {
-      setFit(fitCache.get(src));
+    if (fitCache.has(cacheKey)) {
+      setFit(fitCache.get(cacheKey));
       return;
     }
     let cancelled = false;
@@ -123,19 +126,19 @@ export function NormalizedProductImage({ src, className, style, ...props }: Prop
     probe.crossOrigin = "anonymous";
     probe.decoding = "async";
     probe.onload = () => {
-      const next = measureImage(probe);
-      fitCache.set(src, next);
+      const next = measureImage(probe, frameAspect);
+      fitCache.set(cacheKey, next);
       if (!cancelled) setFit(next);
     };
     probe.onerror = () => {
-      fitCache.set(src, null);
+      fitCache.set(cacheKey, null);
       if (!cancelled) setFit(null);
     };
     probe.src = src;
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [cacheKey, frameAspect, src]);
 
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
