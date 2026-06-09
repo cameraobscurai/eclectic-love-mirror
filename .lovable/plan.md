@@ -1,51 +1,36 @@
-# Polish pass — 5 fixes, one at a time
+## Goal
+Confirm the cocktail/bar fix didn't leave outliers in any other category, and identify any section that still needs its own aspect override.
 
-All five are narrow code-level fixes. None changes layout or visual design, so no design directions are needed. I'll do them in order, verify each before moving on.
+## Approach
 
-## 1. Footer FAQ link → atelier anchor
-**Files:** `src/components/footer.tsx`, `src/routes/atelier.tsx`
+Current logic: every category uses `PRODUCT_TILE_ASPECT` (4:5 portrait) + `NormalizedProductImage`. Only `cocktail-bar` is overridden to `PRODUCT_TILE_WIDE_ASPECT` (5:4 landscape). So the only categories at risk of "outlier" rows are ones with a mix of tall + wide objects, or predominantly wide silhouettes forced into a portrait frame.
 
-- Change footer entry from `{ href: "/contact", label: "FAQ", hash: "faq" }` to `{ href: "/atelier", label: "FAQ", hash: "working-with-the-atelier" }`.
-- Add `id="working-with-the-atelier"` to the `<Section>` wrapping the FAQ accordion (atelier.tsx line ~376).
-- Verify: click footer FAQ → lands on /atelier, scrolls to section.
+Risk-ranked categories to inspect:
+1. tables — mix of long dining tables (wide) and side tables (square/tall)
+2. seating — sofas (very wide) vs. chairs/stools (portrait)
+3. storage — consoles (wide) vs. cabinets (tall)
+4. lighting — chandeliers (tall) vs. sconces (compact)
+5. chandeliers — uniform tall, likely fine
+6. large-decor — unknown silhouettes
+7. rugs — naturally landscape, forced portrait = severe outlier risk
+8. styling, candlelight, tableware, serveware, pillows-throws, furs-pelts — small/uniform, expected fine
 
-## 2. Home hero SSR hydration mismatch
-**File:** `src/components/home/SequentialHeroVideo.tsx`
+## Execution
 
-- Replace `useState(() => Math.floor(Math.random() * HERO_CLIPS.length))` with `useState(0)`.
-- Add `useEffect(() => { setIndex(Math.floor(Math.random() * HERO_CLIPS.length)); }, [])` so the random rotation still happens, but only after mount.
-- Verify: reload home, console clean of hydration warnings, video still rotates.
+Spawn parallel `acp_subagent--explore` runs, one per risk category (1–7 above), each instructed to:
+- Open the preview at `/collection?group=<slug>` at 1874×1130 (matches current viewport)
+- Take a full-page screenshot
+- Report: row alignment consistency, presence of vertical gaps, any tile where the product visually leaks/floats vs. neighbors
+- Compare against a reference shot of `pillows-throws` (known-good uniform grid)
 
-## 3. Invalid DOM prop `fetchpriority` → `fetchPriority`
-**Files:** `src/components/home/PosterPicture.tsx`, `src/components/home/HeroFilmstrip.tsx`, `src/components/hero-image.tsx`
+Aggregate findings into a table: `category | status (clean / minor / outlier) | offending product(s) | recommended fix (data fix vs. wide-frame override vs. per-tile normalization tweak)`.
 
-- Rename JSX attribute from lowercase `fetchpriority` to camelCase `fetchPriority` in all three files. React 19 emits the correct lowercase HTML attribute internally.
-- Verify: console clean of "Invalid DOM property" warnings.
+## Deliverable
 
-## 4. Framer Motion scroll container warning on /contact
-**File:** likely `src/routes/contact.tsx` (sticky left column wrapper)
+A short report in chat listing each category's status and a concrete remediation plan for any flagged section (e.g., "add `rugs` to wide-frame override", "Ovalia miscategorized, move to seating", "Anathema console silhouette too wide — reduce maxW cap"). No code changes in this pass — verification only.
 
-- Locate the sticky/scroll-tracked wrapper Framer is measuring.
-- Add `position: relative` (or `className="relative"`) to its container.
-- Verify: load /contact, console clean of the "non-static position" warning.
+## Technical notes
 
-## 5. Route file leaks non-route export
-**File:** `src/routes/admin.incoming.tsx`
-
-- Move the `IncomingPage` component to `src/components/admin/incoming-page.tsx` (new file) and import it into the route.
-- Drop the named export from the route file so only the `Route` export remains.
-- Verify: console clean of the tanstack-router code-split warning.
-
-## Sequencing & verification
-
-After each fix:
-1. Reload the affected route in the preview.
-2. Read console logs for that route.
-3. Move to the next fix only after the prior one is clean.
-
-If any fix breaks something visual, revert that single change and re-plan before continuing — no batching, per the project's perf/dead-code memory rule.
-
-## Out of scope (flagged earlier, not in this plan)
-
-- Missing Collection facets (candlelight, chandeliers, serveware, large-decor, furs-pelts). Needs your call on intent before any UI change.
-- Mixed-case "build a style brief →" CTA on /contact. Cosmetic; decide caps vs mixed.
+- All checks are read-only via the browser tool against the running preview.
+- Reference files: `src/routes/collection.tsx:714` (wide-frame switch), `src/lib/collection-tile-presets.ts` (aspect constants), `src/components/collection/NormalizedProductImage.tsx` (scaling caps).
+- If a fix is approved after the report, it lands as either (a) extending the `useWideProductFrame` condition, or (b) a data-layer category correction in `current_catalog.json`.
