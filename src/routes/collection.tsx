@@ -1194,15 +1194,20 @@ function CollectionPage() {
                                 : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
                             }
                           >
-                            {visibleBatch.map((p, i) => (
-                              <ProductTile
-                                key={p.id}
-                                product={p}
-                                index={i}
-                                onOpen={() => setQuickViewId(p.id)}
-                                onImageFailed={markFailed}
-                              />
-                            ))}
+                            {(() => {
+                              const uniformMediaH =
+                                getParentUniformMediaH(activeParent || null);
+                              return visibleBatch.map((p, i) => (
+                                <ProductTile
+                                  key={p.id}
+                                  product={p}
+                                  index={i}
+                                  onOpen={() => setQuickViewId(p.id)}
+                                  onImageFailed={markFailed}
+                                  mediaHOverride={uniformMediaH ?? undefined}
+                                />
+                              ));
+                            })()}
                           </motion.ul>
                         </LayoutGroup>
 
