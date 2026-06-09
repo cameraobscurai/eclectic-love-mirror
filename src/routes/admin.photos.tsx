@@ -365,13 +365,24 @@ function CategoryGrid({ category }: { category: string }) {
   );
 }
 
+// Solve cols × rows ≥ N where the cell aspect stays close to the viewport's.
+// Cheap loop, runs once per items.length change at the call site.
+function wallCols(n: number): number {
+  if (n <= 0) return 1;
+  // Bias toward the public Collection's "rows of 3" feel: floor of sqrt(N*1.4).
+  // Caps at 10 so huge categories (pillows-throws ~155) stay readable.
+  return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
+}
+
 function Tile({
   item,
   index,
+  dense,
   onOpen,
 }: {
   item: Item;
   index: number;
+  dense: boolean;
   onOpen: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -392,26 +403,23 @@ function Tile({
       {...attributes}
       {...listeners}
       onClick={(e) => {
-        // PointerSensor distance:8 separates drag from click. If a real drag
-        // occurred dnd-kit suppresses click; otherwise this fires.
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-all ${
+      className={`group relative aspect-[4/5] bg-white border cursor-grab active:cursor-grabbing transition-colors ${
         needsAttention
           ? "border-amber-400"
           : "border-charcoal/10 hover:border-charcoal/40"
       }`}
       title={`${item.title} · click to edit · drag to reorder`}
     >
-      <TileMedia item={item} />
+      <TileMedia item={item} dense={dense} />
 
       {/* Position pill */}
       <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
         {index + 1}
       </span>
 
-      {/* Health badge */}
       {needsAttention && (
         <span
           className="absolute top-2 right-2 bg-amber-500 text-white p-1"
@@ -421,7 +429,7 @@ function Tile({
         </span>
       )}
 
-      {/* Title overlay */}
+      {/* Hover plate — matches Collection's editorial reveal. */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <p className="text-white text-[10px] uppercase tracking-widest truncate">
           {item.title}
@@ -434,7 +442,7 @@ function Tile({
   );
 }
 
-function TileMedia({ item }: { item: Item }) {
+function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
   const hero = item.images?.[0];
   if (!hero) {
     return (
@@ -443,16 +451,21 @@ function TileMedia({ item }: { item: Item }) {
       </div>
     );
   }
+  // White bg + padded object-contain = identical silhouette treatment to the
+  // public Collection tiles. Wall view uses tighter pad like CollectionWall.
   return (
-    <img
-      src={hero}
-      alt=""
-      loading="lazy"
-      draggable={false}
-      className="h-full w-full object-cover select-none"
-    />
+    <div className={`h-full w-full flex items-center justify-center ${dense ? "p-[8%]" : "p-[10%]"}`}>
+      <img
+        src={hero}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        className="max-h-full max-w-full object-contain select-none"
+      />
+    </div>
   );
 }
+
 
 function SaveBadge({
   state,
