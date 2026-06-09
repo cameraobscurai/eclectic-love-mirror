@@ -274,6 +274,13 @@ function ContactPage() {
         title: s.title.length > 60 ? s.title.slice(0, 57) + "…" : s.title,
       }));
     }
+    // Final guard — if still over cap (extreme edge: 50 items, very long
+    // category names), drop trailing items rather than let RLS reject the
+    // whole inquiry. rms_ids stay in metadata so admin loses nothing.
+    while (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES && itemSnapshots.length > 1) {
+      itemSnapshots = itemSnapshots.slice(0, -1);
+    }
+
 
     // Snapshot for the admin email — keep the original (with images) so the
     // email can show product thumbnails. The DB row only stores the trimmed
