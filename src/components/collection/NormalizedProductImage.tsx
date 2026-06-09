@@ -12,16 +12,50 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
 
 const fitCache = new Map<string, Fit | null>();
 
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, scale: 1 };
+const FRAME_ASPECT = 4 / 5;
+const TILE_IMAGE_INSET = 0.84;
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, scale: 0.68 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
+}
+
+function fitFromVisualBox(
+  cx: number,
+  cy: number,
+  bw: number,
+  bh: number,
+  naturalAspect: number,
+): Fit | null {
+  if (!bw || !bh || !naturalAspect) return null;
+
+  const renderedW = naturalAspect >= FRAME_ASPECT ? bw : (naturalAspect / FRAME_ASPECT) * bw;
+  const renderedH = naturalAspect >= FRAME_ASPECT ? (FRAME_ASPECT / naturalAspect) * bh : bh;
+  if (!renderedW || !renderedH) return null;
+
+  const silhouette = renderedW / renderedH;
+  const targetArea = silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2;
+  const maxW = silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56;
+  const maxH = silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56;
+  const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
+  const scaleByArea = Math.sqrt(targetArea / currentArea);
+  const scaleByCaps = Math.min(
+    maxW / Math.max(0.001, TILE_IMAGE_INSET * renderedW),
+    maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
+  );
+
+  return {
+    cx: clamp(cx, 0.05, 0.95),
+    cy: clamp(cy, 0.05, 0.95),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.52, 1.55),
+  };
 }
 
 function measureImage(img: HTMLImageElement): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
+  const naturalAspect = w / h;
 
   const maxSide = 180;
   const scale = Math.min(1, maxSide / Math.max(w, h));
@@ -38,7 +72,7 @@ function measureImage(img: HTMLImageElement): Fit | null {
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return null;
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect);
   }
 
   let minX = cw;
@@ -72,18 +106,7 @@ function measureImage(img: HTMLImageElement): Fit | null {
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  // Target: subject fills 82% of the tile's effective area.
-  // min clamp reduced to 0.8 (allow slight shrink for subjects that nearly fill the canvas).
-  // max clamp raised to 4.0 so small subjects (≥20% of canvas) still hit the target.
-  // Result: subjects in the 20–90% canvas fill range all appear ~75% of tile width/height.
-  const scaleToFrame = 0.82 / Math.max(bw, bh);
-
-  return {
-    // Tighter center clamp prevents extreme off-center translations at high scale
-    cx: clamp(cx, 0.1, 0.9),
-    cy: clamp(cy, 0.1, 0.9),
-    scale: clamp(scaleToFrame, 0.8, 4.0),
-  };
+  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect);
 }
 
 export function NormalizedProductImage({ src, className, style, ...props }: Props) {
