@@ -211,7 +211,7 @@ function CategoryGrid({ category }: { category: string }) {
   };
 
   const activeItem = useMemo(
-    () => items.find((i) => i.id === activeId) ?? null,
+    () => (items ?? []).find((i) => i.id === activeId) ?? null,
     [items, activeId],
   );
 
