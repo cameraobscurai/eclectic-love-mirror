@@ -37,12 +37,9 @@ function fitFromVisualBox(
   if (!renderedW || !renderedH) return null;
 
   const silhouette = renderedW / renderedH;
-  // Wide silhouettes (bars, low cabinets): boost target area + height cap so
-  // they read at the same visual height as chunky/square neighbors instead
-  // of floating as tiny strips.
-  const targetArea = silhouette > 1.45 ? 0.26 : silhouette < 0.75 ? 0.17 : 0.2;
-  const maxW = silhouette > 1.45 ? 0.92 : silhouette < 0.75 ? 0.42 : 0.56;
-  const maxH = silhouette > 1.45 ? 0.5 : silhouette < 0.75 ? 0.58 : 0.56;
+  const targetArea = silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2;
+  const maxW = silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56;
+  const maxH = silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56;
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
