@@ -61,6 +61,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
+  mediaHOverride,
 }: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
