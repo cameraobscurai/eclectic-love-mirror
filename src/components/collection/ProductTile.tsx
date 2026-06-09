@@ -5,10 +5,7 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import {
-  PRODUCT_TILE_ASPECT,
-  PRODUCT_TILE_IMAGE_CLASS,
-} from "@/lib/collection-tile-presets";
+import { PRODUCT_TILE_ASPECT, PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
 // All tiles use one fixed portrait frame. The image floats inside it; the grid
@@ -121,10 +118,7 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
               {product.primaryImage ? (
                 <NormalizedProductImage
                   src={withCdnWidth(product.primaryImage.url, 600)}
-                  srcSet={
-                    buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
-                    undefined
-                  }
+                  srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
                   width={600}
