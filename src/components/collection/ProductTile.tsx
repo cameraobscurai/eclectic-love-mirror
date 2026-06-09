@@ -21,6 +21,8 @@ interface ProductTileProps {
   /** Optional override for the cell height — used by single-parent views to
    *  enforce a uniform row baseline (dense editorial rhythm). */
   mediaHOverride?: string;
+  padOverride?: string;
+  anchorOverride?: "bottom" | "center";
 }
 
 // Eager render = first three full rows on wide desktops, two on smaller.
@@ -62,6 +64,8 @@ export function ProductTile({
   onOpen,
   onImageFailed,
   mediaHOverride,
+  padOverride,
+  anchorOverride,
 }: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
@@ -93,8 +97,9 @@ export function ProductTile({
   // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
   const preset = getTilePreset(spyGroup);
-  const padClass = preset.pad;
-  const anchorClass = preset.anchor === "center" ? "object-center" : "object-bottom";
+  const padClass = padOverride ?? preset.pad;
+  const anchor = anchorOverride ?? preset.anchor;
+  const anchorClass = anchor === "center" ? "object-center" : "object-bottom";
 
   // Restrained spring — same family used by the grid container so cards and
   // container reflow as one system. No bounce, no playful elasticity.
@@ -244,7 +249,7 @@ export function ProductTile({
           {/* Caption — visible on mobile only (no hover available there).
               Desktop relies on the glass label inside the frame above. */}
           <p
-            className="md:hidden mt-3 text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
+            className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
             style={{
               maxWidth: "var(--archive-tile-caption-w)",
               color: "var(--archive-text-quiet)",
