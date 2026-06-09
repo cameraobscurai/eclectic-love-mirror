@@ -522,7 +522,6 @@ function Tile({
   return (
     <div
       ref={setNodeRef}
-      style={style}
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
       onClick={(e) => {
