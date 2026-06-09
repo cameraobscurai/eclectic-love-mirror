@@ -241,7 +241,14 @@ function ContactPage() {
 
     // Frozen-at-submit snapshot. Even if catalog rebinds an image tomorrow,
     // the admin inbox always renders what the customer actually saw.
-    const itemSnapshots = effectiveIds
+    //
+    // RLS WITH CHECK caps item_snapshots at 16,000 bytes. A 50-item selection
+    // with long titles + CDN URLs blows past that and the insert is rejected.
+    // We build the full snapshot first; if it would exceed the cap we strip
+    // image_url (the heaviest field — admin can re-resolve from rms_id),
+    // then truncate titles as a last resort.
+    type Snap = { rms_id: string; title: string; category: string | null; image_url: string | null };
+    const fullSnapshots: Snap[] = effectiveIds
       .map((id) => piecesById.get(id))
       .filter((p): p is SelectedPiece => Boolean(p))
       .map((p) => ({
@@ -250,6 +257,29 @@ function ContactPage() {
         category: p.category,
         image_url: p.image ? withCdnWidth(p.image, 480) : null,
       }));
+
+    const SNAPSHOT_MAX_BYTES = 15500; // leave headroom under the 16,000 cap
+    const bytes = (v: unknown) =>
+      typeof TextEncoder !== "undefined"
+        ? new TextEncoder().encode(JSON.stringify(v)).length
+        : JSON.stringify(v).length;
+
+    let itemSnapshots: Snap[] = fullSnapshots;
+    if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
+      itemSnapshots = fullSnapshots.map((s) => ({ ...s, image_url: null }));
+    }
+    if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
+      itemSnapshots = itemSnapshots.map((s) => ({
+        ...s,
+        title: s.title.length > 60 ? s.title.slice(0, 57) + "…" : s.title,
+      }));
+    }
+
+    // Snapshot for the admin email — keep the original (with images) so the
+    // email can show product thumbnails. The DB row only stores the trimmed
+    // version to stay under the RLS cap.
+    const emailItemSnapshots = fullSnapshots;
+
 
     // Resolve catalog rms_ids → DB UUIDs for the typed `item_ids` column.
     // Failures are non-fatal — snapshots + metadata.rms_ids preserve the
