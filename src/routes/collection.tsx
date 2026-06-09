@@ -14,11 +14,6 @@ import {
   type BrowseGroupId,
   getProductBrowseGroup,
 } from "@/lib/collection-browse-groups";
-// Single-parent views (e.g. /collection?group=cocktail-bar) opt into a
-// uniform row baseline via getParentUniformMediaH — restores the dense,
-// editorial row rhythm of the live site without re-introducing the cross-
-// parent crush that pickBatchMediaHeight used to cause.
-import { getParentTilePreset, getParentUniformMediaH } from "@/lib/collection-tile-presets";
 
 import {
   PARENT_ORDER,
@@ -709,8 +704,11 @@ function CollectionPage() {
     resultMeta = "";
   }
 
-  // Grid mode is a single comfortable preset — big tiles. Wall is the dense option.
-  const gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3";
+  // Grid mode: 3-up default, dense mode: 5-up. Wall is the full-fit option.
+  const [dense, setDense] = useState(false);
+  const gridCols = dense
+    ? "grid-cols-3 sm:grid-cols-4 lg:grid-cols-5"
+    : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
 
 
@@ -922,19 +920,34 @@ function CollectionPage() {
                 aria-label="View"
               >
                 <button
-                  onClick={() => setLayout("grid")}
+                  onClick={() => { setLayout("grid"); setDense(false); }}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    layout === "grid"
+                    layout === "grid" && !dense
                       ? "text-charcoal bg-charcoal/[0.04]"
                       : "text-charcoal/40 hover:text-charcoal/80",
                   ].join(" ")}
-                  aria-label="Comfortable grid"
-                  aria-pressed={layout === "grid"}
-                  title="Grid — scrollable, large tiles"
+                  aria-label="3-up grid"
+                  aria-pressed={layout === "grid" && !dense}
+                  title="Grid — 3 columns, large tiles"
                 >
                   <DensityIconLarge />
+                </button>
+                <button
+                  onClick={() => { setLayout("grid"); setDense(true); }}
+                  className={[
+                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                    layout === "grid" && dense
+                      ? "text-charcoal bg-charcoal/[0.04]"
+                      : "text-charcoal/40 hover:text-charcoal/80",
+                  ].join(" ")}
+                  aria-label="Dense grid"
+                  aria-pressed={layout === "grid" && dense}
+                  title="Dense — 5 columns, compact tiles"
+                >
+                  <DensityIconSmall />
                 </button>
                 <button
                   onClick={() => setLayout("wall")}
@@ -1178,16 +1191,7 @@ function CollectionPage() {
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
-                            className={`grid ${gridCols} ${gridGapClasses} items-start [grid-auto-rows:max-content]`}
-                            // Cell height is set PER TILE (on each <li> via
-                            // --archive-tile-media-h from its family preset).
-                            // The old batch-collapse strategy (shortest family
-                            // wins for the whole batch) crushed tall silhouettes
-                            // when one wide-low product entered the visible set.
-                            // grid-auto-rows:max-content lets each row settle on
-                            // its tallest cell naturally — mildly ragged rows
-                            // read as deliberate printed-contact-sheet rhythm
-                            // in dense, and as proportional scale in editorial.
+                            className={`grid ${gridCols} ${gridGapClasses} items-start`}
                             transition={
                               reduced
                                 ? { duration: 0 }
@@ -1195,11 +1199,6 @@ function CollectionPage() {
                             }
                           >
                             {(() => {
-                              const uniformMediaH =
-                                getParentUniformMediaH(activeParent || null);
-                              const parentPreset = uniformMediaH
-                                ? getParentTilePreset(activeParent || null)
-                                : null;
                               return visibleBatch.map((p, i) => (
                                 <ProductTile
                                   key={p.id}
@@ -1207,9 +1206,6 @@ function CollectionPage() {
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
                                   onImageFailed={markFailed}
-                                  mediaHOverride={uniformMediaH ?? undefined}
-                                  padOverride={parentPreset?.pad}
-                                  anchorOverride={parentPreset?.anchor}
                                 />
                               ));
                             })()}

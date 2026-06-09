@@ -8,8 +8,7 @@
 // Taxonomy: PARENT_ORDER + PARENT_SUBS from src/lib/collection-parents.ts —
 // the single source of truth shared with /collection.
 //
-// Tile sizing: per-family pad from getTilePreset() normalizes silhouettes
-// so banquettes don't dwarf ottomans inside the same row.
+// Tile sizing mirrors /collection: one fixed frame and one image-fit rule.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -38,6 +37,7 @@ import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "luc
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
+import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { reorderItems } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
@@ -46,12 +46,11 @@ import {
   productParent,
   type ParentId,
 } from "@/lib/collection-parents";
-import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
-import { getTilePreset } from "@/lib/collection-tile-presets";
 import {
   getCollectionCatalog,
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
+import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -72,8 +71,6 @@ type Item = {
   images: string[];
   card_background_url: string | null;
   variantCount: number;
-  /** Browse group drives the per-family tile-preset padding. */
-  browseGroup: ReturnType<typeof getProductBrowseGroup>;
 };
 
 function adapt(p: CollectionProduct): Item {
@@ -84,7 +81,6 @@ function adapt(p: CollectionProduct): Item {
     images: p.images.map((i) => i.url),
     card_background_url: null,
     variantCount: p.variants?.length ?? 0,
-    browseGroup: getProductBrowseGroup(p),
   };
 }
 
@@ -526,7 +522,7 @@ function Tile({
   );
 }
 
-function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
+function TileMedia({ item }: { item: Item; dense?: boolean }) {
   const hero = item.images[0];
   if (!hero) {
     return (
@@ -535,20 +531,14 @@ function TileMedia({ item, dense = false }: { item: Item; dense?: boolean }) {
       </div>
     );
   }
-  // Per-family padding from the same preset /collection uses — normalizes
-  // tight headshots vs loose room shots so silhouettes share a baseline.
-  const preset = getTilePreset(item.browseGroup);
-  const padClass = dense ? "p-[6%]" : preset.pad;
-  const anchorClass =
-    preset.anchor === "bottom" ? "items-end" : "items-center";
   return (
-    <div className={`h-full w-full flex justify-center ${anchorClass} ${padClass}`}>
-      <img
+    <div className="h-full w-full">
+      <NormalizedProductImage
         src={hero}
         alt=""
         loading="lazy"
         draggable={false}
-        className="max-h-full max-w-full object-contain select-none"
+        className={`h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} select-none`}
       />
     </div>
   );
