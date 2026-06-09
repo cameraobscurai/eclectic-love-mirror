@@ -121,7 +121,10 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
               {product.primaryImage ? (
                 <NormalizedProductImage
                   src={withCdnWidth(product.primaryImage.url, 600)}
-                  srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
+                  srcSet={
+                    buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
+                    undefined
+                  }
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
                   width={600}
@@ -141,48 +144,45 @@ export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTi
                 />
               ) : null}
 
-            {/* Desktop hover glass label */}
-            <div
-              aria-hidden
-              className={[
-                "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
-                "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
-                "group-hover:opacity-100 group-hover:translate-y-0",
-                "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
-                reduced ? "transition-none" : "",
-              ].join(" ")}
-            >
+              {/* Desktop hover glass label */}
               <div
-                className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
-                style={webkitGlassBlur}
+                aria-hidden
+                className={[
+                  "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
+                  "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
+                  "group-hover:opacity-100 group-hover:translate-y-0",
+                  "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
+                  reduced ? "transition-none" : "",
+                ].join(" ")}
               >
-                <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
-                  {product.title}
-                </p>
+                <div
+                  className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
+                  style={webkitGlassBlur}
+                >
+                  <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
+                    {product.title}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Mobile caption below the frame */}
-          <p
-            className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
-            style={{
-              maxWidth: "var(--archive-tile-caption-w)",
-              color: "var(--archive-text-quiet)",
-            }}
-          >
-            {product.title}
-          </p>
-        </button>
-      ) : (
-        <div aria-hidden className="block w-full bg-white">
-          <div
-            className="w-full bg-white"
-            style={{ aspectRatio: PRODUCT_TILE_ASPECT }}
-          />
-          <div className="md:hidden mt-3 h-[34px]" />
-        </div>
-      )}
+            {/* Mobile caption below the frame */}
+            <p
+              className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
+              style={{
+                maxWidth: "var(--archive-tile-caption-w)",
+                color: "var(--archive-text-quiet)",
+              }}
+            >
+              {product.title}
+            </p>
+          </button>
+        ) : (
+          <div aria-hidden className="block w-full bg-white">
+            <div className="w-full bg-white" style={{ aspectRatio: PRODUCT_TILE_ASPECT }} />
+            <div className="md:hidden mt-3 h-[34px]" />
+          </div>
+        )}
       </div>
     </motion.li>
   );

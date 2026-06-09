@@ -5,7 +5,6 @@ import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
-
 interface Props {
   product: CollectionProduct;
   isHovered: boolean;
