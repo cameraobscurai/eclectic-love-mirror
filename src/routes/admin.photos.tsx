@@ -367,8 +367,11 @@ function CategoryGrid({
             </button>
           ))}
           <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40 self-center">
-            Sub filter is visual only — reorder still writes the full parent list
+            {subActive
+              ? "Filtered view · clear sub to reorder"
+              : "Reorder writes the full parent list"}
           </span>
+
         </div>
       )}
 
