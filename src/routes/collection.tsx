@@ -708,7 +708,7 @@ function CollectionPage() {
   }
 
   // Grid mode is a single comfortable preset — big tiles. Wall is the dense option.
-  const gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4";
+  const gridCols = "grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
 
 
