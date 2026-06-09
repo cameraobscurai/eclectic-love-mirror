@@ -1,10 +1,9 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
-import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
-import { getTilePreset } from "@/lib/collection-tile-presets";
+import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-
+import { NormalizedProductImage } from "./NormalizedProductImage";
 
 interface Props {
   product: CollectionProduct;
@@ -14,23 +13,11 @@ interface Props {
   onOpen: (id: string) => void;
 }
 
-// Wall tile uses a chunkier base pad (p-[8%]) than the grid tile because
-// cells are larger; per-family presets only adjust top/bottom asymmetry
-// for wide-low silhouettes so settees and chesterfields share a baseline.
-const WIDE_LOW_GROUPS = new Set(["sofas", "benches-ottomans", "coffee-tables", "cocktail-tables", "rugs", "furs-pelts"]);
-
 const WALL_WIDTHS = [600, 900, 1200];
 
 function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
-  const group = getProductBrowseGroup(product);
-  const isWideLow = group && WIDE_LOW_GROUPS.has(group);
-  const padClass = isWideLow ? "pt-[22%] pb-[6%] px-[10%]" : "p-[10%]";
-  // Carry the dining width-cap into wall view so banquettes/wide tables
-  // don't blow out next to chairs/pedestals.
-  const preset = getTilePreset(group);
-  const maxAspect = preset.maxAspect;
 
   // Route through Supabase's /render/image transform endpoint via withCdnWidth
   // so the CDN can serve right-sized variants and cache them properly. Native
@@ -56,21 +43,16 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
     >
       <div className="absolute inset-0 flex items-center justify-center">
         {url && (
-          <div
-            className="h-full max-w-full"
-            style={maxAspect ? { aspectRatio: String(maxAspect) } : { width: "100%" }}
-          >
-            <img
-              src={src}
-              srcSet={srcSet}
-              sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
-              alt=""
-              className={`w-full h-full object-contain ${padClass} pointer-events-none select-none`}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-            />
-          </div>
+          <NormalizedProductImage
+            src={src}
+            srcSet={srcSet}
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+            alt=""
+            className={`w-full h-full ${PRODUCT_TILE_IMAGE_CLASS} pointer-events-none select-none`}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
         )}
       </div>
     </motion.button>

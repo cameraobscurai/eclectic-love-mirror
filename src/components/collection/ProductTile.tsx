@@ -5,52 +5,28 @@ import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { getTilePreset } from "@/lib/collection-tile-presets";
+import { PRODUCT_TILE_ASPECT, PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
+import { NormalizedProductImage } from "./NormalizedProductImage";
 
-// Per-tile silhouette normalization. Each browse group maps to a "family"
-// preset (wide-low / tall-narrow / small-object / mixed) that tunes pad and
-// image anchor. Cell height is set on the grid via --archive-tile-media-h.
-// See src/lib/collection-tile-presets.ts.
+// All tiles use one fixed portrait frame. The image floats inside it; the grid
+// never changes height by category or silhouette.
 
 interface ProductTileProps {
   product: CollectionProduct;
   index: number;
   onOpen: () => void;
-  /** Mark image as failed so the parent can hide this product for the session. */
   onImageFailed?: (productId: string) => void;
-  /** Optional override for the cell height — used by single-parent views to
-   *  enforce a uniform row baseline (dense editorial rhythm). */
-  mediaHOverride?: string;
-  padOverride?: string;
-  anchorOverride?: "bottom" | "center";
 }
 
-// Eager render = first three full rows on wide desktops, two on smaller.
-// Bumping past 12 was previously risky because tiles were heavy; with
-// content-visibility:auto on the deferred shells, off-screen cost stays low.
-const EAGER_RENDER_COUNT = 18; // first 18: render full internals immediately
-const EAGER_LOAD_COUNT = 12; // first 12: loading="eager"
-// First row (4 tiles on desktop) gets fetchpriority="high" — narrow window
-// so the H plate hero (true LCP on /collection landings) wins bandwidth on
-// initial paint instead of competing with 12 tiles in the same HTTP/2 stream.
+const EAGER_RENDER_COUNT = 18;
+const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-// Row-aware reveal — wipes left→right as each row scrolls into view.
-// Math is column-modulo against the widest breakpoint (xl: 6 cols). On
-// narrower viewports column 1 still gets 0ms, so the wipe direction reads
-// correctly even though the absolute offsets compress slightly.
 const REVEAL_COLS = 6;
 const REVEAL_STEP_MS = 60;
 const REVEAL_MAX_DELAY_MS = 240;
-// Above-the-fold tiles skip the wipe entirely — they appear together on
-// initial paint, no perceptible cascade. Wipe only kicks in for tiles that
-// enter via scroll.
 const REVEAL_SKIP_INDEX = 12;
 
-// Warm the QuickViewModal chunk on first hover/focus/touch of any tile so
-// the modal is in the module cache before the click resolves. One-shot —
-// subsequent calls are no-ops because the dynamic import is memoized by the
-// loader. Safe to call from any tile.
 let quickViewWarmed = false;
 const preloadQuickView = () => {
   if (quickViewWarmed) return;
@@ -58,33 +34,18 @@ const preloadQuickView = () => {
   void import("@/components/collection/QuickViewModal");
 };
 
-export function ProductTile({
-  product,
-  index,
-  onOpen,
-  onImageFailed,
-  mediaHOverride,
-  padOverride,
-  anchorOverride,
-}: ProductTileProps) {
+export function ProductTile({ product, index, onOpen, onImageFailed }: ProductTileProps) {
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
-  // Cards 0-11 render full internals from mount. Cards 12+ render a stable
-  // shell until they enter the 600px-margin viewport window. Once `near`
-  // flips true the hook holds it true for the session, so cards stay mounted
-  // when scrolled away — no flicker, no re-request.
   const { ref, near } = useNearViewport<HTMLLIElement>({
     rootMargin: "600px",
     initial: renderImmediately,
   });
 
   const [loaded, setLoaded] = useState(false);
-  const showInternals = near; // gates image, hover label, fetch
+  const showInternals = near;
 
-  // Row-aware reveal — fires once the tile is near the viewport AND its
-  // image has resolved (or there's no image). Tiles in the eager window
-  // skip the cascade so the first paint isn't artificially staggered.
   const skipReveal = reduced || index < REVEAL_SKIP_INDEX;
   const hasImage = Boolean(product.primaryImage);
   const readyToReveal = near && (loaded || !hasImage);
@@ -93,187 +54,129 @@ export function ProductTile({
     ? 0
     : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
-  // Spy section id — drives the right-rail segmented progress and left-rail
-  // active highlight. Pure function of the product, so safe to compute here.
   const spyGroup = getProductBrowseGroup(product);
-  const preset = getTilePreset(spyGroup);
-  const padClass = padOverride ?? preset.pad;
-  const anchor = anchorOverride ?? preset.anchor;
-  const anchorClass = anchor === "center" ? "object-center" : "object-bottom";
 
-  // Restrained spring — same family used by the grid container so cards and
-  // container reflow as one system. No bounce, no playful elasticity.
-  const layoutSpring = { type: "spring" as const, stiffness: 260, damping: 32, mass: 0.8 };
+  const layoutSpring = {
+    type: "spring" as const,
+    stiffness: 260,
+    damping: 32,
+    mass: 0.8,
+  };
 
   return (
     <motion.li
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
       layout
-      // No layoutId. Cross-route shared-element transitions aren't used here,
-      // and registering ~900 projection nodes on mount is the single biggest
-      // cost in the grid.
       transition={{
-        // Layout (position) reflow only — no enter/exit cascade. Reflow IS
-        // the visual event when filters change.
         layout: reduced ? { duration: 0 } : layoutSpring,
       }}
       style={{
         background: "#ffffff",
         overflow: "hidden",
-        // Per-tile media height. Each tile owns its family's clamp value so a
-        // wide-low sofa no longer crushes a tall lamp in the same row. The
-        // grid's [grid-auto-rows:max-content] lets each row take its tallest
-        // cell naturally; rows are mildly ragged on purpose (printed
-        // contact-sheet rhythm), not collapsed to the shortest family.
-        ["--archive-tile-media-h" as string]: mediaHOverride ?? preset.mediaH,
-        // Skip layout/paint/decode for offscreen tiles. Intrinsic size now
-        // matches the actual cell height (not a hardcoded 480px) so the
-        // reserved box is correct for every family — eliminates the
-        // 480px→real-height snap that caused row-collapse on scroll.
+        // Fixed intrinsic size hint for content-visibility.
+        // The actual rendered height is set by aspect-ratio in the frame below,
+        // so this is purely a paint-skip budget hint for the browser.
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
-        containIntrinsicSize: `auto ${mediaHOverride ?? preset.mediaH}`,
+        containIntrinsicSize: "auto 300px",
       }}
     >
-
-      {/* Reveal wrapper — opacity/transform/blur cascade keyed off `entered`.
-          Lives inside the layout-projected <li> so motion.layout still owns
-          position transitions when filters change; this only animates the
-          one-shot enter. */}
       <div
         style={{
           opacity: entered ? 1 : 0,
           transform: entered ? "translateY(0)" : "translateY(4px)",
-          // Blur removed — filter compositing on every tile in the cascade
-          // costs GPU without adding visible signal beyond the opacity fade.
           transition: skipReveal
             ? "none"
             : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
           willChange: entered ? "auto" : "opacity, transform",
         }}
       >
-      {showInternals ? (
-        <button
-          onClick={onOpen}
-          onMouseEnter={preloadQuickView}
-          onFocus={preloadQuickView}
-          onTouchStart={preloadQuickView}
-          aria-label={`Open ${product.title}`}
-          className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
-        >
-          {/* Specimen frame — fixed height, generous interior padding,
-              and a shared bottom baseline so every product sits on one
-              optical line regardless of its native dimensions. This is
-              what makes a wall of mismatched silhouettes (low wide sofa
-              next to tall slim lamp) read as a single organized grid
-              instead of floating tiles at random heights. */}
-          <div
-            className="relative w-full bg-white overflow-hidden"
-            style={{ height: "var(--archive-tile-media-h)" }}
+        {showInternals ? (
+          <button
+            onClick={onOpen}
+            onMouseEnter={preloadQuickView}
+            onFocus={preloadQuickView}
+            onTouchStart={preloadQuickView}
+            aria-label={`Open ${product.title}`}
+            className="group block w-full text-left bg-white active:scale-[0.98] focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-4 focus-visible:ring-offset-white transition-transform duration-150"
           >
-            {/* Quiet skeleton overlay — pure white so empty tiles read as
-                negative space (matches the page background) rather than as
-                placeholder blocks. Fades out the moment the image loads. */}
+            {/* Media frame — fixed aspect ratio, no per-category height logic. */}
             <div
-              aria-hidden
-              className="absolute inset-0 bg-white"
-              style={{
-                opacity: loaded || !product.primaryImage ? 0 : 1,
-                transition: "opacity 240ms ease-out",
-              }}
-            />
-
-            {product.primaryImage ? (
+              className="relative w-full bg-white overflow-hidden"
+              style={{ aspectRatio: PRODUCT_TILE_ASPECT }}
+            >
+              {/* Skeleton overlay — fades on load */}
               <div
-                className="absolute inset-0 mx-auto"
-                style={
-                  preset.maxAspect
-                    ? { maxWidth: `calc(var(--archive-tile-media-h) * ${preset.maxAspect})` }
-                    : undefined
-                }
-              >
-                <img
+                aria-hidden
+                className="absolute inset-0 bg-white"
+                style={{
+                  opacity: loaded || !product.primaryImage ? 0 : 1,
+                  transition: "opacity 240ms ease-out",
+                }}
+              />
+
+              {product.primaryImage ? (
+                <NormalizedProductImage
                   src={withCdnWidth(product.primaryImage.url, 600)}
-                  srcSet={
-                    buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) ||
-                    undefined
-                  }
+                  srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
-                  width={800}
+                  width={600}
                   height={800}
                   loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
                   decoding="async"
-                  // Inline so the preload scanner sees it before mount.
-                  // Cast: React's types don't yet include fetchpriority.
-                  {...({ fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto" } as Record<string, string>)}
+                  {...({
+                    fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
+                  } as Record<string, string>)}
                   onLoad={() => setLoaded(true)}
                   onError={() => onImageFailed?.(product.id)}
-                  // Shared bottom baseline anchors every silhouette to one
-                  // optical floor — wide sofa, tall lamp, and short stool all
-                  // sit on the same line. Inset padding keeps subjects from
-                  // kissing the cell edges and gives the tile breathing room.
-                  className={`absolute inset-0 h-full w-full object-contain ${anchorClass} ${padClass} will-change-opacity`}
+                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-opacity`}
                   style={{
                     opacity: loaded ? 1 : 0,
                     transition: "opacity 240ms ease-out",
                   }}
                 />
-              </div>
-            ) : null}
+              ) : null}
 
-            {/* Desktop-only object label — frosted plate anchored inside the
-                media frame. Hidden at rest, revealed on hover/focus.
-                aria-hidden because the parent button already exposes the
-                product title via aria-label; this is purely decorative. */}
-            <div
-              aria-hidden
-              className={[
-                "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
-                "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
-                "group-hover:opacity-100 group-hover:translate-y-0",
-                "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
-                reduced ? "transition-none" : "",
-              ].join(" ")}
-            >
+              {/* Desktop hover glass label */}
               <div
-                className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
-                style={webkitGlassBlur}
+                aria-hidden
+                className={[
+                  "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
+                  "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
+                  "group-hover:opacity-100 group-hover:translate-y-0",
+                  "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
+                  reduced ? "transition-none" : "",
+                ].join(" ")}
               >
-                <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
-                  {product.title}
-                </p>
+                <div
+                  className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
+                  style={webkitGlassBlur}
+                >
+                  <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
+                    {product.title}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          {/* Caption — visible on mobile only (no hover available there).
-              Desktop relies on the glass label inside the frame above. */}
-          <p
-            className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
-            style={{
-              maxWidth: "var(--archive-tile-caption-w)",
-              color: "var(--archive-text-quiet)",
-            }}
-          >
-            {product.title}
-          </p>
-        </button>
-      ) : (
-        // Deferred shell — pure white, no shimmer plate. The outer <li>
-        // already carries content-visibility:auto + containIntrinsicSize, so
-        // this inner shell does NOT redeclare them (nested content-visibility
-        // is a no-op and creates a second containment context).
-        <div aria-hidden className="block w-full bg-white">
-          <div
-            className="w-full bg-white"
-            style={{ height: "var(--archive-tile-media-h)" }}
-          />
-          {/* Caption spacer mirrors hydrated state: only present on mobile,
-              where the visible caption lives below the image. */}
-          <div className="md:hidden mt-3 h-[34px]" />
-        </div>
-      )}
 
+            {/* Mobile caption below the frame */}
+            <p
+              className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
+              style={{
+                maxWidth: "var(--archive-tile-caption-w)",
+                color: "var(--archive-text-quiet)",
+              }}
+            >
+              {product.title}
+            </p>
+          </button>
+        ) : (
+          <div aria-hidden className="block w-full bg-white">
+            <div className="w-full bg-white" style={{ aspectRatio: PRODUCT_TILE_ASPECT }} />
+            <div className="md:hidden mt-3 h-[34px]" />
+          </div>
+        )}
       </div>
     </motion.li>
   );
