@@ -123,7 +123,7 @@ function PhotosManager() {
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal flex">
       {/* Sidebar — parents in canonical PARENT_ORDER */}
-      <aside className="w-56 shrink-0 border-r border-charcoal/10 py-6 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto">
+      <aside className="hidden lg:block w-56 shrink-0 border-r border-charcoal/10 py-6 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto">
         <p className="px-5 text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-3">
           Categories
         </p>
@@ -153,6 +153,24 @@ function PhotosManager() {
       </aside>
 
       <main className="flex-1 min-w-0">
+        {/* Mobile category switcher — shown when sidebar is hidden */}
+        <div className="lg:hidden px-6 pt-4 pb-2 border-b border-charcoal/10 bg-cream sticky top-12 z-20">
+          <label className="block text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-1.5">
+            Category
+          </label>
+          <select
+            value={parent}
+            onChange={(e) => setParent(e.target.value as ParentId)}
+            className="w-full border border-charcoal/20 bg-white px-3 py-2 text-[12px] uppercase tracking-[0.14em]"
+          >
+            {PARENT_ORDER.map((pid) => (
+              <option key={pid} value={pid}>
+                {PARENT_LABELS[pid]}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {catalogErr ? (
           <div className="m-6 border border-red-300 bg-red-50 px-4 py-3 text-xs uppercase tracking-widest text-red-700">
             Catalog load failed: {catalogErr}
@@ -304,7 +322,13 @@ function CategoryGrid({
     [],
   );
 
-  const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [ghostWidth, setGhostWidth] = useState<number | null>(null);
+  const handleDragStart = (e: DragStartEvent) => {
+    setActiveId(String(e.active.id));
+    const first = gridRef.current?.firstElementChild as HTMLElement | null;
+    if (first) setGhostWidth(first.getBoundingClientRect().width);
+  };
   const handleDragEnd = (e: DragEndEvent) => {
     setActiveId(null);
     // Reorder is disabled when filtered to a sub — we'd otherwise persist
@@ -478,6 +502,7 @@ function CategoryGrid({
             strategy={rectSortingStrategy}
           >
             <div
+              ref={gridRef}
               className={
                 view === "grid"
                   ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
@@ -510,7 +535,7 @@ function CategoryGrid({
             {activeItem && (
               <div
                 className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
-                style={{ aspectRatio: tileAspect }}
+                style={{ aspectRatio: tileAspect, width: ghostWidth ?? undefined }}
               >
                 <TileMedia item={activeItem} dense={view === "wall"} frameAspect={frameAspect} />
               </div>
@@ -575,7 +600,7 @@ function Tile({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: item.id, disabled: !draggable });
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.4 : 1,
   };

@@ -46,6 +46,7 @@ type NavItem = {
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
+  external?: boolean;
 };
 
 const OVERVIEW: NavItem[] = [
@@ -66,9 +67,9 @@ const INVENTORY: NavItem[] = [
 ];
 
 const SITE: NavItem[] = [
-  { to: "/", label: "View live site", icon: ExternalLink },
-  { to: "/collection", label: "Collection", icon: ScanEye },
-  { to: "/contact", label: "Contact form", icon: Link2 },
+  { to: "/", label: "View live site", icon: ExternalLink, external: true },
+  { to: "/collection", label: "Collection", icon: ScanEye, external: true },
+  { to: "/contact", label: "Contact form", icon: Link2, external: true },
 ];
 
 // Crumb labels keyed off the path. Falls back to last segment if missing.
@@ -122,13 +123,25 @@ function NavGroup({
             return (
               <SidebarMenuItem key={item.to}>
                 <SidebarMenuButton asChild isActive={active}>
-                  <Link
-                    to={item.to}
-                    className="flex items-center gap-2 text-[12px] uppercase tracking-[0.14em]"
-                  >
-                    <item.icon className="h-4 w-4 shrink-0" aria-hidden />
-                    <span className="truncate">{item.label}</span>
-                  </Link>
+                  {item.external ? (
+                    <a
+                      href={item.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-[12px] uppercase tracking-[0.14em]"
+                    >
+                      <item.icon className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="truncate">{item.label}</span>
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.to}
+                      className="flex items-center gap-2 text-[12px] uppercase tracking-[0.14em]"
+                    >
+                      <item.icon className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="truncate">{item.label}</span>
+                    </Link>
+                  )}
                 </SidebarMenuButton>
                 {isInbox && openCount && openCount > 0 ? (
                   <SidebarMenuBadge className="tabular-nums">

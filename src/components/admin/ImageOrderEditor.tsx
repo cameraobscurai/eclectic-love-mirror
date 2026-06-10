@@ -85,7 +85,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
           onSaved({ images: next, card_background_url: bg });
           setTimeout(
             () => setSaveState((s) => (s === "saved" ? "idle" : s)),
-            1200,
+            3000,
           );
         } catch (e) {
           const msg = (e as Error).message || "Save failed";
@@ -104,6 +104,15 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
   }, []);
+
+  // Escape key closes the modal — keyboard-first users were trapped before.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
 
   const apply = (next: string[]) => {
     setUrls(next);
@@ -320,7 +329,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
               </SortableContext>
               <DragOverlay>
                 {activeUrl && (
-                  <div className="aspect-square w-32 border-2 border-emerald-500 shadow-lg">
+                  <div className="aspect-square w-full max-w-[180px] border-2 border-emerald-500 shadow-lg">
                     <img
                       src={activeUrl}
                       alt=""
