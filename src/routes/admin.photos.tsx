@@ -484,6 +484,7 @@ function CategoryGrid({
             strategy={rectSortingStrategy}
           >
             <div
+              ref={gridRef}
               className={
                 view === "grid"
                   ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
@@ -516,7 +517,7 @@ function CategoryGrid({
             {activeItem && (
               <div
                 className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
-                style={{ aspectRatio: tileAspect }}
+                style={{ aspectRatio: tileAspect, width: ghostWidth ?? undefined }}
               >
                 <TileMedia item={activeItem} dense={view === "wall"} frameAspect={frameAspect} />
               </div>
