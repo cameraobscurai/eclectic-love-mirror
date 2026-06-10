@@ -21,6 +21,7 @@ interface ProductTileProps {
   index: number;
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
+  alignToSharedBaseline?: boolean;
 }
 
 const EAGER_RENDER_COUNT = 18;
@@ -44,6 +45,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
+  alignToSharedBaseline = false,
 }: ProductTileProps) {
   const tileAspect = PRODUCT_TILE_ASPECT;
   const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
@@ -133,7 +135,9 @@ export function ProductTile({
                   {...overrides}
                   src={withCdnWidth(product.primaryImage.url, 600)}
                   frameAspect={frameAspect}
-                  visualOffsetY={0}
+                  visualOffsetY={overrides?.visualOffsetY ?? 0}
+                  visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
+                  visualBaselineY={0.66}
                   srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}

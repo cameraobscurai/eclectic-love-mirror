@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
 type Fit = {
   cx: number;
   cy: number;
+  bottom: number;
   scale: number;
 };
 
@@ -10,6 +11,8 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
   visualOffsetY?: number;
+  visualAnchorY?: "center" | "bottom";
+  visualBaselineY?: number;
   targetArea?: number;
   maxW?: number;
   maxH?: number;
@@ -19,7 +22,8 @@ const fitCache = new Map<string, Fit | null>();
 
 const FRAME_ASPECT = 4 / 5;
 const TILE_IMAGE_INSET = 0.84;
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, scale: 0.68 };
+const TILE_OBJECT_CONTENT = 0.92;
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.68 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -56,6 +60,7 @@ function fitFromVisualBox(
   return {
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
+    bottom: clamp(cy + bh / 2, 0.05, 0.95),
     scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.52, 1.55),
   };
 }
@@ -120,13 +125,21 @@ function measureImage(
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH);
+  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH);
+  if (!fit) return null;
+
+  const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
+  const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
+  const visualBottom = (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
+  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.95) };
 }
 
 export function NormalizedProductImage({
   src,
   frameAspect = FRAME_ASPECT,
   visualOffsetY = 0,
+  visualAnchorY = "center",
+  visualBaselineY = 0.66,
   targetArea,
   maxW,
   maxH,
@@ -165,9 +178,11 @@ export function NormalizedProductImage({
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
-    const ty = (0.5 + visualOffsetY - f.cy) * 100;
+    const ty = visualAnchorY === "bottom"
+      ? (visualBaselineY + visualOffsetY - f.bottom) * 100
+      : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit, visualOffsetY]);
+  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);
 
   return (
     <img
