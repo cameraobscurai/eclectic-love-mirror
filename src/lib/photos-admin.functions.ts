@@ -1,6 +1,6 @@
 // Admin photo manager server functions.
 // Gated by requireAdmin. Three surfaces:
-//   - reorderItems: bulk-update manual_order for tiles in one category.
+//   - reorderItems: bulk-update editorial_order for tiles in one category.
 //   - listStorageFiles: browse the squarespace-mirror bucket so admins can
 //     attach an existing image without re-uploading.
 //   - listCategoryItems: hydrate the admin grid from live DB (not the baked
@@ -27,17 +27,27 @@ export const reorderItems = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     // Admin drag-order is the single source of truth for site display order.
     // Writes editorial_order (gaps of 10 leave room for cheap mid-insert).
-    const errors: string[] = [];
-    for (let i = 0; i < data.ids.length; i++) {
-      const { error } = await supabaseAdmin
-        .from("inventory_items")
-        .update({ editorial_order: (i + 1) * 10 })
-        .eq("rms_id", data.ids[i]);
-      if (error) errors.push(`${data.ids[i]}: ${error.message}`);
-    }
+    //
+    // Fan out updates in parallel rather than sequentially. Still not a true
+    // SQL transaction (would need an RPC) but: (a) latency drops from O(n)
+    // round-trips to ~1, (b) we collect every failure instead of stopping at
+    // the first, (c) on any failure we throw so the client can roll back the
+    // optimistic UI to its pre-drag snapshot.
+    const results = await Promise.all(
+      data.ids.map(async (rmsId, i) => {
+        const { error } = await supabaseAdmin
+          .from("inventory_items")
+          .update({ editorial_order: (i + 1) * 10 })
+          .eq("rms_id", rmsId);
+        return error ? `${rmsId}: ${error.message}` : null;
+      }),
+    );
+    const errors = results.filter((e): e is string => e !== null);
 
     if (errors.length) {
-      throw new Error(`REORDER_PARTIAL: ${errors.length} failed — ${errors[0]}`);
+      throw new Error(
+        `REORDER_FAILED: ${errors.length}/${data.ids.length} failed — ${errors[0]}`,
+      );
     }
 
     void audit({
@@ -48,7 +58,7 @@ export const reorderItems = createServerFn({ method: "POST" })
       metadata: { category: data.category, count: data.ids.length },
     });
 
-    return { ok: true, count: data.ids.length };
+    return { ok: true, count: data.ids.length, savedAt: Date.now() };
   });
 
 // ---------------------------------------------------------------------------
@@ -126,7 +136,7 @@ export const listCategoryItems = createServerFn({ method: "POST" })
     const { data: rows, error } = await supabaseAdmin
       .from("inventory_items")
       .select(
-        "id, rms_id, title, slug, category, images, card_background_url, manual_order, owner_site_rank, public_ready, updated_at",
+        "id, rms_id, title, slug, category, images, card_background_url, editorial_order, owner_site_rank, public_ready, updated_at",
       )
       .eq("category", data.category)
       .neq("status", "draft")
@@ -135,8 +145,10 @@ export const listCategoryItems = createServerFn({ method: "POST" })
     if (error) throw error;
 
     const sorted = (rows ?? []).slice().sort((a, b) => {
-      const am = a.manual_order ?? a.owner_site_rank ?? 9e9;
-      const bm = b.manual_order ?? b.owner_site_rank ?? 9e9;
+      // Mirror the write column from reorderItems. Falls back to the
+      // owner-site rank for categories that haven't been editorial-ranked yet.
+      const am = a.editorial_order ?? a.owner_site_rank ?? 9e9;
+      const bm = b.editorial_order ?? b.owner_site_rank ?? 9e9;
       if (am !== bm) return am - bm;
       return (a.title ?? "").localeCompare(b.title ?? "");
     });

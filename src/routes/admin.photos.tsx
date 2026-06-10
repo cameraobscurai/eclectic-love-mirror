@@ -49,6 +49,7 @@ import {
 } from "@/lib/collection-parents";
 import {
   getCollectionCatalog,
+  invalidateCollectionCatalog,
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
 import {
@@ -230,10 +231,18 @@ function CategoryGrid({
   const [editing, setEditing] = useState<Item | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<
-    "idle" | "syncing" | "synced" | "error"
+    "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
+  const [savedAt, setSavedAt] = useState<number | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSaved = useRef<string>("");
+  // Pre-drag snapshot stack — feeds Cmd+Z undo. We push the order BEFORE
+  // each drop so undo restores the exact pre-drag arrangement, including
+  // chained undos through several moves.
+  const undoStack = useRef<Item[][]>([]);
+  // Server-confirmed baseline. On save failure we roll the optimistic UI
+  // back to this so the screen never lies about what's actually persisted.
+  const lastConfirmed = useRef<Item[]>([]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -243,33 +252,49 @@ function CategoryGrid({
   const subs = PARENT_SUBS[parent];
   const subList = useMemo(() => [{ id: "all", label: "All" }, ...subs], [subs]);
 
+  // Seed the confirmed baseline whenever the source data refreshes.
+  useEffect(() => {
+    lastConfirmed.current = baseItems;
+    lastSaved.current = baseItems.map((i) => i.rms_id).filter(Boolean).join("|");
+    undoStack.current = [];
+  }, [baseItems]);
+
   const scheduleSave = useCallback(
     (next: Item[]) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       const ids = next.map((i) => i.rms_id).filter(Boolean);
       const sig = ids.join("|");
       if (sig === lastSaved.current) return;
-      setSaveState("syncing");
+      setSaveState("pending");
+      // 1500ms debounce — gives the merchandiser room for 3-4 follow-up
+      // drags before the storefront sees an intermediate state.
       saveTimer.current = setTimeout(async () => {
+        setSaveState("syncing");
         try {
-          // `category` field on the serverFn is now the parent id — used for
-          // audit metadata. The actual update is per-rms_id, so this works
-          // identically for parents AND the old raw category slugs.
           await reorderFn({ data: { category: parent, ids } });
           lastSaved.current = sig;
+          lastConfirmed.current = next;
+          setSavedAt(Date.now());
           setSaveState("synced");
-          setTimeout(
-            () => setSaveState((s) => (s === "synced" ? "idle" : s)),
-            1500,
-          );
+          // Bust the in-memory catalog cache so /collection picks up the
+          // new order on its next load (no rebake required).
+          invalidateCollectionCatalog();
         } catch (e) {
           setErr((e as Error).message);
           setSaveState("error");
+          // Optimistic rollback — the screen now matches the DB again.
+          setItems(lastConfirmed.current);
         }
-      }, 800);
+      }, 1500);
     },
     [parent, reorderFn],
   );
+
+  // Retry the latest pending order after a failure.
+  const retrySave = useCallback(() => {
+    setErr(null);
+    scheduleSave(items);
+  }, [items, scheduleSave]);
 
   useEffect(
     () => () => {
@@ -289,10 +314,32 @@ function CategoryGrid({
     const oldIdx = items.findIndex((i) => i.id === active.id);
     const newIdx = items.findIndex((i) => i.id === over.id);
     if (oldIdx === -1 || newIdx === -1) return;
+    // Push pre-drag snapshot onto the undo stack before mutating.
+    undoStack.current.push(items);
+    if (undoStack.current.length > 30) undoStack.current.shift();
     const next = arrayMove(items, oldIdx, newIdx);
     setItems(next);
     scheduleSave(next);
   };
+
+  // Cmd+Z / Ctrl+Z — pop a snapshot, restore it, schedule a save.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const mod = e.metaKey || e.ctrlKey;
+      if (!mod || e.key.toLowerCase() !== "z" || e.shiftKey) return;
+      // Don't steal undo from text inputs (image editor, etc.).
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (subActive) return;
+      const prev = undoStack.current.pop();
+      if (!prev) return;
+      e.preventDefault();
+      setItems(prev);
+      scheduleSave(prev);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [subActive, scheduleSave]);
 
 
   const activeItem = useMemo(
@@ -324,7 +371,7 @@ function CategoryGrid({
 
         </div>
         <div className="flex items-center gap-3">
-          <SaveBadge state={saveState} />
+          <SaveBadge state={saveState} savedAt={savedAt} onRetry={retrySave} />
           <div
             className="flex items-center border border-charcoal/15"
             role="group"
@@ -598,24 +645,71 @@ function TileMedia({ item, frameAspect }: { item: Item; dense?: boolean; frameAs
 
 function SaveBadge({
   state,
+  savedAt,
+  onRetry,
 }: {
-  state: "idle" | "syncing" | "synced" | "error";
+  state: "idle" | "pending" | "syncing" | "synced" | "error";
+  savedAt: number | null;
+  onRetry: () => void;
 }) {
-  if (state === "idle") return null;
-  const cls =
-    state === "syncing"
-      ? "border-charcoal/30 text-charcoal/60"
-      : state === "synced"
-        ? "border-emerald-600 text-emerald-700"
-        : "border-red-500 text-red-600";
-  const label =
-    state === "syncing" ? "Syncing" : state === "synced" ? "Synced" : "Error";
+  // Re-render the "saved Xs ago" label every 10s without forcing a global tick.
+  const [, force] = useState(0);
+  useEffect(() => {
+    if (state !== "synced" || !savedAt) return;
+    const t = setInterval(() => force((n) => n + 1), 10_000);
+    return () => clearInterval(t);
+  }, [state, savedAt]);
+
+  if (state === "idle" && !savedAt) return null;
+
+  if (state === "error") {
+    return (
+      <button
+        type="button"
+        onClick={onRetry}
+        className="inline-flex items-center gap-1.5 border border-red-500 px-2 py-1 text-[10px] uppercase tracking-[0.22em] tabular-nums text-red-600 hover:bg-red-500/5"
+        title="Save failed — click to retry"
+      >
+        <AlertCircle className="h-3 w-3" />
+        Save failed · Retry
+      </button>
+    );
+  }
+
+  if (state === "pending") {
+    return (
+      <span className="inline-flex items-center gap-1.5 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.22em] tabular-nums text-charcoal/55">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+        Pending
+      </span>
+    );
+  }
+
+  if (state === "syncing") {
+    return (
+      <span className="inline-flex items-center gap-1.5 border border-charcoal/30 px-2 py-1 text-[10px] uppercase tracking-[0.22em] tabular-nums text-charcoal/70">
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Saving
+      </span>
+    );
+  }
+
+  // synced (or idle with prior savedAt)
+  const ago = savedAt ? relativeTime(savedAt) : "now";
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] uppercase tracking-[0.22em] tabular-nums ${cls}`}
-    >
-      {state === "syncing" && <Loader2 className="h-3 w-3 animate-spin" />}
-      {label}
+    <span className="inline-flex items-center gap-1.5 border border-emerald-600/70 px-2 py-1 text-[10px] uppercase tracking-[0.22em] tabular-nums text-emerald-700">
+      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+      Saved {ago}
     </span>
   );
+}
+
+function relativeTime(ts: number): string {
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 5) return "just now";
+  if (s < 60) return `${s}s ago`;
+  const m = Math.round(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  return `${h}h ago`;
 }
