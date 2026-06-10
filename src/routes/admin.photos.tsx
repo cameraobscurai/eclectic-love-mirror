@@ -257,6 +257,7 @@ function CategoryGrid({
     lastConfirmed.current = baseItems;
     lastSaved.current = baseItems.map((i) => i.rms_id).filter(Boolean).join("|");
     undoStack.current = [];
+    setUndoCount(0);
   }, [baseItems]);
 
   const scheduleSave = useCallback(
