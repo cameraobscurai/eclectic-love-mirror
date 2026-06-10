@@ -135,11 +135,11 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
   // Escape key closes the modal — keyboard-first users were trapped before.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") void handleClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [handleClose]);
 
   const apply = (next: string[]) => {
     setUrls(next);
