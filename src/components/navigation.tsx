@@ -310,14 +310,14 @@ export function Navigation() {
             <span
               className={cn(
                 "w-6 h-px transition-all duration-300",
-                scrolled || !isLightPage ? "bg-cream" : "bg-charcoal",
+                isLightPage ? "bg-charcoal" : "bg-cream",
                 isOpen ? "rotate-45 translate-y-px" : "-translate-y-1"
               )}
             />
             <span
               className={cn(
                 "w-6 h-px transition-all duration-300",
-                scrolled || !isLightPage ? "bg-cream" : "bg-charcoal",
+                isLightPage ? "bg-charcoal" : "bg-cream",
                 isOpen ? "-rotate-45" : "translate-y-1"
               )}
             />
