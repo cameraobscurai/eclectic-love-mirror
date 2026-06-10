@@ -1,52 +1,40 @@
-Reality check: the site is not ruined. The two real problems are controllable: the Bar tile asset needs to be corrected to the exact uploaded cream bar, and the email pipeline needs a proof-level test instead of “it seemed to work.”
+# Finish the Cocktail-Bar Shelf Alignment
 
-Plan:
+## Diagnosis
 
-1. Lock the correct Bar cover
-- Replace the current Bar cover with the newly uploaded `image-128.png` cream/tan bar.
-- Crop/normalize only if needed so the bar sits like the reference: centered horizontally, not floating high, label clear.
-- Remove the earlier wrong Bar cover references from the category cover import path so cached transforms cannot show the black bar or PDF mockup again.
-- Verify the collection overview screenshot at desktop and mobile.
+The 517/514/514 baseline fix only applies to the **Bars subcategory**. Every other view in the cocktail-bar group (ALL, Cocktail Tables, Community Tables, Stools, Storage) still uses center-anchored images, so each product floats at its own visual floor. That's the row-by-row drift visible in screenshots 2 and 3.
 
-2. Fix the collection grid alignment safely
-- Audit every category cover tile in `CategoryTonalGrid`: Bar, Lighting, Cocktail Tables, Storage, Rugs, Tableware, Throws, etc.
-- Keep the existing flat checker grid and category order.
-- Adjust only per-category padding/positioning where the rendered screenshot proves a tile is off.
-- Do not make broad performance or loading changes.
-- Confirm Bar tile click routes to the right Cocktail & Bar view and does not produce an empty or misleading grid.
+Root cause is one line in `src/routes/collection.tsx` (~L1210):
+```
+alignToSharedBaseline={activeParent === "cocktail-bar" && activeSubcategory === "bars"}
+```
 
-3. Harden the inquiry/contact email flow
-- Confirm the verified sender domain is active: `notify.eclectichive.com` is already verified.
-- Keep admin notifications going to `info@eclectichive.com`.
-- Fix the route response so it reports:
-  - inquiry saved
-  - admin email queued
-  - confirmation email queued
-  - any queue/log failure
-- Make confirmation email logging explicit. Current code exists, but recent logs prove only admin notification sends; confirmation send is not yet proven.
-- Keep user-facing success safe: if the inquiry saves but email queue fails, the visitor gets a useful fallback instead of a false “everything is perfect.”
+The 3 toolbar buttons are: 3-col grid · 5-col dense grid · Wall. The first two share the same `ProductTile` path and both benefit from the fix. Wall mode uses a separate component (`CollectionWallTile`) that doesn't participate in baseline math — leave it out of scope.
 
-4. Run one controlled proof test
-- Submit one edge-case inquiry with selected items, long-ish message, reply-to email, project date, budget, and scope.
-- Verify in backend logs:
-  - inquiry row exists
-  - admin notification row reaches `sent`
-  - confirmation row reaches `sent`
-  - no `failed`, `dlq`, or suppressed result
-- Verify the admin email recipient is `info@eclectichive.com`.
-- Verify the confirmation goes to the submitter.
+## Changes
 
-5. Site-wide launch risk pass
-- Check core routes: Home, Collection overview, Bar/Cocktail & Bar route, Contact, Atelier, Gallery.
-- Check obvious client errors and broken network requests in preview.
-- Check inquiry buttons/tray handoff from collection into contact.
-- Check no old Contact FAQ route has been reintroduced.
-- Check no missing image imports or wrong category cover files remain.
+**1. `src/routes/collection.tsx`** — widen the condition to the whole parent:
+```
+alignToSharedBaseline={activeParent === "cocktail-bar"}
+```
+Single-line change. Pins every cocktail-bar product (ALL view + all subcategories) to `visualBaselineY = 0.66`.
 
-6. Final handoff
-- Give you a blunt status report:
-  - fixed
-  - verified
-  - still risky
-  - what not to touch before client review
-- No vague reassurance. Only proof-backed status.
+**2. `src/lib/collection-tile-presets.ts`** — add `PRODUCT_TILE_OVERRIDES` entries for the non-bar outliers visible in screenshots 2 and 3 that have baked bottom whitespace or unusual silhouettes:
+- Steamer-trunk bars (open, tall) — row 1 leftmost two
+- Wood-stack cocktail tables — row 1 & 2 of screenshot 3, several variants
+- Bar carts (tall, thin, wheels) — row 3 of screenshot 3
+- Arched storage cabinet — row 3 rightmost
+
+Each gets a targeted `{ targetArea, maxW, maxH, visualOffsetY? }` tuned to its silhouette family (wide-furniture pattern for cocktail tables, tall-narrow pattern for carts/cabinet). Exact IDs pulled from the catalog before writing.
+
+**3. Verify** with Playwright at 1874×1130, screenshot the ALL view + each subcategory in both 3-col and 5-col modes, measure visible product bottoms in pixels per row, confirm rows hold a shared shelf line (±3px).
+
+## Out of Scope
+
+- Wall mode (`CollectionWallTile`) — different render path, user did not flag it.
+- Other category parents — alignment work stays scoped to cocktail-bar.
+- Catalog/image re-binding.
+
+## Risk
+
+Low. The bottom-anchor math is already proven on bars. Widening the flag exposes more products to the same transform; outliers get per-ID overrides, not global changes. No other category is touched.
