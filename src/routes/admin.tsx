@@ -340,7 +340,7 @@ function AdminDashboard() {
         </div>
 
         <footer className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40" style={{ borderColor: "var(--archive-rule)" }}>
-          Internal tool · not indexed · authentication pending
+          Internal tool · not indexed
         </footer>
       </div>
     </div>
