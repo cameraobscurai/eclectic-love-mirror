@@ -25,12 +25,13 @@ export const reorderItems = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d: unknown) => reorderInput.parse(d))
   .handler(async ({ data, context }) => {
-    // Gaps of 10 leave room for cheap mid-insert later without a full re-pack.
+    // Admin drag-order is the single source of truth for site display order.
+    // Writes editorial_order (gaps of 10 leave room for cheap mid-insert).
     const errors: string[] = [];
     for (let i = 0; i < data.ids.length; i++) {
       const { error } = await supabaseAdmin
         .from("inventory_items")
-        .update({ manual_order: (i + 1) * 10 })
+        .update({ editorial_order: (i + 1) * 10 })
         .eq("rms_id", data.ids[i]);
       if (error) errors.push(`${data.ids[i]}: ${error.message}`);
     }

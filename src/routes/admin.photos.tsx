@@ -193,10 +193,11 @@ function CategoryGrid({
   const baseItems = useMemo<Item[]>(() => {
     if (!allProducts) return [];
     const inParent = allProducts.filter((p) => productParent(p) === parent);
-    // Sort by ownerSiteRank — primary key for /collection's by-type sort.
+    // Sort by editorialOrder (admin drag-order = site display order). Falls
+    // back to ownerSiteRank for parents that haven't been editorial-ranked yet.
     inParent.sort((a, b) => {
-      const ar = a.ownerSiteRank ?? 9e9;
-      const br = b.ownerSiteRank ?? 9e9;
+      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
+      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
       if (ar !== br) return ar - br;
       return a.title.localeCompare(b.title);
     });
