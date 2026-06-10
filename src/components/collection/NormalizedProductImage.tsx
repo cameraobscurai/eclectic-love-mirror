@@ -178,8 +178,9 @@ export function NormalizedProductImage({
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
+    const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
     const ty = visualAnchorY === "bottom"
-      ? (visualBaselineY + visualOffsetY - f.bottom) * 100
+      ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);

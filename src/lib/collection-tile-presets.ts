@@ -29,10 +29,10 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   string,
   { targetArea?: number; maxW?: number; maxH?: number; visualOffsetY?: number }
 > = {
-  // VOYAGE BLACK TRUNK BAR — source crop sits high next to flat-front bars.
-  "2911": { visualOffsetY: 0.28 },
-  // EXCURSION CHAMPAGNE TRUNK BAR — source crop sits high next to flat-front bars.
-  "2912": { visualOffsetY: 0.29 },
+  // VOYAGE BLACK TRUNK BAR
+  "2911": { targetArea: 0.22, maxW: 0.7, maxH: 0.62 },
+  // EXCURSION CHAMPAGNE TRUNK BAR
+  "2912": { targetArea: 0.22, maxW: 0.7, maxH: 0.62 },
   // JEPPERD BLACK TAMBOUR BAR
   "2661": { targetArea: 0.28, maxW: 0.92, maxH: 0.45 },
   // CANYON 8' NATURAL PINE BAR
