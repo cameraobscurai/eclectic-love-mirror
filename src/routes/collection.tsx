@@ -706,10 +706,11 @@ function CollectionPage() {
   }
 
   // Grid mode: 3-up default, dense mode: 5-up. Wall is the full-fit option.
+  // Step up column count past 1280/1536 so tiles don't bloat on wide screens.
   const [dense, setDense] = useState(false);
   const gridCols = dense
-    ? "grid-cols-3 sm:grid-cols-4 lg:grid-cols-5"
-    : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3";
+    ? "grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7"
+    : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
 
 
