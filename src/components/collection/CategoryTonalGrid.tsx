@@ -63,36 +63,9 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
 };
 const DEFAULT_PADDING = "2rem 2.5rem 3rem 2.5rem";
 
-// The category grid waits for one shared preload/decode batch, then releases
-// all tiles together. This bounded fallback prevents one stubborn CDN decode
-// from holding the entire page in a blank state.
-const GRID_REVEAL_TIMEOUT_MS = 3200;
-
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
-function decodeGridImage(src: string): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.decoding = "async";
-
-    const finish = () => {
-      if (typeof img.decode === "function") {
-        img.decode().then(() => resolve()).catch(() => resolve());
-      } else {
-        resolve();
-      }
-    };
-
-    img.onload = finish;
-    img.onerror = () => resolve();
-    img.src = src;
-
-    if (img.complete) finish();
-  });
-}
 
 function preloadGridImage(src: string) {
   const existing = Array.from(
@@ -156,29 +129,13 @@ export function CategoryTonalGrid({
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const [gridReady, setGridReady] = useState(false);
-
+  // Per-tile fade-in: each <img> reveals on its own onLoad. We still warm
+  // the browser cache up-front via <link rel="preload">, but no tile waits
+  // on any other tile to decode.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setGridReady(false);
-
-    let cancelled = false;
-    const reveal = () => {
-      if (!cancelled) setGridReady(true);
-    };
-    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
     const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
-
-    Promise.all(imageUrls.map(decodeGridImage)).then(() => {
-      window.clearTimeout(timeout);
-      reveal();
-    });
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-    };
   }, [tiles]);
 
   return (
@@ -234,7 +191,6 @@ export function CategoryTonalGrid({
             label={t.label}
             tone={tone}
             padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
-            gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
         );
@@ -251,7 +207,6 @@ interface TonalCellProps {
   label: string;
   tone: string;
   padding: string;
-  gridReady: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
@@ -262,9 +217,9 @@ function TonalCell({
   label,
   tone,
   padding,
-  gridReady,
   onSelectCategory,
 }: TonalCellProps) {
+  const [loaded, setLoaded] = useState(false);
   return (
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
@@ -276,7 +231,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      {heroSrc && !gridReady ? (
+      {heroSrc && !loaded ? (
         <span
           aria-hidden
           className="absolute inset-0 pointer-events-none"
@@ -300,12 +255,13 @@ function TonalCell({
           loading="eager"
           decoding="async"
           {...({ fetchPriority: "high" } as Record<string, string>)}
+          onLoad={() => setLoaded(true)}
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
             objectPosition: "center center",
-            opacity: gridReady ? 1 : 0,
-            transition: "opacity 640ms ease-out, transform 500ms ease-out",
+            opacity: loaded ? 1 : 0,
+            transition: "opacity 480ms ease-out, transform 500ms ease-out",
           }}
         />
       ) : null}
