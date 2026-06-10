@@ -194,6 +194,7 @@ const products = all.map((r, i) => {
     colorTemperature: r.color_temperature ?? null,
     colorNeedsReview: !!r.color_needs_review,
     tonalRank: computeTonalRank(r),
+    editorialOrder: r.editorial_order ?? null,
   };
 });
 
