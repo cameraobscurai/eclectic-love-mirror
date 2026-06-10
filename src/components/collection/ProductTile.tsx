@@ -135,9 +135,6 @@ export function ProductTile({
               />
 
               {product.primaryImage ? (
-                <div
-                  className="absolute inset-0"
-                >
                 <NormalizedProductImage
                   {...overrides}
                   src={imageSrc}
@@ -163,7 +160,6 @@ export function ProductTile({
                     transition: "opacity 240ms ease-out",
                   }}
                 />
-                </div>
               ) : null}
 
               {/* Desktop hover glass label */}
