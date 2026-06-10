@@ -18,7 +18,10 @@ import {
 } from "@/lib/admin-chat.functions";
 import { Plus, Trash2 } from "lucide-react";
 
+import { requireAdminOrRedirect } from "@/lib/admin-guard";
+
 export const Route = createFileRoute("/admin/admin")({
+  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   component: AdminCoPilotLayout,
 });
 
