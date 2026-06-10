@@ -218,7 +218,6 @@ export function CategoryTonalGrid({
             label={t.label}
             tone={tone}
             padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
-            gridReady={gridReady}
             onSelectCategory={onSelectCategory}
           />
         );
