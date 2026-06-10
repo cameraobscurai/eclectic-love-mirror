@@ -135,7 +135,7 @@ export function ProductTile({
                   {...overrides}
                   src={withCdnWidth(product.primaryImage.url, 600)}
                   frameAspect={frameAspect}
-                  visualOffsetY={0}
+                  visualOffsetY={overrides?.visualOffsetY ?? 0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
                   visualBaselineY={0.66}
                   srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
