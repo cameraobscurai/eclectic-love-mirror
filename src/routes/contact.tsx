@@ -419,11 +419,11 @@ function ContactPage() {
     >
       <div className="fluid-canvas">
         <div
-          className="grid xl:grid-cols-12"
+          className="grid lg:grid-cols-12"
           style={{ gap: "clamp(2.5rem, 1rem + 3vw, 4rem)" }}
         >
           {/* LEFT — editorial intro */}
-          <aside className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start">
+          <aside className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               CONTACT
             </p>
@@ -465,7 +465,7 @@ function ContactPage() {
           </aside>
 
           {/* RIGHT — single form */}
-          <section id="inquiry" className="xl:col-span-7 scroll-mt-32">
+          <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
             {success ? (
               <SuccessPanel count={submittedCount} />
             ) : (

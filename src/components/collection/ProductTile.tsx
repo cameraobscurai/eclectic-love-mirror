@@ -143,7 +143,7 @@ export function ProductTile({
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
                   visualBaselineY={0.66}
                   srcSet={imageSrcSet}
-                  sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
+                  sizes="(min-width: 1536px) 18vw, (min-width: 1280px) 22vw, (min-width: 1024px) 26vw, (min-width: 768px) 32vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
                   width={600}
                   height={800}
@@ -154,10 +154,10 @@ export function ProductTile({
                   } as Record<string, string>)}
                   onLoad={() => setLoaded(true)}
                   onError={() => onImageFailed?.(product.id)}
-                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-opacity`}
+                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-[opacity,transform] group-hover:scale-[1.015]`}
                   style={{
                     opacity: loaded ? 1 : 0,
-                    transition: "opacity 240ms ease-out",
+                    transition: "opacity 240ms ease-out, transform 700ms ease-out",
                   }}
                 />
               ) : null}

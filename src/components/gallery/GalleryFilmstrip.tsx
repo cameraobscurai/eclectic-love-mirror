@@ -130,7 +130,7 @@ export function GalleryFilmstrip({
       </div>
 
       {/* Progress + scroll hint */}
-      <div className="px-6 lg:px-12 mt-8 max-w-7xl mx-auto">
+      <div className="px-6 lg:px-12 mt-8 max-w-[1600px] mx-auto">
         <div className="flex items-center gap-5">
           <span className="text-cream/55 text-[10px] uppercase tracking-[0.28em] tabular-nums">
             {padded(activeIndex + 1)}

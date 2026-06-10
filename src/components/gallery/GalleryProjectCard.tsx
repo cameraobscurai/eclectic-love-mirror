@@ -27,7 +27,7 @@ export function GalleryProjectCard({
       data-index={index}
       className={[
         "group relative shrink-0 snap-center transition-all duration-500",
-        "w-[85vw] md:w-[60vw] lg:w-[45vw] xl:w-[40vw]",
+        "w-[85vw] md:w-[60vw] lg:w-[45vw] xl:w-[40vw] xl:max-w-[620px]",
         active
           ? "opacity-100 scale-100"
           : "opacity-60 scale-[0.97] hover:opacity-80 hover:scale-[0.98]",

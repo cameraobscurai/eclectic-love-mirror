@@ -18,7 +18,7 @@ const informationLinks = [
 const COL_HEADING = "footer-eyebrow text-cream/40 mb-4 sm:mb-8";
 const COL_LIST = "space-y-2.5 sm:space-y-4";
 const LINK_CLASS =
-  "footer-link inline-block py-1 text-cream/70 hover:text-cream transition-colors";
+  "footer-link editorial-link py-1 text-cream/70 hover:text-cream transition-colors";
 const META_CLASS = "footer-eyebrow text-cream/35";
 
 export function Footer() {
@@ -30,7 +30,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-y-10 sm:gap-y-14 gap-x-6 sm:gap-x-8 md:gap-x-10">
           {/* Brand block */}
           <div className="col-span-2 md:col-span-5">
-            <h2 className="footer-wordmark">ECLECTIC HIVE</h2>
+            <h2 className="footer-wordmark transition-opacity duration-300 hover:opacity-75">ECLECTIC HIVE</h2>
             <p className="footer-link mt-5 sm:mt-8 text-cream/65 max-w-md">
               AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE ENVIRONMENTS.
             </p>

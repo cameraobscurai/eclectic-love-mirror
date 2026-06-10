@@ -255,7 +255,7 @@ function AtelierPage() {
                 className="atelier-hero-reveal page-title text-charcoal"
                 style={{
                   animationDelay: "80ms",
-                  fontSize: "clamp(2.5rem, 8vw, 6rem)",
+                  fontSize: "clamp(2.5rem, 4vw + 1.5rem, 6rem)",
                   lineHeight: 1,
                   width: "fit-content",
                 }}
@@ -344,7 +344,7 @@ function AtelierPage() {
       {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
       <Section eyebrow="ATELIER APPROACH">
         <div
-          className="grid grid-cols-1 md:grid-cols-3"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
         >
           {APPROACH_STEPS.map((step) => (

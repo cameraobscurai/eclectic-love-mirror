@@ -8,7 +8,7 @@ interface GalleryIndexProps {
 export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
   return (
     <section aria-labelledby="gallery-index-heading" className="bg-cream/5 py-12 lg:py-16 px-6 lg:px-12">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1600px] mx-auto">
         <h2
           id="gallery-index-heading"
           className="text-cream/40 text-xs uppercase tracking-[0.3em] mb-12"

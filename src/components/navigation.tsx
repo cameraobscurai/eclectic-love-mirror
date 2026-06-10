@@ -208,7 +208,7 @@ export function Navigation() {
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-5 xl:gap-10">
             {NAV_LINKS.map((link) => {
               const active = pathname === link.href;
               const dark = scrolled ? !isLightPage : !isLightPage;
@@ -286,7 +286,7 @@ export function Navigation() {
                               preload="intent"
                               role="menuitem"
                               onClick={() => setDropdownOpen(false)}
-                              className="block px-5 py-3 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap"
+                              className="block px-5 py-3 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap transition-colors duration-150"
                             >
                               {PARENT_LABELS[pid]}
                             </Link>
@@ -351,7 +351,7 @@ export function Navigation() {
         >
           <nav className="flex-1 flex flex-col justify-center">
             <Link to="/" preload="intent" className="py-4 min-h-[44px] flex items-center">
-              <span className="text-cream font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light hover:text-sand transition-colors">
+              <span className="text-cream font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-light hover:text-sand transition-colors">
                 Home
               </span>
             </Link>
@@ -367,7 +367,7 @@ export function Navigation() {
               >
                 <span
                   className={cn(
-                    "font-display text-[7vw] sm:text-4xl md:text-5xl tracking-[0.04em] uppercase font-light transition-colors",
+                    "font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-light transition-colors",
                     pathname === link.href
                       ? "text-cream"
                       : "text-cream/70 hover:text-cream"
