@@ -382,6 +382,15 @@ function CategoryGrid({
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} savedAt={savedAt} onRetry={retrySave} />
+          <button
+            type="button"
+            onClick={doUndo}
+            disabled={undoCount === 0 || subActive}
+            title={subActive ? "Clear filter to undo" : "Undo last reorder (⌘Z)"}
+            className="inline-flex items-center gap-1.5 border border-charcoal/15 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.18em] text-charcoal/70 hover:bg-charcoal/5 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ↶ Undo{undoCount > 0 ? ` (${undoCount})` : ""}
+          </button>
           <div
             className="flex items-center border border-charcoal/15"
             role="group"
