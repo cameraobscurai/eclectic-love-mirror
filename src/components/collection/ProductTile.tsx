@@ -72,8 +72,8 @@ export function ProductTile({
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const barShelfTranslateY = alignToSharedBaseline
     ? ({
-        "2911": "28%",
-        "2912": "6.5%",
+        "2911": "40%",
+        "2912": "-4%",
       } as Record<string, string | undefined>)[product.id]
     : undefined;
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
