@@ -179,7 +179,7 @@ export function NormalizedProductImage({
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
     const ty = visualAnchorY === "bottom"
-      ? visualOffsetY * 100
+      ? (visualBaselineY + visualOffsetY - 0.5 - (f.bottom - 0.5) * f.scale) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);
@@ -191,9 +191,8 @@ export function NormalizedProductImage({
       className={className}
       style={{
         ...style,
-        objectPosition: visualAnchorY === "bottom" ? "center bottom" : style?.objectPosition,
         transform,
-        transformOrigin: visualAnchorY === "bottom" ? "center bottom" : "center center",
+        transformOrigin: "center center",
       }}
     />
   );
