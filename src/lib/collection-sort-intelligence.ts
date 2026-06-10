@@ -276,6 +276,11 @@ export function getDisplaySortRank(
     // function returns a stable secondary rank for tie-breaking.
     return product.scrapedOrder;
   }
+  // Editorial-curated order wins when present. Values are small (100..30000),
+  // so editorial-ranked items naturally precede every composite key below.
+  if (product.editorialOrder != null) {
+    return product.editorialOrder;
+  }
   const ownerRank = context.activeGroup
     ? 0 // single group view — collapse browse-group dimension
     : getOwnerBrowseGroupRank(product);

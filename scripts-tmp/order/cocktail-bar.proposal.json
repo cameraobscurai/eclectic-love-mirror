@@ -1,0 +1,84 @@
+{
+  "parent": "cocktail-bar",
+  "order": {
+    "bars": [
+      "2813",
+      "3054",
+      "2540",
+      "2816",
+      "2814",
+      "3674",
+      "live-inola-gold-slatted-bar",
+      "2757",
+      "1019",
+      "1022",
+      "786",
+      "2811",
+      "1926",
+      "3060",
+      "4064",
+      "1570",
+      "188",
+      "4086",
+      "787",
+      "1354",
+      "1415",
+      "788",
+      "174",
+      "1927",
+      "3146",
+      "2661",
+      "4116",
+      "2328",
+      "2912",
+      "2911",
+      "2141",
+      "3008",
+      "2150",
+      "3009"
+    ],
+    "cocktail-tables": [
+      "810",
+      "2992",
+      "1940",
+      "362",
+      "3107",
+      "2764",
+      "3188",
+      "4097"
+    ],
+    "community-tables": [
+      "1857",
+      "3508",
+      "360",
+      "376"
+    ],
+    "stools": [
+      "4052",
+      "161",
+      "2747",
+      "3012",
+      "1973"
+    ],
+    "storage": [
+      "3983",
+      "3562",
+      "1928",
+      "3497",
+      "4139",
+      "2919",
+      "148",
+      "709",
+      "1929",
+      "762",
+      "2731"
+    ]
+  },
+  "rationale": {
+    "bars": "Opens with the ARCUS 12' family hero (Calvin smooth/neutral) followed by tambour variants light→dark (Ryann white → Tavion natural → Bevin gold → Levar black), then INOLA family (12' black hero + gold variant) and IRAJA convertible to complete the mega-wide modular block; next come extra-wide double/tasting bars (BOYCE, LOCKWOOD, BARCLAY); mid-width natural-wood bars flow light to medium (Canyon pine → Hampton oak → Beauregard tambour → Sinatra walnut) then the concrete-and-birch/split-wood tier (Wadsworth, Norwood, Boone, Woodsley) and the 72\" concrete cousins (Walden, Elwood, Pickford, Durango); darker character bars close the standard block (Sidecar dark wood → Amisa midnight → Jepperd black tambour → Monroe black slat → Malvina oval outlier); the two tall trunk bars (Excursion champagne → Voyage black) follow as a narrow-silhouette pair; bar carts land last, glam-light to dark (Lucille gold → Marceline gold → Malcolm neutral → Evangeline silver).",
+    "cocktail-tables": "Wide-diameter round tops lead (Elise 40\"Ø mahogany → Duke 32\"Ø bronze), flowing into square-section columns by size (Nantucket 24\" oak → Timon 23.5\" wood), then slim tall columns tonal-light to reflective (Bartolo black tambour → Farrow square slim → Toshia mirror), with the petite low limestone Relic as the outlier closer.",
+    "community-tables": "JETT hero (94\"W brass+wood) leads its family variant JETT MINI (60\"W) immediately behind, then Scout (natural wood, widest) bridges to Broadway concrete (industrial tone) for a warm-to-cool tonal close.",
+    "stools": "Tall bar-height stools open (Thatcher green woven 45\"H → Axel 45\"H), mid-height Vixxen (black, 42\"H back) transitions tonally dark, then shorter counter stools close light-to-small (Farrell grey hide 30\"H → Julien adjustable 27.5\"H).",
+    "storage": "Low wide console hero (Anathema 82\" dark ash) anchors the block, followed by the tiered square shelving unit (Dezik) as an architectural outlier; wide open shelves progress light to warm (Berkshire oak → Therion mango → Ovalia brass); medium-height cabinet/shelf trio flows antique-light to acacia-natural (Beatrice → Salida → Rosa); the tall-dark tier closes with increasing height and material weight (Vespa dark wood 84\"H → Cardea metal screen 72\"H → Kalil black arcing metal 92.5\"H)."
+  }
+}

@@ -392,6 +392,7 @@ export type Database = {
           depth_cm: number | null
           description: string | null
           dimensions_raw: string | null
+          editorial_order: number | null
           height_cm: number | null
           hidden_note: string | null
           id: string
@@ -439,6 +440,7 @@ export type Database = {
           depth_cm?: number | null
           description?: string | null
           dimensions_raw?: string | null
+          editorial_order?: number | null
           height_cm?: number | null
           hidden_note?: string | null
           id?: string
@@ -486,6 +488,7 @@ export type Database = {
           depth_cm?: number | null
           description?: string | null
           dimensions_raw?: string | null
+          editorial_order?: number | null
           height_cm?: number | null
           hidden_note?: string | null
           id?: string

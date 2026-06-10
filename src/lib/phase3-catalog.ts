@@ -87,6 +87,8 @@ export interface CollectionProduct {
   tonalRank?: number | null;
   /** True when AI and pixel-extract disagree, or owner flagged for review. */
   colorNeedsReview?: boolean;
+  /** Editorial-curated order (lower = earlier within subcategory). Null = unranked. */
+  editorialOrder?: number | null;
 }
 
 export interface CategoryFacet {
