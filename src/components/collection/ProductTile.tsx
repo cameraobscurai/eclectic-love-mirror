@@ -135,62 +135,31 @@ export function ProductTile({
               />
 
               {product.primaryImage ? (
-                alignToSharedBaseline ? (
-                  <img
-                    src={imageSrc}
-                    srcSet={imageSrcSet}
-                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
-                    alt={product.primaryImage.altText ?? product.title}
-                    width={600}
-                    height={800}
-                    loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
-                    decoding="async"
-                    {...({
-                      fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
-                    } as Record<string, string>)}
-                    onLoad={() => setLoaded(true)}
-                    onError={() => onImageFailed?.(product.id)}
-                    className="absolute left-1/2 will-change-opacity"
-                    style={{
-                      bottom: "18%",
-                      width: "94%",
-                      height: "auto",
-                      maxWidth: "94%",
-                      maxHeight: "58%",
-                      objectFit: "contain",
-                      objectPosition: "center bottom",
-                      opacity: loaded ? 1 : 0,
-                      transform: "translateX(-50%)",
-                      transition: "opacity 240ms ease-out",
-                    }}
-                  />
-                ) : (
-                  <NormalizedProductImage
-                    {...overrides}
-                    src={imageSrc}
-                    frameAspect={frameAspect}
-                    visualOffsetY={overrides?.visualOffsetY ?? 0}
-                    visualAnchorY="center"
-                    visualBaselineY={0.66}
-                    srcSet={imageSrcSet}
-                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
-                    alt={product.primaryImage.altText ?? product.title}
-                    width={600}
-                    height={800}
-                    loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
-                    decoding="async"
-                    {...({
-                      fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
-                    } as Record<string, string>)}
-                    onLoad={() => setLoaded(true)}
-                    onError={() => onImageFailed?.(product.id)}
-                    className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-opacity`}
-                    style={{
-                      opacity: loaded ? 1 : 0,
-                      transition: "opacity 240ms ease-out",
-                    }}
-                  />
-                )
+                <NormalizedProductImage
+                  {...overrides}
+                  src={imageSrc}
+                  frameAspect={frameAspect}
+                  visualOffsetY={overrides?.visualOffsetY ?? 0}
+                  visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
+                  visualBaselineY={0.66}
+                  srcSet={imageSrcSet}
+                  sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
+                  alt={product.primaryImage.altText ?? product.title}
+                  width={600}
+                  height={800}
+                  loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
+                  decoding="async"
+                  {...({
+                    fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
+                  } as Record<string, string>)}
+                  onLoad={() => setLoaded(true)}
+                  onError={() => onImageFailed?.(product.id)}
+                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-opacity`}
+                  style={{
+                    opacity: loaded ? 1 : 0,
+                    transition: "opacity 240ms ease-out",
+                  }}
+                />
               ) : null}
 
               {/* Desktop hover glass label */}
