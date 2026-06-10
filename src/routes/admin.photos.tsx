@@ -476,10 +476,7 @@ function CategoryGrid({
       )}
 
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
-        Changes save live to the DB. /collection updates after next bake:
-        <code className="ml-2 normal-case tracking-normal bg-charcoal/5 px-2 py-0.5">
-          bun scripts/bake-catalog.mjs
-        </code>
+        Order saves live. /collection reflects it on next page load — no bake needed.
       </p>
     </div>
   );
