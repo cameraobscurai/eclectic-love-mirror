@@ -25,7 +25,7 @@ export function SortableThumb({
     useSortable({ id: url });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.3 : 1,
   };
@@ -59,14 +59,14 @@ export function SortableThumb({
         type="button"
         {...attributes}
         {...listeners}
-        className="absolute top-1 right-1 p-1 bg-white/90 hover:bg-white border border-neutral-300 opacity-0 group-hover:opacity-100 cursor-grab active:cursor-grabbing transition-opacity"
+        className="absolute top-1 right-1 p-1 bg-white/90 hover:bg-white border border-neutral-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 cursor-grab active:cursor-grabbing transition-opacity"
         title="Drag to reorder"
       >
         <GripVertical className="h-3.5 w-3.5" />
       </button>
 
       {/* Hover action bar */}
-      <div className="absolute bottom-0 inset-x-0 flex justify-end gap-1 p-1 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute bottom-0 inset-x-0 flex justify-end gap-1 p-1 bg-gradient-to-t from-black/60 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
         {!isCover && (
           <button
             type="button"
