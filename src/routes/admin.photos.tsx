@@ -153,6 +153,24 @@ function PhotosManager() {
       </aside>
 
       <main className="flex-1 min-w-0">
+        {/* Mobile category switcher — shown when sidebar is hidden */}
+        <div className="lg:hidden px-6 pt-4 pb-2 border-b border-charcoal/10 bg-cream sticky top-12 z-20">
+          <label className="block text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-1.5">
+            Category
+          </label>
+          <select
+            value={parent}
+            onChange={(e) => setParent(e.target.value as ParentId)}
+            className="w-full border border-charcoal/20 bg-white px-3 py-2 text-[12px] uppercase tracking-[0.14em]"
+          >
+            {PARENT_ORDER.map((pid) => (
+              <option key={pid} value={pid}>
+                {PARENT_LABELS[pid]}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {catalogErr ? (
           <div className="m-6 border border-red-300 bg-red-50 px-4 py-3 text-xs uppercase tracking-widest text-red-700">
             Catalog load failed: {catalogErr}
