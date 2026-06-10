@@ -27,4 +27,8 @@ export const PRODUCT_TILE_OVERRIDES: Record<string, { targetArea?: number; maxW?
     targetArea: 0.22,
     maxH: 0.45,
   },
+  "1019": { // BOYCE CONCRETE & BIRCH DOUBLE BAR
+    targetArea: 0.28,
+    maxW: 0.94,
+  },
 };
