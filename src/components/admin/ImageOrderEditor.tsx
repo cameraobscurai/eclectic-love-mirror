@@ -66,38 +66,65 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
+  const flushSave = useCallback(
+    async (next: string[]) => {
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+        saveTimer.current = null;
+      }
+      setSaveState("saving");
+      try {
+        await update({
+          data: {
+            id: item.id,
+            images: next,
+            expectedLength: lastSavedRef.current.length,
+          },
+        });
+        lastSavedRef.current = next;
+        setSaveState("saved");
+        setErrMsg(null);
+        onSaved({ images: next, card_background_url: bg });
+      } catch (e) {
+        const msg = (e as Error).message || "Save failed";
+        setErrMsg(msg);
+        setSaveState("error");
+        setUrls(lastSavedRef.current);
+        throw e;
+      }
+    },
+    [item.id, update, onSaved, bg],
+  );
+
   const scheduleSave = useCallback(
     (next: string[]) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
-      saveTimer.current = setTimeout(async () => {
-        setSaveState("saving");
-        try {
-          await update({
-            data: {
-              id: item.id,
-              images: next,
-              expectedLength: lastSavedRef.current.length,
-            },
-          });
-          lastSavedRef.current = next;
-          setSaveState("saved");
-          setErrMsg(null);
-          onSaved({ images: next, card_background_url: bg });
+      saveTimer.current = setTimeout(() => {
+        void flushSave(next).then(() => {
           setTimeout(
             () => setSaveState((s) => (s === "saved" ? "idle" : s)),
             3000,
           );
-        } catch (e) {
-          const msg = (e as Error).message || "Save failed";
-          setErrMsg(msg);
-          setSaveState("error");
-          // Roll back to last confirmed state
-          setUrls(lastSavedRef.current);
-        }
+        }).catch(() => {});
       }, 400);
     },
-    [item.id, update, onSaved, bg],
+    [flushSave],
   );
+
+  // Close handler: flush any pending save before unmounting so the star /
+  // reorder / delete the user just clicked actually persists.
+  const handleClose = useCallback(async () => {
+    if (saveTimer.current) {
+      try {
+        await flushSave(urls);
+      } catch {
+        // flushSave already surfaced the error + rolled back state.
+        return;
+      }
+    }
+    onClose();
+  }, [flushSave, urls, onClose]);
+
 
   useEffect(() => {
     return () => {
