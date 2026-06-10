@@ -534,14 +534,14 @@ function ContactPage() {
                 {/* 2. PROJECT DETAILS */}
                 <FormSection number="02" label="Project details">
                   <div className="space-y-8">
-                    <Field label="Budget">
+                    <Field label="Budget" asGroup>
                       <PillGroup
                         options={[...BUDGET_RANGES]}
                         value={budget}
                         onChange={setBudget}
                       />
                     </Field>
-                    <Field label="Scope of work">
+                    <Field label="Scope of work" asGroup>
                       <PillGroup
                         options={[...SCOPE_OPTIONS]}
                         value={scope}
@@ -762,12 +762,30 @@ function FormSection({
 function Field({
   label,
   required,
+  asGroup,
   children,
 }: {
   label: string;
   required?: boolean;
+  asGroup?: boolean;
   children: React.ReactNode;
 }) {
+  const reactId = React.useId();
+  if (asGroup) {
+    const labelId = `field-${reactId}-label`;
+    return (
+      <div role="group" aria-labelledby={labelId} className="block">
+        <p
+          id={labelId}
+          className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-3"
+        >
+          {label}
+          {required && <span className="text-charcoal/30"> ·</span>}
+        </p>
+        {children}
+      </div>
+    );
+  }
   return (
     <label className="block">
       <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
