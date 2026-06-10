@@ -4,7 +4,7 @@
 //   default = dry-run (prints SQL + summary)
 //   --apply = executes UPDATEs via psql
 import { readFileSync } from 'node:fs';
-import { execSync } from 'node:child_process';
+import { createClient } from '@supabase/supabase-js';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
