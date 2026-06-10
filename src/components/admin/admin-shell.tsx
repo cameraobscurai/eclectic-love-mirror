@@ -263,17 +263,26 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 );
               })}
             </nav>
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex items-center gap-2">
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 border border-charcoal/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/75 hover:bg-charcoal/5 hover:text-charcoal"
+                title="Exit admin — back to site"
+              >
+                ← Exit
+              </Link>
               <a
                 href="/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal"
+                className="hidden sm:inline-flex items-center gap-1.5 border border-charcoal/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/75 hover:bg-charcoal/5 hover:text-charcoal"
+                title="Open live site in new tab"
               >
                 <ExternalLink className="h-3 w-3" aria-hidden />
-                Live site
+                Live
               </a>
             </div>
+
           </header>
           <main id="main-content" className="flex-1 min-w-0">
             {children}
