@@ -123,7 +123,7 @@ function PhotosManager() {
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal flex">
       {/* Sidebar — parents in canonical PARENT_ORDER */}
-      <aside className="w-56 shrink-0 border-r border-charcoal/10 py-6 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto">
+      <aside className="hidden lg:block w-56 shrink-0 border-r border-charcoal/10 py-6 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto">
         <p className="px-5 text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-3">
           Categories
         </p>
