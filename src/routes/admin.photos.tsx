@@ -304,7 +304,13 @@ function CategoryGrid({
     [],
   );
 
-  const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [ghostWidth, setGhostWidth] = useState<number | null>(null);
+  const handleDragStart = (e: DragStartEvent) => {
+    setActiveId(String(e.active.id));
+    const first = gridRef.current?.firstElementChild as HTMLElement | null;
+    if (first) setGhostWidth(first.getBoundingClientRect().width);
+  };
   const handleDragEnd = (e: DragEndEvent) => {
     setActiveId(null);
     // Reorder is disabled when filtered to a sub — we'd otherwise persist
