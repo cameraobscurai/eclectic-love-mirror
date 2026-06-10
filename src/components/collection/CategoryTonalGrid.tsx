@@ -63,36 +63,9 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
 };
 const DEFAULT_PADDING = "2rem 2.5rem 3rem 2.5rem";
 
-// The category grid waits for one shared preload/decode batch, then releases
-// all tiles together. This bounded fallback prevents one stubborn CDN decode
-// from holding the entire page in a blank state.
-const GRID_REVEAL_TIMEOUT_MS = 3200;
-
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
-function decodeGridImage(src: string): Promise<void> {
-  if (typeof window === "undefined") return Promise.resolve();
-
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.decoding = "async";
-
-    const finish = () => {
-      if (typeof img.decode === "function") {
-        img.decode().then(() => resolve()).catch(() => resolve());
-      } else {
-        resolve();
-      }
-    };
-
-    img.onload = finish;
-    img.onerror = () => resolve();
-    img.src = src;
-
-    if (img.complete) finish();
-  });
-}
 
 function preloadGridImage(src: string) {
   const existing = Array.from(
