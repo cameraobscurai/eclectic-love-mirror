@@ -29,6 +29,10 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   string,
   { targetArea?: number; maxW?: number; maxH?: number; visualOffsetY?: number }
 > = {
+  // VOYAGE BLACK TRUNK BAR — source crop sits high next to flat-front bars.
+  "2911": { visualOffsetY: 0.28 },
+  // EXCURSION CHAMPAGNE TRUNK BAR — source crop sits high next to flat-front bars.
+  "2912": { visualOffsetY: 0.29 },
   // JEPPERD BLACK TAMBOUR BAR
   "2661": { targetArea: 0.28, maxW: 0.92, maxH: 0.45 },
   // CANYON 8' NATURAL PINE BAR
@@ -38,13 +42,13 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   // GOLD ACRYLIC SLATTED BAR
   "live-inola-gold-slatted-bar": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
   // MONROE BLACK FLAT SLAT TAMBOUR BAR
-  "4116": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "4116": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
   // INOLA 12' BLACK CONVERTIBLE BAR
-  "3674": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "3674": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
   // ARCUSES / flat-front bars with baked bottom whitespace
-  "2814": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
-  "2816": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
-  "3054": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
-  "2813": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
-  "2540": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "2814": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
+  "2816": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
+  "3054": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
+  "2813": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
+  "2540": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
 };

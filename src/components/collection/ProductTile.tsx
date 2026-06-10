@@ -70,6 +70,16 @@ export function ProductTile({
 
   const spyGroup = getProductBrowseGroup(product);
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
+  const barShelfTranslateY = alignToSharedBaseline
+    ? ({
+        "2911": "40%",
+        "2912": "-4%",
+      } as Record<string, string | undefined>)[product.id]
+    : undefined;
+  const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
+  const imageSrcSet = product.primaryImage
+    ? buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined
+    : undefined;
 
   const layoutSpring = {
     type: "spring" as const,
@@ -131,14 +141,22 @@ export function ProductTile({
               />
 
               {product.primaryImage ? (
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    transform: barShelfTranslateY
+                      ? `translateY(${barShelfTranslateY})`
+                      : undefined,
+                  }}
+                >
                 <NormalizedProductImage
                   {...overrides}
-                  src={withCdnWidth(product.primaryImage.url, 600)}
+                  src={imageSrc}
                   frameAspect={frameAspect}
-                  visualOffsetY={overrides?.visualOffsetY ?? 0}
+                  visualOffsetY={0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
                   visualBaselineY={0.66}
-                  srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
+                  srcSet={imageSrcSet}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
                   width={600}
@@ -156,6 +174,7 @@ export function ProductTile({
                     transition: "opacity 240ms ease-out",
                   }}
                 />
+                </div>
               ) : null}
 
               {/* Desktop hover glass label */}
