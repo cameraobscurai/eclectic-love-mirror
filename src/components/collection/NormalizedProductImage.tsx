@@ -178,8 +178,13 @@ export function NormalizedProductImage({
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
+    // CSS transforms scale around the image center. For bottom anchoring, the
+    // visual bottom after scale is not `f.bottom` anymore; it is pulled toward
+    // 0.5 by `f.scale`. Align that scaled bottom to the shared baseline so wide
+    // bar silhouettes sit on one straight row instead of drifting by image size.
+    const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
     const ty = visualAnchorY === "bottom"
-      ? (visualBaselineY + visualOffsetY - f.bottom) * 100
+      ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);
