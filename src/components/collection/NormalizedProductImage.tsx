@@ -22,6 +22,7 @@ const fitCache = new Map<string, Fit | null>();
 
 const FRAME_ASPECT = 4 / 5;
 const TILE_IMAGE_INSET = 0.84;
+const TILE_OBJECT_CONTENT = 0.92;
 const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.68 };
 
 function clamp(n: number, min: number, max: number) {
@@ -129,7 +130,7 @@ function measureImage(
 
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
   const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
-  const visualBottom = contentTop + ((maxY + 1) / ch) * renderedH;
+  const visualBottom = (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
   return { ...fit, bottom: clamp(visualBottom, 0.05, 0.95) };
 }
 
@@ -178,7 +179,7 @@ export function NormalizedProductImage({
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
     const ty = visualAnchorY === "bottom"
-      ? ((visualBaselineY + visualOffsetY - 0.5) / f.scale + 0.5 - f.bottom) * 100
+      ? (visualBaselineY + visualOffsetY - 0.5 - (f.bottom - 0.5) * f.scale) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);
