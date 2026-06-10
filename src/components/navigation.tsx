@@ -185,6 +185,7 @@ export function Navigation() {
         }}
       >
         <nav
+          aria-label="Primary navigation"
           className={cn(
             "flex items-center justify-between px-6 lg:px-12 transition-all duration-300",
             scrolled ? "py-3 lg:py-3.5" : "py-4 lg:py-5"
@@ -229,6 +230,13 @@ export function Navigation() {
                     to={link.href}
                     preload="intent"
                     {...warmHandlers}
+                    aria-current={active ? "page" : undefined}
+                    {...(isCollection
+                      ? {
+                          "aria-haspopup": "menu" as const,
+                          "aria-expanded": dropdownOpen,
+                        }
+                      : {})}
                     onClick={
                       isCollection
                         ? (e) => {
@@ -339,6 +347,13 @@ export function Navigation() {
       </header>
 
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        aria-hidden={!isOpen}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") setIsOpen(false);
+        }}
         className={cn(
           "fixed inset-0 z-40 bg-charcoal transition-all duration-700 ease-out",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -349,8 +364,13 @@ export function Navigation() {
           className="flex flex-col h-[100dvh] pt-24 px-6 pb-12"
           style={{ paddingBottom: "calc(3rem + env(safe-area-inset-bottom))" }}
         >
-          <nav className="flex-1 flex flex-col justify-center">
-            <Link to="/" preload="intent" className="py-4 min-h-[44px] flex items-center">
+          <nav aria-label="Mobile navigation" className="flex-1 flex flex-col justify-center">
+            <Link
+              to="/"
+              preload="intent"
+              aria-current={pathname === "/" ? "page" : undefined}
+              className="py-4 min-h-[44px] flex items-center"
+            >
               <span className="text-cream font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-light hover:text-sand transition-colors">
                 Home
               </span>
@@ -360,6 +380,7 @@ export function Navigation() {
                 key={link.href}
                 to={link.href}
                 preload="intent"
+                aria-current={pathname === link.href ? "page" : undefined}
                 {...(link.href === "/atelier"
                   ? { onTouchStart: warmAtelier, onFocus: warmAtelier }
                   : {})}
