@@ -317,10 +317,22 @@ function CategoryGrid({
     // Push pre-drag snapshot onto the undo stack before mutating.
     undoStack.current.push(items);
     if (undoStack.current.length > 30) undoStack.current.shift();
+    setUndoCount(undoStack.current.length);
     const next = arrayMove(items, oldIdx, newIdx);
     setItems(next);
     scheduleSave(next);
   };
+
+  const [undoCount, setUndoCount] = useState(0);
+
+  const doUndo = useCallback(() => {
+    if (subActive) return;
+    const prev = undoStack.current.pop();
+    if (!prev) return;
+    setUndoCount(undoStack.current.length);
+    setItems(prev);
+    scheduleSave(prev);
+  }, [subActive, scheduleSave]);
 
   // Cmd+Z / Ctrl+Z — pop a snapshot, restore it, schedule a save.
   useEffect(() => {
@@ -330,16 +342,13 @@ function CategoryGrid({
       // Don't steal undo from text inputs (image editor, etc.).
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
-      if (subActive) return;
-      const prev = undoStack.current.pop();
-      if (!prev) return;
       e.preventDefault();
-      setItems(prev);
-      scheduleSave(prev);
+      doUndo();
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [subActive, scheduleSave]);
+  }, [doUndo]);
+
 
 
   const activeItem = useMemo(
