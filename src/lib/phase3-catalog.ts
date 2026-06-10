@@ -140,19 +140,24 @@ function bustImages(
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached) return cached;
   if (loadPromise) return loadPromise;
-  loadPromise = import("@/data/inventory/current_catalog.json").then((mod) => {
+  loadPromise = import("@/data/inventory/current_catalog.json").then(async (mod) => {
     const raw = ((mod as { default?: RawCatalog }).default ?? mod) as RawCatalog;
     categoryDisplayOrder = raw.meta.categoryDisplayOrder;
-    // Respect publicReady — items flipped false (e.g. owner-hidden) drop out
-    // of the public grid, counts, and rails.
+
+    // LIVE editorial_order overlay — admin reorders write to DB and show up
+    // on next site load without re-baking the JSON snapshot.
+    const overlay = await fetchEditorialOrderOverlay();
+
     const products = raw.products
       .filter((p) => p.publicReady !== false)
       .map((p) => {
+        const live = overlay.get(p.id);
+        const eo = live !== undefined ? live : (p.editorialOrder ?? null);
         const v = p.imagesVersion ?? 0;
-        if (!v) return p;
-        const images = bustImages(p.images, v);
+        const images = v ? bustImages(p.images, v) : p.images;
         return {
           ...p,
+          editorialOrder: eo,
           images,
           primaryImage: images[0] ?? null,
         };
@@ -165,6 +170,39 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     return cached;
   });
   return loadPromise;
+}
+
+async function fetchEditorialOrderOverlay(): Promise<Map<string, number | null>> {
+  const map = new Map<string, number | null>();
+  try {
+    const { supabase } = await import("@/integrations/supabase/client");
+    const PAGE = 1000;
+    let from = 0;
+    for (;;) {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("rms_id, editorial_order")
+        .range(from, from + PAGE - 1);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      for (const row of data as Array<{ rms_id: string; editorial_order: number | null }>) {
+        if (row.rms_id) map.set(row.rms_id, row.editorial_order);
+      }
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+  } catch (e) {
+    // Non-fatal: fall back to baked editorialOrder values.
+    console.warn("[catalog] editorial_order overlay failed:", e);
+  }
+  return map;
+}
+
+/** Drop the in-memory cache so the next getCollectionCatalog() call re-fetches
+ *  the editorial_order overlay. Used by /admin/photos after a reorder save. */
+export function invalidateCollectionCatalog(): void {
+  cached = null;
+  loadPromise = null;
 }
 
 /**
