@@ -234,13 +234,17 @@ function CategoryGrid({
   // never persist a partial parent list.
   const subActive = sub !== "all";
   const visibleItems = useMemo(
-    () =>
-      subActive
+    () => {
+      const base = subActive
         ? items.filter((i) => {
             const p = (allProducts ?? []).find((pp) => pp.id === i.id);
             return p ? productMatchesSub(p, parent, sub) : false;
           })
-        : items,
+        : items;
+      // Guard: dnd-kit's SortableContext throws on null/undefined ids
+      // ("Cannot use 'in' operator to search for 'id' in null").
+      return base.filter((i) => i.id != null && i.id !== "");
+    },
     [items, subActive, allProducts, parent, sub],
   );
 
