@@ -1,40 +1,81 @@
-# Finish the Cocktail-Bar Shelf Alignment
+# Cocktail-Bar Editorial Order — ALL First, Subcategories Inherit
 
-## Diagnosis
+## The insight
 
-The 517/514/514 baseline fix only applies to the **Bars subcategory**. Every other view in the cocktail-bar group (ALL, Cocktail Tables, Community Tables, Stools, Storage) still uses center-anchored images, so each product floats at its own visual floor. That's the row-by-row drift visible in screenshots 2 and 3.
+If ALL is ordered well and ALL is strict subcategory chunks (Bars → Cocktail Tables → Community Tables → Stools → Storage), then each subcategory view is literally a slice of ALL. One ordering decision, five views stay consistent. No drift, no contradiction.
 
-Root cause is one line in `src/routes/collection.tsx` (~L1210):
+## Pipeline (cocktail-bar only, then template the rest)
+
+```text
+1. scripts/order/dump-slice.mjs cocktail-bar
+     → scripts-tmp/order/cocktail-bar.slice.json
+       { subcategory: [{ rms_id, title, image, family, dims }] }
+
+2. spawn ONE capable subagent
+     input: the slice JSON + image URLs grouped by subcategory
+     job:   within each subcategory chunk, rank products by
+              (a) family hero leads, variants follow
+              (b) silhouette block: wide → square → tall
+              (c) tonal flow inside each block
+              (d) true outliers at chunk end
+     output: { bars: [rms_id,...], cocktail-tables: [...], ... } + rationale
+
+3. write scripts-tmp/order/cocktail-bar.proposal.json
+     review in chat (titles + thumbs, no apply yet)
+
+4. scripts/order/apply.mjs cocktail-bar --dry-run
+     prints SQL: UPDATE inventory_items SET editorial_order = N WHERE rms_id = ...
+     numbering: 100, 200, 300... (gaps for manual nudge later)
+
+5. scripts/order/apply.mjs cocktail-bar --apply
+     writes editorial_order column
+
+6. scripts/bake-catalog.mjs
+     editorialOrder lands in current_catalog.json
+
+7. collection-sort-intelligence.ts "By Type" composite key becomes:
+       (subcategoryPillIndex, editorial_order ?? Infinity, title)
+     ALL view = chunks in pill order, each chunk in editorial order.
+     Subcategory view = same chunk, same order. Guaranteed consistent.
 ```
-alignToSharedBaseline={activeParent === "cocktail-bar" && activeSubcategory === "bars"}
+
+## Schema (one migration)
+
+```sql
+ALTER TABLE public.inventory_items
+  ADD COLUMN editorial_order INT NULL;
+
+CREATE INDEX inventory_items_editorial_order_idx
+  ON public.inventory_items (editorial_order)
+  WHERE editorial_order IS NOT NULL;
 ```
+No GRANT/RLS change (additive column on existing table). Null = unranked, sorts last.
 
-The 3 toolbar buttons are: 3-col grid · 5-col dense grid · Wall. The first two share the same `ProductTile` path and both benefit from the fix. Wall mode uses a separate component (`CollectionWallTile`) that doesn't participate in baseline math — leave it out of scope.
+## Sort key change (one file)
 
-## Changes
-
-**1. `src/routes/collection.tsx`** — widen the condition to the whole parent:
+`src/lib/collection-sort-intelligence.ts` — "By Type" branch composite becomes:
 ```
-alignToSharedBaseline={activeParent === "cocktail-bar"}
+subcategoryPillIndex * 1e9
+  + (editorialOrder ?? Infinity) * 1e3
+  + scrapedOrder
 ```
-Single-line change. Pins every cocktail-bar product (ALL view + all subcategories) to `visualBaselineY = 0.66`.
+Existing owner-rank/site-rank logic stays as fallback for parents without editorial_order yet. Cocktail-bar gets the new key; other 13 parents unchanged until their pass runs.
 
-**2. `src/lib/collection-tile-presets.ts`** — add `PRODUCT_TILE_OVERRIDES` entries for the non-bar outliers visible in screenshots 2 and 3 that have baked bottom whitespace or unusual silhouettes:
-- Steamer-trunk bars (open, tall) — row 1 leftmost two
-- Wood-stack cocktail tables — row 1 & 2 of screenshot 3, several variants
-- Bar carts (tall, thin, wheels) — row 3 of screenshot 3
-- Arched storage cabinet — row 3 rightmost
+## Three grid modes
 
-Each gets a targeted `{ targetArea, maxW, maxH, visualOffsetY? }` tuned to its silhouette family (wide-furniture pattern for cocktail tables, tall-narrow pattern for carts/cabinet). Exact IDs pulled from the catalog before writing.
+3-col, 5-col, and Wall all consume the same sorted product array. One order = consistent across all three. Wall's masonry packing is unaffected; we're only changing sequence, not tile sizing.
 
-**3. Verify** with Playwright at 1874×1130, screenshot the ALL view + each subcategory in both 3-col and 5-col modes, measure visible product bottoms in pixels per row, confirm rows hold a shared shelf line (±3px).
+## Verify
 
-## Out of Scope
+Playwright at 1874×1130: screenshot ALL + each of 5 subcategories in 3-col and 5-col. Confirm subcategory chunks in ALL match standalone subcategory views (same items, same order). Wall mode spot-check.
 
-- Wall mode (`CollectionWallTile`) — different render path, user did not flag it.
-- Other category parents — alignment work stays scoped to cocktail-bar.
-- Catalog/image re-binding.
+## Out of scope
+
+- Other 13 parents (template after cocktail-bar lands clean)
+- Admin drag-reorder UI (later, once the JSON pipeline is proven)
+- Cross-parent ordering (ALL-all view)
+- Pill order changes
 
 ## Risk
 
-Low. The bottom-anchor math is already proven on bars. Widening the flag exposes more products to the same transform; outliers get per-ID overrides, not global changes. No other category is touched.
+Low. `editorial_order` is additive + nullable, reversible by `UPDATE ... SET editorial_order = NULL`. Sort key change is gated by null-check, so unranked parents fall through to existing logic.
