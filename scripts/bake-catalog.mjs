@@ -159,7 +159,7 @@ const products = all.map((r, i) => {
   const aliasedTitle = titleAliasByRms.get(String(r.rms_id)) || r.title;
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
   return {
-    id: r.rms_id,
+    id: r.rms_id || r.slug,
     sourceUrl: lp?.fullUrl ? `https://www.eclectichive.com${lp.fullUrl}` : '',
     slug: r.slug,
     categorySlug: r.category,
