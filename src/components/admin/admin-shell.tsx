@@ -46,6 +46,7 @@ type NavItem = {
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
+  external?: boolean;
 };
 
 const OVERVIEW: NavItem[] = [
