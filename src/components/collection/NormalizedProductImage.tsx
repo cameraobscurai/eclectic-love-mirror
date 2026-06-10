@@ -29,12 +29,12 @@ function fitFromVisualBox(
   cx: number,
   cy: number,
   bw: number,
-  targetAreaOverride?: number,
-  maxWOverride?: number,
-  maxHOverride?: number,
   bh: number,
   naturalAspect: number,
   frameAspect = FRAME_ASPECT,
+  targetAreaOverride?: number,
+  maxWOverride?: number,
+  maxHOverride?: number,
 ): Fit | null {
   if (!bw || !bh || !naturalAspect) return null;
 
@@ -60,7 +60,13 @@ function fitFromVisualBox(
   };
 }
 
-function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT, targetArea?: number, maxW?: number, maxH?: number): Fit | null {
+function measureImage(
+  img: HTMLImageElement,
+  frameAspect = FRAME_ASPECT,
+  targetArea?: number,
+  maxW?: number,
+  maxH?: number,
+): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
@@ -97,7 +103,6 @@ function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT, targetA
       const r = px[i];
       const g = px[i + 1];
       const b = px[i + 2];
-      // Wider white/near-white threshold catches slightly off-white studio backgrounds
       if (r > 242 && g > 242 && b > 242) continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
@@ -121,7 +126,10 @@ function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT, targetA
 export function NormalizedProductImage({
   src,
   frameAspect = FRAME_ASPECT,
-  visualOffsetY = 0, targetArea, maxW, maxH,
+  visualOffsetY = 0,
+  targetArea,
+  maxW,
+  maxH,
   className,
   style,
   ...props
@@ -152,7 +160,7 @@ export function NormalizedProductImage({
     return () => {
       cancelled = true;
     };
-  }, [cacheKey, frameAspect, src]);
+  }, [cacheKey, frameAspect, src, targetArea, maxW, maxH]);
 
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
