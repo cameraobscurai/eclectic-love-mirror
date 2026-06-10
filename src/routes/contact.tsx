@@ -367,9 +367,21 @@ function ContactPage() {
         items: emailItemSnapshots,
         inquiry_id: inserted?.id ?? null,
       }),
-    }).catch((err) => {
-      console.warn("Inquiry notification failed", err);
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          console.error("Inquiry notification endpoint returned non-OK", {
+            status: res.status,
+            inquiry_id: inserted?.id ?? null,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Inquiry notification failed", {
+          err,
+          inquiry_id: inserted?.id ?? null,
+        });
+      });
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
@@ -439,7 +451,7 @@ function ContactPage() {
               href="/studio"
               className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/75 hover:text-charcoal border-b border-charcoal/30 hover:border-charcoal pb-1"
             >
-              Have a vision board? Build a style brief →
+              HAVE A VISION BOARD? BUILD A STYLE BRIEF →
             </a>
             <div className="mt-12 space-y-5">
               <p>
@@ -847,7 +859,7 @@ function SuccessPanel({ count }: { count: number }) {
           letterSpacing: "0.04em",
         }}
       >
-        Thank you. Your inquiry is with the atelier.
+        THANK YOU. YOUR INQUIRY IS WITH THE ATELIER.
       </h2>
       {count > 0 && (
         <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">

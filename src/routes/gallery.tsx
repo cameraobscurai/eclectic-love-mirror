@@ -206,7 +206,7 @@ function GalleryPage() {
             id="press-heading"
             className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"
           >
-            As Featured In
+            AS FEATURED IN
           </h2>
           <img
             src={pressLogos}

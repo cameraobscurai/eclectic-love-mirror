@@ -186,7 +186,7 @@ export function ProductTile({
 
             {/* Mobile caption below the frame */}
             <p
-              className="md:hidden mt-3 h-[34px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
+              className="md:hidden mt-3 min-h-[36px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
               style={{
                 maxWidth: "var(--archive-tile-caption-w)",
                 color: "var(--archive-text-quiet)",
@@ -198,7 +198,7 @@ export function ProductTile({
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
-            <div className="md:hidden mt-3 h-[34px]" />
+            <div className="md:hidden mt-3 min-h-[36px]" />
           </div>
         )}
       </div>
