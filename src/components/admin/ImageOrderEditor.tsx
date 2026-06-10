@@ -274,7 +274,7 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
               )}
             </span>
             <button
-              onClick={onClose}
+              onClick={() => void handleClose()}
               className="p-1 hover:bg-neutral-100 border border-neutral-300"
               aria-label="Close"
             >
