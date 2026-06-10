@@ -46,7 +46,7 @@ export function CategoryOverview({
               </div>
               <button
                 onClick={() => onSelectCategory(facet.slug)}
-                className="flex-shrink-0 text-xs uppercase tracking-[0.2em] text-charcoal/70 hover:text-charcoal underline underline-offset-4 transition-colors"
+                className="flex-shrink-0 editorial-link text-xs uppercase tracking-[0.2em] text-charcoal/70 hover:text-charcoal transition-colors"
               >
                 View all {facet.display.toLowerCase()} →
               </button>
@@ -120,7 +120,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
             />
           ) : null}
         </div>
-        <p className="mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2 uppercase tracking-[0.06em]">
+        <p className="mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2 uppercase tracking-[0.06em] transition-colors duration-200 group-hover:text-charcoal">
           {product.title}
         </p>
       </button>

@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 export function GalleryCta() {
   return (
     <section className="py-16 lg:py-20 px-6 lg:px-12">
-      <div className="max-w-7xl mx-auto text-center">
+      <div className="max-w-[1600px] mx-auto text-center">
         <p className="text-cream/40 text-xs uppercase tracking-[0.3em] mb-6">
           — Next
         </p>

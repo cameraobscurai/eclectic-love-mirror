@@ -201,7 +201,7 @@ function GalleryPage() {
       {/* As Featured In — transparent press logos on charcoal.
           Width matches the CTA headline measure above for axial continuity. */}
       <section aria-labelledby="press-heading" className="bg-charcoal pb-16 lg:pb-20 px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           <h2
             id="press-heading"
             className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"

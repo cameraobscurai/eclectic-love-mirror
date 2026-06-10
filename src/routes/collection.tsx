@@ -176,7 +176,7 @@ function CollectionSkeleton() {
         className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4"
         style={{ paddingTop: "calc(var(--nav-h, 4rem) + 0.75rem)" }}
       >
-        <div className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           {Array.from({ length: 18 }).map((_, i) => (
             <div
               key={i}
