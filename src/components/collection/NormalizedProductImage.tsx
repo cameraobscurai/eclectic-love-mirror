@@ -10,6 +10,9 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
   visualOffsetY?: number;
+  targetArea?: number;
+  maxW?: number;
+  maxH?: number;
 };
 
 const fitCache = new Map<string, Fit | null>();
@@ -26,6 +29,9 @@ function fitFromVisualBox(
   cx: number,
   cy: number,
   bw: number,
+  targetAreaOverride?: number,
+  maxWOverride?: number,
+  maxHOverride?: number,
   bh: number,
   naturalAspect: number,
   frameAspect = FRAME_ASPECT,
@@ -37,9 +43,9 @@ function fitFromVisualBox(
   if (!renderedW || !renderedH) return null;
 
   const silhouette = renderedW / renderedH;
-  const targetArea = silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2;
-  const maxW = silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56;
-  const maxH = silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56;
+  const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2);
+  const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56);
+  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56);
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
@@ -54,7 +60,7 @@ function fitFromVisualBox(
   };
 }
 
-function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | null {
+function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT, targetArea?: number, maxW?: number, maxH?: number): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
@@ -75,7 +81,7 @@ function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | 
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect);
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
   }
 
   let minX = cw;
@@ -109,18 +115,18 @@ function measureImage(img: HTMLImageElement, frameAspect = FRAME_ASPECT): Fit | 
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect);
+  return fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH);
 }
 
 export function NormalizedProductImage({
   src,
   frameAspect = FRAME_ASPECT,
-  visualOffsetY = 0,
+  visualOffsetY = 0, targetArea, maxW, maxH,
   className,
   style,
   ...props
 }: Props) {
-  const cacheKey = `${src}|${frameAspect}`;
+  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
@@ -134,7 +140,7 @@ export function NormalizedProductImage({
     probe.crossOrigin = "anonymous";
     probe.decoding = "async";
     probe.onload = () => {
-      const next = measureImage(probe, frameAspect);
+      const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
       fitCache.set(cacheKey, next);
       if (!cancelled) setFit(next);
     };
