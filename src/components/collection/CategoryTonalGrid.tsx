@@ -156,29 +156,13 @@ export function CategoryTonalGrid({
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const [gridReady, setGridReady] = useState(false);
-
+  // Per-tile fade-in: each <img> reveals on its own onLoad. We still warm
+  // the browser cache up-front via <link rel="preload">, but no tile waits
+  // on any other tile to decode.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setGridReady(false);
-
-    let cancelled = false;
-    const reveal = () => {
-      if (!cancelled) setGridReady(true);
-    };
-    const timeout = window.setTimeout(reveal, GRID_REVEAL_TIMEOUT_MS);
     const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
-
-    Promise.all(imageUrls.map(decodeGridImage)).then(() => {
-      window.clearTimeout(timeout);
-      reveal();
-    });
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-    };
   }, [tiles]);
 
   return (
