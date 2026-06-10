@@ -27,7 +27,7 @@ export const PRODUCT_TILE_IMAGE_CLASS = "object-contain object-center p-[4%]";
  */
 export const PRODUCT_TILE_OVERRIDES: Record<
   string,
-  { targetArea?: number; maxW?: number; maxH?: number }
+  { targetArea?: number; maxW?: number; maxH?: number; visualOffsetY?: number }
 > = {
   // JEPPERD BLACK TAMBOUR BAR
   "2661": { targetArea: 0.28, maxW: 0.92, maxH: 0.45 },
@@ -37,4 +37,14 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   "1019": { targetArea: 0.28, maxW: 0.94 },
   // GOLD ACRYLIC SLATTED BAR
   "live-inola-gold-slatted-bar": { targetArea: 0.26, maxW: 0.9, maxH: 0.45 },
+  // MONROE BLACK FLAT SLAT TAMBOUR BAR
+  "4116": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  // INOLA 12' BLACK CONVERTIBLE BAR
+  "3674": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  // ARCUSES / flat-front bars with baked bottom whitespace
+  "2814": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "2816": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "3054": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "2813": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
+  "2540": { targetArea: 0.26, maxW: 0.9, maxH: 0.45, visualOffsetY: 0.13 },
 };
