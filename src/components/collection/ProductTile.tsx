@@ -8,7 +8,7 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import {
   PRODUCT_TILE_ASPECT,
   PRODUCT_TILE_FRAME_ASPECT,
-  PRODUCT_TILE_IMAGE_CLASS,
+  PRODUCT_TILE_IMAGE_CLASS, PRODUCT_TILE_OVERRIDES,
 } from "@/lib/collection-tile-presets";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
@@ -67,6 +67,7 @@ export function ProductTile({
     : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
   const spyGroup = getProductBrowseGroup(product);
+  const overrides = PRODUCT_TILE_OVERRIDES[product.id];
 
   const layoutSpring = {
     type: "spring" as const,
@@ -129,6 +130,7 @@ export function ProductTile({
 
               {product.primaryImage ? (
                 <NormalizedProductImage
+                  {...overrides}
                   src={withCdnWidth(product.primaryImage.url, 600)}
                   frameAspect={frameAspect}
                   visualOffsetY={0}
