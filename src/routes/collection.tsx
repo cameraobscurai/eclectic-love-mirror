@@ -1207,7 +1207,7 @@ function CollectionPage() {
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
                                   onImageFailed={markFailed}
-                                  alignToSharedBaseline={activeParent === "cocktail-bar" && activeSubcategory === "bars"}
+                                  alignToSharedBaseline={activeParent === "cocktail-bar"}
                                 />
                               ));
                             })()}
