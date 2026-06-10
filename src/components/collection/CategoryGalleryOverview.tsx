@@ -121,7 +121,7 @@ export function CategoryGalleryOverview({
   //   pillows · throws · tableware · styling · rugs
   // The route owns the order; we just render it.
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-3 sm:p-4">
+    <div className="flex h-full min-h-0 flex-col bg-white text-charcoal p-3 sm:p-4 max-w-[1600px] mx-auto w-full">
       <ul
         className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4"
         style={{ background: "#ffffff" }}

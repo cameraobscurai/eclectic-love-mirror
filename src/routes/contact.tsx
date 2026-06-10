@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
@@ -367,9 +367,21 @@ function ContactPage() {
         items: emailItemSnapshots,
         inquiry_id: inserted?.id ?? null,
       }),
-    }).catch((err) => {
-      console.warn("Inquiry notification failed", err);
-    });
+    })
+      .then((res) => {
+        if (!res.ok) {
+          console.error("Inquiry notification endpoint returned non-OK", {
+            status: res.status,
+            inquiry_id: inserted?.id ?? null,
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Inquiry notification failed", {
+          err,
+          inquiry_id: inserted?.id ?? null,
+        });
+      });
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
@@ -439,7 +451,7 @@ function ContactPage() {
               href="/studio"
               className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/75 hover:text-charcoal border-b border-charcoal/30 hover:border-charcoal pb-1"
             >
-              Have a vision board? Build a style brief →
+              HAVE A VISION BOARD? BUILD A STYLE BRIEF →
             </a>
             <div className="mt-12 space-y-5">
               <p>
@@ -522,14 +534,14 @@ function ContactPage() {
                 {/* 2. PROJECT DETAILS */}
                 <FormSection number="02" label="Project details">
                   <div className="space-y-8">
-                    <Field label="Budget">
+                    <Field label="Budget" asGroup>
                       <PillGroup
                         options={[...BUDGET_RANGES]}
                         value={budget}
                         onChange={setBudget}
                       />
                     </Field>
-                    <Field label="Scope of work">
+                    <Field label="Scope of work" asGroup>
                       <PillGroup
                         options={[...SCOPE_OPTIONS]}
                         value={scope}
@@ -750,12 +762,30 @@ function FormSection({
 function Field({
   label,
   required,
+  asGroup,
   children,
 }: {
   label: string;
   required?: boolean;
+  asGroup?: boolean;
   children: React.ReactNode;
 }) {
+  const reactId = useId();
+  if (asGroup) {
+    const labelId = `field-${reactId}-label`;
+    return (
+      <div role="group" aria-labelledby={labelId} className="block">
+        <p
+          id={labelId}
+          className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-3"
+        >
+          {label}
+          {required && <span className="text-charcoal/30"> ·</span>}
+        </p>
+        {children}
+      </div>
+    );
+  }
   return (
     <label className="block">
       <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/45 mb-3">
@@ -847,7 +877,7 @@ function SuccessPanel({ count }: { count: number }) {
           letterSpacing: "0.04em",
         }}
       >
-        Thank you. Your inquiry is with the atelier.
+        THANK YOU. YOUR INQUIRY IS WITH THE ATELIER.
       </h2>
       {count > 0 && (
         <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">

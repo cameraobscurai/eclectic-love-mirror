@@ -173,7 +173,7 @@ function CollectionSkeleton() {
   return (
     <main className="min-h-screen bg-white">
       <div
-        className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4"
+        className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4 max-w-[1600px] mx-auto w-full"
         style={{ paddingTop: "calc(var(--nav-h, 4rem) + 0.75rem)" }}
       >
         <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
@@ -1159,8 +1159,6 @@ function CollectionPage() {
                 <>
                   <div
                     style={{
-                      paddingLeft: 0,
-                      paddingRight: "var(--archive-grid-gap-x)",
                       paddingTop: "1.75rem",
                       paddingBottom: "2rem",
                     }}
