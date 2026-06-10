@@ -68,6 +68,7 @@ export function ProductTile({
 
   const spyGroup = getProductBrowseGroup(product);
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
+  const alignToSharedBaseline = product.categorySlug === "cocktail-bar" && spyGroup === "bar";
 
   const layoutSpring = {
     type: "spring" as const,
@@ -134,6 +135,8 @@ export function ProductTile({
                   src={withCdnWidth(product.primaryImage.url, 600)}
                   frameAspect={frameAspect}
                   visualOffsetY={0}
+                  visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
+                  visualBaselineY={0.66}
                   srcSet={buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined}
                   sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, (min-width: 640px) 36vw, 48vw"
                   alt={product.primaryImage.altText ?? product.title}
