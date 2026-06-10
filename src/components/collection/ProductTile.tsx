@@ -68,7 +68,7 @@ export function ProductTile({
 
   const spyGroup = getProductBrowseGroup(product);
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
-  const alignToSharedBaseline = product.categorySlug === "cocktail-bar" && spyGroup === "bar";
+  const alignToSharedBaseline = spyGroup === "bar";
 
   const layoutSpring = {
     type: "spring" as const,
