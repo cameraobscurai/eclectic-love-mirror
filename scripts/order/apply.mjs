@@ -63,6 +63,12 @@ if (!apply) {
   process.exit(0);
 }
 
-console.log('# APPLY — executing via psql...');
-execSync(`psql -v ON_ERROR_STOP=1`, { input: `BEGIN;\n${sql}\nCOMMIT;\n`, stdio: ['pipe', 'inherit', 'inherit'] });
-console.log(`# applied ${updates.length} updates`);
+console.log('# APPLY — executing via Supabase service role...');
+const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+let ok = 0;
+for (const u of updates) {
+  const { error } = await sb.from('inventory_items').update({ editorial_order: u.order }).eq('rms_id', u.rms_id);
+  if (error) { console.error(`FAIL rms_id=${u.rms_id}:`, error.message); process.exit(3); }
+  ok++;
+}
+console.log(`# applied ${ok}/${updates.length} updates`);
