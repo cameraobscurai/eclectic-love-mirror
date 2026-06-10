@@ -21,6 +21,7 @@ interface ProductTileProps {
   index: number;
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
+  alignToSharedBaseline?: boolean;
 }
 
 const EAGER_RENDER_COUNT = 18;
@@ -44,6 +45,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
+  alignToSharedBaseline = false,
 }: ProductTileProps) {
   const tileAspect = PRODUCT_TILE_ASPECT;
   const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
@@ -68,7 +70,6 @@ export function ProductTile({
 
   const spyGroup = getProductBrowseGroup(product);
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
-  const alignToSharedBaseline = spyGroup === "bar";
 
   const layoutSpring = {
     type: "spring" as const,
