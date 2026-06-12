@@ -17,6 +17,10 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   targetArea?: number;
   maxW?: number;
   maxH?: number;
+  /** Admin-set focal point (0–1). When both are numbers, silhouette
+   *  measurement is skipped and the image is centered on this point. */
+  focalX?: number | null;
+  focalY?: number | null;
 };
 
 const fitCache = new Map<string, Fit | null>();
