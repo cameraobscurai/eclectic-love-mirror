@@ -717,7 +717,7 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
         src={hero}
         frameAspect={frameAspectFor(item)}
         visualOffsetY={overrides?.visualOffsetY ?? 0}
-        visualAnchorY={item.useWideFrame ? "bottom" : "center"}
+        visualAnchorY="center"
         visualBaselineY={0.66}
         alt=""
         loading="lazy"
