@@ -509,7 +509,7 @@ function CategoryGrid({
               ref={gridRef}
               className={
                 view === "grid"
-                  ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
+                  ? "collection-product-grid w-full"
                   : "grid gap-1"
               }
               style={
