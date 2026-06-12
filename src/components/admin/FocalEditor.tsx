@@ -104,8 +104,8 @@ export function FocalEditor({ id, coverUrl, initialX, initialY, onSaved }: Props
       <div
         ref={stageRef}
         onClick={onClick}
-        className="relative w-full max-h-[420px] cursor-crosshair select-none"
-        style={{ aspectRatio: "5 / 4", backgroundColor: "#fff" }}
+        className="relative mx-auto w-full cursor-crosshair select-none"
+        style={{ height: 260, maxWidth: 420, backgroundColor: "#fff" }}
         title="Click to set the focal point"
       >
         <img
