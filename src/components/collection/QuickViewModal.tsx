@@ -739,9 +739,9 @@ export function QuickViewModal({
             </div>
           )}
 
-            {/* CTA — sticky to bottom of rail so it stays visible even when
-                the configurations list + thumbs overflow the rail height. */}
-            <div className="sticky bottom-0 -mx-6 md:-mx-8 mt-auto pt-4 px-6 md:px-8 pb-2 bg-white/95 backdrop-blur-sm border-t border-charcoal/10 z-10">
+            {/* CTA — sits naturally after specs so short rails don't have a void below. */}
+            <div className="mt-6 pt-4">
+
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
