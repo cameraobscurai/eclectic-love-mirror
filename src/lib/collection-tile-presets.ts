@@ -6,8 +6,8 @@
  * overrides, no row-specific preset tuning.
  */
 
-export const PRODUCT_TILE_ASPECT = "4 / 5";
-export const PRODUCT_TILE_FRAME_ASPECT = 4 / 5;
+export const PRODUCT_TILE_ASPECT = "1 / 1";
+export const PRODUCT_TILE_FRAME_ASPECT = 1;
 // Wide tile spans 2 columns. Aspect chosen so its rendered height matches a
 // 1-column portrait tile (portrait 4/5 → row height = colW × 1.25;
 // wide spans 2 cols → width = 2·colW, so aspect 2 / 1.25 = 8/5).
