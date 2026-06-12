@@ -221,7 +221,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -231,6 +231,8 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             editorial_order: row.editorial_order,
             images: row.images,
             card_background_url: row.card_background_url,
+            cover_focal_x: row.cover_focal_x,
+            cover_focal_y: row.cover_focal_y,
           });
         }
       }
