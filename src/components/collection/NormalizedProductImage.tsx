@@ -21,9 +21,9 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
 const fitCache = new Map<string, Fit | null>();
 
 const FRAME_ASPECT = 4 / 5;
-const TILE_IMAGE_INSET = 0.84;
+const TILE_IMAGE_INSET = 0.94;
 const TILE_OBJECT_CONTENT = 0.92;
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.68 };
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.78 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -47,9 +47,9 @@ function fitFromVisualBox(
   if (!renderedW || !renderedH) return null;
 
   const silhouette = renderedW / renderedH;
-  const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.16 : silhouette < 0.75 ? 0.17 : 0.2);
-  const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.78 : silhouette < 0.75 ? 0.42 : 0.56);
-  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.32 : silhouette < 0.75 ? 0.58 : 0.56);
+  const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.28 : silhouette < 0.75 ? 0.26 : 0.32);
+  const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.92 : silhouette < 0.75 ? 0.58 : 0.72);
+  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.46 : silhouette < 0.75 ? 0.78 : 0.72);
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(

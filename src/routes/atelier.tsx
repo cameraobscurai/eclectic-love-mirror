@@ -233,14 +233,9 @@ function AtelierPage() {
           paddingBottom: "clamp(3rem, 1.5rem + 3vw, 5rem)",
         }}
       >
-        <div
-          className="fluid-canvas grid grid-cols-1 xl:grid-cols-12"
-          style={{
-            gap: "clamp(2rem, 1rem + 2.5vw, 3rem)",
-          }}
-        >
+        <div className="atelier-hero-grid fluid-canvas">
           {/* Sticky anchor — eyebrow + headline + body manifesto */}
-          <div className="xl:col-span-5 xl:sticky xl:top-32 xl:self-start flex flex-col py-2 md:py-4">
+          <div className="atelier-hero-copy flex flex-col py-2 md:py-4">
             <p className="atelier-hero-reveal text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               ATELIER BY THE HIVE
             </p>
@@ -283,8 +278,9 @@ function AtelierPage() {
               the column doesn't reserve a half-screen of empty air below the
               image (which is what made the page feel slow). The sticky-left
               column still holds because it's shorter than a single viewport. */}
-          <div className="xl:col-span-7 flex flex-col justify-start">
+          <div className="atelier-hero-media flex flex-col justify-start">
             <MediaAperture
+              className="mx-auto w-full max-w-[42rem]"
               ratio="4/5"
               picture={atelierReplacement}
               alt={ATELIER_IMAGE_ALT.HERO_IMAGE}
