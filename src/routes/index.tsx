@@ -201,13 +201,12 @@ function HomePage() {
             <div className="mx-auto" style={{ maxWidth: "min(72rem, 100%)" }}>
               <h1
                 className={cn(
-                  "text-center font-display text-charcoal transition-[opacity,transform,letter-spacing] ease-out",
+                  "text-center font-display text-charcoal transition-[opacity,transform] ease-out [letter-spacing:-0.012em]",
                   loaded
-                    ? "opacity-100 translate-y-0 [letter-spacing:-0.012em]"
-                    : "opacity-0 translate-y-2 [letter-spacing:0.04em]",
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-2",
                 )}
                 style={{
-                  fontWeight: 600,
                   // Fluid: anchored at 1600px → ~5.5rem. Locked min/max so
                   // 1280 and 2560 land in the same proportional family.
                   fontSize: "clamp(3.5rem, 1.5rem + 3.2vw, 5.75rem)",

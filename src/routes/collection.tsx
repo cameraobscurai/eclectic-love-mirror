@@ -881,31 +881,51 @@ function CollectionPage() {
                 style={{ width: "auto", maxWidth: "280px" }}
               />
 
-              <label
-                htmlFor="collection-sort"
+              <span
                 className="hidden sm:inline-flex items-center h-10 whitespace-nowrap text-[10px] uppercase tracking-[0.22em] text-charcoal/55"
+                aria-hidden
               >
                 Sort
-              </label>
-              <select
-                id="collection-sort"
-                value={sort}
-                onChange={(e) =>
-                  navigate({
-                    search: (prev: CollectionSearch) => ({
-                      ...prev,
-                      sort: e.target.value as SortKey,
-                    }),
-                    replace: true,
-                    resetScroll: false,
-                  })
-                }
-                className="h-10 bg-transparent border-b border-charcoal/20 px-1 text-sm text-charcoal focus:outline-none focus:border-charcoal transition-colors"
+              </span>
+              <div
+                role="group"
+                aria-label="Sort"
+                className="inline-flex items-center h-10 gap-4"
               >
-                <option value="type">By Type</option>
-                <option value="tonal">Tonal (preview)</option>
-                <option value="az">A–Z</option>
-              </select>
+                {([
+                  { id: "type", label: "Type" },
+                  { id: "az", label: "A–Z" },
+                  { id: "tonal", label: "Tonal" },
+                ] as { id: SortKey; label: string }[]).map((opt) => {
+                  const active = sort === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() =>
+                        navigate({
+                          search: (prev: CollectionSearch) => ({
+                            ...prev,
+                            sort: opt.id,
+                          }),
+                          replace: true,
+                          resetScroll: false,
+                        })
+                      }
+                      aria-pressed={active}
+                      className={[
+                        "text-[10px] uppercase tracking-[0.22em] py-1 transition-colors",
+                        "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                        active
+                          ? "text-charcoal border-b border-charcoal"
+                          : "text-charcoal/55 hover:text-charcoal border-b border-transparent",
+                      ].join(" ")}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
 
               <div
                 className="hidden lg:flex items-center border border-charcoal/10"

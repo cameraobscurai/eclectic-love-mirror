@@ -454,8 +454,8 @@ function ContactPage() {
             </h1>
             <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
               We would love to hear about your project and how we can support
-              your needs. Every inquiry is personally reviewed and will be
-              answered within 24 hours. Thank you for reaching out to us!
+              your needs. Every inquiry is personally reviewed and answered
+              within two business days. Thank you for reaching out to us!
             </p>
             <a
               href="/studio"

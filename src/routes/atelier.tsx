@@ -404,7 +404,7 @@ function AtelierPage() {
                       +
                     </span>
                   </summary>
-                  <p className="pb-6 max-w-2xl text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/75">
+                  <p className="pb-6 max-w-2xl text-[13px] tracking-[0.06em] leading-[1.7] text-charcoal/75">
                     {item.a}
                   </p>
                 </details>
