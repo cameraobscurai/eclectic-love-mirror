@@ -256,7 +256,7 @@ function CategoryGrid({
   // NOT the catalog id (which is the rms_id like "2408"). The server fn and
   // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
-  const [openingEdit, setOpeningEdit] = useState(false);
+  
 
   const openEditor = useCallback(async (item: Item) => {
     setOpeningEdit(true);
