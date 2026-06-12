@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
+import { forwardRef, useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
 
 type Fit = {
   cx: number;
@@ -134,7 +134,7 @@ function measureImage(
   return { ...fit, bottom: clamp(visualBottom, 0.05, 0.95) };
 }
 
-export function NormalizedProductImage({
+export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(function NormalizedProductImage({
   src,
   frameAspect = FRAME_ASPECT,
   visualOffsetY = 0,
@@ -146,7 +146,7 @@ export function NormalizedProductImage({
   className,
   style,
   ...props
-}: Props) {
+}: Props, ref) {
   const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
@@ -191,6 +191,7 @@ export function NormalizedProductImage({
   return (
     <img
       {...props}
+      ref={ref}
       src={src}
       className={className}
       style={{
@@ -200,4 +201,4 @@ export function NormalizedProductImage({
       }}
     />
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
@@ -59,6 +59,11 @@ export function ProductTile({
 
   const [loaded, setLoaded] = useState(false);
   const showInternals = near;
+
+  const markLoaded = useCallback(() => setLoaded(true), []);
+  const captureLoadedImage = useCallback((node: HTMLImageElement | null) => {
+    if (node?.complete && node.naturalWidth > 0) setLoaded(true);
+  }, []);
 
   const skipReveal = reduced || index < REVEAL_SKIP_INDEX;
   const hasImage = Boolean(product.primaryImage);
@@ -137,6 +142,7 @@ export function ProductTile({
               {product.primaryImage ? (
                 <NormalizedProductImage
                   {...overrides}
+                  ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
@@ -152,7 +158,7 @@ export function ProductTile({
                   {...({
                     fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
                   } as Record<string, string>)}
-                  onLoad={() => setLoaded(true)}
+                  onLoad={markLoaded}
                   onError={() => onImageFailed?.(product.id)}
                   className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-[opacity,transform] group-hover:scale-[1.015]`}
                   style={{
