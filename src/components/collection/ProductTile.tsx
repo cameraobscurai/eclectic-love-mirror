@@ -99,7 +99,6 @@ export function ProductTile({
       style={{
         background: "#ffffff",
         overflow: "hidden",
-        alignSelf: "start",
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
         containIntrinsicSize: "auto 300px",
       }}
