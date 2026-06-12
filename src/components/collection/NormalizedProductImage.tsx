@@ -20,7 +20,7 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
 
 const fitCache = new Map<string, Fit | null>();
 
-const FRAME_ASPECT = 4 / 5;
+const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 const TILE_OBJECT_CONTENT = 0.92;
 const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.78 };
