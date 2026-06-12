@@ -326,7 +326,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-auto md:max-h-[88dvh] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:h-auto md:max-h-[88dvh] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
@@ -389,12 +389,14 @@ export function QuickViewModal({
           ref={stageRef}
           className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,1fr)]"
         >
-          {/* IMAGE COLUMN */}
-          <div className="relative min-w-0 min-h-0 flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
+          {/* IMAGE COLUMN — fills the body row; aspect-ratio is never forced
+              from natural dims so a tall or wide source never overflows.
+              The <img> uses object-contain so the full silhouette (including
+              the bottom edge) is always visible inside the cell. */}
+          <div className="relative min-w-0 min-h-0 overflow-hidden flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
             <div
               ref={zoneRef}
-              className="relative w-full h-full min-h-[42vh] md:min-h-0 max-w-full"
-              style={imgNatural && !isMobile ? { aspectRatio: `${imgNatural.w} / ${imgNatural.h}`, maxWidth: "100%" } : undefined}
+              className="relative w-full h-full min-h-[40vh] md:min-h-0 max-w-full max-h-full"
             >
               <AnimatePresence mode="wait">
                 {img ? (
