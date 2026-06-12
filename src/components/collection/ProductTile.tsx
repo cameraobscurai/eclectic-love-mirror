@@ -102,9 +102,7 @@ export function ProductTile({
       style={{
         background: "#ffffff",
         overflow: "hidden",
-        // Fixed intrinsic size hint for content-visibility.
-        // The actual rendered height is set by aspect-ratio in the frame below,
-        // so this is purely a paint-skip budget hint for the browser.
+        alignSelf: "start",
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
         containIntrinsicSize: "auto 300px",
       }}
