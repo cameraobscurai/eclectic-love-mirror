@@ -180,7 +180,7 @@ function CollectionSkeleton() {
           {Array.from({ length: 18 }).map((_, i) => (
             <div
               key={i}
-              className="relative aspect-[5/4] sm:aspect-[4/5] min-w-0 bg-[#f6f6f6]"
+              className="relative aspect-[5/4] min-w-0 bg-[#f6f6f6]"
               aria-hidden
             />
           ))}

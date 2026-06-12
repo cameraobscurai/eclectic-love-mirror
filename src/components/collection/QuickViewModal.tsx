@@ -29,31 +29,6 @@ interface QuickViewModalProps {
 //
 // Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
 
-function CopyTitleButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={async (e) => {
-        e.stopPropagation();
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1400);
-        } catch {}
-      }}
-      aria-label={copied ? "Copied" : "Copy product name"}
-      title={copied ? "Copied" : "Copy"}
-      className="shrink-0 mt-1 md:mt-2 inline-flex items-center justify-center h-7 w-7 rounded-full text-charcoal/40 hover:text-charcoal hover:bg-charcoal/5 transition-colors"
-    >
-      {copied ? (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-      ) : (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path d="M5 15V5a1.5 1.5 0 0 1 1.5-1.5H15" /></svg>
-      )}
-    </button>
-  );
-}
 
 export function QuickViewModal({
   product,
@@ -351,7 +326,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:h-auto md:max-h-[88dvh] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
@@ -419,6 +394,7 @@ export function QuickViewModal({
             <div
               ref={zoneRef}
               className="relative w-full h-full min-h-[42vh] md:min-h-0"
+              style={imgNatural && !isMobile ? { aspectRatio: `${imgNatural.w} / ${imgNatural.h}` } : undefined}
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -468,7 +444,6 @@ export function QuickViewModal({
               <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase flex-1 min-w-0">
                 {product.title}
               </h2>
-              <CopyTitleButton text={product.title} />
             </div>
             {activeVariant && activeVariant.title !== product.title && (
               <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
@@ -721,7 +696,7 @@ export function QuickViewModal({
                   aria-label="Scroll thumbnails left"
                   className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
                 >
-                  ← MORE
+                  ←
                 </button>
                 <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
                   {imgIdx + 1} / {product.images.length}
@@ -733,15 +708,15 @@ export function QuickViewModal({
                   aria-label="Scroll thumbnails right"
                   className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
                 >
-                  MORE →
+                  →
                 </button>
               </div>
             </div>
           )}
 
-            {/* CTA — sticky to bottom of rail so it stays visible even when
-                the configurations list + thumbs overflow the rail height. */}
-            <div className="sticky bottom-0 -mx-6 md:-mx-8 mt-auto pt-4 px-6 md:px-8 pb-2 bg-white/95 backdrop-blur-sm border-t border-charcoal/10 z-10">
+            {/* CTA — sits naturally after specs so short rails don't have a void below. */}
+            <div className="mt-6 pt-4">
+
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
