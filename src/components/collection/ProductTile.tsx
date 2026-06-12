@@ -8,7 +8,10 @@ import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import {
   PRODUCT_TILE_ASPECT,
   PRODUCT_TILE_FRAME_ASPECT,
-  PRODUCT_TILE_IMAGE_CLASS, PRODUCT_TILE_OVERRIDES,
+  PRODUCT_TILE_IMAGE_CLASS,
+  PRODUCT_TILE_OVERRIDES,
+  PRODUCT_TILE_WIDE_ASPECT,
+  PRODUCT_TILE_WIDE_FRAME_ASPECT,
 } from "@/lib/collection-tile-presets";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
@@ -47,8 +50,10 @@ export function ProductTile({
   onImageFailed,
   alignToSharedBaseline = false,
 }: ProductTileProps) {
-  const tileAspect = PRODUCT_TILE_ASPECT;
-  const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
+  const spyGroup = getProductBrowseGroup(product);
+  const useWideFrame = spyGroup === "bar" || spyGroup === "cocktail-tables" || spyGroup === "storage";
+  const tileAspect = useWideFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
+  const frameAspect = useWideFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
@@ -73,7 +78,6 @@ export function ProductTile({
     ? 0
     : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
 
-  const spyGroup = getProductBrowseGroup(product);
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
   const imageSrcSet = product.primaryImage
