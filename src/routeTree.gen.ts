@@ -30,6 +30,9 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
+import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
+import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
 import { Route as TablewareSplatRouteImport } from './routes/tableware.$'
 import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
 import { Route as StylingSplatRouteImport } from './routes/styling.$'
@@ -37,6 +40,7 @@ import { Route as StudioThreeRouteImport } from './routes/studio.three'
 import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
+import { Route as Storage1SplatRouteImport } from './routes/storage1.$'
 import { Route as StorageSplatRouteImport } from './routes/storage.$'
 import { Route as SofasSplatRouteImport } from './routes/sofas.$'
 import { Route as ServewareSplatRouteImport } from './routes/serveware.$'
@@ -44,7 +48,11 @@ import { Route as Seating1SplatRouteImport } from './routes/seating1.$'
 import { Route as SeatingSplatRouteImport } from './routes/seating.$'
 import { Route as RugsSplatRouteImport } from './routes/rugs.$'
 import { Route as PillowsThrowsSplatRouteImport } from './routes/pillows-throws.$'
+import { Route as LoungeSplatRouteImport } from './routes/lounge.$'
+import { Route as Lighting1SplatRouteImport } from './routes/lighting1.$'
 import { Route as LightingSplatRouteImport } from './routes/lighting.$'
+import { Route as LightSplatRouteImport } from './routes/light.$'
+import { Route as LargeDecor1SplatRouteImport } from './routes/large-decor1.$'
 import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
 import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
@@ -52,6 +60,7 @@ import { Route as DiningSplatRouteImport } from './routes/dining.$'
 import { Route as CocktailBarSplatRouteImport } from './routes/cocktail-bar.$'
 import { Route as ChandeliersSplatRouteImport } from './routes/chandeliers.$'
 import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
+import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.$'
 import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
 import { Route as BarsSplatRouteImport } from './routes/bars.$'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
@@ -175,6 +184,21 @@ const StudioIndexRoute = StudioIndexRouteImport.update({
   path: '/studio/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
+  id: '/ut-new-arrivals/$',
+  path: '/ut-new-arrivals/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TextilesSplatRoute = TextilesSplatRouteImport.update({
+  id: '/textiles/$',
+  path: '/textiles/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestVariantUploadSplatRoute = TestVariantUploadSplatRouteImport.update({
+  id: '/test-variant-upload/$',
+  path: '/test-variant-upload/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TablewareSplatRoute = TablewareSplatRouteImport.update({
   id: '/tableware/$',
   path: '/tableware/$',
@@ -208,6 +232,11 @@ const StudioLabRoute = StudioLabRouteImport.update({
 const StudioTokenRoute = StudioTokenRouteImport.update({
   id: '/studio/$token',
   path: '/studio/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Storage1SplatRoute = Storage1SplatRouteImport.update({
+  id: '/storage1/$',
+  path: '/storage1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StorageSplatRoute = StorageSplatRouteImport.update({
@@ -245,9 +274,29 @@ const PillowsThrowsSplatRoute = PillowsThrowsSplatRouteImport.update({
   path: '/pillows-throws/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoungeSplatRoute = LoungeSplatRouteImport.update({
+  id: '/lounge/$',
+  path: '/lounge/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Lighting1SplatRoute = Lighting1SplatRouteImport.update({
+  id: '/lighting1/$',
+  path: '/lighting1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LightingSplatRoute = LightingSplatRouteImport.update({
   id: '/lighting/$',
   path: '/lighting/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightSplatRoute = LightSplatRouteImport.update({
+  id: '/light/$',
+  path: '/light/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LargeDecor1SplatRoute = LargeDecor1SplatRouteImport.update({
+  id: '/large-decor1/$',
+  path: '/large-decor1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
@@ -283,6 +332,11 @@ const ChandeliersSplatRoute = ChandeliersSplatRouteImport.update({
 const ChairsSplatRoute = ChairsSplatRouteImport.update({
   id: '/chairs/$',
   path: '/chairs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChairsStools1SplatRoute = ChairsStools1SplatRouteImport.update({
+  id: '/chairs-stools1/$',
+  path: '/chairs-stools1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CandlelightSplatRoute = CandlelightSplatRouteImport.update({
@@ -406,6 +460,7 @@ export interface FileRoutesByFullPath {
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs-stools1/$': typeof ChairsStools1SplatRoute
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
@@ -413,7 +468,11 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
+  '/large-decor1/$': typeof LargeDecor1SplatRoute
+  '/light/$': typeof LightSplatRoute
   '/lighting/$': typeof LightingSplatRoute
+  '/lighting1/$': typeof Lighting1SplatRoute
+  '/lounge/$': typeof LoungeSplatRoute
   '/pillows-throws/$': typeof PillowsThrowsSplatRoute
   '/rugs/$': typeof RugsSplatRoute
   '/seating/$': typeof SeatingSplatRoute
@@ -421,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/serveware/$': typeof ServewareSplatRoute
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
+  '/storage1/$': typeof Storage1SplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
@@ -428,6 +488,9 @@ export interface FileRoutesByFullPath {
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
+  '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
+  '/textiles/$': typeof TextilesSplatRoute
+  '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -468,6 +531,7 @@ export interface FileRoutesByTo {
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs-stools1/$': typeof ChairsStools1SplatRoute
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
@@ -475,7 +539,11 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
+  '/large-decor1/$': typeof LargeDecor1SplatRoute
+  '/light/$': typeof LightSplatRoute
   '/lighting/$': typeof LightingSplatRoute
+  '/lighting1/$': typeof Lighting1SplatRoute
+  '/lounge/$': typeof LoungeSplatRoute
   '/pillows-throws/$': typeof PillowsThrowsSplatRoute
   '/rugs/$': typeof RugsSplatRoute
   '/seating/$': typeof SeatingSplatRoute
@@ -483,6 +551,7 @@ export interface FileRoutesByTo {
   '/serveware/$': typeof ServewareSplatRoute
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
+  '/storage1/$': typeof Storage1SplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
@@ -490,6 +559,9 @@ export interface FileRoutesByTo {
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
+  '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
+  '/textiles/$': typeof TextilesSplatRoute
+  '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
   '/studio': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -531,6 +603,7 @@ export interface FileRoutesById {
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs-stools1/$': typeof ChairsStools1SplatRoute
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
@@ -538,7 +611,11 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
+  '/large-decor1/$': typeof LargeDecor1SplatRoute
+  '/light/$': typeof LightSplatRoute
   '/lighting/$': typeof LightingSplatRoute
+  '/lighting1/$': typeof Lighting1SplatRoute
+  '/lounge/$': typeof LoungeSplatRoute
   '/pillows-throws/$': typeof PillowsThrowsSplatRoute
   '/rugs/$': typeof RugsSplatRoute
   '/seating/$': typeof SeatingSplatRoute
@@ -546,6 +623,7 @@ export interface FileRoutesById {
   '/serveware/$': typeof ServewareSplatRoute
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
+  '/storage1/$': typeof Storage1SplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
@@ -553,6 +631,9 @@ export interface FileRoutesById {
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
+  '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
+  '/textiles/$': typeof TextilesSplatRoute
+  '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -595,6 +676,7 @@ export interface FileRouteTypes {
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
+    | '/chairs-stools1/$'
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
@@ -602,7 +684,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/furs-pelts/$'
     | '/large-decor/$'
+    | '/large-decor1/$'
+    | '/light/$'
     | '/lighting/$'
+    | '/lighting1/$'
+    | '/lounge/$'
     | '/pillows-throws/$'
     | '/rugs/$'
     | '/seating/$'
@@ -610,6 +696,7 @@ export interface FileRouteTypes {
     | '/serveware/$'
     | '/sofas/$'
     | '/storage/$'
+    | '/storage1/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
@@ -617,6 +704,9 @@ export interface FileRouteTypes {
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
+    | '/test-variant-upload/$'
+    | '/textiles/$'
+    | '/ut-new-arrivals/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -657,6 +747,7 @@ export interface FileRouteTypes {
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
+    | '/chairs-stools1/$'
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
@@ -664,7 +755,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/furs-pelts/$'
     | '/large-decor/$'
+    | '/large-decor1/$'
+    | '/light/$'
     | '/lighting/$'
+    | '/lighting1/$'
+    | '/lounge/$'
     | '/pillows-throws/$'
     | '/rugs/$'
     | '/seating/$'
@@ -672,6 +767,7 @@ export interface FileRouteTypes {
     | '/serveware/$'
     | '/sofas/$'
     | '/storage/$'
+    | '/storage1/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
@@ -679,6 +775,9 @@ export interface FileRouteTypes {
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
+    | '/test-variant-upload/$'
+    | '/textiles/$'
+    | '/ut-new-arrivals/$'
     | '/studio'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -719,6 +818,7 @@ export interface FileRouteTypes {
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
+    | '/chairs-stools1/$'
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
@@ -726,7 +826,11 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/furs-pelts/$'
     | '/large-decor/$'
+    | '/large-decor1/$'
+    | '/light/$'
     | '/lighting/$'
+    | '/lighting1/$'
+    | '/lounge/$'
     | '/pillows-throws/$'
     | '/rugs/$'
     | '/seating/$'
@@ -734,6 +838,7 @@ export interface FileRouteTypes {
     | '/serveware/$'
     | '/sofas/$'
     | '/storage/$'
+    | '/storage1/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
@@ -741,6 +846,9 @@ export interface FileRouteTypes {
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
+    | '/test-variant-upload/$'
+    | '/textiles/$'
+    | '/ut-new-arrivals/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -774,6 +882,7 @@ export interface RootRouteChildren {
   ApiAdminChatRoute: typeof ApiAdminChatRoute
   BarsSplatRoute: typeof BarsSplatRoute
   CandlelightSplatRoute: typeof CandlelightSplatRoute
+  ChairsStools1SplatRoute: typeof ChairsStools1SplatRoute
   ChairsSplatRoute: typeof ChairsSplatRoute
   ChandeliersSplatRoute: typeof ChandeliersSplatRoute
   CocktailBarSplatRoute: typeof CocktailBarSplatRoute
@@ -781,7 +890,11 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   FursPeltsSplatRoute: typeof FursPeltsSplatRoute
   LargeDecorSplatRoute: typeof LargeDecorSplatRoute
+  LargeDecor1SplatRoute: typeof LargeDecor1SplatRoute
+  LightSplatRoute: typeof LightSplatRoute
   LightingSplatRoute: typeof LightingSplatRoute
+  Lighting1SplatRoute: typeof Lighting1SplatRoute
+  LoungeSplatRoute: typeof LoungeSplatRoute
   PillowsThrowsSplatRoute: typeof PillowsThrowsSplatRoute
   RugsSplatRoute: typeof RugsSplatRoute
   SeatingSplatRoute: typeof SeatingSplatRoute
@@ -789,6 +902,7 @@ export interface RootRouteChildren {
   ServewareSplatRoute: typeof ServewareSplatRoute
   SofasSplatRoute: typeof SofasSplatRoute
   StorageSplatRoute: typeof StorageSplatRoute
+  Storage1SplatRoute: typeof Storage1SplatRoute
   StudioTokenRoute: typeof StudioTokenRoute
   StudioLabRoute: typeof StudioLabRoute
   StudioThanksRoute: typeof StudioThanksRoute
@@ -796,6 +910,9 @@ export interface RootRouteChildren {
   StylingSplatRoute: typeof StylingSplatRoute
   Tables1SplatRoute: typeof Tables1SplatRoute
   TablewareSplatRoute: typeof TablewareSplatRoute
+  TestVariantUploadSplatRoute: typeof TestVariantUploadSplatRoute
+  TextilesSplatRoute: typeof TextilesSplatRoute
+  UtNewArrivalsSplatRoute: typeof UtNewArrivalsSplatRoute
   StudioIndexRoute: typeof StudioIndexRoute
   ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -953,6 +1070,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ut-new-arrivals/$': {
+      id: '/ut-new-arrivals/$'
+      path: '/ut-new-arrivals/$'
+      fullPath: '/ut-new-arrivals/$'
+      preLoaderRoute: typeof UtNewArrivalsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/textiles/$': {
+      id: '/textiles/$'
+      path: '/textiles/$'
+      fullPath: '/textiles/$'
+      preLoaderRoute: typeof TextilesSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test-variant-upload/$': {
+      id: '/test-variant-upload/$'
+      path: '/test-variant-upload/$'
+      fullPath: '/test-variant-upload/$'
+      preLoaderRoute: typeof TestVariantUploadSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tableware/$': {
       id: '/tableware/$'
       path: '/tableware/$'
@@ -1000,6 +1138,13 @@ declare module '@tanstack/react-router' {
       path: '/studio/$token'
       fullPath: '/studio/$token'
       preLoaderRoute: typeof StudioTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/storage1/$': {
+      id: '/storage1/$'
+      path: '/storage1/$'
+      fullPath: '/storage1/$'
+      preLoaderRoute: typeof Storage1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/storage/$': {
@@ -1051,11 +1196,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PillowsThrowsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lounge/$': {
+      id: '/lounge/$'
+      path: '/lounge/$'
+      fullPath: '/lounge/$'
+      preLoaderRoute: typeof LoungeSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting1/$': {
+      id: '/lighting1/$'
+      path: '/lighting1/$'
+      fullPath: '/lighting1/$'
+      preLoaderRoute: typeof Lighting1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lighting/$': {
       id: '/lighting/$'
       path: '/lighting/$'
       fullPath: '/lighting/$'
       preLoaderRoute: typeof LightingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/light/$': {
+      id: '/light/$'
+      path: '/light/$'
+      fullPath: '/light/$'
+      preLoaderRoute: typeof LightSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/large-decor1/$': {
+      id: '/large-decor1/$'
+      path: '/large-decor1/$'
+      fullPath: '/large-decor1/$'
+      preLoaderRoute: typeof LargeDecor1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/large-decor/$': {
@@ -1105,6 +1278,13 @@ declare module '@tanstack/react-router' {
       path: '/chairs/$'
       fullPath: '/chairs/$'
       preLoaderRoute: typeof ChairsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs-stools1/$': {
+      id: '/chairs-stools1/$'
+      path: '/chairs-stools1/$'
+      fullPath: '/chairs-stools1/$'
+      preLoaderRoute: typeof ChairsStools1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/candlelight/$': {
@@ -1289,6 +1469,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAdminChatRoute: ApiAdminChatRoute,
   BarsSplatRoute: BarsSplatRoute,
   CandlelightSplatRoute: CandlelightSplatRoute,
+  ChairsStools1SplatRoute: ChairsStools1SplatRoute,
   ChairsSplatRoute: ChairsSplatRoute,
   ChandeliersSplatRoute: ChandeliersSplatRoute,
   CocktailBarSplatRoute: CocktailBarSplatRoute,
@@ -1296,7 +1477,11 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   FursPeltsSplatRoute: FursPeltsSplatRoute,
   LargeDecorSplatRoute: LargeDecorSplatRoute,
+  LargeDecor1SplatRoute: LargeDecor1SplatRoute,
+  LightSplatRoute: LightSplatRoute,
   LightingSplatRoute: LightingSplatRoute,
+  Lighting1SplatRoute: Lighting1SplatRoute,
+  LoungeSplatRoute: LoungeSplatRoute,
   PillowsThrowsSplatRoute: PillowsThrowsSplatRoute,
   RugsSplatRoute: RugsSplatRoute,
   SeatingSplatRoute: SeatingSplatRoute,
@@ -1304,6 +1489,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServewareSplatRoute: ServewareSplatRoute,
   SofasSplatRoute: SofasSplatRoute,
   StorageSplatRoute: StorageSplatRoute,
+  Storage1SplatRoute: Storage1SplatRoute,
   StudioTokenRoute: StudioTokenRoute,
   StudioLabRoute: StudioLabRoute,
   StudioThanksRoute: StudioThanksRoute,
@@ -1311,6 +1497,9 @@ const rootRouteChildren: RootRouteChildren = {
   StylingSplatRoute: StylingSplatRoute,
   Tables1SplatRoute: Tables1SplatRoute,
   TablewareSplatRoute: TablewareSplatRoute,
+  TestVariantUploadSplatRoute: TestVariantUploadSplatRoute,
+  TextilesSplatRoute: TextilesSplatRoute,
+  UtNewArrivalsSplatRoute: UtNewArrivalsSplatRoute,
   StudioIndexRoute: StudioIndexRoute,
   ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
@@ -1321,13 +1510,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
