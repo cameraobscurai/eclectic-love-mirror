@@ -252,7 +252,30 @@ function CategoryGrid({
 
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  // editing.id is the inventory_items UUID (resolved by rms_id at open time),
+  // NOT the catalog id (which is the rms_id like "2408"). The server fn and
+  // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
+  const [openingEdit, setOpeningEdit] = useState(false);
+
+  const openEditor = useCallback(async (item: Item) => {
+    setOpeningEdit(true);
+    setErr(null);
+    try {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id")
+        .eq("rms_id", item.rms_id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditing({ ...item, id: data.id });
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setOpeningEdit(false);
+    }
+  }, []);
   const [err, setErr] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
