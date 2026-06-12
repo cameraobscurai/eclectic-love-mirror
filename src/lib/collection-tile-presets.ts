@@ -1,16 +1,14 @@
 /**
  * Product tile geometry.
  *
- * The professional fix is one invariant frame for every product: same outer
- * aspect, same image fit, same inset. No category height math, no parent
- * overrides, no row-specific preset tuning.
+ * One invariant square frame for every product: same outer aspect, same image
+ * fit, same inset. No category height math or row-specific preset tuning.
  */
 
 export const PRODUCT_TILE_ASPECT = "1 / 1";
 export const PRODUCT_TILE_FRAME_ASPECT = 1;
-// Wide tile spans 2 columns. Aspect chosen so its rendered height matches a
-// 1-column portrait tile (portrait 4/5 → row height = colW × 1.25;
-// wide spans 2 cols → width = 2·colW, so aspect 2 / 1.25 = 8/5).
+// Retired wide constants kept for import compatibility only. Public/admin grids
+// now use the square constants above.
 export const PRODUCT_TILE_WIDE_ASPECT = "8 / 5";
 export const PRODUCT_TILE_WIDE_FRAME_ASPECT = 8 / 5;
 // Reduced padding from 8% → 4%: NormalizedProductImage already normalises
