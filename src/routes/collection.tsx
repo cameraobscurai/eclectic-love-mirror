@@ -1078,7 +1078,7 @@ function CollectionPage() {
             <motion.div
               layout={!reduced}
               className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
-              key={activeParent || (q.trim() ? "search" : "overview")}
+              key={showOverview ? "overview" : "results"}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
