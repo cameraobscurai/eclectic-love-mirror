@@ -60,6 +60,7 @@ const INBOX: NavItem[] = [
 
 const INVENTORY: NavItem[] = [
   { to: "/admin/photos", label: "Photos", icon: ImageIcon },
+  { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
   { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
   { to: "/admin/image-qa", label: "Image QA", icon: ScanEye },
