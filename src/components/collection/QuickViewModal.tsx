@@ -441,7 +441,7 @@ export function QuickViewModal({
                 variant, surface that variant's name as a secondary line so users
                 know which piece they're viewing in a multi-piece set. */}
             <div className="flex items-start gap-2">
-              <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase flex-1 min-w-0">
+              <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] uppercase flex-1 min-w-0 [overflow-wrap:break-word] hyphens-auto">
                 {product.title}
               </h2>
             </div>
