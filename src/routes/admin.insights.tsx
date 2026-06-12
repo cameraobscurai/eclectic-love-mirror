@@ -8,7 +8,7 @@
 // Both are admin-gated.
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
   getInsights,
@@ -318,15 +318,15 @@ function InquiryRow({ row, onSaved }: { row: InsightsInquiry; onSaved: () => voi
           <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40 tabular-nums">
             {formatDate(row.created_at)}
           </span>
-          <a
-            href={`/admin/studio?inquiry=${row.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/admin/studio"
+            search={{ inquiry: row.id }}
+            preload="intent"
             onClick={(e) => e.stopPropagation()}
             className="text-[10px] uppercase tracking-[0.2em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline"
           >
             Studio →
-          </a>
+          </Link>
         </div>
       </button>
 
