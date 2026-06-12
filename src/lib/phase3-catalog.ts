@@ -188,6 +188,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           ...p,
           editorialOrder: eo,
           cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
+          coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
+          coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
           images,
           primaryImage: images[0] ?? null,
         };
