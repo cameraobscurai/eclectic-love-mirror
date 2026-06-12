@@ -208,6 +208,8 @@ type LiveOverlayRow = {
   editorial_order: number | null;
   images: string[] | null;
   card_background_url: string | null;
+  cover_focal_x: number | null;
+  cover_focal_y: number | null;
 };
 
 async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
