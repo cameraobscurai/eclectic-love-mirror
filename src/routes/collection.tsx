@@ -1184,9 +1184,8 @@ function CollectionPage() {
                       </div>
                     ) : (
                       <>
-                        <LayoutGroup id={`collection-grid-${activeParent}-${activeSubcategory}`}>
+                        <LayoutGroup id="collection-grid">
                           <motion.ul
-                            key={`${activeParent}-${activeSubcategory}`}
                             className="collection-product-grid"
                           >
                             {(() => {
