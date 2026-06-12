@@ -65,6 +65,7 @@ import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.
 import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
 import { Route as BarsSplatRouteImport } from './routes/bars.$'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
+import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
@@ -360,6 +361,11 @@ const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
   path: '/api/admin-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUploadHeroRoute = AdminUploadHeroRouteImport.update({
+  id: '/upload-hero',
+  path: '/upload-hero',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -463,6 +469,7 @@ export interface FileRoutesByFullPath {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
@@ -535,6 +542,7 @@ export interface FileRoutesByTo {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
@@ -608,6 +616,7 @@ export interface FileRoutesById {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
@@ -682,6 +691,7 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/photos'
     | '/admin/studio'
+    | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
@@ -754,6 +764,7 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/photos'
     | '/admin/studio'
+    | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
@@ -826,6 +837,7 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/photos'
     | '/admin/studio'
+    | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/bars/$'
     | '/candlelight/$'
@@ -1328,6 +1340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/upload-hero': {
+      id: '/admin/upload-hero'
+      path: '/upload-hero'
+      fullPath: '/admin/upload-hero'
+      preLoaderRoute: typeof AdminUploadHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -1450,6 +1469,7 @@ interface AdminRouteChildren {
   AdminInsightsRoute: typeof AdminInsightsRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminStudioRoute: typeof AdminStudioRoute
+  AdminUploadHeroRoute: typeof AdminUploadHeroRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -1461,6 +1481,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInsightsRoute: AdminInsightsRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminStudioRoute: AdminStudioRoute,
+  AdminUploadHeroRoute: AdminUploadHeroRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
