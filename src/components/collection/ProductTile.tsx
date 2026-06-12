@@ -134,7 +134,7 @@ export function ProductTile({
                   frameAspect={frameAspect}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
-                  visualBaselineY={0.66}
+                  visualBaselineY={0.92}
                   srcSet={imageSrcSet}
                   sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
                   alt={product.primaryImage.altText ?? product.title}
