@@ -149,7 +149,7 @@ export function ProductTile({
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
                   visualBaselineY={0.66}
                   srcSet={imageSrcSet}
-                  sizes="(min-width: 1536px) 18vw, (min-width: 1280px) 22vw, (min-width: 1024px) 26vw, (min-width: 768px) 32vw, (min-width: 640px) 36vw, 48vw"
+                  sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
                   alt={product.primaryImage.altText ?? product.title}
                   width={600}
                   height={800}
