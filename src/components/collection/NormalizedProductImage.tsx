@@ -158,7 +158,10 @@ export function NormalizedProductImage({
     }
     let cancelled = false;
     const probe = new Image();
-    probe.crossOrigin = "anonymous";
+    // No crossOrigin here — the rendered <img> below doesn't set it either,
+    // and a mismatched probe causes the browser to fetch the asset twice
+    // (once with CORS for measurement, once without for rendering). We only
+    // need natural dimensions; CORS isn't required for that.
     probe.decoding = "async";
     probe.onload = () => {
       const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
