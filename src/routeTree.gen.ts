@@ -30,11 +30,30 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as TablewareSplatRouteImport } from './routes/tableware.$'
+import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
+import { Route as StylingSplatRouteImport } from './routes/styling.$'
 import { Route as StudioThreeRouteImport } from './routes/studio.three'
 import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
 import { Route as StudioTokenRouteImport } from './routes/studio.$token'
+import { Route as StorageSplatRouteImport } from './routes/storage.$'
+import { Route as SofasSplatRouteImport } from './routes/sofas.$'
+import { Route as ServewareSplatRouteImport } from './routes/serveware.$'
+import { Route as Seating1SplatRouteImport } from './routes/seating1.$'
+import { Route as SeatingSplatRouteImport } from './routes/seating.$'
+import { Route as RugsSplatRouteImport } from './routes/rugs.$'
+import { Route as PillowsThrowsSplatRouteImport } from './routes/pillows-throws.$'
+import { Route as LightingSplatRouteImport } from './routes/lighting.$'
+import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
+import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as DiningSplatRouteImport } from './routes/dining.$'
+import { Route as CocktailBarSplatRouteImport } from './routes/cocktail-bar.$'
+import { Route as ChandeliersSplatRouteImport } from './routes/chandeliers.$'
+import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
+import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
+import { Route as BarsSplatRouteImport } from './routes/bars.$'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
@@ -156,6 +175,21 @@ const StudioIndexRoute = StudioIndexRouteImport.update({
   path: '/studio/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TablewareSplatRoute = TablewareSplatRouteImport.update({
+  id: '/tableware/$',
+  path: '/tableware/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Tables1SplatRoute = Tables1SplatRouteImport.update({
+  id: '/tables1/$',
+  path: '/tables1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylingSplatRoute = StylingSplatRouteImport.update({
+  id: '/styling/$',
+  path: '/styling/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioThreeRoute = StudioThreeRouteImport.update({
   id: '/studio/three',
   path: '/studio/three',
@@ -176,9 +210,89 @@ const StudioTokenRoute = StudioTokenRouteImport.update({
   path: '/studio/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StorageSplatRoute = StorageSplatRouteImport.update({
+  id: '/storage/$',
+  path: '/storage/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SofasSplatRoute = SofasSplatRouteImport.update({
+  id: '/sofas/$',
+  path: '/sofas/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServewareSplatRoute = ServewareSplatRouteImport.update({
+  id: '/serveware/$',
+  path: '/serveware/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Seating1SplatRoute = Seating1SplatRouteImport.update({
+  id: '/seating1/$',
+  path: '/seating1/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatingSplatRoute = SeatingSplatRouteImport.update({
+  id: '/seating/$',
+  path: '/seating/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RugsSplatRoute = RugsSplatRouteImport.update({
+  id: '/rugs/$',
+  path: '/rugs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PillowsThrowsSplatRoute = PillowsThrowsSplatRouteImport.update({
+  id: '/pillows-throws/$',
+  path: '/pillows-throws/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightingSplatRoute = LightingSplatRouteImport.update({
+  id: '/lighting/$',
+  path: '/lighting/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
+  id: '/large-decor/$',
+  path: '/large-decor/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FursPeltsSplatRoute = FursPeltsSplatRouteImport.update({
+  id: '/furs-pelts/$',
+  path: '/furs-pelts/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiningSplatRoute = DiningSplatRouteImport.update({
+  id: '/dining/$',
+  path: '/dining/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CocktailBarSplatRoute = CocktailBarSplatRouteImport.update({
+  id: '/cocktail-bar/$',
+  path: '/cocktail-bar/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChandeliersSplatRoute = ChandeliersSplatRouteImport.update({
+  id: '/chandeliers/$',
+  path: '/chandeliers/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChairsSplatRoute = ChairsSplatRouteImport.update({
+  id: '/chairs/$',
+  path: '/chairs/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CandlelightSplatRoute = CandlelightSplatRouteImport.update({
+  id: '/candlelight/$',
+  path: '/candlelight/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarsSplatRoute = BarsSplatRouteImport.update({
+  id: '/bars/$',
+  path: '/bars/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
@@ -290,11 +404,30 @@ export interface FileRoutesByFullPath {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/bars/$': typeof BarsSplatRoute
+  '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs/$': typeof ChairsSplatRoute
+  '/chandeliers/$': typeof ChandeliersSplatRoute
+  '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/large-decor/$': typeof LargeDecorSplatRoute
+  '/lighting/$': typeof LightingSplatRoute
+  '/pillows-throws/$': typeof PillowsThrowsSplatRoute
+  '/rugs/$': typeof RugsSplatRoute
+  '/seating/$': typeof SeatingSplatRoute
+  '/seating1/$': typeof Seating1SplatRoute
+  '/serveware/$': typeof ServewareSplatRoute
+  '/sofas/$': typeof SofasSplatRoute
+  '/storage/$': typeof StorageSplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/styling/$': typeof StylingSplatRoute
+  '/tables1/$': typeof Tables1SplatRoute
+  '/tableware/$': typeof TablewareSplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -333,11 +466,30 @@ export interface FileRoutesByTo {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/bars/$': typeof BarsSplatRoute
+  '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs/$': typeof ChairsSplatRoute
+  '/chandeliers/$': typeof ChandeliersSplatRoute
+  '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/large-decor/$': typeof LargeDecorSplatRoute
+  '/lighting/$': typeof LightingSplatRoute
+  '/pillows-throws/$': typeof PillowsThrowsSplatRoute
+  '/rugs/$': typeof RugsSplatRoute
+  '/seating/$': typeof SeatingSplatRoute
+  '/seating1/$': typeof Seating1SplatRoute
+  '/serveware/$': typeof ServewareSplatRoute
+  '/sofas/$': typeof SofasSplatRoute
+  '/storage/$': typeof StorageSplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/styling/$': typeof StylingSplatRoute
+  '/tables1/$': typeof Tables1SplatRoute
+  '/tableware/$': typeof TablewareSplatRoute
   '/studio': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -377,11 +529,30 @@ export interface FileRoutesById {
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/bars/$': typeof BarsSplatRoute
+  '/candlelight/$': typeof CandlelightSplatRoute
+  '/chairs/$': typeof ChairsSplatRoute
+  '/chandeliers/$': typeof ChandeliersSplatRoute
+  '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
+  '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/large-decor/$': typeof LargeDecorSplatRoute
+  '/lighting/$': typeof LightingSplatRoute
+  '/pillows-throws/$': typeof PillowsThrowsSplatRoute
+  '/rugs/$': typeof RugsSplatRoute
+  '/seating/$': typeof SeatingSplatRoute
+  '/seating1/$': typeof Seating1SplatRoute
+  '/serveware/$': typeof ServewareSplatRoute
+  '/sofas/$': typeof SofasSplatRoute
+  '/storage/$': typeof StorageSplatRoute
   '/studio/$token': typeof StudioTokenRoute
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/styling/$': typeof StylingSplatRoute
+  '/tables1/$': typeof Tables1SplatRoute
+  '/tableware/$': typeof TablewareSplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -422,11 +593,30 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
+    | '/bars/$'
+    | '/candlelight/$'
+    | '/chairs/$'
+    | '/chandeliers/$'
+    | '/cocktail-bar/$'
+    | '/dining/$'
     | '/email/unsubscribe'
+    | '/furs-pelts/$'
+    | '/large-decor/$'
+    | '/lighting/$'
+    | '/pillows-throws/$'
+    | '/rugs/$'
+    | '/seating/$'
+    | '/seating1/$'
+    | '/serveware/$'
+    | '/sofas/$'
+    | '/storage/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/styling/$'
+    | '/tables1/$'
+    | '/tableware/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -465,11 +655,30 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
+    | '/bars/$'
+    | '/candlelight/$'
+    | '/chairs/$'
+    | '/chandeliers/$'
+    | '/cocktail-bar/$'
+    | '/dining/$'
     | '/email/unsubscribe'
+    | '/furs-pelts/$'
+    | '/large-decor/$'
+    | '/lighting/$'
+    | '/pillows-throws/$'
+    | '/rugs/$'
+    | '/seating/$'
+    | '/seating1/$'
+    | '/serveware/$'
+    | '/sofas/$'
+    | '/storage/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/styling/$'
+    | '/tables1/$'
+    | '/tableware/$'
     | '/studio'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -508,11 +717,30 @@ export interface FileRouteTypes {
     | '/admin/photos'
     | '/admin/studio'
     | '/api/admin-chat'
+    | '/bars/$'
+    | '/candlelight/$'
+    | '/chairs/$'
+    | '/chandeliers/$'
+    | '/cocktail-bar/$'
+    | '/dining/$'
     | '/email/unsubscribe'
+    | '/furs-pelts/$'
+    | '/large-decor/$'
+    | '/lighting/$'
+    | '/pillows-throws/$'
+    | '/rugs/$'
+    | '/seating/$'
+    | '/seating1/$'
+    | '/serveware/$'
+    | '/sofas/$'
+    | '/storage/$'
     | '/studio/$token'
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/styling/$'
+    | '/tables1/$'
+    | '/tableware/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -544,11 +772,30 @@ export interface RootRouteChildren {
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
   ApiAdminChatRoute: typeof ApiAdminChatRoute
+  BarsSplatRoute: typeof BarsSplatRoute
+  CandlelightSplatRoute: typeof CandlelightSplatRoute
+  ChairsSplatRoute: typeof ChairsSplatRoute
+  ChandeliersSplatRoute: typeof ChandeliersSplatRoute
+  CocktailBarSplatRoute: typeof CocktailBarSplatRoute
+  DiningSplatRoute: typeof DiningSplatRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  FursPeltsSplatRoute: typeof FursPeltsSplatRoute
+  LargeDecorSplatRoute: typeof LargeDecorSplatRoute
+  LightingSplatRoute: typeof LightingSplatRoute
+  PillowsThrowsSplatRoute: typeof PillowsThrowsSplatRoute
+  RugsSplatRoute: typeof RugsSplatRoute
+  SeatingSplatRoute: typeof SeatingSplatRoute
+  Seating1SplatRoute: typeof Seating1SplatRoute
+  ServewareSplatRoute: typeof ServewareSplatRoute
+  SofasSplatRoute: typeof SofasSplatRoute
+  StorageSplatRoute: typeof StorageSplatRoute
   StudioTokenRoute: typeof StudioTokenRoute
   StudioLabRoute: typeof StudioLabRoute
   StudioThanksRoute: typeof StudioThanksRoute
   StudioThreeRoute: typeof StudioThreeRoute
+  StylingSplatRoute: typeof StylingSplatRoute
+  Tables1SplatRoute: typeof Tables1SplatRoute
+  TablewareSplatRoute: typeof TablewareSplatRoute
   StudioIndexRoute: typeof StudioIndexRoute
   ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -706,6 +953,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tableware/$': {
+      id: '/tableware/$'
+      path: '/tableware/$'
+      fullPath: '/tableware/$'
+      preLoaderRoute: typeof TablewareSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tables1/$': {
+      id: '/tables1/$'
+      path: '/tables1/$'
+      fullPath: '/tables1/$'
+      preLoaderRoute: typeof Tables1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/styling/$': {
+      id: '/styling/$'
+      path: '/styling/$'
+      fullPath: '/styling/$'
+      preLoaderRoute: typeof StylingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/studio/three': {
       id: '/studio/three'
       path: '/studio/three'
@@ -734,11 +1002,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/storage/$': {
+      id: '/storage/$'
+      path: '/storage/$'
+      fullPath: '/storage/$'
+      preLoaderRoute: typeof StorageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sofas/$': {
+      id: '/sofas/$'
+      path: '/sofas/$'
+      fullPath: '/sofas/$'
+      preLoaderRoute: typeof SofasSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/serveware/$': {
+      id: '/serveware/$'
+      path: '/serveware/$'
+      fullPath: '/serveware/$'
+      preLoaderRoute: typeof ServewareSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating1/$': {
+      id: '/seating1/$'
+      path: '/seating1/$'
+      fullPath: '/seating1/$'
+      preLoaderRoute: typeof Seating1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating/$': {
+      id: '/seating/$'
+      path: '/seating/$'
+      fullPath: '/seating/$'
+      preLoaderRoute: typeof SeatingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rugs/$': {
+      id: '/rugs/$'
+      path: '/rugs/$'
+      fullPath: '/rugs/$'
+      preLoaderRoute: typeof RugsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pillows-throws/$': {
+      id: '/pillows-throws/$'
+      path: '/pillows-throws/$'
+      fullPath: '/pillows-throws/$'
+      preLoaderRoute: typeof PillowsThrowsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting/$': {
+      id: '/lighting/$'
+      path: '/lighting/$'
+      fullPath: '/lighting/$'
+      preLoaderRoute: typeof LightingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/large-decor/$': {
+      id: '/large-decor/$'
+      path: '/large-decor/$'
+      fullPath: '/large-decor/$'
+      preLoaderRoute: typeof LargeDecorSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/furs-pelts/$': {
+      id: '/furs-pelts/$'
+      path: '/furs-pelts/$'
+      fullPath: '/furs-pelts/$'
+      preLoaderRoute: typeof FursPeltsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/email/unsubscribe': {
       id: '/email/unsubscribe'
       path: '/email/unsubscribe'
       fullPath: '/email/unsubscribe'
       preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dining/$': {
+      id: '/dining/$'
+      path: '/dining/$'
+      fullPath: '/dining/$'
+      preLoaderRoute: typeof DiningSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cocktail-bar/$': {
+      id: '/cocktail-bar/$'
+      path: '/cocktail-bar/$'
+      fullPath: '/cocktail-bar/$'
+      preLoaderRoute: typeof CocktailBarSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chandeliers/$': {
+      id: '/chandeliers/$'
+      path: '/chandeliers/$'
+      fullPath: '/chandeliers/$'
+      preLoaderRoute: typeof ChandeliersSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chairs/$': {
+      id: '/chairs/$'
+      path: '/chairs/$'
+      fullPath: '/chairs/$'
+      preLoaderRoute: typeof ChairsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/candlelight/$': {
+      id: '/candlelight/$'
+      path: '/candlelight/$'
+      fullPath: '/candlelight/$'
+      preLoaderRoute: typeof CandlelightSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bars/$': {
+      id: '/bars/$'
+      path: '/bars/$'
+      fullPath: '/bars/$'
+      preLoaderRoute: typeof BarsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/admin-chat': {
@@ -907,11 +1287,30 @@ const rootRouteChildren: RootRouteChildren = {
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
   ApiAdminChatRoute: ApiAdminChatRoute,
+  BarsSplatRoute: BarsSplatRoute,
+  CandlelightSplatRoute: CandlelightSplatRoute,
+  ChairsSplatRoute: ChairsSplatRoute,
+  ChandeliersSplatRoute: ChandeliersSplatRoute,
+  CocktailBarSplatRoute: CocktailBarSplatRoute,
+  DiningSplatRoute: DiningSplatRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  FursPeltsSplatRoute: FursPeltsSplatRoute,
+  LargeDecorSplatRoute: LargeDecorSplatRoute,
+  LightingSplatRoute: LightingSplatRoute,
+  PillowsThrowsSplatRoute: PillowsThrowsSplatRoute,
+  RugsSplatRoute: RugsSplatRoute,
+  SeatingSplatRoute: SeatingSplatRoute,
+  Seating1SplatRoute: Seating1SplatRoute,
+  ServewareSplatRoute: ServewareSplatRoute,
+  SofasSplatRoute: SofasSplatRoute,
+  StorageSplatRoute: StorageSplatRoute,
   StudioTokenRoute: StudioTokenRoute,
   StudioLabRoute: StudioLabRoute,
   StudioThanksRoute: StudioThanksRoute,
   StudioThreeRoute: StudioThreeRoute,
+  StylingSplatRoute: StylingSplatRoute,
+  Tables1SplatRoute: Tables1SplatRoute,
+  TablewareSplatRoute: TablewareSplatRoute,
   StudioIndexRoute: StudioIndexRoute,
   ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
@@ -922,3 +1321,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
