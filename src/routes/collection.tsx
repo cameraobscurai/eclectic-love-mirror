@@ -158,8 +158,9 @@ export const Route = createFileRoute("/collection")({
   // Paint a skeleton matching real layout immediately on slow connections,
   // suppress flicker on fast ones.
   pendingComponent: CollectionSkeleton,
-  pendingMs: 0,
-  pendingMinMs: 150,
+  pendingMs: 1000,
+  pendingMinMs: 0,
+  staleTime: Infinity,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => <div className="p-12">Not found</div>,
   component: CollectionPage,
@@ -180,7 +181,7 @@ function CollectionSkeleton() {
           {Array.from({ length: 18 }).map((_, i) => (
             <div
               key={i}
-              className="relative aspect-[5/4] min-w-0 bg-paper"
+              className="relative aspect-[5/4] min-w-0 bg-[#f5f3ef]"
               aria-hidden
             />
           ))}
@@ -1077,7 +1078,7 @@ function CollectionPage() {
             <motion.div
               layout={!reduced}
               className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
-              key={activeParent || (q.trim() ? "search" : "overview")}
+              key={showOverview ? "overview" : "results"}
               style={{
                 animation: reduced ? undefined : "collection-fadein 150ms ease-out",
                 background: "var(--paper)",
@@ -1183,9 +1184,8 @@ function CollectionPage() {
                       </div>
                     ) : (
                       <>
-                        <LayoutGroup id={`collection-grid-${activeParent}-${activeSubcategory}`}>
+                        <LayoutGroup id="collection-grid">
                           <motion.ul
-                            key={`${activeParent}-${activeSubcategory}`}
                             className="collection-product-grid"
                           >
                             {(() => {

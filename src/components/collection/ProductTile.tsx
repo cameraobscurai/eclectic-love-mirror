@@ -114,8 +114,9 @@ export function ProductTile({
               {/* Skeleton overlay */}
               <div
                 aria-hidden
-                className="absolute inset-0 bg-white"
+                className="absolute inset-0"
                 style={{
+                  background: "#f5f3ef",
                   opacity: loaded || !product.primaryImage ? 0 : 1,
                   transition: "opacity 240ms ease-out",
                 }}
@@ -144,10 +145,9 @@ export function ProductTile({
                   } as Record<string, string>)}
                   onLoad={markLoaded}
                   onError={() => onImageFailed?.(product.id)}
-                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-[opacity,transform] group-hover:scale-[1.015]`}
+                  className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
                   style={{
-                    opacity: loaded ? 1 : 0,
-                    transition: "opacity 240ms ease-out, transform 700ms ease-out",
+                    transition: "transform 700ms ease-out",
                   }}
                 />
               ) : null}
