@@ -256,10 +256,9 @@ function CategoryGrid({
   // NOT the catalog id (which is the rms_id like "2408"). The server fn and
   // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
-  
+  const [err, setErr] = useState<string | null>(null);
 
   const openEditor = useCallback(async (item: Item) => {
-    
     setErr(null);
     try {
       const { data, error } = await supabase
@@ -272,11 +271,8 @@ function CategoryGrid({
       setEditing({ ...item, id: data.id });
     } catch (e) {
       setErr((e as Error).message);
-    } finally {
-      
     }
   }, []);
-  const [err, setErr] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
