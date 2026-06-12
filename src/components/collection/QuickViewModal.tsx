@@ -469,7 +469,6 @@ export function QuickViewModal({
               <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase flex-1 min-w-0">
                 {product.title}
               </h2>
-              <CopyTitleButton text={product.title} />
             </div>
             {activeVariant && activeVariant.title !== product.title && (
               <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
