@@ -438,9 +438,12 @@ export function QuickViewModal({
             {/* Title — uppercase per brand voice. When the active image maps to a
                 variant, surface that variant's name as a secondary line so users
                 know which piece they're viewing in a multi-piece set. */}
-            <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase">
-              {product.title}
-            </h2>
+            <div className="flex items-start gap-2">
+              <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] break-words uppercase flex-1 min-w-0">
+                {product.title}
+              </h2>
+              <CopyTitleButton text={product.title} />
+            </div>
             {activeVariant && activeVariant.title !== product.title && (
               <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
                 {activeVariant.title}
