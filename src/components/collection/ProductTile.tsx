@@ -130,7 +130,7 @@ export function ProductTile({
                   frameAspect={frameAspect}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
-                  visualBaselineY={0.98}
+                  visualBaselineY={0.94}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
