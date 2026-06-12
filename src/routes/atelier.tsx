@@ -342,14 +342,20 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
+      {/* 4. ATELIER APPROACH — staggered scroll reveal */}
       <Section eyebrow="ATELIER APPROACH">
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
         >
-          {APPROACH_STEPS.map((step) => (
-            <div key={step.number}>
+          {APPROACH_STEPS.map((step, i) => (
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.8, delay: i * 0.18, ease: [0.22, 1, 0.36, 1] }}
+            >
               <p
                 className="font-display text-charcoal/45 tabular-nums border-t pt-4"
                 style={{
@@ -368,10 +374,11 @@ function AtelierPage() {
               >
                 {step.label}
               </h3>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Section>
+
 
       {/* 5. WORKING WITH THE ATELIER — FAQ accordion */}
       <Section id="working-with-the-hive">
