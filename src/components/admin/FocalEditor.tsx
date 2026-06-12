@@ -49,6 +49,7 @@ export function FocalEditor({ id, coverUrl, initialX, initialY, onSaved }: Props
       await save({ data: { id, x: nx, y: ny } });
       setX(nx);
       setY(ny);
+      invalidateCollectionCatalog();
       onSaved?.({ x: nx, y: ny });
     } catch (e) {
       setErr((e as Error).message);
