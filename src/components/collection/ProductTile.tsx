@@ -49,9 +49,8 @@ export function ProductTile({
   alignToSharedBaseline = false,
 }: ProductTileProps) {
   const spyGroup = getProductBrowseGroup(product);
-  const useWideFrame = spyGroup === "bar" || spyGroup === "cocktail-tables" || spyGroup === "storage";
-  const tileAspect = useWideFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
-  const frameAspect = useWideFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
+  const tileAspect = PRODUCT_TILE_ASPECT;
+  const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
