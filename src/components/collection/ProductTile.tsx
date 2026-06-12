@@ -169,7 +169,7 @@ export function ProductTile({
                 ].join(" ")}
               >
                 <div
-                  className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
+                  className={`${glassNamePlate} rounded-sm px-3 py-2`}
                   style={webkitGlassBlur}
                 >
                   <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
@@ -181,7 +181,7 @@ export function ProductTile({
 
             {/* Mobile caption below the frame */}
             <p
-              className="md:hidden mt-3 min-h-[36px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
+              className="md:hidden mt-4 min-h-[36px] text-[13px] leading-[1.35] line-clamp-2 transition-colors uppercase tracking-[0.06em]"
               style={{
                 maxWidth: "var(--archive-tile-caption-w)",
                 color: "var(--archive-text-quiet)",
@@ -193,7 +193,7 @@ export function ProductTile({
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
-            <div className="md:hidden mt-3 min-h-[36px]" />
+            <div className="md:hidden mt-4 min-h-[36px]" />
           </div>
         )}
       </div>

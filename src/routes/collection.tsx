@@ -105,7 +105,7 @@ const suggestionRowStyle: React.CSSProperties = {
   textAlign: "left",
   background: "transparent",
   border: "none",
-  borderBottom: "1px solid rgba(26,26,26,0.06)",
+  borderBottom: "1px solid rgba(26,26,26,0.04)",
   padding: "10px 4px",
   cursor: "pointer",
   color: "#1a1a1a",
@@ -180,7 +180,7 @@ function CollectionSkeleton() {
           {Array.from({ length: 18 }).map((_, i) => (
             <div
               key={i}
-              className="relative aspect-[5/4] min-w-0 bg-[#f6f6f6]"
+              className="relative aspect-[5/4] min-w-0 bg-paper"
               aria-hidden
             />
           ))}
@@ -1497,7 +1497,7 @@ function CollectionPage() {
                   commitQuery(modalQuery);
                 }
               }}
-              placeholder="Search the collection"
+              placeholder="Search the archive"
               style={{
                 flex: 1,
                 minWidth: 0,

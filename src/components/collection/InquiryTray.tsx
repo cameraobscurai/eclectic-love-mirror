@@ -39,7 +39,7 @@ export function InquiryTray() {
             </button>
             <Link
               to={href as never}
-              className="bg-white text-charcoal px-4 py-2 text-[11px] uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
+              className="bg-[#fcfcfc] text-charcoal px-4 py-2 text-[11px] uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
             >
               REVIEW INQUIRY
             </Link>

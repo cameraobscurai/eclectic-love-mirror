@@ -237,7 +237,7 @@ function TonalCell({
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.04) 100%)",
+              "linear-gradient(90deg, rgba(212,205,196,0.1) 0%, rgba(212,205,196,0.2) 50%, rgba(212,205,196,0.1) 100%)",
             backgroundSize: "200% 100%",
             animation: "tile-shimmer 1.4s ease-in-out infinite",
             opacity: 0.45,
