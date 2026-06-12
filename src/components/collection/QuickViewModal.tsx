@@ -713,7 +713,7 @@ export function QuickViewModal({
             {/* CTA — sticky to bottom of rail so it stays visible even when
                 the configurations list + thumbs overflow the rail height. */}
             <div className="sticky bottom-0 -mx-6 md:-mx-8 mt-auto pt-4 px-6 md:px-8 pb-2 bg-white/95 backdrop-blur-sm border-t border-charcoal/10 z-10">
-              <div className="pt-2"></div>
+              <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
                   "w-full px-6 py-3.5 text-[11px] uppercase tracking-[0.28em] transition-all border active:scale-[0.99]",
