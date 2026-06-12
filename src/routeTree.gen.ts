@@ -20,6 +20,7 @@ import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventGalleryRouteImport } from './routes/event-gallery'
+import { Route as EventCrewRouteImport } from './routes/event-crew'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as Colorado1RouteImport } from './routes/colorado-1'
 import { Route as CollectionRouteImport } from './routes/collection'
@@ -103,6 +104,11 @@ const FaqRoute = FaqRouteImport.update({
 const EventGalleryRoute = EventGalleryRouteImport.update({
   id: '/event-gallery',
   path: '/event-gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventCrewRoute = EventCrewRouteImport.update({
+  id: '/event-crew',
+  path: '/event-crew',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -263,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
@@ -305,6 +312,7 @@ export interface FileRoutesByTo {
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
@@ -348,6 +356,7 @@ export interface FileRoutesById {
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
   '/contact': typeof ContactRoute
+  '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
@@ -392,6 +401,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/colorado-1'
     | '/contact'
+    | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
@@ -434,6 +444,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/colorado-1'
     | '/contact'
+    | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
@@ -476,6 +487,7 @@ export interface FileRouteTypes {
     | '/collection'
     | '/colorado-1'
     | '/contact'
+    | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
@@ -519,6 +531,7 @@ export interface RootRouteChildren {
   CollectionRoute: typeof CollectionRoute
   Colorado1Route: typeof Colorado1Route
   ContactRoute: typeof ContactRoute
+  EventCrewRoute: typeof EventCrewRoute
   EventGalleryRoute: typeof EventGalleryRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
@@ -621,6 +634,13 @@ declare module '@tanstack/react-router' {
       path: '/event-gallery'
       fullPath: '/event-gallery'
       preLoaderRoute: typeof EventGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-crew': {
+      id: '/event-crew'
+      path: '/event-crew'
+      fullPath: '/event-crew'
+      preLoaderRoute: typeof EventCrewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -874,6 +894,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionRoute: CollectionRoute,
   Colorado1Route: Colorado1Route,
   ContactRoute: ContactRoute,
+  EventCrewRoute: EventCrewRoute,
   EventGalleryRoute: EventGalleryRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
