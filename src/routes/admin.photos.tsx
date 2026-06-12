@@ -259,7 +259,7 @@ function CategoryGrid({
   
 
   const openEditor = useCallback(async (item: Item) => {
-    setOpeningEdit(true);
+    
     setErr(null);
     try {
       const { data, error } = await supabase
@@ -273,7 +273,7 @@ function CategoryGrid({
     } catch (e) {
       setErr((e as Error).message);
     } finally {
-      setOpeningEdit(false);
+      
     }
   }, []);
   const [err, setErr] = useState<string | null>(null);
