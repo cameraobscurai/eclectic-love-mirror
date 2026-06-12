@@ -705,12 +705,9 @@ function CollectionPage() {
     resultMeta = "";
   }
 
-  // Grid mode: 3-up default, dense mode: 5-up. Wall is the full-fit option.
-  // Step up column count past 1280/1536 so tiles don't bloat on wide screens.
-  const [dense, setDense] = useState(false);
-  const gridCols = dense
-    ? "grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7"
-    : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
+  // Grid mode: 3-up, locked. The designer wants pieces large with breathing
+  // room — never bumping to 4/5 on wide screens. Wall is the only alternate.
+  const gridCols = "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3";
   const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
 
 
@@ -922,34 +919,19 @@ function CollectionPage() {
                 aria-label="View"
               >
                 <button
-                  onClick={() => { setLayout("grid"); setDense(false); }}
+                  onClick={() => setLayout("grid")}
                   className={[
                     "h-10 w-10 inline-flex items-center justify-center transition-colors",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    layout === "grid" && !dense
+                    layout === "grid"
                       ? "text-charcoal bg-charcoal/[0.04]"
                       : "text-charcoal/40 hover:text-charcoal/80",
                   ].join(" ")}
                   aria-label="3-up grid"
-                  aria-pressed={layout === "grid" && !dense}
+                  aria-pressed={layout === "grid"}
                   title="Grid — 3 columns, large tiles"
                 >
                   <DensityIconLarge />
-                </button>
-                <button
-                  onClick={() => { setLayout("grid"); setDense(true); }}
-                  className={[
-                    "h-10 w-10 inline-flex items-center justify-center transition-colors border-l border-charcoal/10",
-                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                    layout === "grid" && dense
-                      ? "text-charcoal bg-charcoal/[0.04]"
-                      : "text-charcoal/40 hover:text-charcoal/80",
-                  ].join(" ")}
-                  aria-label="Dense grid"
-                  aria-pressed={layout === "grid" && dense}
-                  title="Dense — 5 columns, compact tiles"
-                >
-                  <DensityIconSmall />
                 </button>
                 <button
                   onClick={() => setLayout("wall")}
