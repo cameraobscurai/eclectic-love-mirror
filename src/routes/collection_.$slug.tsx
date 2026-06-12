@@ -104,7 +104,7 @@ export const Route = createFileRoute("/collection_/$slug")({
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Navigation />
       <main className="mx-auto max-w-3xl px-6 py-32 text-center">
         <h1 className="font-display text-3xl tracking-wide uppercase mb-4">
           Piece Not Found
@@ -132,7 +132,7 @@ function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Navigation />
       <main className="mx-auto max-w-7xl px-6 lg:px-12 pt-28 pb-24">
         <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-8">
           <Link to="/collection" className="hover:text-foreground transition-colors">
