@@ -200,10 +200,12 @@ export function GalleryLightbox({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={`${project.name} — gallery view`}
-      className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col focus:outline-none"
     >
       {/* Main split */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
