@@ -33,8 +33,8 @@ export const PRODUCT_TILE_OVERRIDES: Record<
   "2911": { targetArea: 0.22, maxW: 0.7, maxH: 0.62 },
   // EXCURSION CHAMPAGNE TRUNK BAR
   "2912": { targetArea: 0.22, maxW: 0.7, maxH: 0.62 },
-  // JEPPERD BLACK TAMBOUR BAR
-  "2661": { targetArea: 0.28, maxW: 0.92, maxH: 0.45 },
+  // JEPPERD BLACK TAMBOUR BAR — straight-on photo was overpowering the dense bar grid.
+  "2661": { targetArea: 0.2, maxW: 0.9, maxH: 0.4 },
   // CANYON 8' NATURAL PINE BAR
   "2811": { targetArea: 0.22, maxH: 0.45 },
   // BOYCE CONCRETE & BIRCH DOUBLE BAR
