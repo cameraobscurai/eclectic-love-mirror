@@ -144,17 +144,34 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     const raw = ((mod as { default?: RawCatalog }).default ?? mod) as RawCatalog;
     categoryDisplayOrder = raw.meta.categoryDisplayOrder;
 
-    // LIVE editorial_order overlay — admin reorders write to DB and show up
-    // on next site load without re-baking the JSON snapshot.
-    const overlay = await fetchEditorialOrderOverlay();
+    // LIVE overlay — admin edits (reorder, image uploads/reorder, cover
+    // swaps, card backgrounds) write to DB and show up on the next site load
+    // without re-baking the JSON snapshot. Keyed by rms_id since baked
+    // products may use the RMS id as their primary id.
+    const overlay = await fetchLiveOverlay();
 
     const products = raw.products
       .filter((p) => p.publicReady !== false)
       .map((p) => {
         const live = overlay.get(p.id);
-        const eo = live !== undefined ? live : (p.editorialOrder ?? null);
+        const eo = live?.editorial_order !== undefined && live?.editorial_order !== null
+          ? live.editorial_order
+          : (p.editorialOrder ?? null);
+
+        // Live images win if present, otherwise fall back to baked images.
+        const liveImages = live?.images;
+        const baseImages: CollectionImage[] = liveImages && liveImages.length
+          ? liveImages.map((url, i) => ({
+              url,
+              position: i,
+              isHero: i === 0,
+              inferredFilename: null,
+              altText: null,
+            }))
+          : p.images;
+
         const v = p.imagesVersion ?? 0;
-        const images = v ? bustImages(p.images, v) : p.images;
+        const images = v ? bustImages(baseImages, v) : baseImages;
         return {
           ...p,
           editorialOrder: eo,
@@ -172,8 +189,14 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
   return loadPromise;
 }
 
-async function fetchEditorialOrderOverlay(): Promise<Map<string, number | null>> {
-  const map = new Map<string, number | null>();
+type LiveOverlayRow = {
+  editorial_order: number | null;
+  images: string[] | null;
+  card_background_url: string | null;
+};
+
+async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
+  const map = new Map<string, LiveOverlayRow>();
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     const PAGE = 1000;
@@ -181,19 +204,25 @@ async function fetchEditorialOrderOverlay(): Promise<Map<string, number | null>>
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order")
+        .select("rms_id, editorial_order, images, card_background_url")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
-      for (const row of data as Array<{ rms_id: string; editorial_order: number | null }>) {
-        if (row.rms_id) map.set(row.rms_id, row.editorial_order);
+      for (const row of data as Array<{ rms_id: string } & LiveOverlayRow>) {
+        if (row.rms_id) {
+          map.set(row.rms_id, {
+            editorial_order: row.editorial_order,
+            images: row.images,
+            card_background_url: row.card_background_url,
+          });
+        }
       }
       if (data.length < PAGE) break;
       from += PAGE;
     }
   } catch (e) {
-    // Non-fatal: fall back to baked editorialOrder values.
-    console.warn("[catalog] editorial_order overlay failed:", e);
+    // Non-fatal: fall back to baked values.
+    console.warn("[catalog] live overlay failed:", e);
   }
   return map;
 }
