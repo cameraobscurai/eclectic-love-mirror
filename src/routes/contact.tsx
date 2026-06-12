@@ -695,12 +695,19 @@ function ContactPage() {
                 {/* Submit */}
                 <div className="pt-4">
                   {errorMsg && (
-                    <p className="mb-6 text-[12px] uppercase tracking-[0.18em] leading-[1.7] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                    <p
+                      id="contact-error"
+                      role="alert"
+                      aria-live="assertive"
+                      className="mb-6 text-[12px] uppercase tracking-[0.18em] leading-[1.7] text-charcoal/80 border-l-2 border-charcoal/40 pl-4"
+                    >
                       {errorMsg}
                     </p>
                   )}
                   <button
                     type="submit"
+                    aria-invalid={!!errorMsg}
+                    aria-describedby={errorMsg ? "contact-error" : undefined}
                     disabled={
                       submitting ||
                       selectionStatus === "loading" ||
