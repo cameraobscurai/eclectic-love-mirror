@@ -603,12 +603,12 @@ function wallCols(n: number): number {
   return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
 }
 
-function tileAspectFor(item: Item): string {
-  return item.useWideFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
+function tileAspectFor(_item: Item): string {
+  return PRODUCT_TILE_ASPECT;
 }
 
-function frameAspectFor(item: Item): number {
-  return item.useWideFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
+function frameAspectFor(_item: Item): number {
+  return PRODUCT_TILE_FRAME_ASPECT;
 }
 
 function Tile({
