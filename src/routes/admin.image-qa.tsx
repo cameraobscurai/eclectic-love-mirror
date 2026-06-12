@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { toggleItemVisibility } from "@/lib/archive.functions";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
+import { invalidateCollectionCatalog } from "@/lib/phase3-catalog";
 
 export const Route = createFileRoute("/admin/image-qa")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
