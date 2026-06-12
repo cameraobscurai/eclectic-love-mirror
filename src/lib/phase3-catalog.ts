@@ -161,11 +161,13 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           ? live.editorial_order
           : (p.editorialOrder ?? null);
 
-        // Live images win when the row has been touched by admin (array
-        // present, even if empty — empty intentionally clears the tile).
-        // Only fall back to baked when the live column is null/undefined.
+        // Live images win when the row has a non-empty array. Empty/null
+        // falls back to baked so legacy rows with `images = '{}'` don't
+        // blank their tiles. There's no admin path that intentionally
+        // saves an empty array today — if we add one, swap this for an
+        // explicit "cleared" sentinel instead of relying on length.
         const liveImages = live?.images;
-        const baseImages: CollectionImage[] = Array.isArray(liveImages)
+        const baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
           ? liveImages.map((url, i) => ({
               url,
               position: i,
