@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,7 @@ export function QuickViewModal({
   const closeRef = useRef<HTMLButtonElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const zoneRef = useRef<HTMLDivElement>(null);
+  const trapRef = useFocusTrap();
   const [stageWidth, setStageWidth] = useState(0);
   const [zoneSize, setZoneSize] = useState({ w: 0, h: 0 });
   const [imgNatural, setImgNatural] = useState<{ w: number; h: number } | null>(null);
@@ -287,6 +289,7 @@ export function QuickViewModal({
 
   return createPortal(
     <div
+      ref={trapRef}
       role="dialog"
       aria-modal="true"
       aria-label={product.title}
@@ -357,7 +360,7 @@ export function QuickViewModal({
               disabled={!hasPrev}
               aria-label="Previous piece"
               aria-keyshortcuts="ArrowLeft"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 h-11 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
               <span aria-hidden>←</span> PREV
             </button>
@@ -367,7 +370,7 @@ export function QuickViewModal({
               disabled={!hasNext}
               aria-label="Next piece"
               aria-keyshortcuts="ArrowRight"
-              className="group inline-flex items-center gap-2 h-8 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              className="group inline-flex items-center gap-2 h-11 px-3 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 disabled:cursor-not-allowed hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
               NEXT <span aria-hidden>→</span>
             </button>
@@ -376,7 +379,7 @@ export function QuickViewModal({
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="h-8 w-8 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+              className="h-11 w-11 grid place-items-center text-xl leading-none hover:text-charcoal/60 transition-colors active:scale-90 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
             >
               ×
             </button>
@@ -443,7 +446,7 @@ export function QuickViewModal({
                 variant, surface that variant's name as a secondary line so users
                 know which piece they're viewing in a multi-piece set. */}
             <div className="flex items-start gap-2">
-              <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] uppercase flex-1 min-w-0 [overflow-wrap:break-word] hyphens-auto">
+              <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] flex-1 min-w-0 [overflow-wrap:break-word] hyphens-auto">
                 {product.title}
               </h2>
             </div>
