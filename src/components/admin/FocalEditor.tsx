@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Crosshair, Loader2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { setCoverFocal } from "@/lib/inventory-images.functions";
+import { invalidateCollectionCatalog } from "@/lib/phase3-catalog";
 
 type Props = {
   id: string;
