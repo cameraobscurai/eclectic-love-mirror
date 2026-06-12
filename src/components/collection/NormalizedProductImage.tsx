@@ -145,38 +145,30 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   maxH,
   className,
   style,
+  onLoad,
   ...props
 }: Props, ref) {
   const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
-  useEffect(() => {
-    if (fitCache.has(cacheKey)) {
-      setFit(fitCache.get(cacheKey));
-      return;
-    }
-    let cancelled = false;
-    const probe = new Image();
-    // No crossOrigin here — the rendered <img> below doesn't set it either,
-    // and a mismatched probe causes the browser to fetch the asset twice
-    // (once with CORS for measurement, once without for rendering). We only
-    // need natural dimensions; CORS isn't required for that.
-    probe.decoding = "async";
-    probe.onload = () => {
-      const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
+  // Measure off the actual rendered <img> on its onLoad — no second network
+  // request. Browser cache + srcSet variants stay intact. Falls back to
+  // DEFAULT_FIT until measured; subsequent tiles with the same src hit
+  // fitCache and skip work entirely.
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    onLoad?.(e);
+    if (fitCache.has(cacheKey)) return;
+    const node = e.currentTarget;
+    try {
+      const next = measureImage(node, frameAspect, targetArea, maxW, maxH);
       fitCache.set(cacheKey, next);
-      if (!cancelled) setFit(next);
-    };
-    probe.onerror = () => {
+      setFit(next);
+    } catch {
       fitCache.set(cacheKey, null);
-      if (!cancelled) setFit(null);
-    };
-    probe.src = src;
-    return () => {
-      cancelled = true;
-    };
-  }, [cacheKey, frameAspect, src, targetArea, maxW, maxH]);
+      setFit(null);
+    }
+  };
 
   const transform = useMemo(() => {
     const f = fit ?? DEFAULT_FIT;
@@ -193,6 +185,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       {...props}
       ref={ref}
       src={src}
+      onLoad={handleLoad}
       className={className}
       style={{
         ...style,
@@ -202,3 +195,4 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     />
   );
 });
+
