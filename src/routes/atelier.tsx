@@ -460,12 +460,17 @@ function Section({
   children: React.ReactNode;
   id?: string;
 }) {
+  const reduced = useReducedMotion();
   return (
     <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
-        <div
+        <motion.div
           className="border-t pt-10"
           style={{ borderColor: "var(--archive-rule)" }}
+          initial={reduced ? false : { opacity: 0, y: 24 }}
+          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-12%" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
           {eyebrow ? (
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
@@ -473,9 +478,10 @@ function Section({
             </p>
           ) : null}
           {children}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
+
 
