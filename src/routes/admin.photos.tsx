@@ -37,6 +37,7 @@ import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "luc
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
+import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { reorderItems } from "@/lib/photos-admin.functions";
@@ -251,7 +252,30 @@ function CategoryGrid({
 
 
   const [activeId, setActiveId] = useState<string | null>(null);
+  // editing.id is the inventory_items UUID (resolved by rms_id at open time),
+  // NOT the catalog id (which is the rms_id like "2408"). The server fn and
+  // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
+  
+
+  const openEditor = useCallback(async (item: Item) => {
+    
+    setErr(null);
+    try {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id")
+        .eq("rms_id", item.rms_id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditing({ ...item, id: data.id });
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      
+    }
+  }, []);
   const [err, setErr] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
@@ -530,7 +554,7 @@ function CategoryGrid({
                   tileAspect={tileAspect}
                   frameAspect={frameAspect}
                   draggable={!subActive}
-                  onOpen={() => setEditing(item)}
+                  onOpen={() => void openEditor(item)}
                 />
               ))}
             </div>
@@ -562,7 +586,7 @@ function CategoryGrid({
           onSaved={({ images, card_background_url }) => {
             setItems((prev) =>
               prev.map((i) =>
-                i.id === editing.id
+                i.rms_id === editing.rms_id
                   ? { ...i, images, card_background_url }
                   : i,
               ),
