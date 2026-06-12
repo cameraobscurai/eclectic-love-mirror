@@ -89,7 +89,24 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
         const msg = (e as Error).message || "Save failed";
         setErrMsg(msg);
         setSaveState("error");
-        setUrls(lastSavedRef.current);
+        // STALE = our expectedLength disagrees with the server. Rolling back
+        // to lastSavedRef would re-send the same wrong expectation forever
+        // and trap the user. Re-sync from the server instead.
+        if (msg.startsWith("STALE")) {
+          const { data: fresh } = await supabase
+            .from("inventory_items")
+            .select("images, card_background_url")
+            .eq("id", item.id)
+            .single();
+          const truth = (fresh?.images ?? []) as string[];
+          lastSavedRef.current = truth;
+          setUrls(truth);
+          if (fresh?.card_background_url !== undefined) {
+            setBg(fresh.card_background_url as string | null);
+          }
+        } else {
+          setUrls(lastSavedRef.current);
+        }
         throw e;
       }
     },
