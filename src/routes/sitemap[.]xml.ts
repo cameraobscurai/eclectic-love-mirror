@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { getCollectionCatalog } from "@/lib/phase3-catalog";
 
 const BASE_URL = "https://eclectichive.com";
 
@@ -9,7 +10,7 @@ interface SitemapEntry {
   priority?: string;
 }
 
-const ENTRIES: SitemapEntry[] = [
+const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/atelier", changefreq: "monthly", priority: "0.8" },
   { path: "/collection", changefreq: "weekly", priority: "0.9" },
@@ -22,7 +23,26 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const urls = ENTRIES.map((e) =>
+        // Pull one entry per public-ready product so every canonical
+        // /collection/<slug> URL is discoverable by crawlers.
+        let productEntries: SitemapEntry[] = [];
+        try {
+          const catalog = await getCollectionCatalog();
+          productEntries = catalog.products
+            .filter((p) => p.slug)
+            .map((p) => ({
+              path: `/collection/${p.slug}`,
+              changefreq: "monthly" as const,
+              priority: "0.7",
+            }));
+        } catch {
+          // Catalog load failures shouldn't 500 the sitemap.
+          productEntries = [];
+        }
+
+        const entries = [...STATIC_ENTRIES, ...productEntries];
+
+        const urls = entries.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
