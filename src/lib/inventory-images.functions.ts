@@ -134,6 +134,45 @@ export const setCardBackground = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const setFocalInput = z.object({
+  id: z.string().uuid(),
+  x: z.number().min(0).max(1).nullable(),
+  y: z.number().min(0).max(1).nullable(),
+});
+
+export const setCoverFocal = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d: unknown) => setFocalInput.parse(d))
+  .handler(async ({ data, context }) => {
+    // Both must be set or both cleared — no half-set focal points.
+    const both = data.x !== null && data.y !== null;
+    const neither = data.x === null && data.y === null;
+    if (!both && !neither) throw new Error("focal x and y must both be set or both null");
+
+    const { data: current } = await supabaseAdmin
+      .from("inventory_items")
+      .select("cover_focal_x, cover_focal_y")
+      .eq("id", data.id)
+      .single();
+
+    const { error } = await supabaseAdmin
+      .from("inventory_items")
+      .update({ cover_focal_x: data.x, cover_focal_y: data.y })
+      .eq("id", data.id);
+    if (error) throw error;
+
+    void audit({
+      actorId: context.userId,
+      entity: "inventory_items",
+      entityId: data.id,
+      action: "set_cover_focal",
+      before: { x: current?.cover_focal_x ?? null, y: current?.cover_focal_y ?? null },
+      after: { x: data.x, y: data.y },
+    });
+
+    return { ok: true };
+  });
+
 const uploadInput = z.object({
   id: z.string().uuid(),
   rmsId: z.string().min(1).max(100).regex(/^[a-zA-Z0-9._-]+$/).nullable(),
