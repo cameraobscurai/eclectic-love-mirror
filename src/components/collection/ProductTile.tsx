@@ -3,16 +3,14 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
-import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import {
   PRODUCT_TILE_ASPECT,
   PRODUCT_TILE_FRAME_ASPECT,
   PRODUCT_TILE_IMAGE_CLASS,
   PRODUCT_TILE_OVERRIDES,
-  PRODUCT_TILE_WIDE_ASPECT,
-  PRODUCT_TILE_WIDE_FRAME_ASPECT,
 } from "@/lib/collection-tile-presets";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 
 // One invariant portrait frame for every tile. The grid is always 3 across at
@@ -51,9 +49,8 @@ export function ProductTile({
   alignToSharedBaseline = false,
 }: ProductTileProps) {
   const spyGroup = getProductBrowseGroup(product);
-  const useWideFrame = spyGroup === "bar" || spyGroup === "cocktail-tables" || spyGroup === "storage";
-  const tileAspect = useWideFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
-  const frameAspect = useWideFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
+  const tileAspect = PRODUCT_TILE_ASPECT;
+  const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
   const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
@@ -102,7 +99,6 @@ export function ProductTile({
       style={{
         background: "#ffffff",
         overflow: "hidden",
-        alignSelf: "start",
         contentVisibility: index < EAGER_RENDER_COUNT ? "visible" : "auto",
         containIntrinsicSize: "auto 300px",
       }}

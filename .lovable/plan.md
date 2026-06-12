@@ -1,90 +1,42 @@
-# QA Fix Pass — Sequenced by Risk
+## What's actually wrong
 
-Eight findings, ordered from zero-risk text edits to one isolated perf change. Each step is independently revertable. No batching of perf changes (per project rule).
+**Atelier** — the file has a comment saying "scroll-pinned triptych — Pass 3" but no scroll-driven motion exists. Whatever was there got stripped. The screenshot you posted IS the layout we keep; only the motion is missing.
 
----
+**Collection** — the wide-aspect override for bars / cocktail tables / storage is the source of the chaos. CSS Grid sizes each row to its tallest tile. With portrait + wide tiles mixed in 3-col rows, every row track inherits the tallest tile's height. `alignSelf:start` (last turn) stopped wide tiles from stretching, but it just moved the empty space below them instead of removing it. You can't have mixed aspects in a uniform grid and also have tight spacing — pick one.
 
-## Tier 1 — Zero-risk text/href edits
+## Plan
 
-### 1. FAQ anchor — pick `working-with-the-hive`
-- `src/routes/atelier.tsx:376` — change section `id` from `working-with-the-atelier` → `working-with-the-hive`
-- `src/components/footer.tsx:11` — update href hash to match
-- Ripgrep `working-with-the-atelier` to catch any other refs before saving
+### 1. Collection grid — pick one path
 
-### 2. `/faq` redirect target
-- `src/routes/faq.tsx:9` — redirect from `/contact#faq` → `/atelier#working-with-the-hive`
+**Recommended: drop the wide-aspect override entirely.** Restore the single invariant portrait frame the file's own comment promises. The wide ones look better in isolation but break the row rhythm. One aspect = clean grid.
 
-### 3. Contact `og:image`
-- `src/routes/contact.tsx` head() — add `og:image` + `twitter:image` using the existing root social asset (same URL the root already uses)
-- No new asset generation needed
+Files:
+- `src/components/collection/ProductTile.tsx` — remove `useWideFrame`, `tileAspect`, `frameAspect` branching; use `PRODUCT_TILE_ASPECT` / `PRODUCT_TILE_FRAME_ASPECT` only. Remove the `alignSelf:start` (no longer needed).
+- `src/routes/admin.photos.tsx` — mirror the simplification (drop `useWideFrame`, `tileAspectFor`, `frameAspectFor`).
+- Pad horizontal canvas: bump `column-gap` to `1.5rem` desktop / `1.25rem` tablet in `src/styles.css` so tiles breathe.
 
-**Verify:** `rg working-with-the-atelier src/` returns 0. Click footer FAQ link, lands on Atelier section. Visit `/faq`, lands on Atelier section. View source on `/contact`, og:image present.
+If you'd rather keep wide tiles, the only real fix is masonry (CSS `columns` or a JS masonry lib) — say the word and I'll go that route instead.
 
----
+### 2. Atelier — re-add scroll motion
 
-## Tier 2 — Contact form a11y (scoped, presentation-only)
+Three additions, all framer-motion (already in the bundle):
 
-### 4. Wire error to inputs
-- `src/routes/contact.tsx:688` area — add `aria-invalid={!!errorMsg}` and `aria-describedby="contact-error"` to the relevant input(s); give the error `<p>` `id="contact-error"` and `role="alert"`
-- No logic change, no validation rewrite
+- **Hero pair fade-up** — `IMAGINED. / DESIGNED. / REALIZED.` lines stagger in on mount via `motion.h2` with delay 0/120/240ms. Eyebrow + body paragraph fade in after.
+- **Section reveals** — wrap each top-level section (`THE HIVE`, capabilities, FAQ, CTA) with a `whileInView={{ opacity: 1, y: 0 }}` from `{opacity: 0, y: 24}`, `viewport={{ once: true, margin: "-15%" }}`.
+- **Approach triptych pin** — the `APPROACH_STEPS` (01 Imagined / 02 Designed / 03 Realized) get a sticky container: tall outer wrapper, sticky inner that swaps the active step based on `useScroll` progress (number+label crossfade, no layout shift). Matches the "scroll-pinned triptych" the comment promised.
 
-**Verify:** screen reader announces error on submit. Visual unchanged.
+Files:
+- `src/routes/atelier.tsx` only.
 
----
+### 3. Verify
 
-## Tier 3 — Gallery lightbox focus trap
+After build, screenshot `/atelier` at 1280×1800 to confirm scroll motion fires, and `/collection?cat=all` to confirm row gaps are even.
 
-### 5. Add focus trap to `GalleryLightbox`
-- `src/components/gallery/GalleryLightbox.tsx:155`
-- Lowest-risk approach: wrap modal contents in Radix `Dialog` primitive (project already uses shadcn) — gets focus trap, ESC handling, scroll lock for free
-- If swapping to Radix is too invasive, fallback: manual focus trap via `useEffect` capturing Tab/Shift-Tab within a ref'd container, restore previous activeElement on close
+## Out of scope
 
-**Verify:** open lightbox, tab repeatedly, focus stays inside. ESC closes. Focus returns to trigger.
+- No image swaps, no copy changes, no layout reflow on atelier beyond adding motion wrappers.
+- No catalog / data / inventory touched.
 
----
+## Decision needed
 
-## Tier 4 — Image double-fetch (one isolated perf change)
-
-### 6. Drop duplicate request in `NormalizedProductImage`
-- Render `<img>` and probe must agree on `crossOrigin`
-- Safer of the two: remove `crossOrigin="anonymous"` from the probe (matches the render path, browser caches one request)
-- Keep the silhouette fallback intact
-- Profile collection page before/after per perf rule
-
-**Verify:** DevTools network panel — each tile image = 1 request, not 2. No silhouette regression on tall/wide products.
-
----
-
-## Tier 5 — Defer (need user verification first)
-
-### 7. `the-hive.tsx` vs `the-hive3.tsx`
-- Do NOT delete either. Per dead-code rule: ripgrep both filenames + any export names, check `routeTree.gen.ts`, check footer/nav links
-- Produce a manifest (which one is linked, which is orphaned) and surface to user
-- No code change this pass
-
-### 8. ProductTile skeleton blank (already covered separately)
-- This was the previous turn's diagnosis. Skeleton needs to render outside the opacity gate
-- Treat as its own isolated change, profile before/after, ship separately from this pass to keep blast radius small
-
----
-
-## Risk profile
-
-| Step | Files touched | Behavior change | Visual change | Revert cost |
-|------|---------------|-----------------|---------------|-------------|
-| 1    | 2             | href targets    | none          | 1 edit      |
-| 2    | 1             | redirect target | none          | 1 edit      |
-| 3    | 1             | meta tag added  | none          | 1 edit      |
-| 4    | 1             | aria attrs      | none          | 1 edit      |
-| 5    | 1             | focus behavior  | none          | 1 edit      |
-| 6    | 1             | network pattern | none          | 1 edit      |
-
-Each step is a single-file or two-file edit. No migrations, no schema, no shared state, no batched perf work. If anything regresses, the offending step reverts in isolation.
-
----
-
-## Stop conditions
-
-- Step 5: if Radix Dialog swap touches more than the lightbox file → fall back to manual focus trap, don't expand scope
-- Step 6: if profile shows regression or silhouette bug → revert, leave double-fetch in place for now
-- Steps 7 & 8: do not start without explicit go-ahead
+Confirm option 1 (drop wide-aspect, single portrait frame) vs. masonry. Default is drop wide-aspect — fastest path out of the chaos.

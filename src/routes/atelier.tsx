@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion, useReducedMotion } from "framer-motion";
 import { MediaAperture } from "@/components/media-aperture";
 import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
@@ -341,14 +342,20 @@ function AtelierPage() {
         </div>
       </Section>
 
-      {/* 4. ATELIER APPROACH — quiet text-only triplet (above FAQ) */}
+      {/* 4. ATELIER APPROACH — staggered scroll reveal */}
       <Section eyebrow="ATELIER APPROACH">
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
         >
-          {APPROACH_STEPS.map((step) => (
-            <div key={step.number}>
+          {APPROACH_STEPS.map((step, i) => (
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.8, delay: i * 0.18, ease: [0.22, 1, 0.36, 1] }}
+            >
               <p
                 className="font-display text-charcoal/45 tabular-nums border-t pt-4"
                 style={{
@@ -367,10 +374,11 @@ function AtelierPage() {
               >
                 {step.label}
               </h3>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Section>
+
 
       {/* 5. WORKING WITH THE ATELIER — FAQ accordion */}
       <Section id="working-with-the-hive">
@@ -452,12 +460,17 @@ function Section({
   children: React.ReactNode;
   id?: string;
 }) {
+  const reduced = useReducedMotion();
   return (
     <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
-        <div
+        <motion.div
           className="border-t pt-10"
           style={{ borderColor: "var(--archive-rule)" }}
+          initial={reduced ? false : { opacity: 0, y: 24 }}
+          whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-12%" }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
           {eyebrow ? (
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
@@ -465,9 +478,10 @@ function Section({
             </p>
           ) : null}
           {children}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
+
 
