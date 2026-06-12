@@ -49,7 +49,7 @@ function fitFromVisualBox(
   const silhouette = renderedW / renderedH;
   const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.28 : silhouette < 0.75 ? 0.26 : 0.32);
   const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.92 : silhouette < 0.75 ? 0.58 : 0.72);
-  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.46 : silhouette < 0.75 ? 0.78 : 0.72);
+  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.66 : silhouette < 0.75 ? 0.78 : 0.72);
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
