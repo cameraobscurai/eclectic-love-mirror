@@ -11,7 +11,6 @@ import {
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -130,7 +129,7 @@ export function ProductTile({
                   frameAspect={frameAspect}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
-                  visualBaselineY={0.94}
+                  visualBaselineY={0.92}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
@@ -152,38 +151,19 @@ export function ProductTile({
                   }}
                 />
               ) : null}
-
-              {/* Desktop hover glass label — restored. Mobile uses caption below. */}
-              <div
-                aria-hidden
-                className={[
-                  "hidden md:block pointer-events-none absolute left-3 right-3 bottom-3",
-                  "opacity-0 translate-y-1.5 transition-all duration-200 ease-out",
-                  "group-hover:opacity-100 group-hover:translate-y-0",
-                  "group-focus-visible:opacity-100 group-focus-visible:translate-y-0",
-                  reduced ? "transition-none" : "",
-                ].join(" ")}
-              >
-                <div
-                  className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
-                  style={webkitGlassBlur}
-                >
-                  <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
-                    {product.title}
-                  </p>
-                </div>
-              </div>
             </div>
 
-            {/* Mobile caption below the frame */}
-            <p className="md:hidden mt-3 min-h-[36px] text-[13px] leading-[1.35] line-clamp-2 uppercase tracking-[0.06em] text-charcoal/70">
-              {product.title}
-            </p>
+            {/* Unified caption - "The Museum Label" */}
+            <div className="mt-3.5 pb-2 transition-colors duration-300">
+               <p className="text-[11px] md:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 group-hover:text-charcoal transition-colors">
+                {product.title}
+              </p>
+            </div>
           </button>
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
-            <div className="md:hidden mt-3 min-h-[36px]" />
+            <div className="mt-3.5 pb-2 min-h-[1.5em]" />
           </div>
         )}
       </div>
