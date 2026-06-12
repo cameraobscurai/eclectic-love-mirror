@@ -419,6 +419,7 @@ export function QuickViewModal({
             <div
               ref={zoneRef}
               className="relative w-full h-full min-h-[42vh] md:min-h-0"
+              style={imgNatural && !isMobile ? { aspectRatio: `${imgNatural.w} / ${imgNatural.h}` } : undefined}
             >
               <AnimatePresence mode="wait">
                 {img ? (
