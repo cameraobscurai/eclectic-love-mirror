@@ -257,6 +257,22 @@ function CategoryGrid({
   // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
   const [err, setErr] = useState<string | null>(null);
+
+  const openEditor = useCallback(async (item: Item) => {
+    setErr(null);
+    try {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id")
+        .eq("rms_id", item.rms_id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditing({ ...item, id: data.id });
+    } catch (e) {
+      setErr((e as Error).message);
+    }
+  }, []);
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
