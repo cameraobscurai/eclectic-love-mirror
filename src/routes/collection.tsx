@@ -158,8 +158,9 @@ export const Route = createFileRoute("/collection")({
   // Paint a skeleton matching real layout immediately on slow connections,
   // suppress flicker on fast ones.
   pendingComponent: CollectionSkeleton,
-  pendingMs: 0,
-  pendingMinMs: 150,
+  pendingMs: 1000,
+  pendingMinMs: 0,
+  staleTime: Infinity,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => <div className="p-12">Not found</div>,
   component: CollectionPage,
