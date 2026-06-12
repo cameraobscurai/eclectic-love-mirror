@@ -57,6 +57,7 @@ import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
 import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as DiningSplatRouteImport } from './routes/dining.$'
+import { Route as CollectionSlugRouteImport } from './routes/collection_.$slug'
 import { Route as CocktailBarSplatRouteImport } from './routes/cocktail-bar.$'
 import { Route as ChandeliersSplatRouteImport } from './routes/chandeliers.$'
 import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
@@ -319,6 +320,11 @@ const DiningSplatRoute = DiningSplatRouteImport.update({
   path: '/dining/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectionSlugRoute = CollectionSlugRouteImport.update({
+  id: '/collection_/$slug',
+  path: '/collection/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CocktailBarSplatRoute = CocktailBarSplatRouteImport.update({
   id: '/cocktail-bar/$',
   path: '/cocktail-bar/$',
@@ -464,6 +470,7 @@ export interface FileRoutesByFullPath {
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/collection/$slug': typeof CollectionSlugRoute
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
@@ -535,6 +542,7 @@ export interface FileRoutesByTo {
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/collection/$slug': typeof CollectionSlugRoute
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
@@ -607,6 +615,7 @@ export interface FileRoutesById {
   '/chairs/$': typeof ChairsSplatRoute
   '/chandeliers/$': typeof ChandeliersSplatRoute
   '/cocktail-bar/$': typeof CocktailBarSplatRoute
+  '/collection_/$slug': typeof CollectionSlugRoute
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
@@ -680,6 +689,7 @@ export interface FileRouteTypes {
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
+    | '/collection/$slug'
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
@@ -751,6 +761,7 @@ export interface FileRouteTypes {
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
+    | '/collection/$slug'
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
@@ -822,6 +833,7 @@ export interface FileRouteTypes {
     | '/chairs/$'
     | '/chandeliers/$'
     | '/cocktail-bar/$'
+    | '/collection_/$slug'
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
@@ -886,6 +898,7 @@ export interface RootRouteChildren {
   ChairsSplatRoute: typeof ChairsSplatRoute
   ChandeliersSplatRoute: typeof ChandeliersSplatRoute
   CocktailBarSplatRoute: typeof CocktailBarSplatRoute
+  CollectionSlugRoute: typeof CollectionSlugRoute
   DiningSplatRoute: typeof DiningSplatRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   FursPeltsSplatRoute: typeof FursPeltsSplatRoute
@@ -1259,6 +1272,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiningSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collection_/$slug': {
+      id: '/collection_/$slug'
+      path: '/collection/$slug'
+      fullPath: '/collection/$slug'
+      preLoaderRoute: typeof CollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cocktail-bar/$': {
       id: '/cocktail-bar/$'
       path: '/cocktail-bar/$'
@@ -1473,6 +1493,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChairsSplatRoute: ChairsSplatRoute,
   ChandeliersSplatRoute: ChandeliersSplatRoute,
   CocktailBarSplatRoute: CocktailBarSplatRoute,
+  CollectionSlugRoute: CollectionSlugRoute,
   DiningSplatRoute: DiningSplatRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   FursPeltsSplatRoute: FursPeltsSplatRoute,
