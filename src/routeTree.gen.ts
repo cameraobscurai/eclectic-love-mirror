@@ -30,6 +30,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
 import { Route as StudioThreeRouteImport } from './routes/studio.three'
 import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
 import { Route as StudioLabRouteImport } from './routes/studio.lab'
@@ -154,6 +155,11 @@ const IndexRoute = IndexRouteImport.update({
 const StudioIndexRoute = StudioIndexRouteImport.update({
   id: '/studio/',
   path: '/studio/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Tables1SplatRoute = Tables1SplatRouteImport.update({
+  id: '/tables1/$',
+  path: '/tables1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudioThreeRoute = StudioThreeRouteImport.update({
@@ -295,6 +301,7 @@ export interface FileRoutesByFullPath {
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/tables1/$': typeof Tables1SplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -338,6 +345,7 @@ export interface FileRoutesByTo {
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/tables1/$': typeof Tables1SplatRoute
   '/studio': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -382,6 +390,7 @@ export interface FileRoutesById {
   '/studio/lab': typeof StudioLabRoute
   '/studio/thanks': typeof StudioThanksRoute
   '/studio/three': typeof StudioThreeRoute
+  '/tables1/$': typeof Tables1SplatRoute
   '/studio/': typeof StudioIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
@@ -427,6 +436,7 @@ export interface FileRouteTypes {
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/tables1/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -470,6 +480,7 @@ export interface FileRouteTypes {
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/tables1/$'
     | '/studio'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -513,6 +524,7 @@ export interface FileRouteTypes {
     | '/studio/lab'
     | '/studio/thanks'
     | '/studio/three'
+    | '/tables1/$'
     | '/studio/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
@@ -549,6 +561,7 @@ export interface RootRouteChildren {
   StudioLabRoute: typeof StudioLabRoute
   StudioThanksRoute: typeof StudioThanksRoute
   StudioThreeRoute: typeof StudioThreeRoute
+  Tables1SplatRoute: typeof Tables1SplatRoute
   StudioIndexRoute: typeof StudioIndexRoute
   ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -704,6 +717,13 @@ declare module '@tanstack/react-router' {
       path: '/studio'
       fullPath: '/studio/'
       preLoaderRoute: typeof StudioIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tables1/$': {
+      id: '/tables1/$'
+      path: '/tables1/$'
+      fullPath: '/tables1/$'
+      preLoaderRoute: typeof Tables1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/studio/three': {
@@ -912,6 +932,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudioLabRoute: StudioLabRoute,
   StudioThanksRoute: StudioThanksRoute,
   StudioThreeRoute: StudioThreeRoute,
+  Tables1SplatRoute: Tables1SplatRoute,
   StudioIndexRoute: StudioIndexRoute,
   ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
