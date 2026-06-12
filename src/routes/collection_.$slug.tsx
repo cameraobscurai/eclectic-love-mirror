@@ -9,8 +9,8 @@
 
 import { createFileRoute, Link, notFound, ErrorComponent } from "@tanstack/react-router";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
 
 const SITE = "https://eclectichive.com";
 
