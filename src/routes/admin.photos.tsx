@@ -585,6 +585,9 @@ function CategoryGrid({
                   : i,
               ),
             );
+            // Bust the public catalog cache so the next /collection load
+            // shows this edit immediately (same pattern as reorder saves).
+            invalidateCollectionCatalog();
           }}
         />
       )}

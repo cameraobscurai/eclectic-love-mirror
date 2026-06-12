@@ -89,6 +89,9 @@ export interface CollectionProduct {
   colorNeedsReview?: boolean;
   /** Editorial-curated order (lower = earlier within subcategory). Null = unranked. */
   editorialOrder?: number | null;
+  /** Editorial backdrop URL for the collection tile. Sourced live from
+   *  inventory_items.card_background_url. Null when no backdrop is set. */
+  cardBackgroundUrl?: string | null;
 }
 
 export interface CategoryFacet {
@@ -158,9 +161,11 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           ? live.editorial_order
           : (p.editorialOrder ?? null);
 
-        // Live images win if present, otherwise fall back to baked images.
+        // Live images win when the row has been touched by admin (array
+        // present, even if empty — empty intentionally clears the tile).
+        // Only fall back to baked when the live column is null/undefined.
         const liveImages = live?.images;
-        const baseImages: CollectionImage[] = liveImages && liveImages.length
+        const baseImages: CollectionImage[] = Array.isArray(liveImages)
           ? liveImages.map((url, i) => ({
               url,
               position: i,
@@ -175,6 +180,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         return {
           ...p,
           editorialOrder: eo,
+          cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
           images,
           primaryImage: images[0] ?? null,
         };
