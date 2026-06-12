@@ -696,7 +696,7 @@ export function QuickViewModal({
                   aria-label="Scroll thumbnails left"
                   className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
                 >
-                  ← MORE
+                  ←
                 </button>
                 <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
                   {imgIdx + 1} / {product.images.length}
@@ -708,7 +708,7 @@ export function QuickViewModal({
                   aria-label="Scroll thumbnails right"
                   className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
                 >
-                  MORE →
+                  →
                 </button>
               </div>
             </div>
