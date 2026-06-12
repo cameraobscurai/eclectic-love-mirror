@@ -554,7 +554,7 @@ function CategoryGrid({
                   tileAspect={tileAspect}
                   frameAspect={frameAspect}
                   draggable={!subActive}
-                  onOpen={() => setEditing(item)}
+                  onOpen={() => void openEditor(item)}
                 />
               ))}
             </div>
