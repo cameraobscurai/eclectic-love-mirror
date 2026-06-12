@@ -586,7 +586,7 @@ function CategoryGrid({
           onSaved={({ images, card_background_url }) => {
             setItems((prev) =>
               prev.map((i) =>
-                i.id === editing.id
+                i.rms_id === editing.rms_id
                   ? { ...i, images, card_background_url }
                   : i,
               ),
