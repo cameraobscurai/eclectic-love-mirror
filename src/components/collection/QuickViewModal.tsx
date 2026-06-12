@@ -325,7 +325,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-[73dvh] md:max-h-[730px] md:max-w-[1020px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:h-[88dvh] md:max-h-[880px] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[minmax(0,auto)_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
@@ -710,8 +710,9 @@ export function QuickViewModal({
             </div>
           )}
 
-            {/* CTA — pinned to bottom of rail */}
-            <div className="mt-auto pt-8">
+            {/* CTA — sticky to bottom of rail so it stays visible even when
+                the configurations list + thumbs overflow the rail height. */}
+            <div className="sticky bottom-0 -mx-6 md:-mx-8 mt-auto pt-4 px-6 md:px-8 pb-2 bg-white/95 backdrop-blur-sm border-t border-charcoal/10 z-10">
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
