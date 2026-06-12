@@ -92,6 +92,11 @@ export interface CollectionProduct {
   /** Editorial backdrop URL for the collection tile. Sourced live from
    *  inventory_items.card_background_url. Null when no backdrop is set. */
   cardBackgroundUrl?: string | null;
+  /** Admin-set focal point on the cover image, 0–1 normalized. When both
+   *  are set, NormalizedProductImage skips silhouette measurement and uses
+   *  these as the center of attention. Null = auto-measure. */
+  coverFocalX?: number | null;
+  coverFocalY?: number | null;
 }
 
 export interface CategoryFacet {
