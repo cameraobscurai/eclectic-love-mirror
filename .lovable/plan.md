@@ -1,81 +1,90 @@
-# Cocktail-Bar Editorial Order — ALL First, Subcategories Inherit
+# QA Fix Pass — Sequenced by Risk
 
-## The insight
+Eight findings, ordered from zero-risk text edits to one isolated perf change. Each step is independently revertable. No batching of perf changes (per project rule).
 
-If ALL is ordered well and ALL is strict subcategory chunks (Bars → Cocktail Tables → Community Tables → Stools → Storage), then each subcategory view is literally a slice of ALL. One ordering decision, five views stay consistent. No drift, no contradiction.
+---
 
-## Pipeline (cocktail-bar only, then template the rest)
+## Tier 1 — Zero-risk text/href edits
 
-```text
-1. scripts/order/dump-slice.mjs cocktail-bar
-     → scripts-tmp/order/cocktail-bar.slice.json
-       { subcategory: [{ rms_id, title, image, family, dims }] }
+### 1. FAQ anchor — pick `working-with-the-hive`
+- `src/routes/atelier.tsx:376` — change section `id` from `working-with-the-atelier` → `working-with-the-hive`
+- `src/components/footer.tsx:11` — update href hash to match
+- Ripgrep `working-with-the-atelier` to catch any other refs before saving
 
-2. spawn ONE capable subagent
-     input: the slice JSON + image URLs grouped by subcategory
-     job:   within each subcategory chunk, rank products by
-              (a) family hero leads, variants follow
-              (b) silhouette block: wide → square → tall
-              (c) tonal flow inside each block
-              (d) true outliers at chunk end
-     output: { bars: [rms_id,...], cocktail-tables: [...], ... } + rationale
+### 2. `/faq` redirect target
+- `src/routes/faq.tsx:9` — redirect from `/contact#faq` → `/atelier#working-with-the-hive`
 
-3. write scripts-tmp/order/cocktail-bar.proposal.json
-     review in chat (titles + thumbs, no apply yet)
+### 3. Contact `og:image`
+- `src/routes/contact.tsx` head() — add `og:image` + `twitter:image` using the existing root social asset (same URL the root already uses)
+- No new asset generation needed
 
-4. scripts/order/apply.mjs cocktail-bar --dry-run
-     prints SQL: UPDATE inventory_items SET editorial_order = N WHERE rms_id = ...
-     numbering: 100, 200, 300... (gaps for manual nudge later)
+**Verify:** `rg working-with-the-atelier src/` returns 0. Click footer FAQ link, lands on Atelier section. Visit `/faq`, lands on Atelier section. View source on `/contact`, og:image present.
 
-5. scripts/order/apply.mjs cocktail-bar --apply
-     writes editorial_order column
+---
 
-6. scripts/bake-catalog.mjs
-     editorialOrder lands in current_catalog.json
+## Tier 2 — Contact form a11y (scoped, presentation-only)
 
-7. collection-sort-intelligence.ts "By Type" composite key becomes:
-       (subcategoryPillIndex, editorial_order ?? Infinity, title)
-     ALL view = chunks in pill order, each chunk in editorial order.
-     Subcategory view = same chunk, same order. Guaranteed consistent.
-```
+### 4. Wire error to inputs
+- `src/routes/contact.tsx:688` area — add `aria-invalid={!!errorMsg}` and `aria-describedby="contact-error"` to the relevant input(s); give the error `<p>` `id="contact-error"` and `role="alert"`
+- No logic change, no validation rewrite
 
-## Schema (one migration)
+**Verify:** screen reader announces error on submit. Visual unchanged.
 
-```sql
-ALTER TABLE public.inventory_items
-  ADD COLUMN editorial_order INT NULL;
+---
 
-CREATE INDEX inventory_items_editorial_order_idx
-  ON public.inventory_items (editorial_order)
-  WHERE editorial_order IS NOT NULL;
-```
-No GRANT/RLS change (additive column on existing table). Null = unranked, sorts last.
+## Tier 3 — Gallery lightbox focus trap
 
-## Sort key change (one file)
+### 5. Add focus trap to `GalleryLightbox`
+- `src/components/gallery/GalleryLightbox.tsx:155`
+- Lowest-risk approach: wrap modal contents in Radix `Dialog` primitive (project already uses shadcn) — gets focus trap, ESC handling, scroll lock for free
+- If swapping to Radix is too invasive, fallback: manual focus trap via `useEffect` capturing Tab/Shift-Tab within a ref'd container, restore previous activeElement on close
 
-`src/lib/collection-sort-intelligence.ts` — "By Type" branch composite becomes:
-```
-subcategoryPillIndex * 1e9
-  + (editorialOrder ?? Infinity) * 1e3
-  + scrapedOrder
-```
-Existing owner-rank/site-rank logic stays as fallback for parents without editorial_order yet. Cocktail-bar gets the new key; other 13 parents unchanged until their pass runs.
+**Verify:** open lightbox, tab repeatedly, focus stays inside. ESC closes. Focus returns to trigger.
 
-## Three grid modes
+---
 
-3-col, 5-col, and Wall all consume the same sorted product array. One order = consistent across all three. Wall's masonry packing is unaffected; we're only changing sequence, not tile sizing.
+## Tier 4 — Image double-fetch (one isolated perf change)
 
-## Verify
+### 6. Drop duplicate request in `NormalizedProductImage`
+- Render `<img>` and probe must agree on `crossOrigin`
+- Safer of the two: remove `crossOrigin="anonymous"` from the probe (matches the render path, browser caches one request)
+- Keep the silhouette fallback intact
+- Profile collection page before/after per perf rule
 
-Playwright at 1874×1130: screenshot ALL + each of 5 subcategories in 3-col and 5-col. Confirm subcategory chunks in ALL match standalone subcategory views (same items, same order). Wall mode spot-check.
+**Verify:** DevTools network panel — each tile image = 1 request, not 2. No silhouette regression on tall/wide products.
 
-## Out of scope
+---
 
-- Other 13 parents (template after cocktail-bar lands clean)
-- Admin drag-reorder UI (later, once the JSON pipeline is proven)
-- Cross-parent ordering (ALL-all view)
-- Pill order changes
+## Tier 5 — Defer (need user verification first)
 
-## Risk
+### 7. `the-hive.tsx` vs `the-hive3.tsx`
+- Do NOT delete either. Per dead-code rule: ripgrep both filenames + any export names, check `routeTree.gen.ts`, check footer/nav links
+- Produce a manifest (which one is linked, which is orphaned) and surface to user
+- No code change this pass
 
-Low. `editorial_order` is additive + nullable, reversible by `UPDATE ... SET editorial_order = NULL`. Sort key change is gated by null-check, so unranked parents fall through to existing logic.
+### 8. ProductTile skeleton blank (already covered separately)
+- This was the previous turn's diagnosis. Skeleton needs to render outside the opacity gate
+- Treat as its own isolated change, profile before/after, ship separately from this pass to keep blast radius small
+
+---
+
+## Risk profile
+
+| Step | Files touched | Behavior change | Visual change | Revert cost |
+|------|---------------|-----------------|---------------|-------------|
+| 1    | 2             | href targets    | none          | 1 edit      |
+| 2    | 1             | redirect target | none          | 1 edit      |
+| 3    | 1             | meta tag added  | none          | 1 edit      |
+| 4    | 1             | aria attrs      | none          | 1 edit      |
+| 5    | 1             | focus behavior  | none          | 1 edit      |
+| 6    | 1             | network pattern | none          | 1 edit      |
+
+Each step is a single-file or two-file edit. No migrations, no schema, no shared state, no batched perf work. If anything regresses, the offending step reverts in isolation.
+
+---
+
+## Stop conditions
+
+- Step 5: if Radix Dialog swap touches more than the lightbox file → fall back to manual focus trap, don't expand scope
+- Step 6: if profile shows regression or silhouette bug → revert, leave double-fetch in place for now
+- Steps 7 & 8: do not start without explicit go-ahead
