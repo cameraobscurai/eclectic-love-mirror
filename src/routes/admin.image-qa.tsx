@@ -263,6 +263,8 @@ function ImageQA() {
                 ? { ...prev, images: next.images, card_background_url: next.card_background_url }
                 : prev,
             );
+            // Bust public catalog cache so /collection picks up the edit on next load.
+            invalidateCollectionCatalog();
           }}
         />
       )}
