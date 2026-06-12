@@ -29,31 +29,6 @@ interface QuickViewModalProps {
 //
 // Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
 
-function CopyTitleButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      type="button"
-      onClick={async (e) => {
-        e.stopPropagation();
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1400);
-        } catch {}
-      }}
-      aria-label={copied ? "Copied" : "Copy product name"}
-      title={copied ? "Copied" : "Copy"}
-      className="shrink-0 mt-1 md:mt-2 inline-flex items-center justify-center h-7 w-7 rounded-full text-charcoal/40 hover:text-charcoal hover:bg-charcoal/5 transition-colors"
-    >
-      {copied ? (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-      ) : (
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path d="M5 15V5a1.5 1.5 0 0 1 1.5-1.5H15" /></svg>
-      )}
-    </button>
-  );
-}
 
 export function QuickViewModal({
   product,
