@@ -387,14 +387,14 @@ export function QuickViewModal({
             Mobile stacks: image, then info. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[1.55fr_1fr]"
+          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,1fr)]"
         >
           {/* IMAGE COLUMN */}
-          <div className="relative min-h-0 flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
+          <div className="relative min-w-0 min-h-0 flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
             <div
               ref={zoneRef}
-              className="relative w-full h-full min-h-[42vh] md:min-h-0"
-              style={imgNatural && !isMobile ? { aspectRatio: `${imgNatural.w} / ${imgNatural.h}` } : undefined}
+              className="relative w-full h-full min-h-[42vh] md:min-h-0 max-w-full"
+              style={imgNatural && !isMobile ? { aspectRatio: `${imgNatural.w} / ${imgNatural.h}`, maxWidth: "100%" } : undefined}
             >
               <AnimatePresence mode="wait">
                 {img ? (
