@@ -21,6 +21,7 @@ import { X, Upload, Loader2, FolderOpen, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { SortableThumb } from "./SortableThumb";
+import { FocalEditor } from "./FocalEditor";
 import { StoragePicker } from "./StoragePicker";
 import {
   updateItemImages,
