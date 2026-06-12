@@ -176,7 +176,7 @@ function CollectionSkeleton() {
         className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4 max-w-[1600px] mx-auto w-full"
         style={{ paddingTop: "calc(var(--nav-h, 4rem) + 0.75rem)" }}
       >
-        <div className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+        <div className="collection-product-grid w-full">
           {Array.from({ length: 18 }).map((_, i) => (
             <div
               key={i}
@@ -705,12 +705,6 @@ function CollectionPage() {
     resultMeta = "";
   }
 
-  // Grid mode: 3-up, locked. The designer wants pieces large with breathing
-  // room — never bumping to 4/5 on wide screens. Wall is the only alternate.
-  const gridCols = "grid-cols-2 sm:grid-cols-3 lg:grid-cols-3";
-  const gridGapClasses = "gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4";
-
-
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
   // The rail and the utility bar both stick beneath it, so we publish the
@@ -1173,7 +1167,7 @@ function CollectionPage() {
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
                             layout
-                          className={`grid ${gridCols} ${gridGapClasses} items-start`}
+                            className="collection-product-grid items-start"
                             transition={
                               reduced
                                 ? { duration: 0 }
