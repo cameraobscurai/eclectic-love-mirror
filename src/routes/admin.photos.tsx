@@ -36,6 +36,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { reorderItems } from "@/lib/photos-admin.functions";
