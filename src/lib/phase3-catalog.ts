@@ -92,6 +92,11 @@ export interface CollectionProduct {
   /** Editorial backdrop URL for the collection tile. Sourced live from
    *  inventory_items.card_background_url. Null when no backdrop is set. */
   cardBackgroundUrl?: string | null;
+  /** Admin-set focal point on the cover image, 0–1 normalized. When both
+   *  are set, NormalizedProductImage skips silhouette measurement and uses
+   *  these as the center of attention. Null = auto-measure. */
+  coverFocalX?: number | null;
+  coverFocalY?: number | null;
 }
 
 export interface CategoryFacet {
@@ -183,6 +188,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           ...p,
           editorialOrder: eo,
           cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
+          coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
+          coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
           images,
           primaryImage: images[0] ?? null,
         };
@@ -201,6 +208,8 @@ type LiveOverlayRow = {
   editorial_order: number | null;
   images: string[] | null;
   card_background_url: string | null;
+  cover_focal_x: number | null;
+  cover_focal_y: number | null;
 };
 
 async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
@@ -212,7 +221,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -222,6 +231,8 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             editorial_order: row.editorial_order,
             images: row.images,
             card_background_url: row.card_background_url,
+            cover_focal_x: row.cover_focal_x,
+            cover_focal_y: row.cover_focal_y,
           });
         }
       }

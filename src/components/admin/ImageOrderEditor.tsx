@@ -21,6 +21,7 @@ import { X, Upload, Loader2, FolderOpen, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { SortableThumb } from "./SortableThumb";
+import { FocalEditor } from "./FocalEditor";
 import { StoragePicker } from "./StoragePicker";
 import {
   updateItemImages,
@@ -349,40 +350,48 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
               No images yet. Drop files here, upload below, or pick from storage.
             </div>
           ) : (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext items={urls} strategy={rectSortingStrategy}>
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  {urls.map((url, i) => (
-                    <SortableThumb
-                      key={url}
-                      url={url}
-                      index={i}
-                      isCover={i === 0}
-                      isBackground={bg === url}
-                      onPromote={() => promote(url)}
-                      onDelete={() => remove(url)}
-                      onSetBackground={() => toggleBackground(url)}
-                    />
-                  ))}
-                </div>
-              </SortableContext>
-              <DragOverlay>
-                {activeUrl && (
-                  <div className="aspect-square w-full max-w-[180px] border-2 border-emerald-500 shadow-lg">
-                    <img
-                      src={activeUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
+            <div className="space-y-5">
+              <FocalEditor
+                id={item.id}
+                coverUrl={urls[0]}
+                initialX={null}
+                initialY={null}
+              />
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={urls} strategy={rectSortingStrategy}>
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    {urls.map((url, i) => (
+                      <SortableThumb
+                        key={url}
+                        url={url}
+                        index={i}
+                        isCover={i === 0}
+                        isBackground={bg === url}
+                        onPromote={() => promote(url)}
+                        onDelete={() => remove(url)}
+                        onSetBackground={() => toggleBackground(url)}
+                      />
+                    ))}
                   </div>
-                )}
-              </DragOverlay>
-            </DndContext>
+                </SortableContext>
+                <DragOverlay>
+                  {activeUrl && (
+                    <div className="aspect-square w-full max-w-[180px] border-2 border-emerald-500 shadow-lg">
+                      <img
+                        src={activeUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  )}
+                </DragOverlay>
+              </DndContext>
+            </div>
           )}
         </div>
 

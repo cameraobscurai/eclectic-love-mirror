@@ -388,6 +388,8 @@ export type Database = {
           color_source: string | null
           color_tagged_at: string | null
           color_temperature: string | null
+          cover_focal_x: number | null
+          cover_focal_y: number | null
           created_at: string
           depth_cm: number | null
           description: string | null
@@ -436,6 +438,8 @@ export type Database = {
           color_source?: string | null
           color_tagged_at?: string | null
           color_temperature?: string | null
+          cover_focal_x?: number | null
+          cover_focal_y?: number | null
           created_at?: string
           depth_cm?: number | null
           description?: string | null
@@ -484,6 +488,8 @@ export type Database = {
           color_source?: string | null
           color_tagged_at?: string | null
           color_temperature?: string | null
+          cover_focal_x?: number | null
+          cover_focal_y?: number | null
           created_at?: string
           depth_cm?: number | null
           description?: string | null

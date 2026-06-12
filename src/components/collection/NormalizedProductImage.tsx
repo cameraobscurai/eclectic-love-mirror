@@ -17,6 +17,10 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   targetArea?: number;
   maxW?: number;
   maxH?: number;
+  /** Admin-set focal point (0–1). When both are numbers, silhouette
+   *  measurement is skipped and the image is centered on this point. */
+  focalX?: number | null;
+  focalY?: number | null;
 };
 
 const fitCache = new Map<string, Fit | null>();
@@ -144,11 +148,14 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetArea,
   maxW,
   maxH,
+  focalX,
+  focalY,
   className,
   style,
   onLoad,
   ...props
 }: Props, ref) {
+  const hasFocal = typeof focalX === "number" && typeof focalY === "number";
   const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
@@ -156,9 +163,10 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // Measure off the actual rendered <img> on its onLoad — no second network
   // request. Browser cache + srcSet variants stay intact. Falls back to
   // DEFAULT_FIT until measured; subsequent tiles with the same src hit
-  // fitCache and skip work entirely.
+  // fitCache and skip work entirely. Skipped entirely when admin focal is set.
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);
+    if (hasFocal) return;
     if (fitCache.has(cacheKey)) return;
     const node = e.currentTarget;
     try {
@@ -172,6 +180,13 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   };
 
   const transform = useMemo(() => {
+    // Admin focal override: center the focal pixel in the frame at scale 1.
+    // Bypasses silhouette measurement entirely. visualOffsetY still applies.
+    if (hasFocal) {
+      const tx = (0.5 - (focalX as number)) * 100;
+      const ty = (0.5 + visualOffsetY - (focalY as number)) * 100;
+      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
+    }
     const f = fit ?? DEFAULT_FIT;
     const tx = (0.5 - f.cx) * 100;
     const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
@@ -179,7 +194,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY]);
+  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY]);
+
 
   return (
     <img
