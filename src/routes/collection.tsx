@@ -1166,13 +1166,7 @@ function CollectionPage() {
                         <LayoutGroup id={`collection-grid-${activeParent}-${activeSubcategory}`}>
                           <motion.ul
                             key={`${activeParent}-${activeSubcategory}`}
-                            layout
-                            className="collection-product-grid items-start"
-                            transition={
-                              reduced
-                                ? { duration: 0 }
-                                : { type: "spring", stiffness: 260, damping: 32, mass: 0.8 }
-                            }
+                            className="collection-product-grid"
                           >
                             {(() => {
                               return visibleBatch.map((p, i) => (

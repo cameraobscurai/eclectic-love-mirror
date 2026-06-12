@@ -81,21 +81,10 @@ export function ProductTile({
     ? buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined
     : undefined;
 
-  const layoutSpring = {
-    type: "spring" as const,
-    stiffness: 260,
-    damping: 32,
-    mass: 0.8,
-  };
-
   return (
     <motion.li
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
-      layout
-      transition={{
-        layout: reduced ? { duration: 0 } : layoutSpring,
-      }}
       style={{
         background: "#ffffff",
         overflow: "hidden",
