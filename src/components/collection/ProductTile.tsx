@@ -114,8 +114,9 @@ export function ProductTile({
               {/* Skeleton overlay */}
               <div
                 aria-hidden
-                className="absolute inset-0 bg-white"
+                className="absolute inset-0"
                 style={{
+                  background: "#f5f3ef",
                   opacity: loaded || !product.primaryImage ? 0 : 1,
                   transition: "opacity 240ms ease-out",
                 }}
