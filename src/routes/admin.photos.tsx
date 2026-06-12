@@ -37,6 +37,7 @@ import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "luc
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
+import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { reorderItems } from "@/lib/photos-admin.functions";
