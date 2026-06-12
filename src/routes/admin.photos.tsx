@@ -40,6 +40,7 @@ import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
+import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { reorderItems } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
@@ -58,6 +59,7 @@ import {
   PRODUCT_TILE_ASPECT,
   PRODUCT_TILE_FRAME_ASPECT,
   PRODUCT_TILE_IMAGE_CLASS,
+  PRODUCT_TILE_OVERRIDES,
   PRODUCT_TILE_WIDE_ASPECT,
   PRODUCT_TILE_WIDE_FRAME_ASPECT,
 } from "@/lib/collection-tile-presets";
@@ -82,9 +84,11 @@ type Item = {
   images: string[];
   card_background_url: string | null;
   variantCount: number;
+  useWideFrame: boolean;
 };
 
 function adapt(p: CollectionProduct): Item {
+  const browseGroup = getProductBrowseGroup(p);
   return {
     id: p.id,
     rms_id: p.id,
@@ -92,6 +96,7 @@ function adapt(p: CollectionProduct): Item {
     images: p.images.map((i) => i.url),
     card_background_url: null,
     variantCount: p.variants?.length ?? 0,
+    useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
 
@@ -407,9 +412,6 @@ function CategoryGrid({
   );
 
   const loading = allProducts === null;
-  const useWideProductFrame = parent === "cocktail-bar";
-  const tileAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
-  const frameAspect = useWideProductFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
 
   return (
     <div className="px-6 lg:px-10 py-8 max-w-[1500px]">
@@ -547,8 +549,6 @@ function CategoryGrid({
                   item={item}
                   index={idx}
                   dense={view === "wall"}
-                  tileAspect={tileAspect}
-                  frameAspect={frameAspect}
                   draggable={!subActive}
                   onOpen={() => void openEditor(item)}
                 />
@@ -560,9 +560,9 @@ function CategoryGrid({
             {activeItem && (
               <div
                 className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
-                style={{ aspectRatio: tileAspect, width: ghostWidth ?? undefined }}
+                style={{ aspectRatio: tileAspectFor(activeItem), width: ghostWidth ?? undefined }}
               >
-                <TileMedia item={activeItem} dense={view === "wall"} frameAspect={frameAspect} />
+                <TileMedia item={activeItem} dense={view === "wall"} />
               </div>
             )}
           </DragOverlay>
@@ -605,20 +605,24 @@ function wallCols(n: number): number {
   return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
 }
 
+function tileAspectFor(item: Item): string {
+  return item.useWideFrame ? PRODUCT_TILE_WIDE_ASPECT : PRODUCT_TILE_ASPECT;
+}
+
+function frameAspectFor(item: Item): number {
+  return item.useWideFrame ? PRODUCT_TILE_WIDE_FRAME_ASPECT : PRODUCT_TILE_FRAME_ASPECT;
+}
+
 function Tile({
   item,
   index,
   dense,
-  tileAspect,
-  frameAspect,
   draggable = true,
   onOpen,
 }: {
   item: Item;
   index: number;
   dense: boolean;
-  tileAspect: string;
-  frameAspect: number;
   draggable?: boolean;
   onOpen: () => void;
 }) {
@@ -649,10 +653,10 @@ function Tile({
           ? "ring-1 ring-amber-400"
           : "ring-0 hover:shadow-[0_8px_30px_-12px_rgba(26,26,26,0.18)]"
       }`}
-      style={{ ...style, aspectRatio: tileAspect }}
+      style={{ ...style, aspectRatio: tileAspectFor(item) }}
       title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-      <TileMedia item={item} dense={dense} frameAspect={frameAspect} />
+      <TileMedia item={item} dense={dense} />
 
       {/* Position index — small, editorial */}
       <span className="absolute top-2 left-2 text-[10px] uppercase tracking-[0.18em] tabular-nums text-charcoal/70 bg-white/85 backdrop-blur px-1.5 py-0.5">
@@ -698,8 +702,9 @@ function Tile({
   );
 }
 
-function TileMedia({ item, frameAspect }: { item: Item; dense?: boolean; frameAspect: number }) {
+function TileMedia({ item }: { item: Item; dense?: boolean }) {
   const hero = item.images[0];
+  const overrides = PRODUCT_TILE_OVERRIDES[item.rms_id];
   if (!hero) {
     return (
       <div className="h-full w-full bg-charcoal/5 flex items-center justify-center">
@@ -710,8 +715,12 @@ function TileMedia({ item, frameAspect }: { item: Item; dense?: boolean; frameAs
   return (
     <div className="h-full w-full">
       <NormalizedProductImage
+        {...overrides}
         src={hero}
-        frameAspect={frameAspect}
+        frameAspect={frameAspectFor(item)}
+        visualOffsetY={overrides?.visualOffsetY ?? 0}
+        visualAnchorY={item.useWideFrame ? "bottom" : "center"}
+        visualBaselineY={0.66}
         alt=""
         loading="lazy"
         draggable={false}
