@@ -58,6 +58,16 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Inquire — Eclectic Hive, Denver" },
       { property: "og:description", content: `Denver event design + rentals · ${SUPPORT_EMAIL}` },
       { property: "og:url", content: "https://eclectichive.com/contact" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+      },
     ],
     links: [{ rel: "canonical", href: "https://eclectichive.com/contact" }],
   }),
@@ -685,12 +695,19 @@ function ContactPage() {
                 {/* Submit */}
                 <div className="pt-4">
                   {errorMsg && (
-                    <p className="mb-6 text-[12px] uppercase tracking-[0.18em] leading-[1.7] text-charcoal/80 border-l-2 border-charcoal/40 pl-4">
+                    <p
+                      id="contact-error"
+                      role="alert"
+                      aria-live="assertive"
+                      className="mb-6 text-[12px] uppercase tracking-[0.18em] leading-[1.7] text-charcoal/80 border-l-2 border-charcoal/40 pl-4"
+                    >
                       {errorMsg}
                     </p>
                   )}
                   <button
                     type="submit"
+                    aria-invalid={!!errorMsg}
+                    aria-describedby={errorMsg ? "contact-error" : undefined}
                     disabled={
                       submitting ||
                       selectionStatus === "loading" ||

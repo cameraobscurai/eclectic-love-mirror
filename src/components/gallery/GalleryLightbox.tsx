@@ -44,6 +44,53 @@ export function GalleryLightbox({
     return release;
   }, []);
 
+  // Focus trap. Capture previously-focused element, move focus into the
+  // dialog on mount, cycle Tab/Shift-Tab within the dialog, restore focus on
+  // unmount. Pairs with role="dialog" + aria-modal="true" below.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previouslyFocused = (typeof document !== "undefined"
+      ? document.activeElement
+      : null) as HTMLElement | null;
+    const root = dialogRef.current;
+    if (!root) return;
+    const FOCUSABLE =
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+    const getFocusable = () =>
+      Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null
+      );
+    const focusables = getFocusable();
+    (focusables[0] ?? root).focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const list = getFocusable();
+      if (list.length === 0) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    root.addEventListener("keydown", onKey);
+    return () => {
+      root.removeEventListener("keydown", onKey);
+      if (previouslyFocused && typeof previouslyFocused.focus === "function") {
+        previouslyFocused.focus();
+      }
+    };
+  }, []);
+
+
   // Reset plate when project changes.
   useEffect(() => {
     setPlateIndex(0);
@@ -153,10 +200,12 @@ export function GalleryLightbox({
 
   return (
     <div
+      ref={dialogRef}
       role="dialog"
       aria-modal="true"
       aria-label={`${project.name} — gallery view`}
-      className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col"
+      tabIndex={-1}
+      className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col focus:outline-none"
     >
       {/* Main split */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
