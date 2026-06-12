@@ -36,6 +36,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { reorderItems } from "@/lib/photos-admin.functions";
@@ -509,7 +510,7 @@ function CategoryGrid({
               ref={gridRef}
               className={
                 view === "grid"
-                  ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-3 lg:gap-x-5 lg:gap-y-4"
+                  ? "collection-product-grid w-full"
                   : "grid gap-1"
               }
               style={
@@ -621,26 +622,26 @@ function Tile({
         e.stopPropagation();
         onOpen();
       }}
-      className={`group relative bg-white border transition-colors ${
+      className={`group relative bg-white overflow-hidden transition-shadow ${
         draggable ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
       } ${
         needsAttention
-          ? "border-amber-400"
-          : "border-charcoal/10 hover:border-charcoal/40"
+          ? "ring-1 ring-amber-400"
+          : "ring-0 hover:shadow-[0_8px_30px_-12px_rgba(26,26,26,0.18)]"
       }`}
       style={{ ...style, aspectRatio: tileAspect }}
       title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-
       <TileMedia item={item} dense={dense} frameAspect={frameAspect} />
 
-      <span className="absolute top-2 left-2 bg-white/95 backdrop-blur text-[10px] uppercase tracking-widest px-1.5 py-0.5 border border-charcoal/10 tabular-nums">
-        {index + 1}
+      {/* Position index — small, editorial */}
+      <span className="absolute top-2 left-2 text-[10px] uppercase tracking-[0.18em] tabular-nums text-charcoal/70 bg-white/85 backdrop-blur px-1.5 py-0.5">
+        {String(index + 1).padStart(2, "0")}
       </span>
 
       {item.variantCount > 0 && (
         <span
-          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-charcoal/85 text-white text-[9px] uppercase tracking-widest px-1.5 py-0.5"
+          className="absolute top-2 right-2 inline-flex items-center gap-1 bg-white/85 backdrop-blur text-charcoal/75 text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5"
           title={`${item.variantCount + 1} variants — edits apply to the primary record`}
         >
           <Layers className="h-2.5 w-2.5" /> {item.variantCount + 1}
@@ -656,13 +657,22 @@ function Tile({
         </span>
       )}
 
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <p className="text-white text-[10px] uppercase tracking-widest truncate">
-          {item.title}
-        </p>
-        <p className="text-white/70 text-[9px] uppercase tracking-widest mt-0.5">
-          {imageCount} {imageCount === 1 ? "image" : "images"}
-        </p>
+      {/* Glass nameplate — same treatment as public Collection tile */}
+      <div
+        aria-hidden
+        className="hidden md:block pointer-events-none absolute left-3 right-3 bottom-3 opacity-0 translate-y-1.5 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0"
+      >
+        <div
+          className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
+          style={webkitGlassBlur}
+        >
+          <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
+            {item.title}
+          </p>
+          <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/55 tabular-nums">
+            {imageCount} {imageCount === 1 ? "image" : "images"}
+          </p>
+        </div>
       </div>
     </div>
   );
