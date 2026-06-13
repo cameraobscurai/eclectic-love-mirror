@@ -189,7 +189,7 @@ function HomePage() {
             "calc(var(--nav-h, 4rem) + var(--fold-unit) * 4)",
           ["--fold-gap" as string]: "calc(var(--fold-unit) * 1)",
           ["--fold-strip" as string]: "calc(var(--fold-unit) * 3)",
-          ["--fold-tail" as string]: "calc(var(--fold-unit) * 6)",
+          ["--fold-tail" as string]: "calc(var(--fold-unit) * 3)",
         }}
       >
         {/* Heading + tagline on desktop only — mobile uses the sequential reel above */}

@@ -251,7 +251,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const enterT = smooth(scrolledVh / ENTER_VH);
   // Floor the block opacity so the manifesto is *present* (dim) before it
   // fully resolves — no more empty white pre-roll between filmstrip and copy.
-  const blockOpacity = 0.35 + 0.65 * enterT;
+  const blockOpacity = 0.6 + 0.4 * enterT;
   const blockLift = (1 - enterT) * 8; // px
 
   // ── READ: per-line wave ─────────────────────────────────────────────
