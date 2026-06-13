@@ -52,9 +52,15 @@ function fitFromVisualBox(
   if (!renderedW || !renderedH) return null;
 
   const silhouette = renderedW / renderedH;
-  const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.28 : silhouette < 0.75 ? 0.26 : 0.32);
-  const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.92 : silhouette < 0.75 ? 0.58 : 0.72);
-  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.66 : silhouette < 0.75 ? 0.78 : 0.72);
+  // Tuned for well-composed source photos (Squarespace mirror) where the
+  // subject already fills most of the frame. Previous values (0.28/0.32/0.26
+  // targetArea, 0.66 maxH) shrank wide sofas/bars to ~60-70% of tile height,
+  // producing the empty-space rows the owner flagged. New floors let the
+  // measured silhouette occupy ~90% of the available frame while still
+  // preventing over-zoom on tightly cropped sources.
+  const targetArea = targetAreaOverride ?? (silhouette > 1.45 ? 0.52 : silhouette < 0.75 ? 0.48 : 0.55);
+  const maxW = maxWOverride ?? (silhouette > 1.45 ? 0.98 : silhouette < 0.75 ? 0.80 : 0.92);
+  const maxH = maxHOverride ?? (silhouette > 1.45 ? 0.86 : silhouette < 0.75 ? 0.94 : 0.90);
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
@@ -66,7 +72,7 @@ function fitFromVisualBox(
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.52, 1.55),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.85, 1.55),
   };
 }
 
