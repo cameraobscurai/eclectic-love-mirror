@@ -202,6 +202,11 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       {...props}
       ref={ref}
       src={src}
+      // Required for canvas-based silhouette measurement. Without this the
+      // browser taints the canvas on cross-origin images (Supabase CDN) and
+      // getImageData throws — fit falls back to a generic shrink that
+      // miscenters wide objects (e.g. sofa legs clipped at the bottom).
+      crossOrigin="anonymous"
       onLoad={handleLoad}
       className={className}
       style={{
