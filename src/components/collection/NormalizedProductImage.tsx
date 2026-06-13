@@ -176,11 +176,11 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     const probe = new Image();
     probe.crossOrigin = "anonymous";
     probe.decoding = "async";
-    probe.onload = () => {
+    probe.onload = () => { console.log("[probe]", src.slice(-30), "loaded", probe.naturalWidth, probe.naturalHeight);
       if (cancelled) return;
       try {
         const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
-        fitCache.set(cacheKey, next);
+        fitCache.set(cacheKey, next); console.log("[probe-fit]", src.slice(-40), next);
         setFit(next);
       } catch {
         fitCache.set(cacheKey, null);
