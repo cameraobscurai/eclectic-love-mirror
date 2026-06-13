@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState, type ImgHTMLAttributes } from "react";
+import { forwardRef, useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
 import type React from "react";
 
 type Fit = {
@@ -160,23 +160,46 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
-  // Measure off the actual rendered <img> on its onLoad — no second network
-  // request. Browser cache + srcSet variants stay intact. Falls back to
-  // DEFAULT_FIT until measured; subsequent tiles with the same src hit
-  // fitCache and skip work entirely. Skipped entirely when admin focal is set.
-  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    onLoad?.(e);
+  // Measure via a side-channel Image() with crossOrigin set BEFORE src so
+  // the browser fetches with CORS mode from the start and the canvas is not
+  // tainted by a pre-existing no-cors cache entry. The visible <img> can
+  // load from cache normally. Skipped entirely when admin focal is set.
+  useEffect(() => {
     if (hasFocal) return;
-    if (fitCache.has(cacheKey)) return;
-    const node = e.currentTarget;
-    try {
-      const next = measureImage(node, frameAspect, targetArea, maxW, maxH);
-      fitCache.set(cacheKey, next);
-      setFit(next);
-    } catch {
+    if (!src) return;
+    const existing = fitCache.get(cacheKey);
+    if (existing !== undefined) {
+      if (existing !== fit) setFit(existing);
+      return;
+    }
+    let cancelled = false;
+    const probe = new Image();
+    probe.crossOrigin = "anonymous";
+    probe.decoding = "async";
+    probe.onload = () => {
+      if (cancelled) return;
+      try {
+        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
+        fitCache.set(cacheKey, next);
+        setFit(next);
+      } catch {
+        fitCache.set(cacheKey, null);
+        setFit(null);
+      }
+    };
+    probe.onerror = () => {
+      if (cancelled) return;
       fitCache.set(cacheKey, null);
       setFit(null);
-    }
+    };
+    probe.src = src;
+    return () => {
+      cancelled = true;
+    };
+  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fit]);
+
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    onLoad?.(e);
   };
 
   const transform = useMemo(() => {
@@ -202,6 +225,11 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       {...props}
       ref={ref}
       src={src}
+      // Required for canvas-based silhouette measurement. Without this the
+      // browser taints the canvas on cross-origin images (Supabase CDN) and
+      // getImageData throws — fit falls back to a generic shrink that
+      // miscenters wide objects (e.g. sofa legs clipped at the bottom).
+      crossOrigin="anonymous"
       onLoad={handleLoad}
       className={className}
       style={{
