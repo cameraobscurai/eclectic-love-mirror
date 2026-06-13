@@ -31,15 +31,29 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     setIsMobile(window.matchMedia("(hover: none) and (pointer: coarse)").matches);
   }, []);
 
-  // Track container size.
+  // Track container size. rAF-throttled + identity-checked so a drag-resize
+  // doesn't fire setState on every pixel (was causing the "tiles skipping
+  // around" perception — full React re-render storm at 60–120 fps).
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const update = () => setSize({ w: el.clientWidth, h: el.clientHeight });
-    update();
-    const ro = new ResizeObserver(update);
+    let raf = 0;
+    const commit = () => {
+      raf = 0;
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      setSize((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+    };
+    commit();
+    const ro = new ResizeObserver(() => {
+      if (raf) return;
+      raf = requestAnimationFrame(commit);
+    });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      ro.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   const capped = useMemo(() => products.slice(0, cap), [products, cap]);
@@ -146,7 +160,15 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
         onTouchCancel={onTouchEnd}
       >
         {trimmed.map((p) => (
-          <div key={p.id} className="relative bg-white">
+          <div
+            key={p.id}
+            className="relative bg-white"
+            style={{
+              // Paint + layout isolation: when cols/rows flip, neighbor tiles
+              // don't cascade-repaint. Major snappiness win on resize.
+              contain: "layout paint style",
+            }}
+          >
             <CollectionWallTile
               product={p}
               isHovered={activeId === p.id}
