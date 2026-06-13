@@ -211,6 +211,7 @@ function HomePage() {
                   // 1280 and 2560 land in the same proportional family.
                   fontSize: "clamp(3.5rem, 1.5rem + 3.2vw, 5.75rem)",
                   lineHeight: 0.95,
+                  fontWeight: 600,
                   transitionDuration: "1100ms",
                 }}
               >
