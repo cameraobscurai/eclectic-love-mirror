@@ -340,7 +340,7 @@ function CategoryGrid({
         }
       }, 1500);
     },
-    [parent, reorderFn],
+    [parent, reorderFn, savedAt],
   );
 
   // Retry the latest pending order after a failure.
