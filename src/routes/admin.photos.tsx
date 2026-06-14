@@ -311,7 +311,13 @@ function CategoryGrid({
       if (saveTimer.current) clearTimeout(saveTimer.current);
       const ids = next.map((i) => i.rms_id).filter(Boolean);
       const sig = ids.join("|");
-      if (sig === lastSaved.current) return;
+      if (sig === lastSaved.current) {
+        // User dragged back to the last-saved order — nothing to persist.
+        // Clear any leftover "pending" from the prior drag so the badge
+        // doesn't stick on orange forever.
+        setSaveState((s) => (s === "pending" || s === "syncing" ? (savedAt ? "synced" : "idle") : s));
+        return;
+      }
       setSaveState("pending");
       // 1500ms debounce — gives the merchandiser room for 3-4 follow-up
       // drags before the storefront sees an intermediate state.
@@ -334,7 +340,7 @@ function CategoryGrid({
         }
       }, 1500);
     },
-    [parent, reorderFn],
+    [parent, reorderFn, savedAt],
   );
 
   // Retry the latest pending order after a failure.
