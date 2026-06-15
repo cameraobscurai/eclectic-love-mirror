@@ -72,6 +72,7 @@ import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
+import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 import { Route as AdminAdminRouteImport } from './routes/admin.admin'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
@@ -396,6 +397,11 @@ const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
   path: '/image-health',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminColorsRoute = AdminColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
@@ -463,6 +469,7 @@ export interface FileRoutesByFullPath {
   '/the-hive3': typeof TheHive3Route
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -536,6 +543,7 @@ export interface FileRoutesByTo {
   '/the-hive3': typeof TheHive3Route
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -610,6 +618,7 @@ export interface FileRoutesById {
   '/the-hive3': typeof TheHive3Route
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -685,6 +694,7 @@ export interface FileRouteTypes {
     | '/the-hive3'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -758,6 +768,7 @@ export interface FileRouteTypes {
     | '/the-hive3'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -831,6 +842,7 @@ export interface FileRouteTypes {
     | '/the-hive3'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -1389,6 +1401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageHealthRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/colors': {
       id: '/admin/colors'
       path: '/colors'
@@ -1463,6 +1482,7 @@ const AdminAdminRouteWithChildren = AdminAdminRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminAdminRoute: typeof AdminAdminRouteWithChildren
   AdminColorsRoute: typeof AdminColorsRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
@@ -1475,6 +1495,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminRoute: AdminAdminRouteWithChildren,
   AdminColorsRoute: AdminColorsRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,

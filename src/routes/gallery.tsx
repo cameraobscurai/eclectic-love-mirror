@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
@@ -11,6 +11,8 @@ import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
 import { morphOpen } from "@/lib/view-transition";
 import { flushSync } from "react-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { applyGalleryOrder, gallerySlug } from "@/lib/gallery-orders";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
@@ -161,23 +163,63 @@ function GalleryPage() {
   const [filter, setFilter] = useState<string>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  // Per-gallery admin overrides — keyed by slug, fetched once client-side.
+  const [orders, setOrders] = useState<Map<string, string[]>>(new Map());
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("gallery_orders")
+        .select("gallery_slug, order_keys");
+      if (!alive || error || !data) return;
+      const m = new Map<string, string[]>();
+      for (const row of data as { gallery_slug: string; order_keys: string[] | null }[]) {
+        if (row.order_keys && row.order_keys.length > 0) {
+          m.set(row.gallery_slug, row.order_keys);
+        }
+      }
+      setOrders(m);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // Apply DB overrides over the manifest order. When no override exists for
+  // a gallery, the project passes through unchanged (manifest + promoteHeroes
+  // fallback continues to apply).
+  const overriddenProjects = useMemo<GalleryProject[]>(() => {
+    if (orders.size === 0) return galleryProjects;
+    return galleryProjects.map((p) => {
+      const keys = orders.get(gallerySlug(p));
+      if (!keys) return p;
+      return {
+        ...p,
+        detailImages: applyGalleryOrder(p.detailImages, {
+          gallery_slug: gallerySlug(p),
+          order_keys: keys,
+        }),
+      };
+    });
+  }, [orders]);
+
   const visibleProjects: GalleryProject[] = useMemo(() => {
-    if (filter === "All") return galleryProjects;
-    return galleryProjects.filter((p) => p.region === filter);
-  }, [filter]);
+    if (filter === "All") return overriddenProjects;
+    return overriddenProjects.filter((p) => p.region === filter);
+  }, [filter, overriddenProjects]);
 
   const counts: Record<string, number> = useMemo(() => {
-    const base: Record<string, number> = { All: galleryProjects.length };
+    const base: Record<string, number> = { All: overriddenProjects.length };
     for (const f of REGION_FILTERS) if (f !== "All") base[f] = 0;
-    for (const p of galleryProjects) base[p.region] = (base[p.region] ?? 0) + 1;
+    for (const p of overriddenProjects) base[p.region] = (base[p.region] ?? 0) + 1;
     return base;
-  }, []);
+  }, [overriddenProjects]);
 
   // Open lightbox at the real project index (independent of current filter view).
   const handleOpen = (visibleIndex: number, sourceEl?: HTMLElement | null) => {
     const project = visibleProjects[visibleIndex];
     if (!project) return;
-    const realIndex = galleryProjects.findIndex((p) => p.number === project.number);
+    const realIndex = overriddenProjects.findIndex((p) => p.number === project.number);
     const next = realIndex >= 0 ? realIndex : 0;
     morphOpen(
       sourceEl ?? null,
@@ -188,7 +230,7 @@ function GalleryPage() {
 
   return (
     <main className="min-h-screen bg-charcoal text-cream">
-      <GalleryHero total={galleryProjects.length} />
+      <GalleryHero total={overriddenProjects.length} />
 
       {/* Region filters hidden for now */}
 
@@ -221,7 +263,7 @@ function GalleryPage() {
 
       {openIndex !== null && (
         <GalleryLightbox
-          projects={galleryProjects}
+          projects={overriddenProjects}
           initialProjectIndex={openIndex}
           onClose={() => setOpenIndex(null)}
         />

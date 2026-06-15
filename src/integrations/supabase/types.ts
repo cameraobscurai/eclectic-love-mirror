@@ -300,6 +300,27 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_orders: {
+        Row: {
+          gallery_slug: string
+          order_keys: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          gallery_slug: string
+          order_keys?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          gallery_slug?: string
+          order_keys?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           created_at: string
