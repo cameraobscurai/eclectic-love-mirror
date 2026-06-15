@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "framer-motion";
 import { MediaAperture } from "@/components/media-aperture";
@@ -6,6 +6,7 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
+import { galleryProjects, GALLERY_EXCLUDE_PLANNERS, GALLERY_NDA_PLANNERS } from "@/content/gallery-projects";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
 
 // Slot-mapped images — see ./atelier.images.ts. DO NOT replace these inline;
