@@ -27,7 +27,10 @@ const BodySchema = z.object({
   budget: z.string().max(100).optional().nullable(),
   scope: z.string().max(500).optional().nullable(),
   items: z.array(ItemSnapshotSchema).max(50).optional().default([]),
-  inquiry_id: z.string().max(100).optional().nullable(),
+  // Required: the inquiry row id minted client-side and inserted via RLS
+  // before this endpoint is called. We verify the row exists and its email
+  // matches before sending — drops random spam that hits the URL directly.
+  inquiry_id: z.string().uuid(),
 })
 
 function generateToken(): string {
@@ -54,6 +57,27 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
         }
 
         const supabase = createClient(supabaseUrl, supabaseServiceKey)
+
+        // Verify the inquiry row exists and its email matches the payload.
+        // Without this, the endpoint is an open email relay to the owner inbox.
+        const { data: inquiryRow, error: inquiryErr } = await supabase
+          .from('inquiries')
+          .select('id, email, created_at')
+          .eq('id', body.inquiry_id)
+          .maybeSingle()
+
+        if (inquiryErr || !inquiryRow) {
+          return Response.json({ error: 'Unknown inquiry' }, { status: 404 })
+        }
+        if ((inquiryRow.email ?? '').toLowerCase() !== body.email.toLowerCase()) {
+          return Response.json({ error: 'Email mismatch' }, { status: 403 })
+        }
+        // Only allow notification within 5 minutes of insert — prevents
+        // replaying an old inquiry_id to spam the inbox later.
+        const createdAt = inquiryRow.created_at ? new Date(inquiryRow.created_at).getTime() : 0
+        if (!createdAt || Date.now() - createdAt > 5 * 60_000) {
+          return Response.json({ error: 'Inquiry expired' }, { status: 410 })
+        }
 
         const template = TEMPLATES[TEMPLATE_NAME]
         if (!template) {
