@@ -304,12 +304,12 @@ function CreditMarquee({
   return (
     <section
       aria-labelledby={headingId}
-      className="bg-charcoal px-6 lg:px-12 py-4"
+      className="bg-charcoal px-6 lg:px-12 py-6 lg:py-8"
     >
       <div className="max-w-[1600px] mx-auto">
         <h2
           id={headingId}
-          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-4"
+          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-5"
         >
           {eyebrow}
         </h2>
