@@ -20,12 +20,17 @@ export function keyFor(src: string): string {
   return decodeURIComponent(src.slice(i + marker.length));
 }
 
-/** Stable slug for a gallery, derived from its display name. */
-export function gallerySlug(project: Pick<GalleryProject, "name">): string {
-  return project.name
+/**
+ * Stable slug for a gallery. Prefixed with the slot number because some
+ * galleries share a display name across planners (e.g. two Brush Creek Ranch
+ * entries).
+ */
+export function gallerySlug(project: Pick<GalleryProject, "name" | "number">): string {
+  const slug = project.name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+  return `${project.number}-${slug}`;
 }
 
 export type GalleryOrder = {
