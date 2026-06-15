@@ -128,7 +128,16 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Meetings + Incentive Travel",
     heroImage: amangiriGalleryHero,
-    detailImages: promoteHeroes(amangiriGalleryImages),
+    detailImages: promoteHeroes(amangiriGalleryImages, {
+      // Hard-pin: 5-perspective jury (Vogue editor / scroll-stopper / landscape
+      // critic / luxury bride) + owner's favorite. Algorithm was burying these.
+      pin: [
+        "gahan__Raven_s_Nest_at_Night_3",            // jury #1 — canyon cathedral, wide
+        "chinledinner__D9D9D665",                    // ⭐ owner favorite — long-table vs sandstone
+        "gahan__Raven_s_Nest_at_Night2",             // glowing curved table, blue hour
+        "chinledinner__ADD_ON_Night_Shot_3",         // moody single-structure remote luxury
+      ],
+    }),
     summary:
       "Long-table Chinle dinner against the sandstone, lounge moments from the amphitheater, and the landscape framing every plate.",
     coords: [-111.4357, 37.0306],
