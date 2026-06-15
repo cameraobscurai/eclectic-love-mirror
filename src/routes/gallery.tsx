@@ -275,3 +275,48 @@ function GalleryPage() {
     </main>
   );
 }
+
+// Derived from gallery-projects.ts. Dedupes by short venue label (first segment
+// of `location` before the comma), keeps owner-curated order.
+function VenueIndex({ projects }: { projects: GalleryProject[] }) {
+  const venues = useMemo(() => {
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const p of projects) {
+      const short = (p.location.split("—")[0].split(",")[0] ?? "").trim().toUpperCase();
+      if (!short || seen.has(short)) continue;
+      seen.add(short);
+      out.push(short);
+    }
+    return out;
+  }, [projects]);
+
+  if (venues.length === 0) return null;
+
+  return (
+    <section
+      aria-labelledby="venue-index-heading"
+      className="bg-charcoal px-6 lg:px-12 pt-2 pb-10 lg:pb-14"
+    >
+      <div className="max-w-[1600px] mx-auto">
+        <h2
+          id="venue-index-heading"
+          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-5"
+        >
+          DELIVERED TO
+        </h2>
+        <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-cream/70">
+          {venues.map((v, i) => (
+            <li key={v} className="flex items-center gap-5">
+              <span>{v}</span>
+              {i < venues.length - 1 && (
+                <span aria-hidden className="text-cream/25">·</span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
