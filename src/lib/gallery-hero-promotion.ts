@@ -37,22 +37,26 @@ function keyFor(src: string): string {
 
 /**
  * Visual-bucket key — proxy for "what kind of shot is this". Filenames
- * follow `<scene>__<id>` conventions (chinledinner__, gahan__Tablescape_,
- * Fireside__Lounge, Sangeet__, etc). We bucket on the longest stable prefix
- * so four near-identical tablescape frames don't all land up front.
+ * follow `<scene>__<subscene>__<id>` conventions (chinledinner__GUID,
+ * gahan__Tablescape_2, Fireside__Lounge_Close_Up, Favorites__N_B_8, etc).
+ * We strip trailing indices / GUIDs / "close_up"/"detail" qualifiers, then
+ * bucket on the first two `__` segments so four near-identical tablescape
+ * frames don't all land up front.
  */
 function bucketFor(key: string): string {
   const file = key.split("/").pop() ?? key;
-  // Drop extension, lowercase.
-  const base = file.replace(/\.[a-z0-9]+$/i, "").toLowerCase();
-  // Split on the first numeric run, GUID, or trailing index — keep the
-  // semantic prefix only.
-  const prefix = base.split(/[_\- ]?(?:\d{2,}|[a-f0-9]{8}-)/)[0];
-  // Also collapse `__close_up`, `__detail`, etc — anything after the second
-  // double-underscore is treated as an instance.
-  const parts = prefix.split("__");
-  return parts.slice(0, 2).join("__");
+  let base = file.replace(/\.[a-z0-9]+$/i, "").toLowerCase();
+  // Strip trailing GUID-ish blocks (8+ hex chars, optionally dashed).
+  base = base.replace(/[_\- ]?[a-f0-9]{8,}(?:-[a-f0-9]+)*$/i, "");
+  // Strip trailing common qualifier suffixes ("close_up", "detail", "floral").
+  base = base.replace(/[_\- ](?:close[_\- ]?up|detail|details|floral|\+[_\- ]?floral)$/i, "");
+  // Strip trailing numeric index of any length (Tablescape_2, _3, _12, -627).
+  for (let i = 0; i < 3; i++) {
+    base = base.replace(/[_\- ]\d+$/i, "").replace(/[_\- ](?:close[_\- ]?up|detail|details|floral)$/i, "");
+  }
+  return base.split("__").slice(0, 2).join("__");
 }
+
 
 export function promoteHeroes(
   images: readonly GalleryImage[],
