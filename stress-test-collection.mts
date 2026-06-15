@@ -6,7 +6,7 @@ const URL = 'http://localhost:8080/collection';
 const SCREENSHOT_DIR = '/tmp/browser/collection-load/';
 
 async function runTest() {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, executablePath: "/nix/store/f0zwc9si9bjhs4vipbbfw0i7my9ck3in-chromium-146.0.7680.80/bin/chromium", args: ["--no-sandbox"] });
   const context = await browser.newContext({
     viewport: { width: 1280, height: 1800 },
   });

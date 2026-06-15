@@ -1,19 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, chromium } from '@playwright/test';
 
 const BASE_URL = 'http://localhost:8080';
 
 test.describe('Navigation Stress Test', () => {
   const consoleErrors: string[] = [];
 
-  test.beforeEach(async ({ page }) => {
+  test('Desktop Navigation Stress Test', async () => {
+    const browser = await chromium.launch({ executablePath: '/bin/chromium', args: ['--no-sandbox'] });
+    const page = await browser.newPage();
+    
     page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
       }
     });
-  });
 
-  test('Desktop Navigation Stress Test', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1800 });
     await page.goto(BASE_URL);
 
@@ -28,20 +29,20 @@ test.describe('Navigation Stress Test', () => {
     // 1. Hover and click every nav bar link
     for (const link of navLinks) {
       console.log(`Testing link: ${link.text}`);
-      const locator = page.locator('nav').filter({ hasText: 'ECLECTIC HIVE' }).locator('a').filter({ hasText: link.text });
+      // Use a more robust selector that finds the link in the desktop nav
+      const locator = page.locator('header nav').first().locator('a').filter({ hasText: new RegExp(link.text, 'i') }).first();
       await locator.hover();
       await locator.click();
-      await page.waitForURL(`**${link.href}**`);
+      await page.waitForURL(`**${link.href}**`, { timeout: 10000 });
       expect(page.url()).toContain(link.href);
       
-      // Check for blank state (minimal content check)
       const bodyText = await page.innerText('body');
       expect(bodyText.length).toBeGreaterThan(100);
     }
 
     // Verify Collection link specifically
     await page.goto(BASE_URL);
-    await page.locator('a').filter({ hasText: 'HIVE SIGNATURE COLLECTION' }).click();
+    await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
     await page.waitForURL('**/collection**');
     expect(page.url()).toContain('/collection');
 
@@ -49,14 +50,14 @@ test.describe('Navigation Stress Test', () => {
     const routes = ['/gallery', '/atelier', '/contact'];
     for (const route of routes) {
       await page.goto(`${BASE_URL}${route}`);
-      await page.locator('a').filter({ hasText: 'HIVE SIGNATURE COLLECTION' }).click();
+      await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
       await page.waitForURL('**/collection**');
       expect(page.url()).toContain('/collection');
     }
 
     // 3. Browser back/forward 5+ times
     await page.goto(BASE_URL);
-    await page.locator('a').filter({ hasText: 'HIVE SIGNATURE COLLECTION' }).click();
+    await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
     await page.waitForURL('**/collection**');
     
     // Go to a subcategory
@@ -82,9 +83,19 @@ test.describe('Navigation Stress Test', () => {
     }
     
     await page.screenshot({ path: '/tmp/browser/collection-nav/desktop-final.png' });
+    await browser.close();
   });
 
-  test('Mobile Navigation Stress Test', async ({ page }) => {
+  test('Mobile Navigation Stress Test', async () => {
+    const browser = await chromium.launch({ executablePath: '/bin/chromium', args: ['--no-sandbox'] });
+    const page = await browser.newPage();
+    
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text());
+      }
+    });
+
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(BASE_URL);
 
@@ -92,7 +103,7 @@ test.describe('Navigation Stress Test', () => {
     const burger = page.locator('button[aria-label="Open menu"]');
     await burger.click();
     
-    const collectionLink = page.locator('nav[aria-label="Mobile navigation"]').locator('a').filter({ hasText: 'HIVE SIGNATURE COLLECTION' });
+    const collectionLink = page.locator('nav[aria-label="Mobile navigation"]').locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i });
     await expect(collectionLink).toBeVisible();
     await collectionLink.click();
     
@@ -105,8 +116,6 @@ test.describe('Navigation Stress Test', () => {
     await page.locator('a[aria-label="ECLECTIC HIVE — home"]').click();
     await page.waitForURL(BASE_URL + '/');
     
-    if (consoleErrors.length > 0) {
-       // Filter out known harmless errors if any, but user asked for verbatim
-    }
+    await browser.close();
   });
 });
