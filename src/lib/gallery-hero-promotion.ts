@@ -48,14 +48,16 @@ function bucketFor(key: string): string {
   let base = file.replace(/\.[a-z0-9]+$/i, "").toLowerCase();
   // Strip trailing GUID-ish blocks (8+ hex chars, optionally dashed).
   base = base.replace(/[_\- ]?[a-f0-9]{8,}(?:-[a-f0-9]+)*$/i, "");
-  // Strip trailing common qualifier suffixes ("close_up", "detail", "floral").
-  base = base.replace(/[_\- ](?:close[_\- ]?up|detail|details|floral|\+[_\- ]?floral)$/i, "");
-  // Strip trailing numeric index of any length (Tablescape_2, _3, _12, -627).
-  for (let i = 0; i < 3; i++) {
-    base = base.replace(/[_\- ]\d+$/i, "").replace(/[_\- ](?:close[_\- ]?up|detail|details|floral)$/i, "");
+  // Iteratively strip trailing indices, qualifiers, and stray punctuation.
+  for (let i = 0; i < 4; i++) {
+    base = base
+      .replace(/\d+$/i, "") // trailing digits (with or without separator)
+      .replace(/[_\- ](?:close[_\- ]?up|detail|details|floral|\+[_\- ]?floral)$/i, "")
+      .replace(/[_\-\s]+$/i, ""); // stray trailing separators
   }
   return base.split("__").slice(0, 2).join("__");
 }
+
 
 
 export function promoteHeroes(
