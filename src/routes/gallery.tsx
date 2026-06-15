@@ -245,6 +245,9 @@ function GalleryPage() {
 
       <GalleryCta />
 
+      {/* In partnership with — planner rolodex (ticker), trade-proof bridge to venues */}
+      <PartnerTicker />
+
       {/* Delivered to — venue index (derived from gallery project locations) */}
       <VenueIndex projects={overriddenProjects} />
 
