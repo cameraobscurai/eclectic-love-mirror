@@ -155,41 +155,15 @@ export const Route = createFileRoute("/collection")({
   }),
   validateSearch: zodValidator(searchSchema),
   loader: async (): Promise<CatalogPayload> => await getCollectionCatalog(),
-  // Paint a skeleton matching real layout immediately on slow connections,
-  // suppress flicker on fast ones.
-  pendingComponent: CollectionSkeleton,
-  pendingMs: 1000,
-  pendingMinMs: 0,
+  // No pendingComponent: a generic 18-tile skeleton doesn't match the actual
+  // first paint (the "H Signature Collection" cover), so it reads as a flash
+  // into a different page. On slow loads TanStack Router holds the previous
+  // route until the catalog resolves.
   staleTime: Infinity,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => <div className="p-12">Not found</div>,
   component: CollectionPage,
 });
-
-function CollectionSkeleton() {
-  // Mirrors <CategoryGalleryOverview> first paint: full-bleed white panel,
-  // hairline-padded 2/3/5/6 col grid of aspect-[5/4] sm:aspect-[4/5] tiles.
-  // Same column counts, same gaps, same aspect — so the cross-fade into
-  // the real overview is silent (no "different page" flash).
-  return (
-    <main className="min-h-screen bg-white">
-      <div
-        className="flex min-h-[calc(100dvh-var(--nav-h,4rem))] flex-col bg-white p-3 sm:p-4 max-w-[1600px] mx-auto w-full"
-        style={{ paddingTop: "calc(var(--nav-h, 4rem) + 0.75rem)" }}
-      >
-        <div className="collection-product-grid w-full">
-          {Array.from({ length: 18 }).map((_, i) => (
-            <div
-              key={i}
-              className="relative aspect-[5/4] min-w-0 bg-[#f5f3ef]"
-              aria-hidden
-            />
-          ))}
-        </div>
-      </div>
-    </main>
-  );
-}
 
 function CollectionPage() {
   const data = Route.useLoaderData() as CatalogPayload;
