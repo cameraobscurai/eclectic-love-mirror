@@ -123,6 +123,8 @@ interface RawCatalog extends CatalogPayload {
 
 let cached: CatalogPayload | null = null;
 let loadPromise: Promise<CatalogPayload> | null = null;
+let baseCached: CatalogPayload | null = null;
+let baseLoadPromise: Promise<CatalogPayload> | null = null;
 let categoryDisplayOrder: string[] = [];
 
 /**
@@ -145,12 +147,37 @@ function bustImages(
   return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
 }
 
+/**
+ * Baked-only catalog — zero network. The /collection route loader awaits
+ * this so first paint never blocks on the Supabase overlay round-trip
+ * (which was 200–800ms on cold visits). Admin overlay edits (reorder,
+ * image uploads, card backgrounds, focal points) are merged in post-mount
+ * via getCollectionCatalog().
+ */
+export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
+  if (baseCached) return baseCached;
+  if (baseLoadPromise) return baseLoadPromise;
+  baseLoadPromise = import("@/data/inventory/current_catalog.json").then((mod) => {
+    const raw = ((mod as { default?: RawCatalog }).default ?? mod) as RawCatalog;
+    categoryDisplayOrder = raw.meta.categoryDisplayOrder;
+    const products = raw.products
+      .filter((p) => p.publicReady !== false)
+      .map((p) => {
+        const v = p.imagesVersion ?? 0;
+        const images = v ? bustImages(p.images, v) : p.images;
+        return { ...p, images, primaryImage: images[0] ?? null };
+      });
+    baseCached = { products, facets: raw.facets, total: products.length };
+    return baseCached;
+  });
+  return baseLoadPromise;
+}
+
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached) return cached;
   if (loadPromise) return loadPromise;
-  loadPromise = import("@/data/inventory/current_catalog.json").then(async (mod) => {
-    const raw = ((mod as { default?: RawCatalog }).default ?? mod) as RawCatalog;
-    categoryDisplayOrder = raw.meta.categoryDisplayOrder;
+  loadPromise = (async () => {
+    const base = await getCollectionCatalogBase();
 
     // LIVE overlay — admin edits (reorder, image uploads/reorder, cover
     // swaps, card backgrounds) write to DB and show up on the next site load
@@ -158,49 +185,42 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // products may use the RMS id as their primary id.
     const overlay = await fetchLiveOverlay();
 
-    const products = raw.products
-      .filter((p) => p.publicReady !== false)
-      .map((p) => {
-        const live = overlay.get(p.id);
-        const eo = live?.editorial_order !== undefined && live?.editorial_order !== null
-          ? live.editorial_order
-          : (p.editorialOrder ?? null);
+    const products = base.products.map((p) => {
+      const live = overlay.get(p.id);
+      if (!live) return p;
+      const eo = live.editorial_order !== undefined && live.editorial_order !== null
+        ? live.editorial_order
+        : (p.editorialOrder ?? null);
 
-        // Live images win when the row has a non-empty array. Empty/null
-        // falls back to baked so legacy rows with `images = '{}'` don't
-        // blank their tiles. There's no admin path that intentionally
-        // saves an empty array today — if we add one, swap this for an
-        // explicit "cleared" sentinel instead of relying on length.
-        const liveImages = live?.images;
-        const baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
-          ? liveImages.map((url, i) => ({
-              url,
-              position: i,
-              isHero: i === 0,
-              inferredFilename: null,
-              altText: null,
-            }))
-          : p.images;
+      // Live images win when the row has a non-empty array. Empty/null
+      // falls back to baked so legacy rows with `images = '{}'` don't
+      // blank their tiles.
+      const liveImages = live.images;
+      const baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
+        ? liveImages.map((url, i) => ({
+            url,
+            position: i,
+            isHero: i === 0,
+            inferredFilename: null,
+            altText: null,
+          }))
+        : p.images;
 
-        const v = p.imagesVersion ?? 0;
-        const images = v ? bustImages(baseImages, v) : baseImages;
-        return {
-          ...p,
-          editorialOrder: eo,
-          cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
-          coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
-          coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
-          images,
-          primaryImage: images[0] ?? null,
-        };
-      });
-    cached = {
-      products,
-      facets: raw.facets,
-      total: products.length,
-    };
+      const v = p.imagesVersion ?? 0;
+      const images = v ? bustImages(baseImages, v) : baseImages;
+      return {
+        ...p,
+        editorialOrder: eo,
+        cardBackgroundUrl: live.card_background_url ?? p.cardBackgroundUrl ?? null,
+        coverFocalX: live.cover_focal_x ?? p.coverFocalX ?? null,
+        coverFocalY: live.cover_focal_y ?? p.coverFocalY ?? null,
+        images,
+        primaryImage: images[0] ?? null,
+      };
+    });
+    cached = { products, facets: base.facets, total: products.length };
     return cached;
-  });
+  })();
   return loadPromise;
 }
 
