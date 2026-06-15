@@ -82,7 +82,7 @@ interface SelectedPiece {
 }
 
 function ContactPage() {
-  const { ids: storeIds, clear: clearInquiry } = useInquiry();
+  const { ids: storeIds, clear: clearInquiry, remove: removeFromInquiry } = useInquiry();
 
   // Merge URL ?items=… with local inquiry store. URL wins for ordering.
   const initialIds = useMemo(() => {
@@ -186,6 +186,9 @@ function ContactPage() {
       next.add(id);
       return next;
     });
+    // Keep the global tray in sync — without this, the floating InquiryTray
+    // still shows the piece the user just removed from the contact form.
+    removeFromInquiry(id);
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -207,6 +210,14 @@ function ContactPage() {
     // Required fields
     if (!name.trim() || !email.trim() || !vision.trim()) {
       setErrorMsg("Please add your name, email, and a short note about your vision.");
+      return;
+    }
+
+    // Email format — server validates again with zod, but catching it here
+    // saves a round trip and gives the user an immediate, specific error.
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!EMAIL_RE.test(email.trim())) {
+      setErrorMsg("That email doesn't look right — please double-check it.");
       return;
     }
 

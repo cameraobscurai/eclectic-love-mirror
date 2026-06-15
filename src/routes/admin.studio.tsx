@@ -176,7 +176,30 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
     );
   }
 
-  const inq = state.inquiry!;
+  // Guard: load failure leaves ready=true but inquiry=null. Without this,
+  // the non-null assertion below crashes the whole admin route.
+  if (state.error || !state.inquiry) {
+    return (
+      <div className="min-h-[calc(100vh-3rem)] grid place-items-center bg-cream px-6">
+        <div className="text-center max-w-md">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Workspace unavailable</p>
+          <p className="mt-3 font-display text-xl text-charcoal">Couldn't load this inquiry.</p>
+          <p className="mt-2 text-[12px] text-charcoal/60 normal-case font-sans">
+            {state.error ?? "The inquiry may have been removed or the link is wrong."}
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-5 text-[11px] uppercase tracking-[0.22em] text-charcoal underline underline-offset-4"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const inq = state.inquiry;
   const totalImages = state.inspo.length + state.pinned.length;
 
   return (
