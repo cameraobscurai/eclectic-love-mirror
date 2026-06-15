@@ -28,7 +28,7 @@ import {
 } from "@/lib/collection-parents";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
-import { InquiryTray } from "@/components/collection/InquiryTray";
+// InquiryTray globalized in __root.tsx
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
 
@@ -1363,7 +1363,7 @@ function CollectionPage() {
         </AnimatePresence>
       </Suspense>
 
-      <InquiryTray />
+      {/* InquiryTray is now globalized in __root.tsx */}
 
       {/* ============================================================
           FLOATING SEARCH BUTTON — bottom-right, always visible.
