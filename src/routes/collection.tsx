@@ -171,7 +171,21 @@ export const Route = createFileRoute("/collection")({
 });
 
 function CollectionPage() {
-  const data = Route.useLoaderData() as CatalogPayload;
+  const initial = Route.useLoaderData() as CatalogPayload;
+  const [data, setData] = useState<CatalogPayload>(initial);
+  // Apply the live Supabase overlay (admin reorders, image uploads, card
+  // backgrounds, focal points) after first paint. Worst-case visual: a
+  // tile reflects an admin edit ~300ms after the grid appears. Acceptable
+  // — the alternative blocks LCP on a paginated DB round-trip.
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog().then((full) => {
+      if (alive) setData(full);
+    }).catch(() => {
+      /* overlay failure is non-fatal — base catalog is already on screen */
+    });
+    return () => { alive = false; };
+  }, []);
   const { products, total } = data;
   const search = Route.useSearch() as CollectionSearch;
   const { group, subcategory, q, sort, layout, view } = search;
