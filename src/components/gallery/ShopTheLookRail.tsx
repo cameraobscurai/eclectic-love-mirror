@@ -40,6 +40,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
               <Link
                 to="/collection/$slug"
                 params={{ slug: p.slug }}
+                preload="intent"
                 className="block aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 {p.primaryImage?.url && (
