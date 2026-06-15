@@ -1,42 +1,84 @@
-## What's actually wrong
+# Plan: Glue The Site Together
 
-**Atelier** — the file has a comment saying "scroll-pinned triptych — Pass 3" but no scroll-driven motion exists. Whatever was there got stripped. The screenshot you posted IS the layout we keep; only the motion is missing.
+Four passes. Ship in order. Each pass is independently shippable and reversible.
 
-**Collection** — the wide-aspect override for bars / cocktail tables / storage is the source of the chaos. CSS Grid sizes each row to its tallest tile. With portrait + wide tiles mixed in 3-col rows, every row track inherits the tallest tile's height. `alignSelf:start` (last turn) stopped wide tiles from stretching, but it just moved the empty space below them instead of removing it. You can't have mixed aspects in a uniform grid and also have tight spacing — pick one.
+---
 
-## Plan
+## Pass 1 — Gallery becomes a funnel (#3 + #6)
 
-### 1. Collection grid — pick one path
+**Goal:** Gallery stops being a dead-end. Every lightbox can convert to inquiry or brief.
 
-**Recommended: drop the wide-aspect override entirely.** Restore the single invariant portrait frame the file's own comment promises. The wide ones look better in isolation but break the row rhythm. One aspect = clean grid.
+**Schema**
+- Add `relatedInventorySlugs: string[]` to `GalleryProject` in `src/data/gallery-projects.ts`
+- Optional `shopTheLookEnabled?: boolean` per project (default true when slugs exist)
 
-Files:
-- `src/components/collection/ProductTile.tsx` — remove `useWideFrame`, `tileAspect`, `frameAspect` branching; use `PRODUCT_TILE_ASPECT` / `PRODUCT_TILE_FRAME_ASPECT` only. Remove the `alignSelf:start` (no longer needed).
-- `src/routes/admin.photos.tsx` — mirror the simplification (drop `useWideFrame`, `tileAspectFor`, `frameAspectFor`).
-- Pad horizontal canvas: bump `column-gap` to `1.5rem` desktop / `1.25rem` tablet in `src/styles.css` so tiles breathe.
+**Component**
+- `src/components/gallery/GalleryLightbox.tsx`
+  - New "SHOP THE LOOK" rail under the caption — horizontal scroll of product tiles resolved from `current_catalog.json` by slug
+  - Per-tile "ADD TO INQUIRY" button (writes to existing `inquiryStore`)
+  - "START A BOARD FROM THIS" secondary action — opens `/studio` with project context in query params
 
-If you'd rather keep wide tiles, the only real fix is masonry (CSS `columns` or a JS masonry lib) — say the word and I'll go that route instead.
+**Data**
+- Bind slugs for 3–5 hero projects manually first (no admin UI yet)
 
-### 2. Atelier — re-add scroll motion
+---
 
-Three additions, all framer-motion (already in the bundle):
+## Pass 2 — Tray → Brief handover (#4)
 
-- **Hero pair fade-up** — `IMAGINED. / DESIGNED. / REALIZED.` lines stagger in on mount via `motion.h2` with delay 0/120/240ms. Eyebrow + body paragraph fade in after.
-- **Section reveals** — wrap each top-level section (`THE HIVE`, capabilities, FAQ, CTA) with a `whileInView={{ opacity: 1, y: 0 }}` from `{opacity: 0, y: 24}`, `viewport={{ once: true, margin: "-15%" }}`.
-- **Approach triptych pin** — the `APPROACH_STEPS` (01 Imagined / 02 Designed / 03 Realized) get a sticky container: tall outer wrapper, sticky inner that swaps the active step based on `useScroll` progress (number+label crossfade, no layout shift). Matches the "scroll-pinned triptych" the comment promised.
+**Goal:** Inquiry tray and Studio brief stop being parallel intake systems.
 
-Files:
-- `src/routes/atelier.tsx` only.
+- `src/components/collection/InquiryTray.tsx`
+  - When `items.length >= 3`, add secondary "BUILD A BRIEF" action next to the existing inquiry CTA
+  - Routes to `/studio` with tray contents preloaded into a new draft brief
+- `src/routes/studio.tsx` (or its draft loader)
+  - Accept `?from=tray` and hydrate the brief's product list from `inquiryStore`
 
-### 3. Verify
+---
 
-After build, screenshot `/atelier` at 1280×1800 to confirm scroll motion fires, and `/collection?cat=all` to confirm row gaps are even.
+## Pass 3 — Boards → one-click inquiry (#5)
 
-## Out of scope
+**Goal:** Remove the `mailto:` dead-end. Client clicks one button and the Hive gets a real inquiry.
 
-- No image swaps, no copy changes, no layout reflow on atelier beyond adding motion wrappers.
-- No catalog / data / inventory touched.
+- `src/components/studio/BoardDeck.tsx:402`
+  - Replace `mailto:` with a server function call that creates an `inquiries` row with `source: 'board'` and `board_id` reference
+  - Confirmation toast + state flip on success
 
-## Decision needed
+**Schema**
+- Add `source text` and `board_id uuid references style_boards(id)` to `public.inquiries` (nullable, no backfill)
+- Migration includes the GRANT block
 
-Confirm option 1 (drop wide-aspect, single portrait frame) vs. masonry. Default is drop wide-aspect — fastest path out of the chaos.
+---
+
+## Pass 4 — Admin cache + concurrency fixes (HIGH bugs from earlier audit)
+
+**Goal:** Admin actions actually reflect on `/collection`. Two admins can't stomp each other.
+
+- `src/routes/admin.image-qa.tsx`
+  - `toggleItemVisibility` → call `invalidateCollectionCatalog()` after success
+  - Fix `expectedUpdatedAt` by selecting `updated_at` in the read query
+- `src/routes/admin.colors.tsx`
+  - Add `invalidateCollectionCatalog()` to `overrideColor`, `setColorLocked`, `clearColorTag`
+- `src/lib/photos-admin.functions.ts`
+  - Add `expectedUpdatedAt` concurrency guard to `reorderItems`
+- `src/lib/inventory-images.functions.ts:143`
+  - Add `expectedUpdatedAt` to `setCoverFocal`
+
+---
+
+## Out of scope (deliberate)
+
+- Mobile polish (#8) — separate pass, low structural risk
+- Catalog-engine unification in Studio picker (#7) — larger refactor, defer
+- Admin UI for binding gallery slugs — manual bind first, build UI only if needed
+- New animations, new pages, design changes
+
+---
+
+## Order & gates
+
+1. Pass 1 → verify lightbox CTA fires and tray updates from `/gallery`
+2. Pass 2 → verify tray with 3+ items deep-links into `/studio` with items present
+3. Pass 3 → migration first (dry-run review), then component swap, verify inquiry row lands
+4. Pass 4 → one file at a time, verify cache invalidation on `/collection` after each toggle
+
+Stop after each pass for your review before starting the next.
