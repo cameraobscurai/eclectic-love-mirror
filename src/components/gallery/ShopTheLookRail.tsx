@@ -42,9 +42,9 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
                 params={{ slug: p.slug }}
                 className="block aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
-                {p.primaryImage && (
+                {p.primaryImage?.url && (
                   <img
-                    src={p.primaryImage}
+                    src={p.primaryImage.url}
                     alt={p.title ?? p.slug}
                     loading="lazy"
                     className="h-full w-full object-cover"
