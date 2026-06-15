@@ -32,8 +32,8 @@ export const Route = createFileRoute("/")({
       // Preload the desktop LCP poster (frame 02 — leftmost always-visible
       // frame on md screens) and the mobile LCP poster set. AVIF first; the
       // browser falls back if it can't decode it.
-      { rel: "preload", as: "image", href: "/media/home/02-poster.avif", type: "image/avif", fetchpriority: "high" },
-      { rel: "preload", as: "image", href: "/media/home/01-poster.avif", type: "image/avif", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: "/media/home/02-poster.avif", type: "image/avif", fetchPriority: "high" },
+      { rel: "preload", as: "image", href: "/media/home/01-poster.avif", type: "image/avif", fetchPriority: "high" },
     ],
     scripts: [
       {
