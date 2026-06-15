@@ -179,12 +179,10 @@ function CollectionPage() {
   // — the alternative blocks LCP on a paginated DB round-trip.
   useEffect(() => {
     let alive = true;
-    console.log("[catalog] overlay effect mounting");
     getCollectionCatalog().then((full) => {
-      console.log("[catalog] overlay resolved, products:", full.products.length);
       if (alive) setData(full);
-    }).catch((e) => {
-      console.warn("[catalog] overlay failed", e);
+    }).catch(() => {
+      /* overlay failure is non-fatal — base catalog is already on screen */
     });
     return () => { alive = false; };
   }, []);
