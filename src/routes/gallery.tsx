@@ -6,7 +6,12 @@ import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
 import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
-import { galleryProjects, type GalleryProject } from "@/content/gallery-projects";
+import {
+  galleryProjects,
+  GALLERY_EXCLUDE_PLANNERS,
+  GALLERY_NDA_PLANNERS,
+  type GalleryProject,
+} from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
 import { morphOpen } from "@/lib/view-transition";
