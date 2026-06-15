@@ -4,6 +4,7 @@ import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { CrossfadeImage } from "./CrossfadeImage";
 import { LightboxParallax } from "./LightboxParallax";
+import { ShopTheLookRail } from "./ShopTheLookRail";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
@@ -332,6 +333,9 @@ export function GalleryLightbox({
               <p className="mt-6 text-sm leading-relaxed text-cream/65 normal-case max-w-[42ch]">
                 {project.summary}
               </p>
+            )}
+            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
+              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
             )}
           </div>
 
