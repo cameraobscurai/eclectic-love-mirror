@@ -251,13 +251,13 @@ export function GalleryLightbox({
               maxScale={4}
               centerOnInit
               doubleClick={{ mode: "toggle", step: 1.6, animationTime: 220 }}
-              wheel={{ step: 0.18, activationKeys: ["Control", "Meta"], smoothStep: 0.004 }}
+              wheel={{ step: 0.18, activationKeys: ["Control", "Meta"] }}
               pinch={{ step: 5 }}
               panning={{ disabled: !isZoomed, velocityDisabled: true }}
               onInit={(ref) => {
                 zoomApiRef.current = ref;
               }}
-              onTransformed={(_, state) => {
+              onTransformed={(_ref, state: { scale: number }) => {
                 setZoomScale(state.scale);
               }}
             >
