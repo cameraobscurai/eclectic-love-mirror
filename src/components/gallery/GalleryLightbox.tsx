@@ -334,6 +334,9 @@ export function GalleryLightbox({
                 {project.summary}
               </p>
             )}
+            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
+              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
+            )}
           </div>
 
 
