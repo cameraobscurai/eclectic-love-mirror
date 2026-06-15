@@ -257,7 +257,7 @@ export function GalleryLightbox({
               onInit={(ref) => {
                 zoomApiRef.current = ref;
               }}
-              onTransformed={(_ref, state: { scale: number }) => {
+              onTransform={(_ref: unknown, state: { scale: number }) => {
                 setZoomScale(state.scale);
               }}
             >
