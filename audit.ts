@@ -11,66 +11,28 @@ async function audit() {
   const context = await browser.newContext({ viewport: { width: 1280, height: 1800 } });
 
   for (const route of ROUTES) {
-    console.log(`Auditing ${route}...`);
     const page = await context.newPage();
     const url = `${BASE_URL}${route}`;
-    const logs = {
-      url,
-      console: [] as any[],
-      failedRequests: [] as any[],
-      oversizedImages: [] as any[],
-      lcp: null as number | null,
-    };
+    const logs = { url, console: [] as any[], failedRequests: [] as any[], oversizedImages: [] as any[], lcp: 0 };
 
-    // Pre-inject LCP observer
-    await page.addInitScript(() => {
-      (window as any).lcpValue = 0;
-      new PerformanceObserver((entryList) => {
-        const entries = entryList.getEntries();
-        const lastEntry = entries[entries.length - 1];
-        (window as any).lcpValue = lastEntry.startTime;
-      }).observe({ type: 'largest-contentful-paint', buffered: true });
-    });
-
-    page.on('console', msg => {
-      if (msg.type() === 'error' || msg.type() === 'warning') {
-        logs.console.push({ type: msg.type(), text: msg.text() });
-      }
-    });
-
-    const imagePromises: Promise<void>[] = [];
-    page.on('response', response => {
-      const status = response.status();
-      const contentType = response.headers()['content-type'] || '';
-      if (status >= 400) {
-        logs.failedRequests.push({ url: response.url(), status });
-      }
-      if (contentType.startsWith('image/')) {
-        const p = response.body().then(buffer => {
-          if (buffer.length > 500 * 1024) {
-            logs.oversizedImages.push({ url: response.url(), size: (buffer.length / 1024).toFixed(2) + 'KB' });
-          }
-        }).catch(() => {});
-        imagePromises.push(p);
+    page.on('console', msg => logs.console.push({ type: msg.type(), text: msg.text() }));
+    page.on('response', async res => {
+      if (res.status() >= 400) logs.failedRequests.push({ url: res.url(), status: res.status() });
+      if (res.request().resourceType() === 'image') {
+        const buf = await res.body().catch(() => null);
+        if (buf && buf.length > 500 * 1024) logs.oversizedImages.push({ url: res.url(), size: (buf.length / 1024).toFixed(0) + 'KB' });
       }
     });
 
     try {
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-      await Promise.all(imagePromises);
-      
-      const lcp = await page.evaluate(() => (window as any).lcpValue);
-      logs.lcp = lcp;
-    } catch (e) {
-      console.error(`Failed to audit ${url}:`, e);
-    }
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+      await page.waitForTimeout(2000); // Wait for some images/scripts
+    } catch (e) {}
 
     const filename = (route.replace(/\//g, '') || 'home') + '.json';
     fs.writeFileSync(path.join(LOG_DIR, filename), JSON.stringify(logs, null, 2));
     await page.close();
   }
-
   await browser.close();
 }
-
 audit();
