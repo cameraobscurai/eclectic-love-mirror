@@ -1,46 +1,54 @@
 import { chromium, devices } from 'playwright';
 
 async function runTest(viewport, name) {
-  const browser = await chromium.launch({ executablePath: '/bin/chromium' });
+  const browser = await chromium.launch({ executablePath: '/bin/chromium', args: ['--no-sandbox'] });
   const context = await browser.newContext({
     viewport: viewport,
-    userAgent: name === 'mobile' ? devices['iPhone 12'].userAgent : undefined
+    userAgent: name === 'mobile' ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1' : undefined
   });
   const page = await context.newPage();
+  const BASE_URL = 'http://localhost:8080';
   
   try {
     console.log(`Starting ${name} flow...`);
     
     // 1. Home
-    await page.goto('https://id-preview--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app/');
+    await page.goto(BASE_URL);
+    await page.waitForLoadState('networkidle');
     await page.screenshot({ path: `/tmp/browser/ux/${name}_01_home.png` });
     
     // 2. Collection
-    // Looking for a "Collection" or "Shop" link. Often in nav or hero.
-    // Based on common patterns, let's try to find a link that looks like "Shop" or "Collection"
-    const collectionLink = page.getByRole('link', { name: /collection|shop|products/i }).first();
-    if (await collectionLink.isVisible()) {
-        await collectionLink.click();
+    let collectionLink;
+    if (name === 'mobile') {
+        await page.locator('button[aria-label="Open menu"]').click();
+        await page.waitForTimeout(500);
+        collectionLink = page.locator('nav[aria-label="Mobile navigation"] a').filter({ hasText: /COLLECTION/i }).first();
     } else {
-        // Fallback: click first CTA in hero
-        await page.getByRole('button', { name: /shop|explore/i }).first().click();
+        collectionLink = page.locator('header nav a').filter({ hasText: /COLLECTION/i }).first();
     }
-    await page.waitForLoadState('networkidle');
+    await collectionLink.click();
+    await page.waitForURL('**/collection**');
     await page.screenshot({ path: `/tmp/browser/ux/${name}_02_collection.png` });
 
     // 3. Filter to Chandeliers
-    // Filters are often in a sidebar or a dropdown.
-    const chandelierFilter = page.getByRole('checkbox', { name: /chandelier/i }).or(page.getByText(/chandelier/i, { exact: false })).first();
+    // Looking for "Chandeliers" in the list or group
+    const chandelierFilter = page.locator('button, a, label').filter({ hasText: /^Chandeliers$/i }).first();
     if (await chandelierFilter.isVisible()) {
         await chandelierFilter.click();
-        await page.waitForTimeout(1000); // Wait for filter to apply
+        await page.waitForTimeout(1000);
+    } else {
+        // Try finding by text in the main area
+        const altFilter = page.getByText('Chandeliers', { exact: true }).first();
+        if (await altFilter.isVisible()) await altFilter.click();
     }
     await page.screenshot({ path: `/tmp/browser/ux/${name}_03_filtered.png` });
 
     // 4. Tap a product
-    // Clicking the first product image or title
-    await page.locator('a[href*="/product/"]').first().click();
-    await page.waitForLoadState('networkidle');
+    const firstProduct = page.locator('a[href*="/product/"]').first();
+    if (await firstProduct.isVisible()) {
+        await firstProduct.click();
+        await page.waitForURL('**/product/**');
+    }
     await page.screenshot({ path: `/tmp/browser/ux/${name}_04_product.png` });
 
     // 5. Inquiry
