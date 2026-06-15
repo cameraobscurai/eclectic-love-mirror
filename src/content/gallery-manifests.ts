@@ -784,37 +784,8 @@ export const brushCreekDiwanGalleryImages = createGalleryImages([...brushCreekDi
 
 // Flow: Friday details (day prep) → Ceremony details → Cocktail Hour → Tent (night)
 export const bishopsLodge42NorthGalleryPaths = [
-  // Friday — day-of details
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
-  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
-  // Ceremony details
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
-  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
-  // Cocktail Hour — golden hour ascending
+  // Owner-locked arc: cocktail hour → ceremony → tent → Friday details (Jill notes).
+  // Cocktail Hour — golden hour
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1980.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1983.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-1984.jpg",
@@ -849,7 +820,31 @@ export const bishopsLodge42NorthGalleryPaths = [
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2286.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2288.jpg",
   "BISHOPS-LODGE-42-NORTH/Cocktail_Hour__KGW-2293.jpg",
-  // Tent — night reception finale
+  // Ceremony details
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1478.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1481.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1483.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1489.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1494.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1496.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1498.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1506.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1515.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1517.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1520.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1521.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1523.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1532.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1543.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1544.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1571.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1576.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1577.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1602.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1603.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1606.jpg",
+  "BISHOPS-LODGE-42-NORTH/Details_-_Ceremony__KGW-1609.jpg",
+  // Tent — night reception
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2294.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2295.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2296.jpg",
@@ -860,6 +855,12 @@ export const bishopsLodge42NorthGalleryPaths = [
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2301.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2302.jpg",
   "BISHOPS-LODGE-42-NORTH/Details_-_Tent__KGW-2303.jpg",
+  // Friday — day-of details (coda)
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0371.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0372.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0373.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0374.jpg",
+  "BISHOPS-LODGE-42-NORTH/Friday_-_Details__KGW-0375.jpg",
 ] as const;
 
 export const bishopsLodge42NorthGalleryHero: GalleryImage = {
