@@ -85,7 +85,7 @@ export function CrossfadeImage({
         sizes={current.sizes}
         alt={current.alt}
         decoding="async"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-contain"
         draggable={false}
       />
       {next && (
@@ -95,7 +95,7 @@ export function CrossfadeImage({
           sizes={next.sizes}
           alt={next.alt}
           decoding="async"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
+          className="absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ease-out"
           style={{ opacity: nextReady ? 1 : 0 }}
           draggable={false}
         />
