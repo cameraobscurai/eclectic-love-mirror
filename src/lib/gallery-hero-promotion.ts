@@ -35,6 +35,31 @@ function keyFor(src: string): string {
   return decodeURIComponent(src.slice(i + marker.length));
 }
 
+/**
+ * Visual-bucket key — proxy for "what kind of shot is this". Filenames
+ * follow `<scene>__<subscene>__<id>` conventions (chinledinner__GUID,
+ * gahan__Tablescape_2, Fireside__Lounge_Close_Up, Favorites__N_B_8, etc).
+ * We strip trailing indices / GUIDs / "close_up"/"detail" qualifiers, then
+ * bucket on the first two `__` segments so four near-identical tablescape
+ * frames don't all land up front.
+ */
+function bucketFor(key: string): string {
+  const file = key.split("/").pop() ?? key;
+  let base = file.replace(/\.[a-z0-9]+$/i, "").toLowerCase();
+  // Strip trailing GUID-ish blocks (8+ hex chars, optionally dashed).
+  base = base.replace(/[_\- ]?[a-f0-9]{8,}(?:-[a-f0-9]+)*$/i, "");
+  // Iteratively strip trailing indices, qualifiers, and stray punctuation.
+  for (let i = 0; i < 4; i++) {
+    base = base
+      .replace(/\d+$/i, "") // trailing digits (with or without separator)
+      .replace(/[_\- ](?:close[_\- ]?up|detail|details|floral|\+[_\- ]?floral)$/i, "")
+      .replace(/[_\-\s]+$/i, ""); // stray trailing separators
+  }
+  return base.split("__").slice(0, 2).join("__");
+}
+
+
+
 export function promoteHeroes(
   images: readonly GalleryImage[],
   opts: { topK?: number } = {},
@@ -42,28 +67,69 @@ export function promoteHeroes(
   const topK = opts.topK ?? TOP_K;
 
   const scored = images.map((img, idx) => {
-    const s = SCORES[keyFor(img.src)];
-    return { img, idx, wow: s?.wow ?? 0, product: s?.product ?? 0 };
+    const key = keyFor(img.src);
+    const s = SCORES[key];
+    // Slice index — split the gallery into topK equal segments. Combined
+    // with the filename bucket this guarantees diversity even when one
+    // photographer prefix dominates (Brooke→MKSADLER, Lynden→nb-25-…).
+    const slice = Math.min(topK - 1, Math.floor((idx / images.length) * topK));
+    return {
+      img,
+      idx,
+      key,
+      bucket: bucketFor(key),
+      slice,
+      wow: s?.wow ?? 0,
+      product: s?.product ?? 0,
+    };
   });
 
   if (scored.every((s) => s.wow === 0)) return [...images];
 
-  // Top of the field for THIS gallery. Require minimum product visibility so
-  // we never promote pure portraits / candids over a styled scene.
-  const ranked = [...scored]
+  const leadScore = scored[0]?.wow ?? 0;
+  const eligible = scored
     .filter((s) => s.product >= 3)
+    .filter((s) => s.wow >= ABSOLUTE_WOW || s.wow >= leadScore + RELATIVE_MARGIN)
     .sort((a, b) => b.wow - a.wow || a.idx - b.idx);
 
-  // Only promote plates that are meaningfully better than the curated lead.
-  const leadScore = scored[0]?.wow ?? 0;
-  const candidates = ranked
-    .filter((s) => s.wow >= ABSOLUTE_WOW || s.wow >= leadScore + RELATIVE_MARGIN)
-    .slice(0, topK);
+  if (eligible.length === 0) return [...images];
 
-  if (candidates.length === 0) return [...images];
+  // Greedy diversity pick: one plate per (bucket, slice) combo. This rules
+  // out near-identical tablescape variants AND back-to-back picks from the
+  // same arc segment.
+  const candidates: typeof eligible = [];
+  const usedBuckets = new Set<string>();
+  const usedSlices = new Set<number>();
+  for (const e of eligible) {
+    if (candidates.length >= topK) break;
+    if (usedBuckets.has(e.bucket) || usedSlices.has(e.slice)) continue;
+    candidates.push(e);
+    usedBuckets.add(e.bucket);
+    usedSlices.add(e.slice);
+  }
+  // Relax bucket constraint, keep slice constraint.
+  if (candidates.length < topK) {
+    for (const e of eligible) {
+      if (candidates.length >= topK) break;
+      if (candidates.includes(e)) continue;
+      if (usedSlices.has(e.slice)) continue;
+      candidates.push(e);
+      usedSlices.add(e.slice);
+    }
+  }
+  // Final fallback — fill remaining slots with next-best.
+  if (candidates.length < topK) {
+    for (const e of eligible) {
+      if (candidates.length >= topK) break;
+      if (candidates.includes(e)) continue;
+      candidates.push(e);
+    }
+  }
+
 
   const promotedIdx = new Set(candidates.map((c) => c.idx));
   const rest = scored.filter((s) => !promotedIdx.has(s.idx)).map((s) => s.img);
   return [...candidates.map((c) => c.img), ...rest];
 }
+
 
