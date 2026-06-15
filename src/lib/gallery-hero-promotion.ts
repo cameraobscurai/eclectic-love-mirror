@@ -35,6 +35,25 @@ function keyFor(src: string): string {
   return decodeURIComponent(src.slice(i + marker.length));
 }
 
+/**
+ * Visual-bucket key — proxy for "what kind of shot is this". Filenames
+ * follow `<scene>__<id>` conventions (chinledinner__, gahan__Tablescape_,
+ * Fireside__Lounge, Sangeet__, etc). We bucket on the longest stable prefix
+ * so four near-identical tablescape frames don't all land up front.
+ */
+function bucketFor(key: string): string {
+  const file = key.split("/").pop() ?? key;
+  // Drop extension, lowercase.
+  const base = file.replace(/\.[a-z0-9]+$/i, "").toLowerCase();
+  // Split on the first numeric run, GUID, or trailing index — keep the
+  // semantic prefix only.
+  const prefix = base.split(/[_\- ]?(?:\d{2,}|[a-f0-9]{8}-)/)[0];
+  // Also collapse `__close_up`, `__detail`, etc — anything after the second
+  // double-underscore is treated as an instance.
+  const parts = prefix.split("__");
+  return parts.slice(0, 2).join("__");
+}
+
 export function promoteHeroes(
   images: readonly GalleryImage[],
   opts: { topK?: number } = {},
@@ -42,28 +61,52 @@ export function promoteHeroes(
   const topK = opts.topK ?? TOP_K;
 
   const scored = images.map((img, idx) => {
-    const s = SCORES[keyFor(img.src)];
-    return { img, idx, wow: s?.wow ?? 0, product: s?.product ?? 0 };
+    const key = keyFor(img.src);
+    const s = SCORES[key];
+    return {
+      img,
+      idx,
+      key,
+      bucket: bucketFor(key),
+      wow: s?.wow ?? 0,
+      product: s?.product ?? 0,
+    };
   });
 
   if (scored.every((s) => s.wow === 0)) return [...images];
 
-  // Top of the field for THIS gallery. Require minimum product visibility so
-  // we never promote pure portraits / candids over a styled scene.
-  const ranked = [...scored]
+  // Eligible pool: meets product floor and the wow bar (absolute OR beats
+  // curated lead by margin).
+  const leadScore = scored[0]?.wow ?? 0;
+  const eligible = scored
     .filter((s) => s.product >= 3)
+    .filter((s) => s.wow >= ABSOLUTE_WOW || s.wow >= leadScore + RELATIVE_MARGIN)
     .sort((a, b) => b.wow - a.wow || a.idx - b.idx);
 
-  // Only promote plates that are meaningfully better than the curated lead.
-  const leadScore = scored[0]?.wow ?? 0;
-  const candidates = ranked
-    .filter((s) => s.wow >= ABSOLUTE_WOW || s.wow >= leadScore + RELATIVE_MARGIN)
-    .slice(0, topK);
+  if (eligible.length === 0) return [...images];
 
-  if (candidates.length === 0) return [...images];
+  // Greedy diversity pick: one plate per visual bucket until topK filled.
+  // If we run out of unique buckets (small gallery), fall back to next-best
+  // plate regardless of bucket so we still hit topK.
+  const candidates: typeof eligible = [];
+  const usedBuckets = new Set<string>();
+  for (const e of eligible) {
+    if (candidates.length >= topK) break;
+    if (usedBuckets.has(e.bucket)) continue;
+    candidates.push(e);
+    usedBuckets.add(e.bucket);
+  }
+  if (candidates.length < topK) {
+    for (const e of eligible) {
+      if (candidates.length >= topK) break;
+      if (candidates.includes(e)) continue;
+      candidates.push(e);
+    }
+  }
 
   const promotedIdx = new Set(candidates.map((c) => c.idx));
   const rest = scored.filter((s) => !promotedIdx.has(s.idx)).map((s) => s.img);
   return [...candidates.map((c) => c.img), ...rest];
 }
+
 
