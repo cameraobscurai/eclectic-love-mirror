@@ -328,3 +328,75 @@ function VenueIndex({ projects }: { projects: GalleryProject[] }) {
   );
 }
 
+// Planner ticker — same source-of-truth as /atelier, tuned for charcoal gallery surface.
+function PartnerTicker() {
+  const partners = useMemo(() => {
+    const excluded = new Set<string>([
+      ...GALLERY_EXCLUDE_PLANNERS.map((p) => p.toUpperCase()),
+      ...GALLERY_NDA_PLANNERS.map((p) => p.toUpperCase()),
+    ]);
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const p of galleryProjects) {
+      const name = p.planner.trim().toUpperCase();
+      if (!name || seen.has(name)) continue;
+      if ([...excluded].some((ex) => name.includes(ex))) continue;
+      seen.add(name);
+      out.push(name);
+    }
+    return out.sort((a, b) => a.localeCompare(b));
+  }, []);
+
+  if (partners.length === 0) return null;
+
+  return (
+    <section
+      aria-labelledby="partner-ticker-heading"
+      className="bg-charcoal px-6 lg:px-12 pt-2 pb-10 lg:pb-14"
+    >
+      <div className="max-w-[1600px] mx-auto">
+        <h2
+          id="partner-ticker-heading"
+          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-5"
+        >
+          IN PARTNERSHIP WITH
+        </h2>
+        <div
+          className="group relative -mx-6 overflow-hidden md:-mx-12"
+          aria-label="Planner partners"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          }}
+        >
+          <div className="flex w-max animate-[partner-marquee_60s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+            {[0, 1].map((dup) => (
+              <ul
+                key={dup}
+                aria-hidden={dup === 1}
+                className="flex shrink-0 items-center gap-x-10 pr-10 text-[11px] uppercase tracking-[0.32em] text-cream/70"
+              >
+                {partners.map((name) => (
+                  <li key={`${dup}-${name}`} className="flex items-center gap-x-10 whitespace-nowrap">
+                    <span>{name}</span>
+                    <span aria-hidden className="text-cream/25">·</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+        <style>{`
+          @keyframes partner-marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+          }
+        `}</style>
+      </div>
+    </section>
+  );
+}
+
+
