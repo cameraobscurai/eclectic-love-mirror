@@ -6,6 +6,7 @@ import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState }
 import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
+  getCollectionCatalogBase,
   getCollectionCatalog,
   type CollectionProduct,
   type CatalogPayload,
