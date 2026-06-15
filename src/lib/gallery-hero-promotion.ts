@@ -69,11 +69,16 @@ export function promoteHeroes(
   const scored = images.map((img, idx) => {
     const key = keyFor(img.src);
     const s = SCORES[key];
+    // Slice index — split the gallery into topK equal segments. Combined
+    // with the filename bucket this guarantees diversity even when one
+    // photographer prefix dominates (Brooke→MKSADLER, Lynden→nb-25-…).
+    const slice = Math.min(topK - 1, Math.floor((idx / images.length) * topK));
     return {
       img,
       idx,
       key,
       bucket: bucketFor(key),
+      slice,
       wow: s?.wow ?? 0,
       product: s?.product ?? 0,
     };
@@ -81,8 +86,6 @@ export function promoteHeroes(
 
   if (scored.every((s) => s.wow === 0)) return [...images];
 
-  // Eligible pool: meets product floor and the wow bar (absolute OR beats
-  // curated lead by margin).
   const leadScore = scored[0]?.wow ?? 0;
   const eligible = scored
     .filter((s) => s.product >= 3)
@@ -91,17 +94,30 @@ export function promoteHeroes(
 
   if (eligible.length === 0) return [...images];
 
-  // Greedy diversity pick: one plate per visual bucket until topK filled.
-  // If we run out of unique buckets (small gallery), fall back to next-best
-  // plate regardless of bucket so we still hit topK.
+  // Greedy diversity pick: one plate per (bucket, slice) combo. This rules
+  // out near-identical tablescape variants AND back-to-back picks from the
+  // same arc segment.
   const candidates: typeof eligible = [];
   const usedBuckets = new Set<string>();
+  const usedSlices = new Set<number>();
   for (const e of eligible) {
     if (candidates.length >= topK) break;
-    if (usedBuckets.has(e.bucket)) continue;
+    if (usedBuckets.has(e.bucket) || usedSlices.has(e.slice)) continue;
     candidates.push(e);
     usedBuckets.add(e.bucket);
+    usedSlices.add(e.slice);
   }
+  // Relax bucket constraint, keep slice constraint.
+  if (candidates.length < topK) {
+    for (const e of eligible) {
+      if (candidates.length >= topK) break;
+      if (candidates.includes(e)) continue;
+      if (usedSlices.has(e.slice)) continue;
+      candidates.push(e);
+      usedSlices.add(e.slice);
+    }
+  }
+  // Final fallback — fill remaining slots with next-best.
   if (candidates.length < topK) {
     for (const e of eligible) {
       if (candidates.length >= topK) break;
@@ -109,6 +125,7 @@ export function promoteHeroes(
       candidates.push(e);
     }
   }
+
 
   const promotedIdx = new Set(candidates.map((c) => c.idx));
   const rest = scored.filter((s) => !promotedIdx.has(s.idx)).map((s) => s.img);
