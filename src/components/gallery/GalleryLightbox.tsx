@@ -4,6 +4,7 @@ import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { CrossfadeImage } from "./CrossfadeImage";
 import { LightboxParallax } from "./LightboxParallax";
+import { ShopTheLookRail } from "./ShopTheLookRail";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
