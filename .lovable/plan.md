@@ -1,84 +1,94 @@
-# Plan: Glue The Site Together
+# Gallery polish
 
-Four passes. Ship in order. Each pass is independently shippable and reversible.
+## What you asked for
+1. Product-centric plate ordering inside each gallery, honoring Jill's notes
+2. Lightbox: pinch-zoom + persistent counter
+3. Index: hover thumbnail preview
+4. Filmstrip: ken-burns on active, fix chevron flicker, snap tightening
 
----
-
-## Pass 1 — Gallery becomes a funnel (#3 + #6)
-
-**Goal:** Gallery stops being a dead-end. Every lightbox can convert to inquiry or brief.
-
-**Schema**
-- Add `relatedInventorySlugs: string[]` to `GalleryProject` in `src/data/gallery-projects.ts`
-- Optional `shopTheLookEnabled?: boolean` per project (default true when slugs exist)
-
-**Component**
-- `src/components/gallery/GalleryLightbox.tsx`
-  - New "SHOP THE LOOK" rail under the caption — horizontal scroll of product tiles resolved from `current_catalog.json` by slug
-  - Per-tile "ADD TO INQUIRY" button (writes to existing `inquiryStore`)
-  - "START A BOARD FROM THIS" secondary action — opens `/studio` with project context in query params
-
-**Data**
-- Bind slugs for 3–5 hero projects manually first (no admin UI yet)
+No image uploads, no destructive ops, no schema changes. All changes are additive to existing files.
 
 ---
 
-## Pass 2 — Tray → Brief handover (#4)
+## Pass 1 — Plate ordering (the hard one)
 
-**Goal:** Inquiry tray and Studio brief stop being parallel intake systems.
+### Approach
+Hybrid: Jill's grammar comes first, AI vision-rank breaks ties.
 
-- `src/components/collection/InquiryTray.tsx`
-  - When `items.length >= 3`, add secondary "BUILD A BRIEF" action next to the existing inquiry CTA
-  - Routes to `/studio` with tray contents preloaded into a new draft brief
-- `src/routes/studio.tsx` (or its draft loader)
-  - Accept `?from=tray` and hydrate the brief's product list from `inquiryStore`
+1. **Score every plate** in each populated gallery via Lovable AI Gateway (`google/gemini-3-flash-preview`). One image → one JSON object:
+   - `productScore` (0-5): how much rentable Hive decor is in frame (tables, chairs, lounges, tablescapes, florals, lighting, rugs, bars)
+   - `tags`: subset of `{tablescape, lounge, ceremony, tent-exterior, room-shot, florals, detail-close, portrait, landscape, dance, night, day}`
+   - `lifestyleScore` (0-5): editorial-lifestyle vs. snapshot-portrait
+2. **Apply Jill's grammar** per gallery from `curationNotes`. Encoded as a small rule table:
+   - `amangiri`: chinle dinner → lounge (amphitheater) → landscape → fireside; drop pool-deck filenames
+   - `aspen-event-works`: day → personal interleaved → night
+   - `lynden-lane`: exclude `1083`, lead with `1143`
+   - `brooke-keegan`: lead MKSadler-4118
+   - `42-north`: cocktail → ceremony → tent → friday details
+   - `love-this-day`: color-grouped Westworld arc
+   - others without explicit notes: sort by `(productScore * 0.7 + lifestyleScore * 0.3)` desc, then interleave to avoid 3+ similar tags in a row.
+3. **Bake** results into `src/data/gallery/plate-order.json` (`{ galleryNumber: orderedSrcs[] }`). Script lives at `scripts/order-gallery-plates.mjs`.
+4. **Load** the manifest in `gallery-projects.ts` — apply ordering to `detailImages` at module init. Falls back to original order if a src isn't in the manifest. Zero runtime cost.
 
----
+### Cost
+~15 galleries × ~25 plates = ~400 Gemini Flash vision calls. Small.
 
-## Pass 3 — Boards → one-click inquiry (#5)
-
-**Goal:** Remove the `mailto:` dead-end. Client clicks one button and the Hive gets a real inquiry.
-
-- `src/components/studio/BoardDeck.tsx:402`
-  - Replace `mailto:` with a server function call that creates an `inquiries` row with `source: 'board'` and `board_id` reference
-  - Confirmation toast + state flip on success
-
-**Schema**
-- Add `source text` and `board_id uuid references style_boards(id)` to `public.inquiries` (nullable, no backfill)
-- Migration includes the GRANT block
-
----
-
-## Pass 4 — Admin cache + concurrency fixes (HIGH bugs from earlier audit)
-
-**Goal:** Admin actions actually reflect on `/collection`. Two admins can't stomp each other.
-
-- `src/routes/admin.image-qa.tsx`
-  - `toggleItemVisibility` → call `invalidateCollectionCatalog()` after success
-  - Fix `expectedUpdatedAt` by selecting `updated_at` in the read query
-- `src/routes/admin.colors.tsx`
-  - Add `invalidateCollectionCatalog()` to `overrideColor`, `setColorLocked`, `clearColorTag`
-- `src/lib/photos-admin.functions.ts`
-  - Add `expectedUpdatedAt` concurrency guard to `reorderItems`
-- `src/lib/inventory-images.functions.ts:143`
-  - Add `expectedUpdatedAt` to `setCoverFocal`
+### Safety
+- Script is **dry-run first** → writes a proposal JSON + side-by-side preview HTML I can show you → you approve → apply writes the final manifest.
+- Existing `detailImages` arrays stay untouched. Hero `coverDirective` arc stays untouched.
+- If anything looks wrong, deleting one JSON file reverts everything.
 
 ---
 
-## Out of scope (deliberate)
+## Pass 2 — UI polish (shipped as separate small commits)
 
-- Mobile polish (#8) — separate pass, low structural risk
-- Catalog-engine unification in Studio picker (#7) — larger refactor, defer
-- Admin UI for binding gallery slugs — manual bind first, build UI only if needed
-- New animations, new pages, design changes
+### Lightbox: zoom + counter
+- Add `react-zoom-pan-pinch` (~6kb, MIT). Wrap `CrossfadeImage` in a pinch/wheel zoom container on mobile + cmd-scroll on desktop. Double-tap to zoom, drag to pan, double-tap to reset.
+- Move the `01 / 12` counter from the sidebar into a small persistent badge bottom-left on the hero plate (always visible, including when scrolling the sidebar on tall screens). Sidebar counter stays for redundancy on mobile.
+
+### Index: hover thumbnail
+- On `≥ lg` only: cursor-following thumbnail card (~280×340) shows the gallery's cover when hovering each text row. Charcoal frame, subtle fade-in, follows pointer with `requestAnimationFrame` (no library). Mobile keeps current text-only.
+
+### Filmstrip polish
+- Active card gets slow ken-burns (scale 1 → 1.04 over 8s, reverse on inactive). Uses existing `prefers-reduced-motion` guard.
+- Chevron disabled-state flicker — currently the buttons reflow as `disabled` swaps. Fix by always rendering, opacity transition driven by data attribute.
+- Tighten `scroll-snap` to `mandatory` + add small `scroll-margin-inline` so the active card lands flush, not half-pixel off.
 
 ---
 
-## Order & gates
+## Files
 
-1. Pass 1 → verify lightbox CTA fires and tray updates from `/gallery`
-2. Pass 2 → verify tray with 3+ items deep-links into `/studio` with items present
-3. Pass 3 → migration first (dry-run review), then component swap, verify inquiry row lands
-4. Pass 4 → one file at a time, verify cache invalidation on `/collection` after each toggle
+**New**
+- `scripts/order-gallery-plates.mjs` — dry-run + apply
+- `src/data/gallery/plate-order.json` — baked manifest
+- `src/lib/gallery-plate-ordering.ts` — apply manifest at module init
 
-Stop after each pass for your review before starting the next.
+**Edited**
+- `src/content/gallery-projects.ts` — import + apply ordering
+- `src/components/gallery/GalleryLightbox.tsx` — zoom wrapper + persistent counter
+- `src/components/gallery/CrossfadeImage.tsx` — accept transform from zoom wrapper
+- `src/components/gallery/GalleryIndex.tsx` — hover thumbnail
+- `src/components/gallery/GalleryFilmstrip.tsx` — chevron flicker, snap
+- `src/components/gallery/GalleryProjectCard.tsx` — ken-burns on `active`
+
+**Added dep**
+- `react-zoom-pan-pinch`
+
+---
+
+## Order of operations
+1. Build + run the ordering script in dry-run mode. Show you the proposed reorder for 2-3 galleries (Amangiri, Santa Fe, Love This Day) as side-by-side HTML before/after. You approve or redirect.
+2. Apply the manifest, ship the gallery-projects wire-up. Verify /gallery still renders.
+3. Ship Filmstrip polish (smallest, lowest risk).
+4. Ship Index hover thumbnail.
+5. Ship Lightbox zoom + counter.
+
+Each step is its own commit. Any one can revert without touching the others.
+
+---
+
+## Not in scope
+- New Drive uploads (folders are already mirrored where they exist)
+- Cover hero swaps (those are owner-locked via `coverDirective`)
+- Pending galleries (#3, #5, #11, #12 if still empty — they show placeholders until folders land)
+- Performance pass (separate request per the perf memory; never batched)

@@ -43,7 +43,7 @@ export function GalleryProjectCard({
           className={[
             "relative aspect-[4/5] overflow-hidden bg-charcoal ring-1 ring-cream/5 transition-shadow duration-500",
             active
-              ? "shadow-[0_25px_60px_-12px_rgba(0,0,0,0.55)]"
+              ? "shadow-[0_25px_60px_-12px_rgba(0,0,0,0.55)] gallery-card-active"
               : "shadow-2xl shadow-black/40",
           ].join(" ")}
         >
@@ -55,9 +55,10 @@ export function GalleryProjectCard({
             loading={index < 2 ? "eager" : "lazy"}
             decoding="async"
             {...(index === 0 ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="gallery-card-img absolute inset-0 w-full h-full object-cover will-change-transform"
             draggable={false}
           />
+
 
           {pending && (
             <div className="absolute inset-0 flex items-end justify-start p-6 pointer-events-none">
