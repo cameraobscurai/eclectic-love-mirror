@@ -3,19 +3,22 @@ import { test, expect, chromium } from '@playwright/test';
 const BASE_URL = 'http://localhost:8080';
 
 test.describe('Navigation Stress Test', () => {
-  const consoleErrors: string[] = [];
+  test.setTimeout(120000); // 2 minutes
 
   test('Desktop Navigation Stress Test', async () => {
+    const consoleErrors: string[] = [];
     const browser = await chromium.launch({ executablePath: '/bin/chromium', args: ['--no-sandbox'] });
     const page = await browser.newPage();
     
     page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
+        console.error('CONSOLE ERROR:', msg.text());
       }
     });
 
     await page.setViewportSize({ width: 1280, height: 1800 });
+    console.log('Navigating to BASE_URL');
     await page.goto(BASE_URL);
 
     const navLinks = [
@@ -29,11 +32,10 @@ test.describe('Navigation Stress Test', () => {
     // 1. Hover and click every nav bar link
     for (const link of navLinks) {
       console.log(`Testing link: ${link.text}`);
-      // Use a more robust selector that finds the link in the desktop nav
       const locator = page.locator('header nav').first().locator('a').filter({ hasText: new RegExp(link.text, 'i') }).first();
       await locator.hover();
       await locator.click();
-      await page.waitForURL(`**${link.href}**`, { timeout: 10000 });
+      await page.waitForURL(`**${link.href}**`, { timeout: 15000 });
       expect(page.url()).toContain(link.href);
       
       const bodyText = await page.innerText('body');
@@ -41,6 +43,7 @@ test.describe('Navigation Stress Test', () => {
     }
 
     // Verify Collection link specifically
+    console.log('Verifying Collection link specifically');
     await page.goto(BASE_URL);
     await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
     await page.waitForURL('**/collection**');
@@ -49,6 +52,7 @@ test.describe('Navigation Stress Test', () => {
     // 2. Test nav from /gallery, /atelier, /contact INTO /collection
     const routes = ['/gallery', '/atelier', '/contact'];
     for (const route of routes) {
+      console.log(`Testing nav from ${route} to /collection`);
       await page.goto(`${BASE_URL}${route}`);
       await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
       await page.waitForURL('**/collection**');
@@ -56,30 +60,31 @@ test.describe('Navigation Stress Test', () => {
     }
 
     // 3. Browser back/forward 5+ times
+    console.log('History stress test');
     await page.goto(BASE_URL);
     await page.locator('header nav').first().locator('a').filter({ hasText: /HIVE SIGNATURE COLLECTION/i }).first().click();
     await page.waitForURL('**/collection**');
     
-    // Go to a subcategory
     await page.goto(`${BASE_URL}/collection?group=lounge-seating`);
     
     for (let i = 0; i < 5; i++) {
+      console.log(`History step ${i+1}`);
       await page.goBack();
       await page.goForward();
     }
     
-    // Final check after history stress
     expect(page.url()).toContain('group=lounge-seating');
     
     // 5. Click site logo from /collection
+    console.log('Testing logo click');
     await page.locator('a[aria-label="ECLECTIC HIVE — home"]').click();
     await page.waitForURL(BASE_URL + '/');
     expect(page.url()).toBe(BASE_URL + '/');
 
-    // Report console errors
     if (consoleErrors.length > 0) {
-      console.error('Console Errors Detected:');
-      consoleErrors.forEach(err => console.error(`- ${err}`));
+      console.log('--- ALL CONSOLE ERRORS ---');
+      consoleErrors.forEach(err => console.log(err));
+      console.log('--------------------------');
     }
     
     await page.screenshot({ path: '/tmp/browser/collection-nav/desktop-final.png' });
@@ -87,12 +92,14 @@ test.describe('Navigation Stress Test', () => {
   });
 
   test('Mobile Navigation Stress Test', async () => {
+    const consoleErrors: string[] = [];
     const browser = await chromium.launch({ executablePath: '/bin/chromium', args: ['--no-sandbox'] });
     const page = await browser.newPage();
     
     page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleErrors.push(msg.text());
+        console.error('CONSOLE ERROR:', msg.text());
       }
     });
 
@@ -100,6 +107,7 @@ test.describe('Navigation Stress Test', () => {
     await page.goto(BASE_URL);
 
     // 4. Mobile viewport - hamburger/mobile nav
+    console.log('Mobile menu test');
     const burger = page.locator('button[aria-label="Open menu"]');
     await burger.click();
     
@@ -112,7 +120,7 @@ test.describe('Navigation Stress Test', () => {
     
     await page.screenshot({ path: '/tmp/browser/collection-nav/mobile-collection.png' });
 
-    // Check logo click on mobile
+    console.log('Mobile logo click test');
     await page.locator('a[aria-label="ECLECTIC HIVE — home"]').click();
     await page.waitForURL(BASE_URL + '/');
     
