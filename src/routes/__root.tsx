@@ -12,6 +12,7 @@ import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
 import { Toaster } from "../components/ui/sonner";
+import { InquiryTray } from "../components/collection/InquiryTray";
 import { installServerFnAuth } from "../lib/server-fn-auth";
 
 // Install the Supabase → server-fn Authorization bridge as early as possible
@@ -205,6 +206,7 @@ function RootComponent() {
         <Outlet />
         {!hideFooter && <Footer />}
       </div>
+      {!isAdmin && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
       <Toaster />
     </>
