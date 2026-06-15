@@ -508,19 +508,39 @@ function PartnerRolodex() {
 
   return (
     <Section eyebrow="IN PARTNERSHIP WITH">
-      <ul
-        className="flex flex-wrap gap-x-6 gap-y-3 max-w-4xl text-[11px] uppercase tracking-[0.22em] text-charcoal/75"
+      <div
+        className="group relative -mx-6 overflow-hidden md:-mx-12"
         aria-label="Planner partners"
+        style={{
+          maskImage:
+            "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+        }}
       >
-        {partners.map((name, i) => (
-          <li key={name} className="flex items-center gap-6">
-            <span>{name}</span>
-            {i < partners.length - 1 && (
-              <span aria-hidden className="text-charcoal/25">·</span>
-            )}
-          </li>
-        ))}
-      </ul>
+        <div className="flex w-max animate-[partner-marquee_60s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+          {[0, 1].map((dup) => (
+            <ul
+              key={dup}
+              aria-hidden={dup === 1}
+              className="flex shrink-0 items-center gap-x-10 pr-10 text-[11px] uppercase tracking-[0.32em] text-charcoal/70"
+            >
+              {partners.map((name) => (
+                <li key={`${dup}-${name}`} className="flex items-center gap-x-10 whitespace-nowrap">
+                  <span>{name}</span>
+                  <span aria-hidden className="text-charcoal/25">·</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+      <style>{`
+        @keyframes partner-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+      `}</style>
     </Section>
   );
 }
