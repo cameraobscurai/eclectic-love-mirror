@@ -698,13 +698,10 @@ function CollectionPage() {
   // The category name is owned by the rail. The utility bar stays silent
   // unless the user is actively searching.
   const trimmedQ = q.trim();
-  let resultMeta: string;
-  if (trimmedQ) {
-    const n = visibleProducts.length;
-    resultMeta = `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`;
-  } else {
-    resultMeta = "";
-  }
+  const n = visibleProducts.length;
+  const resultMeta = trimmedQ
+    ? `${n} ${n === 1 ? "result" : "results"} matching “${trimmedQ}”`
+    : `${n} ${n === 1 ? "piece" : "pieces"}`;
 
   // ---------- Heading height tracking (for sticky stack offset) ----------
   // The static "THE COLLECTION" block sits above the sticky utility bar.
