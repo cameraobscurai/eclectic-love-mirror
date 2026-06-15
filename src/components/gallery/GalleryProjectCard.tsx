@@ -70,15 +70,15 @@ export function GalleryProjectCard({
           )}
         </div>
 
-        {/* Caption — planner eyebrow → location → year */}
+        {/* Caption — planner promoted to co-headline (trade proof: "Easton × Eclectic Hive") */}
         <div className="mt-5 text-cream">
-          <p className="text-[9px] uppercase tracking-[0.32em] text-cream/40 truncate">
+          <h3 className="text-[12px] uppercase tracking-[0.26em] text-cream truncate">
             {project.planner}
-          </p>
-          <div className="mt-1.5 flex items-baseline justify-between gap-6">
-            <h3 className="text-[11px] uppercase tracking-[0.24em] text-cream/85 truncate">
+          </h3>
+          <div className="mt-2 flex items-baseline justify-between gap-6">
+            <p className="text-[11px] uppercase tracking-[0.24em] text-cream/55 truncate">
               {project.name}
-            </h3>
+            </p>
             <span className="text-cream/35 text-[10px] uppercase tracking-[0.28em] tabular-nums shrink-0">
               {project.year}
             </span>
