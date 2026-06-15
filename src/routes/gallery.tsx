@@ -219,7 +219,7 @@ function GalleryPage() {
   const handleOpen = (visibleIndex: number, sourceEl?: HTMLElement | null) => {
     const project = visibleProjects[visibleIndex];
     if (!project) return;
-    const realIndex = galleryProjects.findIndex((p) => p.number === project.number);
+    const realIndex = overriddenProjects.findIndex((p) => p.number === project.number);
     const next = realIndex >= 0 ? realIndex : 0;
     morphOpen(
       sourceEl ?? null,
@@ -230,7 +230,7 @@ function GalleryPage() {
 
   return (
     <main className="min-h-screen bg-charcoal text-cream">
-      <GalleryHero total={galleryProjects.length} />
+      <GalleryHero total={overriddenProjects.length} />
 
       {/* Region filters hidden for now */}
 
@@ -263,7 +263,7 @@ function GalleryPage() {
 
       {openIndex !== null && (
         <GalleryLightbox
-          projects={galleryProjects}
+          projects={overriddenProjects}
           initialProjectIndex={openIndex}
           onClose={() => setOpenIndex(null)}
         />
