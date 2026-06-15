@@ -245,14 +245,38 @@ export function GalleryLightbox({
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
           <LightboxParallax plateKey={plate.src} disabled={plateChanging || pending}>
-            <CrossfadeImage
-              srcKey={plate.src}
-              src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
-              srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
-              sizes="(min-width: 1024px) 66vw, 100vw"
-              alt={plate.alt}
-              onLoadingChange={handleLoadingChange}
-            />
+            <TransformWrapper
+              initialScale={1}
+              minScale={1}
+              maxScale={4}
+              centerOnInit
+              doubleClick={{ mode: "toggle", step: 1.6, animationTime: 220 }}
+              wheel={{ step: 0.18, activationKeys: ["Control", "Meta"], smoothStep: 0.004 }}
+              pinch={{ step: 5 }}
+              panning={{ disabled: !isZoomed, velocityDisabled: true }}
+              onInit={(ref) => {
+                zoomApiRef.current = ref;
+              }}
+              onTransformed={(_, state) => {
+                setZoomScale(state.scale);
+              }}
+            >
+              <TransformComponent
+                wrapperClass="!w-full !h-full"
+                contentClass="!w-full !h-full"
+              >
+                <div className="relative w-full h-full">
+                  <CrossfadeImage
+                    srcKey={plate.src}
+                    src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+                    srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
+                    sizes="(min-width: 1024px) 66vw, 100vw"
+                    alt={plate.alt}
+                    onLoadingChange={handleLoadingChange}
+                  />
+                </div>
+              </TransformComponent>
+            </TransformWrapper>
           </LightboxParallax>
 
           {pending && (
@@ -288,15 +312,29 @@ export function GalleryLightbox({
             );
           })}
 
-          {/* Plate paddles — hidden for pending projects */}
+          {/* Persistent counter badge — always visible bottom-left on the hero. */}
           {!pending && (
+            <div
+              aria-hidden
+              className="absolute left-4 lg:left-6 bottom-4 lg:bottom-6 z-10 pointer-events-none select-none"
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-charcoal/55 backdrop-blur-sm border border-cream/15 text-cream/80 text-[10px] uppercase tracking-[0.28em] tabular-nums">
+                <span>{(plateIndex + 1).toString().padStart(2, "0")}</span>
+                <span className="text-cream/35">/</span>
+                <span className="text-cream/55">{plates.length.toString().padStart(2, "0")}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Plate paddles — hidden when zoomed (panning takes over) or pending */}
+          {!pending && !isZoomed && (
             <>
               <button
                 type="button"
                 aria-label="Previous plate"
                 onClick={() => stepPlate(-1)}
                 disabled={plateIndex === 0}
-                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 z-10 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -305,12 +343,13 @@ export function GalleryLightbox({
                 aria-label="Next plate"
                 onClick={() => stepPlate(1)}
                 disabled={plateIndex === plates.length - 1}
-                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 z-10 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
             </>
           )}
+
         </div>
 
         {/* Sidebar */}
