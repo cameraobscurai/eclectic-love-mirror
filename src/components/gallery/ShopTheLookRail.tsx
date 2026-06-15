@@ -8,11 +8,11 @@ interface CatalogProduct {
   id: number | string;
   slug: string;
   title?: string;
-  primaryImage?: string;
+  primaryImage?: { url?: string } | null;
   categorySlug?: string;
 }
 
-const PRODUCTS = (catalog as { products: CatalogProduct[] }).products;
+const PRODUCTS = (catalog as unknown as { products: CatalogProduct[] }).products;
 const BY_SLUG = new Map(PRODUCTS.map((p) => [p.slug, p]));
 
 interface ShopTheLookRailProps {
