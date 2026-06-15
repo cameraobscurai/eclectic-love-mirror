@@ -284,8 +284,73 @@ function GalleryPage() {
   );
 }
 
-// Derived from gallery-projects.ts. Dedupes by short venue label (first segment
-// of `location` before the comma), keeps owner-curated order.
+// Shared marquee — single keyframe set, direction flips via reverse animation.
+function CreditMarquee({
+  eyebrow,
+  items,
+  direction = "left",
+  headingId,
+}: {
+  eyebrow: string;
+  items: string[];
+  direction?: "left" | "right";
+  headingId: string;
+}) {
+  if (items.length === 0) return null;
+  const animation =
+    direction === "left"
+      ? "animate-[credit-marquee_60s_linear_infinite]"
+      : "animate-[credit-marquee_60s_linear_infinite_reverse]";
+  return (
+    <section
+      aria-labelledby={headingId}
+      className="bg-charcoal px-6 lg:px-12 py-4"
+    >
+      <div className="max-w-[1600px] mx-auto">
+        <h2
+          id={headingId}
+          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-4"
+        >
+          {eyebrow}
+        </h2>
+        <div
+          className="group relative -mx-6 overflow-hidden md:-mx-12"
+          aria-label={eyebrow}
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          }}
+        >
+          <div
+            className={`flex w-max ${animation} group-hover:[animation-play-state:paused] motion-reduce:animate-none`}
+          >
+            {[0, 1].map((dup) => (
+              <ul
+                key={dup}
+                aria-hidden={dup === 1}
+                className="flex shrink-0 items-center gap-x-10 pr-10 text-[11px] uppercase tracking-[0.32em] text-cream/70"
+              >
+                {items.map((name) => (
+                  <li
+                    key={`${dup}-${name}`}
+                    className="flex items-center gap-x-10 whitespace-nowrap"
+                  >
+                    <span>{name}</span>
+                    <span aria-hidden className="text-cream/25">·</span>
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Venue ticker — right-to-left direction, complements the planner ticker.
 function VenueIndex({ projects }: { projects: GalleryProject[] }) {
   const venues = useMemo(() => {
     const seen = new Set<string>();
@@ -299,36 +364,17 @@ function VenueIndex({ projects }: { projects: GalleryProject[] }) {
     return out;
   }, [projects]);
 
-  if (venues.length === 0) return null;
-
   return (
-    <section
-      aria-labelledby="venue-index-heading"
-      className="bg-charcoal px-6 lg:px-12 pt-2 pb-10 lg:pb-14"
-    >
-      <div className="max-w-[1600px] mx-auto">
-        <h2
-          id="venue-index-heading"
-          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-5"
-        >
-          DELIVERED TO
-        </h2>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.22em] text-cream/70">
-          {venues.map((v, i) => (
-            <li key={v} className="flex items-center gap-5">
-              <span>{v}</span>
-              {i < venues.length - 1 && (
-                <span aria-hidden className="text-cream/25">·</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+    <CreditMarquee
+      eyebrow="DELIVERED TO"
+      items={venues}
+      direction="right"
+      headingId="venue-index-heading"
+    />
   );
 }
 
-// Planner ticker — same source-of-truth as /atelier, tuned for charcoal gallery surface.
+// Planner ticker — left-to-right, same source-of-truth as /atelier.
 function PartnerTicker() {
   const partners = useMemo(() => {
     const excluded = new Set<string>([
@@ -347,55 +393,21 @@ function PartnerTicker() {
     return out.sort((a, b) => a.localeCompare(b));
   }, []);
 
-  if (partners.length === 0) return null;
-
   return (
-    <section
-      aria-labelledby="partner-ticker-heading"
-      className="bg-charcoal px-6 lg:px-12 pt-2 pb-10 lg:pb-14"
-    >
-      <div className="max-w-[1600px] mx-auto">
-        <h2
-          id="partner-ticker-heading"
-          className="text-cream/40 text-[10px] uppercase tracking-[0.32em] mb-5"
-        >
-          IN PARTNERSHIP WITH
-        </h2>
-        <div
-          className="group relative -mx-6 overflow-hidden md:-mx-12"
-          aria-label="Planner partners"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-            WebkitMaskImage:
-              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
-          }}
-        >
-          <div className="flex w-max animate-[partner-marquee_60s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
-            {[0, 1].map((dup) => (
-              <ul
-                key={dup}
-                aria-hidden={dup === 1}
-                className="flex shrink-0 items-center gap-x-10 pr-10 text-[11px] uppercase tracking-[0.32em] text-cream/70"
-              >
-                {partners.map((name) => (
-                  <li key={`${dup}-${name}`} className="flex items-center gap-x-10 whitespace-nowrap">
-                    <span>{name}</span>
-                    <span aria-hidden className="text-cream/25">·</span>
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
-        </div>
-        <style>{`
-          @keyframes partner-marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-          }
-        `}</style>
-      </div>
-    </section>
+    <>
+      <CreditMarquee
+        eyebrow="IN PARTNERSHIP WITH"
+        items={partners}
+        direction="left"
+        headingId="partner-ticker-heading"
+      />
+      <style>{`
+        @keyframes credit-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+      `}</style>
+    </>
   );
 }
 
