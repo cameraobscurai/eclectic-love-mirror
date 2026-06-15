@@ -5,6 +5,7 @@ import {
   Inbox,
   BarChart3,
   ImageIcon,
+  Images,
   ScanEye,
   Palette,
   Upload,
@@ -59,7 +60,8 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
-  { to: "/admin/photos", label: "Photos", icon: ImageIcon },
+  { to: "/admin/photos", label: "Collection", icon: ImageIcon },
+  { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
   { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
@@ -76,7 +78,8 @@ const SITE: NavItem[] = [
 // Crumb labels keyed off the path. Falls back to last segment if missing.
 const CRUMB_LABELS: Record<string, string> = {
   "/admin": "Dashboard",
-  "/admin/photos": "Photos",
+  "/admin/photos": "Collection",
+  "/admin/gallery": "Gallery",
   "/admin/upload-hero": "Upload hero",
   "/admin/insights": "Inquiries & insights",
   "/admin/colors": "Color QA",
