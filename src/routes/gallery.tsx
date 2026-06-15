@@ -240,6 +240,10 @@ function GalleryPage() {
 
       <GalleryCta />
 
+      {/* Delivered to — venue index (derived from gallery project locations) */}
+      <VenueIndex projects={overriddenProjects} />
+
+
       {/* As Featured In — transparent press logos on charcoal.
           Width matches the CTA headline measure above for axial continuity. */}
       <section aria-labelledby="press-heading" className="bg-charcoal pb-16 lg:pb-20 px-6 lg:px-12">
