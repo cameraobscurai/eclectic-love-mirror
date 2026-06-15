@@ -350,6 +350,18 @@ button, a, [role="button"] {
   100% { background-position: -200% 0; }
 }
 
+/* Gallery filmstrip — slow ken-burns on active card. */
+@keyframes gallery-card-kenburns {
+  0%   { transform: scale(1) translate3d(0, 0, 0); }
+  100% { transform: scale(1.06) translate3d(-1.5%, -1%, 0); }
+}
+.gallery-card-active img.gallery-card-img {
+  animation: gallery-card-kenburns 14s ease-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-card-active img.gallery-card-img { animation: none; }
+}
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
