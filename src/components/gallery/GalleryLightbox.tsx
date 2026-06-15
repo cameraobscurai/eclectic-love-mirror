@@ -92,11 +92,23 @@ export function GalleryLightbox({
     };
   }, []);
 
+  // Zoom controller — pinch/double-click/ctrl-wheel zoom on the hero plate.
+  // Track scale so paddles know when to defer to panning.
+  const zoomApiRef = useRef<{ resetTransform: () => void } | null>(null);
+  const [zoomScale, setZoomScale] = useState(1);
+  const isZoomed = zoomScale > 1.02;
 
-  // Reset plate when project changes.
+  // Reset plate (and zoom) when project changes.
   useEffect(() => {
     setPlateIndex(0);
+    zoomApiRef.current?.resetTransform();
   }, [projectIndex]);
+
+  // Reset zoom when plate changes inside a project.
+  useEffect(() => {
+    zoomApiRef.current?.resetTransform();
+  }, [plateIndex]);
+
 
   // plateChanging is now driven by CrossfadeImage's actual decode lifecycle
   // (see onLoadingChange below). The safety timer here only fires if a decode
