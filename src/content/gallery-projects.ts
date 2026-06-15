@@ -66,6 +66,8 @@ export interface GalleryProject {
   curationNotes?: string;
   /** Cover-pick rules consumed by the bake script when folders land. */
   coverDirective?: CoverDirective;
+  /** Catalog slugs to surface as a "Shop the Look" rail in the lightbox. */
+  relatedInventorySlugs?: string[];
 }
 
 import {
