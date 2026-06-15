@@ -104,6 +104,7 @@ import {
   fourSeasonsVailCassieLamereGalleryImages,
 } from "./gallery-manifests";
 import { galleriesUrl } from "@/lib/storage-image";
+import { promoteHeroes } from "@/lib/gallery-hero-promotion";
 
 // Planners hard-excluded from the gallery surface.
 export const GALLERY_EXCLUDE_PLANNERS = ["VanderWeide"] as const;
