@@ -364,7 +364,7 @@ export function GalleryLightbox({
           </button>
 
           <div className="mt-2 lg:mt-12">
-            <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
+            <p className="lg:hidden text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
               {pending
                 ? "—"
                 : `${(plateIndex + 1).toString().padStart(2, "0")}`}
