@@ -694,10 +694,19 @@ function ContactPage() {
                   <Field label="Describe your vision or add a wish list" required>
                     <textarea
                       value={vision}
-                      onChange={(e) => setVision(e.target.value)}
+                      onChange={(e) => {
+                        setVision(e.target.value);
+                        // Auto-grow: reset to min then expand to content.
+                        // Keeps single-line entries compact and long ones
+                        // fully visible without scrollbars on mobile.
+                        const el = e.currentTarget;
+                        el.style.height = "auto";
+                        el.style.height = `${Math.min(el.scrollHeight, 600)}px`;
+                      }}
                       rows={6}
+                      maxLength={5000}
                       required
-                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal placeholder:text-charcoal/35 resize-none transition-colors"
+                      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal placeholder:text-charcoal/35 resize-none transition-colors overflow-hidden"
                       placeholder="COLORWAY, MATERIALS, INVENTORY REFERENCES, AND VENUE DETAILS ARE ALL GREAT PLACES TO START."
                     />
                   </Field>

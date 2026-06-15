@@ -27,7 +27,10 @@ function write(ids: string[]) {
 }
 
 export function useInquiry() {
-  const [ids, setIds] = useState<string[]>([]);
+  // Lazy init: read localStorage on first render so the tray count doesn't
+  // flash 0 → N. SSR returns []; the post-hydration effect below re-reads
+  // to pick up cross-tab changes that happened while this tab was idle.
+  const [ids, setIds] = useState<string[]>(() => read());
 
   useEffect(() => {
     setIds(read());
