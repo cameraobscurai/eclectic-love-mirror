@@ -62,9 +62,28 @@ function bucketFor(key: string): string {
 
 export function promoteHeroes(
   images: readonly GalleryImage[],
-  opts: { topK?: number } = {},
+  opts: { topK?: number; pin?: readonly string[] } = {},
 ): GalleryImage[] {
   const topK = opts.topK ?? TOP_K;
+
+  // Hard-pin path: caller-supplied filename substrings jump to the front in
+  // the given order. Bypasses scoring + bucketing — use for owner-curated
+  // overrides where the algorithm picked wrong.
+  if (opts.pin && opts.pin.length > 0) {
+    const pinned: GalleryImage[] = [];
+    const usedIdx = new Set<number>();
+    for (const needle of opts.pin) {
+      const idx = images.findIndex(
+        (img, i) => !usedIdx.has(i) && keyFor(img.src).includes(needle),
+      );
+      if (idx >= 0) {
+        pinned.push(images[idx]);
+        usedIdx.add(idx);
+      }
+    }
+    const rest = images.filter((_, i) => !usedIdx.has(i));
+    return [...pinned, ...rest];
+  }
 
   const scored = images.map((img, idx) => {
     const key = keyFor(img.src);
