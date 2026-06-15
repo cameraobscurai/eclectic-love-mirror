@@ -1,94 +1,66 @@
-# Gallery polish
+## What we're building
 
-## What you asked for
-1. Product-centric plate ordering inside each gallery, honoring Jill's notes
-2. Lightbox: pinch-zoom + persistent counter
-3. Index: hover thumbnail preview
-4. Filmstrip: ken-burns on active, fix chevron flicker, snap tightening
+A `/admin/gallery` page that lists every gallery (Amangiri, Brush Creek, etc.) and lets you drag-reorder its plates AND pin a custom front-of-arc — same UX as the Collection per-product reorderer.
 
-No image uploads, no destructive ops, no schema changes. All changes are additive to existing files.
+Sidebar nav gets two changes:
+- `Photos` → `Collection` (matches the public /collection route it edits)
+- New `Gallery` item below it (matches the public /gallery route it edits)
 
----
+```text
+INVENTORY
+├─ Collection         ← renamed from "Photos"
+├─ Gallery            ← NEW
+├─ Upload hero
+├─ Incoming photos
+├─ Image health
+├─ Image QA
+└─ Color QA
+```
 
-## Pass 1 — Plate ordering (the hard one)
+## How the gallery reorder persists
 
-### Approach
-Hybrid: Jill's grammar comes first, AI vision-rank breaks ties.
+Galleries today are static arrays in `src/content/gallery-manifests.ts` + a hard-pin override hardcoded in `src/content/gallery-projects.ts` (Amangiri). We can't edit source files from an admin tool, so order moves to the database.
 
-1. **Score every plate** in each populated gallery via Lovable AI Gateway (`google/gemini-3-flash-preview`). One image → one JSON object:
-   - `productScore` (0-5): how much rentable Hive decor is in frame (tables, chairs, lounges, tablescapes, florals, lighting, rugs, bars)
-   - `tags`: subset of `{tablescape, lounge, ceremony, tent-exterior, room-shot, florals, detail-close, portrait, landscape, dance, night, day}`
-   - `lifestyleScore` (0-5): editorial-lifestyle vs. snapshot-portrait
-2. **Apply Jill's grammar** per gallery from `curationNotes`. Encoded as a small rule table:
-   - `amangiri`: chinle dinner → lounge (amphitheater) → landscape → fireside; drop pool-deck filenames
-   - `aspen-event-works`: day → personal interleaved → night
-   - `lynden-lane`: exclude `1083`, lead with `1143`
-   - `brooke-keegan`: lead MKSadler-4118
-   - `42-north`: cocktail → ceremony → tent → friday details
-   - `love-this-day`: color-grouped Westworld arc
-   - others without explicit notes: sort by `(productScore * 0.7 + lifestyleScore * 0.3)` desc, then interleave to avoid 3+ similar tags in a row.
-3. **Bake** results into `src/data/gallery/plate-order.json` (`{ galleryNumber: orderedSrcs[] }`). Script lives at `scripts/order-gallery-plates.mjs`.
-4. **Load** the manifest in `gallery-projects.ts` — apply ordering to `detailImages` at module init. Falls back to original order if a src isn't in the manifest. Zero runtime cost.
+New table `gallery_orders`:
+- `gallery_slug` text PK (derived from `name`, e.g. `amangiri-az`)
+- `pinned_keys` text[] — front-of-arc heroes, in order (replaces the hardcoded `pin:` arrays)
+- `order_keys` text[] — full plate order; `null` = use manifest default
+- `updated_at` timestamptz
 
-### Cost
-~15 galleries × ~25 plates = ~400 Gemini Flash vision calls. Small.
+The Gallery route loader merges DB overrides over the manifest at request time. Pinned keys jump to the front in the given order; remaining plates follow `order_keys` if present, else the manifest's original sequence. The existing `promoteHeroes` hard-pin path stays as a build-time fallback so anything not yet overridden in the DB still renders.
 
-### Safety
-- Script is **dry-run first** → writes a proposal JSON + side-by-side preview HTML I can show you → you approve → apply writes the final manifest.
-- Existing `detailImages` arrays stay untouched. Hero `coverDirective` arc stays untouched.
-- If anything looks wrong, deleting one JSON file reverts everything.
+## Admin UX (mirrors `/admin/photos` + `ImageOrderEditor`)
 
----
+`/admin/gallery` — index list:
+- Grid of gallery cards (hero + name + plate count + pinned-count badge)
+- Click → opens the per-gallery editor inline
 
-## Pass 2 — UI polish (shipped as separate small commits)
-
-### Lightbox: zoom + counter
-- Add `react-zoom-pan-pinch` (~6kb, MIT). Wrap `CrossfadeImage` in a pinch/wheel zoom container on mobile + cmd-scroll on desktop. Double-tap to zoom, drag to pan, double-tap to reset.
-- Move the `01 / 12` counter from the sidebar into a small persistent badge bottom-left on the hero plate (always visible, including when scrolling the sidebar on tall screens). Sidebar counter stays for redundancy on mobile.
-
-### Index: hover thumbnail
-- On `≥ lg` only: cursor-following thumbnail card (~280×340) shows the gallery's cover when hovering each text row. Charcoal frame, subtle fade-in, follows pointer with `requestAnimationFrame` (no library). Mobile keeps current text-only.
-
-### Filmstrip polish
-- Active card gets slow ken-burns (scale 1 → 1.04 over 8s, reverse on inactive). Uses existing `prefers-reduced-motion` guard.
-- Chevron disabled-state flicker — currently the buttons reflow as `disabled` swaps. Fix by always rendering, opacity transition driven by data attribute.
-- Tighten `scroll-snap` to `mandatory` + add small `scroll-margin-inline` so the active card lands flush, not half-pixel off.
-
----
+Per-gallery editor (one card per gallery, drag-and-drop on the full plate list):
+- "Pinned heroes" strip at the top (up to 4 slots) — drag plates in from the main grid
+- Main reorder grid — every plate, dnd-kit sortable, autosave on drop (debounced)
+- "Reset to manifest default" button
+- Save state badges (`saving` / `saved` / `error`) identical to Collection editor
 
 ## Files
 
-**New**
-- `scripts/order-gallery-plates.mjs` — dry-run + apply
-- `src/data/gallery/plate-order.json` — baked manifest
-- `src/lib/gallery-plate-ordering.ts` — apply manifest at module init
+NEW
+- `supabase/migrations/<ts>_gallery_orders.sql` — table + RLS + grants
+- `src/lib/gallery-orders.functions.ts` — `getGalleryOrder`, `saveGalleryOrder`, `resetGalleryOrder` (admin-only)
+- `src/lib/gallery-orders.ts` — pure merge helper `applyGalleryOrder(manifestImages, dbOrder)` used by both the public Gallery loader and the admin editor
+- `src/routes/admin.gallery.tsx` — admin index + inline editor
+- `src/components/admin/GalleryOrderEditor.tsx` — dnd-kit sortable, modeled on `ImageOrderEditor`
 
-**Edited**
-- `src/content/gallery-projects.ts` — import + apply ordering
-- `src/components/gallery/GalleryLightbox.tsx` — zoom wrapper + persistent counter
-- `src/components/gallery/CrossfadeImage.tsx` — accept transform from zoom wrapper
-- `src/components/gallery/GalleryIndex.tsx` — hover thumbnail
-- `src/components/gallery/GalleryFilmstrip.tsx` — chevron flicker, snap
-- `src/components/gallery/GalleryProjectCard.tsx` — ken-burns on `active`
+EDITED
+- `src/components/admin/admin-shell.tsx` — rename `Photos` → `Collection`, add `Gallery` nav item, update CRUMB_LABELS
+- `src/content/gallery-projects.ts` — Amangiri's hardcoded `pin:` stays as a fallback (DB override wins when present); add stable `slug` derivation
+- Gallery detail route loader — apply DB order before render
 
-**Added dep**
-- `react-zoom-pan-pinch`
+## Out of scope (call out)
 
----
+- Cross-gallery reordering (the order galleries appear on `/gallery`) — separate tool
+- Editing plate metadata (captions, alt text) — separate tool
+- Uploading new plates from this UI — the existing `/admin/incoming` flow stays the upload path
 
-## Order of operations
-1. Build + run the ordering script in dry-run mode. Show you the proposed reorder for 2-3 galleries (Amangiri, Santa Fe, Love This Day) as side-by-side HTML before/after. You approve or redirect.
-2. Apply the manifest, ship the gallery-projects wire-up. Verify /gallery still renders.
-3. Ship Filmstrip polish (smallest, lowest risk).
-4. Ship Index hover thumbnail.
-5. Ship Lightbox zoom + counter.
+## Open question
 
-Each step is its own commit. Any one can revert without touching the others.
-
----
-
-## Not in scope
-- New Drive uploads (folders are already mirrored where they exist)
-- Cover hero swaps (those are owner-locked via `coverDirective`)
-- Pending galleries (#3, #5, #11, #12 if still empty — they show placeholders until folders land)
-- Performance pass (separate request per the perf memory; never batched)
+Renaming `Photos` → `Collection` is what you suggested and it does match the public route. Confirming before I ship that label.
