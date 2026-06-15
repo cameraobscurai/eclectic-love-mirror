@@ -68,6 +68,7 @@ export function Footer() {
         {/* Bottom rule */}
         <div className="mt-12 sm:mt-20 pt-5 sm:pt-6 border-t border-cream/10 flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3">
           <p className={META_CLASS}>© {new Date().getFullYear()} ECLECTIC HIVE</p>
+          <p className={META_CLASS}>EST. 2012</p>
           <p className={META_CLASS}>DENVER, COLORADO</p>
         </div>
 

@@ -62,10 +62,10 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                       {p.number}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] uppercase tracking-[0.32em] text-cream/40 truncate">
+                      <p className="font-display text-xl lg:text-2xl text-cream font-light group-hover:text-sand transition-colors truncate">
                         {p.planner}
                       </p>
-                      <p className="mt-1 font-display text-xl lg:text-2xl text-cream font-light group-hover:text-sand transition-colors truncate">
+                      <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/45 truncate">
                         {p.name}
                       </p>
                     </div>
