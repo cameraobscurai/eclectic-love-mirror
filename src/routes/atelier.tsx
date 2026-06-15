@@ -484,4 +484,46 @@ function Section({
   );
 }
 
+// Derived from gallery-projects.ts: unique planners, excluding NDA + hard-excluded.
+// Stays in sync with the gallery — no separate list to maintain.
+function PartnerRolodex() {
+  const partners = useMemo(() => {
+    const excluded = new Set<string>([
+      ...GALLERY_EXCLUDE_PLANNERS.map((p) => p.toUpperCase()),
+      ...GALLERY_NDA_PLANNERS.map((p) => p.toUpperCase()),
+    ]);
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const p of galleryProjects) {
+      const name = p.planner.trim().toUpperCase();
+      if (!name || seen.has(name)) continue;
+      if ([...excluded].some((ex) => name.includes(ex))) continue;
+      seen.add(name);
+      out.push(name);
+    }
+    return out.sort((a, b) => a.localeCompare(b));
+  }, []);
+
+  if (partners.length === 0) return null;
+
+  return (
+    <Section eyebrow="IN PARTNERSHIP WITH">
+      <ul
+        className="flex flex-wrap gap-x-6 gap-y-3 max-w-4xl text-[11px] uppercase tracking-[0.22em] text-charcoal/75"
+        aria-label="Planner partners"
+      >
+        {partners.map((name, i) => (
+          <li key={name} className="flex items-center gap-6">
+            <span>{name}</span>
+            {i < partners.length - 1 && (
+              <span aria-hidden className="text-charcoal/25">·</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
+
 
