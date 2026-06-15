@@ -22,7 +22,10 @@ type PlateScore = { wow: number; product: number };
 const SCORES = scoresJson as Record<string, PlateScore>;
 
 const TOP_K = 4;
-const MIN_WOW = 7.5;
+// Soft floor — promotions must beat a curated plate by a real margin OR
+// clear an absolute "would stop a scroll" score.
+const ABSOLUTE_WOW = 8;
+const RELATIVE_MARGIN = 1.5;
 
 /** Extract the storage path from a full public URL — keys in plate-scores.json. */
 function keyFor(src: string): string {
@@ -34,20 +37,27 @@ function keyFor(src: string): string {
 
 export function promoteHeroes(
   images: readonly GalleryImage[],
-  opts: { topK?: number; minWow?: number } = {},
+  opts: { topK?: number } = {},
 ): GalleryImage[] {
   const topK = opts.topK ?? TOP_K;
-  const minWow = opts.minWow ?? MIN_WOW;
 
   const scored = images.map((img, idx) => {
     const s = SCORES[keyFor(img.src)];
     return { img, idx, wow: s?.wow ?? 0, product: s?.product ?? 0 };
   });
 
-  // Candidates: scored plates clearing the wow bar, AI-confident on decor.
-  const candidates = scored
-    .filter((s) => s.wow >= minWow && s.product >= 2)
-    .sort((a, b) => b.wow - a.wow || a.idx - b.idx)
+  if (scored.every((s) => s.wow === 0)) return [...images];
+
+  // Top of the field for THIS gallery. Require minimum product visibility so
+  // we never promote pure portraits / candids over a styled scene.
+  const ranked = [...scored]
+    .filter((s) => s.product >= 3)
+    .sort((a, b) => b.wow - a.wow || a.idx - b.idx);
+
+  // Only promote plates that are meaningfully better than the curated lead.
+  const leadScore = scored[0]?.wow ?? 0;
+  const candidates = ranked
+    .filter((s) => s.wow >= ABSOLUTE_WOW || s.wow >= leadScore + RELATIVE_MARGIN)
     .slice(0, topK);
 
   if (candidates.length === 0) return [...images];
@@ -56,3 +66,4 @@ export function promoteHeroes(
   const rest = scored.filter((s) => !promotedIdx.has(s.idx)).map((s) => s.img);
   return [...candidates.map((c) => c.img), ...rest];
 }
+
