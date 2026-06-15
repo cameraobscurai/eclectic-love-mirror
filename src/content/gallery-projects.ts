@@ -127,7 +127,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Meetings + Incentive Travel",
     heroImage: amangiriGalleryHero,
-    detailImages: amangiriGalleryImages,
+    detailImages: promoteHeroes(amangiriGalleryImages),
     summary:
       "Long-table Chinle dinner against the sandstone, lounge moments from the amphitheater, and the landscape framing every plate.",
     coords: [-111.4357, 37.0306],
@@ -145,7 +145,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: aspenEventWorksGalleryHero,
-    detailImages: aspenEventWorksGalleryImages,
+    detailImages: promoteHeroes(aspenEventWorksGalleryImages),
     summary:
       "A private ranch wedding in the Aspen meadows — day to personal to night, tented dinner under linen.",
     coords: [-106.8175, 39.1911],
@@ -163,7 +163,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: brookeKeganDuntonHero4118,
-    detailImages: brookeKeganDuntonGalleryImages,
+    detailImages: promoteHeroes(brookeKeganDuntonGalleryImages),
     summary:
       "A candlelit weekend at Dunton — long meadow tables, the historic saloon interior, and intimate detail across every hour.",
     coords: [-108.0728, 37.7669],
@@ -184,7 +184,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: brushCreekDiwanGalleryHero,
-    detailImages: brushCreekDiwanGalleryImages,
+    detailImages: promoteHeroes(brushCreekDiwanGalleryImages),
     summary:
       "Wedding day on the ranch — open ceremony in the meadow, reception staged against the Wyoming horizon.",
     coords: [-106.8083, 41.4549],
@@ -201,7 +201,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2025",
     category: "Luxury Weddings",
     heroImage: lyndenLaneGalleryHero,
-    detailImages: lyndenLaneGalleryImages,
+    detailImages: promoteHeroes(lyndenLaneGalleryImages),
     summary:
       "A modernist outdoor program — sculptural lounges set against the architecture, layered florals through the evening.",
     coords: [-107.8123, 37.9375],
@@ -223,7 +223,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: fourSeasonsVailCassieLamereGalleryHero,
-    detailImages: fourSeasonsVailCassieLamereGalleryImages,
+    detailImages: promoteHeroes(fourSeasonsVailCassieLamereGalleryImages),
     summary:
       "An alpine weekend at Four Seasons Vail with Cassie Lamere — feature program across welcome, ceremony, reception.",
     coords: [-106.3742, 39.6403],
@@ -240,7 +240,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: eastonEventsMontanaGalleryHero,
-    detailImages: eastonEventsMontanaGalleryImages,
+    detailImages: promoteHeroes(eastonEventsMontanaGalleryImages),
     summary:
       "A tented celebration in the Big Sky landscape — alpine welcome lounges, ceremony beneath the peaks, reception running late into the evening.",
     coords: [-111.3088, 45.2841],
@@ -257,7 +257,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2022",
     category: "Luxury Weddings",
     heroImage: dosMasEnLaMesaGalleryHero,
-    detailImages: dosMasEnLaMesaGalleryImages,
+    detailImages: promoteHeroes(dosMasEnLaMesaGalleryImages),
     summary:
       "Dos Mas en la Mesa — a saturated mountain wedding staged across the Dunton property over a long Colorado weekend.",
     coords: [-108.0728, 37.7669],
@@ -274,7 +274,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: bishopsLodge42NorthGalleryHero,
-    detailImages: bishopsLodge42NorthGalleryImages,
+    detailImages: promoteHeroes(bishopsLodge42NorthGalleryImages),
     summary:
       "Cocktail hour to ceremony to tent, with Santa Fe earth tones running through Friday's details.",
     coords: [-105.9378, 35.6870],
@@ -292,7 +292,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: blackberryFarmsEastonGalleryHero,
-    detailImages: blackberryFarmsEastonGalleryImages,
+    detailImages: promoteHeroes(blackberryFarmsEastonGalleryImages),
     summary:
       "A December weekend at Blackberry Farms — wood-paneled dining, lantern light, layered hospitality detail.",
     coords: [-83.8090, 35.7434],
@@ -309,7 +309,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: brushCreekLoveThisDayGalleryHero,
-    detailImages: brushCreekLoveThisDayGalleryImages,
+    detailImages: promoteHeroes(brushCreekLoveThisDayGalleryImages),
     summary:
       "Westworld Americana — color-blocked favorites, Carrie King Americana plus wedding, Ralph red-white-denim throughline.",
     coords: [-106.8083, 41.4549],
@@ -327,7 +327,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: encoreBostonDiwanGalleryHero,
-    detailImages: encoreBostonDiwanGalleryImages,
+    detailImages: promoteHeroes(encoreBostonDiwanGalleryImages),
     summary:
       "A ballroom wedding at The Encore — architectural scale, layered floral, evening dance program.",
     coords: [-71.0589, 42.3601],
@@ -343,7 +343,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: anguillaMicheleRagoGalleryHero,
-    detailImages: anguillaMicheleRagoGalleryImages,
+    detailImages: promoteHeroes(anguillaMicheleRagoGalleryImages),
     summary:
       "Wedding-day lounge by the sea — a destination program built around the water with quiet detail throughout.",
     coords: [-63.0686, 18.2206],
@@ -360,7 +360,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: privateResidenceTxCinergyGalleryHero,
-    detailImages: privateResidenceTxCinergyGalleryImages,
+    detailImages: promoteHeroes(privateResidenceTxCinergyGalleryImages),
     summary:
       "A private residence celebration — tablescape detail and deep evening tones across the property.",
     coords: [-97.7431, 30.2672],
@@ -376,7 +376,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2024",
     category: "Luxury Weddings",
     heroImage: birchDesignGalleryHero,
-    detailImages: birchDesignGalleryImages,
+    detailImages: promoteHeroes(birchDesignGalleryImages),
     summary:
       "Aspen weekend with Birch — Caribou rehearsal dinner, Aspen Art Museum welcome party, disco after-party in pastel light.",
     coords: [-106.8231, 39.1880],
