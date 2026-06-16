@@ -130,13 +130,18 @@ export function CategoryTonalGrid({
   }, []);
 
   // Per-tile fade-in: each <img> reveals on its own onLoad. We still warm
-  // the browser cache up-front via <link rel="preload">, but no tile waits
-  // on any other tile to decode.
+  // the browser cache up-front via <link rel="preload">, but ONLY for the
+  // first row (5 tiles on desktop). Preloading all 15 saturates the
+  // browser's priority pool and nothing actually gets priority.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
+    const imageUrls = tiles
+      .slice(0, 5)
+      .map((tile) => tile.heroSrc)
+      .filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
   }, [tiles]);
+
 
   return (
     // grid-rows-3 lg + h-full = three equal rows that fill the parent's
@@ -191,10 +196,12 @@ export function CategoryTonalGrid({
             label={t.label}
             tone={tone}
             padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
+            priority={i < 5}
             onSelectCategory={onSelectCategory}
           />
         );
       })}
+
     </div>
     </>
   );
@@ -207,6 +214,7 @@ interface TonalCellProps {
   label: string;
   tone: string;
   padding: string;
+  priority: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
@@ -217,6 +225,7 @@ function TonalCell({
   label,
   tone,
   padding,
+  priority,
   onSelectCategory,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
@@ -252,10 +261,11 @@ function TonalCell({
           alt={heroAlt}
           width={600}
           height={480}
-          loading="eager"
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
-          {...({ fetchPriority: "high" } as Record<string, string>)}
+          {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
           onLoad={() => setLoaded(true)}
+
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
