@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
@@ -228,10 +228,6 @@ function TonalCell({
   priority,
   onSelectCategory,
 }: TonalCellProps) {
-  const [loaded, setLoaded] = useState(false);
-  const captureLoadedImage = useCallback((node: HTMLImageElement | null) => {
-    if (node?.complete && node.naturalWidth > 0) setLoaded(true);
-  }, []);
   return (
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
@@ -243,23 +239,8 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      {heroSrc && !loaded ? (
-        <span
-          aria-hidden
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(212,205,196,0.1) 0%, rgba(212,205,196,0.2) 50%, rgba(212,205,196,0.1) 100%)",
-            backgroundSize: "200% 100%",
-            animation: "tile-shimmer 1.4s ease-in-out infinite",
-            opacity: 0.45,
-            transition: "opacity 300ms ease-out",
-          }}
-        />
-      ) : null}
       {heroSrc ? (
         <img
-          ref={captureLoadedImage}
           src={heroSrc}
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
@@ -268,14 +249,11 @@ function TonalCell({
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
-          onLoad={() => setLoaded(true)}
-
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
             objectPosition: "center center",
-            opacity: loaded ? 1 : 0,
-            transition: "opacity 480ms ease-out, transform 500ms ease-out",
+            transition: "transform 500ms ease-out",
           }}
         />
       ) : null}
