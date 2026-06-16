@@ -471,18 +471,8 @@ button, a, [role="button"] {
    real route navigations (where framer wasn't running). Browsers without
    support: no change. Cross-fade is the browser default; we don't override.
    ---------------------------------------------------------------------------- */
-@view-transition {
-  navigation: auto;
-}
-
-/* Reduce-motion users get instant swap, no cross-fade. */
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation-duration: 0.01ms !important;
-  }
-}
+/* Global cross-fade view-transition removed — caused tiles to flash/disappear
+   on navigation into /collection. Per-element morphs (gallery-hero below) still work. */
 
 /* Gallery card → lightbox shared-element morph. Slightly slower and softer
    than the browser default so the canyon plate feels like it lifts, not snaps. */
