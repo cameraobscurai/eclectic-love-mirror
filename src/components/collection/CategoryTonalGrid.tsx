@@ -214,6 +214,7 @@ interface TonalCellProps {
   label: string;
   tone: string;
   padding: string;
+  priority: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
 
@@ -224,6 +225,7 @@ function TonalCell({
   label,
   tone,
   padding,
+  priority,
   onSelectCategory,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
@@ -259,10 +261,11 @@ function TonalCell({
           alt={heroAlt}
           width={600}
           height={480}
-          loading="eager"
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
-          {...({ fetchPriority: "high" } as Record<string, string>)}
+          {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
           onLoad={() => setLoaded(true)}
+
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
           style={{
             padding,
