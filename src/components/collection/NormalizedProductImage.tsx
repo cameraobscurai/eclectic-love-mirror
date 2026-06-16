@@ -233,7 +233,6 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       // browser taints the canvas on cross-origin images (Supabase CDN) and
       // getImageData throws — fit falls back to a generic shrink that
       // miscenters wide objects (e.g. sofa legs clipped at the bottom).
-      crossOrigin="anonymous"
       onLoad={handleLoad}
       className={className}
       style={{
