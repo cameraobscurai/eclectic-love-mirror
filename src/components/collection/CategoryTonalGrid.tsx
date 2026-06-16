@@ -130,13 +130,18 @@ export function CategoryTonalGrid({
   }, []);
 
   // Per-tile fade-in: each <img> reveals on its own onLoad. We still warm
-  // the browser cache up-front via <link rel="preload">, but no tile waits
-  // on any other tile to decode.
+  // the browser cache up-front via <link rel="preload">, but ONLY for the
+  // first row (5 tiles on desktop). Preloading all 15 saturates the
+  // browser's priority pool and nothing actually gets priority.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const imageUrls = tiles.map((tile) => tile.heroSrc).filter(Boolean) as string[];
+    const imageUrls = tiles
+      .slice(0, 5)
+      .map((tile) => tile.heroSrc)
+      .filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
   }, [tiles]);
+
 
   return (
     // grid-rows-3 lg + h-full = three equal rows that fill the parent's
