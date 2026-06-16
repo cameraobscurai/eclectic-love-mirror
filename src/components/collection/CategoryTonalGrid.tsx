@@ -196,10 +196,12 @@ export function CategoryTonalGrid({
             label={t.label}
             tone={tone}
             padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
+            priority={i < 5}
             onSelectCategory={onSelectCategory}
           />
         );
       })}
+
     </div>
     </>
   );
