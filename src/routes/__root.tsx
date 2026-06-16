@@ -195,17 +195,18 @@ function RootComponent() {
         Skip to main content
       </a>
       {!isAdmin && <Navigation />}
-      {/* No route-level transition. Per spec: navigation is instant —
-          chunks and data preload on intent/viewport so the swap is silent.
-          AnimatePresence around <Outlet /> forces full subtree remount and
-          is catastrophic on /collection (~900 tiles). */}
-      {/* DevEdit canvas wrapper — gets a transform applied only when dev mode
-          is active. In production rendering it is a passive div with no
-          inline styles, so layout is byte-identical. */}
+      {/* Route-enter transition: NO remount. We toggle a class on pathname
+          change to retrigger a CSS keyframe (opacity + tiny blur). The
+          subtree is preserved — critical for /collection's ~900 tiles
+          which must NOT be torn down. AnimatePresence is still forbidden
+          here for the same reason. */}
       <div id="devedit-canvas">
-        <Outlet />
+        <RouteEnter pathname={pathname}>
+          <Outlet />
+        </RouteEnter>
         {!hideFooter && <Footer />}
       </div>
+
       {!isAdmin && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
       <Toaster />
