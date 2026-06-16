@@ -213,3 +213,37 @@ function RootComponent() {
     </>
   );
 }
+
+/**
+ * Retriggers an opacity+blur fade-in on pathname change WITHOUT
+ * remounting children. Re-mounting would tear down /collection's tile
+ * grid (~900 nodes) and undo Fix #1's instant paint. Instead we mutate
+ * a class on the wrapper to restart the CSS keyframe.
+ */
+function RouteEnter({
+  pathname,
+  children,
+}: {
+  pathname: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof window !== "undefined") {
+      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) return;
+    }
+    el.classList.remove("route-enter");
+    // Force reflow so the animation restarts.
+    void el.offsetWidth;
+    el.classList.add("route-enter");
+  }, [pathname]);
+  return (
+    <div ref={ref} className="route-enter" data-route-enter>
+      {children}
+    </div>
+  );
+}
+
