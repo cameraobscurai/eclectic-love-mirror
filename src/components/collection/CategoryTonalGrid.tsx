@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   BROWSE_GROUP_LABELS,
   type BrowseGroupId,
@@ -229,6 +229,9 @@ function TonalCell({
   onSelectCategory,
 }: TonalCellProps) {
   const [loaded, setLoaded] = useState(false);
+  const captureLoadedImage = useCallback((node: HTMLImageElement | null) => {
+    if (node?.complete && node.naturalWidth > 0) setLoaded(true);
+  }, []);
   return (
     // Fills its grid cell. Image absolute-fits; label absolute bottom-left
     // so the silhouette gets the full cell area for presence.
@@ -256,6 +259,7 @@ function TonalCell({
       ) : null}
       {heroSrc ? (
         <img
+          ref={captureLoadedImage}
           src={heroSrc}
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
