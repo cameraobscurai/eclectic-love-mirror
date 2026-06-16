@@ -350,6 +350,25 @@ button, a, [role="button"] {
   100% { background-position: -200% 0; }
 }
 
+/* Route-enter: gentle ease + tiny blur lift on every nav between
+   /, /collection, /gallery, /atelier, /contact. NOT a remount —
+   the wrapper div stays mounted; the class is re-applied on
+   pathname change. Filter creates a stacking context only during
+   the 320ms transition; position:fixed nav lives outside the
+   wrapper so it's unaffected. */
+@keyframes route-enter {
+  from { opacity: 0; filter: blur(6px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+.route-enter {
+  animation: route-enter 320ms ease-out both;
+  will-change: opacity, filter;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-enter { animation: none; }
+}
+
+
 /* Gallery filmstrip — slow ken-burns on active card. */
 @keyframes gallery-card-kenburns {
   0%   { transform: scale(1) translate3d(0, 0, 0); }

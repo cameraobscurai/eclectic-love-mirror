@@ -6,7 +6,7 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
@@ -195,20 +195,55 @@ function RootComponent() {
         Skip to main content
       </a>
       {!isAdmin && <Navigation />}
-      {/* No route-level transition. Per spec: navigation is instant —
-          chunks and data preload on intent/viewport so the swap is silent.
-          AnimatePresence around <Outlet /> forces full subtree remount and
-          is catastrophic on /collection (~900 tiles). */}
-      {/* DevEdit canvas wrapper — gets a transform applied only when dev mode
-          is active. In production rendering it is a passive div with no
-          inline styles, so layout is byte-identical. */}
+      {/* Route-enter transition: NO remount. We toggle a class on pathname
+          change to retrigger a CSS keyframe (opacity + tiny blur). The
+          subtree is preserved — critical for /collection's ~900 tiles
+          which must NOT be torn down. AnimatePresence is still forbidden
+          here for the same reason. */}
       <div id="devedit-canvas">
-        <Outlet />
+        <RouteEnter pathname={pathname}>
+          <Outlet />
+        </RouteEnter>
         {!hideFooter && <Footer />}
       </div>
+
       {!isAdmin && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
       <Toaster />
     </>
   );
 }
+
+/**
+ * Retriggers an opacity+blur fade-in on pathname change WITHOUT
+ * remounting children. Re-mounting would tear down /collection's tile
+ * grid (~900 nodes) and undo Fix #1's instant paint. Instead we mutate
+ * a class on the wrapper to restart the CSS keyframe.
+ */
+function RouteEnter({
+  pathname,
+  children,
+}: {
+  pathname: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof window !== "undefined") {
+      const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) return;
+    }
+    el.classList.remove("route-enter");
+    // Force reflow so the animation restarts.
+    void el.offsetWidth;
+    el.classList.add("route-enter");
+  }, [pathname]);
+  return (
+    <div ref={ref} className="route-enter" data-route-enter>
+      {children}
+    </div>
+  );
+}
+
