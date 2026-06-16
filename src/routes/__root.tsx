@@ -228,7 +228,15 @@ function RouteEnter({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const firstRun = useRef(true);
   useEffect(() => {
+    // Skip the first run: the wrapper already animated on initial mount
+    // via the CSS class baked into JSX. Re-running here would replay the
+    // same animation immediately and produce a visible double-fade.
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
     const el = ref.current;
     if (!el) return;
     if (typeof window !== "undefined") {
