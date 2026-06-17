@@ -62,13 +62,13 @@ export function ProductTile({
     if (node?.complete && node.naturalWidth > 0) setLoaded(true);
   }, []);
 
-  const skipReveal = reduced || index < REVEAL_SKIP_INDEX;
-  const hasImage = Boolean(product.primaryImage);
-  const readyToReveal = near && (loaded || !hasImage);
-  const entered = skipReveal ? true : readyToReveal;
-  const revealDelayMs = skipReveal
-    ? 0
-    : Math.min((index % REVEAL_COLS) * REVEAL_STEP_MS, REVEAL_MAX_DELAY_MS);
+  // Tile container is always visible; only the image area shows a skeleton
+  // until it loads. Previously the whole tile (caption + image) faded in on
+  // image load, so any slow image made the tile look "disappeared."
+  const entered = true;
+  const skipReveal = true;
+  const revealDelayMs = 0;
+  void reduced;
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
