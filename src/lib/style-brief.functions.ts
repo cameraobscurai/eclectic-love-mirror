@@ -66,8 +66,8 @@ const submitSchema = z.object({
   insightTitles: z.array(z.string().max(80)).max(6).default([]),
   // Storage refs from signPublicInspoUpload
   inspoPaths: z.array(z.string().max(300)).max(8).default([]),
-  // Pinned inventory item ids (UUIDs from the Inquiry tray)
-  pinnedIds: z.array(z.string().uuid()).max(50).default([]),
+  // Pinned inventory rms_id strings from the Inquiry tray (catalog uses rms_id as product.id).
+  pinnedIds: z.array(z.string().min(1).max(64)).max(50).default([]),
   // Honeypot — must be empty
   website: z.string().max(0).optional().default(""),
 });
@@ -95,18 +95,20 @@ export const submitStyleBrief = createServerFn({ method: "POST" })
       return { inquiryId: "00000000-0000-0000-0000-000000000000" };
     }
 
-    // Resolve pinned item snapshots (title + first image) for the admin view.
+    // Resolve pinned items: catalog ids are rms_id strings; inquiries.item_ids is uuid[].
     let snapshots: Array<{ id: string; title: string; image: string | null }> = [];
+    let resolvedUuids: string[] = [];
     if (data.pinnedIds.length) {
       const { data: rows } = await supabaseAdmin
         .from("inventory_items")
-        .select("id,title,images")
-        .in("id", data.pinnedIds);
+        .select("id,rms_id,title,images")
+        .in("rms_id", data.pinnedIds);
       snapshots = (rows ?? []).map((r) => ({
-        id: String(r.id),
+        id: String(r.rms_id ?? r.id),
         title: r.title,
         image: (r.images as string[] | null)?.[0] ?? null,
       }));
+      resolvedUuids = (rows ?? []).map((r) => String(r.id));
     }
 
     // Trim insights to titles only to stay well under the 4KB metadata cap.
@@ -119,6 +121,7 @@ export const submitStyleBrief = createServerFn({ method: "POST" })
       event_date: data.eventDate || null,
       scope: data.scope || null,
       budget: data.budget || null,
+      pinned_rms_ids: data.pinnedIds,
     };
 
     const insertPayload = {
@@ -127,7 +130,7 @@ export const submitStyleBrief = createServerFn({ method: "POST" })
       phone: data.phone || null,
       subject: "Style Brief",
       message: buildMessage(data),
-      item_ids: data.pinnedIds,
+      item_ids: resolvedUuids,
       item_snapshots: snapshots,
       metadata,
     };
