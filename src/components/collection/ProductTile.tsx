@@ -50,7 +50,7 @@ export function ProductTile({
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
   const { ref, near } = useNearViewport<HTMLLIElement>({
-    rootMargin: "600px",
+    rootMargin: "1500px",
     initial: renderImmediately,
   });
 
