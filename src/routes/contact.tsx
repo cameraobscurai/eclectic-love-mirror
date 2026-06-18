@@ -237,8 +237,6 @@ function ContactPage() {
 
     setSubmitting(true);
     try {
-
-
     const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
