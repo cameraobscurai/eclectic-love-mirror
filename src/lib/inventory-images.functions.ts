@@ -316,4 +316,49 @@ export const createInventoryItem = createServerFn({ method: "POST" })
     return { id: row.id, rmsId: row.rms_id, title: row.title };
   });
 
+// updateInventoryItemMeta — partial update for manual-product editing flow.
+// All fields optional; only provided fields are written.
+const updateMetaInput = z.object({
+  id: z.string().uuid(),
+  title: z.string().trim().min(1).max(200).optional(),
+  category: z.enum(CATEGORY_SLUGS).optional(),
+  quantity: z.number().int().min(0).max(9999).nullable().optional(),
+  dimensionsRaw: z.string().trim().max(500).nullable().optional(),
+  publicReady: z.boolean().optional(),
+});
+
+export const updateInventoryItemMeta = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d: unknown) => updateMetaInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const patch: Record<string, unknown> = {};
+    if (data.title !== undefined) {
+      patch.title = data.title;
+      patch.slug = `${slugifyTitle(data.title)}-${data.id.slice(0, 8)}`;
+    }
+    if (data.category !== undefined) patch.category = data.category;
+    if (data.quantity !== undefined) patch.quantity = data.quantity;
+    if (data.dimensionsRaw !== undefined) patch.dimensions_raw = data.dimensionsRaw;
+    if (data.publicReady !== undefined) patch.public_ready = data.publicReady;
+
+    if (Object.keys(patch).length === 0) return { ok: true };
+
+    const { error } = await supabaseAdmin
+      .from("inventory_items")
+      .update(patch)
+      .eq("id", data.id);
+    if (error) throw error;
+
+    void audit({
+      actorId: context.userId,
+      entity: "inventory_items",
+      entityId: data.id,
+      action: "update_manual_meta",
+      after: patch,
+    });
+
+    return { ok: true };
+  });
+
+
 
