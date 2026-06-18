@@ -94,14 +94,23 @@ function absoluteCover(parent: ParentId): string | null {
   return url.startsWith("http") ? url : `${SITE}${url}`;
 }
 
-type ParentLoad = { kind: "parent"; parent: ParentId };
+type ParentLoad = { kind: "parent"; parent: ParentId; fallbackImage: string | null };
 type ProductLoad = { kind: "product"; product: CollectionProduct };
 type LoadResult = ParentLoad | ProductLoad;
 
 export const Route = createFileRoute("/collection_/$slug")({
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
-      return { kind: "parent", parent: params.slug as ParentId };
+      const parent = params.slug as ParentId;
+      let fallbackImage: string | null = null;
+      if (!PARENT_HERO_GROUP[parent]) {
+        const catalog = await getCollectionCatalog();
+        const firstImaged = catalog.products.find(
+          (p) => p.categorySlug === parent && p.primaryImage?.url,
+        );
+        fallbackImage = firstImaged?.primaryImage?.url ?? null;
+      }
+      return { kind: "parent", parent, fallbackImage };
     }
     const catalog = await getCollectionCatalog();
     const product =
@@ -121,7 +130,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       const label = PARENT_LABELS[parent];
       const desc = PARENT_DESCRIPTIONS[parent];
       const url = parentUrl(parent);
-      const img = absoluteCover(parent);
+      const img = absoluteCover(parent) ?? data.fallbackImage;
       const title = `${label} — Event Rental Archive | Eclectic Hive`;
 
       const jsonLd = {
