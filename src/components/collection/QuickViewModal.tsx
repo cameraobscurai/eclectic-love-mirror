@@ -376,6 +376,29 @@ export function QuickViewModal({
             </button>
             <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
             <button
+              type="button"
+              onClick={async () => {
+                const url = `https://eclectichive.com/collection?view=${encodeURIComponent(String(product.id))}`;
+                try {
+                  await navigator.clipboard.writeText(url);
+                  const { toast } = await import("sonner");
+                  toast("Link copied");
+                } catch {
+                  const { toast } = await import("sonner");
+                  toast.error("Couldn't copy");
+                }
+              }}
+              aria-label="Copy link to this piece"
+              className="h-11 px-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" />
+                <path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" />
+              </svg>
+              LINK
+            </button>
+            <span aria-hidden className="h-4 w-px bg-charcoal/20 mx-1" />
+            <button
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"

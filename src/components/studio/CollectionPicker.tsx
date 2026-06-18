@@ -58,13 +58,28 @@ export function CollectionPicker() {
     [buckets],
   );
 
+  // Global search: when q is set with no active category, search across ALL.
+  const globalSearchList = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term || active) return [];
+    const rank = (p: CollectionProduct) => {
+      const t = p.title.toLowerCase();
+      if (t === term) return 0;
+      if (t.startsWith(term)) return 1;
+      return 2;
+    };
+    return products
+      .filter((p) => p.title.toLowerCase().includes(term))
+      .sort((a, b) => rank(a) - rank(b) || a.title.localeCompare(b.title))
+      .slice(0, 60);
+  }, [products, q, active]);
+
   const activeList = useMemo(() => {
     if (!active) return [];
     const base = buckets.get(active) ?? [];
     const term = q.trim().toLowerCase();
 
     if (term) {
-      // Search-rank trumps sort while a query is active — mirrors /collection.
       const rank = (p: CollectionProduct) => {
         const t = p.title.toLowerCase();
         if (t === term) return 0;
@@ -86,7 +101,7 @@ export function CollectionPicker() {
   return (
     <div>
       {/* Pinned count + back row */}
-      <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 mb-5">
+      <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 mb-4">
         {active ? (
           <button
             type="button"
@@ -108,9 +123,44 @@ export function CollectionPicker() {
         </span>
       </div>
 
-      {!active ? (
+      {/* Global search — always available, searches across all categories
+          when no category is active. */}
+      {!active && (
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="SEARCH THE COLLECTION…"
+          className="w-full bg-transparent border-b border-charcoal/20 px-1 py-2 mb-4 text-[11px] uppercase tracking-[0.22em] placeholder:text-charcoal/35 focus:outline-none focus:border-charcoal/60"
+        />
+      )}
+
+      {!active && q.trim() ? (
+        // Global search results — render product grid directly
+        <div>
+          <div className="flex items-baseline justify-between gap-4 mb-3">
+            <h3 className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">
+              Results
+            </h3>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
+              {globalSearchList.length}
+            </span>
+          </div>
+          {globalSearchList.length === 0 ? (
+            <div className="py-16 text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+              No matches
+            </div>
+          ) : (
+            <ProductGrid
+              products={globalSearchList}
+              has={has}
+              toggle={toggle}
+            />
+          )}
+        </div>
+      ) : !active ? (
         // Level 1 — checker grid identical to /collection
-        <div className="h-[min(72vh,820px)]">
+        <div className="h-[min(60vh,720px)] md:h-[min(72vh,820px)]">
           <CategoryTonalGrid
             groups={groups}
             onSelectCategory={(id) => setActive(id)}
@@ -170,61 +220,71 @@ export function CollectionPicker() {
               {q ? "No matches" : "Nothing in this category yet"}
             </div>
           ) : (
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {activeList.map((p) => {
-                const pinned = has(String(p.id));
-                const src = p.primaryImage?.url;
-                return (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => toggle(String(p.id))}
-                      aria-pressed={pinned}
-                      className="group block w-full text-left"
-                    >
-                      <div
-                        className={`relative aspect-square bg-white overflow-hidden border transition-colors ${
-                          pinned
-                            ? "border-charcoal"
-                            : "border-charcoal/10 hover:border-charcoal/40"
-                        }`}
-                      >
-                        {src ? (
-                          <img
-                            src={withCdnWidth(src, 400)}
-                            alt={p.title}
-                            loading="lazy"
-                            decoding="async"
-                            className="absolute inset-0 h-full w-full object-contain p-3"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-charcoal/[0.03]" />
-                        )}
-                        <span
-                          className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${
-                            pinned
-                              ? "bg-charcoal text-cream opacity-100"
-                              : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"
-                          }`}
-                        >
-                          {pinned ? (
-                            <Check className="h-3 w-3" />
-                          ) : (
-                            <Plus className="h-3 w-3" />
-                          )}
-                        </span>
-                      </div>
-                      <p className="mt-1.5 text-[10px] uppercase tracking-[0.12em] text-charcoal/70 line-clamp-1">
-                        {p.title}
-                      </p>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <ProductGrid products={activeList} has={has} toggle={toggle} />
           )}
         </div>
       )}
     </div>
+  );
+}
+
+function ProductGrid({
+  products,
+  has,
+  toggle,
+}: {
+  products: CollectionProduct[];
+  has: (id: string) => boolean;
+  toggle: (id: string) => void;
+}) {
+  return (
+    <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {products.map((p) => {
+        const pinned = has(String(p.id));
+        const src = p.primaryImage?.url;
+        return (
+          <li key={p.id}>
+            <button
+              type="button"
+              onClick={() => toggle(String(p.id))}
+              aria-pressed={pinned}
+              className="group block w-full text-left"
+            >
+              <div
+                className={`relative aspect-square bg-white overflow-hidden border transition-colors ${
+                  pinned
+                    ? "border-charcoal"
+                    : "border-charcoal/10 hover:border-charcoal/40"
+                }`}
+              >
+                {src ? (
+                  <img
+                    src={withCdnWidth(src, 400)}
+                    alt={p.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-contain p-3"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-charcoal/[0.03]" />
+                )}
+                <span
+                  className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${
+                    pinned
+                      ? "bg-charcoal text-cream opacity-100"
+                      : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"
+                  }`}
+                >
+                  {pinned ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                </span>
+              </div>
+              <p className="mt-1.5 text-[10px] uppercase tracking-[0.12em] text-charcoal/70 line-clamp-1">
+                {p.title}
+              </p>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
