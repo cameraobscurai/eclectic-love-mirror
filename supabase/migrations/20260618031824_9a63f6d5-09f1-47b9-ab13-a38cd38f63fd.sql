@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public.studio_briefs CASCADE;

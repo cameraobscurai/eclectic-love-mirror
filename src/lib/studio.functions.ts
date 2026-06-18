@@ -183,13 +183,20 @@ export const markBoardSent = createServerFn({ method: "POST" })
     if (exErr) throw exErr;
 
     const token = existing.share_token ?? crypto.randomUUID();
+    const update: {
+      share_token: string;
+      status: "sent";
+      sent_at?: string;
+    } = {
+      share_token: token,
+      status: "sent",
+    };
+    if (!existing.share_token) {
+      update.sent_at = new Date().toISOString();
+    }
     const { data: row, error } = await supabaseAdmin
       .from("style_boards")
-      .update({
-        share_token: token,
-        status: "sent",
-        sent_at: existing.share_token ? undefined : new Date().toISOString(),
-      })
+      .update(update)
       .eq("id", data.boardId)
       .select("*")
       .single();
@@ -347,7 +354,6 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       })).filter((i) => i.url),
       pinned: items,
       client_name: inq?.name ?? "",
-      cover_pinned_rms_id:
-        (board as unknown as { cover_pinned_rms_id?: string | null }).cover_pinned_rms_id ?? null,
+      cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
     } satisfies PublicStyleBoard;
   });
