@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
+import { PARENT_ORDER } from "@/lib/collection-parents";
 
 const BASE_URL = "https://eclectichive.com";
 
@@ -18,6 +19,15 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/contact", changefreq: "yearly", priority: "0.6" },
   { path: "/privacy", changefreq: "yearly", priority: "0.3" },
 ];
+
+// Per-category landing pages — /collection/<parent>. Each renders its own
+// head() (title, description, og:image from CATEGORY_COVERS) so crawlers
+// and link-preview unfurlers see a distinct page per category.
+const PARENT_ENTRIES: SitemapEntry[] = PARENT_ORDER.map((p) => ({
+  path: `/collection/${p}`,
+  changefreq: "weekly" as const,
+  priority: "0.85",
+}));
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
@@ -40,7 +50,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           productEntries = [];
         }
 
-        const entries = [...STATIC_ENTRIES, ...productEntries];
+        const entries = [...STATIC_ENTRIES, ...PARENT_ENTRIES, ...productEntries];
 
         const urls = entries.map((e) =>
           [
