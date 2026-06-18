@@ -65,15 +65,38 @@ function StudioPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Form fields
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [scope, setScope] = useState<string>("");
-  const [budget, setBudget] = useState<string>("");
-  const [vibe, setVibe] = useState("");
-  const [website, setWebsite] = useState(""); // honeypot
+  // Form fields — hydrated from sessionStorage so a re-render, accidental
+  // reload, or browser Back doesn't blank them out.
+  const STORAGE_KEY = "stylebrief:contact";
+  const initial = (() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.sessionStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const [name, setName] = useState(initial?.name ?? "");
+  const [email, setEmail] = useState(initial?.email ?? "");
+  const [phone, setPhone] = useState(initial?.phone ?? "");
+  const [eventDate, setEventDate] = useState(initial?.eventDate ?? "");
+  const [scope, setScope] = useState<string>(initial?.scope ?? "");
+  const [budget, setBudget] = useState<string>(initial?.budget ?? "");
+  const [vibe, setVibe] = useState(initial?.vibe ?? "");
+  const [website, setWebsite] = useState(""); // honeypot — never persisted
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ name, email, phone, eventDate, scope, budget, vibe }),
+      );
+    } catch {
+      /* quota / private mode — non-fatal */
+    }
+  }, [name, email, phone, eventDate, scope, budget, vibe]);
 
   // Resolve pinned pieces to titles + thumbnails for the strip.
   const [catalog, setCatalog] = useState<Map<string, CollectionProduct>>(new Map());
