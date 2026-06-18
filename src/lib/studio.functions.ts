@@ -311,7 +311,7 @@ export const markBoardSent = createServerFn({ method: "POST" })
     // Idempotent: if already sent and has a token, return it.
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,status,project_title,prepared_by_name,palette,tones,curator_notes,inquiry_id")
+      .select("id,share_token,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
@@ -324,12 +324,14 @@ export const markBoardSent = createServerFn({ method: "POST" })
       prepared_by_user_id?: string;
       prepared_by_name?: string;
       project_title?: string;
+      section_word?: string;
+      production_notes?: Record<string, string>;
     } = {
       share_token: token,
       status: "sent",
     };
 
-    // First-send bookkeeping: capture sender + AI title only on the first send.
+    // First-send bookkeeping: capture sender + AI copy only on the first send.
     if (!existing.share_token) {
       update.sent_at = new Date().toISOString();
 
@@ -345,22 +347,41 @@ export const markBoardSent = createServerFn({ method: "POST" })
         console.error("[markBoardSent] sender lookup failed:", err);
       }
 
-      // AI-derive project title if not already set.
+      // AI-derive editorial copy if not already set.
       const existingTitle = (existing as unknown as { project_title?: string | null }).project_title;
       if (!existingTitle) {
-        // Fetch client name for prompt context.
+        // Fetch client name + pinned item titles grouped by category for the prompt.
         const { data: inq } = await supabaseAdmin
           .from("inquiries")
           .select("name")
           .eq("id", existing.inquiry_id)
           .maybeSingle();
-        const aiTitle = await aiDeriveProjectTitle({
+
+        const pinnedIds = (existing.pinned_rms_ids ?? []) as string[];
+        const pinnedByCategory: Record<string, string[]> = {};
+        if (pinnedIds.length) {
+          const { data: rows } = await supabaseAdmin
+            .from("inventory_items")
+            .select("rms_id,title,category")
+            .in("rms_id", pinnedIds);
+          for (const r of rows ?? []) {
+            const slug = r.category ?? "other";
+            (pinnedByCategory[slug] ??= []).push(r.title);
+          }
+        }
+
+        const copy = await generateBoardCopy({
           clientName: inq?.name ?? "",
           curatorNotes: existing.curator_notes as string | null,
           palette: (existing.palette ?? []) as unknown[],
           tones: (existing.tones ?? {}) as Record<string, unknown>,
+          pinnedByCategory,
         });
-        if (aiTitle) update.project_title = aiTitle;
+        if (copy) {
+          update.project_title = copy.project_title;
+          update.section_word = copy.section_word;
+          update.production_notes = copy.production_notes;
+        }
       }
     }
 
