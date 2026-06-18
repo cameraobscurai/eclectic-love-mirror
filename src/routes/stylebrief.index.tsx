@@ -295,12 +295,14 @@ function StudioPage() {
   async function downloadBrief() {
     if (!briefRef.current || downloading) return;
     setDownloading(true);
+    setSubmitError(null);
     try {
       const stamp = new Date().toISOString().slice(0, 10);
       const slug = (name.trim() || "brief").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "brief";
       await downloadDeckPDF(briefRef.current, `eclectic-hive-${slug}-${stamp}.pdf`);
     } catch (err) {
       console.warn("brief download failed", err);
+      setSubmitError(`Download failed: ${(err as Error).message || "unknown error"}`);
     } finally {
       setDownloading(false);
     }
