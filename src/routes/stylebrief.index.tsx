@@ -5,13 +5,14 @@
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
+import { Loader2, ImagePlus, Sparkles, X, ArrowRight, Download } from "lucide-react";
 
 import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/lib/style-brief.functions";
 import { CollectionPicker } from "@/components/studio/CollectionPicker";
+import { downloadDeckPDF } from "@/lib/board-export";
 
 export const Route = createFileRoute("/stylebrief/")({
   head: () => ({
