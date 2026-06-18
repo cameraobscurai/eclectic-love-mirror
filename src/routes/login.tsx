@@ -19,7 +19,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-type Mode = "signin" | "signup" | "forgot";
+type Mode = "signin" | "forgot";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -94,17 +94,6 @@ function LoginPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await verifyAdminAndRoute();
-      } else if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: `${window.location.origin}/login` },
-        });
-        if (error) throw error;
-        setInfo(
-          "Account created. Check your email to confirm, then sign in. The site owner must grant admin access before /admin will load.",
-        );
-        setMode("signin");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
@@ -165,7 +154,7 @@ function LoginPage() {
             letterSpacing: "0.02em",
           }}
         >
-          {mode === "signup" ? "CREATE ACCOUNT" : mode === "forgot" ? "RESET PASSWORD" : "ADMIN SIGN IN"}
+          {mode === "forgot" ? "RESET PASSWORD" : "ADMIN SIGN IN"}
         </h1>
 
         <button
@@ -219,7 +208,7 @@ function LoginPage() {
                 type="password"
                 required
                 minLength={8}
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={inputStyle}
@@ -240,13 +229,7 @@ function LoginPage() {
               marginTop: 8,
             }}
           >
-            {busy
-              ? "…"
-              : mode === "signup"
-                ? "CREATE ACCOUNT"
-                : mode === "forgot"
-                  ? "SEND RESET LINK"
-                  : "SIGN IN"}
+            {busy ? "…" : mode === "forgot" ? "SEND RESET LINK" : "SIGN IN"}
           </button>
         </form>
 
@@ -255,14 +238,9 @@ function LoginPage() {
           style={{ fontSize: "10px", letterSpacing: "0.18em" }}
         >
           {mode === "signin" ? (
-            <>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-                FORGOT PASSWORD?
-              </button>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signup"); }} style={{ color: "#1a1a1a", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-                CREATE ACCOUNT
-              </button>
-            </>
+            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              FORGOT PASSWORD?
+            </button>
           ) : (
             <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
               ← BACK TO SIGN IN
