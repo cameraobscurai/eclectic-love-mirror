@@ -41,6 +41,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { reorderItems } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
@@ -61,6 +62,14 @@ import {
   PRODUCT_TILE_IMAGE_CLASS,
   PRODUCT_TILE_OVERRIDES,
 } from "@/lib/collection-tile-presets";
+
+type SortMode = "editorial" | "type" | "az" | "tonal";
+const SORT_MODES: { id: SortMode; label: string }[] = [
+  { id: "editorial", label: "Editorial" },
+  { id: "type", label: "By Type" },
+  { id: "az", label: "A–Z" },
+  { id: "tonal", label: "Tonal" },
+];
 
 
 export const Route = createFileRoute("/admin/photos")({
