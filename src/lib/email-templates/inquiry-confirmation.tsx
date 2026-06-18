@@ -51,19 +51,49 @@ const InquiryConfirmation = ({
 
         <Hr style={hr} />
 
-        {(projectDate || budget || scope || items.length > 0) && (
+        {(projectDate || budget || scope) && (
           <Section style={section}>
             <Text style={sectionLabel}>YOUR BRIEF</Text>
             {projectDate ? <Text style={body}><strong>DATE:</strong> {projectDate}</Text> : null}
             {budget ? <Text style={body}><strong>BUDGET:</strong> {budget}</Text> : null}
             {scope ? <Text style={body}><strong>SCOPE:</strong> {scope}</Text> : null}
-            {items.length > 0 ? (
-              <Text style={body}>
-                <strong>PIECES SELECTED:</strong> {items.length}
-              </Text>
-            ) : null}
           </Section>
         )}
+
+        {items.length > 0 ? (
+          <Section style={section}>
+            <Text style={sectionLabel}>YOUR PIECES ({items.length})</Text>
+            <table cellPadding={0} cellSpacing={0} border={0} role="presentation" style={{ borderCollapse: 'collapse', width: '100%' }}>
+              <tbody>
+                {items.map((item, idx) => (
+                  <tr key={item.rms_id ?? idx}>
+                    <td width="72" style={{ padding: '0 14px 14px 0', verticalAlign: 'top', width: '72px' }}>
+                      {item.image_url ? (
+                        <img
+                          src={item.image_url}
+                          alt={item.title ?? 'Piece'}
+                          width="72"
+                          height="72"
+                          style={{ width: '72px', height: '72px', objectFit: 'cover', display: 'block', border: '1px solid #1a1a1a14', backgroundColor: '#f5f2ed' }}
+                        />
+                      ) : (
+                        <div style={{ width: '72px', height: '72px', backgroundColor: '#f5f2ed', border: '1px solid #1a1a1a14' }}>&nbsp;</div>
+                      )}
+                    </td>
+                    <td style={{ padding: '0 0 14px 0', verticalAlign: 'top' }}>
+                      <Text style={{ ...body, margin: '0 0 4px', fontFamily: 'Georgia, "Cormorant Garamond", serif', fontSize: '16px', letterSpacing: '0' }}>
+                        {item.title ?? 'Untitled'}
+                      </Text>
+                      {item.category ? (
+                        <Text style={{ ...sectionLabel, margin: '0' }}>{item.category}</Text>
+                      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Section>
+        ) : null}
 
         {palette.length > 0 ? (
           <Section style={section}>
