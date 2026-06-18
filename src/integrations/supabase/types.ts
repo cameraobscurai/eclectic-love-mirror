@@ -1388,6 +1388,9 @@ export type Database = {
           palette: Json
           pin_notes: Json
           pinned_rms_ids: string[]
+          prepared_by_name: string | null
+          prepared_by_user_id: string | null
+          project_title: string | null
           sent_at: string | null
           share_token: string | null
           status: string
@@ -1408,6 +1411,9 @@ export type Database = {
           palette?: Json
           pin_notes?: Json
           pinned_rms_ids?: string[]
+          prepared_by_name?: string | null
+          prepared_by_user_id?: string | null
+          project_title?: string | null
           sent_at?: string | null
           share_token?: string | null
           status?: string
@@ -1428,6 +1434,9 @@ export type Database = {
           palette?: Json
           pin_notes?: Json
           pinned_rms_ids?: string[]
+          prepared_by_name?: string | null
+          prepared_by_user_id?: string | null
+          project_title?: string | null
           sent_at?: string | null
           share_token?: string | null
           status?: string
