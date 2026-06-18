@@ -127,7 +127,7 @@ function PageRenderer({
       {page.kind === "tones" && <TonesPage page={page} />}
       {page.kind === "section-divider" && <SectionDividerPage page={page} />}
       {page.kind === "production" && <ProductionPage page={page} />}
-      {page.kind === "closing" && <ClosingPage page={page} />}
+      {page.kind === "closing" && <ClosingPage page={page} meta={meta} />}
       {page.kind !== "cover" && (
         <PageChrome pageNum={pageNum} total={total} meta={meta} />
       )}
@@ -389,7 +389,8 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
 
 // ---- Closing -------------------------------------------------------------
 
-function ClosingPage({ page }: { page: Extract<DeckPage, { kind: "closing" }> }) {
+function ClosingPage({ page, meta }: { page: Extract<DeckPage, { kind: "closing" }>; meta: DeckMeta }) {
+  const sender = meta.preparedBy && meta.preparedBy !== "The Studio" ? meta.preparedBy : "the studio";
   return (
     <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
       <div
@@ -405,7 +406,7 @@ function ClosingPage({ page }: { page: Extract<DeckPage, { kind: "closing" }> })
         href="mailto:hello@eclectichive.com"
         className="mt-16 text-[10px] uppercase tracking-[0.4em] text-cream/80 border border-cream/30 px-6 py-3 hover:bg-cream hover:text-charcoal transition-colors"
       >
-        Reply to Jill
+        Reply to {sender}
       </a>
     </div>
   );
