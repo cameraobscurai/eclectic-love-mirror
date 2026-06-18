@@ -250,6 +250,39 @@ function StudioPage() {
         },
       });
 
+      // 3. Fire-and-forget owner + submitter email notification with palette + inspo.
+      // Failure here doesn't block the user — the inquiry is already saved.
+      const pinnedSnapshots = pinnedIds
+        .map((id) => catalog.get(id))
+        .filter(Boolean)
+        .slice(0, 50)
+        .map((p) => ({
+          rms_id: String(p!.id),
+          title: p!.title,
+          category: (p as any)?.displayCategory ?? null,
+          image_url: p!.primaryImage?.url ?? null,
+        }));
+      fetch("/api/public/notify-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || null,
+          subject: "Style Brief",
+          message: vibe.trim() || null,
+          project_date: eventDate.trim() || null,
+          budget: budget || null,
+          scope: scope || null,
+          items: pinnedSnapshots,
+          inquiry_id: inquiryId,
+          palette: (analysis?.palette ?? []).slice(0, 8).map((c) => c.hex),
+          tones: (analysis?.tones ?? {}) as Record<string, number>,
+          insights: (analysis?.insights ?? []).slice(0, 6).map((i) => i.title),
+          inspo_paths: inspoPaths,
+        }),
+      }).catch((err) => console.warn("notify-inquiry failed", err));
+
       clearInquiry();
       try { window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
       navigate({ to: "/stylebrief/thanks", search: { inquiry: inquiryId } });
@@ -258,6 +291,22 @@ function StudioPage() {
       setSubmitting(false);
     }
   }
+
+  async function downloadBrief() {
+    if (!briefRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const stamp = new Date().toISOString().slice(0, 10);
+      const slug = (name.trim() || "brief").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "brief";
+      await downloadDeckPDF(briefRef.current, `eclectic-hive-${slug}-${stamp}.pdf`);
+    } catch (err) {
+      console.warn("brief download failed", err);
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  const canDownload = !!analysis || pinnedIds.length > 0 || inspo.length > 0 || name.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
