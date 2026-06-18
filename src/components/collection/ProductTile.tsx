@@ -24,10 +24,6 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-const REVEAL_COLS = 6;
-const REVEAL_STEP_MS = 60;
-const REVEAL_MAX_DELAY_MS = 240;
-const REVEAL_SKIP_INDEX = 12;
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
