@@ -82,7 +82,7 @@ export function useBalancedColumnWidth({
           lo = mid;
         }
       }
-      if (!cancelled) setWidth(best);
+      if (!cancelled) setWidth(Math.min(best, window.innerWidth));
     };
 
     if (document.fonts && document.fonts.ready) {
