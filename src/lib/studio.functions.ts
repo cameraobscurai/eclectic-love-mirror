@@ -463,6 +463,8 @@ export interface PublicStyleBoard {
   cover_pinned_rms_id: string | null;
   project_title: string | null;
   prepared_by_name: string | null;
+  section_word: string | null;
+  production_notes: Record<string, string>;
 }
 
 export const getStyleBoardByToken = createServerFn({ method: "GET" })
@@ -470,7 +472,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name")
+      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes")
       .eq("share_token", data.token)
       .eq("status", "sent")
       .maybeSingle();
@@ -550,5 +552,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
       project_title: (board as unknown as { project_title?: string | null }).project_title ?? null,
       prepared_by_name: (board as unknown as { prepared_by_name?: string | null }).prepared_by_name ?? null,
+      section_word: (board as unknown as { section_word?: string | null }).section_word ?? null,
+      production_notes: ((board as unknown as { production_notes?: Record<string, string> }).production_notes ?? {}),
     } satisfies PublicStyleBoard;
   });
