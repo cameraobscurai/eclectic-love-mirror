@@ -247,6 +247,7 @@ function StudioPage() {
       });
 
       clearInquiry();
+      try { window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
       navigate({ to: "/stylebrief/thanks", search: { inquiry: inquiryId } });
     } catch (e) {
       setSubmitError((e as Error).message);
