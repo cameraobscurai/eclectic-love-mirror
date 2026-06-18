@@ -73,7 +73,7 @@ function NewProductPage() {
       const res = await create({
         data: {
           title: title.trim(),
-          category,
+          category: category as "seating",
           quantity: qNum !== null && Number.isFinite(qNum) ? qNum : null,
           quantityLabel: null,
           dimensionsRaw: dimensions.trim() || null,
