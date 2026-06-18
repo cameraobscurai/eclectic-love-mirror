@@ -44,6 +44,10 @@ export async function downloadDeckPDF(
       pixelRatio: 2,
       backgroundColor: /^(rgb|#)/i.test(bg) ? bg : "#ffffff",
       cacheBust: true,
+      // Skip cross-origin font sheets (Google Fonts) — they throw a
+      // SecurityError on cssRules access. The PDF falls back to the system
+      // font for that family, which renders cleanly.
+      skipFonts: true,
     });
 
     // Probe dimensions
