@@ -68,6 +68,7 @@ import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
+import { Route as AdminNewProductRouteImport } from './routes/admin.new-product'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
@@ -377,6 +378,11 @@ const AdminPhotosRoute = AdminPhotosRouteImport.update({
   path: '/photos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminNewProductRoute = AdminNewProductRouteImport.update({
+  id: '/new-product',
+  path: '/new-product',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminInsightsRoute = AdminInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -474,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
@@ -548,6 +555,7 @@ export interface FileRoutesByTo {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
@@ -623,6 +631,7 @@ export interface FileRoutesById {
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
   '/admin/insights': typeof AdminInsightsRoute
+  '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
@@ -699,6 +708,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/new-product'
     | '/admin/photos'
     | '/admin/studio'
     | '/admin/upload-hero'
@@ -773,6 +783,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/new-product'
     | '/admin/photos'
     | '/admin/studio'
     | '/admin/upload-hero'
@@ -847,6 +858,7 @@ export interface FileRouteTypes {
     | '/admin/image-qa'
     | '/admin/incoming'
     | '/admin/insights'
+    | '/admin/new-product'
     | '/admin/photos'
     | '/admin/studio'
     | '/admin/upload-hero'
@@ -1373,6 +1385,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPhotosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/new-product': {
+      id: '/admin/new-product'
+      path: '/new-product'
+      fullPath: '/admin/new-product'
+      preLoaderRoute: typeof AdminNewProductRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/insights': {
       id: '/admin/insights'
       path: '/insights'
@@ -1487,6 +1506,7 @@ interface AdminRouteChildren {
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
+  AdminNewProductRoute: typeof AdminNewProductRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
   AdminStudioRoute: typeof AdminStudioRoute
   AdminUploadHeroRoute: typeof AdminUploadHeroRoute
@@ -1500,6 +1520,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
   AdminInsightsRoute: AdminInsightsRoute,
+  AdminNewProductRoute: AdminNewProductRoute,
   AdminPhotosRoute: AdminPhotosRoute,
   AdminStudioRoute: AdminStudioRoute,
   AdminUploadHeroRoute: AdminUploadHeroRoute,

@@ -1,41 +1,63 @@
-## What's broken today
+# New Product Upload — /admin
 
-1. **Step 2 "Browse The Collection"** uses `StudioBrowser` / `CatalogPickerTab` — a flat 2-col grid of ~60 random product thumbs with a search box. It does not mirror the signature `/collection` experience (the 15-tile `CategoryTonalGrid` you screenshotted → click → subcategory rail → products).
-2. **Finish step asks for name/email a second time.** Reason to verify: state lives in `useState` inside `stylebrief.index.tsx`. If the submit handler navigates to `/stylebrief/thanks` and the user hits Back, or if a re-render unmounts the form section between Step 2 and Step 4, the inputs blank out. Need to confirm exact trigger before fixing.
+Today `/admin/incoming` is a dumb file dump into the `incoming-photos` bucket. It never creates a product. This plan adds a real "new product" flow without breaking the existing intake.
 
-## Plan
+## What gets built
 
-### Part A — Mirror the Collection process inside Step 2
+**1. New route: `/admin/new-product`** — a single-page form (not a wizard, keep it tight):
+- Title
+- Category (dropdown of the 14 RMS slugs)
+- Quantity, dimensions (optional)
+- Image upload + reorder (reuses existing `ImageOrderEditor` pieces)
+- Cover focal + card background (reuses `FocalEditor`, `SortableThumb`)
+- Publish toggle (`public_ready`)
 
-Replace `<StudioBrowser />` in `stylebrief.index.tsx` Step 2 with a new `<CollectionPicker />` component that reuses the *same* visual + interaction language as `/collection`:
+Submit creates the `inventory_items` row, uploads images to `squarespace-mirror`, then redirects to `/admin/photos` filtered to the new product.
 
-- **Level 1 — Category grid.** Reuse `CategoryTonalGrid` (the 15-tile checker grid: Sofas, Chairs, Benches & Ottomans, Cocktail Tables, Side Tables, Coffee Tables, Dining, Bar, Lighting, Storage, Pillows, Throws, Tableware, Styling, Rugs). Same greyscale checker tones, same hero image per tile, same caps labels.
-- **Level 2 — Subcategory / product rail.** On tile click, drill into the category using the same subcategory chips + product grid that `/collection` and `collection_.$slug.tsx` use. Pin/unpin badge (the existing `+` / `✓` corner badge) replaces the "View" action — clicking a product pins it instead of navigating.
-- **Level 3 — Back to grid.** Breadcrumb / back link returns to the 15-tile grid. Pinned count chip sticks to the top of the picker so users always see what they've pinned.
-- Search stays available as a secondary affordance (small input above the grid), but the primary path is category → subcategory → product, identical to the public site.
+**2. New nav entry** in `admin-shell.tsx` under INVENTORY: "New Product" (above "Incoming photos").
 
-No changes to `/collection` itself. Picker is a thin wrapper over the existing components in `src/components/collection/`.
+**3. Existing `/admin/incoming` stays** as the bulk-dump triage area. Unchanged.
 
-### Part B — Stop making users retype name/email
+## The critical safety fix (must ship in same batch)
 
-1. **Confirm the trigger.** Open `/stylebrief`, fill name + email at Step 4, click Finish, observe whether fields blank before the redirect or only on Back navigation. Check `submit()` in `stylebrief.index.tsx` (lines 185-230) for a stray `setName("")` / form reset.
-2. **Persist contact fields** to `sessionStorage` (`stylebrief:contact`) on every change, hydrate on mount. Survives accidental reload, Back, and re-render. Clear only after successful submit + redirect.
-3. **Disable-but-don't-blank on submit.** Confirm the submitting state only sets `disabled`, never resets values. If `submit()` throws, fields must remain populated (currently they do, but verify after sessionStorage change).
-4. **Thanks page** stays as the success destination; no contact data shown there.
+`scripts/import.mjs:58` retires every row where `rms_id IS NULL` on every RMS re-import. A manual product would vanish on the next inventory sync.
 
-### Out of scope
+Fix: manual products get `rms_id = 'MANUAL-<short-uuid>'`. The `MANUAL-` prefix never collides with numeric RMS IDs, so the upsert ignores them and the null-sweep skips them. No schema migration, no import-script change required.
 
-- No changes to the public `/collection` route, the inquiries table, the email templates, or the 3D viewer (`/stylebrief/three`).
-- No redesign of Steps 1, 3, 4 — only Step 2's picker swaps, plus the contact-field persistence fix.
+The `createInventoryItem` server function generates the prefix server-side — the UI never sees it.
 
-### Technical notes
+## Technical details
 
-- New file: `src/components/studio/CollectionPicker.tsx`. Imports `CategoryTonalGrid` and the subcategory/product-grid pieces already used by `collection.tsx`. Accepts `pinned: string[]`, `onPin`, `onUnpin` — same contract as `CatalogPickerTab`.
-- Delete or retire `CatalogPickerTab.tsx` and the catalog tab inside `StudioBrowser.tsx` only after the new picker is wired and confirmed working (per the dead-code memory rule — ripgrep first, flag before delete).
-- Contact persistence: small `useEffect` pair in `stylebrief.index.tsx`, no new dependency.
+**New server function** `createInventoryItem` in `src/lib/inventory-images.functions.ts` (admin-gated, service-role write):
+- Input: `{ title, category, quantity?, quantityLabel?, dimensionsRaw?, publicReady }`
+- Generates `rms_id = 'MANUAL-' + crypto.randomUUID().slice(0,8)`
+- Generates `slug = slugify(title) + '-' + rms_id.toLowerCase()`
+- Inserts with `status: 'available'`, `images: []`, `editorial_order: null`
+- Returns the new row's `id` (UUID) so the page can hand it to `ImageOrderEditor`
 
-### Verification before I say it's done
+**Route file** `src/routes/admin.new-product.tsx`:
+- `beforeLoad: requireAdminOrRedirect`
+- Two-stage UI: (a) metadata form → create row → (b) reveal `ImageOrderEditor` inline against the new UUID
+- "Done" button → `router.navigate({ to: '/admin/photos' })`
 
-- Manually walk the flow in the preview: pick a category tile → pin 2 products → back to grid → pin from a second category → fill contact → submit → confirm `inquiries` row + email log, then hit Back and confirm fields are still filled.
+**Nav** in `src/components/admin/admin-shell.tsx`:
+- Add `{ label: 'New Product', to: '/admin/new-product' }` to the `INVENTORY` array
+- Add matching `CRUMB_LABELS` entry
 
-Want me to build it?
+**Catalog visibility:** After create + publish, the product appears in the DB immediately but `current_catalog.json` is only refreshed by `scripts/bake-catalog.mjs`. Admin views read the DB live, so the new product shows in `/admin/photos` instantly. Public site shows it on the next bake. Flag this in the success toast: "Live on site after next catalog bake."
+
+## Out of scope
+
+- Editing existing products (already handled by `/admin/photos` + `ImageOrderEditor`)
+- Variants/families (manual products are single SKU only for v1)
+- Bulk CSV upload
+- Color tagging (auto-runs on next color pipeline pass)
+- Modifying `import.mjs` or adding a `source` column (the `MANUAL-` prefix sidesteps this)
+
+## Verification
+
+1. Create a test product end-to-end, publish, confirm it appears in `/admin/photos`.
+2. Confirm `rms_id` starts with `MANUAL-` in the DB.
+3. Dry-run `scripts/import.mjs` against current RMS XLSX, confirm the manual row's `status` stays `available`.
+
+Ready to build?

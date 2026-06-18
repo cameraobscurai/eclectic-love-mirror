@@ -14,6 +14,7 @@ import {
   LogOut,
   ChevronRight,
   Sparkles,
+  PlusCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -61,6 +62,7 @@ const INBOX: NavItem[] = [
 
 const INVENTORY: NavItem[] = [
   { to: "/admin/photos", label: "Collection", icon: ImageIcon },
+  { to: "/admin/new-product", label: "New product", icon: PlusCircle },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
@@ -79,6 +81,7 @@ const SITE: NavItem[] = [
 const CRUMB_LABELS: Record<string, string> = {
   "/admin": "Dashboard",
   "/admin/photos": "Collection",
+  "/admin/new-product": "New product",
   "/admin/gallery": "Gallery",
   "/admin/upload-hero": "Upload hero",
   "/admin/insights": "Inquiries & insights",
