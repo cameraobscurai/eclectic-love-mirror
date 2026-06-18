@@ -70,10 +70,12 @@ const INVENTORY: NavItem[] = [
 // sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
 // /admin/colors.
 
+const LIVE_ORIGIN = "https://eclectichive.com";
+
 const SITE: NavItem[] = [
-  { to: "/", label: "View live site", icon: ExternalLink, external: true },
-  { to: "/collection", label: "Collection", icon: ScanEye, external: true },
-  { to: "/contact", label: "Contact form", icon: Link2, external: true },
+  { to: `${LIVE_ORIGIN}/`, label: "View live site", icon: ExternalLink, external: true },
+  { to: `${LIVE_ORIGIN}/collection`, label: "Collection", icon: ScanEye, external: true },
+  { to: `${LIVE_ORIGIN}/contact`, label: "Contact form", icon: Link2, external: true },
 ];
 
 // Crumb labels keyed off the path. Falls back to last segment if missing.
@@ -292,7 +294,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 ← Exit
               </Link>
               <a
-                href="/"
+                href={LIVE_ORIGIN}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:inline-flex items-center gap-1.5 border border-charcoal/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/75 hover:bg-charcoal/5 hover:text-charcoal"
