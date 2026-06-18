@@ -624,7 +624,7 @@ function CategoryGrid({
                   item={item}
                   index={idx}
                   dense={view === "wall"}
-                  draggable={!subActive}
+                  draggable={!reorderDisabled}
                   onOpen={() => void openEditor(item)}
                 />
               ))}
