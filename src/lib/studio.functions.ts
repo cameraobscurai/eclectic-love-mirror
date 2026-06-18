@@ -170,14 +170,87 @@ export const saveStyleBoard = createServerFn({ method: "POST" })
     return row as unknown as StyleBoardRow;
   });
 
+// Derive a human display name from auth user. Prefers user_metadata.full_name,
+// then user_metadata.name, then the email local part titlecased. Never returns
+// an empty string — falls back to "The Studio".
+function deriveSenderName(user: { email?: string | null; user_metadata?: Record<string, unknown> | null } | null): string {
+  const meta = (user?.user_metadata ?? {}) as Record<string, unknown>;
+  const full = typeof meta.full_name === "string" ? meta.full_name.trim() : "";
+  if (full) return full;
+  const name = typeof meta.name === "string" ? meta.name.trim() : "";
+  if (name) return name;
+  const email = user?.email ?? "";
+  const local = email.split("@")[0] ?? "";
+  if (local) {
+    return local
+      .replace(/[._-]+/g, " ")
+      .split(" ")
+      .filter(Boolean)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+      .join(" ");
+  }
+  return "The Studio";
+}
+
+// AI-derive an editorial project title from the board's palette + curator notes
+// + client name. Three to six words, no quotes, evocative not literal. Returns
+// null if generation fails — caller falls back to deterministic derivation.
+async function aiDeriveProjectTitle(input: {
+  clientName: string;
+  curatorNotes: string | null;
+  palette: unknown[];
+  tones: Record<string, unknown>;
+}): Promise<string | null> {
+  const key = process.env.LOVABLE_API_KEY;
+  if (!key) return null;
+  try {
+    const { generateText } = await import("ai");
+    const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+    const gateway = createLovableAiGatewayProvider(key);
+    const swatchSummary = (input.palette as Array<{ hex?: string; name?: string }>)
+      .filter((s) => s && s.hex)
+      .map((s) => (s.name ? `${s.name} (${s.hex})` : s.hex))
+      .slice(0, 10)
+      .join(", ");
+    const toneSummary = Object.entries(input.tones)
+      .filter(([, v]) => typeof v === "number" && (v as number) > 0)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(" ");
+    const prompt = `You name editorial style proposals for an interior design studio (Eclectic Hive).
+
+Client: ${input.clientName || "Unnamed"}
+Palette: ${swatchSummary || "none"}
+Tones: ${toneSummary || "none"}
+Curator notes: ${input.curatorNotes?.slice(0, 400) || "none"}
+
+Write ONE project title. Rules:
+- 3 to 6 words, Title Case
+- Evocative, never literal (e.g. "A Study in Moss & Chestnut", "The Quiet Room", "Lowlight & Linen")
+- No quotes, no trailing punctuation, no the client's name
+- Editorial, restrained, never marketing-speak
+
+Return ONLY the title, nothing else.`;
+    const { text } = await generateText({
+      model: gateway("google/gemini-3-flash-preview"),
+      prompt,
+    });
+    const cleaned = text.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
+    if (!cleaned || cleaned.length > 80 || cleaned.split(/\s+/).length > 8) return null;
+    return cleaned;
+  } catch (err) {
+    console.error("[aiDeriveProjectTitle] failed:", err);
+    return null;
+  }
+}
+
 export const markBoardSent = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     // Idempotent: if already sent and has a token, return it.
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,status")
+      .select("id,share_token,status,project_title,prepared_by_name,palette,tones,curator_notes,inquiry_id")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
@@ -187,13 +260,49 @@ export const markBoardSent = createServerFn({ method: "POST" })
       share_token: string;
       status: "sent";
       sent_at?: string;
+      prepared_by_user_id?: string;
+      prepared_by_name?: string;
+      project_title?: string;
     } = {
       share_token: token,
       status: "sent",
     };
+
+    // First-send bookkeeping: capture sender + AI title only on the first send.
     if (!existing.share_token) {
       update.sent_at = new Date().toISOString();
+
+      // Capture sender from authenticated admin.
+      try {
+        const { data: userData } = await supabaseAdmin.auth.admin.getUserById(context.userId);
+        const u = userData?.user ?? null;
+        update.prepared_by_user_id = context.userId;
+        update.prepared_by_name = deriveSenderName(
+          u as { email?: string | null; user_metadata?: Record<string, unknown> | null } | null,
+        );
+      } catch (err) {
+        console.error("[markBoardSent] sender lookup failed:", err);
+      }
+
+      // AI-derive project title if not already set.
+      const existingTitle = (existing as unknown as { project_title?: string | null }).project_title;
+      if (!existingTitle) {
+        // Fetch client name for prompt context.
+        const { data: inq } = await supabaseAdmin
+          .from("inquiries")
+          .select("name")
+          .eq("id", existing.inquiry_id)
+          .maybeSingle();
+        const aiTitle = await aiDeriveProjectTitle({
+          clientName: inq?.name ?? "",
+          curatorNotes: existing.curator_notes as string | null,
+          palette: (existing.palette ?? []) as unknown[],
+          tones: (existing.tones ?? {}) as Record<string, unknown>,
+        });
+        if (aiTitle) update.project_title = aiTitle;
+      }
     }
+
     const { data: row, error } = await supabaseAdmin
       .from("style_boards")
       .update(update)
