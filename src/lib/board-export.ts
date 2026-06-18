@@ -6,7 +6,8 @@ export async function downloadDeckPDF(
   root: HTMLElement,
   filename = "style-board.pdf",
 ): Promise<void> {
-  const pages = Array.from(root.querySelectorAll<HTMLElement>("[data-board-page]"));
+  const descendants = Array.from(root.querySelectorAll<HTMLElement>("[data-board-page]"));
+  const pages = root.matches?.("[data-board-page]") ? [root, ...descendants] : descendants;
   if (pages.length === 0) return;
 
   // Letter portrait, 8.5 x 11 in @ 72dpi = 612 x 792 pt
