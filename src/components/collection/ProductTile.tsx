@@ -78,16 +78,8 @@ export function ProductTile({
         containIntrinsicSize: "auto 300px",
       }}
     >
-      <div
-        style={{
-          opacity: entered ? 1 : 0,
-          transform: entered ? "translateY(0)" : "translateY(4px)",
-          transition: skipReveal
-            ? "none"
-            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
-          willChange: entered ? "auto" : "opacity, transform",
-        }}
-      >
+      <div>
+
         {showInternals ? (
           <button
             onClick={onOpen}
