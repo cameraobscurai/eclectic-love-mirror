@@ -61,7 +61,9 @@ export function useBalancedColumnWidth({
       // If the body already fits in <= targetLines at headlineWidth, we're done.
       const atHeadline = measureLineStats(prepared, headlineWidth);
       if (atHeadline.lineCount <= bodyTargetLines) {
-        if (!cancelled) setWidth(headlineWidth);
+        // Cap at viewport so the hook can never produce a width that
+        // overflows the screen, regardless of the parent's grid track.
+        if (!cancelled) setWidth(Math.min(headlineWidth, window.innerWidth));
         return;
       }
 
