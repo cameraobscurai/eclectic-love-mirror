@@ -655,7 +655,11 @@ function StudioPage() {
               });
             }
             return (
-              <article className="mt-12 relative border border-charcoal/15 bg-cream px-8 lg:px-14 py-12 lg:py-16 max-w-2xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <article
+                ref={briefRef}
+                data-board-page="1"
+                className="mt-12 relative border border-charcoal/15 bg-cream px-8 lg:px-14 py-12 lg:py-16 max-w-2xl animate-in fade-in slide-in-from-bottom-2 duration-500"
+              >
                 {/* Top chrome */}
                 <div className="absolute top-4 left-8 right-8 lg:left-14 lg:right-14 flex justify-between text-[10px] tracking-[0.32em] text-charcoal/45 tabular-nums">
                   <span>STYLE BRIEF · DRAFT</span>
