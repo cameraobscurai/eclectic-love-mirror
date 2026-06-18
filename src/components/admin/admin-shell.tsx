@@ -66,10 +66,11 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
-  { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
-  { to: "/admin/image-qa", label: "Image QA", icon: ScanEye },
-  { to: "/admin/colors", label: "Color QA", icon: Palette },
 ];
+// Hidden utility routes — still reachable by direct URL, just removed from
+// sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
+// /admin/colors. Icons retained as imports for backwards compat.
+void BarChart3; void ScanEye; void Palette;
 
 const SITE: NavItem[] = [
   { to: "/", label: "View live site", icon: ExternalLink, external: true },
