@@ -233,6 +233,7 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
                 scope: body.scope,
                 items: body.items ?? [],
                 inquiryId: body.inquiry_id ?? undefined,
+                palette: body.palette ?? [],
               }
               const confirmMessageId = crypto.randomUUID()
               const confirmIdempotency = body.inquiry_id
