@@ -10,6 +10,31 @@ export interface DeckMeta {
   projectTitle: string;
 }
 
+const COUNT_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+
+export function countWord(n: number): string {
+  return COUNT_WORDS[n] ?? String(n);
+}
+
+function titleCase(s: string): string {
+  return s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+}
+
+// Derive an editorial project title from the board itself — never hardcoded.
+export function deriveProjectTitle(board: PublicStyleBoard): string {
+  const swatches = (board.palette as unknown as PaletteSwatch[]).filter((s) => s && s.hex);
+  const named = swatches.map((s) => s.name?.trim()).filter((n): n is string => Boolean(n));
+  if (named.length >= 2) {
+    return `A Study in ${titleCase(named[0])} & ${titleCase(named[1])}`;
+  }
+  if (named.length === 1) {
+    return `A Study in ${titleCase(named[0])}`;
+  }
+  const label = toneLabel(board.tones as Record<string, unknown>);
+  if (label) return `A ${label.split(" · ").map(titleCase).join(", ")} Study`;
+  return "Style Guide";
+}
+
 export type DeckPage =
   | { kind: "cover"; cover: PublicPinnedItem | null }
   | { kind: "mood-hero"; images: Array<{ url: string; alt: string }> }
