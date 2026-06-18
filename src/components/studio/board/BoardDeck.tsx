@@ -5,6 +5,8 @@ import {
   buildPages,
   spansFor,
   getProductionNote,
+  deriveProjectTitle,
+  countWord,
   type DeckPage,
   type DeckMeta,
   type PaletteSwatch,
@@ -27,7 +29,7 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
             year: "numeric",
           })
         : "",
-      projectTitle: "A Study in Moss & Chestnut",
+      projectTitle: deriveProjectTitle(board),
     }),
     [board],
   );
@@ -243,10 +245,10 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
         Palette
       </p>
       <h2
-        className="font-display tracking-tight mb-12"
+        className="font-display tracking-tight mb-12 capitalize"
         style={{ fontSize: "clamp(2.25rem, 4vw, 3.5rem)" }}
       >
-        Seven tones
+        {countWord(page.swatches.length)} {page.swatches.length === 1 ? "tone" : "tones"}
       </h2>
       <div
         className="grid gap-4"
