@@ -699,13 +699,19 @@ function StudioPage() {
               {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
               {submitting ? "Sending…" : "Submit Brief"}
             </button>
+            <button
+              type="button"
+              onClick={downloadBrief}
+              disabled={!canDownload || downloading}
+              className="inline-flex items-center gap-2 px-6 py-3 border border-charcoal/30 text-charcoal text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/[0.04] transition-colors"
+            >
+              {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+              {downloading ? "Building PDF…" : "Download Brief"}
+            </button>
             <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
               Or use the standard contact form
             </Link>
           </div>
-          {submitError && (
-            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{submitError}</p>
-          )}
         </Step>
       </form>
     </div>
