@@ -241,9 +241,11 @@ function AtelierPage() {
               ATELIER BY THE HIVE
             </p>
             <div
-              className="mt-8"
+              className="mt-8 min-w-0"
               style={{
-                width: balancedW ? `${balancedW}px` : "fit-content",
+                // min() clamps the typographic width to the container so the
+                // grid track can never be pushed past the viewport on mobile.
+                width: balancedW ? `min(${balancedW}px, 100%)` : "fit-content",
                 maxWidth: "100%",
               }}
             >
