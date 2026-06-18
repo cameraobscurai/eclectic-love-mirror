@@ -4,7 +4,6 @@ import type { PublicStyleBoard, PublicPinnedItem } from "@/lib/studio.functions"
 import {
   buildPages,
   spansFor,
-  getProductionNote,
   deriveProjectTitle,
   countWord,
   type DeckPage,
