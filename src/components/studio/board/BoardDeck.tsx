@@ -22,14 +22,14 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
   const meta: DeckMeta = useMemo(
     () => ({
       clientName: board.client_name || "Client",
-      preparedBy: "Jill",
+      preparedBy: "Eclectic Hive",
       date: board.sent_at
         ? new Date(board.sent_at).toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
           })
         : "",
-      projectTitle: "A Study in Moss & Chestnut",
+      projectTitle: deriveProjectTitle(board),
     }),
     [board],
   );
