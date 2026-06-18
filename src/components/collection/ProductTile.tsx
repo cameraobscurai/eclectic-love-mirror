@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import {
@@ -24,10 +24,6 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-const REVEAL_COLS = 6;
-const REVEAL_STEP_MS = 60;
-const REVEAL_MAX_DELAY_MS = 240;
-const REVEAL_SKIP_INDEX = 12;
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
@@ -46,7 +42,6 @@ export function ProductTile({
   const spyGroup = getProductBrowseGroup(product);
   const tileAspect = PRODUCT_TILE_ASPECT;
   const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
-  const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
   const { ref, near } = useNearViewport<HTMLLIElement>({
@@ -65,10 +60,6 @@ export function ProductTile({
   // Tile container is always visible; only the image area shows a skeleton
   // until it loads. Previously the whole tile (caption + image) faded in on
   // image load, so any slow image made the tile look "disappeared."
-  const entered = true;
-  const skipReveal = true;
-  const revealDelayMs = 0;
-  void reduced;
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
@@ -87,16 +78,8 @@ export function ProductTile({
         containIntrinsicSize: "auto 300px",
       }}
     >
-      <div
-        style={{
-          opacity: entered ? 1 : 0,
-          transform: entered ? "translateY(0)" : "translateY(4px)",
-          transition: skipReveal
-            ? "none"
-            : `opacity 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms, transform 380ms cubic-bezier(0.22, 1, 0.36, 1) ${revealDelayMs}ms`,
-          willChange: entered ? "auto" : "opacity, transform",
-        }}
-      >
+      <div>
+
         {showInternals ? (
           <button
             onClick={onOpen}

@@ -84,9 +84,22 @@ export function Navigation() {
       if (h > 0) document.documentElement.style.setProperty("--nav-h", `${h}px`);
     };
     apply();
-    const ro = new ResizeObserver(apply);
+    // rAF-debounce: writing --nav-h on :root can re-trigger layout on the
+    // observed element within the same frame, producing "ResizeObserver loop
+    // completed with undelivered notifications". Defer the write by a frame.
+    let raf = 0;
+    const ro = new ResizeObserver(() => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        apply();
+      });
+    });
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, []);
 
   const isLightPage =

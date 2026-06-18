@@ -85,17 +85,22 @@ function ContactPage() {
   const { ids: storeIds, clear: clearInquiry, remove: removeFromInquiry } = useInquiry();
 
   // Merge URL ?items=… with local inquiry store. URL wins for ordering.
-  const initialIds = useMemo(() => {
-    if (typeof window === "undefined") return [] as string[];
+  // Read URL only after mount to avoid SSR/client hydration mismatch (#418).
+  const [urlIds, setUrlIds] = useState<string[]>([]);
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const raw = params.get("items") ?? "";
-    const fromUrl = raw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const merged = [...fromUrl, ...storeIds.filter((id) => !fromUrl.includes(id))];
-    return merged;
-  }, [storeIds]);
+    setUrlIds(
+      raw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+    );
+  }, []);
+  const initialIds = useMemo(
+    () => [...urlIds, ...storeIds.filter((id) => !urlIds.includes(id))],
+    [urlIds, storeIds],
+  );
 
   const [pieces, setPieces] = useState<SelectedPiece[]>([]);
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());

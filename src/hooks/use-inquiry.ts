@@ -27,10 +27,10 @@ function write(ids: string[]) {
 }
 
 export function useInquiry() {
-  // Lazy init: read localStorage on first render so the tray count doesn't
-  // flash 0 → N. SSR returns []; the post-hydration effect below re-reads
-  // to pick up cross-tab changes that happened while this tab was idle.
-  const [ids, setIds] = useState<string[]>(() => read());
+  // SSR-safe: start empty so server and first client render match (avoids
+  // React #418 hydration mismatch). The effect below populates from
+  // localStorage post-mount and keeps in sync with cross-tab changes.
+  const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
     setIds(read());
