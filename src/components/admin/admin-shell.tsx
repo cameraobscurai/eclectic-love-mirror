@@ -64,11 +64,10 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
-  { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
 ];
 // Hidden utility routes — still reachable by direct URL, just removed from
 // sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
-// /admin/colors.
+// /admin/colors, /admin/incoming (superseded by /admin/new-product).
 
 const LIVE_ORIGIN = "https://eclectichive.com";
 
