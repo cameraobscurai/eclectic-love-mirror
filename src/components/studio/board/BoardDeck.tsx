@@ -221,7 +221,8 @@ function MoodHeroPage({
 
 function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }> }) {
   return (
-    <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+    <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">
         {page.eyebrow}
       </p>
