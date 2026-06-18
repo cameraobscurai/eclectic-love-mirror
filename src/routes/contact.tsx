@@ -446,9 +446,9 @@ function ContactPage() {
 
   return (
     <main
-      className="min-h-screen bg-cream text-charcoal pb-32"
+      className="min-h-screen bg-cream text-charcoal pb-24 lg:pb-32"
       style={{
-        paddingTop: "calc(var(--nav-h) + 2rem)",
+        paddingTop: "calc(var(--nav-h) + clamp(1.5rem, 3vw, 2rem))",
         // Contact reads narrower than home — pin canvas to 1400.
         ["--canvas-max" as string]: "1400px",
       }}
@@ -466,7 +466,7 @@ function ContactPage() {
             <h1 className="page-title mt-6 text-charcoal">
               LET'S COLLABORATE
             </h1>
-            <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
+            <p className="mt-6 lg:mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
               We would love to hear about your project and how we can support
               your needs. Every style brief request is personally reviewed and
               answered within two business days. Thank you for reaching out to us!
@@ -477,7 +477,7 @@ function ContactPage() {
             >
               HAVE YOUR INSPO IMAGES? BUILD A STYLE BRIEF →
             </a>
-            <div className="mt-12 space-y-5">
+            <div className="mt-10 lg:mt-12 space-y-5">
               <p>
                 <span className="block text-[11px] uppercase tracking-[0.22em] text-charcoal/40 mb-1">
                   EMAIL
@@ -505,10 +505,10 @@ function ContactPage() {
             {success ? (
               <SuccessPanel count={submittedCount} />
             ) : (
-              <form onSubmit={onSubmit} noValidate className="space-y-16">
+              <form onSubmit={onSubmit} noValidate className="space-y-12 lg:space-y-16">
                 {/* 1. YOUR INFORMATION */}
                 <FormSection number="01" label="Your information">
-                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+                  <div className="grid sm:grid-cols-2 gap-x-8 gap-y-5 lg:gap-y-6">
                     <Field label="Name" required>
                       <UnderlineInput
                         value={name}
@@ -557,7 +557,7 @@ function ContactPage() {
 
                 {/* 2. PROJECT DETAILS */}
                 <FormSection number="02" label="Project details">
-                  <div className="space-y-8">
+                  <div className="space-y-6 lg:space-y-8">
                     <Field label="Budget" asGroup>
                       <PillGroup
                         options={[...BUDGET_RANGES]}
@@ -783,10 +783,10 @@ function FormSection({
 }) {
   return (
     <section
-      className="border-t pt-10 relative"
+      className="border-t pt-8 lg:pt-10 relative"
       style={{ borderColor: "var(--archive-rule)" }}
     >
-      <div className="flex items-baseline gap-4 mb-10">
+      <div className="flex items-baseline gap-4 mb-8 lg:mb-10">
         <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/40 tabular-nums">
           {number}
         </span>
@@ -860,7 +860,7 @@ function UnderlineInput({
       required={required}
       autoComplete={autoComplete}
       placeholder={placeholder}
-      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-2 text-[12px] uppercase tracking-[0.18em] text-charcoal placeholder:text-charcoal/35 transition-colors"
+      className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 lg:py-2 text-[12px] uppercase tracking-[0.18em] text-charcoal placeholder:text-charcoal/35 transition-colors"
     />
   );
 }

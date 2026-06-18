@@ -20,7 +20,7 @@ export function StyleBoardCanvas({ inspo, pinned, catalog, onRemoveInspo, onUnpi
     );
   }
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-2">
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2">
       {inspo.map((img) => (
         <Tile
           key={img.id}
@@ -64,7 +64,7 @@ function Tile({ src, label, name, onRemove }: { src: string; label: string; name
       <button
         type="button"
         onClick={onRemove}
-        className="absolute top-1.5 right-1.5 w-5 h-5 bg-charcoal/80 text-cream grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-1.5 right-1.5 w-5 h-5 bg-charcoal/80 text-cream grid place-items-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
         aria-label="Remove"
       >
         <X className="h-3 w-3" />
