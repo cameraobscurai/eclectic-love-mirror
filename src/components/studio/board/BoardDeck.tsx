@@ -5,6 +5,8 @@ import {
   buildPages,
   spansFor,
   getProductionNote,
+  deriveProjectTitle,
+  countWord,
   type DeckPage,
   type DeckMeta,
   type PaletteSwatch,
