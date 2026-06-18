@@ -23,7 +23,7 @@ export function CategoryOverview({
   const reduced = useReducedMotion();
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-10 md:space-y-16">
       {facets.map((facet, sectionIdx) => {
         const items = (productsByCategory[facet.slug] ?? []).slice(0, PREVIEW_COUNT);
         if (items.length === 0) return null;
@@ -40,7 +40,7 @@ export function CategoryOverview({
           >
             <div className="flex items-end justify-between mb-5 gap-4">
               <div className="min-w-0">
-                <h2 className="font-display text-2xl md:text-3xl tracking-tight">
+                <h2 className="font-display text-xl md:text-2xl lg:text-3xl tracking-tight">
                   {facet.display}
                 </h2>
               </div>
@@ -120,7 +120,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
             />
           ) : null}
         </div>
-        <p className="mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2 uppercase tracking-[0.06em] transition-colors duration-200 group-hover:text-charcoal">
+        <p className="mt-1.5 md:mt-2 text-sm text-charcoal/85 leading-snug line-clamp-2 uppercase tracking-[0.06em] transition-colors duration-200 group-hover:text-charcoal">
           {product.title}
         </p>
       </button>

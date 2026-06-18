@@ -152,7 +152,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
       <div
         ref={containerRef}
         className="absolute inset-0 grid touch-none select-none"
-        style={{ ...gridStyle, gap: 1, background: "#ffffff" }}
+        style={{ ...gridStyle, gap: "2px", background: "#ffffff" }}
         onMouseLeave={() => setHoveredId(null)}
         onTouchStart={handleTouch}
         onTouchMove={handleTouch}

@@ -12,7 +12,7 @@ export function GalleryFilters<T extends string>({
   onChange,
 }: GalleryFiltersProps<T>) {
   return (
-    <section className="px-6 lg:px-12 pb-10">
+    <section className="px-6 lg:px-12 pb-12 lg:pb-16">
       <div className="max-w-[1600px] mx-auto flex flex-wrap gap-2">
         {filters.map((f) => {
           const on = f === active;

@@ -82,13 +82,13 @@ export function GalleryFilmstrip({
   const showControls = total > 1;
 
   return (
-    <section aria-label="Project filmstrip" className="pb-10 lg:pb-14">
+    <section aria-label="Project filmstrip" className="pb-12 lg:pb-20">
       <div className="relative">
         <ul
           ref={scrollerRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
-          className="flex gap-8 lg:gap-10 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 lg:px-12 pb-4 scrollbar-slim focus:outline-none"
+          className="flex gap-5 lg:gap-10 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 lg:px-12 pb-4 scrollbar-slim focus:outline-none"
         >
           {projects.map((p, i) => (
             <GalleryProjectCard
@@ -130,7 +130,7 @@ export function GalleryFilmstrip({
       </div>
 
       {/* Progress + scroll hint */}
-      <div className="px-6 lg:px-12 mt-8 max-w-[1600px] mx-auto">
+      <div className="px-6 lg:px-12 mt-10 max-w-[1600px] mx-auto">
         <div className="flex items-center gap-5">
           <span className="text-cream/55 text-[10px] uppercase tracking-[0.28em] tabular-nums">
             {padded(activeIndex + 1)}
