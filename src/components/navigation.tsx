@@ -35,7 +35,7 @@ const NAV_LINKS = [
   },
   { href: "/collection", label: "HIVE SIGNATURE COLLECTION", render: "HIVE SIGNATURE COLLECTION" },
   { href: "/gallery", label: "THE GALLERY", render: "THE GALLERY" },
-  // { href: "/studio", label: "THE STUDIO", render: "THE STUDIO" }, // hidden from nav; route still active
+  // { href: "/stylebrief", label: "THE STUDIO", render: "THE STUDIO" }, // hidden from nav; route still active
   { href: "/contact", label: "CONTACT", render: "CONTACT" },
 ] as const;
 
@@ -56,8 +56,8 @@ const LIGHT_BG_PAGES = [
 const WHITE_BG_PAGES = ["/", "/collection"];
 
 // Prefix matches for entire route trees (e.g. all /studio/* pages share a light bg)
-const LIGHT_BG_PREFIXES = ["/studio"];
-const WHITE_BG_PREFIXES = ["/studio"];
+const LIGHT_BG_PREFIXES = ["/stylebrief"];
+const WHITE_BG_PREFIXES = ["/stylebrief"];
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);

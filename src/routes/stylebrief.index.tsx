@@ -13,7 +13,7 @@ import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catal
 import { signPublicInspoUpload, submitStyleBrief } from "@/lib/style-brief.functions";
 import { StudioBrowser } from "@/components/studio/StudioBrowser";
 
-export const Route = createFileRoute("/studio/")({
+export const Route = createFileRoute("/stylebrief/")({
   head: () => ({
     meta: [
       { title: "Studio · Build Your Style Brief — Eclectic Hive" },
@@ -224,7 +224,7 @@ function StudioPage() {
       });
 
       clearInquiry();
-      navigate({ to: "/studio/thanks", search: { inquiry: inquiryId } });
+      navigate({ to: "/stylebrief/thanks", search: { inquiry: inquiryId } });
     } catch (e) {
       setSubmitError((e as Error).message);
       setSubmitting(false);
@@ -243,18 +243,16 @@ function StudioPage() {
           Drop the images that move you. See your palette. Send us your vision.
         </p>
       </header>
-
       {/* TOOLS — keep 3D viewer discoverable */}
       <nav className="px-6 lg:px-16 py-5 border-b border-charcoal/10 flex flex-wrap gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
-        <Link to="/studio/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
+        <Link to="/stylebrief/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
           3D Viewer <ArrowRight className="h-3 w-3" />
         </Link>
-        <Link to="/studio/lab" className="text-charcoal/55 hover:text-charcoal inline-flex items-center gap-2">
+        <Link to="/stylebrief/lab" className="text-charcoal/55 hover:text-charcoal inline-flex items-center gap-2">
           Creative Lab
         </Link>
         <span className="text-charcoal/35 ml-auto hidden md:inline">Below: Style Brief</span>
       </nav>
-
       <form onSubmit={submit} className="px-6 lg:px-16 pb-24">
         {/* STEP 1 — INSPO */}
         <Step n={1} title="Drop Inspiration">
@@ -630,7 +628,7 @@ function StudioPage() {
         </Step>
       </form>
     </div>
-  );
+  )
 }
 
 // ── presentational ──────────────────────────────────────────────────────

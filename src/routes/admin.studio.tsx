@@ -77,13 +77,13 @@ function NoInquiry() {
             status="Live"
           />
           <ToolCard
-            to="/studio/three"
+            to="/stylebrief/three"
             icon={<Box className="h-5 w-5" />}
             label="3D"
             status="Live"
           />
           <ToolCard
-            to="/studio/lab"
+            to="/stylebrief/lab"
             icon={<Sparkles className="h-5 w-5" />}
             label="Lab"
             status="Soon"
@@ -322,13 +322,13 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
             <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-2">
               <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">Share link</p>
               <code className="flex-1 text-[11px] font-sans normal-case truncate text-charcoal/80">
-                {typeof window !== "undefined" ? `${window.location.origin}/studio/${state.shareToken}` : `/studio/${state.shareToken}`}
+                {typeof window !== "undefined" ? `${window.location.origin}/stylebrief/${state.shareToken}` : `/stylebrief/${state.shareToken}`}
               </code>
               <button
                 type="button"
                 onClick={() => {
                   if (typeof window === "undefined") return;
-                  navigator.clipboard.writeText(`${window.location.origin}/studio/${state.shareToken}`);
+                  navigator.clipboard.writeText(`${window.location.origin}/stylebrief/${state.shareToken}`);
                   setCopied(true);
                   setTimeout(() => setCopied(false), 1500);
                 }}

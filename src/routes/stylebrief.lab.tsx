@@ -12,7 +12,7 @@ const MODELS = [
 const viewerReady: Promise<unknown> =
   typeof window === "undefined" ? Promise.resolve() : import("@google/model-viewer");
 
-export const Route = createFileRoute("/studio/lab")({
+export const Route = createFileRoute("/stylebrief/lab")({
   head: () => ({
     meta: [
       { title: "Creative Lab · Studio" },
@@ -33,7 +33,7 @@ function LabPage() {
   return (
     <div className="min-h-screen bg-cream text-charcoal">
       <header className="px-6 lg:px-16 pt-10 pb-6 border-b border-charcoal/10 flex items-center justify-between">
-        <Link to="/studio" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50 hover:text-charcoal inline-flex items-center gap-1.5">
+        <Link to="/stylebrief" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50 hover:text-charcoal inline-flex items-center gap-1.5">
           <ArrowLeft className="h-3 w-3" /> Studio
         </Link>
         <div className="flex items-baseline gap-3">
@@ -45,7 +45,7 @@ function LabPage() {
       <section className="px-6 lg:px-16 py-12">
         <div className="flex items-baseline justify-between mb-6">
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45">3D Pieces · Live</p>
-          <Link to="/studio/three" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/60 hover:text-charcoal inline-flex items-center gap-1.5">
+          <Link to="/stylebrief/three" className="text-[10px] uppercase tracking-[0.28em] text-charcoal/60 hover:text-charcoal inline-flex items-center gap-1.5">
             Full Viewer <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
@@ -63,7 +63,7 @@ function LabPage() {
 function LabTile({ model, ready }: { model: { id: string; name: string; src: string }; ready: boolean }) {
   const [load, setLoad] = useState(false);
   return (
-    <Link to="/studio/three" className="group block">
+    <Link to="/stylebrief/three" className="group block">
       <div
         className="aspect-square bg-white border border-charcoal/10 overflow-hidden relative"
         onPointerEnter={() => setLoad(true)}
@@ -71,7 +71,7 @@ function LabTile({ model, ready }: { model: { id: string; name: string; src: str
       >
         {ready && load ? (
           // @ts-expect-error - custom element
-          <model-viewer
+          (<model-viewer
             src={model.src}
             alt={model.name}
             auto-rotate
@@ -88,7 +88,7 @@ function LabTile({ model, ready }: { model: { id: string; name: string; src: str
             loading="lazy"
             reveal="auto"
             style={{ width: "100%", height: "100%", background: "transparent" }}
-          />
+          />)
         ) : (
           <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/30">
             {ready ? "Hover to preview" : "Loading"}
@@ -100,6 +100,6 @@ function LabTile({ model, ready }: { model: { id: string; name: string; src: str
         <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/40 group-hover:text-charcoal transition-colors">Open →</span>
       </div>
     </Link>
-  );
+  )
 }
 
