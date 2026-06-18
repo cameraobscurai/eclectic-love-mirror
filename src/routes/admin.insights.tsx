@@ -432,12 +432,21 @@ function InquiryRow({
   }
 
   return (
-    <div className="group border-b py-4" style={{ borderColor: "var(--archive-rule)" }}>
+    <div className="group border-b py-4 flex items-start gap-3" style={{ borderColor: "var(--archive-rule)" }}>
+      <input
+        type="checkbox"
+        checked={selected}
+        onChange={onToggleSelect}
+        onClick={(e) => e.stopPropagation()}
+        aria-label={`Select inquiry from ${row.name}`}
+        className="mt-2 accent-charcoal shrink-0"
+      />
+      <div className="flex-1 min-w-0">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="w-full text-left flex items-baseline justify-between gap-4"
-      >
+      ></button>
         <div className="min-w-0 flex-1">
           <p className="font-display text-lg leading-tight truncate">{row.name}</p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
