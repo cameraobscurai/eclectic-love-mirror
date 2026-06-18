@@ -42,7 +42,6 @@ export function ProductTile({
   const spyGroup = getProductBrowseGroup(product);
   const tileAspect = PRODUCT_TILE_ASPECT;
   const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
-  const reduced = useReducedMotion();
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
   const { ref, near } = useNearViewport<HTMLLIElement>({
@@ -61,10 +60,6 @@ export function ProductTile({
   // Tile container is always visible; only the image area shows a skeleton
   // until it loads. Previously the whole tile (caption + image) faded in on
   // image load, so any slow image made the tile look "disappeared."
-  const entered = true;
-  const skipReveal = true;
-  const revealDelayMs = 0;
-  void reduced;
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
