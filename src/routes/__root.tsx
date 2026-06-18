@@ -6,7 +6,8 @@ import {
   Scripts,
   useLocation,
 } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Navigation } from "../components/navigation";
 import { Footer } from "../components/footer";
 import { DevEditOverlay } from "../components/DevEditOverlay";
@@ -161,6 +162,10 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { pathname, search, hash } = useLocation();
   const isHome = pathname === "/";
+  // One QueryClient per browser session. Lazy-init so SSR doesn't share state across requests.
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } },
+  }));
 
   // Send a GA4 page_view on every TanStack route change.
   useEffect(() => {
@@ -186,7 +191,7 @@ function RootComponent() {
     pathname === "/process";
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <SmoothScroll />
       <a
         href="#main-content"
@@ -203,7 +208,7 @@ function RootComponent() {
       {!isAdmin && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
       <Toaster />
-    </>
+    </QueryClientProvider>
   );
 }
 
