@@ -65,6 +65,9 @@ function StudioPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const briefRef = useRef<HTMLElement | null>(null);
+
 
   // Form fields — hydrated from sessionStorage so a re-render, accidental
   // reload, or browser Back doesn't blank them out.
