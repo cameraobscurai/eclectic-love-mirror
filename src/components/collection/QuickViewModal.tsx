@@ -473,6 +473,27 @@ export function QuickViewModal({
               <h2 className="font-display leading-[1.05] tracking-[0.04em] text-charcoal text-[26px] md:text-[34px] flex-1 min-w-0 [overflow-wrap:break-word] hyphens-auto">
                 {product.title}
               </h2>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(product.title);
+                    const { toast } = await import("sonner");
+                    toast(`Copied "${product.title}"`);
+                  } catch {
+                    const { toast } = await import("sonner");
+                    toast.error("Couldn't copy");
+                  }
+                }}
+                aria-label={`Copy name: ${product.title}`}
+                title="Copy name"
+                className="shrink-0 mt-2 h-7 w-7 grid place-items-center text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                  <rect x="9" y="9" width="11" height="11" rx="1.5" />
+                  <path d="M5 15V5.5A1.5 1.5 0 0 1 6.5 4H15" />
+                </svg>
+              </button>
             </div>
             {activeVariant && activeVariant.title !== product.title && (
               <p className="mt-2 text-[12px] uppercase tracking-[0.24em] text-charcoal/70">
