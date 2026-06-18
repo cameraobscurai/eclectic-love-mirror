@@ -170,6 +170,10 @@
   position: sticky;
   top: 8rem;
   align-self: start;
+  /* min-width:0 is critical — without it, a child measured wider than the
+     grid track (e.g. useBalancedColumnWidth returning a typographic width on
+     mobile) would push the track past the viewport. */
+  min-width: 0;
 }
 
 .atelier-hero-media {
@@ -178,13 +182,17 @@
 
 @media (max-width: 900px) {
   .atelier-hero-grid {
-    grid-template-columns: 1fr;
+    /* minmax(0,1fr) — NOT 1fr. Plain 1fr = minmax(auto,1fr) which lets the
+       track grow to its content's intrinsic width, bypassing the parent
+       container width on narrow viewports. */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .atelier-hero-copy {
     position: static;
   }
 }
+
 
 /* Collection product grid contract:
  * mobile = 2-up, tablet/desktop = 3-up, never wider. Keep this centralized so
