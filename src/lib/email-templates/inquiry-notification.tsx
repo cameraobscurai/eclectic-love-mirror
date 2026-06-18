@@ -31,6 +31,19 @@ interface Props {
   scope?: string | null
   items?: ItemSnapshot[]
   inquiryId?: string
+  palette?: string[]
+  tones?: Record<string, number>
+  insights?: string[]
+  inspoUrls?: string[]
+}
+
+const topTones = (tones?: Record<string, number>): string[] => {
+  if (!tones) return []
+  return Object.entries(tones)
+    .filter(([, v]) => typeof v === 'number' && v > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([k, v]) => `${k.toUpperCase()} ${Math.round(v * 100)}%`)
 }
 
 const InquiryNotification = ({
@@ -44,13 +57,19 @@ const InquiryNotification = ({
   scope,
   items = [],
   inquiryId,
-}: Props) => (
+  palette = [],
+  tones = {},
+  insights = [],
+  inspoUrls = [],
+}: Props) => {
+  const tonesList = topTones(tones)
+  return (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>{`New inquiry from ${name}${items.length ? ` · ${items.length} piece${items.length === 1 ? '' : 's'}` : ''}`}</Preview>
+    <Preview>{`New style brief from ${name}${palette.length ? ` · ${palette.length} color${palette.length === 1 ? '' : 's'}` : ''}${items.length ? ` · ${items.length} piece${items.length === 1 ? '' : 's'}` : ''}`}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={eyebrow}>ECLECTIC HIVE — NEW INQUIRY</Text>
+        <Text style={eyebrow}>ECLECTIC HIVE — NEW STYLE BRIEF</Text>
         <Heading style={h1}>{name}</Heading>
         <Text style={meta}>
           <Link href={`mailto:${email}`} style={link}>
@@ -81,10 +100,85 @@ const InquiryNotification = ({
           </Section>
         ) : null}
 
+        {palette.length > 0 ? (
+          <Section style={section}>
+            <Text style={sectionLabel}>COLOR PALETTE</Text>
+            <table cellPadding={0} cellSpacing={0} border={0} role="presentation" style={{ borderCollapse: 'collapse', marginBottom: '6px' }}>
+              <tbody>
+                <tr>
+                  {palette.map((hex, i) => (
+                    <td
+                      key={`${hex}-${i}`}
+                      bgcolor={hex}
+                      width="44"
+                      height="44"
+                      style={{ backgroundColor: hex, width: '44px', height: '44px', border: '1px solid #1a1a1a14' }}
+                    >
+                      &nbsp;
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  {palette.map((hex, i) => (
+                    <td
+                      key={`label-${hex}-${i}`}
+                      style={{ fontSize: '9px', letterSpacing: '0.12em', color: '#1a1a1a80', textAlign: 'center', padding: '4px 2px 0', fontFamily: 'monospace' }}
+                    >
+                      {hex.toUpperCase()}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+            {tonesList.length > 0 ? (
+              <Text style={{ ...body, color: '#1a1a1a99', marginTop: '8px' }}>
+                {tonesList.join(' · ')}
+              </Text>
+            ) : null}
+          </Section>
+        ) : null}
+
+        {insights.length > 0 ? (
+          <Section style={section}>
+            <Text style={sectionLabel}>READ</Text>
+            {insights.map((s, i) => (
+              <Text key={i} style={body}>• {s}</Text>
+            ))}
+          </Section>
+        ) : null}
+
+        {inspoUrls.length > 0 ? (
+          <Section style={section}>
+            <Text style={sectionLabel}>INSPIRATION ({inspoUrls.length})</Text>
+            <table cellPadding={0} cellSpacing={6} border={0} role="presentation" style={{ borderCollapse: 'separate' }}>
+              <tbody>
+                <tr>
+                  {inspoUrls.slice(0, 8).map((url, i) => (
+                    <td key={i} style={{ padding: '0' }}>
+                      <Link href={url} style={{ textDecoration: 'none' }}>
+                        <img
+                          src={url}
+                          alt={`Inspiration ${i + 1}`}
+                          width="72"
+                          height="72"
+                          style={{ width: '72px', height: '72px', objectFit: 'cover', border: '1px solid #1a1a1a14', display: 'block' }}
+                        />
+                      </Link>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+            <Text style={{ ...footer, marginTop: '6px' }}>
+              Image links expire in 7 days. Originals live in the studio-inspo bucket.
+            </Text>
+          </Section>
+        ) : null}
+
         {items.length > 0 ? (
           <Section style={section}>
             <Text style={sectionLabel}>
-              SELECTED PIECES ({items.length})
+              PINNED PIECES ({items.length})
             </Text>
             {items.map((item, idx) => (
               <Text key={item.rms_id ?? idx} style={body}>
@@ -104,7 +198,8 @@ const InquiryNotification = ({
       </Container>
     </Body>
   </Html>
-)
+  )
+}
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Inter, Arial, sans-serif', color: '#1a1a1a' }
 const container = { padding: '32px 28px', maxWidth: '620px', margin: '0 auto' }
@@ -123,10 +218,13 @@ export const template = {
   component: InquiryNotification,
   subject: (data: Record<string, any>) => {
     const name = data?.name || 'Anonymous'
+    const palette = Array.isArray(data?.palette) ? data.palette.length : 0
     const count = Array.isArray(data?.items) ? data.items.length : 0
-    return count > 0
-      ? `New Hive inquiry — ${name} (${count} piece${count === 1 ? '' : 's'})`
-      : `New Hive inquiry — ${name}`
+    const bits: string[] = []
+    if (palette) bits.push(`${palette} color${palette === 1 ? '' : 's'}`)
+    if (count) bits.push(`${count} piece${count === 1 ? '' : 's'}`)
+    const suffix = bits.length ? ` (${bits.join(', ')})` : ''
+    return `New Hive style brief — ${name}${suffix}`
   },
   displayName: 'Inquiry Notification (admin)',
   to: 'info@eclectichive.com',
@@ -139,6 +237,10 @@ export const template = {
     projectDate: '2026-09-12',
     budget: '$15k–$25k',
     scope: 'Full styling',
+    palette: ['#d4cdc4', '#8a7361', '#3c2e25', '#c9a98c', '#1a1a1a'],
+    tones: { warm: 0.62, muted: 0.41, light: 0.33 },
+    insights: ['Warm desert neutrals', 'Low contrast', 'Tactile earth tones'],
+    inspoUrls: [],
     items: [
       { rms_id: 'RMS-001', title: 'Birch Lounge Chair', category: 'Seating' },
       { rms_id: 'RMS-002', title: 'Pampas Tall Vessel', category: 'Styling' },
