@@ -446,7 +446,7 @@ function InquiryRow({
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="w-full text-left flex items-baseline justify-between gap-4"
-      ></button>
+      >
         <div className="min-w-0 flex-1">
           <p className="font-display text-lg leading-tight truncate">{row.name}</p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
