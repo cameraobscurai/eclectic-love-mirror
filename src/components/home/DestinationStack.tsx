@@ -109,7 +109,7 @@ function DestinationCard({
       <div
         className="relative flex h-full flex-col justify-between"
         style={{
-          paddingInline: "clamp(0.6rem, 0.4rem + 0.6vw, 2rem)",
+          paddingInline: "clamp(1rem, 0.4rem + 0.6vw, 2rem)",
           paddingBlock: "clamp(0.7rem, 0.5rem + 0.8vw, 2.25rem)",
         }}
       >
@@ -185,7 +185,7 @@ function DestinationCard({
       <div
         className="border border-charcoal/12"
         style={{
-          height: "clamp(96px, 7rem + 3vw, 13rem)",
+          height: "clamp(112px, 7rem + 3vw, 13rem)",
           animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
         }}
       >

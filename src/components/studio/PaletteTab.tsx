@@ -54,7 +54,7 @@ export function PaletteTab({ result }: { result: AnalysisResult }) {
           <div className="space-y-2.5">
             {result.perImage.map((pi, i) => (
               <div key={i} className="flex items-center gap-2">
-                <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 w-20 truncate" title={pi.name}>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 w-28 truncate" title={pi.name}>
                   {pi.name}
                 </span>
                 <div className="flex flex-1 h-5 gap-0.5 overflow-hidden">

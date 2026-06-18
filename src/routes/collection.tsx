@@ -814,9 +814,9 @@ function CollectionPage() {
           transition: "background 0.3s ease, backdrop-filter 0.3s ease",
         }}
       >
-        <div className="px-4 sm:px-6 lg:px-12">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div
-            className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-2 flex-wrap sm:flex-nowrap"
+            className="mx-auto flex items-center justify-between gap-2 sm:gap-4 py-1.5 sm:py-2 flex-wrap sm:flex-nowrap"
             style={{
               maxWidth: "var(--archive-canvas-max)",
               minHeight: "var(--archive-utility-h)",

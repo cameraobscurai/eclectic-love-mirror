@@ -27,7 +27,7 @@ export function GalleryProjectCard({
       data-index={index}
       className={[
         "group relative shrink-0 snap-center transition-all duration-500",
-        "w-[85vw] md:w-[60vw] lg:w-[45vw] xl:w-[40vw] xl:max-w-[620px]",
+        "w-[82vw] md:w-[60vw] lg:w-[45vw] xl:w-[40vw] xl:max-w-[620px]",
         active
           ? "opacity-100 scale-100"
           : "opacity-60 scale-[0.97] hover:opacity-80 hover:scale-[0.98]",
@@ -71,8 +71,8 @@ export function GalleryProjectCard({
         </div>
 
         {/* Caption — planner promoted to co-headline (trade proof: "Easton × Eclectic Hive") */}
-        <div className="mt-5 text-cream">
-          <h3 className="text-[12px] uppercase tracking-[0.26em] text-cream truncate">
+        <div className="mt-4 text-cream">
+          <h3 className="text-[11px] lg:text-[12px] uppercase tracking-[0.26em] text-cream truncate">
             {project.planner}
           </h3>
           <div className="mt-2 flex items-baseline justify-between gap-6">

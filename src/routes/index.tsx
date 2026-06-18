@@ -123,12 +123,12 @@ function HomePage() {
       <section className="md:hidden relative -mt-px">
         <SequentialHeroVideo />
         <div
-          className="pointer-events-none absolute inset-0 flex items-center justify-center px-4"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center px-6"
           style={{
             paddingTop: "env(safe-area-inset-top)",
             paddingBottom: "env(safe-area-inset-bottom)",
-            paddingLeft: "max(1rem, env(safe-area-inset-left))",
-            paddingRight: "max(1rem, env(safe-area-inset-right))",
+            paddingLeft: "max(1.5rem, env(safe-area-inset-left))",
+            paddingRight: "max(1.5rem, env(safe-area-inset-right))",
           }}
         >
           <div
@@ -243,7 +243,7 @@ function HomePage() {
         <div
           className={cn(
             "transition-all ease-out",
-            "pb-[calc(var(--fold-tail)*0.45)] md:pb-[var(--fold-tail)]",
+            "pb-[calc(var(--fold-tail)*0.6)] md:pb-[var(--fold-tail)]",
             loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
           )}
           style={{

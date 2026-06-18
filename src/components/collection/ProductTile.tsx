@@ -137,8 +137,8 @@ export function ProductTile({
             </div>
 
             {/* Unified caption - "The Museum Label" */}
-            <div className="mt-3.5 pb-2 transition-colors duration-300">
-               <p className="text-[11px] md:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 group-hover:text-charcoal transition-colors">
+            <div className="mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
+               <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 group-hover:text-charcoal transition-colors">
                 {product.title}
               </p>
             </div>

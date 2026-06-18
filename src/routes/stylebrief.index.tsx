@@ -323,7 +323,7 @@ function StudioPage() {
         </p>
       </header>
       {/* TOOLS — keep 3D viewer discoverable */}
-      <nav className="fluid-canvas py-5 border-b border-charcoal/10 flex flex-wrap gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
+      <nav className="fluid-canvas py-5 border-b border-charcoal/10 flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
         <Link to="/stylebrief/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
           3D Viewer <ArrowRight className="h-3 w-3" />
         </Link>
@@ -369,7 +369,7 @@ function StudioPage() {
                   <button
                     type="button"
                     onClick={() => removeInspo(i.id)}
-                    className="absolute top-1 right-1 w-5 h-5 bg-charcoal/80 text-cream grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 w-5 h-5 bg-charcoal/80 text-cream grid place-items-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
                     aria-label="Remove"
                   >
                     <X className="h-3 w-3" />
@@ -420,10 +420,10 @@ function StudioPage() {
                 <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-3">
                   Combined Palette
                 </p>
-                <div className="flex gap-1">
+                <div className="flex gap-0.5 lg:gap-1">
                   {analysis.palette.slice(0, 8).map((c, i) => (
                     <div key={i} className="flex-1">
-                      <div className="h-28 lg:h-40 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                      <div className="h-20 lg:h-40 lg:h-40 w-full" style={{ background: c.hex }} aria-label={c.hex} />
                       <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
                         {c.hex}
                       </p>
@@ -735,7 +735,7 @@ const inputCls =
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <section className="border-t border-charcoal/10 first:border-t-0 pt-20 lg:pt-28 first:pt-16 lg:first:pt-20">
+    <section className="border-t border-charcoal/10 first:border-t-0 pt-16 lg:pt-28 first:pt-16 lg:first:pt-20">
       <div className="flex items-baseline gap-5 mb-10">
         <span className="text-[10px] uppercase tracking-[0.3em] text-charcoal/40 tabular-nums">
           {String(n).padStart(2, "0")}

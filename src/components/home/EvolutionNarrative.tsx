@@ -295,7 +295,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
               {/* Centered EVOLUTION label with hairline rules on either side */}
               <div
                 ref={eyebrowRef}
-                className="flex items-center justify-center gap-4 md:gap-5 mb-5 md:mb-8 w-full"
+                className="flex items-center justify-center gap-4 md:gap-5 mb-8 md:mb-8 w-full"
               >
                 <div
                   className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"

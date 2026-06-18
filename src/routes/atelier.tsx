@@ -208,7 +208,7 @@ function AtelierPage() {
         // inherit via .fluid-canvas.
         ["--canvas-max" as string]: "1400px",
         // Shared section rhythm — every Section spaces itself off this.
-        ["--section-gap" as string]: "clamp(4rem, 2rem + 4vw, 8rem)",
+        ["--section-gap" as string]: "clamp(3rem, 1rem + 6vw, 8rem)",
       }}
     >
       <style>{`
@@ -231,7 +231,7 @@ function AtelierPage() {
       <section
         style={{
           paddingTop: "clamp(1.5rem, 1rem + 1.5vw, 3rem)",
-          paddingBottom: "clamp(3rem, 1.5rem + 3vw, 5rem)",
+          paddingBottom: "clamp(2rem, 1rem + 2vw, 4rem)",
         }}
       >
         <div className="atelier-hero-grid fluid-canvas">
@@ -254,7 +254,7 @@ function AtelierPage() {
                 className="atelier-hero-reveal page-title text-charcoal"
                 style={{
                   animationDelay: "80ms",
-                  fontSize: "clamp(2.5rem, 4vw + 1.5rem, 6rem)",
+                  fontSize: "clamp(3.25rem, 8vw, 6rem)",
                   lineHeight: 1,
                   width: "fit-content",
                 }}
@@ -296,7 +296,7 @@ function AtelierPage() {
       </section>
 
       {/* 2. THE HIVE — centered, full-viewport staff spread. */}
-      <section className="min-h-[calc(100svh-var(--nav-h))] flex items-center py-[clamp(4rem,2rem+5vw,8rem)]">
+      <section className="py-[var(--section-gap)]">
         <div className="fluid-canvas w-full">
           <div
             className="border-t pt-10"
@@ -314,7 +314,7 @@ function AtelierPage() {
       <Section eyebrow="L'ATELIER">
         {/* Triptych is a 3:1 horizontal — readable on tablet+. Below sm we
             relax to 5:3 so the three sub-frames are tall enough to read. */}
-        <div className="mt-4 [&_figure]:[aspect-ratio:5/3_!important] sm:[&_figure]:[aspect-ratio:3/1_!important]">
+        <div className="mt-4 [&_figure]:[aspect-ratio:2/1_!important] sm:[&_figure]:[aspect-ratio:3/1_!important]">
           <MediaAperture
             ratio="3/1"
             picture={atelierHiveTriptych}
@@ -323,7 +323,7 @@ function AtelierPage() {
             prefetchMargin="1600px"
           />
         </div>
-        <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           <MediaAperture
             ratio="4/5"
             picture={atelierSketchDrape}
@@ -356,7 +356,7 @@ function AtelierPage() {
               transition={{ duration: 0.8, delay: i * 0.18, ease: [0.22, 1, 0.36, 1] }}
             >
               <p
-                className="font-display text-charcoal/45 tabular-nums border-t pt-4"
+                className="font-display text-charcoal/45 tabular-nums border-t pt-6"
                 style={{
                   borderColor: "var(--archive-rule)",
                   fontSize: "clamp(1.25rem, 0.9rem + 0.5vw, 1.625rem)",
@@ -399,7 +399,7 @@ function AtelierPage() {
                 style={{ borderColor: "var(--archive-rule)" }}
               >
                 <details className="group">
-                  <summary className="flex items-baseline justify-between gap-4 py-5 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
+                  <summary className="flex items-baseline justify-between gap-4 py-4 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
                     <span className="text-[12px] uppercase tracking-[0.18em]">
                       {item.q}
                     </span>
@@ -410,7 +410,7 @@ function AtelierPage() {
                       +
                     </span>
                   </summary>
-                  <p className="pb-6 max-w-2xl text-[13px] tracking-[0.06em] leading-[1.7] text-charcoal/75">
+                  <p className="pb-5 max-w-2xl text-[13px] tracking-[0.06em] leading-[1.7] text-charcoal/75">
                     {item.a}
                   </p>
                 </details>
@@ -467,7 +467,7 @@ function Section({
     <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
         <motion.div
-          className="border-t pt-10"
+          className="border-t pt-12"
           style={{ borderColor: "var(--archive-rule)" }}
           initial={reduced ? false : { opacity: 0, y: 24 }}
           whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
@@ -475,7 +475,7 @@ function Section({
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         >
           {eyebrow ? (
-            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-8">
               {eyebrow}
             </p>
           ) : null}

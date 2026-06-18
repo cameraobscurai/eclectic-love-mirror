@@ -34,7 +34,7 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
   return (
     <section
       aria-labelledby="gallery-index-heading"
-      className="bg-cream/5 py-12 lg:py-16 px-6 lg:px-12"
+      className="bg-cream/5 pt-20 pb-12 lg:pt-32 lg:pb-24 px-6 lg:px-12"
     >
       <div className="max-w-[1600px] mx-auto">
         <h2
@@ -56,13 +56,13 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                     onMouseLeave={() => setHoverIdx((prev) => (prev === i ? null : prev))}
                     onFocus={() => setHoverIdx(i)}
                     onBlur={() => setHoverIdx(null)}
-                    className="w-full group py-6 border-b border-cream/10 flex items-center gap-6 lg:gap-12 text-left hover:bg-cream/5 transition-colors px-4 -mx-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+                    className="w-full group py-5 lg:py-7 border-b border-cream/10 flex items-center gap-6 lg:gap-12 text-left hover:bg-cream/5 transition-colors px-4 -mx-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
                   >
                     <span className="text-cream/30 text-sm tracking-[0.18em] w-8 shrink-0 tabular-nums">
                       {p.number}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-display text-xl lg:text-2xl text-cream font-light group-hover:text-sand transition-colors truncate">
+                      <p className="font-display text-lg lg:text-2xl text-cream font-light group-hover:text-sand transition-colors truncate">
                         {p.planner}
                       </p>
                       <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/45 truncate">
