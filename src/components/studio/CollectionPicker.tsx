@@ -16,14 +16,25 @@ import {
   getCollectionCatalog,
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
+import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { withCdnWidth } from "@/lib/image-url";
+
+const SORTS = ["type", "az", "tonal"] as const;
+type SortKey = (typeof SORTS)[number];
+const SORT_LABELS: Record<SortKey, string> = {
+  type: "Type",
+  az: "A–Z",
+  tonal: "Tonal",
+};
+
 
 export function CollectionPicker() {
   const { has, toggle, ids } = useInquiry();
   const [products, setProducts] = useState<CollectionProduct[]>([]);
   const [active, setActive] = useState<BrowseGroupId | null>(null);
   const [q, setQ] = useState("");
+  const [sort, setSort] = useState<SortKey>("type");
 
   useEffect(() => {
     let alive = true;
@@ -49,12 +60,28 @@ export function CollectionPicker() {
 
   const activeList = useMemo(() => {
     if (!active) return [];
-    const list = buckets.get(active) ?? [];
+    const base = buckets.get(active) ?? [];
     const term = q.trim().toLowerCase();
-    return term
-      ? list.filter((p) => p.title.toLowerCase().includes(term))
-      : list;
-  }, [active, buckets, q]);
+
+    if (term) {
+      // Search-rank trumps sort while a query is active — mirrors /collection.
+      const rank = (p: CollectionProduct) => {
+        const t = p.title.toLowerCase();
+        if (t === term) return 0;
+        if (t.startsWith(term)) return 1;
+        return 2;
+      };
+      return base
+        .filter((p) => p.title.toLowerCase().includes(term))
+        .sort((a, b) => rank(a) - rank(b) || a.title.localeCompare(b.title));
+    }
+
+    return sortProductsForCollection(base, {
+      mode: sort === "az" ? "az" : sort === "tonal" ? "tonal" : "by-type",
+      activeGroup: active,
+    });
+  }, [active, buckets, q, sort]);
+
 
   return (
     <div>
@@ -101,6 +128,34 @@ export function CollectionPicker() {
             </span>
           </div>
 
+          <div
+            role="group"
+            aria-label="Sort"
+            className="flex flex-wrap items-center gap-4 mb-3"
+          >
+            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+              Sort
+            </span>
+            {SORTS.map((id) => {
+              const isActive = sort === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setSort(id)}
+                  aria-pressed={isActive}
+                  className={`text-[10px] uppercase tracking-[0.22em] py-1 transition-colors ${
+                    isActive
+                      ? "text-charcoal border-b border-charcoal"
+                      : "text-charcoal/45 hover:text-charcoal/80"
+                  }`}
+                >
+                  {SORT_LABELS[id]}
+                </button>
+              );
+            })}
+          </div>
+
           <input
             type="search"
             value={q}
@@ -108,6 +163,7 @@ export function CollectionPicker() {
             placeholder={`SEARCH ${BROWSE_GROUP_LABELS[active]}…`}
             className="w-full max-w-md bg-transparent border-b border-charcoal/20 px-1 py-2 mb-5 text-[11px] uppercase tracking-[0.22em] placeholder:text-charcoal/35 focus:outline-none focus:border-charcoal/60"
           />
+
 
           {activeList.length === 0 ? (
             <div className="py-16 text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
