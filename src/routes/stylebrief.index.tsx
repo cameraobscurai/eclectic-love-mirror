@@ -11,7 +11,7 @@ import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/lib/style-brief.functions";
-import { StudioBrowser } from "@/components/studio/StudioBrowser";
+import { CollectionPicker } from "@/components/studio/CollectionPicker";
 
 export const Route = createFileRoute("/stylebrief/")({
   head: () => ({
