@@ -16,6 +16,21 @@ export async function downloadDeckPDF(
 
   for (let i = 0; i < pages.length; i++) {
     const el = pages[i];
+    // Wait for every <img> inside this page to fully decode so html2canvas
+    // doesn't snapshot empty placeholders.
+    const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
+    await Promise.all(
+      imgs.map((img) =>
+        img.decode
+          ? img.decode().catch(() => undefined)
+          : img.complete
+            ? Promise.resolve()
+            : new Promise<void>((res) => {
+                img.addEventListener("load", () => res(), { once: true });
+                img.addEventListener("error", () => res(), { once: true });
+              }),
+      ),
+    );
     const canvas = await html2canvas(el, {
       scale: 2,
       backgroundColor: getComputedStyle(el).backgroundColor || "#ffffff",
