@@ -329,7 +329,7 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
   const note = page.note;
 
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen">
       <div className="flex items-baseline justify-between mb-3">
         <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45">
           {page.categoryLabel}
