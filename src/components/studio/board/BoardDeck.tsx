@@ -22,7 +22,7 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
   const meta: DeckMeta = useMemo(
     () => ({
       clientName: board.client_name || "Client",
-      preparedBy: "Eclectic Hive",
+      preparedBy: "Jill",
       date: board.sent_at
         ? new Date(board.sent_at).toLocaleDateString("en-US", {
             month: "long",
