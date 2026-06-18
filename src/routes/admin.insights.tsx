@@ -386,7 +386,17 @@ function InquiryInbox({
 // ---------------------------------------------------------------------------
 
 
-function InquiryRow({ row, onSaved }: { row: InsightsInquiry; onSaved: () => void }) {
+function InquiryRow({
+  row,
+  onSaved,
+  selected,
+  onToggleSelect,
+}: {
+  row: InsightsInquiry;
+  onSaved: () => void;
+  selected: boolean;
+  onToggleSelect: () => void;
+}) {
   const updateOutcome = useServerFn(updateInquiryOutcome);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<InquiryStatus>(row.status);
