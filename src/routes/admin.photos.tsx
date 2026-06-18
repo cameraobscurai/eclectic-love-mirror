@@ -114,6 +114,7 @@ function AdminPhotosPage() {
 function PhotosManager() {
   const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
   const [sub, setSub] = useState<string>("all");
+  const [sortMode, setSortMode] = useState<SortMode>("editorial");
   const [view, setView] = useState<"grid" | "wall">("grid");
 
   // Load baked catalog once.
