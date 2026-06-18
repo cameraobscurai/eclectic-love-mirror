@@ -192,21 +192,35 @@ function deriveSenderName(user: { email?: string | null; user_metadata?: Record<
   return "The Studio";
 }
 
-// AI-derive an editorial project title from the board's palette + curator notes
-// + client name. Three to six words, no quotes, evocative not literal. Returns
-// null if generation fails — caller falls back to deterministic derivation.
-async function aiDeriveProjectTitle(input: {
+// AI-derive all editorial copy for a sent board in a single structured call:
+// project title, single-word section divider label, and a one-line note per
+// pinned category. Notes reference the *actual* pinned pieces (by title) so
+// they read as designer voice, not boilerplate. Returns null on any failure;
+// caller falls back to deterministic derivation in the renderer.
+interface BoardCopy {
+  project_title: string;
+  section_word: string;
+  production_notes: Record<string, string>;
+}
+
+async function generateBoardCopy(input: {
   clientName: string;
   curatorNotes: string | null;
   palette: unknown[];
   tones: Record<string, unknown>;
-}): Promise<string | null> {
+  pinnedByCategory: Record<string, string[]>; // slug -> array of item titles
+}): Promise<BoardCopy | null> {
   const key = process.env.LOVABLE_API_KEY;
   if (!key) return null;
+  const categories = Object.keys(input.pinnedByCategory).filter(
+    (slug) => (input.pinnedByCategory[slug] ?? []).length > 0,
+  );
   try {
-    const { generateText } = await import("ai");
+    const { generateText, Output } = await import("ai");
     const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+    const { z: zod } = await import("zod");
     const gateway = createLovableAiGatewayProvider(key);
+
     const swatchSummary = (input.palette as Array<{ hex?: string; name?: string }>)
       .filter((s) => s && s.hex)
       .map((s) => (s.name ? `${s.name} (${s.hex})` : s.hex))
@@ -216,29 +230,76 @@ async function aiDeriveProjectTitle(input: {
       .filter(([, v]) => typeof v === "number" && (v as number) > 0)
       .map(([k, v]) => `${k}:${v}`)
       .join(" ");
-    const prompt = `You name editorial style proposals for an interior design studio (Eclectic Hive).
+    const piecesBlock = categories
+      .map((slug) => {
+        const items = (input.pinnedByCategory[slug] ?? []).slice(0, 8).join("; ");
+        return `- ${slug}: ${items}`;
+      })
+      .join("\n");
+
+    // Build a narrow per-slug schema so the model returns notes only for
+    // categories that actually have pinned pieces. Keeps Gemini's constrained
+    // decoding state machine small.
+    const notesShape = categories.reduce<Record<string, ReturnType<typeof zod.string>>>(
+      (acc, slug) => {
+        acc[slug] = zod.string();
+        return acc;
+      },
+      {},
+    );
+
+    const prompt = `You write editorial copy for an interior design studio (Eclectic Hive) sending a curated style proposal to a client. Output is a printed-feel document, not marketing copy.
 
 Client: ${input.clientName || "Unnamed"}
 Palette: ${swatchSummary || "none"}
 Tones: ${toneSummary || "none"}
-Curator notes: ${input.curatorNotes?.slice(0, 400) || "none"}
+Curator's own notes: ${input.curatorNotes?.slice(0, 600) || "none"}
 
-Write ONE project title. Rules:
-- 3 to 6 words, Title Case
-- Evocative, never literal (e.g. "A Study in Moss & Chestnut", "The Quiet Room", "Lowlight & Linen")
-- No quotes, no trailing punctuation, no the client's name
-- Editorial, restrained, never marketing-speak
+Pinned pieces by category (these are the ACTUAL items on the board — reference them):
+${piecesBlock || "none"}
 
-Return ONLY the title, nothing else.`;
-    const { text } = await generateText({
+Write three things:
+
+1. project_title — ONE title for this proposal. 3–6 words, Title Case. Evocative, never literal. Never include the client's name. Examples: "A Study in Moss & Chestnut", "The Quiet Room", "Lowlight & Linen", "Late Afternoon, Slow".
+
+2. section_word — ONE single word that introduces the pieces section of the deck. Editorial, slightly poetic. Examples: "Pieces", "Anchors", "Elements", "Materials", "Vessels". One word only.
+
+3. production_notes — For EACH category in the pinned list, write ONE sentence (max 18 words) of art direction. Reference real pieces by name when natural. Specific to what was pinned. Never fabricate facts the client didn't mention (no "firepit", "dining table", "the bar" unless those items appear in the pieces). Editorial restraint, no exclamation marks.
+
+Return JSON matching the schema.`;
+
+    const { experimental_output: output } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
       prompt,
+      experimental_output: Output.object({
+        schema: zod.object({
+          project_title: zod.string(),
+          section_word: zod.string(),
+          production_notes: zod.object(notesShape),
+        }),
+      }),
     });
-    const cleaned = text.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
-    if (!cleaned || cleaned.length > 80 || cleaned.split(/\s+/).length > 8) return null;
-    return cleaned;
+
+    if (!output) return null;
+    const title = output.project_title.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
+    const word = output.section_word.trim().replace(/[^A-Za-z]/g, "");
+    if (!title || title.split(/\s+/).length > 8) return null;
+    if (!word) return null;
+
+    const cleanedNotes: Record<string, string> = {};
+    for (const [slug, note] of Object.entries(output.production_notes)) {
+      if (typeof note === "string" && note.trim()) {
+        cleanedNotes[slug] = note.trim();
+      }
+    }
+
+    return {
+      project_title: title,
+      section_word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+      production_notes: cleanedNotes,
+    };
   } catch (err) {
-    console.error("[aiDeriveProjectTitle] failed:", err);
+    console.error("[generateBoardCopy] failed:", err);
     return null;
   }
 }
