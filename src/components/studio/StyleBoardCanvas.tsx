@@ -15,7 +15,7 @@ export function StyleBoardCanvas({ inspo, pinned, catalog, onRemoveInspo, onUnpi
   if (empty) {
     return (
       <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 px-1 py-6 text-center">
-        Drop inspiration images or pin pieces from the catalog tab to begin
+        Drop your inspo images or pin pieces from our collection to begin
       </p>
     );
   }

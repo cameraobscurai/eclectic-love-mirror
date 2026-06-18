@@ -230,14 +230,14 @@ function ContactPage() {
     if (typeof window !== "undefined") {
       const last = Number(window.localStorage.getItem(RATE_LIMIT_KEY) ?? 0);
       if (Date.now() - last < RATE_LIMIT_MS) {
-        setErrorMsg("Just received your last inquiry — please wait a moment before sending another.");
+        setErrorMsg("Just received your last style brief request — please wait a moment before sending another.");
         return;
       }
     }
 
     setSubmitting(true);
     try {
-    const subjectParts = [scope || "Inquiry", projectDate].filter(Boolean);
+    const subjectParts = [scope || "Style Brief Request", projectDate].filter(Boolean);
     const subject = subjectParts.join(" · ");
 
     const selectedLines = effectiveIds.map((id) => {
@@ -468,14 +468,14 @@ function ContactPage() {
             </h1>
             <p className="mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
               We would love to hear about your project and how we can support
-              your needs. Every inquiry is personally reviewed and answered
-              within two business days. Thank you for reaching out to us!
+              your needs. Every style brief request is personally reviewed and
+              answered within two business days. Thank you for reaching out to us!
             </p>
             <a
               href="/stylebrief"
               className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/75 hover:text-charcoal border-b border-charcoal/30 hover:border-charcoal pb-1"
             >
-              HAVE A VISION BOARD? BUILD A STYLE BRIEF →
+              HAVE YOUR INSPO IMAGES? BUILD A STYLE BRIEF →
             </a>
             <div className="mt-12 space-y-5">
               <p>
@@ -594,7 +594,7 @@ function ContactPage() {
                           <p className="text-[11px] uppercase tracking-[0.22em] leading-[1.7] text-charcoal/75">
                             {selectionStatus === "error"
                               ? "COULDN'T LOAD YOUR SELECTION."
-                              : `${unresolvedIds.length} ITEM${unresolvedIds.length === 1 ? "" : "S"} COULDN'T BE FOUND IN THE CATALOG: ${unresolvedIds.map((id) => id.slice(-6).toUpperCase()).join(" · ")}.`}
+                              : `${unresolvedIds.length} ITEM${unresolvedIds.length === 1 ? "" : "S"} COULDN'T BE FOUND IN OUR COLLECTION: ${unresolvedIds.map((id) => id.slice(-6).toUpperCase()).join(" · ")}.`}
                           </p>
                           <div className="mt-2 flex flex-wrap gap-4">
                             <button
@@ -710,7 +710,7 @@ function ContactPage() {
                       maxLength={5000}
                       required
                       className="w-full bg-transparent border-0 border-b border-charcoal/30 focus:border-charcoal focus:outline-none py-3 text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal placeholder:text-charcoal/35 resize-none transition-colors overflow-hidden"
-                      placeholder="COLORWAY, MATERIALS, INVENTORY REFERENCES, AND VENUE DETAILS ARE ALL GREAT PLACES TO START."
+                      placeholder="COLORWAY, MATERIALS, COLLECTION ITEMS, AND VENUE DETAILS ARE ALL GREAT PLACES TO START."
                     />
                   </Field>
                 </FormSection>
@@ -747,7 +747,7 @@ function ContactPage() {
                           ? "RESOLVE SELECTION TO SEND"
                           : unresolvedIds.length > 0
                             ? "RESOLVE MISSING ITEMS TO SEND"
-                            : "SEND INQUIRY"}
+                            : "SEND STYLE BRIEF REQUEST"}
                   </button>
                   <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/45">
                     OR EMAIL US DIRECTLY AT{" "}
@@ -917,7 +917,7 @@ function SuccessPanel({ count }: { count: number }) {
           letterSpacing: "0.04em",
         }}
       >
-        THANK YOU. YOUR INQUIRY IS WITH THE ATELIER.
+        THANK YOU. YOUR STYLE BRIEF REQUEST IS WITH THE ATELIER.
       </h2>
       {count > 0 && (
         <p className="mt-6 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
