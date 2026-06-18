@@ -8,6 +8,7 @@ export async function downloadDeckPDF(
 ): Promise<void> {
   const descendants = Array.from(root.querySelectorAll<HTMLElement>("[data-board-page]"));
   const pages = root.matches?.("[data-board-page]") ? [root, ...descendants] : descendants;
+  console.log("[board-export] pages:", pages.length, "root matches:", root.matches?.("[data-board-page]"));
   if (pages.length === 0) return;
 
   // Letter portrait, 8.5 x 11 in @ 72dpi = 612 x 792 pt
@@ -53,5 +54,7 @@ export async function downloadDeckPDF(
     }
   }
 
+  console.log("[board-export] calling pdf.save", filename);
   pdf.save(filename);
+  console.log("[board-export] pdf.save returned");
 }
