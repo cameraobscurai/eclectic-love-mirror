@@ -262,7 +262,7 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
           <header className="flex items-baseline justify-between mb-4">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Style board</p>
-              <h2 className="mt-1 font-display text-xl uppercase tracking-[0.04em]">Inspiration + pieces</h2>
+              <h2 className="mt-1 font-display text-xl uppercase tracking-[0.04em]">All of these elements are building your style</h2>
             </div>
             <div className="flex items-center gap-2">
               <StatusBadge status={state.status} dirty={state.dirty} />

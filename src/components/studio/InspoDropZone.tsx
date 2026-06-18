@@ -39,7 +39,10 @@ export function InspoDropZone({ onFiles, disabled, count, max = 12 }: Props) {
       >
         {busy ? <Loader2 className="h-6 w-6 text-charcoal/50 animate-spin" /> : <ImagePlus className="h-6 w-6 text-charcoal/50" />}
         <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/65 text-center">
-          {busy ? "Uploading…" : "Drop inspiration images"}
+          {busy ? "Uploading…" : count > 0 ? "Your inspo images" : "Upload your inspiration photos"}
+        </p>
+        <p className="text-[10px] normal-case tracking-normal text-charcoal/45 text-center max-w-[28ch] leading-snug">
+          These images will contribute to your personalized color palette.
         </p>
         <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
           {count} / {max}
