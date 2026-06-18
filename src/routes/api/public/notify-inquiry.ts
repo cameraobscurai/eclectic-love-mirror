@@ -89,6 +89,18 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           return Response.json({ error: 'Template missing' }, { status: 500 })
         }
 
+        // Sign inspo paths against the private studio-inspo bucket so the
+        // owner can preview thumbnails directly from the email. 7-day TTL.
+        let inspoUrls: string[] = []
+        if (body.inspo_paths && body.inspo_paths.length) {
+          const { data: signed } = await supabase
+            .storage.from('studio-inspo')
+            .createSignedUrls(body.inspo_paths, 60 * 60 * 24 * 7)
+          inspoUrls = (signed ?? [])
+            .map((s) => s.signedUrl)
+            .filter((u): u is string => typeof u === 'string' && u.length > 0)
+        }
+
         const templateData = {
           name: body.name,
           email: body.email,
@@ -100,6 +112,10 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           scope: body.scope,
           items: body.items ?? [],
           inquiryId: body.inquiry_id ?? undefined,
+          palette: body.palette ?? [],
+          tones: body.tones ?? {},
+          insights: body.insights ?? [],
+          inspoUrls,
         }
 
         const recipient = template.to!
