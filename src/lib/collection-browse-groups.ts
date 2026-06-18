@@ -1,6 +1,6 @@
 /**
  * Legacy module. Kept as a re-export shim so existing consumers
- * (collection.tsx, CollectionRail, CategoryGalleryOverview, ProductTile,
+ * (collection.tsx, CollectionRail, ProductTile,
  * category-covers, sort-intelligence) don't need to change import paths.
  *
  * NEW CODE should import from `@/lib/collection-taxonomy` directly.

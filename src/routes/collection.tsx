@@ -142,7 +142,7 @@ export const Route = createFileRoute("/collection")({
       { name: "twitter:image", content: "https://eclectichive.com/og/collection.jpg" },
     ],
     // Note: previously we preloaded CATEGORY_COVERS here. That preload now
-    // lives inside <CategoryGalleryOverview> so it only runs when the
+    // now lives in the collection grid so it only runs when the
     // overview branch is actually rendered (not on direct category links or
     // the search view). TanStack Start's head() is route-level, so a
     // child-conditional preload requires the imperative pattern.
@@ -484,7 +484,7 @@ function CollectionPage() {
 
   const overviewGroups = useMemo(() => {
     // Owner-curated overview: 15 cards arranged in 3 rows of 5.
-    // Order is locked here — CategoryGalleryOverview honors it row-by-row.
+    // Order is locked here — the grid honors it row-by-row.
     const OVERVIEW_TILE_ORDER: BrowseGroupId[] = [
       // Row 1
       "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
