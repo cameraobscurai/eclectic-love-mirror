@@ -83,13 +83,15 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
 function PageChrome({ pageNum, total, meta }: { pageNum: number; total: number; meta: DeckMeta }) {
   return (
     <>
-      <div className="absolute bottom-6 left-12 right-12 flex items-center justify-between text-[9px] uppercase tracking-[0.32em] text-charcoal/45 pointer-events-none z-10">
-        <span>
+      <div className="absolute bottom-4 left-5 right-5 lg:bottom-6 lg:left-12 lg:right-12 flex items-center justify-between gap-4 text-[8px] lg:text-[9px] uppercase tracking-[0.24em] lg:tracking-[0.32em] text-charcoal/45 pointer-events-none z-10">
+        <span className="truncate min-w-0">
           <span className="text-charcoal/70">Eclectic Hive</span>
-          {meta.preparedBy && <> · Prepared by {meta.preparedBy}</>}
-          {meta.clientName && <> · For {meta.clientName}</>}
+          <span className="hidden sm:inline">
+            {meta.preparedBy && <> · Prepared by {meta.preparedBy}</>}
+            {meta.clientName && <> · For {meta.clientName}</>}
+          </span>
         </span>
-        <span className="font-mono tabular-nums">
+        <span className="font-mono tabular-nums shrink-0">
           {String(pageNum).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
       </div>
@@ -154,20 +156,18 @@ function CoverPage({
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-transparent to-charcoal/60" />
-      <div className="absolute top-12 left-12 text-[10px] uppercase tracking-[0.4em] text-cream/80">
-        {meta.date}
+      <div className="absolute top-6 left-5 right-5 lg:top-12 lg:left-12 lg:right-12 flex items-start justify-between text-[9px] lg:text-[10px] uppercase tracking-[0.3em] lg:tracking-[0.4em] text-cream/80">
+        <span>{meta.date}</span>
+        <span>Eclectic Hive</span>
       </div>
-      <div className="absolute top-12 right-12 text-[10px] uppercase tracking-[0.4em] text-cream/80">
-        Eclectic Hive
-      </div>
-      <div className="absolute bottom-16 left-12 right-12 flex items-end justify-between gap-12">
+      <div className="absolute bottom-14 left-5 right-5 lg:bottom-16 lg:left-12 lg:right-12 flex items-end justify-between gap-8">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-cream/70 mb-6">
+          <p className="text-[9px] lg:text-[10px] uppercase tracking-[0.32em] lg:tracking-[0.4em] text-cream/70 mb-5 lg:mb-6">
             Style Brief · For {meta.clientName}
           </p>
           <h1
             className="font-display text-cream leading-[0.95] tracking-tight max-w-[14ch]"
-            style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 9vw, 6.5rem)" }}
           >
             {meta.projectTitle}
           </h1>
@@ -191,7 +191,7 @@ function MoodHeroPage({
   meta: DeckMeta;
 }) {
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen flex flex-col justify-center">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen flex flex-col justify-center">
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-8">
         {meta.clientName}
       </p>
@@ -221,7 +221,8 @@ function MoodHeroPage({
 
 function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }> }) {
   return (
-    <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+    <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">
         {page.eyebrow}
       </p>
@@ -239,20 +240,21 @@ function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }
 
 function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> }) {
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen">
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-3">
         Color Palette
       </p>
       <h2
-        className="font-display tracking-tight mb-12 capitalize"
-        style={{ fontSize: "clamp(2.25rem, 4vw, 3.5rem)" }}
+        className="font-display tracking-tight mb-10 lg:mb-12 capitalize"
+        style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
       >
         {countWord(page.swatches.length)} {page.swatches.length === 1 ? "tone" : "tones"}
       </h2>
       <div
-        className="grid gap-4"
+        className="grid gap-3 sm:gap-4 grid-cols-[repeat(var(--swatch-cols-sm),minmax(0,1fr))] lg:grid-cols-[repeat(var(--swatch-cols-lg),minmax(0,1fr))]"
         style={{
-          gridTemplateColumns: `repeat(${Math.min(page.swatches.length, 7)}, minmax(0, 1fr))`,
+          ["--swatch-cols-sm" as string]: String(Math.min(page.swatches.length, 4)),
+          ["--swatch-cols-lg" as string]: String(Math.min(page.swatches.length, 7)),
         }}
       >
         {page.swatches.map((s: PaletteSwatch, i) => (
@@ -278,7 +280,8 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
 
 function TonesPage({ page }: { page: Extract<DeckPage, { kind: "tones" }> }) {
   return (
-    <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+    <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-10">
         Tone
       </p>
@@ -326,7 +329,7 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
   const note = page.note;
 
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen">
       <div className="flex items-baseline justify-between mb-3">
         <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45">
           {page.categoryLabel}
@@ -382,7 +385,7 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
 function ClosingPage({ page, meta }: { page: Extract<DeckPage, { kind: "closing" }>; meta: DeckMeta }) {
   const sender = meta.preparedBy && meta.preparedBy !== "The Studio" ? meta.preparedBy : "the studio";
   return (
-    <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+    <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
       <div
         className="font-display tracking-[0.06em] uppercase text-cream"
         style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
