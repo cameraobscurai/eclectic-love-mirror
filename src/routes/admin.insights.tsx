@@ -157,15 +157,7 @@ function InsightsPage() {
               eyebrow={`Inbox · ${inquiries.length} most recent`}
               title="Conversations"
             >
-              {inquiries.length === 0 ? (
-                <p className="text-sm text-charcoal/55">No inquiries yet.</p>
-              ) : (
-                <div className="border-t" style={{ borderColor: "var(--archive-rule)" }}>
-                  {inquiries.map((r) => (
-                    <InquiryRow key={r.id} row={r} onSaved={refresh} />
-                  ))}
-                </div>
-              )}
+              <InquiryInbox inquiries={inquiries} onChanged={refresh} />
             </Panel>
           </section>
 
