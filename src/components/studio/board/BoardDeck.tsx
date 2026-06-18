@@ -325,7 +325,7 @@ function SectionDividerPage({
 function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production" }> }) {
   const items = page.items;
   const spans = spansFor(items.length);
-  const note = getProductionNote(page.categorySlug);
+  const note = page.note;
 
   return (
     <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">

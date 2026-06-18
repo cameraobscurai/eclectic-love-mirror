@@ -42,7 +42,7 @@ export type DeckPage =
   | { kind: "palette"; swatches: PaletteSwatch[] }
   | { kind: "tones"; label: string }
   | { kind: "section-divider"; word: string; bgImages: string[] }
-  | { kind: "production"; categorySlug: string; categoryLabel: string; items: PublicPinnedItem[] }
+  | { kind: "production"; categorySlug: string; categoryLabel: string; items: PublicPinnedItem[]; note: string }
   | { kind: "closing"; body: string };
 
 // Fixed category order — categories absent from a board are skipped.
@@ -213,6 +213,7 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
       categorySlug: slug,
       categoryLabel: CATEGORY_LABELS[slug] ?? slug.replace(/-/g, " "),
       items,
+      note: board.production_notes?.[slug]?.trim() ?? "",
     });
   }
 
@@ -223,11 +224,4 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
   });
 
   return pages;
-}
-
-// Production note is per-board, AI-generated at send time. No hardcoded fallback —
-// if the AI didn't produce a note for this category, the deck simply omits it
-// rather than show a generic placeholder.
-export function getProductionNote(board: PublicStyleBoard, slug: string): string {
-  return board.production_notes?.[slug]?.trim() ?? "";
 }
