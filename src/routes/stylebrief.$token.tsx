@@ -3,7 +3,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getStyleBoardByToken, type PublicStyleBoard } from "@/lib/studio.functions";
 import { BoardDeck } from "@/components/studio/board/BoardDeck";
 
-export const Route = createFileRoute("/studio/$token")({
+export const Route = createFileRoute("/stylebrief/$token")({
   head: ({ loaderData }: { loaderData?: PublicStyleBoard }) => {
     const name = loaderData?.client_name?.trim();
     return {

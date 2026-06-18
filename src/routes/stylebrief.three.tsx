@@ -31,7 +31,7 @@ const MODELS: ModelEntry[] = [
   },
 ];
 
-export const Route = createFileRoute("/studio/three")({
+export const Route = createFileRoute("/stylebrief/three")({
   head: () => ({
     meta: [
       { title: "3D · Studio" },
@@ -112,7 +112,7 @@ function ThreePage() {
       <header className="border-b border-charcoal/10">
         <div className="fluid-canvas pt-10 pb-6 flex items-center justify-between">
           <Link
-            to="/studio"
+            to="/stylebrief"
             className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] text-charcoal/50 hover:text-charcoal transition-colors"
           >
             <ArrowLeft className="h-3 w-3" /> Studio
@@ -247,7 +247,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
     >
       {ready ? (
         // @ts-expect-error - custom element
-        <model-viewer
+        (<model-viewer
           key={model.id}
           src={model.src}
           alt={model.name}
@@ -277,13 +277,12 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
             "--progress-bar-color": "#1a1a1a",
             "--progress-bar-height": "1px",
           } as React.CSSProperties}
-        />
+        />)
       ) : (
         <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/35">
           Loading
         </div>
       )}
-
       {/* Swap indicator — hairline scan line during model change */}
       {swapping && (
         <div
@@ -291,7 +290,6 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
           className="absolute inset-x-0 top-0 h-px bg-charcoal/40 animate-pulse"
         />
       )}
-
       <div className="absolute top-3 right-3 flex flex-col gap-px">
         <ControlButton onClick={reset} aria-label="Reset view">
           <RotateCw className="h-3.5 w-3.5" strokeWidth={1.25} />
@@ -301,7 +299,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
         </ControlButton>
       </div>
     </div>
-  );
+  )
 }
 
 function ControlButton({

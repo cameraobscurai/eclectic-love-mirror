@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Check } from "lucide-react";
 
-export const Route = createFileRoute("/studio/thanks")({
+export const Route = createFileRoute("/stylebrief/thanks")({
   validateSearch: (s) => z.object({ inquiry: z.string().optional() }).parse(s),
   head: () => ({
     meta: [

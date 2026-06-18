@@ -29,17 +29,17 @@ import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as StylebriefIndexRouteImport } from './routes/stylebrief.index'
 import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
 import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
 import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
 import { Route as TablewareSplatRouteImport } from './routes/tableware.$'
 import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
 import { Route as StylingSplatRouteImport } from './routes/styling.$'
-import { Route as StudioThreeRouteImport } from './routes/studio.three'
-import { Route as StudioThanksRouteImport } from './routes/studio.thanks'
-import { Route as StudioLabRouteImport } from './routes/studio.lab'
-import { Route as StudioTokenRouteImport } from './routes/studio.$token'
+import { Route as StylebriefThreeRouteImport } from './routes/stylebrief.three'
+import { Route as StylebriefThanksRouteImport } from './routes/stylebrief.thanks'
+import { Route as StylebriefLabRouteImport } from './routes/stylebrief.lab'
+import { Route as StylebriefTokenRouteImport } from './routes/stylebrief.$token'
 import { Route as Storage1SplatRouteImport } from './routes/storage1.$'
 import { Route as StorageSplatRouteImport } from './routes/storage.$'
 import { Route as SofasSplatRouteImport } from './routes/sofas.$'
@@ -182,9 +182,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioIndexRoute = StudioIndexRouteImport.update({
-  id: '/studio/',
-  path: '/studio/',
+const StylebriefIndexRoute = StylebriefIndexRouteImport.update({
+  id: '/stylebrief/',
+  path: '/stylebrief/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
@@ -217,24 +217,24 @@ const StylingSplatRoute = StylingSplatRouteImport.update({
   path: '/styling/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioThreeRoute = StudioThreeRouteImport.update({
-  id: '/studio/three',
-  path: '/studio/three',
+const StylebriefThreeRoute = StylebriefThreeRouteImport.update({
+  id: '/stylebrief/three',
+  path: '/stylebrief/three',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioThanksRoute = StudioThanksRouteImport.update({
-  id: '/studio/thanks',
-  path: '/studio/thanks',
+const StylebriefThanksRoute = StylebriefThanksRouteImport.update({
+  id: '/stylebrief/thanks',
+  path: '/stylebrief/thanks',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioLabRoute = StudioLabRouteImport.update({
-  id: '/studio/lab',
-  path: '/studio/lab',
+const StylebriefLabRoute = StylebriefLabRouteImport.update({
+  id: '/stylebrief/lab',
+  path: '/stylebrief/lab',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudioTokenRoute = StudioTokenRouteImport.update({
-  id: '/studio/$token',
-  path: '/studio/$token',
+const StylebriefTokenRoute = StylebriefTokenRouteImport.update({
+  id: '/stylebrief/$token',
+  path: '/stylebrief/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Storage1SplatRoute = Storage1SplatRouteImport.update({
@@ -502,17 +502,17 @@ export interface FileRoutesByFullPath {
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
-  '/studio/$token': typeof StudioTokenRoute
-  '/studio/lab': typeof StudioLabRoute
-  '/studio/thanks': typeof StudioThanksRoute
-  '/studio/three': typeof StudioThreeRoute
+  '/stylebrief/$token': typeof StylebriefTokenRoute
+  '/stylebrief/lab': typeof StylebriefLabRoute
+  '/stylebrief/thanks': typeof StylebriefThanksRoute
+  '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
-  '/studio/': typeof StudioIndexRoute
+  '/stylebrief/': typeof StylebriefIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -576,17 +576,17 @@ export interface FileRoutesByTo {
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
-  '/studio/$token': typeof StudioTokenRoute
-  '/studio/lab': typeof StudioLabRoute
-  '/studio/thanks': typeof StudioThanksRoute
-  '/studio/three': typeof StudioThreeRoute
+  '/stylebrief/$token': typeof StylebriefTokenRoute
+  '/stylebrief/lab': typeof StylebriefLabRoute
+  '/stylebrief/thanks': typeof StylebriefThanksRoute
+  '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
-  '/studio': typeof StudioIndexRoute
+  '/stylebrief': typeof StylebriefIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -651,17 +651,17 @@ export interface FileRoutesById {
   '/sofas/$': typeof SofasSplatRoute
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
-  '/studio/$token': typeof StudioTokenRoute
-  '/studio/lab': typeof StudioLabRoute
-  '/studio/thanks': typeof StudioThanksRoute
-  '/studio/three': typeof StudioThreeRoute
+  '/stylebrief/$token': typeof StylebriefTokenRoute
+  '/stylebrief/lab': typeof StylebriefLabRoute
+  '/stylebrief/thanks': typeof StylebriefThanksRoute
+  '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
   '/tables1/$': typeof Tables1SplatRoute
   '/tableware/$': typeof TablewareSplatRoute
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
-  '/studio/': typeof StudioIndexRoute
+  '/stylebrief/': typeof StylebriefIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -727,17 +727,17 @@ export interface FileRouteTypes {
     | '/sofas/$'
     | '/storage/$'
     | '/storage1/$'
-    | '/studio/$token'
-    | '/studio/lab'
-    | '/studio/thanks'
-    | '/studio/three'
+    | '/stylebrief/$token'
+    | '/stylebrief/lab'
+    | '/stylebrief/thanks'
+    | '/stylebrief/three'
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
-    | '/studio/'
+    | '/stylebrief/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -801,17 +801,17 @@ export interface FileRouteTypes {
     | '/sofas/$'
     | '/storage/$'
     | '/storage1/$'
-    | '/studio/$token'
-    | '/studio/lab'
-    | '/studio/thanks'
-    | '/studio/three'
+    | '/stylebrief/$token'
+    | '/stylebrief/lab'
+    | '/stylebrief/thanks'
+    | '/stylebrief/three'
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
-    | '/studio'
+    | '/stylebrief'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -875,17 +875,17 @@ export interface FileRouteTypes {
     | '/sofas/$'
     | '/storage/$'
     | '/storage1/$'
-    | '/studio/$token'
-    | '/studio/lab'
-    | '/studio/thanks'
-    | '/studio/three'
+    | '/stylebrief/$token'
+    | '/stylebrief/lab'
+    | '/stylebrief/thanks'
+    | '/stylebrief/three'
     | '/styling/$'
     | '/tables1/$'
     | '/tableware/$'
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
-    | '/studio/'
+    | '/stylebrief/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -940,17 +940,17 @@ export interface RootRouteChildren {
   SofasSplatRoute: typeof SofasSplatRoute
   StorageSplatRoute: typeof StorageSplatRoute
   Storage1SplatRoute: typeof Storage1SplatRoute
-  StudioTokenRoute: typeof StudioTokenRoute
-  StudioLabRoute: typeof StudioLabRoute
-  StudioThanksRoute: typeof StudioThanksRoute
-  StudioThreeRoute: typeof StudioThreeRoute
+  StylebriefTokenRoute: typeof StylebriefTokenRoute
+  StylebriefLabRoute: typeof StylebriefLabRoute
+  StylebriefThanksRoute: typeof StylebriefThanksRoute
+  StylebriefThreeRoute: typeof StylebriefThreeRoute
   StylingSplatRoute: typeof StylingSplatRoute
   Tables1SplatRoute: typeof Tables1SplatRoute
   TablewareSplatRoute: typeof TablewareSplatRoute
   TestVariantUploadSplatRoute: typeof TestVariantUploadSplatRoute
   TextilesSplatRoute: typeof TextilesSplatRoute
   UtNewArrivalsSplatRoute: typeof UtNewArrivalsSplatRoute
-  StudioIndexRoute: typeof StudioIndexRoute
+  StylebriefIndexRoute: typeof StylebriefIndexRoute
   ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -1100,11 +1100,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio/': {
-      id: '/studio/'
-      path: '/studio'
-      fullPath: '/studio/'
-      preLoaderRoute: typeof StudioIndexRouteImport
+    '/stylebrief/': {
+      id: '/stylebrief/'
+      path: '/stylebrief'
+      fullPath: '/stylebrief/'
+      preLoaderRoute: typeof StylebriefIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ut-new-arrivals/$': {
@@ -1149,32 +1149,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StylingSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio/three': {
-      id: '/studio/three'
-      path: '/studio/three'
-      fullPath: '/studio/three'
-      preLoaderRoute: typeof StudioThreeRouteImport
+    '/stylebrief/three': {
+      id: '/stylebrief/three'
+      path: '/stylebrief/three'
+      fullPath: '/stylebrief/three'
+      preLoaderRoute: typeof StylebriefThreeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio/thanks': {
-      id: '/studio/thanks'
-      path: '/studio/thanks'
-      fullPath: '/studio/thanks'
-      preLoaderRoute: typeof StudioThanksRouteImport
+    '/stylebrief/thanks': {
+      id: '/stylebrief/thanks'
+      path: '/stylebrief/thanks'
+      fullPath: '/stylebrief/thanks'
+      preLoaderRoute: typeof StylebriefThanksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio/lab': {
-      id: '/studio/lab'
-      path: '/studio/lab'
-      fullPath: '/studio/lab'
-      preLoaderRoute: typeof StudioLabRouteImport
+    '/stylebrief/lab': {
+      id: '/stylebrief/lab'
+      path: '/stylebrief/lab'
+      fullPath: '/stylebrief/lab'
+      preLoaderRoute: typeof StylebriefLabRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/studio/$token': {
-      id: '/studio/$token'
-      path: '/studio/$token'
-      fullPath: '/studio/$token'
-      preLoaderRoute: typeof StudioTokenRouteImport
+    '/stylebrief/$token': {
+      id: '/stylebrief/$token'
+      path: '/stylebrief/$token'
+      fullPath: '/stylebrief/$token'
+      preLoaderRoute: typeof StylebriefTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/storage1/$': {
@@ -1553,17 +1553,17 @@ const rootRouteChildren: RootRouteChildren = {
   SofasSplatRoute: SofasSplatRoute,
   StorageSplatRoute: StorageSplatRoute,
   Storage1SplatRoute: Storage1SplatRoute,
-  StudioTokenRoute: StudioTokenRoute,
-  StudioLabRoute: StudioLabRoute,
-  StudioThanksRoute: StudioThanksRoute,
-  StudioThreeRoute: StudioThreeRoute,
+  StylebriefTokenRoute: StylebriefTokenRoute,
+  StylebriefLabRoute: StylebriefLabRoute,
+  StylebriefThanksRoute: StylebriefThanksRoute,
+  StylebriefThreeRoute: StylebriefThreeRoute,
   StylingSplatRoute: StylingSplatRoute,
   Tables1SplatRoute: Tables1SplatRoute,
   TablewareSplatRoute: TablewareSplatRoute,
   TestVariantUploadSplatRoute: TestVariantUploadSplatRoute,
   TextilesSplatRoute: TextilesSplatRoute,
   UtNewArrivalsSplatRoute: UtNewArrivalsSplatRoute,
-  StudioIndexRoute: StudioIndexRoute,
+  StylebriefIndexRoute: StylebriefIndexRoute,
   ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
