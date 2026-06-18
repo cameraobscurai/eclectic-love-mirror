@@ -73,14 +73,14 @@ function NewProductPage() {
       const res = await create({
         data: {
           title: title.trim(),
-          category: category as Parameters<typeof create>[0]["data"]["category"],
+          category,
           quantity: qNum !== null && Number.isFinite(qNum) ? qNum : null,
           quantityLabel: null,
           dimensionsRaw: dimensions.trim() || null,
           publicReady,
         },
       });
-      setCreated({ id: res.id, rmsId: res.rmsId, title: res.title, category });
+      setCreated({ id: res.id, rmsId: res.rmsId ?? "", title: res.title, category });
     } catch (e2) {
       setErr((e2 as Error).message || "Failed to create");
     } finally {
