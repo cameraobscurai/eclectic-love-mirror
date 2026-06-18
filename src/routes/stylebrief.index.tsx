@@ -735,7 +735,7 @@ const inputCls =
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <section className="border-t border-charcoal/10 pt-20 lg:pt-28">
+    <section className="border-t border-charcoal/10 first:border-t-0 pt-20 lg:pt-28 first:pt-16 lg:first:pt-20">
       <div className="flex items-baseline gap-5 mb-10">
         <span className="text-[10px] uppercase tracking-[0.3em] text-charcoal/40 tabular-nums">
           {String(n).padStart(2, "0")}
