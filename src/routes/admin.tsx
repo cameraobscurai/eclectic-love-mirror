@@ -25,6 +25,11 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 export const Route = createFileRoute("/admin")({
+  // ssr: false → beforeLoad runs only on the client where Supabase session
+  // lives. Without this, the SSR pass through the admin-guard returned early
+  // (no session in Node) and the dashboard HTML shipped to unauthenticated
+  // browsers before the client-side check could redirect.
+  ssr: false,
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
     meta: [
