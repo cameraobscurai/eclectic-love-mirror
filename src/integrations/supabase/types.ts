@@ -1390,7 +1390,9 @@ export type Database = {
           pinned_rms_ids: string[]
           prepared_by_name: string | null
           prepared_by_user_id: string | null
+          production_notes: Json
           project_title: string | null
+          section_word: string | null
           sent_at: string | null
           share_token: string | null
           status: string
@@ -1413,7 +1415,9 @@ export type Database = {
           pinned_rms_ids?: string[]
           prepared_by_name?: string | null
           prepared_by_user_id?: string | null
+          production_notes?: Json
           project_title?: string | null
+          section_word?: string | null
           sent_at?: string | null
           share_token?: string | null
           status?: string
@@ -1436,7 +1440,9 @@ export type Database = {
           pinned_rms_ids?: string[]
           prepared_by_name?: string | null
           prepared_by_user_id?: string | null
+          production_notes?: Json
           project_title?: string | null
+          section_word?: string | null
           sent_at?: string | null
           share_token?: string | null
           status?: string

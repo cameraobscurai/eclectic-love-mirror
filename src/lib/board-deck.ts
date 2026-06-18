@@ -42,7 +42,7 @@ export type DeckPage =
   | { kind: "palette"; swatches: PaletteSwatch[] }
   | { kind: "tones"; label: string }
   | { kind: "section-divider"; word: string; bgImages: string[] }
-  | { kind: "production"; categorySlug: string; categoryLabel: string; items: PublicPinnedItem[] }
+  | { kind: "production"; categorySlug: string; categoryLabel: string; items: PublicPinnedItem[]; note: string }
   | { kind: "closing"; body: string };
 
 // Fixed category order — categories absent from a board are skipped.
@@ -134,21 +134,6 @@ export function toneLabel(tones: Record<string, unknown>): string {
   return parts.join(" · ");
 }
 
-const NOTE_BY_CATEGORY: Record<string, string> = {
-  seating: "Anchored by the firepit — keep clusters loose, never symmetrical.",
-  lighting: "Two lamps, one register — warm bulb, off-center placement.",
-  rugs: "Floor anchor for the entire scheme. Runs the length of the table.",
-  "pillows-throws": "Textile counterweight to the leather and stone.",
-  tableware: "Mixed-metal restraint — the matte gold is the only shine.",
-  serveware: "Service pieces in matte ceramic — never reflective.",
-  styling: "Seven hand-formed vessels — group in odd clusters of 3 and 5.",
-  candlelight: "Low warm light at table height — never above eye line.",
-  chandeliers: "Overhead anchor — keep at 32–36\" above the surface.",
-  "large-decor": "One sculptural anchor per room — let it breathe.",
-  storage: "Bar and side storage — closed, never on display.",
-  "furs-pelts": "One throw, draped — texture against the leather.",
-};
-
 export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] {
   const pages: DeckPage[] = [];
 
@@ -197,13 +182,14 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
   const label = toneLabel(board.tones as Record<string, unknown>);
   if (label) pages.push({ kind: "tones", label });
 
-  // Section divider
+  // Section divider — word is AI-generated at send time, falls back to "Pieces"
   const bgImages = board.pinned
     .filter((p) => p.image_url)
     .slice(0, 12)
     .map((p) => p.image_url as string);
   if (bgImages.length) {
-    pages.push({ kind: "section-divider", word: "Pieces", bgImages });
+    const word = board.section_word?.trim() || "Pieces";
+    pages.push({ kind: "section-divider", word, bgImages });
   }
 
   // Production pages — one per category in fixed order
@@ -227,6 +213,7 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
       categorySlug: slug,
       categoryLabel: CATEGORY_LABELS[slug] ?? slug.replace(/-/g, " "),
       items,
+      note: board.production_notes?.[slug]?.trim() ?? "",
     });
   }
 
@@ -237,8 +224,4 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
   });
 
   return pages;
-}
-
-export function getProductionNote(slug: string): string {
-  return NOTE_BY_CATEGORY[slug] ?? "";
 }

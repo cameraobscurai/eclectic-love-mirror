@@ -192,21 +192,35 @@ function deriveSenderName(user: { email?: string | null; user_metadata?: Record<
   return "The Studio";
 }
 
-// AI-derive an editorial project title from the board's palette + curator notes
-// + client name. Three to six words, no quotes, evocative not literal. Returns
-// null if generation fails — caller falls back to deterministic derivation.
-async function aiDeriveProjectTitle(input: {
+// AI-derive all editorial copy for a sent board in a single structured call:
+// project title, single-word section divider label, and a one-line note per
+// pinned category. Notes reference the *actual* pinned pieces (by title) so
+// they read as designer voice, not boilerplate. Returns null on any failure;
+// caller falls back to deterministic derivation in the renderer.
+interface BoardCopy {
+  project_title: string;
+  section_word: string;
+  production_notes: Record<string, string>;
+}
+
+async function generateBoardCopy(input: {
   clientName: string;
   curatorNotes: string | null;
   palette: unknown[];
   tones: Record<string, unknown>;
-}): Promise<string | null> {
+  pinnedByCategory: Record<string, string[]>; // slug -> array of item titles
+}): Promise<BoardCopy | null> {
   const key = process.env.LOVABLE_API_KEY;
   if (!key) return null;
+  const categories = Object.keys(input.pinnedByCategory).filter(
+    (slug) => (input.pinnedByCategory[slug] ?? []).length > 0,
+  );
   try {
-    const { generateText } = await import("ai");
+    const { generateText, Output } = await import("ai");
     const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+    const { z: zod } = await import("zod");
     const gateway = createLovableAiGatewayProvider(key);
+
     const swatchSummary = (input.palette as Array<{ hex?: string; name?: string }>)
       .filter((s) => s && s.hex)
       .map((s) => (s.name ? `${s.name} (${s.hex})` : s.hex))
@@ -216,29 +230,76 @@ async function aiDeriveProjectTitle(input: {
       .filter(([, v]) => typeof v === "number" && (v as number) > 0)
       .map(([k, v]) => `${k}:${v}`)
       .join(" ");
-    const prompt = `You name editorial style proposals for an interior design studio (Eclectic Hive).
+    const piecesBlock = categories
+      .map((slug) => {
+        const items = (input.pinnedByCategory[slug] ?? []).slice(0, 8).join("; ");
+        return `- ${slug}: ${items}`;
+      })
+      .join("\n");
+
+    // Build a narrow per-slug schema so the model returns notes only for
+    // categories that actually have pinned pieces. Keeps Gemini's constrained
+    // decoding state machine small.
+    const notesShape = categories.reduce<Record<string, ReturnType<typeof zod.string>>>(
+      (acc, slug) => {
+        acc[slug] = zod.string();
+        return acc;
+      },
+      {},
+    );
+
+    const prompt = `You write editorial copy for an interior design studio (Eclectic Hive) sending a curated style proposal to a client. Output is a printed-feel document, not marketing copy.
 
 Client: ${input.clientName || "Unnamed"}
 Palette: ${swatchSummary || "none"}
 Tones: ${toneSummary || "none"}
-Curator notes: ${input.curatorNotes?.slice(0, 400) || "none"}
+Curator's own notes: ${input.curatorNotes?.slice(0, 600) || "none"}
 
-Write ONE project title. Rules:
-- 3 to 6 words, Title Case
-- Evocative, never literal (e.g. "A Study in Moss & Chestnut", "The Quiet Room", "Lowlight & Linen")
-- No quotes, no trailing punctuation, no the client's name
-- Editorial, restrained, never marketing-speak
+Pinned pieces by category (these are the ACTUAL items on the board — reference them):
+${piecesBlock || "none"}
 
-Return ONLY the title, nothing else.`;
-    const { text } = await generateText({
+Write three things:
+
+1. project_title — ONE title for this proposal. 3–6 words, Title Case. Evocative, never literal. Never include the client's name. Examples: "A Study in Moss & Chestnut", "The Quiet Room", "Lowlight & Linen", "Late Afternoon, Slow".
+
+2. section_word — ONE single word that introduces the pieces section of the deck. Editorial, slightly poetic. Examples: "Pieces", "Anchors", "Elements", "Materials", "Vessels". One word only.
+
+3. production_notes — For EACH category in the pinned list, write ONE sentence (max 18 words) of art direction. Reference real pieces by name when natural. Specific to what was pinned. Never fabricate facts the client didn't mention (no "firepit", "dining table", "the bar" unless those items appear in the pieces). Editorial restraint, no exclamation marks.
+
+Return JSON matching the schema.`;
+
+    const { experimental_output: output } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
       prompt,
+      experimental_output: Output.object({
+        schema: zod.object({
+          project_title: zod.string(),
+          section_word: zod.string(),
+          production_notes: zod.object(notesShape),
+        }),
+      }),
     });
-    const cleaned = text.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
-    if (!cleaned || cleaned.length > 80 || cleaned.split(/\s+/).length > 8) return null;
-    return cleaned;
+
+    if (!output) return null;
+    const title = output.project_title.trim().replace(/^["'""]+|["'""]+$/g, "").replace(/\.$/, "").trim();
+    const word = output.section_word.trim().replace(/[^A-Za-z]/g, "");
+    if (!title || title.split(/\s+/).length > 8) return null;
+    if (!word) return null;
+
+    const cleanedNotes: Record<string, string> = {};
+    for (const [slug, note] of Object.entries(output.production_notes)) {
+      if (typeof note === "string" && note.trim()) {
+        cleanedNotes[slug] = note.trim();
+      }
+    }
+
+    return {
+      project_title: title,
+      section_word: word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+      production_notes: cleanedNotes,
+    };
   } catch (err) {
-    console.error("[aiDeriveProjectTitle] failed:", err);
+    console.error("[generateBoardCopy] failed:", err);
     return null;
   }
 }
@@ -250,7 +311,7 @@ export const markBoardSent = createServerFn({ method: "POST" })
     // Idempotent: if already sent and has a token, return it.
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,status,project_title,prepared_by_name,palette,tones,curator_notes,inquiry_id")
+      .select("id,share_token,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
@@ -263,12 +324,14 @@ export const markBoardSent = createServerFn({ method: "POST" })
       prepared_by_user_id?: string;
       prepared_by_name?: string;
       project_title?: string;
+      section_word?: string;
+      production_notes?: Record<string, string>;
     } = {
       share_token: token,
       status: "sent",
     };
 
-    // First-send bookkeeping: capture sender + AI title only on the first send.
+    // First-send bookkeeping: capture sender + AI copy only on the first send.
     if (!existing.share_token) {
       update.sent_at = new Date().toISOString();
 
@@ -284,22 +347,41 @@ export const markBoardSent = createServerFn({ method: "POST" })
         console.error("[markBoardSent] sender lookup failed:", err);
       }
 
-      // AI-derive project title if not already set.
+      // AI-derive editorial copy if not already set.
       const existingTitle = (existing as unknown as { project_title?: string | null }).project_title;
       if (!existingTitle) {
-        // Fetch client name for prompt context.
+        // Fetch client name + pinned item titles grouped by category for the prompt.
         const { data: inq } = await supabaseAdmin
           .from("inquiries")
           .select("name")
           .eq("id", existing.inquiry_id)
           .maybeSingle();
-        const aiTitle = await aiDeriveProjectTitle({
+
+        const pinnedIds = (existing.pinned_rms_ids ?? []) as string[];
+        const pinnedByCategory: Record<string, string[]> = {};
+        if (pinnedIds.length) {
+          const { data: rows } = await supabaseAdmin
+            .from("inventory_items")
+            .select("rms_id,title,category")
+            .in("rms_id", pinnedIds);
+          for (const r of rows ?? []) {
+            const slug = r.category ?? "other";
+            (pinnedByCategory[slug] ??= []).push(r.title);
+          }
+        }
+
+        const copy = await generateBoardCopy({
           clientName: inq?.name ?? "",
           curatorNotes: existing.curator_notes as string | null,
           palette: (existing.palette ?? []) as unknown[],
           tones: (existing.tones ?? {}) as Record<string, unknown>,
+          pinnedByCategory,
         });
-        if (aiTitle) update.project_title = aiTitle;
+        if (copy) {
+          update.project_title = copy.project_title;
+          update.section_word = copy.section_word;
+          update.production_notes = copy.production_notes;
+        }
       }
     }
 
@@ -381,6 +463,8 @@ export interface PublicStyleBoard {
   cover_pinned_rms_id: string | null;
   project_title: string | null;
   prepared_by_name: string | null;
+  section_word: string | null;
+  production_notes: Record<string, string>;
 }
 
 export const getStyleBoardByToken = createServerFn({ method: "GET" })
@@ -388,7 +472,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name")
+      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes")
       .eq("share_token", data.token)
       .eq("status", "sent")
       .maybeSingle();
@@ -468,5 +552,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
       project_title: (board as unknown as { project_title?: string | null }).project_title ?? null,
       prepared_by_name: (board as unknown as { prepared_by_name?: string | null }).prepared_by_name ?? null,
+      section_word: (board as unknown as { section_word?: string | null }).section_word ?? null,
+      production_notes: ((board as unknown as { production_notes?: Record<string, string> }).production_notes ?? {}),
     } satisfies PublicStyleBoard;
   });
