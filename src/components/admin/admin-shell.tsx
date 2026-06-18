@@ -51,8 +51,9 @@ type NavItem = {
 
 const OVERVIEW: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/admin", label: "ADMIN", icon: Sparkles },
+  // Hidden: /admin/admin (chat/agent surface) — still reachable by direct URL.
 ];
+void Sparkles;
 
 const INBOX: NavItem[] = [
   { to: "/admin/insights", label: "Inquiries & insights", icon: Inbox },
