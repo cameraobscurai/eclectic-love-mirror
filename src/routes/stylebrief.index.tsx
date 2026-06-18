@@ -712,6 +712,9 @@ function StudioPage() {
               Or use the standard contact form
             </Link>
           </div>
+          {submitError && (
+            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{submitError}</p>
+          )}
         </Step>
       </form>
     </div>
