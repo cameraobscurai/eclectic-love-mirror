@@ -306,7 +306,7 @@ function StudioPage() {
           <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
             Pin pieces that fit your vision. Search by name, browse by category, or match by image.
           </p>
-          <StudioBrowser seedPalette={analysis?.palette ?? null} />
+          <CollectionPicker />
         </Step>
 
         {/* STEP 3 — GENERATE PALETTE (from inspo + pinned furniture) */}
