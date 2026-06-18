@@ -3,11 +3,9 @@ import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Inbox,
-  BarChart3,
   ImageIcon,
   Images,
   ScanEye,
-  Palette,
   Upload,
   Link2,
   ExternalLink,
@@ -66,10 +64,10 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
-  { to: "/admin/image-health", label: "Image health", icon: BarChart3 },
-  { to: "/admin/image-qa", label: "Image QA", icon: ScanEye },
-  { to: "/admin/colors", label: "Color QA", icon: Palette },
 ];
+// Hidden utility routes — still reachable by direct URL, just removed from
+// sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
+// /admin/colors.
 
 const SITE: NavItem[] = [
   { to: "/", label: "View live site", icon: ExternalLink, external: true },
