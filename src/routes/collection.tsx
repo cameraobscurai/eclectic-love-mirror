@@ -138,6 +138,8 @@ export const Route = createFileRoute("/collection")({
           "600+ pieces of curated event furniture, lighting, and tableware available for rental in Denver and beyond.",
       },
       { property: "og:url", content: "https://eclectichive.com/collection" },
+      { property: "og:image", content: "https://eclectichive.com/og/collection.jpg" },
+      { name: "twitter:image", content: "https://eclectichive.com/og/collection.jpg" },
     ],
     // Note: previously we preloaded CATEGORY_COVERS here. That preload now
     // lives inside <CategoryGalleryOverview> so it only runs when the
