@@ -220,61 +220,71 @@ export function CollectionPicker() {
               {q ? "No matches" : "Nothing in this category yet"}
             </div>
           ) : (
-            <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-              {activeList.map((p) => {
-                const pinned = has(String(p.id));
-                const src = p.primaryImage?.url;
-                return (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => toggle(String(p.id))}
-                      aria-pressed={pinned}
-                      className="group block w-full text-left"
-                    >
-                      <div
-                        className={`relative aspect-square bg-white overflow-hidden border transition-colors ${
-                          pinned
-                            ? "border-charcoal"
-                            : "border-charcoal/10 hover:border-charcoal/40"
-                        }`}
-                      >
-                        {src ? (
-                          <img
-                            src={withCdnWidth(src, 400)}
-                            alt={p.title}
-                            loading="lazy"
-                            decoding="async"
-                            className="absolute inset-0 h-full w-full object-contain p-3"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-charcoal/[0.03]" />
-                        )}
-                        <span
-                          className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${
-                            pinned
-                              ? "bg-charcoal text-cream opacity-100"
-                              : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"
-                          }`}
-                        >
-                          {pinned ? (
-                            <Check className="h-3 w-3" />
-                          ) : (
-                            <Plus className="h-3 w-3" />
-                          )}
-                        </span>
-                      </div>
-                      <p className="mt-1.5 text-[10px] uppercase tracking-[0.12em] text-charcoal/70 line-clamp-1">
-                        {p.title}
-                      </p>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <ProductGrid products={activeList} has={has} toggle={toggle} />
           )}
         </div>
       )}
     </div>
+  );
+}
+
+function ProductGrid({
+  products,
+  has,
+  toggle,
+}: {
+  products: CollectionProduct[];
+  has: (id: string) => boolean;
+  toggle: (id: string) => void;
+}) {
+  return (
+    <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {products.map((p) => {
+        const pinned = has(String(p.id));
+        const src = p.primaryImage?.url;
+        return (
+          <li key={p.id}>
+            <button
+              type="button"
+              onClick={() => toggle(String(p.id))}
+              aria-pressed={pinned}
+              className="group block w-full text-left"
+            >
+              <div
+                className={`relative aspect-square bg-white overflow-hidden border transition-colors ${
+                  pinned
+                    ? "border-charcoal"
+                    : "border-charcoal/10 hover:border-charcoal/40"
+                }`}
+              >
+                {src ? (
+                  <img
+                    src={withCdnWidth(src, 400)}
+                    alt={p.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-contain p-3"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-charcoal/[0.03]" />
+                )}
+                <span
+                  className={`absolute top-1.5 right-1.5 h-5 w-5 grid place-items-center transition-all ${
+                    pinned
+                      ? "bg-charcoal text-cream opacity-100"
+                      : "bg-cream/90 text-charcoal opacity-0 group-hover:opacity-100"
+                  }`}
+                >
+                  {pinned ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                </span>
+              </div>
+              <p className="mt-1.5 text-[10px] uppercase tracking-[0.12em] text-charcoal/70 line-clamp-1">
+                {p.title}
+              </p>
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
