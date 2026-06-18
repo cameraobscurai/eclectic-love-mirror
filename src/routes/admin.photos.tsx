@@ -455,8 +455,12 @@ function CategoryGrid({
             {PARENT_LABELS[parent]}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {subActive
-              ? `${visibleItems.length} of ${items.length} shown · Reorder disabled while filtered`
+            {reorderDisabled
+              ? `${visibleItems.length} of ${items.length} shown · ${
+                  sortMode !== "editorial"
+                    ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
+                    : "Reorder disabled while filtered"
+                }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
 
@@ -466,8 +470,8 @@ function CategoryGrid({
           <button
             type="button"
             onClick={doUndo}
-            disabled={undoCount === 0 || subActive}
-            title={subActive ? "Clear filter to undo" : "Undo last reorder (⌘Z)"}
+            disabled={undoCount === 0 || reorderDisabled}
+            title={reorderDisabled ? "Switch to Editorial sort to undo" : "Undo last reorder (⌘Z)"}
             className="inline-flex items-center gap-1.5 border border-charcoal/15 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.18em] text-charcoal/70 hover:bg-charcoal/5 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             ↶ Undo{undoCount > 0 ? ` (${undoCount})` : ""}
