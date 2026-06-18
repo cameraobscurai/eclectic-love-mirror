@@ -195,6 +195,8 @@ function PhotosManager() {
             parent={parent}
             sub={sub}
             onSub={setSub}
+            sortMode={sortMode}
+            onSortMode={setSortMode}
             view={view}
             onView={setView}
             allProducts={allProducts}
