@@ -586,6 +586,7 @@ function InquiryRow({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
