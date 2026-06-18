@@ -41,6 +41,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
+import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { reorderItems } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
@@ -61,6 +62,14 @@ import {
   PRODUCT_TILE_IMAGE_CLASS,
   PRODUCT_TILE_OVERRIDES,
 } from "@/lib/collection-tile-presets";
+
+type SortMode = "editorial" | "type" | "az" | "tonal";
+const SORT_MODES: { id: SortMode; label: string }[] = [
+  { id: "editorial", label: "Editorial" },
+  { id: "type", label: "By Type" },
+  { id: "az", label: "A–Z" },
+  { id: "tonal", label: "Tonal" },
+];
 
 
 export const Route = createFileRoute("/admin/photos")({
@@ -105,6 +114,7 @@ function AdminPhotosPage() {
 function PhotosManager() {
   const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
   const [sub, setSub] = useState<string>("all");
+  const [sortMode, setSortMode] = useState<SortMode>("editorial");
   const [view, setView] = useState<"grid" | "wall">("grid");
 
   // Load baked catalog once.
@@ -185,6 +195,8 @@ function PhotosManager() {
             parent={parent}
             sub={sub}
             onSub={setSub}
+            sortMode={sortMode}
+            onSortMode={setSortMode}
             view={view}
             onView={setView}
             allProducts={allProducts}
@@ -199,6 +211,8 @@ function CategoryGrid({
   parent,
   sub,
   onSub,
+  sortMode,
+  onSortMode,
   view,
   onView,
   allProducts,
@@ -206,27 +220,36 @@ function CategoryGrid({
   parent: ParentId;
   sub: string;
   onSub: (s: string) => void;
+  sortMode: SortMode;
+  onSortMode: (m: SortMode) => void;
   view: "grid" | "wall";
   onView: (v: "grid" | "wall") => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
 
-  // Source items for this parent (and optional sub).
-  // Use the SAME classifier the front-end uses for sub filtering.
+  // Source items for this parent. Mirrors /collection so the admin shows
+  // exactly what visitors see in each sort mode.
+  //   - editorial → editorialOrder (drag-reorder writes this back)
+  //   - type/az/tonal → same sortProductsForCollection() the public grid uses
   const baseItems = useMemo<Item[]>(() => {
     if (!allProducts) return [];
     const inParent = allProducts.filter((p) => productParent(p) === parent);
-    // Sort by editorialOrder (admin drag-order = site display order). Falls
-    // back to ownerSiteRank for parents that haven't been editorial-ranked yet.
-    inParent.sort((a, b) => {
-      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
-      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
-      if (ar !== br) return ar - br;
-      return a.title.localeCompare(b.title);
+    if (sortMode === "editorial") {
+      inParent.sort((a, b) => {
+        const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
+        const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
+        if (ar !== br) return ar - br;
+        return a.title.localeCompare(b.title);
+      });
+      return inParent.map(adapt);
+    }
+    const sorted = sortProductsForCollection(inParent, {
+      mode: sortMode === "az" ? "az" : sortMode === "tonal" ? "tonal" : "by-type",
+      activeGroup: parent as never,
     });
-    return inParent.map(adapt);
-  }, [allProducts, parent]);
+    return sorted.map(adapt);
+  }, [allProducts, parent, sortMode]);
 
   // Local items state so drag-reorder feels instant. Holds the FULL parent
   // list — the sub filter is purely a display filter (see `visibleItems`).
@@ -235,9 +258,12 @@ function CategoryGrid({
     setItems(baseItems);
   }, [baseItems]);
 
-  // Sub filter is visual only. Reorder is disabled while filtered so we
-  // never persist a partial parent list.
+  // Sub filter is visual only. Reorder is disabled while filtered (would
+  // persist a partial parent list) or while viewing a non-editorial sort
+  // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
+  // mirrors of the public sort, not editable orderings).
   const subActive = sub !== "all";
+  const reorderDisabled = subActive || sortMode !== "editorial";
   const visibleItems = useMemo(
     () => {
       const base = subActive
@@ -367,7 +393,7 @@ function CategoryGrid({
     setActiveId(null);
     // Reorder is disabled when filtered to a sub — we'd otherwise persist
     // a partial parent list.
-    if (subActive) return;
+    if (reorderDisabled) return;
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const oldIdx = items.findIndex((i) => i.id === active.id);
@@ -385,13 +411,13 @@ function CategoryGrid({
   const [undoCount, setUndoCount] = useState(0);
 
   const doUndo = useCallback(() => {
-    if (subActive) return;
+    if (reorderDisabled) return;
     const prev = undoStack.current.pop();
     if (!prev) return;
     setUndoCount(undoStack.current.length);
     setItems(prev);
     scheduleSave(prev);
-  }, [subActive, scheduleSave]);
+  }, [reorderDisabled, scheduleSave]);
 
   // Cmd+Z / Ctrl+Z — pop a snapshot, restore it, schedule a save.
   useEffect(() => {
@@ -429,8 +455,12 @@ function CategoryGrid({
             {PARENT_LABELS[parent]}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
-            {subActive
-              ? `${visibleItems.length} of ${items.length} shown · Reorder disabled while filtered`
+            {reorderDisabled
+              ? `${visibleItems.length} of ${items.length} shown · ${
+                  sortMode !== "editorial"
+                    ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
+                    : "Reorder disabled while filtered"
+                }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
 
@@ -440,8 +470,8 @@ function CategoryGrid({
           <button
             type="button"
             onClick={doUndo}
-            disabled={undoCount === 0 || subActive}
-            title={subActive ? "Clear filter to undo" : "Undo last reorder (⌘Z)"}
+            disabled={undoCount === 0 || reorderDisabled}
+            title={reorderDisabled ? "Switch to Editorial sort to undo" : "Undo last reorder (⌘Z)"}
             className="inline-flex items-center gap-1.5 border border-charcoal/15 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.18em] text-charcoal/70 hover:bg-charcoal/5 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             ↶ Undo{undoCount > 0 ? ` (${undoCount})` : ""}
@@ -481,6 +511,45 @@ function CategoryGrid({
         </div>
       </header>
 
+      {/* Sort selector — mirrors /collection's sort tabs so the admin grid
+          matches exactly what the public sees in each mode. Editorial is the
+          only editable mode (drag → writes editorialOrder). */}
+      <div className="mb-4 flex flex-wrap items-center gap-1 border-b border-charcoal/10 pb-3">
+        <span className="mr-3 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+          Sort
+        </span>
+        {SORT_MODES.map((opt) => {
+          const active = sortMode === opt.id;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onSortMode(opt.id)}
+              className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] border-b transition-colors ${
+                active
+                  ? "text-charcoal border-charcoal"
+                  : "text-charcoal/55 hover:text-charcoal border-transparent"
+              }`}
+              title={
+                opt.id === "editorial"
+                  ? "Your drag-reorder (writes editorialOrder)"
+                  : `Public ${opt.label} sort — read-only mirror`
+              }
+            >
+              {opt.label}
+              {opt.id === "editorial" && (
+                <span className="ml-1.5 text-charcoal/35">●</span>
+              )}
+            </button>
+          );
+        })}
+        <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+          {sortMode === "editorial"
+            ? "Editable · drag to reorder"
+            : "Read-only mirror of public sort"}
+        </span>
+      </div>
+
       {/* Subcategory rail — mirrors /collection's SubcategoryRail. */}
       {subs.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-2">
@@ -500,7 +569,9 @@ function CategoryGrid({
           <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40 self-center">
             {subActive
               ? "Filtered view · clear sub to reorder"
-              : "Reorder writes the full parent list"}
+              : sortMode !== "editorial"
+                ? "Switch to Editorial sort to reorder"
+                : "Reorder writes the full parent list"}
           </span>
 
         </div>
@@ -553,7 +624,7 @@ function CategoryGrid({
                   item={item}
                   index={idx}
                   dense={view === "wall"}
-                  draggable={!subActive}
+                  draggable={!reorderDisabled}
                   onOpen={() => void openEditor(item)}
                 />
               ))}
