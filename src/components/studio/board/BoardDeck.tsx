@@ -240,22 +240,23 @@ function StatementPage({ page }: { page: Extract<DeckPage, { kind: "statement" }
 
 function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> }) {
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen">
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-3">
         Color Palette
       </p>
       <h2
-        className="font-display tracking-tight mb-12 capitalize"
-        style={{ fontSize: "clamp(2.25rem, 4vw, 3.5rem)" }}
+        className="font-display tracking-tight mb-10 lg:mb-12 capitalize"
+        style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
       >
         {countWord(page.swatches.length)} {page.swatches.length === 1 ? "tone" : "tones"}
       </h2>
       <div
-        className="grid gap-4"
+        className="grid gap-3 sm:gap-4"
         style={{
-          gridTemplateColumns: `repeat(${Math.min(page.swatches.length, 7)}, minmax(0, 1fr))`,
+          gridTemplateColumns: `repeat(${Math.min(page.swatches.length, 4)}, minmax(0, 1fr))`,
         }}
       >
+        {/* desktop override via inline media query not possible; use CSS var fallback */}
         {page.swatches.map((s: PaletteSwatch, i) => (
           <div key={i} className="space-y-3">
             <div
