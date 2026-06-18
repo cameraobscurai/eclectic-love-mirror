@@ -379,6 +379,8 @@ export interface PublicStyleBoard {
   pinned: PublicPinnedItem[];
   client_name: string;
   cover_pinned_rms_id: string | null;
+  project_title: string | null;
+  prepared_by_name: string | null;
 }
 
 export const getStyleBoardByToken = createServerFn({ method: "GET" })
