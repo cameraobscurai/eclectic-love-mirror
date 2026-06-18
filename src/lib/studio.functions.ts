@@ -183,13 +183,16 @@ export const markBoardSent = createServerFn({ method: "POST" })
     if (exErr) throw exErr;
 
     const token = existing.share_token ?? crypto.randomUUID();
+    const update: Record<string, unknown> = {
+      share_token: token,
+      status: "sent",
+    };
+    if (!existing.share_token) {
+      update.sent_at = new Date().toISOString();
+    }
     const { data: row, error } = await supabaseAdmin
       .from("style_boards")
-      .update({
-        share_token: token,
-        status: "sent",
-        sent_at: existing.share_token ? undefined : new Date().toISOString(),
-      })
+      .update(update)
       .eq("id", data.boardId)
       .select("*")
       .single();
