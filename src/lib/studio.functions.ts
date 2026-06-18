@@ -183,7 +183,11 @@ export const markBoardSent = createServerFn({ method: "POST" })
     if (exErr) throw exErr;
 
     const token = existing.share_token ?? crypto.randomUUID();
-    const update: Record<string, unknown> = {
+    const update: {
+      share_token: string;
+      status: "sent";
+      sent_at?: string;
+    } = {
       share_token: token,
       status: "sent",
     };
