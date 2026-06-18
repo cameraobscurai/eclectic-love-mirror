@@ -294,7 +294,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 ← Exit
               </Link>
               <a
-                href="/"
+                href={LIVE_ORIGIN}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:inline-flex items-center gap-1.5 border border-charcoal/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/75 hover:bg-charcoal/5 hover:text-charcoal"
