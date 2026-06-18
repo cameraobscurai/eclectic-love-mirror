@@ -31,6 +31,11 @@ const BodySchema = z.object({
   // before this endpoint is called. We verify the row exists and its email
   // matches before sending — drops random spam that hits the URL directly.
   inquiry_id: z.string().uuid(),
+  // Optional style-brief extras (only sent from /stylebrief)
+  palette: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8).optional().default([]),
+  tones: z.record(z.string(), z.number()).optional().default({}),
+  insights: z.array(z.string().max(120)).max(6).optional().default([]),
+  inspo_paths: z.array(z.string().max(300)).max(8).optional().default([]),
 })
 
 function generateToken(): string {
@@ -84,6 +89,18 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           return Response.json({ error: 'Template missing' }, { status: 500 })
         }
 
+        // Sign inspo paths against the private studio-inspo bucket so the
+        // owner can preview thumbnails directly from the email. 7-day TTL.
+        let inspoUrls: string[] = []
+        if (body.inspo_paths && body.inspo_paths.length) {
+          const { data: signed } = await supabase
+            .storage.from('studio-inspo')
+            .createSignedUrls(body.inspo_paths, 60 * 60 * 24 * 7)
+          inspoUrls = (signed ?? [])
+            .map((s) => s.signedUrl)
+            .filter((u): u is string => typeof u === 'string' && u.length > 0)
+        }
+
         const templateData = {
           name: body.name,
           email: body.email,
@@ -95,6 +112,10 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
           scope: body.scope,
           items: body.items ?? [],
           inquiryId: body.inquiry_id ?? undefined,
+          palette: body.palette ?? [],
+          tones: body.tones ?? {},
+          insights: body.insights ?? [],
+          inspoUrls,
         }
 
         const recipient = template.to!
@@ -212,6 +233,7 @@ export const Route = createFileRoute('/api/public/notify-inquiry')({
                 scope: body.scope,
                 items: body.items ?? [],
                 inquiryId: body.inquiry_id ?? undefined,
+                palette: body.palette ?? [],
               }
               const confirmMessageId = crypto.randomUUID()
               const confirmIdempotency = body.inquiry_id

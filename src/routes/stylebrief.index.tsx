@@ -5,13 +5,14 @@
 
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, ImagePlus, Sparkles, X, ArrowRight } from "lucide-react";
+import { Loader2, ImagePlus, Sparkles, X, ArrowRight, Download } from "lucide-react";
 
 import { analyzeMoodboard, type AnalysisResult } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { signPublicInspoUpload, submitStyleBrief } from "@/lib/style-brief.functions";
 import { CollectionPicker } from "@/components/studio/CollectionPicker";
+import { downloadDeckPDF } from "@/lib/board-export";
 
 export const Route = createFileRoute("/stylebrief/")({
   head: () => ({
@@ -64,6 +65,9 @@ function StudioPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
+  const briefRef = useRef<HTMLElement | null>(null);
+
 
   // Form fields — hydrated from sessionStorage so a re-render, accidental
   // reload, or browser Back doesn't blank them out.
@@ -246,6 +250,39 @@ function StudioPage() {
         },
       });
 
+      // 3. Fire-and-forget owner + submitter email notification with palette + inspo.
+      // Failure here doesn't block the user — the inquiry is already saved.
+      const pinnedSnapshots = pinnedIds
+        .map((id) => catalog.get(id))
+        .filter(Boolean)
+        .slice(0, 50)
+        .map((p) => ({
+          rms_id: String(p!.id),
+          title: p!.title,
+          category: (p as any)?.displayCategory ?? null,
+          image_url: p!.primaryImage?.url ?? null,
+        }));
+      fetch("/api/public/notify-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || null,
+          subject: "Style Brief",
+          message: vibe.trim() || null,
+          project_date: eventDate.trim() || null,
+          budget: budget || null,
+          scope: scope || null,
+          items: pinnedSnapshots,
+          inquiry_id: inquiryId,
+          palette: (analysis?.palette ?? []).slice(0, 8).map((c) => c.hex),
+          tones: (analysis?.tones ?? {}) as Record<string, number>,
+          insights: (analysis?.insights ?? []).slice(0, 6).map((i) => i.title),
+          inspo_paths: inspoPaths,
+        }),
+      }).catch((err) => console.warn("notify-inquiry failed", err));
+
       clearInquiry();
       try { window.sessionStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
       navigate({ to: "/stylebrief/thanks", search: { inquiry: inquiryId } });
@@ -254,6 +291,22 @@ function StudioPage() {
       setSubmitting(false);
     }
   }
+
+  async function downloadBrief() {
+    if (!briefRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      const stamp = new Date().toISOString().slice(0, 10);
+      const slug = (name.trim() || "brief").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "brief";
+      await downloadDeckPDF(briefRef.current, `eclectic-hive-${slug}-${stamp}.pdf`);
+    } catch (err) {
+      console.warn("brief download failed", err);
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  const canDownload = !!analysis || pinnedIds.length > 0 || inspo.length > 0 || name.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-cream text-charcoal">
@@ -602,7 +655,11 @@ function StudioPage() {
               });
             }
             return (
-              <article className="mt-12 relative border border-charcoal/15 bg-cream px-8 lg:px-14 py-12 lg:py-16 max-w-2xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <article
+                ref={briefRef}
+                data-board-page="1"
+                className="mt-12 relative border border-charcoal/15 bg-cream px-8 lg:px-14 py-12 lg:py-16 max-w-2xl animate-in fade-in slide-in-from-bottom-2 duration-500"
+              >
                 {/* Top chrome */}
                 <div className="absolute top-4 left-8 right-8 lg:left-14 lg:right-14 flex justify-between text-[10px] tracking-[0.32em] text-charcoal/45 tabular-nums">
                   <span>STYLE BRIEF · DRAFT</span>
@@ -641,6 +698,15 @@ function StudioPage() {
             >
               {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
               {submitting ? "Sending…" : "Submit Brief"}
+            </button>
+            <button
+              type="button"
+              onClick={downloadBrief}
+              disabled={!canDownload || downloading}
+              className="inline-flex items-center gap-2 px-6 py-3 border border-charcoal/30 text-charcoal text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/[0.04] transition-colors"
+            >
+              {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+              {downloading ? "Building PDF…" : "Download Brief"}
             </button>
             <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
               Or use the standard contact form

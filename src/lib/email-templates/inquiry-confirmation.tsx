@@ -26,6 +26,7 @@ interface Props {
   scope?: string | null
   items?: ItemSnapshot[]
   inquiryId?: string
+  palette?: string[]
 }
 
 const InquiryConfirmation = ({
@@ -35,23 +36,24 @@ const InquiryConfirmation = ({
   scope,
   items = [],
   inquiryId,
+  palette = [],
 }: Props) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>We've received your inquiry — the Hive will be in touch shortly.</Preview>
+    <Preview>We've received your style brief — the Hive will be in touch shortly.</Preview>
     <Body style={main}>
       <Container style={container}>
         <Text style={eyebrow}>ECLECTIC HIVE</Text>
         <Heading style={h1}>Thank you, {name}.</Heading>
         <Text style={lede}>
-          WE'VE RECEIVED YOUR INQUIRY. A MEMBER OF THE HIVE WILL BE IN TOUCH SHORTLY.
+          WE'VE RECEIVED YOUR STYLE BRIEF. A MEMBER OF THE HIVE WILL BE IN TOUCH SHORTLY.
         </Text>
 
         <Hr style={hr} />
 
         {(projectDate || budget || scope || items.length > 0) && (
           <Section style={section}>
-            <Text style={sectionLabel}>YOUR INQUIRY</Text>
+            <Text style={sectionLabel}>YOUR BRIEF</Text>
             {projectDate ? <Text style={body}><strong>DATE:</strong> {projectDate}</Text> : null}
             {budget ? <Text style={body}><strong>BUDGET:</strong> {budget}</Text> : null}
             {scope ? <Text style={body}><strong>SCOPE:</strong> {scope}</Text> : null}
@@ -62,6 +64,29 @@ const InquiryConfirmation = ({
             ) : null}
           </Section>
         )}
+
+        {palette.length > 0 ? (
+          <Section style={section}>
+            <Text style={sectionLabel}>YOUR COLOR PALETTE</Text>
+            <table cellPadding={0} cellSpacing={0} border={0} role="presentation" style={{ borderCollapse: 'collapse' }}>
+              <tbody>
+                <tr>
+                  {palette.map((hex, i) => (
+                    <td
+                      key={`${hex}-${i}`}
+                      {...({ bgcolor: hex } as any)}
+                      width="40"
+                      height="40"
+                      style={{ backgroundColor: hex, width: '40px', height: '40px', border: '1px solid #1a1a1a14' }}
+                    >
+                      &nbsp;
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </Section>
+        ) : null}
 
         <Hr style={hr} />
 
@@ -94,6 +119,7 @@ export const template = {
     projectDate: '2026-09-12',
     budget: '$15k–$25k',
     scope: 'Full styling',
+    palette: ['#d4cdc4', '#8a7361', '#3c2e25', '#c9a98c'],
     items: [
       { rms_id: 'RMS-001', title: 'Birch Lounge Chair', category: 'Seating' },
       { rms_id: 'RMS-002', title: 'Pampas Tall Vessel', category: 'Styling' },
