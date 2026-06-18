@@ -1,12 +1,15 @@
-// Capture each [data-board-page] element to a canvas and stitch a letter-portrait PDF.
-import html2canvas from "html2canvas";
+// Capture each [data-board-page] element to a JPEG via html-to-image
+// (handles modern CSS color functions like lab()/oklch() that html2canvas
+// chokes on), then stitch into a letter-portrait PDF.
+import { toJpeg } from "html-to-image";
 import { jsPDF } from "jspdf";
 
 export async function downloadDeckPDF(
   root: HTMLElement,
   filename = "style-board.pdf",
 ): Promise<void> {
-  const pages = Array.from(root.querySelectorAll<HTMLElement>("[data-board-page]"));
+  const descendants = Array.from(root.querySelectorAll<HTMLElement>("[data-board-page]"));
+  const pages = root.matches?.("[data-board-page]") ? [root, ...descendants] : descendants;
   if (pages.length === 0) return;
 
   // Letter portrait, 8.5 x 11 in @ 72dpi = 612 x 792 pt
@@ -16,8 +19,9 @@ export async function downloadDeckPDF(
 
   for (let i = 0; i < pages.length; i++) {
     const el = pages[i];
-    // Wait for every <img> inside this page to fully decode so html2canvas
-    // doesn't snapshot empty placeholders.
+
+    // Wait for every <img> inside this page to fully decode so the snapshot
+    // doesn't capture empty placeholders.
     const imgs = Array.from(el.querySelectorAll<HTMLImageElement>("img"));
     await Promise.all(
       imgs.map((img) =>
@@ -31,24 +35,38 @@ export async function downloadDeckPDF(
               }),
       ),
     );
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      backgroundColor: getComputedStyle(el).backgroundColor || "#ffffff",
-      useCORS: true,
-      logging: false,
-      windowWidth: el.scrollWidth,
+
+    const bg = getComputedStyle(el).backgroundColor || "#ffffff";
+    // html-to-image renders the element via foreignObject SVG, which the
+    // browser itself rasterizes — modern color spaces just work.
+    const dataUrl = await toJpeg(el, {
+      quality: 0.92,
+      pixelRatio: 2,
+      backgroundColor: /^(rgb|#)/i.test(bg) ? bg : "#ffffff",
+      cacheBust: true,
+      // Skip cross-origin font sheets (Google Fonts) — they throw a
+      // SecurityError on cssRules access. The PDF falls back to the system
+      // font for that family, which renders cleanly.
+      skipFonts: true,
     });
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
-    const ratio = canvas.height / canvas.width;
+
+    // Probe dimensions
+    const probe = await new Promise<{ w: number; h: number }>((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve({ w: im.naturalWidth, h: im.naturalHeight });
+      im.onerror = () => reject(new Error("PDF image decode failed"));
+      im.src = dataUrl;
+    });
+
+    const ratio = probe.h / probe.w;
     const renderH = pageW * ratio;
     if (i > 0) pdf.addPage();
-    // If page is taller than letter, scale down to fit
     if (renderH <= pageH) {
-      pdf.addImage(imgData, "JPEG", 0, 0, pageW, renderH);
+      pdf.addImage(dataUrl, "JPEG", 0, 0, pageW, renderH);
     } else {
       const renderW = pageH / ratio;
       const offsetX = (pageW - renderW) / 2;
-      pdf.addImage(imgData, "JPEG", offsetX, 0, renderW, pageH);
+      pdf.addImage(dataUrl, "JPEG", offsetX, 0, renderW, pageH);
     }
   }
 
