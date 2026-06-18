@@ -31,6 +31,11 @@ const BodySchema = z.object({
   // before this endpoint is called. We verify the row exists and its email
   // matches before sending — drops random spam that hits the URL directly.
   inquiry_id: z.string().uuid(),
+  // Optional style-brief extras (only sent from /stylebrief)
+  palette: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8).optional().default([]),
+  tones: z.record(z.string(), z.number()).optional().default({}),
+  insights: z.array(z.string().max(120)).max(6).optional().default([]),
+  inspo_paths: z.array(z.string().max(300)).max(8).optional().default([]),
 })
 
 function generateToken(): string {
