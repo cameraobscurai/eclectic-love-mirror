@@ -156,20 +156,18 @@ function CoverPage({
         />
       )}
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/30 via-transparent to-charcoal/60" />
-      <div className="absolute top-12 left-12 text-[10px] uppercase tracking-[0.4em] text-cream/80">
-        {meta.date}
+      <div className="absolute top-6 left-5 right-5 lg:top-12 lg:left-12 lg:right-12 flex items-start justify-between text-[9px] lg:text-[10px] uppercase tracking-[0.3em] lg:tracking-[0.4em] text-cream/80">
+        <span>{meta.date}</span>
+        <span>Eclectic Hive</span>
       </div>
-      <div className="absolute top-12 right-12 text-[10px] uppercase tracking-[0.4em] text-cream/80">
-        Eclectic Hive
-      </div>
-      <div className="absolute bottom-16 left-12 right-12 flex items-end justify-between gap-12">
+      <div className="absolute bottom-14 left-5 right-5 lg:bottom-16 lg:left-12 lg:right-12 flex items-end justify-between gap-8">
         <div>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-cream/70 mb-6">
+          <p className="text-[9px] lg:text-[10px] uppercase tracking-[0.32em] lg:tracking-[0.4em] text-cream/70 mb-5 lg:mb-6">
             Style Brief · For {meta.clientName}
           </p>
           <h1
             className="font-display text-cream leading-[0.95] tracking-tight max-w-[14ch]"
-            style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 9vw, 6.5rem)" }}
           >
             {meta.projectTitle}
           </h1>
