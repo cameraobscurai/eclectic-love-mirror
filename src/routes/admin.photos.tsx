@@ -411,13 +411,13 @@ function CategoryGrid({
   const [undoCount, setUndoCount] = useState(0);
 
   const doUndo = useCallback(() => {
-    if (subActive) return;
+    if (reorderDisabled) return;
     const prev = undoStack.current.pop();
     if (!prev) return;
     setUndoCount(undoStack.current.length);
     setItems(prev);
     scheduleSave(prev);
-  }, [subActive, scheduleSave]);
+  }, [reorderDisabled, scheduleSave]);
 
   // Cmd+Z / Ctrl+Z — pop a snapshot, restore it, schedule a save.
   useEffect(() => {
