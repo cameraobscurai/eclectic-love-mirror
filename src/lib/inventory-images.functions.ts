@@ -251,3 +251,69 @@ export const uploadItemImage = createServerFn({ method: "POST" })
     return { url: pub.publicUrl, path, deduped };
   });
 
+// ---------------------------------------------------------------------------
+// createInventoryItem — manual product upload entry point.
+//
+// CRITICAL: manual products get rms_id = 'MANUAL-<short-uuid>'. scripts/import.mjs
+// retires every row where rms_id IS NULL on every RMS re-import. The MANUAL-
+// prefix never collides with numeric RMS IDs, so the upsert ignores them and
+// the null-sweep skips them. Do NOT remove this prefix.
+// ---------------------------------------------------------------------------
+
+const CATEGORY_SLUGS = [
+  "tableware", "pillows-throws", "seating", "styling", "tables", "serveware",
+  "bars", "large-decor", "lighting", "rugs", "candlelight", "chandeliers",
+  "storage", "furs-pelts",
+] as const;
+
+const createItemInput = z.object({
+  title: z.string().trim().min(1).max(200),
+  category: z.enum(CATEGORY_SLUGS),
+  quantity: z.number().int().min(0).max(9999).nullable().optional(),
+  quantityLabel: z.string().trim().max(50).nullable().optional(),
+  dimensionsRaw: z.string().trim().max(500).nullable().optional(),
+  publicReady: z.boolean().default(true),
+});
+
+function slugifyTitle(s: string): string {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "item";
+}
+
+export const createInventoryItem = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d: unknown) => createItemInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const rmsId = `MANUAL-${crypto.randomUUID().slice(0, 8)}`;
+    const slug = `${slugifyTitle(data.title)}-${rmsId.toLowerCase()}`;
+
+    const { data: row, error } = await supabaseAdmin
+      .from("inventory_items")
+      .insert({
+        rms_id: rmsId,
+        title: data.title,
+        slug,
+        category: data.category,
+        status: "available",
+        quantity: data.quantity ?? null,
+        quantity_label: data.quantityLabel ?? null,
+        dimensions_raw: data.dimensionsRaw ?? null,
+        images: [],
+        public_ready: data.publicReady,
+      })
+      .select("id, rms_id, title, category")
+      .single();
+
+    if (error || !row) throw new Error(error?.message ?? "Failed to create item");
+
+    void audit({
+      actorId: context.userId,
+      entity: "inventory_items",
+      entityId: row.id,
+      action: "create_manual_item",
+      after: { rms_id: row.rms_id, title: row.title, category: row.category },
+    });
+
+    return { id: row.id, rmsId: row.rms_id, title: row.title };
+  });
+
+
