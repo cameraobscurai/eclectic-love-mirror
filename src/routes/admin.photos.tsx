@@ -258,9 +258,12 @@ function CategoryGrid({
     setItems(baseItems);
   }, [baseItems]);
 
-  // Sub filter is visual only. Reorder is disabled while filtered so we
-  // never persist a partial parent list.
+  // Sub filter is visual only. Reorder is disabled while filtered (would
+  // persist a partial parent list) or while viewing a non-editorial sort
+  // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
+  // mirrors of the public sort, not editable orderings).
   const subActive = sub !== "all";
+  const reorderDisabled = subActive || sortMode !== "editorial";
   const visibleItems = useMemo(
     () => {
       const base = subActive
