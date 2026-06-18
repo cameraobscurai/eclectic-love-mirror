@@ -345,7 +345,8 @@ export const updateInventoryItemMeta = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("inventory_items")
-      .update(patch)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .update(patch as any)
       .eq("id", data.id);
     if (error) throw error;
 
