@@ -13,8 +13,8 @@ import { AdminShell } from "@/components/admin/admin-shell";
 // ---------------------------------------------------------------------------
 // /admin — Editorial admin dashboard
 //
-// Test build, intentionally NOT password-protected (per owner). When auth is
-// added, gate this route via `beforeLoad` + `has_role('admin')`.
+// Gated to admin role via `requireAdminOrRedirect` (beforeLoad, client) plus
+// `requireAdmin` middleware on every server fn (server-side defense in depth).
 //
 // Three columns of insight:
 //   1. Inventory snapshot from the baked Phase 3 catalog (no DB round-trip).
