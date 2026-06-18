@@ -1,63 +1,47 @@
-# New Product Upload — /admin
+## What's broken
 
-Today `/admin/incoming` is a dumb file dump into the `incoming-photos` bucket. It never creates a product. This plan adds a real "new product" flow without breaking the existing intake.
+**1. Visitor download — does not exist.**
+`/stylebrief` shows a draft brief preview (`src/routes/stylebrief.index.tsx:605-632`) with palette, inspo, pinned pieces. There is **no download button**. The PDF exporter (`src/lib/board-export.ts`) is wired only to the admin-curated deck at `/stylebrief/$token` (`BoardDeck.tsx`), not the public submission.
 
-## What gets built
+**2. Staff email — palette and inspo missing.**
+On submit, `submitStyleBrief` (`src/lib/style-brief.functions.ts`) writes palette / tones / insights / inspo_paths into `inquiries.metadata` (JSON). The admin notification email (`src/lib/email-templates/inquiry-notification.tsx`) renders only name, contact, date, budget, scope, vision text, and pinned item titles. **No swatches. No tones. No inspo images. No insights.** That data is in the DB but the email never reads it.
 
-**1. New route: `/admin/new-product`** — a single-page form (not a wizard, keep it tight):
-- Title
-- Category (dropdown of the 14 RMS slugs)
-- Quantity, dimensions (optional)
-- Image upload + reorder (reuses existing `ImageOrderEditor` pieces)
-- Cover focal + card background (reuses `FocalEditor`, `SortableThumb`)
-- Publish toggle (`public_ready`)
+Same gap in `inquiry-confirmation.tsx` (client receipt).
 
-Submit creates the `inventory_items` row, uploads images to `squarespace-mirror`, then redirects to `/admin/photos` filtered to the new product.
+---
 
-**2. New nav entry** in `admin-shell.tsx` under INVENTORY: "New Product" (above "Incoming photos").
+## Plan
 
-**3. Existing `/admin/incoming` stays** as the bulk-dump triage area. Unchanged.
+### A. Add visitor PDF download on `/stylebrief`
+1. Tag the existing draft article (lines 605-632) with `data-board-page="1"` so `downloadDeckPDF()` can find it.
+2. Add a "Download Your Brief" secondary button next to "Submit Brief". On click: call `downloadDeckPDF(articleRef.current, "eclectic-hive-brief-{name}.pdf")`.
+3. Single-page letter-portrait PDF. Captures palette swatches + inspo thumbs + pinned strip + all details already on screen. Zero new layout.
+4. Enable whenever palette OR pinned items OR inspo exist — even before submit.
 
-## The critical safety fix (must ship in same batch)
+### B. Pass palette/inspo into both emails
+1. **`inquiry-notification.tsx`** — extend `Props` with `palette: string[]`, `tones: Record<string, number>`, `insights: string[]`, `inspoUrls: string[]`. Render:
+   - Palette block: row of inline HTML swatches using `<td bgcolor="#xxxxxx">` (email-client safe).
+   - Top tones: top 3 by weight as text ("Warm · Muted · Light").
+   - Insights: bullet list.
+   - Inspo: thumbnail grid linked to signed URLs.
+2. **`inquiry-confirmation.tsx`** — same palette + insight block so client gets receipt with their style.
+3. **Email trigger** — find where `inquiry-notification` is composed (need to confirm: likely in an email queue worker or post-insert hook). Update the payload builder to read `inquiries.metadata.palette/tones/insights/inspo_paths`, sign each inspo storage path against `studio-inspo` bucket (1-week TTL), pass through.
 
-`scripts/import.mjs:58` retires every row where `rms_id IS NULL` on every RMS re-import. A manual product would vanish on the next inventory sync.
+### C. Risks / decisions to confirm before building
+- **Inspo bucket is private**. Email must use signed URLs (time-limited). Confirm 7-day TTL is acceptable, or upgrade to a permanent public mirror bucket.
+- **html2canvas on inspo images**: client-uploaded blob URLs work fine pre-submit. After submit/clear, they're revoked. Download must happen before submit OR we re-fetch from storage — recommend "download before submit" (button enabled the moment brief has content).
+- **Where the email actually fires**: still need to trace the inquiries → notification path. The email-templates registry exists, but the send trigger isn't visible from the files read. Will pinpoint during build (likely `enqueue_email` RPC + a worker or edge function).
 
-Fix: manual products get `rms_id = 'MANUAL-<short-uuid>'`. The `MANUAL-` prefix never collides with numeric RMS IDs, so the upsert ignores them and the null-sweep skips them. No schema migration, no import-script change required.
+### D. Out of scope
+- Rebuilding the multi-page admin `BoardDeck` for visitors. The single-page draft is enough for a self-serve receipt.
+- Changing the admin curated `/stylebrief/$token` flow (it already has PDF download).
 
-The `createInventoryItem` server function generates the prefix server-side — the UI never sees it.
+### Files touched
+- `src/routes/stylebrief.index.tsx` (download button + data-board-page tag)
+- `src/lib/email-templates/inquiry-notification.tsx` (palette/inspo/tones/insights)
+- `src/lib/email-templates/inquiry-confirmation.tsx` (palette block)
+- Email send worker / function that composes the props (TBD — trace during build)
+- Possibly `src/lib/style-brief.functions.ts` if signed URLs are pre-generated at submit time
 
-## Technical details
-
-**New server function** `createInventoryItem` in `src/lib/inventory-images.functions.ts` (admin-gated, service-role write):
-- Input: `{ title, category, quantity?, quantityLabel?, dimensionsRaw?, publicReady }`
-- Generates `rms_id = 'MANUAL-' + crypto.randomUUID().slice(0,8)`
-- Generates `slug = slugify(title) + '-' + rms_id.toLowerCase()`
-- Inserts with `status: 'available'`, `images: []`, `editorial_order: null`
-- Returns the new row's `id` (UUID) so the page can hand it to `ImageOrderEditor`
-
-**Route file** `src/routes/admin.new-product.tsx`:
-- `beforeLoad: requireAdminOrRedirect`
-- Two-stage UI: (a) metadata form → create row → (b) reveal `ImageOrderEditor` inline against the new UUID
-- "Done" button → `router.navigate({ to: '/admin/photos' })`
-
-**Nav** in `src/components/admin/admin-shell.tsx`:
-- Add `{ label: 'New Product', to: '/admin/new-product' }` to the `INVENTORY` array
-- Add matching `CRUMB_LABELS` entry
-
-**Catalog visibility:** After create + publish, the product appears in the DB immediately but `current_catalog.json` is only refreshed by `scripts/bake-catalog.mjs`. Admin views read the DB live, so the new product shows in `/admin/photos` instantly. Public site shows it on the next bake. Flag this in the success toast: "Live on site after next catalog bake."
-
-## Out of scope
-
-- Editing existing products (already handled by `/admin/photos` + `ImageOrderEditor`)
-- Variants/families (manual products are single SKU only for v1)
-- Bulk CSV upload
-- Color tagging (auto-runs on next color pipeline pass)
-- Modifying `import.mjs` or adding a `source` column (the `MANUAL-` prefix sidesteps this)
-
-## Verification
-
-1. Create a test product end-to-end, publish, confirm it appears in `/admin/photos`.
-2. Confirm `rms_id` starts with `MANUAL-` in the DB.
-3. Dry-run `scripts/import.mjs` against current RMS XLSX, confirm the manual row's `status` stays `available`.
-
-Ready to build?
+### Estimate
+3 small UI changes + 2 email template extensions + 1 backend wiring step. ~1 build turn for A, ~2 for B+C combined.
