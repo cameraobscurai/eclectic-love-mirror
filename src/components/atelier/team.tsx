@@ -80,14 +80,14 @@ export function AtelierTeam() {
       {/* Section header — display title + owner-sourced quiet italic tagline.
           Tagline stays Title/sentence case per typography rule (only display
           titles + brand statements go ALL CAPS). */}
-      <div className="mb-16 md:mb-20 flex flex-col items-center text-center">
+      <div className="mb-12 md:mb-16 flex flex-col items-center text-center">
         <h2
           className="page-title text-charcoal"
           style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)", lineHeight: 1 }}
         >
           THE HIVE
         </h2>
-        <p className="mt-6 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
+        <p className="mt-4 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
           Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.
         </p>
       </div>
@@ -98,7 +98,7 @@ export function AtelierTeam() {
           first-row gate (that pattern stalled the row when any single image
           failed to fire onLoad). */}
       <ul
-        className="mx-auto grid max-w-[1180px] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-14 text-center"
+        className="mx-auto grid max-w-[1180px] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-10 md:gap-y-16 text-center"
       >
         {visibleMembers.map((member, index) => {
           const showImage = !!member.image && member.image.approvedForWeb;
@@ -125,7 +125,7 @@ export function AtelierTeam() {
                 prefetchMargin="2000px"
                 className={member.imageClassName}
               />
-              <p className="mt-5 font-display text-lg md:text-xl leading-tight text-charcoal">
+              <p className="mt-4 font-display text-lg md:text-xl leading-tight text-charcoal">
                 {member.name}
               </p>
               <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
