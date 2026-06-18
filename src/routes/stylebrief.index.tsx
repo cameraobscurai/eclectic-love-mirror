@@ -313,17 +313,17 @@ function StudioPage() {
   return (
     <div className="min-h-screen bg-cream text-charcoal">
       {/* MASTHEAD */}
-      <header className="px-6 lg:px-16 pt-20 pb-10 border-b border-charcoal/10">
+      <header className="fluid-canvas pt-28 lg:pt-36 pb-16 lg:pb-20 border-b border-charcoal/10">
         <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">Studio</p>
-        <h1 className="mt-3 font-display text-4xl lg:text-5xl uppercase tracking-[0.04em]">
+        <h1 className="mt-4 font-display text-4xl lg:text-6xl uppercase tracking-[0.04em]">
           Build Your Style Brief
         </h1>
-        <p className="mt-4 max-w-xl text-[11px] uppercase tracking-[0.18em] text-charcoal/55 leading-relaxed">
+        <p className="mt-5 max-w-xl text-[11px] uppercase tracking-[0.18em] text-charcoal/55 leading-relaxed">
           Drop the images that move you. See your palette. Send us your vision.
         </p>
       </header>
       {/* TOOLS — keep 3D viewer discoverable */}
-      <nav className="px-6 lg:px-16 py-5 border-b border-charcoal/10 flex flex-wrap gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
+      <nav className="fluid-canvas py-5 border-b border-charcoal/10 flex flex-wrap gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
         <Link to="/stylebrief/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
           3D Viewer <ArrowRight className="h-3 w-3" />
         </Link>
@@ -332,7 +332,8 @@ function StudioPage() {
         </Link>
         <span className="text-charcoal/35 ml-auto hidden md:inline">Below: Style Brief</span>
       </nav>
-      <form onSubmit={submit} className="px-6 lg:px-16 pb-24">
+      <form onSubmit={submit} className="fluid-canvas pb-32">
+
         {/* STEP 1 — INSPO */}
         <Step n={1} title="Drop Your Inspo Images">
           <input
@@ -347,9 +348,9 @@ function StudioPage() {
             onClick={() => inspo.length < MAX_INSPO && fileInputRef.current?.click()}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); addFiles(e.dataTransfer.files); }}
-            className={`border border-dashed border-charcoal/25 min-h-[140px] grid place-items-center cursor-pointer transition-colors hover:border-charcoal/50 hover:bg-charcoal/[0.02] ${inspo.length >= MAX_INSPO ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`border border-dashed border-charcoal/25 min-h-[200px] lg:min-h-[280px] grid place-items-center cursor-pointer transition-colors hover:border-charcoal/50 hover:bg-charcoal/[0.02] ${inspo.length >= MAX_INSPO ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            <div className="flex flex-col items-center gap-2 py-6">
+            <div className="flex flex-col items-center gap-3 py-10 lg:py-16">
               <ImagePlus className="h-6 w-6 text-charcoal/40" />
               <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/65">
                 Drop images or click to browse
@@ -361,7 +362,7 @@ function StudioPage() {
           </div>
 
           {inspo.length > 0 && (
-            <div className="mt-4 grid grid-cols-4 md:grid-cols-8 gap-2">
+            <div className="mt-5 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 lg:gap-3">
               {inspo.map((i) => (
                 <div key={i.id} className="relative aspect-square bg-charcoal/5 overflow-hidden group">
                   <img src={i.url} alt="" className="w-full h-full object-cover" />
@@ -413,7 +414,7 @@ function StudioPage() {
           )}
 
           {analysis && (
-            <div className="mt-8 space-y-10">
+            <div className="mt-14 space-y-14">
               {/* COMBINED PALETTE */}
               <div>
                 <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 mb-3">
@@ -422,8 +423,8 @@ function StudioPage() {
                 <div className="flex gap-1">
                   {analysis.palette.slice(0, 8).map((c, i) => (
                     <div key={i} className="flex-1">
-                      <div className="h-20 w-full" style={{ background: c.hex }} aria-label={c.hex} />
-                      <p className="mt-1.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
+                      <div className="h-28 lg:h-40 w-full" style={{ background: c.hex }} aria-label={c.hex} />
+                      <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-charcoal/50 tabular-nums text-center">
                         {c.hex}
                       </p>
                     </div>
@@ -472,7 +473,7 @@ function StudioPage() {
 
         {/* STEP 4 — DETAILS */}
         <Step n={4} title="Your Details">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 max-w-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8 max-w-2xl">
             <Field label="Name *">
               <input value={name} onChange={(e) => setName(e.target.value)} required className={inputCls} />
             </Field>
@@ -673,7 +674,7 @@ function StudioPage() {
                   <span>01 / 01</span>
                 </div>
 
-                <dl className="grid grid-cols-[150px_1fr] gap-x-6 text-[11px] uppercase tracking-[0.18em]">
+                <dl className="grid grid-cols-[90px_1fr] sm:grid-cols-[140px_1fr] lg:grid-cols-[150px_1fr] gap-x-4 sm:gap-x-6 text-[11px] uppercase tracking-[0.18em]">
                   {rows.map((row, i) => {
                     const n = String(i + 1).padStart(2, "0");
                     const border = i === 0 ? "" : "border-t border-charcoal/10 pt-3 mt-3";
@@ -692,27 +693,31 @@ function StudioPage() {
             );
           })()}
 
-          <div className="mt-10 flex items-center gap-4 flex-wrap">
-            <button
-              type="submit"
-              disabled={!canSubmit}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-charcoal text-cream text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
-            >
-              {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
-              {submitting ? "Sending…" : "Submit Brief"}
-            </button>
-            <button
-              type="button"
-              onClick={downloadBrief}
-              disabled={!canDownload || downloading}
-              className="inline-flex items-center gap-2 px-6 py-3 border border-charcoal/30 text-charcoal text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/[0.04] transition-colors"
-            >
-              {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
-              {downloading ? "Building PDF…" : "Download Brief"}
-            </button>
-            <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
-              Or use the standard contact form
-            </Link>
+          <div className="mt-12">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-charcoal text-cream text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors"
+              >
+                {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ArrowRight className="h-3.5 w-3.5" />}
+                {submitting ? "Sending…" : "Submit Brief"}
+              </button>
+              <button
+                type="button"
+                onClick={downloadBrief}
+                disabled={!canDownload || downloading}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-charcoal/30 text-charcoal text-[11px] uppercase tracking-[0.24em] disabled:opacity-40 hover:bg-charcoal/[0.04] transition-colors"
+              >
+                {downloading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />}
+                {downloading ? "Building PDF…" : "Download Brief"}
+              </button>
+            </div>
+            <p className="mt-5">
+              <Link to="/contact" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal underline-offset-4 hover:underline">
+                Or use the standard contact form
+              </Link>
+            </p>
           </div>
           {submitError && (
             <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-red-700/80">{submitError}</p>
@@ -730,12 +735,12 @@ const inputCls =
 
 function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
-    <section className="pt-12">
-      <div className="flex items-baseline gap-4 mb-6">
+    <section className="border-t border-charcoal/10 first:border-t-0 pt-20 lg:pt-28 first:pt-16 lg:first:pt-20">
+      <div className="flex items-baseline gap-5 mb-10">
         <span className="text-[10px] uppercase tracking-[0.3em] text-charcoal/40 tabular-nums">
           {String(n).padStart(2, "0")}
         </span>
-        <h2 className="font-display text-xl uppercase tracking-[0.06em]">{title}</h2>
+        <h2 className="font-display text-2xl lg:text-3xl uppercase tracking-[0.04em]">{title}</h2>
       </div>
       {children}
     </section>
@@ -746,9 +751,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return (
     <label className="block">
       <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50">{label}</span>
-      <div className="mt-1">{children}</div>
+      <div className="mt-2">{children}</div>
     </label>
   );
 }
+
 
 
