@@ -62,6 +62,7 @@ const INBOX: NavItem[] = [
 
 const INVENTORY: NavItem[] = [
   { to: "/admin/photos", label: "Collection", icon: ImageIcon },
+  { to: "/admin/new-product", label: "New product", icon: PlusCircle },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/upload-hero", label: "Upload hero", icon: Upload },
   { to: "/admin/incoming", label: "Incoming photos", icon: Upload },
