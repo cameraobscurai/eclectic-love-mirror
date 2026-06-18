@@ -248,9 +248,143 @@ function InsightsPage() {
 }
 
 // ---------------------------------------------------------------------------
+// Inquiry inbox — filter chips by status, bulk-select + delete, and inline
+// expand-to-edit rows. Replaces the old flat list so the inbox doesn't grow
+// into one unscannable wall.
+// ---------------------------------------------------------------------------
+
+const STATUS_FILTERS: Array<{ key: "all" | InquiryStatus | "open"; label: string }> = [
+  { key: "all", label: "ALL" },
+  { key: "open", label: "OPEN" },
+  { key: "new", label: "NEW" },
+  { key: "quoted", label: "QUOTED" },
+  { key: "booked", label: "BOOKED" },
+  { key: "lost", label: "LOST" },
+  { key: "ghosted", label: "GHOSTED" },
+];
+
+function InquiryInbox({
+  inquiries,
+  onChanged,
+}: {
+  inquiries: InsightsInquiry[];
+  onChanged: () => void;
+}) {
+  const removeMany = useServerFn(deleteInquiries);
+  const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]["key"]>("all");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+
+  const visible = useMemo(() => {
+    if (filter === "all") return inquiries;
+    if (filter === "open") return inquiries.filter((r) => r.status === "new" || r.status === "quoted");
+    return inquiries.filter((r) => r.status === filter);
+  }, [inquiries, filter]);
+
+  const allChecked = visible.length > 0 && visible.every((r) => selected.has(r.id));
+
+  function toggleOne(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function toggleAll() {
+    setSelected((prev) => {
+      if (visible.every((r) => prev.has(r.id))) {
+        const next = new Set(prev);
+        for (const r of visible) next.delete(r.id);
+        return next;
+      }
+      const next = new Set(prev);
+      for (const r of visible) next.add(r.id);
+      return next;
+    });
+  }
+  async function handleDelete() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    if (!confirm(`Delete ${ids.length} inquir${ids.length === 1 ? "y" : "ies"}? This cannot be undone.`)) return;
+    setDeleting(true);
+    try {
+      await removeMany({ data: { ids } });
+      setSelected(new Set());
+      onChanged();
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {STATUS_FILTERS.map((f) => (
+          <button
+            key={f.key}
+            type="button"
+            onClick={() => setFilter(f.key)}
+            className={`text-[10px] uppercase tracking-[0.18em] px-2.5 py-1 border transition-colors ${
+              filter === f.key
+                ? "bg-charcoal text-cream border-charcoal"
+                : "border-charcoal/20 text-charcoal/60 hover:border-charcoal/50"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+        <span className="ml-auto flex items-center gap-3">
+          {visible.length > 0 && (
+            <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-charcoal/55 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={allChecked}
+                onChange={toggleAll}
+                className="accent-charcoal"
+              />
+              Select all
+            </label>
+          )}
+          {selected.size > 0 && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="text-[10px] uppercase tracking-[0.18em] px-3 py-1 border border-charcoal/70 text-charcoal hover:bg-charcoal hover:text-cream disabled:opacity-50"
+            >
+              {deleting ? "Deleting…" : `Delete ${selected.size}`}
+            </button>
+          )}
+        </span>
+      </div>
+
+      {visible.length === 0 ? (
+        <p className="text-sm text-charcoal/55">
+          {inquiries.length === 0 ? "No inquiries yet." : "No inquiries match this filter."}
+        </p>
+      ) : (
+        <div className="border-t" style={{ borderColor: "var(--archive-rule)" }}>
+          {visible.map((r) => (
+            <InquiryRow
+              key={r.id}
+              row={r}
+              onSaved={onChanged}
+              selected={selected.has(r.id)}
+              onToggleSelect={() => toggleOne(r.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Inquiry row — collapsed by default, expands to show the full message and
 // outcome editor (status / quote / notes).
 // ---------------------------------------------------------------------------
+
 
 function InquiryRow({ row, onSaved }: { row: InsightsInquiry; onSaved: () => void }) {
   const updateOutcome = useServerFn(updateInquiryOutcome);
