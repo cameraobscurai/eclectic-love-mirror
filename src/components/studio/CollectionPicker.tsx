@@ -58,13 +58,28 @@ export function CollectionPicker() {
     [buckets],
   );
 
+  // Global search: when q is set with no active category, search across ALL.
+  const globalSearchList = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term || active) return [];
+    const rank = (p: CollectionProduct) => {
+      const t = p.title.toLowerCase();
+      if (t === term) return 0;
+      if (t.startsWith(term)) return 1;
+      return 2;
+    };
+    return products
+      .filter((p) => p.title.toLowerCase().includes(term))
+      .sort((a, b) => rank(a) - rank(b) || a.title.localeCompare(b.title))
+      .slice(0, 60);
+  }, [products, q, active]);
+
   const activeList = useMemo(() => {
     if (!active) return [];
     const base = buckets.get(active) ?? [];
     const term = q.trim().toLowerCase();
 
     if (term) {
-      // Search-rank trumps sort while a query is active — mirrors /collection.
       const rank = (p: CollectionProduct) => {
         const t = p.title.toLowerCase();
         if (t === term) return 0;
@@ -86,7 +101,7 @@ export function CollectionPicker() {
   return (
     <div>
       {/* Pinned count + back row */}
-      <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 mb-5">
+      <div className="flex items-center justify-between border-b border-charcoal/10 pb-3 mb-4">
         {active ? (
           <button
             type="button"
@@ -108,9 +123,44 @@ export function CollectionPicker() {
         </span>
       </div>
 
-      {!active ? (
+      {/* Global search — always available, searches across all categories
+          when no category is active. */}
+      {!active && (
+        <input
+          type="search"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="SEARCH THE COLLECTION…"
+          className="w-full bg-transparent border-b border-charcoal/20 px-1 py-2 mb-4 text-[11px] uppercase tracking-[0.22em] placeholder:text-charcoal/35 focus:outline-none focus:border-charcoal/60"
+        />
+      )}
+
+      {!active && q.trim() ? (
+        // Global search results — render product grid directly
+        <div>
+          <div className="flex items-baseline justify-between gap-4 mb-3">
+            <h3 className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">
+              Results
+            </h3>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
+              {globalSearchList.length}
+            </span>
+          </div>
+          {globalSearchList.length === 0 ? (
+            <div className="py-16 text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+              No matches
+            </div>
+          ) : (
+            <ProductGrid
+              products={globalSearchList}
+              has={has}
+              toggle={toggle}
+            />
+          )}
+        </div>
+      ) : !active ? (
         // Level 1 — checker grid identical to /collection
-        <div className="h-[min(72vh,820px)]">
+        <div className="h-[min(60vh,720px)] md:h-[min(72vh,820px)]">
           <CategoryTonalGrid
             groups={groups}
             onSelectCategory={(id) => setActive(id)}
