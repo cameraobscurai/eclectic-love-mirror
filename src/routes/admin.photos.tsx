@@ -393,7 +393,7 @@ function CategoryGrid({
     setActiveId(null);
     // Reorder is disabled when filtered to a sub — we'd otherwise persist
     // a partial parent list.
-    if (subActive) return;
+    if (reorderDisabled) return;
     const { active, over } = e;
     if (!over || active.id === over.id) return;
     const oldIdx = items.findIndex((i) => i.id === active.id);
