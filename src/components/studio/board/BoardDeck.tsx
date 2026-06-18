@@ -191,7 +191,7 @@ function MoodHeroPage({
   meta: DeckMeta;
 }) {
   return (
-    <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen flex flex-col justify-center">
+    <div className="px-5 sm:px-6 lg:px-16 pt-20 pb-20 lg:pt-24 lg:pb-24 min-h-screen flex flex-col justify-center">
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-8">
         {meta.clientName}
       </p>
