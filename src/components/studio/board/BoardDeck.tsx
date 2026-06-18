@@ -163,7 +163,7 @@ function CoverPage({
       <div className="absolute bottom-16 left-12 right-12 flex items-end justify-between gap-12">
         <div>
           <p className="text-[10px] uppercase tracking-[0.4em] text-cream/70 mb-6">
-            Style Guide · For {meta.clientName}
+            Style Brief · For {meta.clientName}
           </p>
           <h1
             className="font-display text-cream leading-[0.95] tracking-tight max-w-[14ch]"
@@ -241,7 +241,7 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
   return (
     <div className="px-6 lg:px-16 pt-24 pb-24 min-h-screen">
       <p className="text-[10px] uppercase tracking-[0.4em] text-charcoal/45 mb-3">
-        Palette
+        Color Palette
       </p>
       <h2
         className="font-display tracking-tight mb-12 capitalize"

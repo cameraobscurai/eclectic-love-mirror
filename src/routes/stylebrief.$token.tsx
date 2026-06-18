@@ -8,7 +8,7 @@ export const Route = createFileRoute("/stylebrief/$token")({
     const name = loaderData?.client_name?.trim();
     return {
       meta: [
-        { title: name ? `Style Board for ${name} · Eclectic Hive` : "Your Style Board · Eclectic Hive" },
+        { title: name ? `Style Brief for ${name} · Eclectic Hive` : "Your Style Brief · Eclectic Hive" },
         { name: "robots", content: "noindex, nofollow" },
       ],
     };

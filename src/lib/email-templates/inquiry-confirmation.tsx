@@ -112,7 +112,7 @@ const footer = { fontSize: '10px', letterSpacing: '0.18em', color: '#1a1a1a80', 
 
 export const template = {
   component: InquiryConfirmation,
-  subject: 'We received your inquiry — Eclectic Hive',
+  subject: 'We received your style brief — Eclectic Hive',
   displayName: 'Inquiry Confirmation (submitter)',
   previewData: {
     name: 'Jane',

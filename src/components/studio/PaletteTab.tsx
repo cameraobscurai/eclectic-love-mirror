@@ -29,7 +29,7 @@ export function PaletteTab({ result }: { result: AnalysisResult }) {
   return (
     <div className="space-y-4">
       <div className="p-4 border-b border-charcoal/10">
-        <h3 className="text-[10px] uppercase tracking-[0.24em] text-charcoal/50 mb-3">Combined palette</h3>
+        <h3 className="text-[10px] uppercase tracking-[0.24em] text-charcoal/50 mb-3">Combined color palette</h3>
         <div className="flex h-12 overflow-hidden mb-3">
           {result.palette.map((c, i) => <Swatch key={i} color={c} />)}
         </div>

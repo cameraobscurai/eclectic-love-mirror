@@ -332,7 +332,7 @@ function StudioPage() {
       </nav>
       <form onSubmit={submit} className="px-6 lg:px-16 pb-24">
         {/* STEP 1 — INSPO */}
-        <Step n={1} title="Drop Inspiration">
+        <Step n={1} title="Drop Your Inspo Images">
           <input
             ref={fileInputRef}
             type="file"
@@ -379,9 +379,9 @@ function StudioPage() {
         </Step>
 
         {/* STEP 2 — BROWSE INVENTORY */}
-        <Step n={2} title="Browse The Collection">
+        <Step n={2} title="Browse Our Collection">
           <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-5 max-w-xl">
-            Pin pieces that fit your vision. Search by name, browse by category, or match by image.
+            Pin pieces that fit your vision. Search by name, browse our collection, or match by image.
           </p>
           <CollectionPicker />
         </Step>
@@ -395,7 +395,7 @@ function StudioPage() {
               ? `Pulling colors from your ${pinnedIds.length} pinned ${pinnedIds.length === 1 ? "piece" : "pieces"}.`
               : inspo.length > 0
               ? `Pulling colors from your ${inspo.length} inspiration ${inspo.length === 1 ? "image" : "images"}.`
-              : "Pin pieces above or drop inspiration images to generate a palette."}
+              : "Pin pieces above or drop your inspo images to generate a palette."}
           </p>
           <button
             type="button"
@@ -580,7 +580,7 @@ function StudioPage() {
             if (scope) rows.push({ label: "Scope", node: <span className="text-charcoal">{scope}</span> });
             if (budget) rows.push({ label: "Budget", node: <span className="text-charcoal">{budget}</span> });
             rows.push({
-              label: "References",
+              label: "Your Inspo Images",
               node: (
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-charcoal tabular-nums">{String(inspo.length).padStart(2, "0")}</span>
@@ -618,7 +618,7 @@ function StudioPage() {
               ),
             });
             rows.push({
-              label: "Palette",
+              label: "Color Palette",
               alignTop: true,
               node: (
                 <div>

@@ -193,7 +193,7 @@ const InquiryNotification = ({
 
         <Text style={footer}>
           Reply to this email to respond directly to {name}.
-          {inquiryId ? ` · Inquiry ID: ${inquiryId}` : ''}
+          {inquiryId ? ` · Request ID: ${inquiryId}` : ''}
         </Text>
       </Container>
     </Body>
