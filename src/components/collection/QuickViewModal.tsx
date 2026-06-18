@@ -378,7 +378,8 @@ export function QuickViewModal({
             <button
               type="button"
               onClick={async () => {
-                const url = `https://eclectichive.com/collection?view=${encodeURIComponent(String(product.id))}`;
+                const key = (product as { slug?: string }).slug || String(product.id);
+                const url = `https://eclectichive.com/collection?view=${encodeURIComponent(key)}`;
                 try {
                   await navigator.clipboard.writeText(url);
                   const { toast } = await import("sonner");
