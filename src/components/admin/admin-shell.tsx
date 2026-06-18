@@ -14,6 +14,7 @@ import {
   LogOut,
   ChevronRight,
   Sparkles,
+  PlusCircle,
 } from "lucide-react";
 import {
   Sidebar,
