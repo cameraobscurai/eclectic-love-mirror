@@ -388,7 +388,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id")
+      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name")
       .eq("share_token", data.token)
       .eq("status", "sent")
       .maybeSingle();
@@ -466,5 +466,7 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       pinned: items,
       client_name: inq?.name ?? "",
       cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
+      project_title: (board as unknown as { project_title?: string | null }).project_title ?? null,
+      prepared_by_name: (board as unknown as { prepared_by_name?: string | null }).prepared_by_name ?? null,
     } satisfies PublicStyleBoard;
   });
