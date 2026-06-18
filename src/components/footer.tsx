@@ -24,7 +24,7 @@ const META_CLASS = "footer-eyebrow text-cream/35";
 export function Footer() {
   return (
     <footer className="bg-charcoal text-cream border-t border-cream/10">
-      <div className="max-w-[1600px] mx-auto px-5 sm:px-6 lg:px-12 pt-12 sm:pt-20 lg:pt-24 pb-10 lg:pb-10">
+      <div className="max-w-[1600px] mx-auto px-6 sm:px-6 lg:px-12 pt-12 sm:pt-20 lg:pt-24 pb-10 lg:pb-10">
         {/* Mobile: brand block on top, then STUDIO+INFORMATION as a 2-col pair,
             then CONNECT full width. Desktop: 12-col with brand at left. */}
         <div className="grid grid-cols-2 md:grid-cols-12 gap-y-10 sm:gap-y-14 gap-x-6 sm:gap-x-8 md:gap-x-10">

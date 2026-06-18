@@ -130,7 +130,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     <div ref={containerRef} className={cn("relative w-full bg-paper", className)}>
       {/* Mobile (<md): poster-only strip, all 5 visible at once. No video
           mounts — tap a poster to open the lightbox. */}
-      <div className="md:hidden w-full flex gap-px px-3">
+      <div className="md:hidden w-full flex gap-px px-6">
         {clips.map((clip) => (
           <MobilePosterTile
             key={clip.id}
@@ -219,12 +219,12 @@ function MobilePosterTile({
         style={{ fontWeight: 400 }}
       >
         <span
-          className="text-[8px] tracking-[0.14em] text-charcoal/55"
+          className="text-[9px] tracking-[0.14em] text-charcoal/55"
           style={{ fontVariantNumeric: "tabular-nums" }}
         >
           {clip.id}
         </span>
-        <span className="text-[8.5px] uppercase tracking-[0.16em] truncate">
+        <span className="text-[10px] uppercase tracking-[0.16em] truncate">
           {clip.season}
         </span>
       </figcaption>
