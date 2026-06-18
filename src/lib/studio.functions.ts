@@ -354,7 +354,6 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       })).filter((i) => i.url),
       pinned: items,
       client_name: inq?.name ?? "",
-      cover_pinned_rms_id:
-        (board as unknown as { cover_pinned_rms_id?: string | null }).cover_pinned_rms_id ?? null,
+      cover_pinned_rms_id: board.cover_pinned_rms_id ?? null,
     } satisfies PublicStyleBoard;
   });
