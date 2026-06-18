@@ -73,7 +73,7 @@ export function CollectionPicker() {
           </button>
         ) : (
           <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/50">
-            Browse By Category
+            Browse our collection
           </span>
         )}
         <span className="text-[10px] uppercase tracking-[0.28em] text-charcoal/55 tabular-nums">
