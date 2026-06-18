@@ -13,6 +13,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   getInsights,
   updateInquiryOutcome,
+  deleteInquiries,
   type InsightsPayload,
   type InsightsInquiry,
   type InquiryStatus,
