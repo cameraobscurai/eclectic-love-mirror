@@ -511,6 +511,45 @@ function CategoryGrid({
         </div>
       </header>
 
+      {/* Sort selector — mirrors /collection's sort tabs so the admin grid
+          matches exactly what the public sees in each mode. Editorial is the
+          only editable mode (drag → writes editorialOrder). */}
+      <div className="mb-4 flex flex-wrap items-center gap-1 border-b border-charcoal/10 pb-3">
+        <span className="mr-3 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+          Sort
+        </span>
+        {SORT_MODES.map((opt) => {
+          const active = sortMode === opt.id;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onSortMode(opt.id)}
+              className={`px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] border-b transition-colors ${
+                active
+                  ? "text-charcoal border-charcoal"
+                  : "text-charcoal/55 hover:text-charcoal border-transparent"
+              }`}
+              title={
+                opt.id === "editorial"
+                  ? "Your drag-reorder (writes editorialOrder)"
+                  : `Public ${opt.label} sort — read-only mirror`
+              }
+            >
+              {opt.label}
+              {opt.id === "editorial" && (
+                <span className="ml-1.5 text-charcoal/35">●</span>
+              )}
+            </button>
+          );
+        })}
+        <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
+          {sortMode === "editorial"
+            ? "Editable · drag to reorder"
+            : "Read-only mirror of public sort"}
+        </span>
+      </div>
+
       {/* Subcategory rail — mirrors /collection's SubcategoryRail. */}
       {subs.length > 0 && (
         <div className="mb-6 flex flex-wrap gap-2">
@@ -530,7 +569,9 @@ function CategoryGrid({
           <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40 self-center">
             {subActive
               ? "Filtered view · clear sub to reorder"
-              : "Reorder writes the full parent list"}
+              : sortMode !== "editorial"
+                ? "Switch to Editorial sort to reorder"
+                : "Reorder writes the full parent list"}
           </span>
 
         </div>
