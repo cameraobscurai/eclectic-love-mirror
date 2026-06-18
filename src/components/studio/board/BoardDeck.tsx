@@ -3,13 +3,13 @@ import { useMemo, useRef, useState } from "react";
 import type { PublicStyleBoard, PublicPinnedItem } from "@/lib/studio.functions";
 import {
   buildPages,
-  spansFor,
   deriveProjectTitle,
   countWord,
   type DeckPage,
   type DeckMeta,
   type PaletteSwatch,
 } from "@/lib/board-deck";
+
 import { downloadDeckPDF } from "@/lib/board-export";
 
 interface BoardDeckProps {
@@ -323,7 +323,6 @@ function SectionDividerPage({
 
 function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production" }> }) {
   const items = page.items;
-  const spans = spansFor(items.length);
   const note = page.note;
 
   return (
@@ -347,44 +346,36 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
           {note}
         </p>
       )}
-      <div
-        className="grid grid-cols-12 gap-3 lg:gap-4"
-        style={{ gridAutoRows: "160px" }}
-      >
-        {items.map((item: PublicPinnedItem, idx: number) => {
-          const span = spans[idx] ?? { col: "col-span-3", row: "row-span-1" };
-          return (
-            <figure
-              key={item.id}
-              className={`${span.col} ${span.row} flex flex-col gap-2 min-h-0`}
-            >
-              <div className="flex-1 bg-charcoal/5 overflow-hidden min-h-0">
-                {item.image_url && (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                )}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 lg:gap-4">
+        {items.map((item: PublicPinnedItem) => (
+          <figure key={item.id} className="flex flex-col gap-2">
+            <div className="aspect-square bg-charcoal/5 overflow-hidden">
+              {item.image_url && (
+                <img
+                  src={item.image_url}
+                  alt={item.title}
+                  loading="lazy"
+                  className="w-full h-full object-contain p-3"
+                />
+              )}
+            </div>
+            <figcaption className="space-y-0.5">
+              <div className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 truncate">
+                {item.title}
               </div>
-              <figcaption className="space-y-0.5">
-                <div className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 truncate">
-                  {item.title}
+              {item.note && (
+                <div className="text-[10px] font-display italic text-charcoal/55 leading-snug line-clamp-2">
+                  {item.note}
                 </div>
-                {item.note && (
-                  <div className="text-[10px] font-display italic text-charcoal/55 leading-snug line-clamp-2">
-                    {item.note}
-                  </div>
-                )}
-              </figcaption>
-            </figure>
-          );
-        })}
+              )}
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </div>
   );
 }
+
 
 // ---- Closing -------------------------------------------------------------
 
