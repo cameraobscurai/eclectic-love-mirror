@@ -3,11 +3,9 @@ import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Inbox,
-  BarChart3,
   ImageIcon,
   Images,
   ScanEye,
-  Palette,
   Upload,
   Link2,
   ExternalLink,
