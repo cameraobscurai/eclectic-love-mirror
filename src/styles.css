@@ -193,10 +193,6 @@
   }
 }
 
-  .atelier-hero-copy {
-    position: static;
-  }
-}
 
 /* Collection product grid contract:
  * mobile = 2-up, tablet/desktop = 3-up, never wider. Keep this centralized so
