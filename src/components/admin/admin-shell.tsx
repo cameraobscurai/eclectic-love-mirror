@@ -70,10 +70,12 @@ const INVENTORY: NavItem[] = [
 // sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
 // /admin/colors.
 
+const LIVE_ORIGIN = "https://eclectichive.com";
+
 const SITE: NavItem[] = [
-  { to: "/", label: "View live site", icon: ExternalLink, external: true },
-  { to: "/collection", label: "Collection", icon: ScanEye, external: true },
-  { to: "/contact", label: "Contact form", icon: Link2, external: true },
+  { to: `${LIVE_ORIGIN}/`, label: "View live site", icon: ExternalLink, external: true },
+  { to: `${LIVE_ORIGIN}/collection`, label: "Collection", icon: ScanEye, external: true },
+  { to: `${LIVE_ORIGIN}/contact`, label: "Contact form", icon: Link2, external: true },
 ];
 
 // Crumb labels keyed off the path. Falls back to last segment if missing.
