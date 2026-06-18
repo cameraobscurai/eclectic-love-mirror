@@ -109,7 +109,7 @@ const InquiryNotification = ({
                   {palette.map((hex, i) => (
                     <td
                       key={`${hex}-${i}`}
-                      bgcolor={hex}
+                      {...({ bgcolor: hex } as any)}
                       width="44"
                       height="44"
                       style={{ backgroundColor: hex, width: '44px', height: '44px', border: '1px solid #1a1a1a14' }}
