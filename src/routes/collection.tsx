@@ -571,8 +571,15 @@ function CollectionPage() {
       // Snapshot the active element (the tile button) for focus return.
       openerRef.current = document.activeElement as HTMLElement | null;
     }
+    // Prefer the product's human-readable slug in the URL — `?view=auset-linen-banquette`
+    // reads better than `?view=3190`. The matcher below already accepts either.
+    let key = id;
+    if (id) {
+      const hit = products.find((p) => p.id === id || p.slug === id);
+      if (hit?.slug) key = hit.slug;
+    }
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, view: id ?? "" }),
+      search: (prev: CollectionSearch) => ({ ...prev, view: key ?? "" }),
       // Opening pushes a history entry so the back button closes the modal.
       // Closing REPLACES that entry so the back button leaves the page
       // entirely instead of reopening the modal (open→close→back = ghost).
