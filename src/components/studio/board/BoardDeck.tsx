@@ -251,12 +251,12 @@ function PalettePage({ page }: { page: Extract<DeckPage, { kind: "palette" }> })
         {countWord(page.swatches.length)} {page.swatches.length === 1 ? "tone" : "tones"}
       </h2>
       <div
-        className="grid gap-3 sm:gap-4"
+        className="grid gap-3 sm:gap-4 grid-cols-[repeat(var(--swatch-cols-sm),minmax(0,1fr))] lg:grid-cols-[repeat(var(--swatch-cols-lg),minmax(0,1fr))]"
         style={{
-          gridTemplateColumns: `repeat(${Math.min(page.swatches.length, 4)}, minmax(0, 1fr))`,
+          ["--swatch-cols-sm" as string]: String(Math.min(page.swatches.length, 4)),
+          ["--swatch-cols-lg" as string]: String(Math.min(page.swatches.length, 7)),
         }}
       >
-        {/* desktop override via inline media query not possible; use CSS var fallback */}
         {page.swatches.map((s: PaletteSwatch, i) => (
           <div key={i} className="space-y-3">
             <div
