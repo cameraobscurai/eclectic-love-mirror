@@ -385,7 +385,7 @@ function ProductionPage({ page }: { page: Extract<DeckPage, { kind: "production"
 function ClosingPage({ page, meta }: { page: Extract<DeckPage, { kind: "closing" }>; meta: DeckMeta }) {
   const sender = meta.preparedBy && meta.preparedBy !== "The Studio" ? meta.preparedBy : "the studio";
   return (
-    <div className="px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
+    <div className="px-5 sm:px-6 lg:px-16 min-h-screen flex flex-col items-center justify-center text-center">
       <div
         className="font-display tracking-[0.06em] uppercase text-cream"
         style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
