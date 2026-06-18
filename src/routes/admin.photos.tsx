@@ -211,6 +211,8 @@ function CategoryGrid({
   parent,
   sub,
   onSub,
+  sortMode,
+  onSortMode,
   view,
   onView,
   allProducts,
@@ -218,27 +220,36 @@ function CategoryGrid({
   parent: ParentId;
   sub: string;
   onSub: (s: string) => void;
+  sortMode: SortMode;
+  onSortMode: (m: SortMode) => void;
   view: "grid" | "wall";
   onView: (v: "grid" | "wall") => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
 
-  // Source items for this parent (and optional sub).
-  // Use the SAME classifier the front-end uses for sub filtering.
+  // Source items for this parent. Mirrors /collection so the admin shows
+  // exactly what visitors see in each sort mode.
+  //   - editorial → editorialOrder (drag-reorder writes this back)
+  //   - type/az/tonal → same sortProductsForCollection() the public grid uses
   const baseItems = useMemo<Item[]>(() => {
     if (!allProducts) return [];
     const inParent = allProducts.filter((p) => productParent(p) === parent);
-    // Sort by editorialOrder (admin drag-order = site display order). Falls
-    // back to ownerSiteRank for parents that haven't been editorial-ranked yet.
-    inParent.sort((a, b) => {
-      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
-      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
-      if (ar !== br) return ar - br;
-      return a.title.localeCompare(b.title);
+    if (sortMode === "editorial") {
+      inParent.sort((a, b) => {
+        const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
+        const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
+        if (ar !== br) return ar - br;
+        return a.title.localeCompare(b.title);
+      });
+      return inParent.map(adapt);
+    }
+    const sorted = sortProductsForCollection(inParent, {
+      mode: sortMode === "az" ? "az" : sortMode === "tonal" ? "tonal" : "by-type",
+      activeGroup: parent as never,
     });
-    return inParent.map(adapt);
-  }, [allProducts, parent]);
+    return sorted.map(adapt);
+  }, [allProducts, parent, sortMode]);
 
   // Local items state so drag-reorder feels instant. Holds the FULL parent
   // list — the sub filter is purely a display filter (see `visibleItems`).
