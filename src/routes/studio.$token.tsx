@@ -4,7 +4,7 @@ import { getStyleBoardByToken, type PublicStyleBoard } from "@/lib/studio.functi
 import { BoardDeck } from "@/components/studio/board/BoardDeck";
 
 export const Route = createFileRoute("/studio/$token")({
-  head: ({ loaderData }) => {
+  head: ({ loaderData }: { loaderData?: PublicStyleBoard }) => {
     const name = loaderData?.client_name?.trim();
     return {
       meta: [
