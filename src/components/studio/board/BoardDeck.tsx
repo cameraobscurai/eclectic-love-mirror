@@ -83,13 +83,15 @@ export function BoardDeck({ board, preview = false }: BoardDeckProps) {
 function PageChrome({ pageNum, total, meta }: { pageNum: number; total: number; meta: DeckMeta }) {
   return (
     <>
-      <div className="absolute bottom-6 left-12 right-12 flex items-center justify-between text-[9px] uppercase tracking-[0.32em] text-charcoal/45 pointer-events-none z-10">
-        <span>
+      <div className="absolute bottom-4 left-5 right-5 lg:bottom-6 lg:left-12 lg:right-12 flex items-center justify-between gap-4 text-[8px] lg:text-[9px] uppercase tracking-[0.24em] lg:tracking-[0.32em] text-charcoal/45 pointer-events-none z-10">
+        <span className="truncate min-w-0">
           <span className="text-charcoal/70">Eclectic Hive</span>
-          {meta.preparedBy && <> · Prepared by {meta.preparedBy}</>}
-          {meta.clientName && <> · For {meta.clientName}</>}
+          <span className="hidden sm:inline">
+            {meta.preparedBy && <> · Prepared by {meta.preparedBy}</>}
+            {meta.clientName && <> · For {meta.clientName}</>}
+          </span>
         </span>
-        <span className="font-mono tabular-nums">
+        <span className="font-mono tabular-nums shrink-0">
           {String(pageNum).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
       </div>
