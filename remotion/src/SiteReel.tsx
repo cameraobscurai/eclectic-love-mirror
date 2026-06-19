@@ -176,10 +176,10 @@ const S03GridConstruct: React.FC = () => {
   const opacity = easeRange(frame, [0, 18], [0, 1]);
   const exit = easeRange(frame, [120, 140], [1, 0]);
   // 12-col guide + 6-row guide, all draw L→R / T→B
-  const colDraw = easeRange(frame, [10, 50], [0, 1]);
-  const rowDraw = easeRange(frame, [35, 75], [0, 1]);
-  const labelOp = easeRange(frame, [60, 80], [0, 1]);
-  const tileSnap = easeRange(frame, [80, 110], [0, 1]);
+  const colDraw = easeRange(frame, [6, 28], [0, 1]);
+  const rowDraw = easeRange(frame, [18, 42], [0, 1]);
+  const labelOp = easeRange(frame, [44, 60], [0, 1]);
+  const tileSnap = easeRange(frame, [50, 90], [0, 1]);
   const cols = 6, rows = 4;
   return (
     <AbsoluteFill style={{ background: WHITE, opacity: opacity * exit }}>
@@ -212,11 +212,11 @@ const S03GridConstruct: React.FC = () => {
             transform: `scaleX(${rowDraw})`,
           }} />
         ))}
-        {/* Tile snap-in previews */}
+        {/* Tile snap-in previews — square cells, normalized silhouette */}
         {Array.from({ length: cols * rows }).map((_, i) => {
           const r = Math.floor(i / cols), c = i % cols;
-          const delay = (r * cols + c) * 1.2;
-          const tp = easeRange(frame, [80 + delay, 100 + delay], [0, 1]);
+          const delay = (r * cols + c) * 0.8;
+          const tp = easeRange(frame, [50 + delay, 70 + delay], [0, 1]);
           const tile = manifest.tiles[i];
           if (!tile) return null;
           return (
@@ -226,11 +226,16 @@ const S03GridConstruct: React.FC = () => {
               left: `${(c / cols) * 100}%`,
               width: `${100 / cols}%`,
               height: `${100 / rows}%`,
-              padding: 8,
+              padding: 10,
               opacity: tp,
               transform: `translateY(${(1 - tp) * 6}px)`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}>
-              <Img src={staticFile(tile.file)} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+              <div style={{ width: "78%", height: "78%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Img src={staticFile(tile.file)} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+              </div>
             </div>
           );
         })}
@@ -248,77 +253,91 @@ const S03GridConstruct: React.FC = () => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────
-// S04 — ARCHIVE WIDE (full grid, 10 cols × ~10 rows = 100 tiles)
+// S04 — ARCHIVE WIDE (12 × 7 = 84 tiles, perfectly square normalized cards)
 // ─────────────────────────────────────────────────────────────────────────
-// Pre-compute the tile layout once so it stays stable across S04 → S05 → S06
-const GRID_COLS = 10;
-const GRID_ROWS = 10;
+const GRID_COLS = 12;
+const GRID_ROWS = 7;
 const GRID_TILES = manifest.tiles.slice(0, GRID_COLS * GRID_ROWS);
-// Track a target match-cut tile for S06: pick the first seating product
-const MATCH_TILE_IDX = GRID_TILES.findIndex((t) => t.category === "seating") || 0;
+// Match-cut target for S06: first seating product
+const MATCH_TILE_IDX = Math.max(0, GRID_TILES.findIndex((t) => t.category === "seating"));
 const MATCH_TILE = GRID_TILES[MATCH_TILE_IDX];
 
 const ArchiveGrid: React.FC<{ progress: number; tonalProgress: number }> = ({ progress, tonalProgress }) => {
-  // Tonal-sort target rank for textiles
+  // Tonal sort target: textiles ordered light → dark
   const textiles = GRID_TILES
     .map((t, i) => ({ t, i }))
     .filter(({ t }) => t.category === "pillows-throws" && t.colorHex)
-    .sort((a, b) => (a.t.colorLightness ?? 0) - (b.t.colorLightness ?? 0))
-    .reverse(); // light → dark
-  const textilePosMap = new Map<number, number>(
-    textiles.map(({ i }, idx) => [i, idx])
-  );
+    .sort((a, b) => (b.t.colorLightness ?? 0) - (a.t.colorLightness ?? 0));
+  const textilePosMap = new Map<number, number>(textiles.map(({ i }, idx) => [i, idx]));
+  // Sort scene lays textiles across a middle row in tonal order
+  const sortedRow = Math.floor(GRID_ROWS / 2);
   return (
     <div style={{
       position: "absolute",
-      inset: "60px 80px 60px 80px",
+      inset: "56px 80px 56px 80px",
       display: "grid",
       gridTemplateColumns: `repeat(${GRID_COLS}, 1fr)`,
-      gridAutoRows: "1fr",
-      gap: 6,
+      gap: 4,
     }}>
       {GRID_TILES.map((tile, i) => {
-        // Staggered cascade entrance (S04)
         const r = Math.floor(i / GRID_COLS), c = i % GRID_COLS;
-        const delay = (r + c) * 0.6;
-        const enter = Math.max(0, Math.min(1, (progress * 80 - delay) / 20));
-        // Tonal sort: textiles rearrange to a sorted row
+        const delay = (r + c) * 0.5;
+        const enter = Math.max(0, Math.min(1, (progress * 90 - delay) / 22));
         let translateX = 0, translateY = 0;
         if (textilePosMap.has(i)) {
           const targetIdx = textilePosMap.get(i)!;
-          // place sorted textiles in row 4 (middle), spread across cols
-          const targetCol = (targetIdx / Math.max(1, textiles.length - 1)) * (GRID_COLS - 1);
-          const targetRow = 4;
-          const dx = (targetCol - c) * (100 / GRID_COLS);
-          const dy = (targetRow - r) * (100 / GRID_ROWS);
+          const targetCol = textiles.length <= 1 ? c : (targetIdx / (textiles.length - 1)) * (GRID_COLS - 1);
+          const dx = (targetCol - c) * (100 / 1);   // % of OWN width × cells
+          const dy = (sortedRow - r) * (100 / 1);
           translateX = dx * tonalProgress;
           translateY = dy * tonalProgress;
-        } else {
-          // non-textiles dim slightly during tonal sort
         }
-        const dim = textilePosMap.has(i) ? 1 : 1 - 0.5 * tonalProgress;
+        const dim = textilePosMap.has(i) ? 1 : 1 - 0.55 * tonalProgress;
+        const isMatch = i === MATCH_TILE_IDX;
         return (
           <div
             key={tile.slug}
-            data-tile-idx={i}
             style={{
               position: "relative",
+              aspectRatio: "1 / 1",
               opacity: enter * dim,
-              transform: `translate(${translateX}%, ${translateY}%) translateY(${(1 - enter) * 12}px)`,
-              transition: "none",
-              padding: 4,
-              background: WHITE,
-              outline: i === MATCH_TILE_IDX ? `1px solid rgba(26,26,26,${0.0 + 0.5 * tonalProgress})` : "none",
-              zIndex: textilePosMap.has(i) ? 5 : 1,
+              transform: `translate(${translateX}%, ${translateY}%) translateY(${(1 - enter) * 10}px)`,
+              background: "#f7f5f1",
+              outline: isMatch ? `1px solid rgba(26,26,26,${0.15 + 0.55 * tonalProgress})` : "1px solid rgba(26,26,26,0.04)",
+              outlineOffset: isMatch ? 1 : 0,
+              zIndex: textilePosMap.has(i) ? 5 : isMatch ? 4 : 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
             }}
           >
-            <Img src={staticFile(tile.file)} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            {/* Normalized silhouette box: every product occupies the same visual area */}
+            <div style={{
+              width: "78%",
+              height: "78%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              <Img
+                src={staticFile(tile.file)}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  width: "auto",
+                  height: "auto",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
           </div>
         );
       })}
     </div>
   );
 };
+
 
 const S04Archive: React.FC = () => {
   const frame = useCurrentFrame();
@@ -387,7 +406,19 @@ const S06Macro: React.FC = () => {
         transform: `scale(${scale})`,
         filter: `blur(${exitBlur}px)`,
       }}>
-        <Img src={staticFile(MATCH_TILE.file)} style={{ maxWidth: "62%", maxHeight: "72%", objectFit: "contain" }} />
+        {/* Normalized box so the silhouette truly fills frame */}
+        <div style={{
+          width: "62%",
+          height: "78%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <Img
+            src={staticFile(MATCH_TILE.file)}
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        </div>
       </div>
       <div style={{ position: "absolute", top: 56, left: 96, opacity: labelOp, ...labelStyle(10, "rgba(26,26,26,0.55)") }}>
         {MATCH_TILE.category.replace(/-/g, " ").toUpperCase()} · {String(MATCH_TILE_IDX + 1).padStart(3, "0")} / 625
@@ -582,7 +613,7 @@ const S11Brief: React.FC = () => {
           );
         })}
       </div>
-      <div style={{ position: "absolute", top: 200, left: 96, ...labelStyle(9, "rgba(26,26,26,0.45)") }}>
+      <div style={{ position: "absolute", top: 178, left: 96, zIndex: 5, background: WHITE, padding: "0 8px", ...labelStyle(9, "rgba(26,26,26,0.5)") }}>
         01 INSPO
       </div>
       {/* Palette */}
