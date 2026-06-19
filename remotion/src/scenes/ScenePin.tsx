@@ -1,68 +1,16 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
-import { COLORS } from "../theme";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
+import { COLORS, PRODUCTS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 03 — PIN. A 4×3 product grid. Tiles light up one by one with a small
-// check chip, evoking pinning pieces into the brief.
-type Tile = { label: string; tone: [string, string]; shape: "lounge" | "table" | "lamp" | "pillow" | "rug" };
-const GRID: Tile[] = [
-  { label: "AUSET LINEN BANQUETTE", tone: ["#e8e1d6", "#d4cdc4"], shape: "lounge" },
-  { label: "MARRAKECH RUG", tone: ["#6e3a2b", "#8a6a44"], shape: "rug" },
-  { label: "OLIVE BRANCH LAMP", tone: ["#3a342c", "#7a6a55"], shape: "lamp" },
-  { label: "DONAVER GLASS", tone: ["#d4cdc4", "#b8ad9f"], shape: "table" },
-  { label: "BOUCLÉ PILLOW", tone: ["#e8e1d6", "#c89c6a"], shape: "pillow" },
-  { label: "ADONIS BAR", tone: ["#1a1a1a", "#3a342c"], shape: "table" },
-  { label: "SAGE CANDLE", tone: ["#7a6a55", "#3a342c"], shape: "lamp" },
-  { label: "MIDAS FLATWARE", tone: ["#c89c6a", "#8a6a44"], shape: "table" },
-  { label: "FUR THROW", tone: ["#b8ad9f", "#e8e1d6"], shape: "pillow" },
-  { label: "AKOYA BOWL", tone: ["#e8e1d6", "#d4cdc4"], shape: "table" },
-  { label: "SAOL LANTERN", tone: ["#3a342c", "#6e3a2b"], shape: "lamp" },
-  { label: "CASA CARTA CHAIR", tone: ["#7a6a55", "#3a342c"], shape: "lounge" },
-];
+// SCENE 03 — PIN. Real catalog product tiles. Each lights up with a check chip
+// as a "pin" lands, mirroring the actual collection picker.
 
-// which tiles get "pinned" (checkmark) and in what order
-const PINS = [0, 1, 3, 5, 6, 9];
+// 3 × 4 grid built from real products (repeat to fill 12 cells)
+const GRID = Array.from({ length: 12 }, (_, i) => PRODUCTS[i % PRODUCTS.length]);
 
-function Pictogram({ shape, color }: { shape: Tile["shape"]; color: string }) {
-  const s = 56;
-  if (shape === "lounge")
-    return (
-      <svg width={s * 2} height={s} viewBox="0 0 112 56" fill="none">
-        <path d="M6 36 v-16 q0-10 10-10 h80 q10 0 10 10 v16" stroke={color} strokeWidth="1.5" />
-        <rect x="0" y="34" width="112" height="14" fill="none" stroke={color} strokeWidth="1.5" />
-      </svg>
-    );
-  if (shape === "table")
-    return (
-      <svg width={s * 2} height={s} viewBox="0 0 112 56" fill="none">
-        <rect x="6" y="20" width="100" height="6" stroke={color} strokeWidth="1.5" />
-        <line x1="16" y1="26" x2="16" y2="48" stroke={color} strokeWidth="1.5" />
-        <line x1="96" y1="26" x2="96" y2="48" stroke={color} strokeWidth="1.5" />
-      </svg>
-    );
-  if (shape === "lamp")
-    return (
-      <svg width={s} height={s} viewBox="0 0 56 56" fill="none">
-        <path d="M14 22 L42 22 L36 8 L20 8 Z" stroke={color} strokeWidth="1.5" />
-        <line x1="28" y1="22" x2="28" y2="48" stroke={color} strokeWidth="1.5" />
-        <line x1="18" y1="50" x2="38" y2="50" stroke={color} strokeWidth="1.5" />
-      </svg>
-    );
-  if (shape === "pillow")
-    return (
-      <svg width={s} height={s} viewBox="0 0 56 56" fill="none">
-        <rect x="8" y="14" width="40" height="28" rx="6" stroke={color} strokeWidth="1.5" />
-      </svg>
-    );
-  return (
-    <svg width={s * 2} height={s} viewBox="0 0 112 56" fill="none">
-      <rect x="6" y="8" width="100" height="40" stroke={color} strokeWidth="1.5" />
-      <line x1="6" y1="20" x2="106" y2="20" stroke={color} strokeWidth="1.2" opacity="0.6" />
-      <line x1="6" y1="36" x2="106" y2="36" stroke={color} strokeWidth="1.2" opacity="0.6" />
-    </svg>
-  );
-}
+// which tiles get pinned (matches the 6 unique products, in order)
+const PINS = [0, 1, 2, 3, 4, 5];
 
 export const ScenePin: React.FC = () => {
   const frame = useCurrentFrame();
@@ -73,7 +21,6 @@ export const ScenePin: React.FC = () => {
     <AbsoluteFill>
       <Chrome step={3} label="Pin the Pieces" />
 
-      {/* Headline strip top */}
       <div
         style={{
           position: "absolute",
@@ -83,34 +30,14 @@ export const ScenePin: React.FC = () => {
           transform: `translateY(${interpolate(headIn, [0, 1], [24, 0])}px)`,
         }}
       >
-        <div
-          style={{
-            color: COLORS.charcoal,
-            opacity: 0.55,
-            fontFamily: BODY,
-            fontSize: 12,
-            letterSpacing: "0.42em",
-            textTransform: "uppercase",
-            marginBottom: 18,
-          }}
-        >
+        <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 18 }}>
           Step Three
         </div>
-        <div
-          style={{
-            color: COLORS.charcoal,
-            fontFamily: DISPLAY,
-            fontSize: 96,
-            lineHeight: 0.95,
-            fontWeight: 300,
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 96, lineHeight: 0.95, fontWeight: 300, letterSpacing: "-0.01em" }}>
           Pin the pieces you <em style={{ fontStyle: "italic", fontWeight: 400 }}>want</em>.
         </div>
       </div>
 
-      {/* Grid 4 × 3 */}
       <div
         style={{
           position: "absolute",
@@ -119,7 +46,7 @@ export const ScenePin: React.FC = () => {
           bottom: 130,
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gridTemplateRows: "repeat(3, 160px)",
+          gridTemplateRows: "repeat(3, 180px)",
           gap: 18,
         }}
       >
@@ -131,30 +58,34 @@ export const ScenePin: React.FC = () => {
           const pinIdx = PINS.indexOf(i);
           const pinned = pinIdx >= 0;
           const pinAt = 80 + pinIdx * 12;
-          const pinSp = pinned
-            ? spring({ frame: frame - pinAt, fps, config: { damping: 14, stiffness: 160 } })
-            : 0;
+          const pinSp = pinned ? spring({ frame: frame - pinAt, fps, config: { damping: 14, stiffness: 160 } }) : 0;
           return (
             <div
               key={i}
               style={{
                 position: "relative",
-                background: `linear-gradient(135deg, ${t.tone[0]}, ${t.tone[1]})`,
+                background: COLORS.cream,
                 opacity: op,
                 transform: `translateY(${y}px)`,
                 border: `1px solid ${pinned && pinSp > 0.4 ? COLORS.charcoal : COLORS.charcoal + "22"}`,
                 boxShadow: pinned
-                  ? `0 0 0 ${pinSp * 2}px ${COLORS.charcoal}, 0 16px 40px -16px rgba(26,26,26,${
-                      0.3 + pinSp * 0.2
-                    })`
-                  : "0 12px 30px -16px rgba(26,26,26,0.25)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                  ? `0 0 0 ${pinSp * 2}px ${COLORS.charcoal}, 0 16px 40px -16px rgba(26,26,26,${0.3 + pinSp * 0.2})`
+                  : "0 12px 30px -16px rgba(26,26,26,0.2)",
+                overflow: "hidden",
               }}
             >
-              <Pictogram shape={t.shape} color={`${COLORS.charcoal}88`} />
-              {/* label strip */}
+              <Img
+                src={staticFile(t.src)}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  padding: 14,
+                  background: COLORS.cream,
+                }}
+              />
               <div
                 style={{
                   position: "absolute",
@@ -172,9 +103,8 @@ export const ScenePin: React.FC = () => {
                   textOverflow: "ellipsis",
                 }}
               >
-                {t.label}
+                {t.title}
               </div>
-              {/* pin badge */}
               {pinned && (
                 <div
                   style={{
@@ -201,7 +131,6 @@ export const ScenePin: React.FC = () => {
         })}
       </div>
 
-      {/* Pinned count chip — counts up as PINS land */}
       <div
         style={{
           position: "absolute",
@@ -215,20 +144,9 @@ export const ScenePin: React.FC = () => {
         }}
       >
         <div style={{ fontSize: 96, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-          {Math.min(PINS.length, Math.max(0, Math.floor((frame - 80) / 12) + 1))
-            .toString()
-            .padStart(2, "0")}
+          {Math.min(PINS.length, Math.max(0, Math.floor((frame - 80) / 12) + 1)).toString().padStart(2, "0")}
         </div>
-        <div
-          style={{
-            fontFamily: BODY,
-            fontSize: 11,
-            letterSpacing: "0.34em",
-            textTransform: "uppercase",
-            marginTop: 4,
-            opacity: 0.6,
-          }}
-        >
+        <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", marginTop: 4, opacity: 0.6 }}>
           Pinned
         </div>
       </div>
