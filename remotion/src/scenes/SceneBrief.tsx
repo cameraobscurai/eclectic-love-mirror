@@ -1,263 +1,153 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
-import { COLORS, REAL_PALETTE, PRODUCTS } from "../theme";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, Img, staticFile } from "remotion";
+import { COLORS, PRODUCTS, REAL_PALETTE, PAPER_TEXTURE } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 04 — BRIEF. The compiled document: title, specs, real palette,
-// pinned product thumbs, signature. Each row reveals in sequence.
+// SCENE 04 — THE BRIEF. A printed document drifts up onto cream. Paper grain
+// overlay on card. Broken hierarchy (display caps name, italic occasion at
+// 11pt, palette column offset). Pinned pieces render as proof-sheet strip.
+// Hold 90f. Outro: scale 1→0.97 + fade.
 
-const LINES: { label: string; value: string }[] = [
-  { label: "Client", value: "Hayes / Ridgeline Estate" },
-  { label: "Occasion", value: "Late-Summer Welcome Dinner" },
-  { label: "Guests", value: "64" },
-  { label: "Scope", value: "Full-service design + production" },
-  { label: "Mood", value: "Sand-washed, candle-warmed, low and long" },
-];
-
-function Reveal({ delay, children }: { delay: number; children: React.ReactNode }) {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const sp = spring({ frame: frame - delay, fps, config: { damping: 22, stiffness: 110 } });
-  return (
-    <div
-      style={{
-        opacity: sp,
-        transform: `translateY(${interpolate(sp, [0, 1], [16, 0])}px)`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+const SCENE_LEN = 170;
+const ENTER_END = 40;
+const OUTRO_START = SCENE_LEN - 24;
 
 export const SceneBrief: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const sheetIn = spring({ frame: frame - 2, fps, config: { damping: 22, stiffness: 90 } });
+  void fps;
+
+  const t = interpolate(frame, [0, ENTER_END], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const cardY = interpolate(t, [0, 1], [16, 0]);
+  const cardOp = interpolate(t, [0, 0.4, 1], [0, 0.6, 1]);
+
+  const outroT = interpolate(frame, [OUTRO_START, SCENE_LEN], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const outroScale = interpolate(outroT, [0, 1], [1, 0.97]);
+  const outroOp = interpolate(outroT, [0, 1], [1, 0]);
+
+  // Reveal sub-blocks
+  const titleOp = interpolate(frame, [18, 38], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const metaOp = interpolate(frame, [32, 52], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const paletteOp = interpolate(frame, [48, 68], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const stripOp = interpolate(frame, [62, 84], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ background: COLORS.paper }}>
       <Chrome step={4} label="Your Brief" />
 
-      {/* Document plate — off-white card */}
       <div
         style={{
           position: "absolute",
           left: "50%",
           top: "50%",
           width: 1280,
-          height: 760,
-          transform: `translate(-50%, calc(-50% + ${interpolate(sheetIn, [0, 1], [40, 0])}px))`,
-          opacity: sheetIn,
-          background: COLORS.cream,
-          boxShadow: "0 40px 100px -30px rgba(26,26,26,0.35), 0 12px 30px -12px rgba(26,26,26,0.2)",
+          minHeight: 800,
+          transform: `translate(-50%, calc(-50% + ${cardY}px)) scale(${outroScale})`,
+          transformOrigin: "center center",
+          opacity: cardOp * outroOp,
+          background: "#FBF7EE",
+          boxShadow: "0 40px 100px -30px rgba(26,26,26,0.35), 0 12px 30px -12px rgba(26,26,26,0.18)",
           padding: "72px 88px",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
-        {/* sheet header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-          <Reveal delay={8}>
-            <div
-              style={{
-                fontFamily: BODY,
-                fontSize: 11,
-                letterSpacing: "0.42em",
-                textTransform: "uppercase",
-                color: COLORS.charcoal,
-                opacity: 0.55,
-              }}
-            >
-              Style Brief · No. 0042
-            </div>
-          </Reveal>
-          <Reveal delay={10}>
-            <div
-              style={{
-                fontFamily: BODY,
-                fontSize: 11,
-                letterSpacing: "0.42em",
-                textTransform: "uppercase",
-                color: COLORS.charcoal,
-                opacity: 0.55,
-              }}
-            >
-              Prepared by Eclectic Hive
-            </div>
-          </Reveal>
-        </div>
-
+        {/* Paper grain overlay */}
         <div
           style={{
-            marginTop: 24,
-            height: 1,
-            background: `${COLORS.charcoal}33`,
-            transform: `scaleX(${interpolate(
-              spring({ frame: frame - 6, fps, config: { damping: 22, stiffness: 80 } }),
-              [0, 1],
-              [0, 1],
-            )})`,
-            transformOrigin: "left",
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${staticFile(PAPER_TEXTURE)})`,
+            backgroundSize: "cover",
+            opacity: 0.18,
+            mixBlendMode: "multiply",
+            pointerEvents: "none",
           }}
         />
 
-        {/* Title */}
-        <div style={{ marginTop: 36 }}>
-          <Reveal delay={14}>
-            <div
-              style={{
-                fontFamily: DISPLAY,
-                fontSize: 88,
-                lineHeight: 0.95,
-                fontWeight: 300,
-                color: COLORS.charcoal,
-                letterSpacing: "-0.01em",
-              }}
-            >
-              The <em style={{ fontStyle: "italic", fontWeight: 400 }}>Ridgeline</em>
-              <br />
-              Dinner.
-            </div>
-          </Reveal>
+        {/* Header rail */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 84 }}>
+          <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase" }}>
+            Style Brief · No. 0042
+          </div>
+          <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase" }}>
+            Prepared by Eclectic Hive
+          </div>
         </div>
 
-        {/* Spec list */}
-        <div
-          style={{
-            marginTop: 44,
-            display: "grid",
-            gridTemplateColumns: "180px 1fr",
-            rowGap: 14,
-            columnGap: 24,
-            color: COLORS.charcoal,
-          }}
-        >
-          {LINES.flatMap((l, i) => [
-            <Reveal key={`k-${l.label}`} delay={28 + i * 8}>
+        {/* Title (display caps tracked wide) */}
+        <div style={{ opacity: titleOp, marginBottom: 56 }}>
+          <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 96, lineHeight: 1.0, fontWeight: 300, letterSpacing: "-0.005em" }}>
+            The <em style={{ fontStyle: "italic", fontWeight: 400 }}>Ridgeline</em> Dinner.
+          </div>
+        </div>
+
+        {/* Meta rows — labels left-rail, values offset right */}
+        <div style={{ opacity: metaOp, display: "grid", gridTemplateColumns: "180px 1fr", rowGap: 18, columnGap: 40, marginBottom: 48 }}>
+          <Label>Client</Label>
+          <Value>Hayes / Ridgeline Estate</Value>
+          <Label>Occasion</Label>
+          <Value italic>Late-Summer Welcome Dinner</Value>
+          <Label>Guests</Label>
+          <Value>64</Value>
+          <Label>Scope</Label>
+          <Value>Full-service design + production</Value>
+          <Label>Mood</Label>
+          <Value italic>Sand-washed, candle-warmed, low and long</Value>
+        </div>
+
+        {/* Single rule line */}
+        <div style={{ height: 1, background: `${COLORS.charcoal}40`, marginBottom: 36, opacity: paletteOp }} />
+
+        {/* Palette row — offset slightly right of meta values */}
+        <div style={{ opacity: paletteOp, marginBottom: 44, paddingLeft: 40 }}>
+          <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 16 }}>
+            Palette
+          </div>
+          <div style={{ display: "flex", gap: 0 }}>
+            {REAL_PALETTE.map((sw, i) => (
+              <div key={i} style={{ width: 110, height: 44, background: sw.hex }} />
+            ))}
+          </div>
+        </div>
+
+        {/* Pinned pieces — proof-sheet strip */}
+        <div style={{ opacity: stripOp, paddingLeft: 40 }}>
+          <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 16 }}>
+            Pinned Pieces
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            {PRODUCTS.map((p, i) => (
               <div
+                key={i}
                 style={{
-                  fontFamily: BODY,
-                  fontSize: 11,
-                  letterSpacing: "0.34em",
-                  textTransform: "uppercase",
-                  opacity: 0.55,
-                  paddingTop: 6,
+                  width: 96,
+                  height: 96,
+                  background: COLORS.cream,
+                  border: `1px solid ${COLORS.charcoal}1a`,
+                  padding: 6,
+                  overflow: "hidden",
                 }}
               >
-                {l.label}
+                <Img
+                  src={staticFile(p.src)}
+                  style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                />
               </div>
-            </Reveal>,
-            <Reveal key={`v-${l.label}`} delay={30 + i * 8}>
-              <div style={{ fontFamily: DISPLAY, fontSize: 26, fontWeight: 400 }}>{l.value}</div>
-            </Reveal>,
-          ])}
+            ))}
+          </div>
         </div>
-
-        {/* Palette band */}
-        <Reveal delay={84}>
-          <div style={{ marginTop: 44 }}>
-            <div
-              style={{
-                fontFamily: BODY,
-                fontSize: 11,
-                letterSpacing: "0.34em",
-                textTransform: "uppercase",
-                opacity: 0.55,
-                marginBottom: 12,
-                color: COLORS.charcoal,
-              }}
-            >
-              Palette
-            </div>
-            <div style={{ display: "flex", gap: 6, height: 44 }}>
-              {REAL_PALETTE.map((hex, i) => {
-                const sp = spring({ frame: frame - (94 + i * 3), fps, config: { damping: 16, stiffness: 140 } });
-                return (
-                  <div
-                    key={hex}
-                    style={{
-                      flex: 1,
-                      background: hex,
-                      transform: `scaleY(${interpolate(sp, [0, 1], [0.2, 1])})`,
-                      transformOrigin: "top",
-                      opacity: interpolate(sp, [0, 1], [0, 1]),
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </Reveal>
-
-        {/* Pinned product thumbs — real catalog pieces */}
-        <Reveal delay={108}>
-          <div style={{ marginTop: 28 }}>
-            <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", opacity: 0.55, marginBottom: 12, color: COLORS.charcoal }}>
-              Pinned Pieces
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${PRODUCTS.length}, 1fr)`, gap: 10 }}>
-              {PRODUCTS.map((p, i) => {
-                const sp = spring({ frame: frame - (114 + i * 4), fps, config: { damping: 18, stiffness: 140 } });
-                return (
-                  <div
-                    key={p.src}
-                    style={{
-                      aspectRatio: "1 / 1",
-                      background: COLORS.cream,
-                      border: `1px solid ${COLORS.charcoal}22`,
-                      opacity: sp,
-                      transform: `translateY(${interpolate(sp, [0, 1], [12, 0])}px)`,
-                      overflow: "hidden",
-                      position: "relative",
-                    }}
-                  >
-                    <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 8 }} />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </Reveal>
-
-        {/* signature row */}
-        <Reveal delay={120}>
-          <div
-            style={{
-              marginTop: "auto",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
-              paddingTop: 24,
-              borderTop: `1px solid ${COLORS.charcoal}22`,
-            }}
-          >
-            <div
-              style={{
-                fontFamily: DISPLAY,
-                fontSize: 22,
-                fontStyle: "italic",
-                color: COLORS.charcoal,
-                opacity: 0.85,
-              }}
-            >
-              — the brief, ready to send
-            </div>
-            <div
-              style={{
-                fontFamily: BODY,
-                fontSize: 11,
-                letterSpacing: "0.34em",
-                textTransform: "uppercase",
-                color: COLORS.charcoal,
-                opacity: 0.55,
-              }}
-            >
-              06 Pinned Pieces
-            </div>
-          </div>
-        </Reveal>
       </div>
     </AbsoluteFill>
   );
 };
+
+const Label: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", paddingTop: 6 }}>
+    {children}
+  </div>
+);
+
+const Value: React.FC<{ children: React.ReactNode; italic?: boolean }> = ({ children, italic }) => (
+  <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: italic ? 26 : 28, fontWeight: 400, fontStyle: italic ? "italic" : "normal", lineHeight: 1.2 }}>
+    {children}
+  </div>
+);
