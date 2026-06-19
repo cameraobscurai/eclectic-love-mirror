@@ -64,8 +64,14 @@ export const SceneBrief: React.FC = () => {
   const cameraScale = interpolate(camProgress, [0, 1], [1.06, 1.0]);
   const cameraY = interpolate(camProgress, [0, 1], [-22, 0]);
 
+  // Lift outro — whole brief rises and fades while Send rises underneath
+  const liftP = interpolate(frame, [T_LIFT, SCENE_LEN], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.7, 0, 0.3, 1) });
+  const liftY = liftP * -80;
+  const liftScale = interpolate(liftP, [0, 1], [1, 0.965]);
+  const liftOp = interpolate(liftP, [0, 1], [1, 0]);
+
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ transform: `translateY(${liftY}px) scale(${liftScale})`, transformOrigin: "50% 40%", opacity: liftOp }}>
       <IndexCard
         step={4}
         label="Brief"
