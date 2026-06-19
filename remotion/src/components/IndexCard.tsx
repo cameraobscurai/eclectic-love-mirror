@@ -30,13 +30,13 @@ const STEP_TITLES: Record<number, string> = {
   5: "Sent.",
 };
 
-export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, chromeOpacity = 1, cameraScale = 1, cameraY = 0, cameraOriginY = 50, children }) => {
+export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, chromeOpacity = 1, cameraScale = 1, cameraY = 0, cameraOriginY = 50, noOutFade, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   // Soft fade in / out — the site doesn't bounce, it reveals.
   const inOp = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const outOp = interpolate(frame, [sceneLen - 18, sceneLen], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const outOp = noOutFade ? 1 : interpolate(frame, [sceneLen - 18, sceneLen], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const op = Math.min(inOp, outOp);
 
   // Title micro-rise (no scale — the site is calm).
