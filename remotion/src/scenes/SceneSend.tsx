@@ -28,8 +28,8 @@ export const SceneSend: React.FC = () => {
   // Chrome fade — STEP row dims as we push in
   const chromeOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 40], [1, 0.35], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // Vignette
-  const vigOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 50], [0, 0.18], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Vignette — stops at a composed 0.12, never goes black
+  const vigOp = interpolate(frame, [KENBURNS_AT, KENBURNS_AT + 50], [0, 0.12], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   // Button — pressed, then collapses into the checkmark/confirm
   const btnVisible = frame < CONFIRM_AT;
@@ -54,8 +54,10 @@ export const SceneSend: React.FC = () => {
   const tagOp = tagP * 0.78;
   const tagY = interpolate(tagP, [0, 1], [24, 0]);
 
-  // Palette ghost band rises in
-  const ghostOp = interpolate(frame, [SENT_AT + 8, SENT_AT + 40], [0, 0.09], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Palette ghost band — taller, more present, holds the final composition
+  const ghostOp = interpolate(frame, [SENT_AT + 8, SENT_AT + 40], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Closing wordmark + slug rise during the final hold
+  const closeP = interpolate(frame, [KENBURNS_AT + 30, KENBURNS_AT + 70], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
 
   // Underline under Sent.
   const ulP = interpolate(frame, [UNDERLINE_AT, UNDERLINE_AT + 24], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
@@ -197,14 +199,33 @@ export const SceneSend: React.FC = () => {
           A producer will reach out within one business day.
         </div>
 
-        {/* palette ghost band — brief's color DNA */}
+        {/* closing wordmark above the palette band */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0, right: 0, bottom: 168,
+            textAlign: "center",
+            color: COLORS.charcoal,
+            opacity: closeP * 0.85,
+            transform: `translateY(${(1 - closeP) * 12}px)`,
+          }}
+        >
+          <div style={{ fontFamily: BODY, fontSize: 13, letterSpacing: "0.42em", textTransform: "uppercase" }}>
+            Eclectic Hive
+          </div>
+          <div style={{ marginTop: 14, fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
+            /stylebrief
+          </div>
+        </div>
+
+        {/* palette ghost band — taller, the brief's color DNA holding the page */}
         <div
           style={{
             position: "absolute",
             left: 0, right: 0, bottom: 0,
             display: "grid",
             gridTemplateColumns: `repeat(${REAL_PALETTE.length}, 1fr)`,
-            height: 56,
+            height: 120,
             opacity: ghostOp,
           }}
         >

@@ -243,7 +243,7 @@ export const ScenePalette: React.FC = () => {
               >
                 {sw.hex}
               </div>
-              {/* italic name */}
+              {/* italic name + tiny source caption */}
               <div
                 style={{
                   position: "absolute",
@@ -259,6 +259,23 @@ export const ScenePalette: React.FC = () => {
                 }}
               >
                 {sw.name}
+              </div>
+              <div
+                style={{
+                  position: "absolute",
+                  left: i * SW_W,
+                  top: NAME_TOP + 24,
+                  width: SW_W,
+                  textAlign: "center",
+                  color: COLORS.charcoal,
+                  opacity: labelOp * 0.42,
+                  fontFamily: BODY,
+                  fontSize: 9,
+                  letterSpacing: "0.28em",
+                  textTransform: "uppercase",
+                }}
+              >
+                from {sw.from}
               </div>
             </div>
           );
