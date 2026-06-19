@@ -11,13 +11,13 @@ const SCENE_LEN = 186;
 const FIRST_LAND = 32;
 const STAGGER = 22;
 
-const DROPZONE_H = 380;
+const DROPZONE_H = 440;
 const DROPZONE_TOP = 0;
 
-const THUMB_GAP = 12;
+const THUMB_GAP = 14;
 const THUMB_COLS = 5;
 const THUMB_W = (INNER_W - (THUMB_COLS - 1) * THUMB_GAP) / THUMB_COLS;
-const THUMB_TOP = DROPZONE_TOP + DROPZONE_H + 40;
+const THUMB_TOP = DROPZONE_TOP + DROPZONE_H + 56;
 
 export const SceneDrop: React.FC = () => {
   const frame = useCurrentFrame();
