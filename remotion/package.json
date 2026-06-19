@@ -10,15 +10,22 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@react-three/postprocessing": "^3.0.4",
     "@remotion/bundler": "^4.0.481",
     "@remotion/cli": "^4.0.481",
     "@remotion/compositor-linux-x64-musl": "^4.0.481",
     "@remotion/google-fonts": "^4.0.481",
     "@remotion/renderer": "^4.0.481",
+    "@remotion/three": "^4.0.481",
     "@remotion/transitions": "^4.0.481",
     "@types/react": "^19.2.17",
+    "@types/three": "^0.184.1",
+    "postprocessing": "^6.39.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "remotion": "^4.0.481"
+    "remotion": "^4.0.481",
+    "three": "^0.184.0"
   }
 }
