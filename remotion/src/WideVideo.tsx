@@ -11,16 +11,20 @@ import { DISPLAY, BODY } from "./fonts";
 type Scene = {
   from: number;
   n: number;
-  verb: string;           // single word, never echoed inside the portrait piece
-  epigraph: string;       // short line — voice, not label
+  verb: string;           // anchored to the Atelier triad: Imagined · Designed · Realized
+  epigraph: string;       // editorial voice, never a label
 };
 
+// Voice locked to the Hive register (Saol/Casa Carta editorial). Imagined ·
+// Sourced · Composed · Designed · Realized — the Atelier triad expanded.
+// Rail flips lag StepStack slightly so Scene 4 (the brief) breathes before
+// the finale lands.
 const SCENES: Scene[] = [
-  { from: 0,   n: 1, verb: "Gather",  epigraph: "What you can't stop looking at." },
-  { from: 156, n: 2, verb: "Choose",  epigraph: "From the archive, into the room." },
-  { from: 342, n: 3, verb: "Distill", epigraph: "Color reduced to a chord." },
-  { from: 552, n: 4, verb: "Compose", epigraph: "One page. Everything in it." },
-  { from: 780, n: 5, verb: "Arrive",  epigraph: "Across the table, by morning." },
+  { from: 0,   n: 1, verb: "IMAGINED", epigraph: "What you can't stop looking at." },
+  { from: 171, n: 2, verb: "SOURCED",  epigraph: "From the archive, into the room." },
+  { from: 357, n: 3, verb: "COMPOSED", epigraph: "A palette, drawn from the image." },
+  { from: 567, n: 4, verb: "DESIGNED", epigraph: "One page. The whole room on it." },
+  { from: 870, n: 5, verb: "REALIZED", epigraph: "On its way to the Hive." },
 ];
 
 const PAGE_H = 1080;
@@ -159,28 +163,28 @@ export const WideVideo: React.FC = () => {
           transform: `translateY(${-breath}px)`,
         }}
       >
-        {/* Top: act label, not redundant */}
+        {/* Top: act label */}
         <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
           An act in five
         </div>
 
-        {/* Middle: VERB with masked reveal + hairline sweep + epigraph */}
+        {/* Middle: VERB (caps, Aesence/Prada register) + hairline sweep + epigraph */}
         <div style={{ maxWidth: SIDE_W - 192 }}>
           <div
             key={`verb-${active.n}`}
             style={{
               fontFamily: DISPLAY,
-              fontStyle: "italic",
-              fontSize: 92,
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
+              fontSize: 72,
+              lineHeight: 1.0,
+              letterSpacing: "0.04em",
               transform: `translateY(${verbY}px)`,
               clipPath: `inset(0 0 ${100 - verbReveal}% 0)`,
               WebkitClipPath: `inset(0 0 ${100 - verbReveal}% 0)`,
             }}
           >
-            {active.verb}.
+            {active.verb}
           </div>
+
 
           {/* hairline that sweeps in under the verb */}
           <div
