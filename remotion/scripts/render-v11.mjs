@@ -32,7 +32,7 @@ await renderMedia({
   outputLocation: out,
   puppeteerInstance: browser,
   muted: true,
-  concurrency: 1,
+  concurrency: 4,
   imageFormat: "jpeg",
   jpegQuality: 92,
   crf: 18,
