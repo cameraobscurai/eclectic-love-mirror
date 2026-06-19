@@ -42,6 +42,14 @@ export const RemotionRoot = () => (
       height={720}
     />
     <Composition
+      id="smoke-tex"
+      component={SmokeTex}
+      durationInFrames={30}
+      fps={30}
+      width={1280}
+      height={720}
+    />
+    <Composition
       id="onetake-v12"
       component={SiteReelV12}
       durationInFrames={1800}
