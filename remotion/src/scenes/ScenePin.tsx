@@ -3,14 +3,15 @@ import { COLORS, PRODUCTS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 03 — PIN. Real catalog product tiles. Each lights up with a check chip
-// as a "pin" lands, mirroring the actual collection picker.
+// SCENE 02 — PIN. The eight curated catalog pieces fill a 4×2 grid; each
+// lights up with a check chip as the client "pins" it. Mirrors the real
+// CollectionPicker behavior on /stylebrief.
 
-// 3 × 4 grid built from real products (repeat to fill 12 cells)
-const GRID = Array.from({ length: 12 }, (_, i) => PRODUCTS[i % PRODUCTS.length]);
+// One tile per real product, no repeats.
+const GRID = PRODUCTS;
 
-// which tiles get pinned (matches the 6 unique products, in order)
-const PINS = [0, 1, 2, 3, 4, 5];
+// All eight get pinned, staggered in selection order.
+const PINS = GRID.map((_, i) => i);
 
 export const ScenePin: React.FC = () => {
   const frame = useCurrentFrame();
