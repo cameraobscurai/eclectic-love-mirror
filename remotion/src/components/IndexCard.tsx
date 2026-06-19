@@ -25,7 +25,7 @@ const STEP_TITLES: Record<number, string> = {
   5: "Sent.",
 };
 
-export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, children }) => {
+export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -37,6 +37,10 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, ch
   // Title micro-rise (no scale — the site is calm).
   const titleSp = spring({ frame: frame - 2, fps, config: { damping: 28, stiffness: 110 } });
   const titleY = interpolate(titleSp, [0, 1], [12, 0]);
+
+  // When hideTitle, slide content up into the freed real-estate so the doc owns the page.
+  const contentTop = hideTitle ? STEP_TOP + 70 : CONTENT_TOP;
+  const contentHeight = CONTENT_BOTTOM - contentTop;
 
   return (
     <div style={{ position: "absolute", inset: 0, opacity: op }}>
@@ -59,56 +63,61 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, ch
         <span style={{ opacity: 0.45 }}>0{step} / 05 · {label}</span>
       </div>
 
-      {/* Big serif title — sized closer to the site (≈76px) */}
-      <div
-        style={{
-          position: "absolute",
-          left: GUTTER, right: GUTTER, top: TITLE_TOP,
-          color: COLORS.charcoal,
-          fontFamily: DISPLAY,
-          fontSize: 84,
-          fontWeight: 400,
-          lineHeight: 0.98,
-          letterSpacing: "-0.015em",
-          transform: `translateY(${titleY}px)`,
-        }}
-      >
-        {STEP_TITLES[step]}
-      </div>
+      {!hideTitle && (
+        <>
+          {/* Big serif title */}
+          <div
+            style={{
+              position: "absolute",
+              left: GUTTER, right: GUTTER, top: TITLE_TOP,
+              color: COLORS.charcoal,
+              fontFamily: DISPLAY,
+              fontSize: 84,
+              fontWeight: 400,
+              lineHeight: 0.98,
+              letterSpacing: "-0.015em",
+              transform: `translateY(${titleY}px)`,
+            }}
+          >
+            {STEP_TITLES[step]}
+          </div>
 
-      {/* Hairline rule */}
-      <div
-        style={{
-          position: "absolute",
-          left: GUTTER, right: GUTTER, top: RULE_TOP,
-          height: 1, background: COLORS.rule,
-        }}
-      />
+          {/* Hairline rule */}
+          <div
+            style={{
+              position: "absolute",
+              left: GUTTER, right: GUTTER, top: RULE_TOP,
+              height: 1, background: COLORS.rule,
+            }}
+          />
 
-      {/* italic helper line — sits well below the rule (more air) */}
-      <div
-        style={{
-          position: "absolute",
-          left: GUTTER, right: GUTTER, top: RULE_TOP + 28,
-          color: COLORS.charcoal,
-          opacity: 0.55,
-          fontFamily: DISPLAY,
-          fontStyle: "italic",
-          fontSize: 28,
-          fontWeight: 400,
-          letterSpacing: "0.005em",
-        }}
-      >
-        {subtitle}
-      </div>
+          {!hideSubtitle && (
+            <div
+              style={{
+                position: "absolute",
+                left: GUTTER, right: GUTTER, top: RULE_TOP + 28,
+                color: COLORS.charcoal,
+                opacity: 0.55,
+                fontFamily: DISPLAY,
+                fontStyle: "italic",
+                fontSize: 28,
+                fontWeight: 400,
+                letterSpacing: "0.005em",
+              }}
+            >
+              {subtitle}
+            </div>
+          )}
+        </>
+      )}
 
-      {/* CONTENT SLOT — relative box positioned where each scene draws */}
+      {/* CONTENT SLOT */}
       <div
         style={{
           position: "absolute",
-          left: GUTTER, top: CONTENT_TOP,
+          left: GUTTER, top: contentTop,
           width: CONTENT_W,
-          height: CONTENT_BOTTOM - CONTENT_TOP,
+          height: contentHeight,
         }}
       >
         {children}
