@@ -13,6 +13,11 @@ type Props = {
   sceneLen: number;
   hideTitle?: boolean;     // doc-owns-page mode: skip serif title + rule + italic subtitle
   hideSubtitle?: boolean;  // hide just the italic subtitle line
+  chromeOpacity?: number;  // fade the STEP row (0-1, default 1)
+  cameraScale?: number;    // scene-level zoom on inner content (default 1)
+  cameraY?: number;        // scene-level y offset (default 0)
+  cameraOriginY?: number;  // transform-origin Y % (default 50)
+  noOutFade?: boolean;     // skip end-of-scene fadeout (use for final scene)
   children: React.ReactNode;
 };
 
@@ -25,13 +30,13 @@ const STEP_TITLES: Record<number, string> = {
   5: "Sent.",
 };
 
-export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, children }) => {
+export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, chromeOpacity = 1, cameraScale = 1, cameraY = 0, cameraOriginY = 50, noOutFade, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   // Soft fade in / out — the site doesn't bounce, it reveals.
   const inOp = interpolate(frame, [0, 14], [0, 1], { extrapolateRight: "clamp" });
-  const outOp = interpolate(frame, [sceneLen - 18, sceneLen], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const outOp = noOutFade ? 1 : interpolate(frame, [sceneLen - 18, sceneLen], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const op = Math.min(inOp, outOp);
 
   // Title micro-rise (no scale — the site is calm).
@@ -56,7 +61,7 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hi
           letterSpacing: "0.36em",
           textTransform: "uppercase",
           fontWeight: 500,
-          opacity: 0.95,
+          opacity: 0.95 * chromeOpacity,
         }}
       >
         <span>Step · 0{step}</span>
@@ -118,6 +123,8 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hi
           left: GUTTER, top: contentTop,
           width: CONTENT_W,
           height: contentHeight,
+          transform: `translateY(${cameraY}px) scale(${cameraScale})`,
+          transformOrigin: `50% ${cameraOriginY}%`,
         }}
       >
         {children}
