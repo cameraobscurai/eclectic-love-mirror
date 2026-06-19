@@ -1,34 +1,33 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
-import { COLORS } from "../theme";
-import { DISPLAY } from "../fonts";
+import { COLORS, GUTTER } from "../theme";
+import { BODY } from "../fonts";
 
-// Minimal persistent header — wordmark only. The IndexCard carries step + label.
+// Persistent site masthead — matches the /stylebrief header band.
+// "STUDIO" micro label left, "ECLECTIC HIVE" tracked caps centered.
 export const Chrome: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
-  const inOp = interpolate(frame, [0, 24], [0, 1], { extrapolateRight: "clamp" });
+  const inOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
   const outOp = interpolate(frame, [durationInFrames - 18, durationInFrames], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const op = Math.min(inOp, outOp);
 
+  const labelStyle: React.CSSProperties = {
+    color: COLORS.charcoal,
+    fontFamily: BODY,
+    fontSize: 14,
+    letterSpacing: "0.32em",
+    textTransform: "uppercase",
+    fontWeight: 500,
+  };
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 90,
-        left: 0,
-        right: 0,
-        textAlign: "center",
-        opacity: op,
-        color: COLORS.charcoal,
-        fontFamily: DISPLAY,
-        fontSize: 28,
-        letterSpacing: "0.32em",
-        textTransform: "uppercase",
-        fontWeight: 400,
-        pointerEvents: "none",
-      }}
-    >
-      Eclectic&nbsp;Hive
+    <div style={{ position: "absolute", top: 90, left: GUTTER, right: GUTTER, opacity: op, pointerEvents: "none" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ ...labelStyle, opacity: 0.45 }}>STUDIO</span>
+        <span style={{ ...labelStyle, opacity: 0.95 }}>ECLECTIC HIVE</span>
+        <span style={{ ...labelStyle, opacity: 0.45 }}>STYLE BRIEF</span>
+      </div>
+      <div style={{ marginTop: 24, height: 1, background: COLORS.rule }} />
     </div>
   );
 };
