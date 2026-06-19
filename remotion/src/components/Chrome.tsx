@@ -1,4 +1,4 @@
-import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
+import { useCurrentFrame, interpolate } from "remotion";
 import { COLORS, GUTTER } from "../theme";
 import { BODY } from "../fonts";
 
