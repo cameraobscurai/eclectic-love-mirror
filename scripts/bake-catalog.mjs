@@ -182,9 +182,10 @@ const products = all.map((r, i) => {
     // displaces the cached copy the moment the row is touched, while
     // unchanged products keep using the browser cache.
     imagesVersion: r.updated_at ? Math.floor(new Date(r.updated_at).getTime() / 1000) : 0,
-    // Admin-curated manual_order (set via /admin/photos) takes precedence
-    // over the live-site owner_site_rank. Lower = earlier in category view.
-    ownerSiteRank: r.manual_order ?? r.owner_site_rank ?? null,
+    // editorial_order (DB, owner-curated via /admin/photos) is the canonical
+    // sort key — read at runtime by getDisplaySortRank. ownerSiteRank kept
+    // only as a tiebreak for items without editorial_order.
+    ownerSiteRank: r.owner_site_rank ?? null,
     colorHex: r.color_hex ?? null,
     colorHexSecondary: r.color_hex_secondary ?? null,
     colorLightness: r.color_lightness != null ? Number(r.color_lightness) : null,
