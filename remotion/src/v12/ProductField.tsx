@@ -61,7 +61,8 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ tile, index, fieldBuild, tonalSort, macroLock, exit }) => {
-  const texture = useTexture(staticFile(tile.file));
+  const texture = useRemotionTexture(staticFile(tile.file));
+  if (!texture) return null;
   // Preserve aspect ratio: most product PNGs are taller than wide
   const aspect = texture.image ? texture.image.width / texture.image.height : 1;
 
