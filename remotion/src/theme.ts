@@ -9,8 +9,6 @@ export const COLORS = {
   ember: "#8a6a44",
 } as const;
 
-// Palette extracted from the new inspo set — sorted lightest → darkest
-// with editorial names (not hex names) above each swatch.
 export type Swatch = { hex: string; name: string };
 export const REAL_PALETTE: Swatch[] = [
   { hex: "#FAF4DC", name: "Paper" },
@@ -23,28 +21,13 @@ export const REAL_PALETTE: Swatch[] = [
   { hex: "#543C23", name: "Cocoa" },
 ];
 
-// Inspiration set — diverse subjects: interior, textile macro, still life,
-// architecture, kilim flat-lay.
+// Real brand gallery photos
 export const INSPO = [
   "inspo/01-amangiri-dinner.jpg",
   "inspo/02-lynden-lounge.jpg",
   "inspo/03-dos-mas-tablescape.jpg",
   "inspo/04-brush-creek-sangeet.jpg",
   "inspo/05-brooke-hot-springs.jpg",
-];
-
-// Per-swatch origin coords (0-1) mapped to a source inspo image for the
-// "extract palette" sequence. Each swatch travels from a real pixel region
-// on a real image out to its final position.
-export const SWATCH_ORIGINS: { inspoIndex: 0 | 1; x: number; y: number }[] = [
-  { inspoIndex: 0, x: 0.50, y: 0.18 },  // Paper — sky/wall light
-  { inspoIndex: 1, x: 0.30, y: 0.60 },  // Linen — fabric mid-tone
-  { inspoIndex: 0, x: 0.30, y: 0.80 },  // Sand — floor stone
-  { inspoIndex: 1, x: 0.70, y: 0.55 },  // Driftwood — fabric shadow
-  { inspoIndex: 0, x: 0.65, y: 0.42 },  // Bronze — wall warmth
-  { inspoIndex: 1, x: 0.85, y: 0.30 },  // Amber — deep linen fold
-  { inspoIndex: 0, x: 0.20, y: 0.55 },  // Smoke — distant shadow
-  { inspoIndex: 1, x: 0.50, y: 0.85 },  // Cocoa — fabric deep
 ];
 
 // 8 curated catalog products across 8 different categories.
@@ -58,6 +41,21 @@ export const PRODUCTS: Product[] = [
   { src: "products/06-akoya-tableware.png",   title: "AKOYA TABLEWARE",             category: "Tableware" },
   { src: "products/07-amalia-votive.png",     title: "AMALIA SMOKE GLASS VOTIVE",   category: "Candlelight" },
   { src: "products/08-keitha-rug.png",        title: "KEITHA CHUNKY JUTE RUG",      category: "Rugs" },
+];
+
+// Each swatch is extracted from a DIFFERENT source — across inspo AND products.
+// asset: "inspo" or "product" + index. The Palette scene draws a hairline from
+// each source thumbnail in the constellation to the swatch's final position.
+export type SwatchOrigin = { kind: "inspo" | "product"; idx: number; x: number; y: number };
+export const SWATCH_ORIGINS: SwatchOrigin[] = [
+  { kind: "inspo",   idx: 0, x: 0.50, y: 0.20 }, // Paper      — Amangiri sky
+  { kind: "product", idx: 5, x: 0.55, y: 0.40 }, // Linen      — Akoya tableware
+  { kind: "inspo",   idx: 4, x: 0.30, y: 0.50 }, // Sand       — Brooke hot springs
+  { kind: "product", idx: 0, x: 0.50, y: 0.50 }, // Driftwood  — Lars table
+  { kind: "inspo",   idx: 1, x: 0.65, y: 0.45 }, // Bronze     — Lynden lounge
+  { kind: "inspo",   idx: 2, x: 0.55, y: 0.55 }, // Amber      — Dos Mas tablescape
+  { kind: "product", idx: 1, x: 0.50, y: 0.55 }, // Smoke      — Botond chandelier
+  { kind: "inspo",   idx: 3, x: 0.45, y: 0.65 }, // Cocoa      — Brush Creek sangeet
 ];
 
 export const PAPER_TEXTURE = "textures/paper-grain.jpg";
