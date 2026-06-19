@@ -12,19 +12,11 @@ import { SceneSend } from "./scenes/SceneSend";
 //   S1 INSPO       0   → 186
 //   S2 INVENTORY  156  → 372
 //   S3 PALETTE    342  → 582
-//   S4 BRIEF      552  → 900    (extended: assembly + ~4s composed hold)
-//   S5 DELIVERED  870  → 1110
-export const MainVideo: React.FC = () => {
-  return (
-    <AbsoluteFill>
-      <PaperBackground />
-      <Chrome />
-
-      <Sequence from={0}   durationInFrames={186}><SceneDrop /></Sequence>
-      <Sequence from={156} durationInFrames={216}><ScenePin /></Sequence>
-      <Sequence from={342} durationInFrames={240}><ScenePalette /></Sequence>
-      <Sequence from={552} durationInFrames={348}><SceneBrief /></Sequence>
-      <Sequence from={870} durationInFrames={240}><SceneSend /></Sequence>
+//   S4 BRIEF      552  → 912    (assembly + composed hold + 42f lift outro)
+//   S5 DELIVERED  858  → 1110   (rises under the lift for 54f overlap)
+...
+      <Sequence from={552} durationInFrames={360}><SceneBrief /></Sequence>
+      <Sequence from={858} durationInFrames={252}><SceneSend /></Sequence>
 
       <ActiveStep />
     </AbsoluteFill>
