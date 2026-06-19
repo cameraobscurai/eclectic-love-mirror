@@ -1,5 +1,5 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remotion";
-import { COLORS } from "./theme";
+import { COLORS } from "../theme";
 
 // Persistent paper backdrop — subtle warm wash that drifts across the entire
 // 24s timeline so the video never feels static between scenes.

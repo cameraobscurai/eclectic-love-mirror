@@ -1,6 +1,6 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
-import { COLORS } from "./theme";
-import { DISPLAY, BODY } from "./fonts";
+import { COLORS } from "../theme";
+import { DISPLAY, BODY } from "../fonts";
 
 // Persistent editorial chrome: top-left wordmark + top-right step counter +
 // bottom rule with running label. Fades in once at the very start and stays.
