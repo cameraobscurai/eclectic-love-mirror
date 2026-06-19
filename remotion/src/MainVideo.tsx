@@ -6,26 +6,22 @@ import { ScenePalette } from "./scenes/ScenePalette";
 import { SceneBrief } from "./scenes/SceneBrief";
 import { SceneSend } from "./scenes/SceneSend";
 
-// Per-scene timing with custom outros baked into each scene component:
-//   S1 Drop      0   → 150   (24f outro: scale 1→1.04 + fade)
-//   S2 Pin     126   → 296   (24f overlap with S1; 1f color bridge at end)
-//   S3 Palette 296   → 464   (amber bridge intro; white outro 30f)
-//   S4 Brief   446   → 616   (18f overlap with S3 white hold; 24f outro)
-//   S5 Send    592   → 760   (24f overlap with S4)
-//
-// Each scene self-animates its entry & exit (crossfades aren't enough — the
-// boundaries themselves are the editorial moment).
-
+// Story arc — 5 scenes, ~34s total.
+//   S1 DROP    0   → 186   (6.2s)  Drag inspo photos into upload zone.
+//   S2 PIN    162  → 372   (7.0s, 24f overlap)  Tap pieces from collection.
+//   S3 PALETTE 348 → 576   (7.6s, 24f overlap)  Extract from all 13 sources.
+//   S4 BRIEF  552  → 810   (8.6s, 24f overlap)  Auto-compose the document.
+//   S5 SEND   786  → 1020  (7.8s, 24f overlap)  Fly to inbox. Sent.
 export const MainVideo: React.FC = () => {
   return (
     <AbsoluteFill>
       <PaperBackground />
 
-      <Sequence from={0}   durationInFrames={150}><SceneDrop /></Sequence>
-      <Sequence from={126} durationInFrames={170}><ScenePin /></Sequence>
-      <Sequence from={296} durationInFrames={168}><ScenePalette /></Sequence>
-      <Sequence from={446} durationInFrames={170}><SceneBrief /></Sequence>
-      <Sequence from={592} durationInFrames={168}><SceneSend /></Sequence>
+      <Sequence from={0}   durationInFrames={186}><SceneDrop /></Sequence>
+      <Sequence from={162} durationInFrames={210}><ScenePin /></Sequence>
+      <Sequence from={348} durationInFrames={228}><ScenePalette /></Sequence>
+      <Sequence from={552} durationInFrames={258}><SceneBrief /></Sequence>
+      <Sequence from={786} durationInFrames={234}><SceneSend /></Sequence>
     </AbsoluteFill>
   );
 };
