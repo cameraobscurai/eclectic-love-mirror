@@ -1,10 +1,10 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
-import { COLORS, SAMPLE_PALETTE } from "../theme";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
+import { COLORS, REAL_PALETTE, PRODUCTS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 04 — BRIEF. An editorial document composes itself: client, scope,
-// palette band, pinned pieces, signature. Lines reveal one at a time.
+// SCENE 04 — BRIEF. The compiled document: title, specs, real palette,
+// pinned product thumbs, signature. Each row reveals in sequence.
 
 const LINES: { label: string; value: string }[] = [
   { label: "Client", value: "Hayes / Ridgeline Estate" },
@@ -171,12 +171,8 @@ export const SceneBrief: React.FC = () => {
               Palette
             </div>
             <div style={{ display: "flex", gap: 6, height: 44 }}>
-              {SAMPLE_PALETTE.map((hex, i) => {
-                const sp = spring({
-                  frame: frame - (94 + i * 3),
-                  fps,
-                  config: { damping: 16, stiffness: 140 },
-                });
+              {REAL_PALETTE.map((hex, i) => {
+                const sp = spring({ frame: frame - (94 + i * 3), fps, config: { damping: 16, stiffness: 140 } });
                 return (
                   <div
                     key={hex}
@@ -188,6 +184,36 @@ export const SceneBrief: React.FC = () => {
                       opacity: interpolate(sp, [0, 1], [0, 1]),
                     }}
                   />
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Pinned product thumbs — real catalog pieces */}
+        <Reveal delay={108}>
+          <div style={{ marginTop: 28 }}>
+            <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.34em", textTransform: "uppercase", opacity: 0.55, marginBottom: 12, color: COLORS.charcoal }}>
+              Pinned Pieces
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${PRODUCTS.length}, 1fr)`, gap: 10 }}>
+              {PRODUCTS.map((p, i) => {
+                const sp = spring({ frame: frame - (114 + i * 4), fps, config: { damping: 18, stiffness: 140 } });
+                return (
+                  <div
+                    key={p.src}
+                    style={{
+                      aspectRatio: "1 / 1",
+                      background: COLORS.cream,
+                      border: `1px solid ${COLORS.charcoal}22`,
+                      opacity: sp,
+                      transform: `translateY(${interpolate(sp, [0, 1], [12, 0])}px)`,
+                      overflow: "hidden",
+                      position: "relative",
+                    }}
+                  >
+                    <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 8 }} />
+                  </div>
                 );
               })}
             </div>
