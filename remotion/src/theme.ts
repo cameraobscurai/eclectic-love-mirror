@@ -12,16 +12,19 @@ export const COLORS = {
   micro: "rgba(26,26,26,0.45)",
 } as const;
 
-export type Swatch = { hex: string; name: string };
+export type Swatch = { hex: string; name: string; from: string };
+
+// Tones extracted from the actual inspo + product files. Each swatch is
+// traceable to a real image in the picker — palette as proof, not decoration.
 export const REAL_PALETTE: Swatch[] = [
-  { hex: "#FAF4DC", name: "Paper" },
-  { hex: "#E9D7B3", name: "Linen" },
-  { hex: "#D2B99B", name: "Sand" },
-  { hex: "#B6A28B", name: "Driftwood" },
-  { hex: "#997E63", name: "Bronze" },
-  { hex: "#A46539", name: "Amber" },
-  { hex: "#6B5745", name: "Smoke" },
-  { hex: "#543C23", name: "Cocoa" },
+  { hex: "#E2DED2", name: "Limestone",    from: "Amangiri"   },
+  { hex: "#D1BE9B", name: "Bleached Oak", from: "Lars"       },
+  { hex: "#C8A989", name: "Travertine",   from: "Tibur"      },
+  { hex: "#8B7562", name: "Cane",         from: "Fawn"       },
+  { hex: "#A13B22", name: "Clay Ember",   from: "Dos Mas"    },
+  { hex: "#6D7D96", name: "Blue Smoke",   from: "Lynden"     },
+  { hex: "#4B332C", name: "Walnut",       from: "Botond"     },
+  { hex: "#211E1A", name: "Char",         from: "Brooke"     },
 ];
 
 export const INSPO = [
@@ -44,16 +47,28 @@ export const PRODUCTS: Product[] = [
   { src: "products/08-keitha-rug.png",        title: "KEITHA CHUNKY JUTE RUG",      category: "Rugs" },
 ];
 
+// Tether origins per swatch: where the line is drawn FROM in Scene 3.
+// Each entry matches REAL_PALETTE index → its real source image.
 export type SwatchOrigin = { kind: "inspo" | "product"; idx: number; x: number; y: number };
 export const SWATCH_ORIGINS: SwatchOrigin[] = [
-  { kind: "inspo",   idx: 0, x: 0.50, y: 0.20 },
-  { kind: "product", idx: 5, x: 0.55, y: 0.40 },
-  { kind: "inspo",   idx: 4, x: 0.30, y: 0.50 },
-  { kind: "product", idx: 0, x: 0.50, y: 0.50 },
-  { kind: "inspo",   idx: 1, x: 0.65, y: 0.45 },
-  { kind: "inspo",   idx: 2, x: 0.55, y: 0.55 },
-  { kind: "product", idx: 1, x: 0.50, y: 0.55 },
-  { kind: "inspo",   idx: 3, x: 0.45, y: 0.65 },
+  { kind: "inspo",   idx: 0, x: 0.50, y: 0.30 },  // Limestone     ← Amangiri
+  { kind: "product", idx: 0, x: 0.50, y: 0.50 },  // Bleached Oak  ← Lars
+  { kind: "product", idx: 4, x: 0.50, y: 0.50 },  // Travertine    ← Tibur
+  { kind: "product", idx: 2, x: 0.50, y: 0.50 },  // Cane          ← Fawn
+  { kind: "inspo",   idx: 2, x: 0.50, y: 0.50 },  // Clay Ember    ← Dos Mas
+  { kind: "inspo",   idx: 1, x: 0.50, y: 0.50 },  // Blue Smoke    ← Lynden
+  { kind: "product", idx: 1, x: 0.50, y: 0.50 },  // Walnut        ← Botond
+  { kind: "inspo",   idx: 4, x: 0.50, y: 0.50 },  // Char          ← Brooke
+];
+
+// Per-scene accent tone used by the wide rail hairline.
+// Pulled from REAL_PALETTE so the rail is visibly tied to the palette.
+export const SCENE_ACCENT: string[] = [
+  "#6D7D96", // S1 Imagined  — Blue Smoke (inspo)
+  "#D1BE9B", // S2 Sourced   — Bleached Oak (product)
+  "#A13B22", // S3 Composed  — Clay Ember
+  "#4B332C", // S4 Designed  — Walnut
+  "#211E1A", // S5 Realized  — Char
 ];
 
 // Site canvas geometry (1080×1920 9:16).
