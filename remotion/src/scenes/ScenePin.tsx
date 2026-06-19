@@ -31,7 +31,7 @@ export const ScenePin: React.FC = () => {
         }}
       >
         <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 18 }}>
-          Step Three
+          Step Two
         </div>
         <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 96, lineHeight: 0.95, fontWeight: 300, letterSpacing: "-0.01em" }}>
           Pin the pieces you <em style={{ fontStyle: "italic", fontWeight: 400 }}>want</em>.

@@ -66,7 +66,7 @@ export const ScenePalette: React.FC = () => {
         }}
       >
         <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 28 }}>
-          Step Two
+          Step Three
         </div>
         <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 132, lineHeight: 0.95, fontWeight: 300, letterSpacing: "-0.01em" }}>
           Your<br />
