@@ -159,8 +159,10 @@ export function CollectionPicker() {
           )}
         </div>
       ) : !active ? (
-        // Level 1 — checker grid identical to /collection
-        <div className="h-[min(60vh,720px)] md:h-[min(72vh,820px)]">
+        // Level 1 — checker grid identical to /collection.
+        // Height auto so the 3-row grid (min 260px each) renders fully
+        // without overflowing into the next Step section below.
+        <div className="min-h-[420px] md:min-h-[600px]">
           <CategoryTonalGrid
             groups={groups}
             onSelectCategory={(id) => setActive(id)}
