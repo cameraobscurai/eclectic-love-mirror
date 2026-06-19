@@ -122,6 +122,8 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hi
           left: GUTTER, top: contentTop,
           width: CONTENT_W,
           height: contentHeight,
+          transform: `translateY(${cameraY}px) scale(${cameraScale})`,
+          transformOrigin: `50% ${cameraOriginY}%`,
         }}
       >
         {children}
