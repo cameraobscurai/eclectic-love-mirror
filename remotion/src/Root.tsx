@@ -5,6 +5,7 @@ import { SiteReel } from "./SiteReel";
 import { SmokeTest } from "./v12/SmokeTest";
 import { SmokeTex } from "./v12/SmokeTex";
 import { SiteReelV12 } from "./v12/SiteReelV12";
+import { MacroBeatA, MacroBeatB, MacroBeatC } from "./v12/MacroBeat";
 
 // v10 = stylebrief workflow. v11 = full-site reel. v12 = one-take 3D camera.
 export const RemotionRoot = () => (
@@ -48,6 +49,30 @@ export const RemotionRoot = () => (
       fps={30}
       width={1280}
       height={720}
+    />
+    <Composition
+      id="macro-beat-a"
+      component={MacroBeatA}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    <Composition
+      id="macro-beat-b"
+      component={MacroBeatB}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    <Composition
+      id="macro-beat-c"
+      component={MacroBeatC}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
     />
     <Composition
       id="onetake-v12"
