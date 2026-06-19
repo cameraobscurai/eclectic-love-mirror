@@ -133,8 +133,8 @@ export const SceneBrief: React.FC = () => {
             color: COLORS.charcoal,
           }}
         >
-          {LINES.map((l, i) => (
-            <Reveal key={l.label} delay={28 + i * 8}>
+          {LINES.flatMap((l, i) => [
+            <Reveal key={`k-${l.label}`} delay={28 + i * 8}>
               <div
                 style={{
                   fontFamily: BODY,
@@ -147,13 +147,11 @@ export const SceneBrief: React.FC = () => {
               >
                 {l.label}
               </div>
-            </Reveal>
-          ))}
-          {LINES.map((l, i) => (
+            </Reveal>,
             <Reveal key={`v-${l.label}`} delay={30 + i * 8}>
               <div style={{ fontFamily: DISPLAY, fontSize: 26, fontWeight: 400 }}>{l.value}</div>
-            </Reveal>
-          ))}
+            </Reveal>,
+          ])}
         </div>
 
         {/* Palette band */}
