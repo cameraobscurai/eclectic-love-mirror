@@ -13,6 +13,10 @@ type Props = {
   sceneLen: number;
   hideTitle?: boolean;     // doc-owns-page mode: skip serif title + rule + italic subtitle
   hideSubtitle?: boolean;  // hide just the italic subtitle line
+  chromeOpacity?: number;  // fade the STEP row (0-1, default 1)
+  cameraScale?: number;    // scene-level zoom on inner content (default 1)
+  cameraY?: number;        // scene-level y offset (default 0)
+  cameraOriginY?: number;  // transform-origin Y % (default 50)
   children: React.ReactNode;
 };
 
