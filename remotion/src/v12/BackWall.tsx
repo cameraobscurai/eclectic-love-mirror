@@ -1,14 +1,9 @@
 import React from "react";
 import { useCurrentFrame, staticFile } from "remotion";
 import * as THREE from "three";
-import { useVideoTexture } from "@remotion/three";
+import { useTexture } from "@react-three/drei";
 import manifest from "../v11-manifest.json";
 import { PHASE, easeIn } from "./camera-path";
-
-// Find a winter/seasonal home poster to use as a still wall fallback.
-// For now we use a still texture — the back wall plays the home reel as a poster image,
-// with subtle parallax. Video texture support is finicky in headless rendering so
-// we use a still image with Ken Burns to keep things deterministic and fast.
 
 // home is {poster02, poster03, poster04, poster05} — winter is poster05
 const POSTER_FILE = (manifest.home as Record<string, string>).poster05
@@ -16,8 +11,7 @@ const POSTER_FILE = (manifest.home as Record<string, string>).poster05
 
 export const BackWall: React.FC = () => {
   const frame = useCurrentFrame();
-  void useVideoTexture;
-  const texture = useTexture(staticFile(POSTER.file));
+  const texture = useTexture(staticFile(POSTER_FILE));
 
   // Wall is wide enough to fill camera FOV at Z = -28
   const W = 36;
