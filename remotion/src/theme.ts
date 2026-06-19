@@ -64,5 +64,5 @@ export const HEADER_TOP = 100;                 // wordmark band
 export const STEP_TOP = 220;                   // STEP 0X label
 export const TITLE_TOP = 268;                  // big serif title
 export const RULE_TOP = 400;                   // hairline under title
-export const CONTENT_TOP = 432;                // content starts
+export const CONTENT_TOP = 490;                // content starts (clear of subtitle)
 export const CONTENT_BOTTOM = 1720;            // above progress bar
