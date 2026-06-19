@@ -1,150 +1,90 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
 import { COLORS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 05 — SEND. A single deep editorial card: large statement, signature,
-// soft envelope motif sliding across the screen as the close.
+// SCENE 05 — SENT. "Sent." alone first, 30f silent hold, then tagline by
+// opacity only. Long 120f tail. No background motion.
+
 export const SceneSend: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
 
-  const titleIn = spring({ frame: frame - 6, fps, config: { damping: 22, stiffness: 90 } });
-  const subIn = spring({ frame: frame - 36, fps, config: { damping: 22, stiffness: 90 } });
-  const sigIn = spring({ frame: frame - 60, fps, config: { damping: 22, stiffness: 90 } });
-  const ruleIn = spring({ frame: frame - 24, fps, config: { damping: 22, stiffness: 80 } });
+  // "Sent." enters: opacity + slow +4px upward drift
+  const sentOp = interpolate(frame, [4, 24], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const sentY = interpolate(frame, [4, 24], [4, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // Envelope rule sweep
-  const sweep = interpolate(frame, [80, 150], [-200, 1200], { extrapolateRight: "clamp" });
+  // Tagline: opacity only, no movement, starts AFTER 30f hold
+  const taglineOp = interpolate(frame, [54, 78], [0, 0.85], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+
+  // Footer line + handle, even later
+  const footerOp = interpolate(frame, [72, 92], [0, 0.6], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ background: COLORS.paper, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <Chrome step={5} label="Sent" />
 
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-        }}
-      >
-        {/* tiny eyebrow */}
+      <div style={{ textAlign: "center", width: 1200 }}>
         <div
           style={{
-            opacity: interpolate(titleIn, [0, 1], [0, 0.55]),
+            color: COLORS.charcoal,
+            opacity: 0.55,
             fontFamily: BODY,
             fontSize: 12,
-            letterSpacing: "0.5em",
+            letterSpacing: "0.42em",
             textTransform: "uppercase",
-            color: COLORS.charcoal,
-            marginBottom: 36,
+            marginBottom: 32,
           }}
         >
           Step Five
         </div>
 
-        {/* primary statement */}
+        {/* SENT. — alone for 30f */}
         <div
           style={{
-            opacity: titleIn,
-            transform: `translateY(${interpolate(titleIn, [0, 1], [30, 0])}px)`,
-            fontFamily: DISPLAY,
-            fontSize: 180,
-            lineHeight: 0.92,
-            fontWeight: 300,
             color: COLORS.charcoal,
-            letterSpacing: "-0.015em",
+            fontFamily: DISPLAY,
+            fontSize: 220,
+            fontWeight: 300,
+            letterSpacing: "0.02em",
+            lineHeight: 1.0,
+            opacity: sentOp,
+            transform: `translateY(${sentY}px)`,
           }}
         >
           <em style={{ fontStyle: "italic", fontWeight: 400 }}>Sent.</em>
         </div>
 
-        {/* hairline sweep — acts as the "send" motion */}
+        {/* Tagline — opacity only, no movement */}
         <div
           style={{
-            marginTop: 48,
-            width: 720,
-            height: 1,
-            background: `${COLORS.charcoal}30`,
-            position: "relative",
-            transform: `scaleX(${ruleIn})`,
-            transformOrigin: "center",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: -3,
-              left: sweep,
-              width: 120,
-              height: 7,
-              background: COLORS.charcoal,
-              opacity: interpolate(frame, [80, 100, 150], [0, 1, 0]),
-            }}
-          />
-        </div>
-
-        {/* subline */}
-        <div
-          style={{
-            marginTop: 44,
-            opacity: subIn,
-            transform: `translateY(${interpolate(subIn, [0, 1], [16, 0])}px)`,
-            fontFamily: DISPLAY,
-            fontSize: 38,
-            fontStyle: "italic",
+            marginTop: 64,
             color: COLORS.charcoal,
-            opacity: subIn * 0.85,
-            maxWidth: 900,
+            fontFamily: DISPLAY,
+            fontSize: 36,
+            fontStyle: "italic",
+            fontWeight: 400,
+            opacity: taglineOp,
           }}
         >
           We'll be in touch within two business days.
         </div>
 
-        {/* signature row */}
+        {/* Footer mark */}
         <div
           style={{
-            marginTop: 64,
-            opacity: sigIn,
-            transform: `translateY(${interpolate(sigIn, [0, 1], [12, 0])}px)`,
+            marginTop: 96,
             display: "flex",
+            justifyContent: "center",
             alignItems: "center",
             gap: 28,
+            opacity: footerOp,
           }}
         >
-          <span
-            style={{
-              fontFamily: BODY,
-              fontSize: 11,
-              letterSpacing: "0.5em",
-              textTransform: "uppercase",
-              color: COLORS.charcoal,
-              opacity: 0.6,
-            }}
-          >
+          <span style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", color: COLORS.charcoal }}>
             Eclectic Hive
           </span>
-          <span
-            style={{
-              width: 50,
-              height: 1,
-              background: `${COLORS.charcoal}55`,
-            }}
-          />
-          <span
-            style={{
-              fontFamily: BODY,
-              fontSize: 11,
-              letterSpacing: "0.5em",
-              textTransform: "uppercase",
-              color: COLORS.charcoal,
-              opacity: 0.6,
-            }}
-          >
+          <span style={{ width: 60, height: 1, background: COLORS.charcoal, opacity: 0.5 }} />
+          <span style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", color: COLORS.charcoal }}>
             eclectichive.com / stylebrief
           </span>
         </div>

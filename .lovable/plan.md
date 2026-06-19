@@ -1,89 +1,101 @@
-# One Bulletproof Pass: Terminology + Style Brief Hardening
 
-Goal: ship the safe terminology consolidation AND lock in the style brief download/email work already started, in a single coordinated pass with no mass rewrites and no internal renames.
+# Style Brief Editorial Video — V2 Plan
 
-## Guardrails (non-negotiable)
+The current video is close but reads templated and rushed. Two subagents (stylist + motion director) audited it. The diagnosis is one sentence:
 
-- No internal renames. Component names, hooks, props, DB columns, table names, route param names, type names: untouched. Copy-only edits.
-- No `/collection` sort logic touched. "Tonal" sort mode stays.
-- "Tones" stays as brand DNA wherever it refers to the color concept on /collection and on tonal grids. Only the umbrella *label* changes in 2 spots.
-- "Pieces" stays in editorial/brand copy. Only swap where it reads awkwardly inside the style brief flow.
-- Admin sidebar "Inquiry" → DEFER. Flag for Adrienne. Do not change in this pass.
+> **Every scene cuts before it lands, and every product/photo was picked by position in an array — not by editorial instinct.**
 
-## Part 1 — Terminology (22 edits, 9 files)
+## The 3 Real Problems
 
-### Contact form + emails (highest visibility)
-- `src/routes/contact.tsx`
-  - L233 "Just received your last inquiry" → "...your last style brief request"
-  - L240 email subject "Inquiry" → "Style Brief Request"
-  - L471 "Every inquiry is personally reviewed" → "Every style brief request..."
-  - L478 "HAVE A VISION BOARD?" → "HAVE YOUR INSPO IMAGES?"
-  - L597 "...IN THE CATALOG" → "...IN OUR COLLECTION"
-  - L713 placeholder "INVENTORY REFERENCES" → "COLLECTION ITEMS"
-  - L750 button "SEND INQUIRY" → "SEND STYLE BRIEF REQUEST"
-  - L920 "YOUR INQUIRY IS WITH THE ATELIER" → "YOUR STYLE BRIEF REQUEST..."
-- `src/lib/email-templates/inquiry-notification.tsx` — "New inquiry"/"NEW INQUIRY"/"SELECTED PIECES"/"Inquiry ID"/"New Hive inquiry" → style brief request variants; keep "pieces" only where editorial. (Already partly touched in last pass — verify final strings.)
-- `src/lib/email-templates/inquiry-confirmation.tsx` — "received your inquiry"/"YOUR INQUIRY"/"PIECES SELECTED" → style brief request variants.
+1. **No hold time.** Each scene = 162f total, but the fade starts before the last element finishes animating. Need 30–120f of dead-still hold *after* the last element lands, before any transition begins.
+2. **Uniform fades.** 4 identical 18f fades = "PowerPoint with serif fonts." Each boundary needs its own logic.
+3. **Wrong picks + wrong treatment.** Currently re-using the same product images, the Cressida burgundy lamp and Alora floral chair fight the "sand-washed candle-warmed" mood, and the polaroid collage drops 5 cards on the same beat = robotic.
 
-### Style brief surface
-- `src/routes/stylebrief.index.tsx`
-  - L331 "browse by category" → "browse our collection"
-  - L345 "Pin pieces above" → "Select items from our collection"
-  - L459 placeholder "references" → "your inspo images"
-  - L469 "Pieces You Pinned" → "Items You've Selected"
-  - L530 label "References" → "Your Inspo Images"
-- `src/routes/stylebrief.$token.tsx` L11 "Style Board" → "Style Brief" (page title + heading)
-- `src/components/studio/board/BoardDeck.tsx`
-  - L167 cover "Style Guide" → "Style Brief"
-  - L244 "Palette" → "Color Palette"
-- `src/components/studio/PaletteTab.tsx` L32 "Combined palette" → "Combined color palette"
-- `src/components/studio/StyleBoardCanvas.tsx` L18 "Drop inspiration images" → "Drop your inspo images"
-- `src/components/studio/CollectionPicker.tsx` — "Browse By Category" → "Browse our collection" (already done last pass, verify)
+---
 
-### Explicitly NOT changing this pass
-- `admin.studio.tsx` "Inquiry" label (needs Adrienne)
-- All "pieces" on /collection (brand voice)
-- "Tones" on /collection or TonesTab (brand DNA)
-- Any component/hook/table name
-- `useInquiry`, `inquiries` table, `style_board` column
+## Scene 1 — DROP INSPIRATION (5.0s)
 
-## Part 2 — Style Brief Hardening (lock in last pass + close gaps)
+- 5 inspiration polaroids drop in **staggered with physics variance** (8–14f apart), each with its own entry vector and rotation (–6° to +9°, deliberately odd: –3.7°, +5.2°, etc.). No two share rotation.
+- **One polaroid clipped at bottom edge** (~80px off-screen). Intentional imperfection.
+- Per-card shadow variance (8px → 24px blur). Real-object depth, not CSS boxes.
+- Image curation rule: each photo must have a different dominant color temperature and a different subject (interior, textile, garment, surface, still life). Diversity = "curated."
+- **Hold 54f dead-still** after last card lands.
 
-Already shipped last turn (verify intact):
-- Visitor PDF download button on `/stylebrief`
-- `notify-inquiry` route accepts palette/tones/insights/inspo_paths
-- Notification + confirmation emails render palette swatches
-- Inspo signed URLs (7-day TTL) in staff email
+## Scene 2 — PIN THE PIECES (5.7s)
 
-Gaps to close in this pass:
-1. **Verify the submit→notify wire actually fires.** Read `stylebrief.index.tsx` submit handler end-to-end, confirm the POST to `/api/public/notify-inquiry` happens AFTER DB insert and includes all 4 fields (palette, tones, insights, inspo_paths). Log on failure, don't silently swallow.
-2. **PDF capture timing.** `html2canvas` on signed inspo URLs can race. Add `await Promise.all(images.map(decode))` before `downloadDeckPDF` so the PDF never renders with broken thumbs.
-3. **Empty-state guard on download button.** Disable + tooltip "add a palette, inspo, or pinned piece first" when brief is empty. Prevents a blank PDF.
-4. **Email idempotency.** Pass `idempotencyKey = stylebrief-${inquiryId}` on the notify call so a retry doesn't double-send.
-5. **Confirmation email recipient correctness.** Confirm the confirmation email goes to the submitter, not staff, and uses the same palette block.
+- **Replace all 8 products** with fresh stylist picks across 8 different categories:
+  1. LARS 8' Bleached Oak Dining Table (Tables) — hero pin, scale 1.06
+  2. BOTOND 87" Walnut Rod Chandelier (Lighting) — the "low and long" anchor
+  3. FAWN Natural Cane Chair (Seating)
+  4. BEAUREGARD Natural Tambour Bar (Bars)
+  5. TIBUR Travertine Tray (Serveware)
+  6. AKOYA Tableware Set (Tableware)
+  7. AMALIA Smoke Cut Glass Votive (Candlelight)
+  8. KEITHA Chunky Jute Tassels Rug (Rugs)
+- **Reveal in 3 waves: 2 → 3 → 3**, +18f apart. Not a grid load.
+- Each card drops 12px with 6f ease-out. Pin icon pops *after* card lands (+4f).
+- Pin counter increments 0 → 2 → 5 → 8, not a single jump.
+- No card borders. Shadow-only separation.
+- **Hold 60f.**
 
-## Part 3 — Execution order (one pass, parallel where safe)
+## Scene 3 — EXTRACT PALETTE (5.6s)
 
-```text
-Step 1 (parallel reads): contact.tsx, stylebrief.index.tsx,
-        BoardDeck.tsx, both email templates, notify-inquiry.ts
-Step 2 (parallel writes): all 9 copy-only files (Part 1)
-Step 3 (sequential): style brief hardening fixes 1–5 (Part 2)
-Step 4: Playwright pass — submit a brief end-to-end,
-        download PDF, screenshot, verify email payload via server logs
-Step 5: Report back with screenshots + the one Adrienne question
-        (admin sidebar "Inquiry" label)
-```
+- Only **2 inspo images** visible (the strongest from Scene 1) at 85% opacity. Less is more specific.
+- **Swatches earn their place**: each swatch originates as a 4px dot at a real pixel coordinate on the inspo image, then travels along a hairline (0.5px charcoal, 30%) out to its final swatch position. Visible cause→effect.
+- Swatches reveal lightest → darkest, 12f apart.
+- Each swatch gets a **one-word editorial name** above the hex (Cormorant italic): "Alabaster", "Dust", "Warm Graphite", "Slate", "Linen", "Bone", "Cream", "Paper."
+- **Hold 66f completely still.** No shimmer, no breathe.
 
-## Why this is "high ceiling"
+## Scene 4 — YOUR BRIEF (5.7s)
 
-- Terminology is now consistent across the funnel: visitor sees "your inspo images" → "our collection" → "style brief" → "style brief request" in confirmation. One vocabulary, top to bottom.
-- Style brief becomes a real deliverable: download works, email carries the full visual payload, signed URLs don't expire mid-review.
-- Zero internal churn means future feature work (admin curation, AI palette analysis, etc.) builds on the same component/table names — no migration debt from this pass.
+- **Paper grain overlay** at 4–6% opacity on the card face. This single change does the most work.
+- Type hierarchy breaks the grid: client name 28pt Cormorant caps tracked 120, occasion 11pt system italic, palette row offset to a different column than text above.
+- Pinned pieces render as a **horizontal proof-sheet strip** of small thumbnails (~64×80px, 6px gap, no labels) — not a gallery grid.
+- Card enters via slow 6px upward drift, 40f ease-in-out (no spring).
+- Single 0.5pt rule line between palette and pinned pieces — one line, that's it.
+- **Hold 90f** (this is the payoff scene; let it read).
 
-## Risk: low
-- All edits are string-level in JSX/email templates.
-- No schema, no route signatures, no hook contracts.
-- One deferred decision (admin "Inquiry" label) flagged, not silently changed.
+## Scene 5 — SENT (5.2s)
 
-Approve and I'll execute Steps 1–5 in order, screenshots at the end.
+- "Sent." alone first, 72pt Cormorant Light tracked 200, centred. Fade + +4px upward drift over 20f.
+- **Hold "Sent." alone for 30f** before tagline appears.
+- Tagline at 14pt system regular lowercase 80% opacity, opacity-only entrance.
+- No background motion, no particles, no grain loop.
+- **Hold 120f** on final state. ~4 seconds. Confidence.
+
+---
+
+## Transition Treatments (kill the uniform fades)
+
+| Boundary | Treatment | Why |
+|---|---|---|
+| S1 → S2 | **Slow push-in** — scale 1.0→1.04 on collage while crossfading to grid | Feels like camera leans in to examine |
+| S2 → S3 | **Match-cut** — 8th product's dominant color hard-cuts to first swatch (1f color bridge), palette builds from there | The pieces *become* the palette |
+| S3 → S4 | **Hold-on-white** — swatches fade to cream, hold 12f white, brief drifts up | Page turn |
+| S4 → S5 | **Slow push-out** — brief scales 1.0→0.97 + opacity to 0 on cream, "Sent." fades in on same cream | Document sent; only the feeling remains |
+
+---
+
+## Total Runtime
+
+~26.3s (790 frames at 30fps). Longer scenes were tempting but the real fix is **hold time**, not length. If review wants more breathing room, extend Scene 4 hold to 120f.
+
+---
+
+## Build Order
+
+1. Download the 8 new product images from the catalog URLs into `remotion/public/products/` (replace existing 8).
+2. Curate 5 new inspo images with deliberate subject diversity (replace existing 5 in `remotion/public/inspo/`).
+3. Update `remotion/src/theme.ts` PRODUCTS + add palette editorial names + add swatch origin coordinates per inspo image.
+4. Add paper-grain PNG to `remotion/public/textures/` for Scene 4 card.
+5. Rewrite the 5 scene components to the new motion specs (staggered drops, wave reveals, swatch-origin animation, document drift, Sent hold).
+6. Rewrite `MainVideo.tsx`: new scene durations, custom transitions per boundary (replace uniform `fade()` with mix of `slide()` push, custom match-cut Sequence, hold-on-white via a white interstitial Sequence).
+7. Render to `/mnt/documents/stylebrief-editorial-v2.mp4`, spot-check key frames first.
+
+---
+
+## What I need from you before building
+
+1. **Sign off on the 8 product picks** above, or veto specific items.
+2. **Inspo images**: keep the current 5, or want me to source 5 fresh ones with the diversity rule above?
+3. **Total runtime**: 26s (recommended) or push Scene 4 hold to land at ~30s?
