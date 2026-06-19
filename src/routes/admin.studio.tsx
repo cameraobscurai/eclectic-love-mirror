@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, Sparkles, ArrowUpRight } from "lucide-react";
+import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, ArrowUpRight } from "lucide-react";
 
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";

@@ -38,7 +38,6 @@ import { Route as Tables1SplatRouteImport } from './routes/tables1.$'
 import { Route as StylingSplatRouteImport } from './routes/styling.$'
 import { Route as StylebriefThreeRouteImport } from './routes/stylebrief.three'
 import { Route as StylebriefThanksRouteImport } from './routes/stylebrief.thanks'
-import { Route as StylebriefLabRouteImport } from './routes/stylebrief.lab'
 import { Route as StylebriefTokenRouteImport } from './routes/stylebrief.$token'
 import { Route as Storage1SplatRouteImport } from './routes/storage1.$'
 import { Route as StorageSplatRouteImport } from './routes/storage.$'
@@ -226,11 +225,6 @@ const StylebriefThreeRoute = StylebriefThreeRouteImport.update({
 const StylebriefThanksRoute = StylebriefThanksRouteImport.update({
   id: '/stylebrief/thanks',
   path: '/stylebrief/thanks',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StylebriefLabRoute = StylebriefLabRouteImport.update({
-  id: '/stylebrief/lab',
-  path: '/stylebrief/lab',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StylebriefTokenRoute = StylebriefTokenRouteImport.update({
@@ -510,7 +504,6 @@ export interface FileRoutesByFullPath {
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
   '/stylebrief/$token': typeof StylebriefTokenRoute
-  '/stylebrief/lab': typeof StylebriefLabRoute
   '/stylebrief/thanks': typeof StylebriefThanksRoute
   '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
@@ -585,7 +578,6 @@ export interface FileRoutesByTo {
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
   '/stylebrief/$token': typeof StylebriefTokenRoute
-  '/stylebrief/lab': typeof StylebriefLabRoute
   '/stylebrief/thanks': typeof StylebriefThanksRoute
   '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
@@ -661,7 +653,6 @@ export interface FileRoutesById {
   '/storage/$': typeof StorageSplatRoute
   '/storage1/$': typeof Storage1SplatRoute
   '/stylebrief/$token': typeof StylebriefTokenRoute
-  '/stylebrief/lab': typeof StylebriefLabRoute
   '/stylebrief/thanks': typeof StylebriefThanksRoute
   '/stylebrief/three': typeof StylebriefThreeRoute
   '/styling/$': typeof StylingSplatRoute
@@ -738,7 +729,6 @@ export interface FileRouteTypes {
     | '/storage/$'
     | '/storage1/$'
     | '/stylebrief/$token'
-    | '/stylebrief/lab'
     | '/stylebrief/thanks'
     | '/stylebrief/three'
     | '/styling/$'
@@ -813,7 +803,6 @@ export interface FileRouteTypes {
     | '/storage/$'
     | '/storage1/$'
     | '/stylebrief/$token'
-    | '/stylebrief/lab'
     | '/stylebrief/thanks'
     | '/stylebrief/three'
     | '/styling/$'
@@ -888,7 +877,6 @@ export interface FileRouteTypes {
     | '/storage/$'
     | '/storage1/$'
     | '/stylebrief/$token'
-    | '/stylebrief/lab'
     | '/stylebrief/thanks'
     | '/stylebrief/three'
     | '/styling/$'
@@ -953,7 +941,6 @@ export interface RootRouteChildren {
   StorageSplatRoute: typeof StorageSplatRoute
   Storage1SplatRoute: typeof Storage1SplatRoute
   StylebriefTokenRoute: typeof StylebriefTokenRoute
-  StylebriefLabRoute: typeof StylebriefLabRoute
   StylebriefThanksRoute: typeof StylebriefThanksRoute
   StylebriefThreeRoute: typeof StylebriefThreeRoute
   StylingSplatRoute: typeof StylingSplatRoute
@@ -1173,13 +1160,6 @@ declare module '@tanstack/react-router' {
       path: '/stylebrief/thanks'
       fullPath: '/stylebrief/thanks'
       preLoaderRoute: typeof StylebriefThanksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/stylebrief/lab': {
-      id: '/stylebrief/lab'
-      path: '/stylebrief/lab'
-      fullPath: '/stylebrief/lab'
-      preLoaderRoute: typeof StylebriefLabRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/stylebrief/$token': {
@@ -1575,7 +1555,6 @@ const rootRouteChildren: RootRouteChildren = {
   StorageSplatRoute: StorageSplatRoute,
   Storage1SplatRoute: Storage1SplatRoute,
   StylebriefTokenRoute: StylebriefTokenRoute,
-  StylebriefLabRoute: StylebriefLabRoute,
   StylebriefThanksRoute: StylebriefThanksRoute,
   StylebriefThreeRoute: StylebriefThreeRoute,
   StylingSplatRoute: StylingSplatRoute,
