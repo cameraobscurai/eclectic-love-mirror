@@ -1,41 +1,63 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { delayRender, continueRender } from "remotion";
 import * as THREE from "three";
 
-// Module-level texture cache, shared across all calls in a single render process.
+// Module-level cache + loader, shared across the entire render process.
 const cache = new Map<string, THREE.Texture>();
 const loader = new THREE.TextureLoader();
 
-// Remotion-aware texture loader. Holds the frame back via delayRender() until
-// the texture is decoded, then continues. Subsequent uses of the same URL
-// reuse the cached texture (no delayRender needed).
+// Remotion-aware texture loader.
+//
+// delayRender() MUST be called synchronously during the React render phase
+// (before useEffect runs), otherwise Remotion has already captured the frame
+// by the time the handle is registered. We use useRef to hold the handle and
+// only fire delayRender once per component instance per uncached URL.
 export function useRemotionTexture(url: string): THREE.Texture | null {
-  const cached = useMemo(() => cache.get(url) ?? null, [url]);
-  const [tex, setTex] = useState<THREE.Texture | null>(cached);
+  const [tex, setTex] = useState<THREE.Texture | null>(() => cache.get(url) ?? null);
+  const handleRef = useRef<number | null>(null);
+
+  // Synchronously claim a delayRender handle on first render if uncached.
+  if (handleRef.current === null && !cache.has(url)) {
+    handleRef.current = delayRender(`tex:${url}`, { timeoutInMilliseconds: 60000 });
+  }
 
   useEffect(() => {
-    if (cached) return;
-    const handle = delayRender(`tex:${url}`, { timeoutInMilliseconds: 30000 });
+    const cached = cache.get(url);
+    if (cached) {
+      setTex(cached);
+      if (handleRef.current !== null) {
+        continueRender(handleRef.current);
+        handleRef.current = null;
+      }
+      return;
+    }
     let cancelled = false;
     loader.load(
       url,
       (t) => {
         if (cancelled) return;
         t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = 4;
         cache.set(url, t);
         setTex(t);
-        continueRender(handle);
+        if (handleRef.current !== null) {
+          continueRender(handleRef.current);
+          handleRef.current = null;
+        }
       },
       undefined,
       (err) => {
         console.error("texture load failed:", url, err);
-        continueRender(handle);
+        if (handleRef.current !== null) {
+          continueRender(handleRef.current);
+          handleRef.current = null;
+        }
       }
     );
     return () => {
       cancelled = true;
     };
-  }, [url, cached]);
+  }, [url]);
 
   return tex;
 }
