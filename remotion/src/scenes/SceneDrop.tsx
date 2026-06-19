@@ -1,102 +1,172 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
 import { COLORS, INSPO } from "../theme";
 import { BODY } from "../fonts";
-import { IndexCard } from "../components/IndexCard";
+import { IndexCard, INNER_W, INNER_H } from "../components/IndexCard";
 
-// SCENE 01 — INSPO. Photos drop into the card's content area, building a pile.
-// The card IS the drop zone. Counter ticks in the upper right.
+// SCENE 01 — INSPO. Mirrors the site's dashed drop zone + thumbnail grid.
+// Top: dashed bordered zone with "DROP IMAGES OR CLICK TO BROWSE" + counter.
+// Below: 5-up thumbnail grid that fills as images "land".
 
 const SCENE_LEN = 186;
+const FIRST_LAND = 32;
+const STAGGER = 22;
 
-// Content area is ~968 wide × ~1239 tall (inside IndexCard).
-// All tile coordinates are relative to that inner box.
-type Tile = {
-  src: string;
-  startFrame: number;
-  restX: number; restY: number;
-  w: number; h: number;
-  rot: number; rotStart: number;
-};
+const DROPZONE_H = 380;
+const DROPZONE_TOP = 0;
 
-const TILES: Tile[] = [
-  // hero centerpiece
-  { src: INSPO[0], startFrame: 26, restX: 484, restY: 600,  w: 540, h: 400, rot: -2.5,  rotStart: -28 },
-  // upper right
-  { src: INSPO[1], startFrame: 52, restX: 740, restY: 430,  w: 320, h: 320, rot:  6.8,  rotStart:  32 },
-  // mid left
-  { src: INSPO[3], startFrame: 78, restX: 215, restY: 560,  w: 340, h: 280, rot: -8.4,  rotStart: -34 },
-  // lower right
-  { src: INSPO[2], startFrame: 104, restX: 685, restY: 830, w: 360, h: 280, rot:  4.6,  rotStart:  30 },
-  // bottom front
-  { src: INSPO[4], startFrame: 130, restX: 320, restY: 940, w: 360, h: 430, rot: -5.6,  rotStart: -22 },
-];
+const THUMB_GAP = 12;
+const THUMB_COLS = 5;
+const THUMB_W = (INNER_W - (THUMB_COLS - 1) * THUMB_GAP) / THUMB_COLS;
+const THUMB_TOP = DROPZONE_TOP + DROPZONE_H + 40;
 
 export const SceneDrop: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const landed = TILES.filter((t) => frame >= t.startFrame + 14).length;
-  const lastLand = TILES.filter((t) => frame >= t.startFrame + 14).map((t) => t.startFrame + 14).pop() ?? -100;
-  const counterSp = spring({ frame: frame - lastLand, fps, config: { damping: 10, stiffness: 240 } });
-  const counterScale = interpolate(counterSp, [0, 0.5, 1], [0.85, 1.18, 1]);
+  const landAt = (i: number) => FIRST_LAND + i * STAGGER;
+  const landed = INSPO.filter((_, i) => frame >= landAt(i)).length;
+  const lastLand = INSPO.map((_, i) => landAt(i)).filter((f) => frame >= f).pop() ?? -100;
+  const counterSp = spring({ frame: frame - lastLand, fps, config: { damping: 12, stiffness: 220 } });
+  const counterScale = interpolate(counterSp, [0, 0.5, 1], [0.92, 1.1, 1]);
+
+  // pulse drop zone border subtly
+  const hoverPulse = (Math.sin(frame / 14) + 1) / 2; // 0..1
+  const dashOpacity = 0.25 + hoverPulse * 0.15;
 
   return (
     <AbsoluteFill>
-      <IndexCard step={1} label="Inspo" subtitle="What pulls you in." sceneLen={SCENE_LEN}>
-        {/* Counter — upper right of content */}
+      <IndexCard step={1} label="Inspo" subtitle="Drop the images that move you." sceneLen={SCENE_LEN}>
+        {/* Drop zone — dashed bordered, exactly like the site */}
         <div
           style={{
             position: "absolute",
-            top: 24,
-            right: 32,
+            left: 0, right: 0, top: DROPZONE_TOP,
+            height: DROPZONE_H,
+            border: `2px dashed rgba(26,26,26,${dashOpacity})`,
+            background: "rgba(26,26,26,0.012)",
             display: "flex",
-            alignItems: "baseline",
-            gap: 10,
-            transform: `scale(${counterScale})`,
-            transformOrigin: "100% 50%",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 22,
           }}
         >
-          <span style={{ color: COLORS.charcoal, fontFamily: BODY, fontSize: 36, fontWeight: 300, lineHeight: 1 }}>
-            {String(landed).padStart(2, "0")}
-          </span>
-          <span style={{ color: COLORS.charcoal, opacity: 0.5, fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase" }}>
-            / 05
-          </span>
+          {/* image-plus icon (svg, no lib) */}
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke={COLORS.charcoal} strokeOpacity="0.42" strokeWidth="1.2">
+            <rect x="3" y="3" width="18" height="18" rx="1" />
+            <circle cx="9" cy="9" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+            <path d="M18 4v4M16 6h4" strokeOpacity="0.6" />
+          </svg>
+          <div
+            style={{
+              color: COLORS.charcoal,
+              fontFamily: BODY,
+              fontSize: 16,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              fontWeight: 500,
+              opacity: 0.7,
+            }}
+          >
+            Drop images or click to browse
+          </div>
+          <div
+            style={{
+              color: COLORS.charcoal,
+              opacity: 0.45,
+              fontFamily: BODY,
+              fontSize: 12,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              transform: `scale(${counterScale})`,
+              transformOrigin: "50% 50%",
+            }}
+          >
+            <span style={{ fontWeight: 500, color: COLORS.charcoal, opacity: 0.95 }}>
+              {String(landed).padStart(2, "0")}
+            </span>
+            <span> / 05 · 8MB MAX EACH</span>
+          </div>
         </div>
 
-        {/* Photo pile */}
-        {TILES.map((t, i) => {
-          const sp = spring({ frame: frame - t.startFrame, fps, config: { damping: 14, stiffness: 80, mass: 1.2 } });
+        {/* Thumbnail strip — 5 up, fills as images land */}
+        {INSPO.map((src, i) => {
+          const start = landAt(i);
+          const sp = spring({ frame: frame - start, fps, config: { damping: 16, stiffness: 140 } });
           if (sp <= 0) return null;
-          const entryX = interpolate(sp, [0, 1], [t.restX + (i % 2 === 0 ? -120 : 140), t.restX]);
-          const entryY = interpolate(sp, [0, 1], [-280, t.restY]);
-          const rot = interpolate(sp, [0, 1], [t.rotStart, t.rot]);
-          const op = interpolate(sp, [0, 0.4, 1], [0, 0.85, 1]);
-          const settled = Math.max(0, frame - (t.startFrame + 18));
-          const float = Math.sin(settled / 50 + i) * 1.0;
+          const left = i * (THUMB_W + THUMB_GAP);
+          const op = interpolate(sp, [0, 1], [0, 1]);
+          const y = interpolate(sp, [0, 1], [-40, 0]);
+          // tiny landing settle wobble
+          const settled = Math.max(0, frame - (start + 14));
+          const float = Math.sin(settled / 40 + i) * 0.6;
 
           return (
             <div
               key={i}
               style={{
                 position: "absolute",
-                left: entryX - t.w / 2,
-                top: entryY - t.h / 2 + float,
-                width: t.w,
-                height: t.h,
+                left,
+                top: THUMB_TOP + y + float,
+                width: THUMB_W,
+                height: THUMB_W,  // square like site
                 opacity: op,
-                transform: `rotate(${rot}deg)`,
-                background: COLORS.cream,
-                padding: 10,
-                paddingBottom: 24,
-                border: `1px solid ${COLORS.charcoal}22`,
-                boxShadow: "0 28px 70px -26px rgba(26,26,26,0.55), 0 8px 18px -8px rgba(26,26,26,0.32)",
+                background: "rgba(26,26,26,0.05)",
+                overflow: "hidden",
               }}
             >
-              <Img src={staticFile(t.src)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              {/* X corner badge like the site */}
+              <div
+                style={{
+                  position: "absolute", top: 6, right: 6,
+                  width: 22, height: 22,
+                  background: "rgba(26,26,26,0.8)",
+                  color: COLORS.cream,
+                  fontFamily: BODY,
+                  fontSize: 12,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  opacity: 0.85,
+                }}
+              >×</div>
             </div>
           );
         })}
+
+        {/* placeholder empty slots before items land */}
+        {INSPO.map((_, i) => {
+          if (frame >= landAt(i)) return null;
+          const left = i * (THUMB_W + THUMB_GAP);
+          return (
+            <div
+              key={"ph" + i}
+              style={{
+                position: "absolute",
+                left,
+                top: THUMB_TOP,
+                width: THUMB_W,
+                height: THUMB_W,
+                border: `1px solid ${COLORS.rule}`,
+              }}
+            />
+          );
+        })}
+
+        {/* tiny caption below grid */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0, top: THUMB_TOP + THUMB_W + 24,
+            color: COLORS.charcoal, opacity: 0.45,
+            fontFamily: BODY, fontSize: 11, letterSpacing: "0.28em", textTransform: "uppercase",
+          }}
+        >
+          Your Inspo — {String(landed).padStart(2, "0")} of 05
+        </div>
+
+        {/* Suppress unused INNER_H warning */}
+        <div style={{ display: "none" }}>{INNER_H}</div>
       </IndexCard>
     </AbsoluteFill>
   );

@@ -1,34 +1,38 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
 import { COLORS, INSPO, PRODUCTS, REAL_PALETTE, SWATCH_ORIGINS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
-import { IndexCard } from "../components/IndexCard";
+import { IndexCard, INNER_W } from "../components/IndexCard";
 
-// SCENE 03 — PALETTE. All 13 sources visible inside the card. Hairlines pull
-// each swatch from a different source. The card frames the whole act.
+// SCENE 03 — PALETTE. Mirrors the actual site palette UI:
+// black "GENERATE PALETTE" button → a flush row of 8 equal swatches
+// with hex labels in tabular nums underneath. Above: tiny source strip
+// (inspo thumbs + product thumbs) showing where colors are pulled from.
 
 const SCENE_LEN = 240;
-const CONST_IN = 14;
-const FIRST_SWATCH = 56;
-const SWATCH_STAGGER = 14;
 
-// Inner content geometry (relative to IndexCard content area: 968 × ~1232)
-const INSPO_W = 168;
-const INSPO_H = 200;
-const INSPO_GAP = 8;
-const INSPO_TOP = 80;
-const INSPO_LEFT = (968 - (5 * INSPO_W + 4 * INSPO_GAP)) / 2;
+// Source strip (top) — small thumbnails
+const SOURCE_TOP = 0;
+const INSPO_W = 130;
+const INSPO_H = 160;
+const INSPO_GAP = 10;
+const INSPO_LEFT = 0;
 
-const PROD_W = 104;
-const PROD_H = 104;
+const PROD_W = 78;
+const PROD_H = 78;
 const PROD_GAP = 8;
-const PROD_TOP = INSPO_TOP + INSPO_H + 20;
-const PROD_LEFT = (968 - (8 * PROD_W + 7 * PROD_GAP)) / 2;
+const PROD_LEFT = INSPO_LEFT + 5 * INSPO_W + 4 * INSPO_GAP + 24;
 
-const SW_WIDTH = 820;
-const SW_HEIGHT = 64;
-const SW_GAP = 5;
-const SW_TOP = PROD_TOP + PROD_H + 36;
-const SW_LEFT = (968 - SW_WIDTH) / 2;
+// Button row
+const BTN_TOP = SOURCE_TOP + INSPO_H + 36;
+
+// Swatch row — exactly like site: flush, equal width, hex labels under
+const SW_TOP = BTN_TOP + 80;
+const SW_H = 280;
+const SW_W = INNER_W / REAL_PALETTE.length;
+
+const BUTTON_AT = 18;
+const FIRST_SWATCH = 50;
+const SWATCH_STAGGER = 8;
 
 export const ScenePalette: React.FC = () => {
   const frame = useCurrentFrame();
@@ -38,43 +42,38 @@ export const ScenePalette: React.FC = () => {
     const o = SWATCH_ORIGINS[i];
     if (o.kind === "inspo") {
       const left = INSPO_LEFT + o.idx * (INSPO_W + INSPO_GAP);
-      return { x: left + o.x * INSPO_W, y: INSPO_TOP + o.y * INSPO_H };
+      return { x: left + o.x * INSPO_W, y: SOURCE_TOP + o.y * INSPO_H };
     }
-    const left = PROD_LEFT + o.idx * (PROD_W + PROD_GAP);
-    return { x: left + o.x * PROD_W, y: PROD_TOP + o.y * PROD_H };
+    const left = PROD_LEFT + (o.idx % 4) * (PROD_W + PROD_GAP);
+    const row = Math.floor(o.idx / 4);
+    return { x: left + o.x * PROD_W, y: SOURCE_TOP + row * (PROD_H + PROD_GAP) + o.y * PROD_H };
   };
+
+  // Button state: idle → pressed → "Reading…"
+  const btnPressed = frame >= BUTTON_AT && frame < FIRST_SWATCH;
+  const btnLabel = frame < BUTTON_AT ? "GENERATE PALETTE"
+    : frame < FIRST_SWATCH ? "READING…"
+    : "RE-GENERATE PALETTE";
 
   return (
     <AbsoluteFill>
-      <IndexCard step={3} label="Palette" subtitle="From everything you chose." sceneLen={SCENE_LEN}>
-        {/* small note top right */}
-        <div
-          style={{
-            position: "absolute", top: 30, right: 32,
-            color: COLORS.charcoal, opacity: 0.45,
-            fontFamily: BODY, fontSize: 10, letterSpacing: "0.42em", textTransform: "uppercase",
-          }}
-        >
-          13 Sources · 08 Tones
-        </div>
-
-        {/* Inspo row */}
+      <IndexCard step={3} label="Palette" subtitle="Pulled from everything you chose." sceneLen={SCENE_LEN}>
+        {/* INSPO strip */}
         {INSPO.map((src, i) => {
-          const sp = spring({ frame: frame - (CONST_IN + i * 4), fps, config: { damping: 18, stiffness: 180 } });
+          const sp = spring({ frame: frame - (4 + i * 3), fps, config: { damping: 22, stiffness: 160 } });
           const op = interpolate(sp, [0, 1], [0, 1]);
-          const y = interpolate(sp, [0, 1], [10, 0]);
+          const y = interpolate(sp, [0, 1], [8, 0]);
           return (
             <div
               key={"i" + i}
               style={{
                 position: "absolute",
                 left: INSPO_LEFT + i * (INSPO_W + INSPO_GAP),
-                top: INSPO_TOP + y,
+                top: SOURCE_TOP + y,
                 width: INSPO_W, height: INSPO_H,
                 opacity: op,
-                background: COLORS.cream,
-                padding: 6,
-                boxShadow: "0 14px 36px -16px rgba(26,26,26,0.32)",
+                background: "rgba(26,26,26,0.05)",
+                overflow: "hidden",
               }}
             >
               <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
@@ -82,24 +81,24 @@ export const ScenePalette: React.FC = () => {
           );
         })}
 
-        {/* Product chip row */}
+        {/* PRODUCT strip — 4×2 mini */}
         {PRODUCTS.map((p, i) => {
-          const sp = spring({ frame: frame - (CONST_IN + 8 + i * 3), fps, config: { damping: 18, stiffness: 180 } });
+          const sp = spring({ frame: frame - (12 + i * 3), fps, config: { damping: 22, stiffness: 160 } });
           const op = interpolate(sp, [0, 1], [0, 1]);
-          const y = interpolate(sp, [0, 1], [8, 0]);
+          const col = i % 4;
+          const row = Math.floor(i / 4);
           return (
             <div
               key={"p" + i}
               style={{
                 position: "absolute",
-                left: PROD_LEFT + i * (PROD_W + PROD_GAP),
-                top: PROD_TOP + y,
+                left: PROD_LEFT + col * (PROD_W + PROD_GAP),
+                top: SOURCE_TOP + row * (PROD_H + PROD_GAP),
                 width: PROD_W, height: PROD_H,
                 opacity: op,
                 background: COLORS.cream,
-                border: `1px solid ${COLORS.charcoal}14`,
-                padding: 8,
-                boxShadow: "0 8px 22px -12px rgba(26,26,26,0.28)",
+                border: `1px solid ${COLORS.rule}`,
+                padding: 6,
               }}
             >
               <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
@@ -107,30 +106,64 @@ export const ScenePalette: React.FC = () => {
           );
         })}
 
-        {/* Swatch bands */}
+        {/* GENERATE PALETTE button — black, like the site */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0, top: BTN_TOP,
+            background: COLORS.charcoal,
+            color: COLORS.cream,
+            padding: "16px 28px",
+            fontFamily: BODY,
+            fontSize: 13,
+            letterSpacing: "0.26em",
+            textTransform: "uppercase",
+            fontWeight: 500,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 12,
+            transform: btnPressed ? "translateY(2px)" : "translateY(0)",
+            opacity: btnPressed ? 0.85 : 1,
+          }}
+        >
+          {/* sparkles icon */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={COLORS.cream} strokeWidth="1.5">
+            <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+            <path d="M19 5l-2 2M7 17l-2 2M19 19l-2-2M7 7l-2-2" />
+          </svg>
+          {btnLabel}
+        </div>
+
+        {/* Combined Palette label */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0, top: SW_TOP - 32,
+            color: COLORS.charcoal,
+            fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase",
+            opacity: interpolate(frame, [FIRST_SWATCH - 4, FIRST_SWATCH + 4], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+          }}
+        >
+          Combined Palette
+        </div>
+
+        {/* Swatch row — flush, equal width, hex labels under (site-style) */}
         {REAL_PALETTE.map((sw, i) => {
           const startFrame = FIRST_SWATCH + i * SWATCH_STAGGER;
-          const t = interpolate(frame, [startFrame, startFrame + 22], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-
-          const src = sourcePos(i);
-          const swTop = SW_TOP + i * (SW_HEIGHT + SW_GAP);
-          const dx = SW_LEFT + 36;
-          const dy = swTop + SW_HEIGHT / 2;
-
-          const cx = interpolate(t, [0, 1], [src.x, dx]);
-          const cy = interpolate(t, [0, 1], [src.y, dy]);
-          const lineOp = interpolate(t, [0, 0.3, 0.7, 1], [0, 0.55, 0.4, 0]);
-
-          const reveal = spring({ frame: frame - (startFrame + 18), fps, config: { damping: 16, stiffness: 180 } });
+          const reveal = spring({ frame: frame - startFrame, fps, config: { damping: 22, stiffness: 180 } });
+          const op = interpolate(reveal, [0, 1], [0, 1]);
           const wipeR = interpolate(reveal, [0, 1], [0, 100]);
-          const bandOp = interpolate(reveal, [0, 0.3, 1], [0, 1, 1]);
 
+          // hairline from source
+          const t = interpolate(frame, [startFrame - 6, startFrame + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+          const src = sourcePos(i);
+          const dx = i * SW_W + SW_W / 2;
+          const dy = SW_TOP;
           const len = Math.hypot(dx - src.x, dy - src.y);
           const angle = Math.atan2(dy - src.y, dx - src.x) * 180 / Math.PI;
+          const lineOp = interpolate(t, [0, 0.4, 0.7, 1], [0, 0.5, 0.3, 0]);
 
-          const labelOp = interpolate(frame, [startFrame + 24, startFrame + 40], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-          const lightBg = i <= 3;
-          const textColor = lightBg ? "#1a1a1a" : "#faf6ec";
+          const labelOp = interpolate(frame, [startFrame + 8, startFrame + 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
           return (
             <div key={i}>
@@ -141,7 +174,7 @@ export const ScenePalette: React.FC = () => {
                     left: src.x, top: src.y,
                     width: len, height: 1,
                     background: COLORS.charcoal,
-                    opacity: lineOp * 0.5,
+                    opacity: lineOp,
                     transform: `rotate(${angle}deg)`,
                     transformOrigin: "0 0",
                   }}
@@ -150,38 +183,48 @@ export const ScenePalette: React.FC = () => {
               <div
                 style={{
                   position: "absolute",
-                  left: SW_LEFT, top: swTop,
-                  width: SW_WIDTH, height: SW_HEIGHT,
+                  left: i * SW_W, top: SW_TOP,
+                  width: SW_W, height: SW_H,
                   background: sw.hex,
-                  opacity: bandOp,
-                  clipPath: `inset(0 ${100 - wipeR}% 0 0)`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  paddingLeft: 64,
-                  paddingRight: 28,
-                  boxShadow: "0 6px 18px -10px rgba(26,26,26,0.28)",
+                  opacity: op,
+                  clipPath: `inset(${100 - wipeR}% 0 0 0)`,  // wipe down from top
+                }}
+              />
+              {/* hex label below swatch */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: i * SW_W,
+                  top: SW_TOP + SW_H + 10,
+                  width: SW_W,
+                  textAlign: "center",
+                  color: COLORS.charcoal,
+                  opacity: labelOp * 0.6,
+                  fontFamily: BODY,
+                  fontSize: 11,
+                  letterSpacing: "0.18em",
+                  fontVariantNumeric: "tabular-nums",
                 }}
               >
-                <div style={{ opacity: labelOp, fontFamily: DISPLAY, fontStyle: "italic", fontSize: 24, color: textColor, fontWeight: 400 }}>
-                  {sw.name}
-                </div>
-                <div style={{ opacity: labelOp * 0.7, fontFamily: BODY, fontSize: 10, letterSpacing: "0.28em", color: textColor }}>
-                  {sw.hex}
-                </div>
+                {sw.hex}
               </div>
-              {t > 0 && t < 1 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    left: cx - 5, top: cy - 5,
-                    width: 10, height: 10,
-                    borderRadius: "50%",
-                    background: sw.hex,
-                    boxShadow: `0 0 0 2px ${COLORS.cream}, 0 4px 10px -2px rgba(26,26,26,0.5)`,
-                  }}
-                />
-              )}
+              {/* name in italic above hex */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: i * SW_W,
+                  top: SW_TOP + SW_H + 30,
+                  width: SW_W,
+                  textAlign: "center",
+                  color: COLORS.charcoal,
+                  opacity: labelOp * 0.45,
+                  fontFamily: DISPLAY,
+                  fontStyle: "italic",
+                  fontSize: 16,
+                }}
+              >
+                {sw.name}
+              </div>
             </div>
           );
         })}
