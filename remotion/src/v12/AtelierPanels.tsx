@@ -8,10 +8,11 @@ import { PHASE, easeIn } from "./camera-path";
 // 3 triptych panels living in space at X = 6..14, Z = -3..-6
 // Camera path tracks RIGHT past them during PHASE.TRIPTYCH
 
+const atelier = manifest.atelier as Record<string, string>;
 const PANELS = [
-  { file: manifest.atelier.find((a) => /sketch/i.test(a.file))?.file ?? manifest.atelier[0].file, label: "IMAGINED" },
-  { file: manifest.atelier.find((a) => /collage|tent|stilllife/i.test(a.file))?.file ?? manifest.atelier[1].file, label: "DESIGNED" },
-  { file: manifest.atelier.find((a) => /aspen|realized|hero/i.test(a.file))?.file ?? manifest.atelier[2].file, label: "REALIZED" },
+  { file: atelier["sketch-drape"] ?? atelier["workbench-sketch"], label: "IMAGINED" },
+  { file: atelier["collage"] ?? atelier["studio-collage"], label: "DESIGNED" },
+  { file: atelier["realized-aspen"] ?? atelier["hero"], label: "REALIZED" },
 ];
 
 interface PanelProps {
