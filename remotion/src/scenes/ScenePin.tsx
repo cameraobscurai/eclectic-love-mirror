@@ -47,7 +47,7 @@ export const ScenePin: React.FC = () => {
           bottom: 130,
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gridTemplateRows: "repeat(3, 180px)",
+          gridTemplateRows: "repeat(2, 260px)",
           gap: 18,
         }}
       >
