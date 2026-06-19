@@ -19,7 +19,7 @@ export const ScenePin: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Chrome step={3} label="Pin the Pieces" />
+      <Chrome step={2} label="Pin the Pieces" />
 
       <div
         style={{
