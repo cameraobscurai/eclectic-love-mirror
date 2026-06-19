@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET quantity = 5 WHERE id = 'aab3f3f1-6344-49b1-8e16-b76b8138e436';
