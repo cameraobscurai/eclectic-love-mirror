@@ -82,12 +82,6 @@ function NoInquiry() {
             label="3D"
             status="Live"
           />
-          <ToolCard
-            to="/stylebrief/lab"
-            icon={<Sparkles className="h-5 w-5" />}
-            label="Lab"
-            status="Soon"
-          />
         </div>
       </section>
 
