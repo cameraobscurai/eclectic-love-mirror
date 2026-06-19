@@ -20,7 +20,7 @@ export const SceneBrief: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <IndexCard step={4} label="Brief" subtitle="Composed for you, ready to send." sceneLen={SCENE_LEN}>
+      <IndexCard step={4} label="Brief" subtitle="Composed from everything you chose." sceneLen={SCENE_LEN}>
         {/* doc number top right */}
         <Reveal frame={frame} at={T_HEADER} fps={fps}>
           <div
@@ -28,7 +28,7 @@ export const SceneBrief: React.FC = () => {
               position: "absolute", left: 0, right: 0, top: 0,
               display: "flex", justifyContent: "space-between",
               color: COLORS.charcoal, opacity: 0.5,
-              fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase",
+              fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase",
             }}
           >
             <span>Style Brief · No. 0042</span>
@@ -40,33 +40,33 @@ export const SceneBrief: React.FC = () => {
         <Reveal frame={frame} at={T_HEADER + 8} fps={fps}>
           <div
             style={{
-              position: "absolute", left: 0, top: 36,
+              position: "absolute", left: 0, top: 56,
               color: COLORS.charcoal,
               fontFamily: DISPLAY,
               fontSize: 84,
-              lineHeight: 0.95,
+              lineHeight: 0.98,
               fontWeight: 400,
-              letterSpacing: "-0.01em",
+              letterSpacing: "-0.015em",
             }}
           >
             The <em style={{ fontStyle: "italic" }}>Ridgeline</em><br />Dinner.
           </div>
         </Reveal>
 
-        {/* meta rows */}
+        {/* meta rows — tighter typography, generous row padding */}
         <Reveal frame={frame} at={T_ROWS} fps={fps}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 240 }}>
+          <div style={{ position: "absolute", left: 0, right: 0, top: 290 }}>
             {[
               ["For", "Hayes / Ridgeline Estate"],
               ["Occasion", "Late-Summer Welcome Dinner"],
               ["Guests", "64"],
               ["Mood", "Sand-washed · candle-warmed · low + long"],
             ].map(([label, value], i) => (
-              <div key={i} style={{ display: "grid", gridTemplateColumns: "200px 1fr", padding: "16px 0", borderBottom: `1px solid ${COLORS.rule}` }}>
-                <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", paddingTop: 6 }}>
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "220px 1fr", padding: "22px 0", borderBottom: `1px solid ${COLORS.rule}` }}>
+                <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase", paddingTop: 8 }}>
                   {label}
                 </div>
-                <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 26, fontStyle: i === 3 ? "italic" : "normal" }}>
+                <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 28, fontStyle: i === 3 ? "italic" : "normal", lineHeight: 1.2 }}>
                   {value}
                 </div>
               </div>
@@ -76,18 +76,21 @@ export const SceneBrief: React.FC = () => {
 
         {/* palette row */}
         <Reveal frame={frame} at={T_PALETTE} fps={fps}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 540 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-              <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase" }}>
-                Color Palette · 08 Tones
+          <div style={{ position: "absolute", left: 0, right: 0, top: 640 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase" }}>
+                Combined Palette
+              </div>
+              <div style={{ color: COLORS.charcoal, opacity: 0.45, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase" }}>
+                08 Tones
               </div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: `repeat(${REAL_PALETTE.length}, 1fr)`, gap: 0 }}>
               {REAL_PALETTE.map((sw, i) => (
-                <div key={i} style={{ height: 64, background: sw.hex }} />
+                <div key={i} style={{ height: 72, background: sw.hex }} />
               ))}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${REAL_PALETTE.length}, 1fr)`, gap: 0, marginTop: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${REAL_PALETTE.length}, 1fr)`, gap: 0, marginTop: 12 }}>
               {REAL_PALETTE.map((sw, i) => (
                 <div key={i} style={{ textAlign: "center", color: COLORS.charcoal, opacity: 0.5, fontFamily: BODY, fontSize: 10, letterSpacing: "0.18em", fontVariantNumeric: "tabular-nums" }}>
                   {sw.hex}
@@ -99,11 +102,16 @@ export const SceneBrief: React.FC = () => {
 
         {/* pinned row */}
         <Reveal frame={frame} at={T_PINNED} fps={fps}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 720 }}>
-            <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase", marginBottom: 14 }}>
-              Pieces You Pinned · 08
+          <div style={{ position: "absolute", left: 0, right: 0, top: 850 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
+              <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase" }}>
+                Pieces You Pinned
+              </div>
+              <div style={{ color: COLORS.charcoal, opacity: 0.45, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase" }}>
+                08 / 08
+              </div>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
               {PRODUCTS.map((p, i) => (
                 <div
                   key={i}
@@ -111,7 +119,7 @@ export const SceneBrief: React.FC = () => {
                     aspectRatio: "1 / 1",
                     background: COLORS.cream,
                     border: `1px solid ${COLORS.rule}`,
-                    padding: 10,
+                    padding: 12,
                   }}
                 >
                   <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
@@ -123,11 +131,11 @@ export const SceneBrief: React.FC = () => {
 
         {/* signature */}
         <Reveal frame={frame} at={T_SIGN} fps={fps}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 1180, paddingTop: 18, borderTop: `1px solid ${COLORS.rule}`, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-            <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontStyle: "italic", fontSize: 28 }}>
+          <div style={{ position: "absolute", left: 0, right: 0, top: 1100, paddingTop: 24, borderTop: `1px solid ${COLORS.rule}`, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontStyle: "italic", fontSize: 30 }}>
               — Yours, The Hive
             </div>
-            <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase" }}>
+            <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase" }}>
               Ready to Send
             </div>
           </div>

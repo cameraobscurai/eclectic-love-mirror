@@ -14,13 +14,13 @@ type Props = {
   children: React.ReactNode;
 };
 
-// Per-step title strings that mirror the actual form headings.
+// Per-step title strings that mirror the actual form headings on /stylebrief.
 const STEP_TITLES: Record<number, string> = {
   1: "Drop Your Inspo.",
   2: "Pin From Our Collection.",
   3: "Generate Your Palette.",
-  4: "Your Brief, Composed.",
-  5: "Off To The Hive.",
+  4: "Your Style Brief.",
+  5: "Sent.",
 };
 
 export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, children }) => {
@@ -46,8 +46,8 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, ch
           display: "flex", justifyContent: "space-between", alignItems: "baseline",
           color: COLORS.charcoal,
           fontFamily: BODY,
-          fontSize: 12,
-          letterSpacing: "0.34em",
+          fontSize: 13,
+          letterSpacing: "0.36em",
           textTransform: "uppercase",
           fontWeight: 500,
           opacity: 0.95,
@@ -57,17 +57,17 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, ch
         <span style={{ opacity: 0.45 }}>0{step} / 05 · {label}</span>
       </div>
 
-      {/* Big serif title */}
+      {/* Big serif title — sized closer to the site (≈76px) */}
       <div
         style={{
           position: "absolute",
           left: GUTTER, right: GUTTER, top: TITLE_TOP,
           color: COLORS.charcoal,
           fontFamily: DISPLAY,
-          fontSize: 88,
+          fontSize: 84,
           fontWeight: 400,
-          lineHeight: 0.95,
-          letterSpacing: "-0.01em",
+          lineHeight: 0.98,
+          letterSpacing: "-0.015em",
           transform: `translateY(${titleY}px)`,
         }}
       >
@@ -83,17 +83,18 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, ch
         }}
       />
 
-      {/* italic helper line under the rule */}
+      {/* italic helper line — sits well below the rule (more air) */}
       <div
         style={{
           position: "absolute",
-          left: GUTTER, right: GUTTER, top: RULE_TOP + 14,
+          left: GUTTER, right: GUTTER, top: RULE_TOP + 28,
           color: COLORS.charcoal,
           opacity: 0.55,
           fontFamily: DISPLAY,
           fontStyle: "italic",
-          fontSize: 26,
+          fontSize: 28,
           fontWeight: 400,
+          letterSpacing: "0.005em",
         }}
       >
         {subtitle}
