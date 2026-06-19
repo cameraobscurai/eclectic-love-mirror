@@ -61,19 +61,15 @@ export const SiteReelV12: React.FC = () => {
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
         camera={{ position: [0, 0, 14], fov: 35, near: 0.1, far: 200 }}
       >
-        <color attach="background" args={["#0a0a0a"]} />
-        <fog attach="fog" args={["#0a0a0a", 18, 60]} />
+        <color attach="background" args={["#ff0000"]} />
         <ambientLight intensity={1.0} />
         <CameraRig />
-        <Suspense fallback={null}>
-          <BackWall />
-          <Floor />
-          <ProductField />
-          <AtelierPanels />
-          <SwatchTunnel />
-          <WordmarkPlane />
-        </Suspense>
-        <LensStack />
+        <BackWall />
+        <Floor />
+        <ProductField />
+        <AtelierPanels />
+        <SwatchTunnel />
+        <WordmarkPlane />
       </ThreeCanvas>
       <ColdOpen />
       <EndFade />
