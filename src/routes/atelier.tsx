@@ -250,17 +250,19 @@ function AtelierPage() {
                 maxWidth: "100%",
               }}
             >
-              <StaggerHeading
-                as="h1"
-                lines={["IMAGINED.", "DESIGNED.", "REALIZED."]}
-                className="page-title text-charcoal"
-                style={{
-                  fontSize: "clamp(3.25rem, 8vw, 6rem)",
-                  lineHeight: 1,
-                  width: "fit-content",
-                }}
-                delay={0.08}
-              />
+              <div ref={headlineRef as unknown as React.RefObject<HTMLDivElement>} style={{ width: "fit-content" }}>
+                <StaggerHeading
+                  as="h1"
+                  lines={["IMAGINED.", "DESIGNED.", "REALIZED."]}
+                  className="page-title text-charcoal"
+                  style={{
+                    fontSize: "clamp(3.25rem, 8vw, 6rem)",
+                    lineHeight: 1,
+                    width: "fit-content",
+                  }}
+                  delay={0.08}
+                />
+              </div>
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
