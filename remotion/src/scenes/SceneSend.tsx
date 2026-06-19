@@ -70,6 +70,7 @@ export const SceneSend: React.FC = () => {
         chromeOpacity={chromeOp}
         cameraScale={cameraScale}
         cameraOriginY={42}
+        noOutFade
       >
         {/* meta row */}
         <div
