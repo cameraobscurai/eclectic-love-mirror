@@ -17,6 +17,7 @@ type Props = {
   cameraScale?: number;    // scene-level zoom on inner content (default 1)
   cameraY?: number;        // scene-level y offset (default 0)
   cameraOriginY?: number;  // transform-origin Y % (default 50)
+  noOutFade?: boolean;     // skip end-of-scene fadeout (use for final scene)
   children: React.ReactNode;
 };
 
