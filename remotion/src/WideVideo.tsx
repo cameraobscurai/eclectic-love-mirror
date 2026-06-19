@@ -11,16 +11,20 @@ import { DISPLAY, BODY } from "./fonts";
 type Scene = {
   from: number;
   n: number;
-  verb: string;           // single word, never echoed inside the portrait piece
-  epigraph: string;       // short line — voice, not label
+  verb: string;           // anchored to the Atelier triad: Imagined · Designed · Realized
+  epigraph: string;       // editorial voice, never a label
 };
 
+// Voice locked to the Hive register (Saol/Casa Carta editorial). Imagined ·
+// Sourced · Composed · Designed · Realized — the Atelier triad expanded.
+// Rail flips lag StepStack slightly so Scene 4 (the brief) breathes before
+// the finale lands.
 const SCENES: Scene[] = [
-  { from: 0,   n: 1, verb: "Gather",  epigraph: "What you can't stop looking at." },
-  { from: 156, n: 2, verb: "Choose",  epigraph: "From the archive, into the room." },
-  { from: 342, n: 3, verb: "Distill", epigraph: "Color reduced to a chord." },
-  { from: 552, n: 4, verb: "Compose", epigraph: "One page. Everything in it." },
-  { from: 780, n: 5, verb: "Arrive",  epigraph: "Across the table, by morning." },
+  { from: 0,   n: 1, verb: "IMAGINED", epigraph: "What you can't stop looking at." },
+  { from: 171, n: 2, verb: "SOURCED",  epigraph: "From the archive, into the room." },
+  { from: 357, n: 3, verb: "COMPOSED", epigraph: "A palette, drawn from the image." },
+  { from: 567, n: 4, verb: "DESIGNED", epigraph: "One page. The whole room on it." },
+  { from: 870, n: 5, verb: "REALIZED", epigraph: "On its way to the Hive." },
 ];
 
 const PAGE_H = 1080;
