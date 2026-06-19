@@ -23,7 +23,8 @@ interface PanelProps {
 }
 
 const Panel: React.FC<PanelProps> = ({ file, x, z, opacity }) => {
-  const texture = useTexture(staticFile(file));
+  const texture = useRemotionTexture(staticFile(file));
+  if (!texture) return null;
   // Panels are tall, ~3:4 aspect
   return (
     <mesh position={[x, 0, z]}>
