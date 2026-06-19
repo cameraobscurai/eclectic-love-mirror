@@ -159,8 +159,12 @@ export function CollectionPicker() {
           )}
         </div>
       ) : !active ? (
-        // Level 1 — checker grid identical to /collection
-        <div className="h-[min(60vh,720px)] md:h-[min(72vh,820px)]">
+        // Level 1 — checker grid identical to /collection.
+        // No fixed height: CategoryTonalGrid enforces grid-auto-rows
+        // minmax(260px, 1fr), so 3 rows = ~780px. Capping the wrapper
+        // shorter caused the bottom row to overflow into Step 3.
+        // overflow-hidden is the safety net for any stray bleed.
+        <div className="overflow-hidden">
           <CategoryTonalGrid
             groups={groups}
             onSelectCategory={(id) => setActive(id)}
