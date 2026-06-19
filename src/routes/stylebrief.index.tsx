@@ -334,7 +334,7 @@ function StudioPage() {
           <div className="lg:col-span-9">
             <div className="relative w-full overflow-hidden bg-charcoal/[0.04] ring-1 ring-charcoal/10" style={{ aspectRatio: "1440 / 900" }}>
               <video
-                src="/video/stylebrief-flow.mp4"
+                src="/video/stylebrief-howto.mp4"
                 autoPlay
                 muted
                 loop
