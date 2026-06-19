@@ -29,7 +29,7 @@ const STEP_TITLES: Record<number, string> = {
   5: "Sent.",
 };
 
-export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, children }) => {
+export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hideTitle, hideSubtitle, chromeOpacity = 1, cameraScale = 1, cameraY = 0, cameraOriginY = 50, children }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -60,7 +60,7 @@ export const IndexCard: React.FC<Props> = ({ step, label, subtitle, sceneLen, hi
           letterSpacing: "0.36em",
           textTransform: "uppercase",
           fontWeight: 500,
-          opacity: 0.95,
+          opacity: 0.95 * chromeOpacity,
         }}
       >
         <span>Step · 0{step}</span>
