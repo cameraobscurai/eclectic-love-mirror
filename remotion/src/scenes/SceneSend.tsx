@@ -6,14 +6,16 @@ import { IndexCard } from "../components/IndexCard";
 // SCENE 05 — SENT. Send press → confirmation → "Sent." blur-in →
 // Ken Burns push + vignette + chrome fade. Last frame is composed, not abandoned.
 
-const SCENE_LEN = 240;
-const BTN_PRESS = 14;
-const CONFIRM_AT = 34;
-const SENT_AT = 56;
+const SCENE_LEN = 252;
+// All chrome timings shifted +18 to clear the 54f handoff with SceneBrief's lift.
+const INTRO_LEN = 36;
+const BTN_PRESS = 32;
+const CONFIRM_AT = 52;
+const SENT_AT = 74;
 const UNDERLINE_AT = SENT_AT + 14;
-const KENBURNS_AT = 140;
+const KENBURNS_AT = 158;
 const TAGLINE_AT = KENBURNS_AT;
-const FINAL_HOLD = 220;
+const FINAL_HOLD = 232;
 
 export const SceneSend: React.FC = () => {
   const frame = useCurrentFrame();
@@ -54,16 +56,22 @@ export const SceneSend: React.FC = () => {
   const tagOp = tagP * 0.78;
   const tagY = interpolate(tagP, [0, 1], [24, 0]);
 
-  // Palette ghost band — taller, more present, holds the final composition
-  const ghostOp = interpolate(frame, [SENT_AT + 8, SENT_AT + 40], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Palette ghost band — appears immediately to receive the lifting brief's palette
+  const ghostOp = interpolate(frame, [0, 30], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   // Closing wordmark + slug rise during the final hold
   const closeP = interpolate(frame, [KENBURNS_AT + 30, KENBURNS_AT + 70], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
 
   // Underline under Sent.
   const ulP = interpolate(frame, [UNDERLINE_AT, UNDERLINE_AT + 24], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.4, 0, 0.2, 1) });
 
+  // Intro rise — whole composition rises 48px → 0, fades 0 → 1, settles into position
+  const introP = interpolate(frame, [0, INTRO_LEN], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.bezier(0.7, 0, 0.3, 1) });
+  const introY = (1 - introP) * 48;
+  const introOp = introP;
+  const introScale = interpolate(introP, [0, 1], [0.985, 1]);
+
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ transform: `translateY(${introY}px) scale(${introScale})`, transformOrigin: "50% 60%", opacity: introOp }}>
       <IndexCard
         step={5}
         label="Sent"

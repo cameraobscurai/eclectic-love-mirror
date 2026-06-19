@@ -18,13 +18,13 @@ type Scene = {
 
 // Verbs anchored to the Atelier triad expanded.
 // Rail flips lag StepStack so each chapter holds before the next lands.
-// Scene 5 pushed to 900 so the assembled Brief gets real dwell.
+// Scene 5 flips at 876 — midpoint of Brief's lift, so rail moves with the gesture.
 const SCENES: Scene[] = [
   { from: 0,   n: 1, verb: "IMAGINED", ledger: "inspo"    },
   { from: 171, n: 2, verb: "SOURCED",  ledger: "products" },
   { from: 357, n: 3, verb: "COMPOSED", ledger: "palette"  },
   { from: 567, n: 4, verb: "DESIGNED", ledger: "brief"    },
-  { from: 900, n: 5, verb: "REALIZED", ledger: "final"    },
+  { from: 876, n: 5, verb: "REALIZED", ledger: "final"    },
 ];
 
 const PAGE_H = 1080;
