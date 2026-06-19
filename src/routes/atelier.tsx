@@ -9,6 +9,7 @@ import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { galleryProjects, GALLERY_EXCLUDE_PLANNERS, GALLERY_NDA_PLANNERS } from "@/content/gallery-projects";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
 import { StaggerHeading } from "@/components/polish/StaggerHeading";
+import { ParallaxMedia } from "@/components/polish/ParallaxMedia";
 
 // Slot-mapped images — see ./atelier.images.ts. DO NOT replace these inline;
 // edit the constants file so each slot stays bound to the correct asset.
@@ -280,15 +281,16 @@ function AtelierPage() {
               image (which is what made the page feel slow). The sticky-left
               column still holds because it's shorter than a single viewport. */}
           <div className="atelier-hero-media flex flex-col justify-start">
-            <MediaAperture
-              className="mx-auto w-full max-w-[42rem]"
-              ratio="4/5"
-              picture={atelierReplacement}
-              alt={ATELIER_IMAGE_ALT.HERO_IMAGE}
-              sizes="(min-width: 1280px) 55vw, 100vw"
-              lazy={false}
-              fetchPriority="high"
-            />
+            <ParallaxMedia depth="md" className="mx-auto w-full max-w-[42rem]">
+              <MediaAperture
+                ratio="4/5"
+                picture={atelierReplacement}
+                alt={ATELIER_IMAGE_ALT.HERO_IMAGE}
+                sizes="(min-width: 1280px) 55vw, 100vw"
+                lazy={false}
+                fetchPriority="high"
+              />
+            </ParallaxMedia>
           </div>
         </div>
       </section>
