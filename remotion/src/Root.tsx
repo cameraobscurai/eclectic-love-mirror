@@ -1,8 +1,9 @@
 import { Composition } from "remotion";
 import { MainVideo } from "./MainVideo";
 import { WideVideo } from "./WideVideo";
+import { SiteReel } from "./SiteReel";
 
-// 37s @ 30fps. Brief scene gets ~4s of dwell before Send begins.
+// v10 = stylebrief workflow. v11 = full-site cinematic reel.
 export const RemotionRoot = () => (
   <>
     <Composition
@@ -21,5 +22,14 @@ export const RemotionRoot = () => (
       width={1920}
       height={1080}
     />
+    <Composition
+      id="site-reel"
+      component={SiteReel}
+      durationInFrames={1620}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
   </>
 );
+
