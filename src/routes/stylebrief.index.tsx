@@ -322,6 +322,31 @@ function StudioPage() {
           Drop the images that move you. See your palette. Send us your vision.
         </p>
       </header>
+      {/* WALKTHROUGH — real first-person UI flow, not an abstract intro */}
+      <section className="fluid-canvas pt-10 lg:pt-14 pb-10 lg:pb-14 border-b border-charcoal/10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+          <div className="lg:col-span-3">
+            <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">How it works</p>
+            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-charcoal/65 leading-relaxed">
+              Drop. Palette. Pin. Send. A real walk-through of the form below — no extra steps.
+            </p>
+          </div>
+          <div className="lg:col-span-9">
+            <div className="relative w-full overflow-hidden bg-charcoal/[0.04] ring-1 ring-charcoal/10" style={{ aspectRatio: "1440 / 900" }}>
+              <video
+                src="/video/stylebrief-flow.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-label="A walk-through of the Eclectic Hive style brief workflow"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
       {/* TOOLS — keep 3D viewer discoverable */}
       <nav className="fluid-canvas py-5 border-b border-charcoal/10 flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
         <Link to="/stylebrief/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
