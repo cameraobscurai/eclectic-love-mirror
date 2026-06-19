@@ -20,8 +20,8 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          top: 64,
-          left: 80,
+          top: 80,
+          left: 56,
           color: COLORS.charcoal,
           fontFamily: DISPLAY,
           fontSize: 28,
@@ -35,8 +35,8 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          top: 102,
-          left: 80,
+          top: 116,
+          left: 56,
           color: COLORS.charcoal,
           opacity: 0.55,
           fontFamily: BODY,
@@ -52,8 +52,8 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          top: 64,
-          right: 80,
+          top: 80,
+          right: 56,
           textAlign: "right",
           color: COLORS.charcoal,
           fontFamily: BODY,
@@ -70,9 +70,9 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          left: 80,
-          right: 80,
-          bottom: 70,
+          left: 56,
+          right: 56,
+          bottom: 86,
           height: 1,
           background: `${COLORS.charcoal}33`,
         }}
@@ -80,8 +80,8 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          left: 80,
-          bottom: 36,
+          left: 56,
+          bottom: 50,
           color: COLORS.charcoal,
           opacity: 0.45,
           fontFamily: BODY,
@@ -95,8 +95,8 @@ export const Chrome: React.FC<{ step: number; label: string }> = ({ step, label 
       <div
         style={{
           position: "absolute",
-          right: 80,
-          bottom: 36,
+          right: 56,
+          bottom: 50,
           color: COLORS.charcoal,
           opacity: 0.45,
           fontFamily: BODY,
