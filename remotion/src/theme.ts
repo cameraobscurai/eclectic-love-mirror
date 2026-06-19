@@ -58,11 +58,12 @@ export const SWATCH_ORIGINS: SwatchOrigin[] = [
 
 // Site canvas geometry (1080×1920 9:16).
 // Mirrors the .fluid-canvas gutter from the site (~56–64px).
-export const GUTTER = 64;
-export const CONTENT_W = 1080 - GUTTER * 2;   // 952
+// Generous vertical rhythm — the site breathes; the video should too.
+export const GUTTER = 72;
+export const CONTENT_W = 1080 - GUTTER * 2;   // 936
 export const HEADER_TOP = 100;                 // wordmark band
-export const STEP_TOP = 220;                   // STEP 0X label
-export const TITLE_TOP = 268;                  // big serif title
-export const RULE_TOP = 400;                   // hairline under title
-export const CONTENT_TOP = 490;                // content starts (clear of subtitle)
-export const CONTENT_BOTTOM = 1720;            // above progress bar
+export const STEP_TOP = 250;                   // STEP 0X label (more air under chrome)
+export const TITLE_TOP = 310;                  // big serif title
+export const RULE_TOP = 452;                   // hairline under title (extra breathing)
+export const CONTENT_TOP = 560;                // content starts (clear of italic subtitle)
+export const CONTENT_BOTTOM = 1680;            // above progress bar
