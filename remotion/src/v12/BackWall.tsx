@@ -1,17 +1,17 @@
 import React from "react";
 import { useCurrentFrame, staticFile } from "remotion";
 import * as THREE from "three";
-import { useTexture } from "@react-three/drei";
+import { useRemotionTexture } from "./useRemotionTexture";
 import manifest from "../v11-manifest.json";
 import { PHASE, easeIn } from "./camera-path";
 
-// home is {poster02, poster03, poster04, poster05} — winter is poster05
 const POSTER_FILE = (manifest.home as Record<string, string>).poster05
   ?? (manifest.home as Record<string, string>).poster04;
 
 export const BackWall: React.FC = () => {
   const frame = useCurrentFrame();
-  const texture = useTexture(staticFile(POSTER_FILE));
+  const texture = useRemotionTexture(staticFile(POSTER_FILE));
+  if (!texture) return null;
 
   // Wall is wide enough to fill camera FOV at Z = -28
   const W = 36;
