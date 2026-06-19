@@ -39,13 +39,13 @@ export const SceneSend: React.FC = () => {
   return (
     <AbsoluteFill>
       <IndexCard step={5} label="Sent" subtitle="Your brief is on its way." sceneLen={SCENE_LEN}>
-        {/* timestamp */}
+        {/* meta row — confirmation timestamp + destination, like a sent record */}
         <div
           style={{
             position: "absolute", left: 0, right: 0, top: 0,
             display: "flex", justifyContent: "space-between",
             color: COLORS.charcoal, opacity: 0.5,
-            fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase",
+            fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase",
           }}
         >
           <span>Confirmation · 09:42 MT</span>
@@ -57,51 +57,51 @@ export const SceneSend: React.FC = () => {
           <div
             style={{
               position: "absolute",
-              left: 0, top: 100,
+              left: 0, top: 80,
               opacity: btnOp,
               background: COLORS.charcoal,
               color: COLORS.cream,
-              padding: "20px 36px",
+              padding: "22px 40px",
               fontFamily: BODY,
               fontSize: 14,
-              letterSpacing: "0.32em",
+              letterSpacing: "0.34em",
               textTransform: "uppercase",
               fontWeight: 500,
               display: "inline-flex",
               alignItems: "center",
-              gap: 14,
+              gap: 16,
               transform: btnPressed ? "translateY(2px)" : "translateY(0)",
             }}
           >
-            Send Your Brief
+            Send Style Brief
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={COLORS.cream} strokeWidth="1.5">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </div>
         )}
 
-        {/* confirmation checkmark — replaces button */}
+        {/* confirmation — replaces button. Quiet, no badge text. */}
         <div
           style={{
             position: "absolute",
-            left: 0, top: 100,
+            left: 0, top: 80,
             opacity: confOp,
             transform: `scale(${confScale})`,
             transformOrigin: "0 50%",
             display: "flex",
             alignItems: "center",
-            gap: 18,
+            gap: 20,
             color: COLORS.charcoal,
             fontFamily: BODY,
             fontSize: 14,
-            letterSpacing: "0.32em",
+            letterSpacing: "0.34em",
             textTransform: "uppercase",
             fontWeight: 500,
           }}
         >
           <div
             style={{
-              width: 38, height: 38,
+              width: 40, height: 40,
               border: `1.5px solid ${COLORS.charcoal}`,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}
@@ -110,21 +110,21 @@ export const SceneSend: React.FC = () => {
               <path d="M4 12l5 5L20 6" />
             </svg>
           </div>
-          Received by the Hive
+          Received
         </div>
 
-        {/* Sent. italic centerpiece */}
+        {/* Sent. italic centerpiece — the payoff. Heavy whitespace above + below. */}
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, top: 380,
+            left: 0, right: 0, top: 420,
             textAlign: "center",
             color: COLORS.charcoal,
             fontFamily: DISPLAY,
-            fontSize: 280,
+            fontSize: 300,
             fontWeight: 400,
             lineHeight: 1,
-            letterSpacing: "-0.01em",
+            letterSpacing: "-0.02em",
             opacity: sentOp,
             transform: `translateY(${sentY}px)`,
           }}
@@ -132,36 +132,19 @@ export const SceneSend: React.FC = () => {
           <em style={{ fontStyle: "italic" }}>Sent.</em>
         </div>
 
-        {/* tagline */}
+        {/* quiet promise line — uppercase, brand voice */}
         <div
           style={{
             position: "absolute",
-            left: 0, right: 0, top: 760,
+            left: 0, right: 0, top: 870,
             textAlign: "center",
             color: COLORS.charcoal,
-            fontFamily: DISPLAY,
-            fontStyle: "italic",
-            fontSize: 38,
-            lineHeight: 1.3,
-            opacity: tagOp,
-            transform: `translateY(${tagY}px)`,
-          }}
-        >
-          From inspo to inventory<br />in five minutes.
-        </div>
-
-        {/* small return note */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0, right: 0, top: 900,
-            textAlign: "center",
-            color: COLORS.charcoal,
-            opacity: tagOp * 0.6,
+            opacity: tagOp * 0.7,
             fontFamily: BODY,
-            fontSize: 12,
-            letterSpacing: "0.32em",
+            fontSize: 13,
+            letterSpacing: "0.36em",
             textTransform: "uppercase",
+            transform: `translateY(${tagY}px)`,
           }}
         >
           A producer will reach out within one business day.
