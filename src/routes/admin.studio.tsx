@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, Sparkles, ArrowUpRight } from "lucide-react";
+import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, ArrowUpRight } from "lucide-react";
 
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";
@@ -81,12 +81,6 @@ function NoInquiry() {
             icon={<Box className="h-5 w-5" />}
             label="3D"
             status="Live"
-          />
-          <ToolCard
-            to="/stylebrief/lab"
-            icon={<Sparkles className="h-5 w-5" />}
-            label="Lab"
-            status="Soon"
           />
         </div>
       </section>
