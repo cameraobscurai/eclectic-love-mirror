@@ -347,16 +347,15 @@ function StudioPage() {
           </div>
         </div>
       </section>
-      {/* TOOLS — keep 3D viewer discoverable */}
-      <nav className="fluid-canvas py-5 border-b border-charcoal/10 flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-2 text-[10px] uppercase tracking-[0.28em]">
-        <Link to="/stylebrief/three" className="text-charcoal hover:opacity-60 inline-flex items-center gap-2">
+      {/* TOOLS — single quiet entry to the 3D viewer */}
+      <div className="fluid-canvas pt-3 pb-2 flex justify-end">
+        <Link
+          to="/stylebrief/three"
+          className="text-[10px] uppercase tracking-[0.28em] text-charcoal/45 hover:text-charcoal inline-flex items-center gap-2"
+        >
           3D Viewer <ArrowRight className="h-3 w-3" />
         </Link>
-        <Link to="/stylebrief/lab" className="text-charcoal/55 hover:text-charcoal inline-flex items-center gap-2">
-          Creative Lab
-        </Link>
-        <span className="text-charcoal/35 ml-auto hidden md:inline">Below: Style Brief</span>
-      </nav>
+      </div>
       <form onSubmit={submit} className="fluid-canvas pb-32">
 
         {/* STEP 1 — INSPO */}
