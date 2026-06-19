@@ -8,6 +8,7 @@ import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { galleryProjects, GALLERY_EXCLUDE_PLANNERS, GALLERY_NDA_PLANNERS } from "@/content/gallery-projects";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
+import { StaggerHeading } from "@/components/polish/StaggerHeading";
 
 // Slot-mapped images — see ./atelier.images.ts. DO NOT replace these inline;
 // edit the constants file so each slot stays bound to the correct asset.
@@ -249,22 +250,19 @@ function AtelierPage() {
                 maxWidth: "100%",
               }}
             >
-              <h1
-                ref={headlineRef}
-                className="atelier-hero-reveal page-title text-charcoal"
-                style={{
-                  animationDelay: "80ms",
-                  fontSize: "clamp(3.25rem, 8vw, 6rem)",
-                  lineHeight: 1,
-                  width: "fit-content",
-                }}
-              >
-                IMAGINED.
-                <br />
-                DESIGNED.
-                <br />
-                REALIZED.
-              </h1>
+              <div ref={headlineRef as unknown as React.RefObject<HTMLDivElement>} style={{ width: "fit-content" }}>
+                <StaggerHeading
+                  as="h1"
+                  lines={["IMAGINED.", "DESIGNED.", "REALIZED."]}
+                  className="page-title text-charcoal"
+                  style={{
+                    fontSize: "clamp(3.25rem, 8vw, 6rem)",
+                    lineHeight: 1,
+                    width: "fit-content",
+                  }}
+                  delay={0.08}
+                />
+              </div>
               <p
                 className="atelier-hero-reveal mt-8 text-[12px] uppercase tracking-[0.18em] text-charcoal/70"
                 style={{
@@ -303,7 +301,7 @@ function AtelierPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
-              02 — THE HIVE
+              <span className="tabular-nums">02</span> — THE HIVE
             </p>
             <AtelierTeam />
           </div>
@@ -311,7 +309,7 @@ function AtelierPage() {
       </section>
 
       {/* 3. L'ATELIER — triptych above, then collage + sketch drape side by side (swapped) */}
-      <Section eyebrow="L'ATELIER">
+      <Section eyebrow="L'ATELIER" index={3}>
         {/* Triptych is a 3:1 horizontal — readable on tablet+. Below sm we
             relax to 5:3 so the three sub-frames are tall enough to read. */}
         <div className="mt-4 [&_figure]:[aspect-ratio:2/1_!important] sm:[&_figure]:[aspect-ratio:3/1_!important]">
@@ -342,7 +340,7 @@ function AtelierPage() {
       </Section>
 
       {/* 4. ATELIER APPROACH — staggered scroll reveal */}
-      <Section eyebrow="ATELIER APPROACH">
+      <Section eyebrow="ATELIER APPROACH" index={4}>
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           style={{ gap: "clamp(2rem, 1rem + 2.5vw, 3rem)" }}
@@ -383,9 +381,9 @@ function AtelierPage() {
       <PartnerRolodex />
 
       {/* 5b. WORKING WITH THE ATELIER — FAQ accordion */}
-      <Section id="working-with-the-hive">
+      <Section id="working-with-the-hive" eyebrow="WORKING WITH THE ATELIER" index={6}>
         <div>
-          <h2 className="font-display text-[clamp(1.5rem,1rem+0.9vw,2.125rem)] leading-[1.1] uppercase tracking-[0.04em]">
+          <h2 className="sr-only">
             WORKING WITH THE ATELIER
           </h2>
           <ul
@@ -428,18 +426,19 @@ function AtelierPage() {
             style={{ borderColor: "var(--archive-rule)" }}
           >
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
-              BEGIN
+              <span className="tabular-nums">07</span> — BEGIN
             </p>
-            <h2
+            <StaggerHeading
+              as="h2"
+              text="BRING A PROJECT TO THE ATELIER."
+              mode="words"
               className="mt-4 font-display uppercase max-w-2xl"
               style={{
                 fontSize: "clamp(2rem, 1rem + 2.5vw, 3.5rem)",
                 lineHeight: 1.05,
                 letterSpacing: "0.04em",
               }}
-            >
-              BRING A PROJECT TO THE ATELIER.
-            </h2>
+            />
             <Link
               to="/contact"
               className="mt-8 inline-block text-[12px] uppercase tracking-[0.18em] border border-charcoal px-6 py-3 hover:bg-charcoal hover:text-cream transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
@@ -455,14 +454,17 @@ function AtelierPage() {
 
 function Section({
   eyebrow,
+  index,
   children,
   id,
 }: {
   eyebrow?: string;
+  index?: number;
   children: React.ReactNode;
   id?: string;
 }) {
   const reduced = useReducedMotion();
+  const counter = typeof index === "number" ? String(index).padStart(2, "0") : null;
   return (
     <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
@@ -476,7 +478,13 @@ function Section({
         >
           {eyebrow ? (
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-8">
-              {eyebrow}
+              {counter ? (
+                <>
+                  <span className="tabular-nums">{counter}</span> — {eyebrow}
+                </>
+              ) : (
+                eyebrow
+              )}
             </p>
           ) : null}
           {children}
@@ -485,6 +493,7 @@ function Section({
     </section>
   );
 }
+
 
 // Derived from gallery-projects.ts: unique planners, excluding NDA + hard-excluded.
 // Stays in sync with the gallery — no separate list to maintain.
