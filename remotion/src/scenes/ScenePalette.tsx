@@ -3,36 +3,43 @@ import { COLORS, INSPO, PRODUCTS, REAL_PALETTE, SWATCH_ORIGINS } from "../theme"
 import { DISPLAY, BODY } from "../fonts";
 import { IndexCard, INNER_W } from "../components/IndexCard";
 
-// SCENE 03 — PALETTE. Mirrors the actual site palette UI:
-// black "GENERATE PALETTE" button → a flush row of 8 equal swatches
-// with hex labels in tabular nums underneath. Above: tiny source strip
-// (inspo thumbs + product thumbs) showing where colors are pulled from.
+// SCENE 03 — PALETTE. Body composed as: PULLED FROM source row → button →
+// hero swatch wall (420 tall) with hex + italic name footer → italic closer.
+// Cohesion: shared section labels, hairline dividers, "08 TONES" counter,
+// italic closer matching Scene 4's "Yours, The Hive" and Scene 5's "Sent.".
 
 const SCENE_LEN = 240;
 
-// Source strip (top) — small thumbnails
-const SOURCE_TOP = 0;
+// --- Layout constants (relative to the 936×1120 inner content box) ---
+const LABEL_1 = 0;                 // "PULLED FROM"
+const SOURCE_TOP = 24;             // inspo + product chips row
 const INSPO_W = 130;
 const INSPO_H = 160;
 const INSPO_GAP = 10;
-const INSPO_LEFT = 0;
-
-const PROD_W = 78;
-const PROD_H = 78;
+const PROD_W = 56;
+const PROD_H = 56;
 const PROD_GAP = 8;
-const PROD_LEFT = INSPO_LEFT + 5 * INSPO_W + 4 * INSPO_GAP + 24;
+const PROD_LEFT = 5 * INSPO_W + 4 * INSPO_GAP + 24;
 
-// Button row
-const BTN_TOP = SOURCE_TOP + INSPO_H + 36;
+const DIV_1 = 210;
+const BTN_TOP = 236;
+const DIV_2 = 320;
 
-// Swatch row — exactly like site: flush, equal width, hex labels under
-const SW_TOP = BTN_TOP + 80;
-const SW_H = 280;
+const LABEL_2 = 344;               // "COMBINED PALETTE / 08 TONES"
+const SW_TOP = 376;
+const SW_H = 420;
 const SW_W = INNER_W / REAL_PALETTE.length;
+const HEX_TOP = SW_TOP + SW_H + 14;
+const NAME_TOP = HEX_TOP + 22;
 
-const BUTTON_AT = 18;
-const FIRST_SWATCH = 50;
-const SWATCH_STAGGER = 8;
+const DIV_3 = NAME_TOP + 46;       // ~862
+const CLOSER_TOP = DIV_3 + 30;     // ~892
+
+// --- Timing ---
+const BUTTON_AT = 22;
+const FIRST_SWATCH = 56;
+const SWATCH_STAGGER = 7;
+const CLOSER_AT = FIRST_SWATCH + REAL_PALETTE.length * SWATCH_STAGGER + 12;
 
 export const ScenePalette: React.FC = () => {
   const frame = useCurrentFrame();
@@ -41,23 +48,44 @@ export const ScenePalette: React.FC = () => {
   const sourcePos = (i: number) => {
     const o = SWATCH_ORIGINS[i];
     if (o.kind === "inspo") {
-      const left = INSPO_LEFT + o.idx * (INSPO_W + INSPO_GAP);
+      const left = o.idx * (INSPO_W + INSPO_GAP);
       return { x: left + o.x * INSPO_W, y: SOURCE_TOP + o.y * INSPO_H };
     }
-    const left = PROD_LEFT + (o.idx % 4) * (PROD_W + PROD_GAP);
-    const row = Math.floor(o.idx / 4);
-    return { x: left + o.x * PROD_W, y: SOURCE_TOP + row * (PROD_H + PROD_GAP) + o.y * PROD_H };
+    const left = PROD_LEFT + o.idx * (PROD_W + PROD_GAP);
+    return { x: left + o.x * PROD_W, y: SOURCE_TOP + o.y * PROD_H };
   };
 
-  // Button state: idle → pressed → "Reading…"
   const btnPressed = frame >= BUTTON_AT && frame < FIRST_SWATCH;
   const btnLabel = frame < BUTTON_AT ? "GENERATE PALETTE"
     : frame < FIRST_SWATCH ? "READING…"
     : "RE-GENERATE PALETTE";
 
+  // Reveal helpers
+  const revealOp = (at: number) => interpolate(frame, [at, at + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const revealY = (at: number) => interpolate(frame, [at, at + 14], [10, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+
+  const label1Op = revealOp(0);
+  const div1Op = interpolate(frame, [BUTTON_AT - 6, BUTTON_AT + 6], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const div2Op = interpolate(frame, [FIRST_SWATCH - 10, FIRST_SWATCH], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const label2Op = div2Op;
+  const div3Op = interpolate(frame, [CLOSER_AT - 8, CLOSER_AT + 6], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const closerOp = revealOp(CLOSER_AT);
+  const closerY = revealY(CLOSER_AT);
+
   return (
     <AbsoluteFill>
       <IndexCard step={3} label="Palette" subtitle="Pulled from everything you chose." sceneLen={SCENE_LEN}>
+        {/* PULLED FROM label */}
+        <div
+          style={{
+            position: "absolute", left: 0, top: LABEL_1,
+            color: COLORS.charcoal, opacity: label1Op * 0.55,
+            fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase",
+          }}
+        >
+          Pulled From
+        </div>
+
         {/* INSPO strip */}
         {INSPO.map((src, i) => {
           const sp = spring({ frame: frame - (4 + i * 3), fps, config: { damping: 22, stiffness: 160 } });
@@ -68,7 +96,7 @@ export const ScenePalette: React.FC = () => {
               key={"i" + i}
               style={{
                 position: "absolute",
-                left: INSPO_LEFT + i * (INSPO_W + INSPO_GAP),
+                left: i * (INSPO_W + INSPO_GAP),
                 top: SOURCE_TOP + y,
                 width: INSPO_W, height: INSPO_H,
                 opacity: op,
@@ -81,10 +109,11 @@ export const ScenePalette: React.FC = () => {
           );
         })}
 
-        {/* PRODUCT strip — 4×2 mini */}
+        {/* PRODUCT chips — single inline row, smaller */}
         {PRODUCTS.map((p, i) => {
-          const sp = spring({ frame: frame - (12 + i * 3), fps, config: { damping: 22, stiffness: 160 } });
+          const sp = spring({ frame: frame - (12 + i * 2), fps, config: { damping: 22, stiffness: 160 } });
           const op = interpolate(sp, [0, 1], [0, 1]);
+          // Two rows of 4 stacked vertically inside the inspo band height
           const col = i % 4;
           const row = Math.floor(i / 4);
           return (
@@ -106,7 +135,10 @@ export const ScenePalette: React.FC = () => {
           );
         })}
 
-        {/* GENERATE PALETTE button — black, like the site */}
+        {/* Divider 1 */}
+        <div style={{ position: "absolute", left: 0, right: 0, top: DIV_1, height: 1, background: COLORS.rule, opacity: div1Op }} />
+
+        {/* GENERATE button */}
         <div
           style={{
             position: "absolute",
@@ -126,7 +158,6 @@ export const ScenePalette: React.FC = () => {
             opacity: btnPressed ? 0.85 : 1,
           }}
         >
-          {/* sparkles icon */}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={COLORS.cream} strokeWidth="1.5">
             <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
             <path d="M19 5l-2 2M7 17l-2 2M19 19l-2-2M7 7l-2-2" />
@@ -134,27 +165,31 @@ export const ScenePalette: React.FC = () => {
           {btnLabel}
         </div>
 
-        {/* Combined Palette label */}
+        {/* Divider 2 */}
+        <div style={{ position: "absolute", left: 0, right: 0, top: DIV_2, height: 1, background: COLORS.rule, opacity: div2Op }} />
+
+        {/* COMBINED PALETTE / 08 TONES row */}
         <div
           style={{
-            position: "absolute",
-            left: 0, top: SW_TOP - 32,
+            position: "absolute", left: 0, right: 0, top: LABEL_2,
+            display: "flex", justifyContent: "space-between",
+            opacity: label2Op,
             color: COLORS.charcoal,
-            fontFamily: BODY, fontSize: 11, letterSpacing: "0.32em", textTransform: "uppercase",
-            opacity: interpolate(frame, [FIRST_SWATCH - 4, FIRST_SWATCH + 4], [0, 0.55], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
+            fontFamily: BODY, fontSize: 12, letterSpacing: "0.34em", textTransform: "uppercase",
           }}
         >
-          Combined Palette
+          <span style={{ opacity: 0.55 }}>Combined Palette</span>
+          <span style={{ opacity: 0.45 }}>08 Tones</span>
         </div>
 
-        {/* Swatch row — flush, equal width, hex labels under (site-style) */}
+        {/* Swatch wall — hero */}
         {REAL_PALETTE.map((sw, i) => {
           const startFrame = FIRST_SWATCH + i * SWATCH_STAGGER;
           const reveal = spring({ frame: frame - startFrame, fps, config: { damping: 22, stiffness: 180 } });
           const op = interpolate(reveal, [0, 1], [0, 1]);
           const wipeR = interpolate(reveal, [0, 1], [0, 100]);
 
-          // hairline from source
+          // hairline from source → swatch top center
           const t = interpolate(frame, [startFrame - 6, startFrame + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
           const src = sourcePos(i);
           const dx = i * SW_W + SW_W / 2;
@@ -187,19 +222,19 @@ export const ScenePalette: React.FC = () => {
                   width: SW_W, height: SW_H,
                   background: sw.hex,
                   opacity: op,
-                  clipPath: `inset(${100 - wipeR}% 0 0 0)`,  // wipe down from top
+                  clipPath: `inset(${100 - wipeR}% 0 0 0)`,
                 }}
               />
-              {/* hex label below swatch */}
+              {/* hex */}
               <div
                 style={{
                   position: "absolute",
                   left: i * SW_W,
-                  top: SW_TOP + SW_H + 10,
+                  top: HEX_TOP,
                   width: SW_W,
                   textAlign: "center",
                   color: COLORS.charcoal,
-                  opacity: labelOp * 0.6,
+                  opacity: labelOp * 0.65,
                   fontFamily: BODY,
                   fontSize: 11,
                   letterSpacing: "0.18em",
@@ -208,19 +243,19 @@ export const ScenePalette: React.FC = () => {
               >
                 {sw.hex}
               </div>
-              {/* name in italic above hex */}
+              {/* italic name */}
               <div
                 style={{
                   position: "absolute",
                   left: i * SW_W,
-                  top: SW_TOP + SW_H + 30,
+                  top: NAME_TOP,
                   width: SW_W,
                   textAlign: "center",
                   color: COLORS.charcoal,
-                  opacity: labelOp * 0.45,
+                  opacity: labelOp * 0.55,
                   fontFamily: DISPLAY,
                   fontStyle: "italic",
-                  fontSize: 16,
+                  fontSize: 18,
                 }}
               >
                 {sw.name}
@@ -228,6 +263,25 @@ export const ScenePalette: React.FC = () => {
             </div>
           );
         })}
+
+        {/* Divider 3 */}
+        <div style={{ position: "absolute", left: 0, right: 0, top: DIV_3, height: 1, background: COLORS.rule, opacity: div3Op }} />
+
+        {/* Italic closer */}
+        <div
+          style={{
+            position: "absolute", left: 0, right: 0, top: CLOSER_TOP,
+            textAlign: "center",
+            color: COLORS.charcoal,
+            opacity: closerOp * 0.75,
+            transform: `translateY(${closerY}px)`,
+            fontFamily: DISPLAY,
+            fontStyle: "italic",
+            fontSize: 26,
+          }}
+        >
+          Eight tones — composed.
+        </div>
       </IndexCard>
     </AbsoluteFill>
   );
