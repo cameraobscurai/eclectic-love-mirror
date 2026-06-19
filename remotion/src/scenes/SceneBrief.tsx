@@ -7,7 +7,8 @@ import { IndexCard, INNER_W } from "../components/IndexCard";
 // Title builds word-by-word, values type in, swatches drop, pins land,
 // signature handwrites. Single ease, no jitter.
 
-const SCENE_LEN = 348; // assembly ~248f + composed hold ~80f + outro fade 18f
+const SCENE_LEN = 360; // assembly ~248f + composed hold + 42f lift outro
+const T_LIFT = SCENE_LEN - 42; // 318 — brief lifts away here
 
 // Layout
 const META_TOP = 0;
