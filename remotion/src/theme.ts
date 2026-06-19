@@ -26,11 +26,11 @@ export const REAL_PALETTE: Swatch[] = [
 // Inspiration set — diverse subjects: interior, textile macro, still life,
 // architecture, kilim flat-lay.
 export const INSPO = [
-  "inspo/01-table-dusk.jpg",
-  "inspo/02-linen-texture.jpg",
-  "inspo/03-candle-stilllife.jpg",
-  "inspo/04-architecture.jpg",
-  "inspo/05-kilim.jpg",
+  "inspo/01-amangiri-dinner.jpg",
+  "inspo/02-lynden-lounge.jpg",
+  "inspo/03-dos-mas-tablescape.jpg",
+  "inspo/04-brush-creek-sangeet.jpg",
+  "inspo/05-brooke-hot-springs.jpg",
 ];
 
 // Per-swatch origin coords (0-1) mapped to a source inspo image for the
