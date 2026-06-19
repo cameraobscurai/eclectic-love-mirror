@@ -1,6 +1,6 @@
 import React from "react";
 import { useCurrentFrame, staticFile } from "remotion";
-import { useTexture } from "@react-three/drei";
+import { useRemotionTexture } from "./useRemotionTexture";
 import * as THREE from "three";
 import manifest from "../v11-manifest.json";
 import { PHASE, easeIn } from "./camera-path";
