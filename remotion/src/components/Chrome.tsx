@@ -6,10 +6,8 @@ import { BODY } from "../fonts";
 // "STUDIO" micro label left, "ECLECTIC HIVE" tracked caps centered.
 export const Chrome: React.FC = () => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
   const inOp = interpolate(frame, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  const outOp = interpolate(frame, [durationInFrames - 18, durationInFrames], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const op = Math.min(inOp, outOp);
+  const op = inOp;
 
   const labelStyle: React.CSSProperties = {
     color: COLORS.charcoal,
