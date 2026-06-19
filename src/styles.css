@@ -572,3 +572,49 @@ button, a, [role="button"] {
     letter-spacing: 0.14em;
   }
 }
+
+/* ----------------------------------------------------------------------------
+   ParallaxMedia — scroll-driven dimensional parallax.
+
+   Only fires when:
+   - the browser supports `animation-timeline: view()` (Chrome/Edge 115+)
+   - pointer is fine (mouse / trackpad — skips touch devices)
+   - user has not requested reduced motion
+
+   When unsupported or skipped, the inner content renders at rest with no JS
+   cost. The outer wrapper is a paint containment boundary so the transformed
+   inner content can't trigger layout on neighbours.
+   ---------------------------------------------------------------------------- */
+[data-parallax-media] {
+  contain: paint;
+  will-change: auto;
+}
+
+@supports (animation-timeline: view()) {
+  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .parallax-media__inner {
+      animation: parallax-media-drift linear both;
+      animation-timeline: view();
+      /* Start at 0% scroll-into-view, finish at 100% scroll-out-of-view.
+         The cover range maps the full pass of the element across the viewport. */
+      animation-range: cover 0% cover 100%;
+      will-change: transform, filter;
+      transform-origin: center center;
+    }
+  }
+}
+
+@keyframes parallax-media-drift {
+  0% {
+    transform: translate3d(0, calc(var(--pmy, 8%) * -1), 0) scale(var(--pms0, 0.98));
+    filter: brightness(var(--pmb0, 0.92));
+  }
+  50% {
+    transform: translate3d(0, 0, 0) scale(calc((var(--pms0, 0.98) + var(--pms1, 1.06)) / 2));
+    filter: brightness(var(--pmb1, 1));
+  }
+  100% {
+    transform: translate3d(0, var(--pmy, 8%), 0) scale(var(--pms1, 1.06));
+    filter: brightness(var(--pmb1, 1));
+  }
+}
