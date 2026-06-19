@@ -6,14 +6,16 @@ import { IndexCard } from "../components/IndexCard";
 // SCENE 05 — SENT. Send press → confirmation → "Sent." blur-in →
 // Ken Burns push + vignette + chrome fade. Last frame is composed, not abandoned.
 
-const SCENE_LEN = 240;
-const BTN_PRESS = 14;
-const CONFIRM_AT = 34;
-const SENT_AT = 56;
+const SCENE_LEN = 252;
+// All chrome timings shifted +18 to clear the 54f handoff with SceneBrief's lift.
+const INTRO_LEN = 36;
+const BTN_PRESS = 32;
+const CONFIRM_AT = 52;
+const SENT_AT = 74;
 const UNDERLINE_AT = SENT_AT + 14;
-const KENBURNS_AT = 140;
+const KENBURNS_AT = 158;
 const TAGLINE_AT = KENBURNS_AT;
-const FINAL_HOLD = 220;
+const FINAL_HOLD = 232;
 
 export const SceneSend: React.FC = () => {
   const frame = useCurrentFrame();
