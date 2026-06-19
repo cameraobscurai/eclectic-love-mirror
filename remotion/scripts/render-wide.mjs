@@ -26,7 +26,7 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/stylebrief-site-v9-wide.mp4",
+  outputLocation: "/mnt/documents/stylebrief-site-v10-wide.mp4",
   puppeteerInstance: browser,
   muted: true,
   concurrency: 1,
