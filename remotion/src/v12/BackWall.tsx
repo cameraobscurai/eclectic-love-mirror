@@ -10,9 +10,9 @@ import { PHASE, easeIn } from "./camera-path";
 // with subtle parallax. Video texture support is finicky in headless rendering so
 // we use a still image with Ken Burns to keep things deterministic and fast.
 
-const POSTER = manifest.homePosters.find((p) => /05|winter/i.test(p.label)) ?? manifest.homePosters[0];
-
-import { useTexture } from "@react-three/drei";
+// home is {poster02, poster03, poster04, poster05} — winter is poster05
+const POSTER_FILE = (manifest.home as Record<string, string>).poster05
+  ?? (manifest.home as Record<string, string>).poster04;
 
 export const BackWall: React.FC = () => {
   const frame = useCurrentFrame();
