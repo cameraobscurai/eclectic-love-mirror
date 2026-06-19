@@ -1,13 +1,12 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, staticFile } from "remotion";
+import { AbsoluteFill, useVideoConfig, staticFile } from "remotion";
 import { ThreeCanvas } from "@remotion/three";
 import * as THREE from "three";
-import { useRemotionTexture } from "./useRemotionTexture";
+import { getTexture } from "./textureCache";
 
 const Card: React.FC = () => {
   const url = staticFile("v11/products/adelaide-antique-arm-chair-2970.png");
-  const tex = useRemotionTexture(url);
-  console.log("[smoke] tex:", tex ? "loaded" : "null");
+  const tex = getTexture(url);
   if (!tex) return null;
   return (
     <mesh position={[0, 0, 0]}>
@@ -19,8 +18,6 @@ const Card: React.FC = () => {
 
 export const SmokeTex: React.FC = () => {
   const { width, height } = useVideoConfig();
-  const frame = useCurrentFrame();
-  void frame;
   return (
     <AbsoluteFill style={{ background: "#222" }}>
       <ThreeCanvas width={width} height={height} camera={{ position: [0, 0, 5], fov: 50 }}>
