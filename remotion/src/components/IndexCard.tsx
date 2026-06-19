@@ -11,6 +11,8 @@ type Props = {
   label: string;        // legacy — used as STEP title
   subtitle: string;     // small caption line under the rule
   sceneLen: number;
+  hideTitle?: boolean;     // doc-owns-page mode: skip serif title + rule + italic subtitle
+  hideSubtitle?: boolean;  // hide just the italic subtitle line
   children: React.ReactNode;
 };
 
