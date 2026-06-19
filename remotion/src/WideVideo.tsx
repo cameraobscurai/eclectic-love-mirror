@@ -163,28 +163,28 @@ export const WideVideo: React.FC = () => {
           transform: `translateY(${-breath}px)`,
         }}
       >
-        {/* Top: act label, not redundant */}
+        {/* Top: act label */}
         <div style={{ fontFamily: BODY, fontSize: 11, letterSpacing: "0.42em", textTransform: "uppercase", opacity: 0.5 }}>
           An act in five
         </div>
 
-        {/* Middle: VERB with masked reveal + hairline sweep + epigraph */}
+        {/* Middle: VERB (caps, Aesence/Prada register) + hairline sweep + epigraph */}
         <div style={{ maxWidth: SIDE_W - 192 }}>
           <div
             key={`verb-${active.n}`}
             style={{
               fontFamily: DISPLAY,
-              fontStyle: "italic",
-              fontSize: 92,
-              lineHeight: 1.02,
-              letterSpacing: "-0.02em",
+              fontSize: 72,
+              lineHeight: 1.0,
+              letterSpacing: "0.04em",
               transform: `translateY(${verbY}px)`,
               clipPath: `inset(0 0 ${100 - verbReveal}% 0)`,
               WebkitClipPath: `inset(0 0 ${100 - verbReveal}% 0)`,
             }}
           >
-            {active.verb}.
+            {active.verb}
           </div>
+
 
           {/* hairline that sweeps in under the verb */}
           <div
