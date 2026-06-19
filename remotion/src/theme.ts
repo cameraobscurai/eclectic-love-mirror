@@ -34,13 +34,16 @@ export const INSPO = [
   "inspo/05.jpg",
 ];
 
-// Real catalog products mirrored to public/products
+// Real catalog products mirrored to public/products — curated mix the client
+// would actually pin (no novelty items, varied categories, varied silhouettes).
 export type Product = { src: string; title: string; category: string };
 export const PRODUCTS: Product[] = [
-  { src: "products/adelaide-chair.png", title: "ADELAIDE ARM CHAIR", category: "Seating" },
-  { src: "products/aaron-table.png", title: "AARON COFFEE TABLE", category: "Tables" },
-  { src: "products/alabaster-votive.png", title: "ALABASTER VOTIVE", category: "Candlelight" },
-  { src: "products/alexander-decanter.png", title: "ALEXANDER DECANTER", category: "Serveware" },
-  { src: "products/adonis-glass.png", title: "ADONIS GLASSWARE", category: "Tableware" },
-  { src: "products/adele-disco.png", title: "MELTING DISCO BALL", category: "Styling" },
+  { src: "products/01-auset-banquette.png", title: "AUSET LINEN BANQUETTE", category: "Seating" },
+  { src: "products/02-alora-chair.png", title: "ALORA BOTANICAL CHAIR", category: "Seating" },
+  { src: "products/03-calloway-table.png", title: "CALLOWAY MARBLE TABLE", category: "Tables" },
+  { src: "products/04-cressida-lamp.png", title: "CRESSIDA MARBLE LAMP", category: "Lighting" },
+  { src: "products/05-alabaster-votive.png", title: "ALABASTER VOTIVE", category: "Candlelight" },
+  { src: "products/06-linen-pillow.png", title: "BEIGE LINEN PILLOW", category: "Pillows" },
+  { src: "products/07-evren-rug.png", title: "EVREN KILIM RUG", category: "Rugs" },
+  { src: "products/08-keaton-mirror.png", title: "KEATON FLOOR MIRROR", category: "Large Decor" },
 ];
