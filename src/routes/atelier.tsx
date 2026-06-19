@@ -452,14 +452,17 @@ function AtelierPage() {
 
 function Section({
   eyebrow,
+  index,
   children,
   id,
 }: {
   eyebrow?: string;
+  index?: number;
   children: React.ReactNode;
   id?: string;
 }) {
   const reduced = useReducedMotion();
+  const counter = typeof index === "number" ? String(index).padStart(2, "0") : null;
   return (
     <section id={id} style={{ marginTop: "var(--section-gap)" }}>
       <div className="fluid-canvas">
@@ -473,7 +476,13 @@ function Section({
         >
           {eyebrow ? (
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-8">
-              {eyebrow}
+              {counter ? (
+                <>
+                  <span className="tabular-nums">{counter}</span> — {eyebrow}
+                </>
+              ) : (
+                eyebrow
+              )}
             </p>
           ) : null}
           {children}
@@ -482,6 +491,7 @@ function Section({
     </section>
   );
 }
+
 
 // Derived from gallery-projects.ts: unique planners, excluding NDA + hard-excluded.
 // Stays in sync with the gallery — no separate list to maintain.
