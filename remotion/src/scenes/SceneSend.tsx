@@ -218,7 +218,7 @@ export const SceneSend: React.FC = () => {
       <div
         style={{
           position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at center, transparent 50%, rgba(26,26,26,1) 130%)",
+          background: "radial-gradient(ellipse at center, transparent 60%, rgba(26,26,26,1) 115%)",
           opacity: vigOp,
           pointerEvents: "none",
         }}
