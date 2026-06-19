@@ -51,6 +51,30 @@ export const RemotionRoot = () => (
       height={720}
     />
     <Composition
+      id="macro-beat-a"
+      component={MacroBeatA}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    <Composition
+      id="macro-beat-b"
+      component={MacroBeatB}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    <Composition
+      id="macro-beat-c"
+      component={MacroBeatC}
+      durationInFrames={270}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
+    <Composition
       id="onetake-v12"
       component={SiteReelV12}
       durationInFrames={1800}
