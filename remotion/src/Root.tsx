@@ -3,6 +3,7 @@ import { MainVideo } from "./MainVideo";
 import { WideVideo } from "./WideVideo";
 import { SiteReel } from "./SiteReel";
 import { SmokeTest } from "./v12/SmokeTest";
+import { SmokeTex } from "./v12/SmokeTex";
 import { SiteReelV12 } from "./v12/SiteReelV12";
 
 // v10 = stylebrief workflow. v11 = full-site reel. v12 = one-take 3D camera.
