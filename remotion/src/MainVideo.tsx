@@ -26,12 +26,12 @@ export const MainVideo: React.FC = () => {
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: FADE })} />
 
         <TransitionSeries.Sequence durationInFrames={SCENE_LEN}>
-          <ScenePalette />
+          <ScenePin />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: FADE })} />
 
         <TransitionSeries.Sequence durationInFrames={SCENE_LEN}>
-          <ScenePin />
+          <ScenePalette />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition presentation={fade()} timing={linearTiming({ durationInFrames: FADE })} />
 

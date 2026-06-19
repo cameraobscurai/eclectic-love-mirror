@@ -14,7 +14,7 @@ export const ScenePalette: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <Chrome step={2} label="Extract Palette" />
+      <Chrome step={3} label="Extract Palette" />
 
       <div style={{ position: "absolute", right: 200, top: 200, display: "flex", flexDirection: "column", gap: 24 }}>
         {SOURCE_THUMBS.map((src, i) => {
@@ -66,7 +66,7 @@ export const ScenePalette: React.FC = () => {
         }}
       >
         <div style={{ color: COLORS.charcoal, opacity: 0.55, fontFamily: BODY, fontSize: 12, letterSpacing: "0.42em", textTransform: "uppercase", marginBottom: 28 }}>
-          Step Two
+          Step Three
         </div>
         <div style={{ color: COLORS.charcoal, fontFamily: DISPLAY, fontSize: 132, lineHeight: 0.95, fontWeight: 300, letterSpacing: "-0.01em" }}>
           Your<br />
