@@ -1,10 +1,10 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
-import { COLORS, SAMPLE_PALETTE } from "../theme";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
+import { COLORS, REAL_PALETTE, PRODUCTS } from "../theme";
 import { DISPLAY, BODY } from "../fonts";
 import { Chrome } from "../components/Chrome";
 
-// SCENE 04 — BRIEF. An editorial document composes itself: client, scope,
-// palette band, pinned pieces, signature. Lines reveal one at a time.
+// SCENE 04 — BRIEF. The compiled document: title, specs, real palette,
+// pinned product thumbs, signature. Each row reveals in sequence.
 
 const LINES: { label: string; value: string }[] = [
   { label: "Client", value: "Hayes / Ridgeline Estate" },
