@@ -227,7 +227,7 @@ export const template = {
     return `New Hive style brief — ${name}${suffix}`
   },
   displayName: 'Inquiry Notification (admin)',
-  to: 'info@eclectichive.com',
+  to: 'jlivingston@eclectichive.com',
   previewData: {
     name: 'Jane Doe',
     email: 'jane@example.com',
