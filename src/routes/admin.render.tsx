@@ -3,12 +3,12 @@
 // a visual reference. Stream partials with blur→sharp, save to private bucket,
 // optionally publish to the product's images[].
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createParser } from "eventsource-parser";
 import { flushSync } from "react-dom";
-import { Loader2, Search, Wand2, Save, Send, Trash2, Check } from "lucide-react";
+import { Loader2, Search, Wand2, Save, Send, Trash2, Check, Download } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { supabase } from "@/integrations/supabase/client";
