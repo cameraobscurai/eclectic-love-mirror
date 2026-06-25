@@ -435,6 +435,21 @@ function RenderPage() {
             >
               <Save className="h-3.5 w-3.5" /> Save to library
             </button>
+            <button
+              onClick={onDownloadCurrent}
+              disabled={!finalB64}
+              className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+              title="Download PNG (D)"
+            >
+              <Download className="h-3.5 w-3.5" /> Download
+            </button>
+            <button
+              onClick={onCopyCurrent}
+              disabled={!finalB64}
+              className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+              title="Copy to clipboard (C)"
+            >
+              <Check className="h-3.5 w-3.5" /> Copy
             {savedNotice && (
               <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 inline-flex items-center gap-1">
                 <Check className="h-3 w-3" /> {savedNotice}
