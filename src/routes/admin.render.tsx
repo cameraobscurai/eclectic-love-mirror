@@ -102,6 +102,21 @@ function RenderPage() {
     refreshHistory(scopeRms).catch(() => {});
   }, [selected, refreshHistory, historyScope]);
 
+  // Keyboard shortcuts: D = download current, C = copy current
+  useEffect(() => {
+    if (!finalB64) return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "d" || e.key === "D") { e.preventDefault(); onDownloadCurrent(); }
+      else if (e.key === "c" || e.key === "C") { e.preventDefault(); onCopyCurrent(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalB64, selected, preset]);
+
   const categoryCounts = useMemo(() => {
     const m = new Map<string, number>();
     for (const p of pickables ?? []) {
