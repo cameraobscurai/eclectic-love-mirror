@@ -63,8 +63,6 @@ import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
 import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.$'
 import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
 import { Route as BarsSplatRouteImport } from './routes/bars.$'
-import { Route as ApiAdminRenderSaveRouteImport } from './routes/api/admin-render-save'
-import { Route as ApiAdminRenderDownloadRouteImport } from './routes/api/admin-render-download'
 import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
@@ -356,16 +354,6 @@ const BarsSplatRoute = BarsSplatRouteImport.update({
   path: '/bars/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAdminRenderSaveRoute = ApiAdminRenderSaveRouteImport.update({
-  id: '/api/admin-render-save',
-  path: '/api/admin-render-save',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminRenderDownloadRoute = ApiAdminRenderDownloadRouteImport.update({
-  id: '/api/admin-render-download',
-  path: '/api/admin-render-download',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAdminRenderRoute = ApiAdminRenderRouteImport.update({
   id: '/api/admin-render',
   path: '/api/admin-render',
@@ -505,8 +493,6 @@ export interface FileRoutesByFullPath {
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
-  '/api/admin-render-download': typeof ApiAdminRenderDownloadRoute
-  '/api/admin-render-save': typeof ApiAdminRenderSaveRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -583,8 +569,6 @@ export interface FileRoutesByTo {
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
-  '/api/admin-render-download': typeof ApiAdminRenderDownloadRoute
-  '/api/admin-render-save': typeof ApiAdminRenderSaveRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -662,8 +646,6 @@ export interface FileRoutesById {
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
-  '/api/admin-render-download': typeof ApiAdminRenderDownloadRoute
-  '/api/admin-render-save': typeof ApiAdminRenderSaveRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -742,8 +724,6 @@ export interface FileRouteTypes {
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
-    | '/api/admin-render-download'
-    | '/api/admin-render-save'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -820,8 +800,6 @@ export interface FileRouteTypes {
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
-    | '/api/admin-render-download'
-    | '/api/admin-render-save'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -898,8 +876,6 @@ export interface FileRouteTypes {
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
-    | '/api/admin-render-download'
-    | '/api/admin-render-save'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -965,8 +941,6 @@ export interface RootRouteChildren {
   TheHive3Route: typeof TheHive3Route
   ApiAdminChatRoute: typeof ApiAdminChatRoute
   ApiAdminRenderRoute: typeof ApiAdminRenderRoute
-  ApiAdminRenderDownloadRoute: typeof ApiAdminRenderDownloadRoute
-  ApiAdminRenderSaveRoute: typeof ApiAdminRenderSaveRoute
   BarsSplatRoute: typeof BarsSplatRoute
   CandlelightSplatRoute: typeof CandlelightSplatRoute
   ChairsStools1SplatRoute: typeof ChairsStools1SplatRoute
@@ -1388,20 +1362,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BarsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/admin-render-save': {
-      id: '/api/admin-render-save'
-      path: '/api/admin-render-save'
-      fullPath: '/api/admin-render-save'
-      preLoaderRoute: typeof ApiAdminRenderSaveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin-render-download': {
-      id: '/api/admin-render-download'
-      path: '/api/admin-render-download'
-      fullPath: '/api/admin-render-download'
-      preLoaderRoute: typeof ApiAdminRenderDownloadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/admin-render': {
       id: '/api/admin-render'
       path: '/api/admin-render'
@@ -1612,8 +1572,6 @@ const rootRouteChildren: RootRouteChildren = {
   TheHive3Route: TheHive3Route,
   ApiAdminChatRoute: ApiAdminChatRoute,
   ApiAdminRenderRoute: ApiAdminRenderRoute,
-  ApiAdminRenderDownloadRoute: ApiAdminRenderDownloadRoute,
-  ApiAdminRenderSaveRoute: ApiAdminRenderSaveRoute,
   BarsSplatRoute: BarsSplatRoute,
   CandlelightSplatRoute: CandlelightSplatRoute,
   ChairsStools1SplatRoute: ChairsStools1SplatRoute,
