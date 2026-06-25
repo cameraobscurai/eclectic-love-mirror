@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Sparkles,
   PlusCircle,
+  Wand2,
 } from "lucide-react";
 import {
   Sidebar,
