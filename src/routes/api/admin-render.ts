@@ -19,23 +19,28 @@ const PRESET_PROMPTS: Record<string, string> = {
 const MODEL_DEFAULT = "google/gemini-3-pro-image";
 
 async function requireAdminFromRequest(request: Request) {
-  const authHeader = request.headers.get("authorization") ?? "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  if (!token) return null;
+  try {
+    const authHeader = request.headers.get("authorization") ?? "";
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+    if (!token) return null;
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
-  if (userErr || !userData.user) return null;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
+    if (userErr || !userData.user) return null;
 
-  const { data: roleRows } = await supabaseAdmin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userData.user.id)
-    .eq("role", "admin")
-    .limit(1);
+    const { data: roleRows } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userData.user.id)
+      .eq("role", "admin")
+      .limit(1);
 
-  if (!roleRows || roleRows.length === 0) return null;
-  return { supabaseAdmin, userId: userData.user.id };
+    if (!roleRows || roleRows.length === 0) return null;
+    return { supabaseAdmin, userId: userData.user.id };
+  } catch (error) {
+    console.error("[admin-render] auth check failed", error);
+    return null;
+  }
 }
 
 function safeFilename(input: string) {
