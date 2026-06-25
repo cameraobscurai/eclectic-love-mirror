@@ -230,22 +230,26 @@ function RenderPage() {
 
   async function onDownload(h: RenderHistoryItem) {
     if (!h.signedUrl) return;
+    const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
     try {
       const res = await fetch(h.signedUrl);
+      if (!res.ok) throw new Error(`${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
       a.download = name;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : String(e));
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      // CORS or network fallback — append download param so the browser saves it
+      const url = h.signedUrl + (h.signedUrl.includes("?") ? "&" : "?") + `download=${encodeURIComponent(name)}`;
+      window.open(url, "_blank", "noopener");
     }
   }
+
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
@@ -433,76 +437,97 @@ function RenderPage() {
             className="w-full bg-transparent border border-charcoal/15 p-2 text-[12px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/60 resize-none mb-6"
           />
 
-          <div className="border-t border-charcoal/10 pt-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Library</p>
-              <div className="flex border border-charcoal/15">
-                <button
-                  onClick={() => setHistoryScope("product")}
-                  disabled={!selected}
-                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 transition-colors disabled:opacity-30 ${historyScope === "product" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
-                >
-                  This product
-                </button>
-                <button
-                  onClick={() => setHistoryScope("library")}
-                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border-l border-charcoal/15 transition-colors ${historyScope === "library" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
-                >
-                  All renders
-                </button>
-              </div>
-            </div>
-            {historyScope === "product" && selected && (
-              <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/40 mb-2">{selected.rmsId}</p>
-            )}
-            <ul className="space-y-2">
-              {history.length === 0 && (
-                <li className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">None yet</li>
-              )}
-              {history.map((h) => (
-                <li key={h.id} className="border border-charcoal/10 p-2">
-                  {h.signedUrl && (
-                    <img src={h.signedUrl} alt="" className="w-full aspect-[4/5] object-cover bg-charcoal/5 mb-2" />
-                  )}
-                  {historyScope === "library" && h.productTitle && (
-                    <p className="text-[10px] font-sans normal-case text-charcoal/80 truncate mb-1">{h.productTitle}</p>
-                  )}
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-[9px] uppercase tracking-[0.22em] text-charcoal/60 truncate">
-                      {h.preset} · {h.status}
-                    </span>
-                    <div className="flex items-center gap-0.5 shrink-0">
-                      <button
-                        onClick={() => onDownload(h)}
-                        title="Download PNG"
-                        className="p-1 text-charcoal/60 hover:text-charcoal"
-                      >
-                        <Download className="h-3 w-3" />
-                      </button>
-                      {h.status !== "published" && h.rmsId && (
-                        <button
-                          onClick={() => onPublish(h.id)}
-                          title="Attach to product"
-                          className="p-1 text-charcoal/60 hover:text-charcoal"
-                        >
-                          <Send className="h-3 w-3" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => onDiscard(h.id)}
-                        title="Discard"
-                        className="p-1 text-charcoal/60 hover:text-red-700"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
         </aside>
       </div>
+
+      {/* LIBRARY — full-width, first-class surface */}
+      <section className="px-6 lg:px-12 py-10 border-t border-charcoal/10">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Library</p>
+            <h2 className="mt-1 font-display text-2xl uppercase tracking-[0.04em]">
+              {historyScope === "product" && selected
+                ? selected.title
+                : "All renders"}
+            </h2>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+              {history.length} render{history.length === 1 ? "" : "s"}
+              {historyScope === "product" && selected ? ` · ${selected.rmsId}` : ""}
+            </p>
+          </div>
+          <div className="flex border border-charcoal/15">
+            <button
+              onClick={() => setHistoryScope("product")}
+              disabled={!selected}
+              className={`text-[10px] uppercase tracking-[0.22em] px-3 py-2 transition-colors disabled:opacity-30 ${historyScope === "product" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+            >
+              This product
+            </button>
+            <button
+              onClick={() => setHistoryScope("library")}
+              className={`text-[10px] uppercase tracking-[0.22em] px-3 py-2 border-l border-charcoal/15 transition-colors ${historyScope === "library" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+            >
+              All renders
+            </button>
+          </div>
+        </div>
+
+        {history.length === 0 ? (
+          <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40 py-12 text-center border border-dashed border-charcoal/15">
+            No renders yet — generate one above to start the library.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+            {history.map((h) => (
+              <li key={h.id} className="group border border-charcoal/10 bg-cream flex flex-col">
+                <div className="relative aspect-[4/5] bg-charcoal/5 overflow-hidden">
+                  {h.signedUrl && (
+                    <img src={h.signedUrl} alt="" className="w-full h-full object-cover" />
+                  )}
+                  {h.status === "published" && (
+                    <span className="absolute top-2 left-2 text-[9px] uppercase tracking-[0.22em] bg-cream/90 text-charcoal px-1.5 py-0.5">
+                      Published
+                    </span>
+                  )}
+                </div>
+                <div className="p-3 flex-1 flex flex-col gap-2">
+                  {h.productTitle && (
+                    <p className="text-[11px] font-sans normal-case text-charcoal truncate">{h.productTitle}</p>
+                  )}
+                  <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/50">
+                    {h.preset} · {new Date(h.createdAt).toLocaleDateString()}
+                  </p>
+                  <div className="mt-auto flex items-center gap-1 pt-2 border-t border-charcoal/10">
+                    <button
+                      onClick={() => onDownload(h)}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 text-[9px] uppercase tracking-[0.22em] border border-charcoal/20 hover:bg-charcoal hover:text-cream transition-colors"
+                    >
+                      <Download className="h-3 w-3" /> Download
+                    </button>
+                    {h.status !== "published" && h.rmsId && (
+                      <button
+                        onClick={() => onPublish(h.id)}
+                        title="Attach to product"
+                        className="px-2 py-1.5 text-charcoal/60 hover:text-charcoal border border-charcoal/20"
+                      >
+                        <Send className="h-3 w-3" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onDiscard(h.id)}
+                      title="Discard"
+                      className="px-2 py-1.5 text-charcoal/60 hover:text-red-700 border border-charcoal/20"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
+
