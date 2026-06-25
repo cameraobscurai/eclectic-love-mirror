@@ -450,6 +450,7 @@ function RenderPage() {
               title="Copy to clipboard (C)"
             >
               <Check className="h-3.5 w-3.5" /> Copy
+            </button>
             {savedNotice && (
               <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 inline-flex items-center gap-1">
                 <Check className="h-3 w-3" /> {savedNotice}
