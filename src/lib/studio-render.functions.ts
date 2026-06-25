@@ -24,8 +24,8 @@ export const listRenderPickables = createServerFn({ method: "GET" })
       .limit(2000);
     if (error) throw error;
     return (data ?? [])
-      .filter((r): r is { rms_id: string; title: string; category: string | null; images: unknown } => Boolean(r.rms_id))
-      .map((r) => {
+      .filter((r) => Boolean(r.rms_id))
+      .map((r): RenderPickable => {
         const imgs = Array.isArray(r.images) ? (r.images as unknown[]) : [];
         const first = imgs[0];
         const url =
@@ -35,8 +35,8 @@ export const listRenderPickables = createServerFn({ method: "GET" })
             ? String((first as Record<string, unknown>).url ?? "")
             : null;
         return {
-          rmsId: r.rms_id,
-          title: r.title ?? r.rms_id,
+          rmsId: r.rms_id as string,
+          title: r.title ?? (r.rms_id as string),
           category: r.category ?? null,
           primaryImage: url || null,
         };
