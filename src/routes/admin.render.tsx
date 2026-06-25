@@ -230,22 +230,26 @@ function RenderPage() {
 
   async function onDownload(h: RenderHistoryItem) {
     if (!h.signedUrl) return;
+    const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
     try {
       const res = await fetch(h.signedUrl);
+      if (!res.ok) throw new Error(`${res.status}`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
       a.download = name;
       document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(url);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : String(e));
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      // CORS or network fallback — append download param so the browser saves it
+      const url = h.signedUrl + (h.signedUrl.includes("?") ? "&" : "?") + `download=${encodeURIComponent(name)}`;
+      window.open(url, "_blank", "noopener");
     }
   }
+
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
