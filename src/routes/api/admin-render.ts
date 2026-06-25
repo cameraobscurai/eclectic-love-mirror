@@ -124,45 +124,50 @@ export const Route = createFileRoute("/api/admin-render")({
 
         const contentType = request.headers.get("content-type") ?? "";
         if (contentType.includes("multipart/form-data")) {
-          const form = await request.formData();
-          const file = form.get("file");
-          if (!(file instanceof File)) return new Response("Missing image file", { status: 400 });
+          try {
+            const form = await request.formData();
+            const file = form.get("file");
+            if (!(file instanceof Blob)) return new Response("Missing image file", { status: 400 });
 
-          const rmsIdRaw = String(form.get("rmsId") ?? "").trim();
-          const productTitleRaw = String(form.get("productTitle") ?? "").trim();
-          const preset = String(form.get("preset") ?? "render").trim() || "render";
-          const model = String(form.get("model") ?? "").trim();
-          const prompt = String(form.get("prompt") ?? "");
+            const rmsIdRaw = String(form.get("rmsId") ?? "").trim();
+            const productTitleRaw = String(form.get("productTitle") ?? "").trim();
+            const preset = String(form.get("preset") ?? "render").trim() || "render";
+            const model = String(form.get("model") ?? "").trim();
+            const prompt = String(form.get("prompt") ?? "");
 
-          const rmsId = rmsIdRaw || null;
-          const productTitle = productTitleRaw || null;
-          const bytes = new Uint8Array(await file.arrayBuffer());
-          const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-          const slug = (rmsId ?? "render").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
-          const safePreset = preset.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
-          const path = `${slug}/${stamp}-${safePreset}.png`;
+            const rmsId = rmsIdRaw || null;
+            const productTitle = productTitleRaw || null;
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const slug = (rmsId ?? "render").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+            const safePreset = preset.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+            const path = `${slug}/${stamp}-${safePreset}.png`;
 
-          const { error: upErr } = await admin.supabaseAdmin.storage
-            .from("studio-renders")
-            .upload(path, bytes, { contentType: "image/png", upsert: false });
-          if (upErr) return new Response(upErr.message, { status: 500 });
+            const { error: upErr } = await admin.supabaseAdmin.storage
+              .from("studio-renders")
+              .upload(path, bytes, { contentType: "image/png", upsert: false });
+            if (upErr) return new Response(upErr.message, { status: 500 });
 
-          const { data: row, error: insErr } = await admin.supabaseAdmin
-            .from("studio_renders")
-            .insert({
-              rms_id: rmsId,
-              product_title: productTitle,
-              preset,
-              model,
-              prompt,
-              storage_path: path,
-              created_by: admin.userId,
-            })
-            .select("id, storage_path")
-            .single();
+            const { data: row, error: insErr } = await admin.supabaseAdmin
+              .from("studio_renders")
+              .insert({
+                rms_id: rmsId,
+                product_title: productTitle,
+                preset,
+                model,
+                prompt,
+                storage_path: path,
+                created_by: admin.userId,
+              })
+              .select("id, storage_path")
+              .single();
 
-          if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
-          return Response.json({ id: row.id, storagePath: row.storage_path });
+            if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
+            return Response.json({ id: row.id, storagePath: row.storage_path });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            return new Response(message || "Save failed", { status: 500 });
+          }
         }
 
         const body = (await request.json()) as {
