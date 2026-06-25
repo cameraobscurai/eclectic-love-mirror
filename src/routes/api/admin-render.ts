@@ -178,12 +178,57 @@ export const Route = createFileRoute("/api/admin-render")({
         const body = (await request.json()) as {
           intent?: string;
           id?: string;
+          rmsId?: string | null;
+          b64?: string;
+          prompt?: string;
           refImageUrl?: string;
           preset?: string;
           model?: string;
           extraPrompt?: string;
           productTitle?: string;
         };
+
+        if (body.intent === "save") {
+          try {
+            if (!body.b64) return new Response("Missing image data", { status: 400 });
+            const rawB64 = body.b64.includes(",") ? body.b64.split(",").pop() || "" : body.b64;
+            const bytes = Uint8Array.from(atob(rawB64), (c) => c.charCodeAt(0));
+            const preset = (body.preset || "render").trim() || "render";
+            const model = (body.model || "").trim();
+            const prompt = body.prompt || "";
+            const rmsId = body.rmsId?.trim() || null;
+            const productTitle = body.productTitle?.trim() || null;
+            const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const slug = (rmsId ?? "render").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+            const safePreset = preset.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+            const path = `${slug}/${stamp}-${safePreset}.png`;
+
+            const { error: upErr } = await admin.supabaseAdmin.storage
+              .from("studio-renders")
+              .upload(path, bytes, { contentType: "image/png", upsert: false });
+            if (upErr) return new Response(upErr.message, { status: 500 });
+
+            const { data: row, error: insErr } = await admin.supabaseAdmin
+              .from("studio_renders")
+              .insert({
+                rms_id: rmsId,
+                product_title: productTitle,
+                preset,
+                model,
+                prompt,
+                storage_path: path,
+                created_by: admin.userId,
+              })
+              .select("id, storage_path")
+              .single();
+
+            if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
+            return Response.json({ id: row.id, storagePath: row.storage_path });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            return new Response(message || "Save failed", { status: 500 });
+          }
+        }
 
         if (body.intent === "download") {
           if (!body.id) return new Response("Missing id", { status: 400 });
