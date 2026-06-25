@@ -63,6 +63,7 @@ import { Route as ChairsSplatRouteImport } from './routes/chairs.$'
 import { Route as ChairsStools1SplatRouteImport } from './routes/chairs-stools1.$'
 import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
 import { Route as BarsSplatRouteImport } from './routes/bars.$'
+import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
@@ -352,6 +353,11 @@ const BarsSplatRoute = BarsSplatRouteImport.update({
   path: '/bars/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminRenderRoute = ApiAdminRenderRouteImport.update({
+  id: '/api/admin-render',
+  path: '/api/admin-render',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
   id: '/api/admin-chat',
   path: '/api/admin-chat',
@@ -479,6 +485,7 @@ export interface FileRoutesByFullPath {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -553,6 +560,7 @@ export interface FileRoutesByTo {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -628,6 +636,7 @@ export interface FileRoutesById {
   '/admin/studio': typeof AdminStudioRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
+  '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
   '/candlelight/$': typeof CandlelightSplatRoute
   '/chairs-stools1/$': typeof ChairsStools1SplatRoute
@@ -704,6 +713,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/upload-hero'
     | '/api/admin-chat'
+    | '/api/admin-render'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -778,6 +788,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/upload-hero'
     | '/api/admin-chat'
+    | '/api/admin-render'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -852,6 +863,7 @@ export interface FileRouteTypes {
     | '/admin/studio'
     | '/admin/upload-hero'
     | '/api/admin-chat'
+    | '/api/admin-render'
     | '/bars/$'
     | '/candlelight/$'
     | '/chairs-stools1/$'
@@ -916,6 +928,7 @@ export interface RootRouteChildren {
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
   ApiAdminChatRoute: typeof ApiAdminChatRoute
+  ApiAdminRenderRoute: typeof ApiAdminRenderRoute
   BarsSplatRoute: typeof BarsSplatRoute
   CandlelightSplatRoute: typeof CandlelightSplatRoute
   ChairsStools1SplatRoute: typeof ChairsStools1SplatRoute
@@ -1337,6 +1350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BarsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin-render': {
+      id: '/api/admin-render'
+      path: '/api/admin-render'
+      fullPath: '/api/admin-render'
+      preLoaderRoute: typeof ApiAdminRenderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/admin-chat': {
       id: '/api/admin-chat'
       path: '/api/admin-chat'
@@ -1530,6 +1550,7 @@ const rootRouteChildren: RootRouteChildren = {
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
   ApiAdminChatRoute: ApiAdminChatRoute,
+  ApiAdminRenderRoute: ApiAdminRenderRoute,
   BarsSplatRoute: BarsSplatRoute,
   CandlelightSplatRoute: CandlelightSplatRoute,
   ChairsStools1SplatRoute: ChairsStools1SplatRoute,
