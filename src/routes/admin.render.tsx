@@ -14,7 +14,6 @@ import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { supabase } from "@/integrations/supabase/client";
 import {
   listRenderPickables,
-  saveRender,
   listRenders,
   discardRender,
   publishRender,
@@ -187,17 +186,26 @@ function RenderPage() {
   async function onSave() {
     if (!finalB64 || !selected) return;
     setSavedNotice(null);
+    setErr(null);
     try {
-      await saveRender({
-        data: {
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (!token) throw new Error("Not signed in");
+
+      const res = await fetch("/api/admin-render", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          intent: "save",
           rmsId: selected.rmsId,
           productTitle: selected.title,
           preset,
           model,
           prompt: extra,
           b64: finalB64,
-        },
+        }),
       });
+      if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Save failed (${res.status})`);
       setSavedNotice("Saved to library");
       setTimeout(() => setSavedNotice(null), 2000);
       refreshScopedHistory();
@@ -229,11 +237,18 @@ function RenderPage() {
   }
 
   async function onDownload(h: RenderHistoryItem) {
-    if (!h.signedUrl) return;
     const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
+    setErr(null);
     try {
-      const res = await fetch(h.signedUrl);
-      if (!res.ok) throw new Error(`${res.status}`);
+      const { data: sess } = await supabase.auth.getSession();
+      const token = sess.session?.access_token;
+      if (!token) throw new Error("Not signed in");
+      const res = await fetch("/api/admin-render", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ intent: "download", id: h.id }),
+      });
+      if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Download failed (${res.status})`);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -243,10 +258,8 @@ function RenderPage() {
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch {
-      // CORS or network fallback — append download param so the browser saves it
-      const url = h.signedUrl + (h.signedUrl.includes("?") ? "&" : "?") + `download=${encodeURIComponent(name)}`;
-      window.open(url, "_blank", "noopener");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
     }
   }
 
