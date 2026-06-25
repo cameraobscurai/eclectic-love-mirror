@@ -3,12 +3,12 @@
 // a visual reference. Stream partials with blur→sharp, save to private bucket,
 // optionally publish to the product's images[].
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { createParser } from "eventsource-parser";
 import { flushSync } from "react-dom";
-import { Loader2, Search, Wand2, Save, Send, Trash2, Check } from "lucide-react";
+import { Loader2, Search, Wand2, Save, Send, Trash2, Check, Download } from "lucide-react";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { supabase } from "@/integrations/supabase/client";
@@ -71,6 +71,8 @@ function RenderPage() {
   const [err, setErr] = useState<string | null>(null);
   const [history, setHistory] = useState<RenderHistoryItem[]>([]);
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | "all">("all");
+  const [historyScope, setHistoryScope] = useState<"product" | "library">("product");
 
   // load inventory
   useEffect(() => {
@@ -79,7 +81,10 @@ function RenderPage() {
         setPickables(rows);
         if (rms) {
           const hit = rows.find((r) => r.rmsId === rms);
-          if (hit) setSelected(hit);
+          if (hit) {
+            setSelected(hit);
+            setCategory(hit.category ?? "all");
+          }
         }
       })
       .catch((e: Error) => setErr(e.message));
@@ -94,15 +99,27 @@ function RenderPage() {
   );
 
   useEffect(() => {
-    refreshHistory(selected?.rmsId ?? null).catch(() => {});
-  }, [selected, refreshHistory]);
+    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    refreshHistory(scopeRms).catch(() => {});
+  }, [selected, refreshHistory, historyScope]);
+
+  const categoryCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of pickables ?? []) {
+      const k = p.category ?? "—";
+      m.set(k, (m.get(k) ?? 0) + 1);
+    }
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [pickables]);
 
   const filtered = useMemo(() => {
     if (!pickables) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return pickables.slice(0, 200);
-    return pickables.filter((p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q)).slice(0, 200);
-  }, [pickables, query]);
+    let rows = pickables;
+    if (category !== "all") rows = rows.filter((p) => (p.category ?? "—") === category);
+    if (q) rows = rows.filter((p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q));
+    return rows.slice(0, 400);
+  }, [pickables, query, category]);
 
   async function generate() {
     if (!selected?.primaryImage) {
@@ -183,15 +200,20 @@ function RenderPage() {
       });
       setSavedNotice("Saved to library");
       setTimeout(() => setSavedNotice(null), 2000);
-      refreshHistory(selected.rmsId);
+      refreshScopedHistory();
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
   }
 
+  function refreshScopedHistory() {
+    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    refreshHistory(scopeRms).catch(() => {});
+  }
+
   async function onDiscard(id: string) {
     await discardRender({ data: { id } });
-    refreshHistory(selected?.rmsId ?? null);
+    refreshScopedHistory();
   }
 
   async function onPublish(id: string) {
@@ -200,7 +222,26 @@ function RenderPage() {
       await publishRender({ data: { id } });
       setSavedNotice("Attached to product");
       setTimeout(() => setSavedNotice(null), 2000);
-      refreshHistory(selected?.rmsId ?? null);
+      refreshScopedHistory();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  async function onDownload(h: RenderHistoryItem) {
+    if (!h.signedUrl) return;
+    try {
+      const res = await fetch(h.signedUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
@@ -225,10 +266,36 @@ function RenderPage() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title or RMS id"
+              placeholder="Search title or RMS id"
               className="w-full bg-transparent border border-charcoal/15 pl-7 pr-2 py-2 text-[12px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/60"
             />
           </label>
+
+          {/* Category chips — mirrors collection filters */}
+          <div className="flex flex-wrap gap-1 mb-4">
+            <button
+              onClick={() => setCategory("all")}
+              className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border transition-colors ${category === "all" ? "border-charcoal bg-charcoal text-cream" : "border-charcoal/15 hover:border-charcoal/50"}`}
+            >
+              All · {pickables?.length ?? 0}
+            </button>
+            {categoryCounts.map(([cat, n]) => {
+              const active = category === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border transition-colors ${active ? "border-charcoal bg-charcoal text-cream" : "border-charcoal/15 hover:border-charcoal/50"}`}
+                >
+                  {cat} · {n}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/40 mb-2">
+            {filtered.length} item{filtered.length === 1 ? "" : "s"}
+          </p>
           <ul className="space-y-px">
             {pickables === null && <li className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</li>}
             {filtered.map((p) => {
@@ -248,6 +315,14 @@ function RenderPage() {
                       <span className={`block truncate text-[12px] font-sans normal-case ${active ? "text-cream" : "text-charcoal"}`}>{p.title}</span>
                       <span className={`block text-[9px] uppercase tracking-[0.2em] ${active ? "text-cream/60" : "text-charcoal/45"}`}>{p.category ?? "—"}</span>
                     </span>
+                    {p.renderCount > 0 && (
+                      <span
+                        title={`${p.renderCount} saved render${p.renderCount === 1 ? "" : "s"}`}
+                        className={`text-[9px] tracking-[0.18em] px-1.5 py-0.5 border ${active ? "border-cream/40 text-cream" : "border-charcoal/25 text-charcoal/60"}`}
+                      >
+                        {p.renderCount}
+                      </span>
+                    )}
                   </button>
                 </li>
               );
@@ -359,9 +434,27 @@ function RenderPage() {
           />
 
           <div className="border-t border-charcoal/10 pt-5">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-3">
-              History {selected ? `· ${selected.rmsId}` : ""}
-            </p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Library</p>
+              <div className="flex border border-charcoal/15">
+                <button
+                  onClick={() => setHistoryScope("product")}
+                  disabled={!selected}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 transition-colors disabled:opacity-30 ${historyScope === "product" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+                >
+                  This product
+                </button>
+                <button
+                  onClick={() => setHistoryScope("library")}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border-l border-charcoal/15 transition-colors ${historyScope === "library" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+                >
+                  All renders
+                </button>
+              </div>
+            </div>
+            {historyScope === "product" && selected && (
+              <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/40 mb-2">{selected.rmsId}</p>
+            )}
             <ul className="space-y-2">
               {history.length === 0 && (
                 <li className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">None yet</li>
@@ -371,11 +464,21 @@ function RenderPage() {
                   {h.signedUrl && (
                     <img src={h.signedUrl} alt="" className="w-full aspect-[4/5] object-cover bg-charcoal/5 mb-2" />
                   )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] uppercase tracking-[0.22em] text-charcoal/60">
+                  {historyScope === "library" && h.productTitle && (
+                    <p className="text-[10px] font-sans normal-case text-charcoal/80 truncate mb-1">{h.productTitle}</p>
+                  )}
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[9px] uppercase tracking-[0.22em] text-charcoal/60 truncate">
                       {h.preset} · {h.status}
                     </span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <button
+                        onClick={() => onDownload(h)}
+                        title="Download PNG"
+                        className="p-1 text-charcoal/60 hover:text-charcoal"
+                      >
+                        <Download className="h-3 w-3" />
+                      </button>
                       {h.status !== "published" && h.rmsId && (
                         <button
                           onClick={() => onPublish(h.id)}

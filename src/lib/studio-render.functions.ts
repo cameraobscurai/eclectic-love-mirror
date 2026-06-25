@@ -11,6 +11,7 @@ export interface RenderPickable {
   title: string;
   category: string | null;
   primaryImage: string | null;
+  renderCount: number;
 }
 
 export const listRenderPickables = createServerFn({ method: "GET" })
@@ -18,29 +19,44 @@ export const listRenderPickables = createServerFn({ method: "GET" })
   .handler(async (): Promise<RenderPickable[]> => {
     const { data, error } = await supabaseAdmin
       .from("inventory_items")
-      .select("rms_id, title, category, images")
+      .select("rms_id, title, category, images, editorial_order, manual_order")
       .eq("public_ready", true)
-      .order("title", { ascending: true })
       .limit(2000);
     if (error) throw error;
-    return (data ?? [])
-      .filter((r) => Boolean(r.rms_id))
-      .map((r): RenderPickable => {
-        const imgs = Array.isArray(r.images) ? (r.images as unknown[]) : [];
-        const first = imgs[0];
-        const url =
-          typeof first === "string"
-            ? first
-            : first && typeof first === "object" && "url" in (first as Record<string, unknown>)
-            ? String((first as Record<string, unknown>).url ?? "")
-            : null;
-        return {
-          rmsId: r.rms_id as string,
-          title: r.title ?? (r.rms_id as string),
-          category: r.category ?? null,
-          primaryImage: url || null,
-        };
-      });
+
+    const { data: counts } = await supabaseAdmin
+      .from("studio_renders")
+      .select("rms_id");
+    const countMap = new Map<string, number>();
+    for (const r of counts ?? []) {
+      if (r.rms_id) countMap.set(r.rms_id, (countMap.get(r.rms_id) ?? 0) + 1);
+    }
+
+    const rows = (data ?? []).filter((r) => Boolean(r.rms_id));
+    rows.sort((a, b) => {
+      const ea = (a.editorial_order ?? a.manual_order ?? 9_999_999) as number;
+      const eb = (b.editorial_order ?? b.manual_order ?? 9_999_999) as number;
+      if (ea !== eb) return ea - eb;
+      return (a.title ?? "").localeCompare(b.title ?? "");
+    });
+
+    return rows.map((r): RenderPickable => {
+      const imgs = Array.isArray(r.images) ? (r.images as unknown[]) : [];
+      const first = imgs[0];
+      const url =
+        typeof first === "string"
+          ? first
+          : first && typeof first === "object" && "url" in (first as Record<string, unknown>)
+          ? String((first as Record<string, unknown>).url ?? "")
+          : null;
+      return {
+        rmsId: r.rms_id as string,
+        title: r.title ?? (r.rms_id as string),
+        category: r.category ?? null,
+        primaryImage: url || null,
+        renderCount: countMap.get(r.rms_id as string) ?? 0,
+      };
+    });
   });
 
 const SaveInput = z.object({
