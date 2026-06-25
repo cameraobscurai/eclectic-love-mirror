@@ -192,19 +192,18 @@ function RenderPage() {
       const token = sess.session?.access_token;
       if (!token) throw new Error("Not signed in");
 
-      const png = await fetch(`data:image/png;base64,${finalB64}`).then((r) => r.blob());
-      const form = new FormData();
-      form.set("file", png, `${selected.rmsId}-${preset}.png`);
-      form.set("rmsId", selected.rmsId);
-      form.set("productTitle", selected.title);
-      form.set("preset", preset);
-      form.set("model", model);
-      form.set("prompt", extra);
-
       const res = await fetch("/api/admin-render", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: form,
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          intent: "save",
+          rmsId: selected.rmsId,
+          productTitle: selected.title,
+          preset,
+          model,
+          prompt: extra,
+          b64: finalB64,
+        }),
       });
       if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Save failed (${res.status})`);
       setSavedNotice("Saved to library");
