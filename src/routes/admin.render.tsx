@@ -266,10 +266,36 @@ function RenderPage() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title or RMS id"
+              placeholder="Search title or RMS id"
               className="w-full bg-transparent border border-charcoal/15 pl-7 pr-2 py-2 text-[12px] font-sans normal-case placeholder:text-charcoal/30 focus:outline-none focus:border-charcoal/60"
             />
           </label>
+
+          {/* Category chips — mirrors collection filters */}
+          <div className="flex flex-wrap gap-1 mb-4">
+            <button
+              onClick={() => setCategory("all")}
+              className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border transition-colors ${category === "all" ? "border-charcoal bg-charcoal text-cream" : "border-charcoal/15 hover:border-charcoal/50"}`}
+            >
+              All · {pickables?.length ?? 0}
+            </button>
+            {categoryCounts.map(([cat, n]) => {
+              const active = category === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border transition-colors ${active ? "border-charcoal bg-charcoal text-cream" : "border-charcoal/15 hover:border-charcoal/50"}`}
+                >
+                  {cat} · {n}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/40 mb-2">
+            {filtered.length} item{filtered.length === 1 ? "" : "s"}
+          </p>
           <ul className="space-y-px">
             {pickables === null && <li className="text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</li>}
             {filtered.map((p) => {
@@ -289,6 +315,14 @@ function RenderPage() {
                       <span className={`block truncate text-[12px] font-sans normal-case ${active ? "text-cream" : "text-charcoal"}`}>{p.title}</span>
                       <span className={`block text-[9px] uppercase tracking-[0.2em] ${active ? "text-cream/60" : "text-charcoal/45"}`}>{p.category ?? "—"}</span>
                     </span>
+                    {p.renderCount > 0 && (
+                      <span
+                        title={`${p.renderCount} saved render${p.renderCount === 1 ? "" : "s"}`}
+                        className={`text-[9px] tracking-[0.18em] px-1.5 py-0.5 border ${active ? "border-cream/40 text-cream" : "border-charcoal/25 text-charcoal/60"}`}
+                      >
+                        {p.renderCount}
+                      </span>
+                    )}
                   </button>
                 </li>
               );
