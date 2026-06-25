@@ -102,6 +102,21 @@ function RenderPage() {
     refreshHistory(scopeRms).catch(() => {});
   }, [selected, refreshHistory, historyScope]);
 
+  // Keyboard shortcuts: D = download current, C = copy current
+  useEffect(() => {
+    if (!finalB64) return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "d" || e.key === "D") { e.preventDefault(); onDownloadCurrent(); }
+      else if (e.key === "c" || e.key === "C") { e.preventDefault(); onCopyCurrent(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalB64, selected, preset]);
+
   const categoryCounts = useMemo(() => {
     const m = new Map<string, number>();
     for (const p of pickables ?? []) {
@@ -231,6 +246,40 @@ function RenderPage() {
       setSavedNotice("Attached to product");
       setTimeout(() => setSavedNotice(null), 2000);
       refreshScopedHistory();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  function downloadDataUrl(dataUrl: string, name: string) {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  function onDownloadCurrent() {
+    if (!finalB64) return;
+    const slug = (selected?.title ?? "render").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    downloadDataUrl(`data:image/png;base64,${finalB64}`, `${slug || "render"}-${preset}-${stamp}.png`);
+  }
+
+  async function onCopyCurrent() {
+    if (!finalB64) return;
+    setErr(null);
+    try {
+      const bin = atob(finalB64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      const blob = new Blob([arr], { type: "image/png" });
+      await (navigator.clipboard as unknown as { write: (i: unknown[]) => Promise<void> }).write([
+        new (window as unknown as { ClipboardItem: new (i: Record<string, Blob>) => unknown }).ClipboardItem({ "image/png": blob }),
+      ]);
+      setSavedNotice("Copied to clipboard");
+      setTimeout(() => setSavedNotice(null), 1800);
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
@@ -400,6 +449,22 @@ function RenderPage() {
               className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
             >
               <Save className="h-3.5 w-3.5" /> Save to library
+            </button>
+            <button
+              onClick={onDownloadCurrent}
+              disabled={!finalB64}
+              className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+              title="Download PNG (D)"
+            >
+              <Download className="h-3.5 w-3.5" /> Download
+            </button>
+            <button
+              onClick={onCopyCurrent}
+              disabled={!finalB64}
+              className="px-4 py-2.5 border border-charcoal/30 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:border-charcoal transition-colors inline-flex items-center gap-2"
+              title="Copy to clipboard (C)"
+            >
+              <Check className="h-3.5 w-3.5" /> Copy
             </button>
             {savedNotice && (
               <span className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 inline-flex items-center gap-1">
