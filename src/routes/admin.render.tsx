@@ -434,9 +434,27 @@ function RenderPage() {
           />
 
           <div className="border-t border-charcoal/10 pt-5">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45 mb-3">
-              History {selected ? `· ${selected.rmsId}` : ""}
-            </p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Library</p>
+              <div className="flex border border-charcoal/15">
+                <button
+                  onClick={() => setHistoryScope("product")}
+                  disabled={!selected}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 transition-colors disabled:opacity-30 ${historyScope === "product" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+                >
+                  This product
+                </button>
+                <button
+                  onClick={() => setHistoryScope("library")}
+                  className={`text-[9px] uppercase tracking-[0.2em] px-2 py-1 border-l border-charcoal/15 transition-colors ${historyScope === "library" ? "bg-charcoal text-cream" : "hover:bg-charcoal/[0.04]"}`}
+                >
+                  All renders
+                </button>
+              </div>
+            </div>
+            {historyScope === "product" && selected && (
+              <p className="text-[9px] uppercase tracking-[0.22em] text-charcoal/40 mb-2">{selected.rmsId}</p>
+            )}
             <ul className="space-y-2">
               {history.length === 0 && (
                 <li className="text-[10px] uppercase tracking-[0.22em] text-charcoal/40">None yet</li>
@@ -446,11 +464,21 @@ function RenderPage() {
                   {h.signedUrl && (
                     <img src={h.signedUrl} alt="" className="w-full aspect-[4/5] object-cover bg-charcoal/5 mb-2" />
                   )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] uppercase tracking-[0.22em] text-charcoal/60">
+                  {historyScope === "library" && h.productTitle && (
+                    <p className="text-[10px] font-sans normal-case text-charcoal/80 truncate mb-1">{h.productTitle}</p>
+                  )}
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[9px] uppercase tracking-[0.22em] text-charcoal/60 truncate">
                       {h.preset} · {h.status}
                     </span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 shrink-0">
+                      <button
+                        onClick={() => onDownload(h)}
+                        title="Download PNG"
+                        className="p-1 text-charcoal/60 hover:text-charcoal"
+                      >
+                        <Download className="h-3 w-3" />
+                      </button>
                       {h.status !== "published" && h.rmsId && (
                         <button
                           onClick={() => onPublish(h.id)}
