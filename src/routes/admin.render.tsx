@@ -200,15 +200,20 @@ function RenderPage() {
       });
       setSavedNotice("Saved to library");
       setTimeout(() => setSavedNotice(null), 2000);
-      refreshHistory(selected.rmsId);
+      refreshScopedHistory();
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
   }
 
+  function refreshScopedHistory() {
+    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    refreshHistory(scopeRms).catch(() => {});
+  }
+
   async function onDiscard(id: string) {
     await discardRender({ data: { id } });
-    refreshHistory(selected?.rmsId ?? null);
+    refreshScopedHistory();
   }
 
   async function onPublish(id: string) {
@@ -217,7 +222,26 @@ function RenderPage() {
       await publishRender({ data: { id } });
       setSavedNotice("Attached to product");
       setTimeout(() => setSavedNotice(null), 2000);
-      refreshHistory(selected?.rmsId ?? null);
+      refreshScopedHistory();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  async function onDownload(h: RenderHistoryItem) {
+    if (!h.signedUrl) return;
+    try {
+      const res = await fetch(h.signedUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
