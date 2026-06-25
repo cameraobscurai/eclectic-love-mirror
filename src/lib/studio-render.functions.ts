@@ -192,7 +192,7 @@ export const publishRender = createServerFn({ method: "POST" })
     const next = [...existing, { url: publicUrl, source: "studio", preset: row.preset }];
     const { error: updErr } = await supabaseAdmin
       .from("inventory_items")
-      .update({ images: next })
+      .update({ images: next as unknown as never })
       .eq("rms_id", row.rms_id);
     if (updErr) throw updErr;
 
