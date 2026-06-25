@@ -201,8 +201,8 @@ function RenderPage() {
       form.set("model", model);
       form.set("prompt", extra);
 
-      const res = await fetch("/api/admin-render-save", {
-        method: "POST",
+      const res = await fetch("/api/admin-render", {
+        method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: form,
       });
@@ -244,7 +244,7 @@ function RenderPage() {
       const { data: sess } = await supabase.auth.getSession();
       const token = sess.session?.access_token;
       if (!token) throw new Error("Not signed in");
-      const res = await fetch(`/api/admin-render-download?id=${encodeURIComponent(h.id)}`, {
+      const res = await fetch(`/api/admin-render?id=${encodeURIComponent(h.id)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error((await res.text().catch(() => "")) || `Download failed (${res.status})`);

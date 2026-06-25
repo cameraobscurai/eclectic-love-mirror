@@ -18,27 +18,109 @@ const PRESET_PROMPTS: Record<string, string> = {
 
 const MODEL_DEFAULT = "google/gemini-3-pro-image";
 
+async function requireAdminFromRequest(request: Request) {
+  const authHeader = request.headers.get("authorization") ?? "";
+  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  if (!token) return null;
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
+  if (userErr || !userData.user) return null;
+
+  const { data: roleRows } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userData.user.id)
+    .eq("role", "admin")
+    .limit(1);
+
+  if (!roleRows || roleRows.length === 0) return null;
+  return { supabaseAdmin, userId: userData.user.id };
+}
+
+function safeFilename(input: string) {
+  return input.replace(/[^a-z0-9._-]+/gi, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "render.png";
+}
+
 export const Route = createFileRoute("/api/admin-render")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
-        // Auth: bearer + admin role.
-        const authHeader = request.headers.get("authorization") ?? "";
-        const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-        if (!token) return new Response("Unauthorized", { status: 401 });
+      GET: async ({ request }) => {
+        const admin = await requireAdminFromRequest(request);
+        if (!admin) return new Response("Unauthorized", { status: 401 });
 
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
-        if (userErr || !userData.user) return new Response("Unauthorized", { status: 401 });
-        const { data: roleRows } = await supabaseAdmin
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userData.user.id)
-          .eq("role", "admin")
-          .limit(1);
-        if (!roleRows || roleRows.length === 0) {
-          return new Response("Forbidden", { status: 403 });
-        }
+        const id = new URL(request.url).searchParams.get("id");
+        if (!id) return new Response("Missing id", { status: 400 });
+
+        const { data: row, error: rowErr } = await admin.supabaseAdmin
+          .from("studio_renders")
+          .select("id, rms_id, preset, storage_path")
+          .eq("id", id)
+          .single();
+        if (rowErr || !row) return new Response("Render not found", { status: 404 });
+
+        const { data: file, error: dlErr } = await admin.supabaseAdmin.storage
+          .from("studio-renders")
+          .download(row.storage_path);
+        if (dlErr || !file) return new Response(dlErr?.message || "Download failed", { status: 500 });
+
+        const filename = safeFilename(`${row.rms_id ?? "render"}-${row.preset}-${row.id.slice(0, 8)}.png`);
+        return new Response(file, {
+          headers: {
+            "Content-Type": "image/png",
+            "Content-Disposition": `attachment; filename="${filename}"`,
+            "Cache-Control": "private, max-age=0, no-store",
+          },
+        });
+      },
+      PUT: async ({ request }) => {
+        const admin = await requireAdminFromRequest(request);
+        if (!admin) return new Response("Unauthorized", { status: 401 });
+
+        const form = await request.formData();
+        const file = form.get("file");
+        if (!(file instanceof File)) return new Response("Missing image file", { status: 400 });
+
+        const rmsIdRaw = String(form.get("rmsId") ?? "").trim();
+        const productTitleRaw = String(form.get("productTitle") ?? "").trim();
+        const preset = String(form.get("preset") ?? "render").trim() || "render";
+        const model = String(form.get("model") ?? "").trim();
+        const prompt = String(form.get("prompt") ?? "");
+
+        const rmsId = rmsIdRaw || null;
+        const productTitle = productTitleRaw || null;
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const slug = (rmsId ?? "render").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+        const safePreset = preset.replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+        const path = `${slug}/${stamp}-${safePreset}.png`;
+
+        const { error: upErr } = await admin.supabaseAdmin.storage
+          .from("studio-renders")
+          .upload(path, bytes, { contentType: "image/png", upsert: false });
+        if (upErr) return new Response(upErr.message, { status: 500 });
+
+        const { data: row, error: insErr } = await admin.supabaseAdmin
+          .from("studio_renders")
+          .insert({
+            rms_id: rmsId,
+            product_title: productTitle,
+            preset,
+            model,
+            prompt,
+            storage_path: path,
+            created_by: admin.userId,
+          })
+          .select("id, storage_path")
+          .single();
+
+        if (insErr || !row) return new Response(insErr?.message || "Save failed", { status: 500 });
+
+        return Response.json({ id: row.id, storagePath: row.storage_path });
+      },
+      POST: async ({ request }) => {
+        const admin = await requireAdminFromRequest(request);
+        if (!admin) return new Response("Unauthorized", { status: 401 });
 
         const body = (await request.json()) as {
           refImageUrl?: string;
