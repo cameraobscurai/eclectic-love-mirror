@@ -236,6 +236,39 @@ function RenderPage() {
     }
   }
 
+  function downloadDataUrl(dataUrl: string, name: string) {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  function onDownloadCurrent() {
+    if (!finalB64) return;
+    const slug = (selected?.title ?? "render").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    downloadDataUrl(`data:image/png;base64,${finalB64}`, `${slug || "render"}-${preset}-${stamp}.png`);
+  }
+
+  async function onCopyCurrent() {
+    if (!finalB64) return;
+    setErr(null);
+    try {
+      const bin = atob(finalB64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      const blob = new Blob([arr], { type: "image/png" });
+      // @ts-expect-error ClipboardItem typing varies
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      setSavedNotice("Copied to clipboard");
+      setTimeout(() => setSavedNotice(null), 1800);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  }
+
   async function onDownload(h: RenderHistoryItem) {
     const name = `${h.rmsId ?? "render"}-${h.preset}-${h.id.slice(0, 8)}.png`;
     setErr(null);
