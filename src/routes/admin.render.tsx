@@ -260,8 +260,9 @@ function RenderPage() {
       const arr = new Uint8Array(bin.length);
       for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
       const blob = new Blob([arr], { type: "image/png" });
-      // @ts-expect-error ClipboardItem typing varies
-      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      await (navigator.clipboard as unknown as { write: (i: unknown[]) => Promise<void> }).write([
+        new (window as unknown as { ClipboardItem: new (i: Record<string, Blob>) => unknown }).ClipboardItem({ "image/png": blob }),
+      ]);
       setSavedNotice("Copied to clipboard");
       setTimeout(() => setSavedNotice(null), 1800);
     } catch (e) {
