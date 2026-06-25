@@ -71,6 +71,8 @@ function RenderPage() {
   const [err, setErr] = useState<string | null>(null);
   const [history, setHistory] = useState<RenderHistoryItem[]>([]);
   const [savedNotice, setSavedNotice] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | "all">("all");
+  const [historyScope, setHistoryScope] = useState<"product" | "library">("product");
 
   // load inventory
   useEffect(() => {
@@ -79,7 +81,10 @@ function RenderPage() {
         setPickables(rows);
         if (rms) {
           const hit = rows.find((r) => r.rmsId === rms);
-          if (hit) setSelected(hit);
+          if (hit) {
+            setSelected(hit);
+            setCategory(hit.category ?? "all");
+          }
         }
       })
       .catch((e: Error) => setErr(e.message));
@@ -94,15 +99,27 @@ function RenderPage() {
   );
 
   useEffect(() => {
-    refreshHistory(selected?.rmsId ?? null).catch(() => {});
-  }, [selected, refreshHistory]);
+    const scopeRms = historyScope === "library" ? null : selected?.rmsId ?? null;
+    refreshHistory(scopeRms).catch(() => {});
+  }, [selected, refreshHistory, historyScope]);
+
+  const categoryCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const p of pickables ?? []) {
+      const k = p.category ?? "—";
+      m.set(k, (m.get(k) ?? 0) + 1);
+    }
+    return [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [pickables]);
 
   const filtered = useMemo(() => {
     if (!pickables) return [];
     const q = query.trim().toLowerCase();
-    if (!q) return pickables.slice(0, 200);
-    return pickables.filter((p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q)).slice(0, 200);
-  }, [pickables, query]);
+    let rows = pickables;
+    if (category !== "all") rows = rows.filter((p) => (p.category ?? "—") === category);
+    if (q) rows = rows.filter((p) => p.title.toLowerCase().includes(q) || p.rmsId.toLowerCase().includes(q));
+    return rows.slice(0, 400);
+  }, [pickables, query, category]);
 
   async function generate() {
     if (!selected?.primaryImage) {
