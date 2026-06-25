@@ -1373,6 +1373,45 @@ export type Database = {
           },
         ]
       }
+      studio_renders: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          model: string
+          preset: string
+          product_title: string | null
+          prompt: string
+          rms_id: string | null
+          status: string
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model: string
+          preset: string
+          product_title?: string | null
+          prompt: string
+          rms_id?: string | null
+          status?: string
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model?: string
+          preset?: string
+          product_title?: string | null
+          prompt?: string
+          rms_id?: string | null
+          status?: string
+          storage_path?: string
+        }
+        Relationships: []
+      }
       style_boards: {
         Row: {
           client_view_count: number
