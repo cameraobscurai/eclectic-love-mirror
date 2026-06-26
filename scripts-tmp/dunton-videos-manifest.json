@@ -1,0 +1,61 @@
+{
+  "bucket": "videos",
+  "prefix": "dunton-easton",
+  "items": [
+    {
+      "slug": "01-rehearsal",
+      "label": "Rehearsal Reel",
+      "driveId": "18yfLwH0rw4lFTeXyhyiTYvq7nvIsz2_W",
+      "videoUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/01-rehearsal.mp4",
+      "posterUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/01-rehearsal.jpg",
+      "bytes": {
+        "video": 15595433,
+        "poster": 278131
+      }
+    },
+    {
+      "slug": "02-fashion",
+      "label": "Fashion Reel",
+      "driveId": "1WzoAGL07fEqsJhMYn7OwrkrB6lBsfljQ",
+      "videoUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/02-fashion.mp4",
+      "posterUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/02-fashion.jpg",
+      "bytes": {
+        "video": 14355797,
+        "poster": 100401
+      }
+    },
+    {
+      "slug": "03-ceremony",
+      "label": "Ceremony Reel",
+      "driveId": "1UNTzpz6GYggmW65YL6M3kG3UA11IK6Z8",
+      "videoUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.mp4",
+      "posterUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.jpg",
+      "bytes": {
+        "video": 18359541,
+        "poster": 212107
+      }
+    },
+    {
+      "slug": "04-reception",
+      "label": "Reception Reel",
+      "driveId": "1Skeg8u-Lvos6mlKIrY10ofCx-14pt1_g",
+      "videoUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/04-reception.mp4",
+      "posterUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/04-reception.jpg",
+      "bytes": {
+        "video": 16131260,
+        "poster": 117899
+      }
+    },
+    {
+      "slug": "05-casino-night",
+      "label": "Casino Night Reel",
+      "driveId": "1hZaJ_2lZ-VEHZazM6TLCjsJzY5AMcd9T",
+      "videoUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/05-casino-night.mp4",
+      "posterUrl": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/05-casino-night.jpg",
+      "bytes": {
+        "video": 7259413,
+        "poster": 154103
+      }
+    }
+  ]
+}
