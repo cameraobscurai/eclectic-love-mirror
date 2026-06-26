@@ -22,8 +22,12 @@ export type GalleryCategory =
   | "Social + Non-Profit";
 
 export interface GalleryImage {
+  /** Poster/thumbnail URL. For video plates this is the poster JPG. */
   src: string;
   alt: string;
+  /** Optional MP4 URL — when set, the lightbox renders a <video> with `src`
+   *  as the poster. Filmstrip thumbs render a play badge. */
+  video?: string;
 }
 
 export interface CoverDirective {
