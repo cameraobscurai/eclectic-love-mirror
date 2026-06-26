@@ -36,14 +36,14 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
       aria-labelledby="gallery-index-heading"
       className="bg-cream/5 pt-20 pb-12 lg:pt-32 lg:pb-24 px-6 lg:px-12"
     >
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-[1800px] mx-auto">
         <h2
           id="gallery-index-heading"
           className="text-cream/40 text-xs uppercase tracking-[0.3em] mb-12"
         >
           Project Index
         </h2>
-        <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-[1fr_minmax(440px,38vw)] gap-10 lg:gap-20 items-start">
           <div ref={containerRef} className="relative" onMouseMove={onMove}>
             <ul>
               {projects.map((p, i) => {
@@ -118,8 +118,8 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
           </div>
 
           {/* Editorial video accent — desktop only, sticks beside the index */}
-          <aside aria-hidden className="hidden lg:block lg:sticky lg:top-32">
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-charcoal ring-1 ring-cream/10">
+          <aside aria-hidden className="hidden lg:block lg:sticky lg:top-24">
+            <div className="relative w-full h-[calc(100vh-8rem)] overflow-hidden bg-charcoal ring-1 ring-cream/10">
               <video
                 src="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.mp4"
                 poster="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.jpg"
@@ -130,9 +130,15 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                 preload="metadata"
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-charcoal/80 to-transparent">
-                <p className="text-[9px] uppercase tracking-[0.32em] text-cream/70">
-                  In motion · Dunton Hot Springs
+              <div className="absolute inset-x-0 top-0 p-6 bg-gradient-to-b from-charcoal/70 to-transparent">
+                <p className="text-[10px] uppercase tracking-[0.32em] text-cream/70">
+                  In motion
+                </p>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-charcoal/85 to-transparent">
+                <p className="font-display text-2xl text-cream font-light">Dunton Hot Springs</p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/55">
+                  Easton Events · 2022
                 </p>
               </div>
             </div>
