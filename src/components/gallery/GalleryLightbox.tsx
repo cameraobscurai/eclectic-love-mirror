@@ -307,9 +307,9 @@ export function GalleryLightbox({
               >
                 <TransformComponent
                   wrapperClass="!w-full !h-full"
-                  contentClass="!w-full !h-full"
+                  contentClass="!w-full !h-full pointer-events-none"
                 >
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full pointer-events-auto">
                     <CrossfadeImage
                       srcKey={plate.src}
                       src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
