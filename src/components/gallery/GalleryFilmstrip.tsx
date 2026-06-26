@@ -63,8 +63,25 @@ export function GalleryFilmstrip({
   const scrollToIndex = useCallback((i: number) => {
     const clamped = Math.max(0, Math.min(i, itemRefs.current.length - 1));
     const el = itemRefs.current[clamped];
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const scroller = scrollerRef.current;
+    if (!el || !scroller) return;
+    // Center the target card. We allow negative targets to clamp at 0 only when
+    // the natural max would otherwise overshoot; otherwise just trust the math.
+    const center = el.offsetLeft - scroller.clientWidth / 2 + el.clientWidth / 2;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    const target = Math.max(0, Math.min(max, center));
+    // If the math is a no-op (item already centered to within a few px), nudge
+    // by one card so the click is never silent.
+    if (Math.abs(target - scroller.scrollLeft) < 8) {
+      const step = el.clientWidth + 40; // gap-10 ≈ 40px
+      const dir = i >= clamped ? 1 : -1;
+      scroller.scrollTo({
+        left: Math.max(0, Math.min(max, scroller.scrollLeft + dir * step)),
+        behavior: "smooth",
+      });
+      return;
+    }
+    scroller.scrollTo({ left: target, behavior: "smooth" });
   }, []);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
