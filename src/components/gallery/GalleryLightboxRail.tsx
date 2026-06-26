@@ -93,7 +93,7 @@ export function GalleryLightboxRail({
       </div>
 
       {/* Plate progress rule */}
-      <div className="px-6 lg:px-12 pb-5 pt-2 flex items-center gap-5">
+      <div className="px-4 lg:px-12 pb-3 lg:pb-5 pt-1 lg:pt-2 flex items-center gap-5">
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
           {(currentIndex + 1).toString().padStart(2, "0")}
         </span>
