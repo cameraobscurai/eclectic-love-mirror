@@ -171,12 +171,12 @@ export function LightboxParallax({ plateKey, disabled, children }: Props) {
     <div
       ref={wrapperRef}
       data-vt-dest="gallery-hero"
-      className="absolute inset-0 overflow-hidden pointer-events-auto"
+      className="absolute inset-0 overflow-hidden pointer-events-none"
       style={{ contain: "layout paint" }}
     >
       <div
         ref={innerRef}
-        className="absolute inset-0 will-change-transform"
+        className="absolute inset-0 will-change-transform pointer-events-auto"
         style={{
           transform: `scale(${SCALE})`,
           transformOrigin: "center center",

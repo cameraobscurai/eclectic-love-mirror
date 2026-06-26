@@ -307,9 +307,9 @@ export function GalleryLightbox({
               >
                 <TransformComponent
                   wrapperClass="!w-full !h-full"
-                  contentClass="!w-full !h-full"
+                  contentClass="!w-full !h-full pointer-events-none"
                 >
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full pointer-events-auto">
                     <CrossfadeImage
                       srcKey={plate.src}
                       src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
@@ -379,7 +379,7 @@ export function GalleryLightbox({
                 aria-label="Previous plate"
                 onClick={() => stepPlate(-1)}
                 disabled={plateIndex === 0}
-                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 z-10 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+                className="absolute left-3 lg:left-5 top-1/2 -translate-y-1/2 z-30 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -388,7 +388,7 @@ export function GalleryLightbox({
                 aria-label="Next plate"
                 onClick={() => stepPlate(1)}
                 disabled={plateIndex === plates.length - 1}
-                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 z-10 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+                className="absolute right-3 lg:right-5 top-1/2 -translate-y-1/2 z-30 h-12 w-12 flex items-center justify-center rounded-full border border-cream/25 bg-charcoal/55 backdrop-blur-sm text-cream/80 hover:text-cream hover:border-cream/60 disabled:opacity-20 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
