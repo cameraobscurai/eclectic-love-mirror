@@ -290,7 +290,7 @@ export const galleryProjects: GalleryProject[] = [
     year: "2022",
     category: "Luxury Weddings",
     heroImage: dosMasEnLaMesaGalleryHero,
-    detailImages: promoteHeroes(dosMasEnLaMesaGalleryImages),
+    detailImages: [...duntonEastonReels, ...promoteHeroes(dosMasEnLaMesaGalleryImages)],
     summary:
       "Dos Mas en la Mesa — a saturated mountain wedding staged across the Dunton property over a long Colorado weekend.",
     coords: [-108.0728, 37.7669],
