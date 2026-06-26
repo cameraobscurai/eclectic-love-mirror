@@ -137,7 +137,7 @@ export function GalleryFilmstrip({
               aria-label="Next project"
               aria-disabled={atEnd}
               disabled={atEnd}
-              onClick={() => { console.log('[filmstrip] next click', activeIndex); scrollToIndex(activeIndex + 1); }}
+              onClick={() => scrollToIndex(activeIndex + 1)}
               className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 items-center justify-center rounded-full border border-cream/20 bg-charcoal/40 backdrop-blur-md text-cream transition-all hover:bg-charcoal/70 hover:border-cream/40 disabled:opacity-20 disabled:pointer-events-none focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/50"
             >
               <ChevronRight className="h-5 w-5" />
