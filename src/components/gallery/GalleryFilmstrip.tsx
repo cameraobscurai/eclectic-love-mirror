@@ -63,8 +63,25 @@ export function GalleryFilmstrip({
   const scrollToIndex = useCallback((i: number) => {
     const clamped = Math.max(0, Math.min(i, itemRefs.current.length - 1));
     const el = itemRefs.current[clamped];
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const scroller = scrollerRef.current;
+    if (!el || !scroller) return;
+    // Center the target card. We allow negative targets to clamp at 0 only when
+    // the natural max would otherwise overshoot; otherwise just trust the math.
+    const center = el.offsetLeft - scroller.clientWidth / 2 + el.clientWidth / 2;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    const target = Math.max(0, Math.min(max, center));
+    // If the math is a no-op (item already centered to within a few px), nudge
+    // by one card so the click is never silent.
+    if (Math.abs(target - scroller.scrollLeft) < 8) {
+      const step = el.clientWidth + 40; // gap-10 ≈ 40px
+      const dir = i >= clamped ? 1 : -1;
+      scroller.scrollTo({
+        left: Math.max(0, Math.min(max, scroller.scrollLeft + dir * step)),
+        behavior: "smooth",
+      });
+      return;
+    }
+    scroller.scrollTo({ left: target, behavior: "smooth" });
   }, []);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
@@ -120,7 +137,7 @@ export function GalleryFilmstrip({
               aria-label="Next project"
               aria-disabled={atEnd}
               disabled={atEnd}
-              onClick={() => scrollToIndex(activeIndex + 1)}
+              onClick={() => { console.log('[filmstrip] next click', activeIndex); scrollToIndex(activeIndex + 1); }}
               className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 items-center justify-center rounded-full border border-cream/20 bg-charcoal/40 backdrop-blur-md text-cream transition-all hover:bg-charcoal/70 hover:border-cream/40 disabled:opacity-20 disabled:pointer-events-none focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/50"
             >
               <ChevronRight className="h-5 w-5" />
