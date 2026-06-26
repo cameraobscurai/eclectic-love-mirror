@@ -37,6 +37,7 @@ export function GalleryLightbox({
   const plates =
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const plate = plates[plateIndex];
+  const plateIsVideo = !!plate.video;
   const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
 
   // Lock body scroll while open. Shared ref-counted lock; safe under
