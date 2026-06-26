@@ -245,40 +245,56 @@ export function GalleryLightbox({
           }}
           className="relative flex-1 min-h-0 bg-[color-mix(in_oklab,var(--cream)_4%,var(--charcoal))] overflow-hidden touch-pan-y"
         >
-          <LightboxParallax plateKey={plate.src} disabled={plateChanging || pending}>
-            <TransformWrapper
-              initialScale={1}
-              minScale={1}
-              maxScale={4}
-              centerOnInit
-              doubleClick={{ mode: "toggle", step: 1.6, animationTime: 220 }}
-              wheel={{ step: 0.18, activationKeys: ["Control", "Meta"] }}
-              pinch={{ step: 5 }}
-              panning={{ disabled: !isZoomed, velocityDisabled: true }}
-              onInit={(ref) => {
-                zoomApiRef.current = ref;
-              }}
-              onTransform={(_ref: unknown, state: { scale: number }) => {
-                setZoomScale(state.scale);
-              }}
-            >
-              <TransformComponent
-                wrapperClass="!w-full !h-full"
-                contentClass="!w-full !h-full"
+          {plateIsVideo ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-black">
+              <video
+                key={plate.video}
+                src={plate.video}
+                poster={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+                controls
+                playsInline
+                preload="metadata"
+                className="max-h-full max-w-full w-auto h-auto"
               >
-                <div className="relative w-full h-full">
-                  <CrossfadeImage
-                    srcKey={plate.src}
-                    src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
-                    srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
-                    sizes="(min-width: 1024px) 66vw, 100vw"
-                    alt={plate.alt}
-                    onLoadingChange={handleLoadingChange}
-                  />
-                </div>
-              </TransformComponent>
-            </TransformWrapper>
-          </LightboxParallax>
+                <track kind="captions" />
+              </video>
+            </div>
+          ) : (
+            <LightboxParallax plateKey={plate.src} disabled={plateChanging || pending}>
+              <TransformWrapper
+                initialScale={1}
+                minScale={1}
+                maxScale={4}
+                centerOnInit
+                doubleClick={{ mode: "toggle", step: 1.6, animationTime: 220 }}
+                wheel={{ step: 0.18, activationKeys: ["Control", "Meta"] }}
+                pinch={{ step: 5 }}
+                panning={{ disabled: !isZoomed, velocityDisabled: true }}
+                onInit={(ref) => {
+                  zoomApiRef.current = ref;
+                }}
+                onTransform={(_ref: unknown, state: { scale: number }) => {
+                  setZoomScale(state.scale);
+                }}
+              >
+                <TransformComponent
+                  wrapperClass="!w-full !h-full"
+                  contentClass="!w-full !h-full"
+                >
+                  <div className="relative w-full h-full">
+                    <CrossfadeImage
+                      srcKey={plate.src}
+                      src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+                      srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
+                      sizes="(min-width: 1024px) 66vw, 100vw"
+                      alt={plate.alt}
+                      onLoadingChange={handleLoadingChange}
+                    />
+                  </div>
+                </TransformComponent>
+              </TransformWrapper>
+            </LightboxParallax>
+          )}
 
           {pending && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
