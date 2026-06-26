@@ -45,7 +45,7 @@ export function GalleryLightboxRail({
     <div className="border-t border-cream/10 bg-charcoal">
       <div
         ref={railRef}
-        className="flex gap-2 overflow-x-auto no-scrollbar px-6 lg:px-12 pt-5 pb-3"
+        className="flex gap-1.5 lg:gap-2 overflow-x-auto no-scrollbar px-4 lg:px-12 pt-3 lg:pt-5 pb-2 lg:pb-3"
       >
         {images.map((img, i) => {
           const active = i === currentIndex;
@@ -58,7 +58,7 @@ export function GalleryLightboxRail({
               aria-label={`View plate ${i + 1} of ${images.length}`}
               aria-current={active}
               className={[
-                "shrink-0 h-14 w-20 lg:h-16 lg:w-24 overflow-hidden transition-all duration-300",
+                "shrink-0 h-10 w-14 lg:h-16 lg:w-24 overflow-hidden transition-all duration-300",
                 "focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40",
                 active
                   ? "opacity-100 ring-1 ring-cream/80"
@@ -93,7 +93,7 @@ export function GalleryLightboxRail({
       </div>
 
       {/* Plate progress rule */}
-      <div className="px-6 lg:px-12 pb-5 pt-2 flex items-center gap-5">
+      <div className="px-4 lg:px-12 pb-3 lg:pb-5 pt-1 lg:pt-2 flex items-center gap-5">
         <span className="text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
           {(currentIndex + 1).toString().padStart(2, "0")}
         </span>

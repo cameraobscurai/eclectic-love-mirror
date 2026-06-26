@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronUp, X } from "lucide-react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { GalleryLightboxRail } from "./GalleryLightboxRail";
@@ -31,6 +31,7 @@ export function GalleryLightbox({
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
   const [plateIndex, setPlateIndex] = useState(0);
   const [plateChanging, setPlateChanging] = useState(false);
+  const [mobileDetailsOpen, setMobileDetailsOpen] = useState(false);
 
   const project = projects[projectIndex];
   const pending = !!project.pending;
@@ -222,6 +223,33 @@ export function GalleryLightbox({
       tabIndex={-1}
       className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col focus:outline-none"
     >
+      {/* Mobile top bar — close + project name + counter */}
+      <div className="lg:hidden shrink-0 flex items-center gap-3 px-4 pt-[max(env(safe-area-inset-top),0.5rem)] pb-3 border-b border-cream/10 bg-charcoal">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close gallery"
+          className="h-9 w-9 -ml-2 flex items-center justify-center text-cream/70 hover:text-cream focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-[9px] uppercase tracking-[0.32em] text-cream/45 truncate">
+            {project.planner}
+          </p>
+          <p className="mt-0.5 font-display text-[15px] leading-tight text-cream truncate">
+            {project.name}
+          </p>
+        </div>
+        {!pending && (
+          <span className="shrink-0 text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
+            {(plateIndex + 1).toString().padStart(2, "0")}
+            <span className="mx-1.5 text-cream/25">/</span>
+            {plates.length.toString().padStart(2, "0")}
+          </span>
+        )}
+      </div>
+
       {/* Main split */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
         {/* Hero plate — wheel target */}
@@ -369,8 +397,8 @@ export function GalleryLightbox({
 
         </div>
 
-        {/* Sidebar */}
-        <aside className="relative shrink-0 w-full lg:w-[380px] xl:w-[440px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-8 lg:px-12 py-8 lg:py-12 flex flex-col">
+        {/* Sidebar (desktop) */}
+        <aside className="relative shrink-0 w-full lg:w-[380px] xl:w-[440px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-8 lg:px-12 py-8 lg:py-12 hidden lg:flex flex-col">
           <button
             type="button"
             onClick={onClose}
@@ -437,6 +465,81 @@ export function GalleryLightbox({
           currentIndex={plateIndex}
           onSelect={setPlateIndex}
         />
+      )}
+
+      {/* Mobile project nav + details trigger */}
+      <div className="lg:hidden shrink-0 flex items-stretch border-t border-cream/10 bg-charcoal pb-[max(env(safe-area-inset-bottom),0px)]">
+        <button
+          type="button"
+          onClick={() => stepProject(-1)}
+          aria-label="Previous project"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/60 active:text-cream"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Prev
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileDetailsOpen(true)}
+          className="flex-[1.4] flex items-center justify-center gap-2 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/80 border-x border-cream/10"
+        >
+          <ChevronUp className="h-4 w-4" />
+          Details
+        </button>
+        <button
+          type="button"
+          onClick={() => stepProject(1)}
+          aria-label="Next project"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/60 active:text-cream"
+        >
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Mobile bottom-sheet drawer */}
+      {mobileDetailsOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60] flex flex-col">
+          <button
+            type="button"
+            aria-label="Close details"
+            onClick={() => setMobileDetailsOpen(false)}
+            className="flex-1 bg-charcoal/70 backdrop-blur-sm"
+          />
+          <div
+            role="dialog"
+            aria-label="Project details"
+            className="relative max-h-[80vh] overflow-y-auto bg-charcoal border-t border-cream/15 rounded-t-2xl px-6 pt-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] animate-in slide-in-from-bottom duration-300"
+          >
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-cream/25" aria-hidden />
+            <button
+              type="button"
+              onClick={() => setMobileDetailsOpen(false)}
+              aria-label="Close details"
+              className="absolute top-3 right-3 h-9 w-9 flex items-center justify-center text-cream/60"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-cream/55">
+              {project.planner}
+            </p>
+            <h2 className="mt-2 font-display text-[clamp(1.75rem,6vw,2.25rem)] leading-[1.05] tracking-[-0.005em] pr-10">
+              {project.name}
+            </h2>
+            <div className="mt-4 h-px w-10 bg-cream/25" aria-hidden />
+            <p className="mt-3 text-[10px] uppercase tracking-[0.32em] text-cream/55 tabular-nums">
+              {project.kind} · {project.year}
+            </p>
+            {project.summary && (
+              <p className="mt-4 text-sm leading-relaxed text-cream/70 normal-case">
+                {project.summary}
+              </p>
+            )}
+            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
+              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
