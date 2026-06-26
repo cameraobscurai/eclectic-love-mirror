@@ -65,14 +65,28 @@ export function GalleryLightboxRail({
                   : "opacity-40 hover:opacity-80",
               ].join(" ")}
             >
-              <img
-                src={renderUrl(img.src, { width: 240, quality: 65 })}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                className="w-full h-full object-cover"
-              />
+              <div className="relative w-full h-full">
+                <img
+                  src={renderUrl(img.src, { width: 240, quality: 65 })}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
+                  className="w-full h-full object-cover"
+                />
+                {img.video && (
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <span className="flex items-center justify-center h-6 w-6 rounded-full bg-charcoal/70 backdrop-blur-sm border border-cream/40">
+                      <svg viewBox="0 0 12 12" className="h-3 w-3 fill-cream translate-x-[1px]">
+                        <path d="M2 1l9 5-9 5z" />
+                      </svg>
+                    </span>
+                  </span>
+                )}
+              </div>
             </button>
           );
         })}
