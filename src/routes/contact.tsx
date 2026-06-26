@@ -498,7 +498,22 @@ function ContactPage() {
                 </span>
               </p>
             </div>
+
+            {/* Editorial video accent — desktop only */}
+            <div aria-hidden className="hidden lg:block mt-12 relative aspect-[4/5] w-full max-w-md overflow-hidden bg-charcoal ring-1 ring-charcoal/10">
+              <video
+                src="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/02-fashion.mp4"
+                poster="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/02-fashion.jpg"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
           </aside>
+
 
           {/* RIGHT — single form */}
           <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
