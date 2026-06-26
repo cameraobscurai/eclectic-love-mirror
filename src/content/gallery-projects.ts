@@ -107,7 +107,7 @@ import {
   fourSeasonsVailCassieLamereGalleryHero,
   fourSeasonsVailCassieLamereGalleryImages,
 } from "./gallery-manifests";
-import { galleriesUrl } from "@/lib/storage-image";
+import { galleriesUrl, publicStorageUrl } from "@/lib/storage-image";
 import { promoteHeroes } from "@/lib/gallery-hero-promotion";
 
 // Planners hard-excluded from the gallery surface.
