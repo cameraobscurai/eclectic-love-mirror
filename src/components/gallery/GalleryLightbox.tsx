@@ -466,6 +466,81 @@ export function GalleryLightbox({
           onSelect={setPlateIndex}
         />
       )}
+
+      {/* Mobile project nav + details trigger */}
+      <div className="lg:hidden shrink-0 flex items-stretch border-t border-cream/10 bg-charcoal pb-[max(env(safe-area-inset-bottom),0px)]">
+        <button
+          type="button"
+          onClick={() => stepProject(-1)}
+          aria-label="Previous project"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/60 active:text-cream"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Prev
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileDetailsOpen(true)}
+          className="flex-[1.4] flex items-center justify-center gap-2 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/80 border-x border-cream/10"
+        >
+          <ChevronUp className="h-4 w-4" />
+          Details
+        </button>
+        <button
+          type="button"
+          onClick={() => stepProject(1)}
+          aria-label="Next project"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-[10px] uppercase tracking-[0.28em] text-cream/60 active:text-cream"
+        >
+          Next
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+
+      {/* Mobile bottom-sheet drawer */}
+      {mobileDetailsOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60] flex flex-col">
+          <button
+            type="button"
+            aria-label="Close details"
+            onClick={() => setMobileDetailsOpen(false)}
+            className="flex-1 bg-charcoal/70 backdrop-blur-sm"
+          />
+          <div
+            role="dialog"
+            aria-label="Project details"
+            className="relative max-h-[80vh] overflow-y-auto bg-charcoal border-t border-cream/15 rounded-t-2xl px-6 pt-4 pb-[max(env(safe-area-inset-bottom),1.25rem)] animate-in slide-in-from-bottom duration-300"
+          >
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-cream/25" aria-hidden />
+            <button
+              type="button"
+              onClick={() => setMobileDetailsOpen(false)}
+              aria-label="Close details"
+              className="absolute top-3 right-3 h-9 w-9 flex items-center justify-center text-cream/60"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-cream/55">
+              {project.planner}
+            </p>
+            <h2 className="mt-2 font-display text-[clamp(1.75rem,6vw,2.25rem)] leading-[1.05] tracking-[-0.005em] pr-10">
+              {project.name}
+            </h2>
+            <div className="mt-4 h-px w-10 bg-cream/25" aria-hidden />
+            <p className="mt-3 text-[10px] uppercase tracking-[0.32em] text-cream/55 tabular-nums">
+              {project.kind} · {project.year}
+            </p>
+            {project.summary && (
+              <p className="mt-4 text-sm leading-relaxed text-cream/70 normal-case">
+                {project.summary}
+              </p>
+            )}
+            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
+              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
