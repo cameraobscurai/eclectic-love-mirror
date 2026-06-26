@@ -31,6 +31,7 @@ export function GalleryLightbox({
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
   const [plateIndex, setPlateIndex] = useState(0);
   const [plateChanging, setPlateChanging] = useState(false);
+  const [mobileDetailsOpen, setMobileDetailsOpen] = useState(false);
 
   const project = projects[projectIndex];
   const pending = !!project.pending;
