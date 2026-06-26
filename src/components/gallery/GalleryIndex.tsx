@@ -36,14 +36,14 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
       aria-labelledby="gallery-index-heading"
       className="bg-cream/5 pt-20 pb-12 lg:pt-32 lg:pb-24 px-6 lg:px-12"
     >
-      <div className="max-w-[1600px] mx-auto">
+      <div className="max-w-[1800px] mx-auto">
         <h2
           id="gallery-index-heading"
           className="text-cream/40 text-xs uppercase tracking-[0.3em] mb-12"
         >
           Project Index
         </h2>
-        <div className="grid lg:grid-cols-[1fr_320px] gap-10 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-[1fr_minmax(440px,38vw)] gap-10 lg:gap-20 items-start">
           <div ref={containerRef} className="relative" onMouseMove={onMove}>
             <ul>
               {projects.map((p, i) => {
