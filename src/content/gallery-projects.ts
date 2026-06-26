@@ -121,6 +121,25 @@ const brookeKeganDuntonHero4118: GalleryImage = {
   alt: "Candlelit detail at Dunton Hot Springs — MKSadler 4118",
 };
 
+// Easton Events × Dunton Hot Springs — 5 reels mirrored to videos/dunton-easton/.
+// See scripts-tmp/dunton-videos-manifest.json.
+const DUNTON_EASTON_VIDEO_BASE = publicStorageUrl("videos", "dunton-easton").replace(
+  /\/$/,
+  "",
+);
+const duntonEastonReels: GalleryImage[] = [
+  { slug: "03-ceremony",   label: "Ceremony" },
+  { slug: "04-reception",  label: "Reception" },
+  { slug: "01-rehearsal",  label: "Rehearsal" },
+  { slug: "05-casino-night", label: "Casino Night" },
+  { slug: "02-fashion",    label: "Fashion" },
+].map(({ slug, label }) => ({
+  src: `${DUNTON_EASTON_VIDEO_BASE}/${slug}.jpg`,
+  video: `${DUNTON_EASTON_VIDEO_BASE}/${slug}.mp4`,
+  alt: `${label} reel — Easton Events at Dunton Hot Springs`,
+}));
+
+
 export const galleryProjects: GalleryProject[] = [
   {
     number: "01",
