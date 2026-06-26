@@ -397,8 +397,8 @@ export function GalleryLightbox({
 
         </div>
 
-        {/* Sidebar */}
-        <aside className="relative shrink-0 w-full lg:w-[380px] xl:w-[440px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-8 lg:px-12 py-8 lg:py-12 flex flex-col">
+        {/* Sidebar (desktop) */}
+        <aside className="relative shrink-0 w-full lg:w-[380px] xl:w-[440px] bg-charcoal border-t lg:border-t-0 lg:border-l border-cream/10 px-8 lg:px-12 py-8 lg:py-12 hidden lg:flex flex-col">
           <button
             type="button"
             onClick={onClose}
