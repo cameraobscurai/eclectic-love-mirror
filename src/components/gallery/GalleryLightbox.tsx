@@ -223,6 +223,33 @@ export function GalleryLightbox({
       tabIndex={-1}
       className="fixed inset-0 z-50 bg-charcoal text-cream flex flex-col focus:outline-none"
     >
+      {/* Mobile top bar — close + project name + counter */}
+      <div className="lg:hidden shrink-0 flex items-center gap-3 px-4 pt-[max(env(safe-area-inset-top),0.5rem)] pb-3 border-b border-cream/10 bg-charcoal">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close gallery"
+          className="h-9 w-9 -ml-2 flex items-center justify-center text-cream/70 hover:text-cream focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-[9px] uppercase tracking-[0.32em] text-cream/45 truncate">
+            {project.planner}
+          </p>
+          <p className="mt-0.5 font-display text-[15px] leading-tight text-cream truncate">
+            {project.name}
+          </p>
+        </div>
+        {!pending && (
+          <span className="shrink-0 text-[10px] uppercase tracking-[0.28em] text-cream/55 tabular-nums">
+            {(plateIndex + 1).toString().padStart(2, "0")}
+            <span className="mx-1.5 text-cream/25">/</span>
+            {plates.length.toString().padStart(2, "0")}
+          </span>
+        )}
+      </div>
+
       {/* Main split */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row">
         {/* Hero plate — wheel target */}
