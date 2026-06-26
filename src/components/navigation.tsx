@@ -35,7 +35,7 @@ const NAV_LINKS = [
   },
   { href: "/collection", label: "HIVE SIGNATURE COLLECTION", render: "HIVE SIGNATURE COLLECTION" },
   { href: "/gallery", label: "THE GALLERY", render: "THE GALLERY" },
-  // { href: "/stylebrief", label: "THE STUDIO", render: "THE STUDIO" }, // hidden from nav; route still active
+  { href: "/stylebrief", label: "THE STUDIO", render: "THE STUDIO" },
   { href: "/contact", label: "CONTACT", render: "CONTACT" },
 ] as const;
 
