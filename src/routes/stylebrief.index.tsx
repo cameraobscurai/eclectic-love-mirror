@@ -26,6 +26,14 @@ export const Route = createFileRoute("/stylebrief/")({
       { property: "og:title", content: "Studio — Eclectic Hive" },
       { property: "og:description", content: "Build your style brief in minutes." },
     ],
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: "/media/stylebrief/howto-poster.jpg",
+        fetchpriority: "high" as const,
+      },
+    ],
   }),
   component: StudioPage,
 });
@@ -316,7 +324,7 @@ function StudioPage() {
       <header className="fluid-canvas pt-28 lg:pt-36 pb-16 lg:pb-20 border-b border-charcoal/10">
         <p className="text-[10px] uppercase tracking-[0.32em] text-charcoal/45">Studio</p>
         <h1 className="mt-4 font-display text-4xl lg:text-6xl uppercase tracking-[0.04em]">
-          Build Your Style Brief
+          BUILD YOUR STYLE BRIEF
         </h1>
         <p className="mt-5 max-w-xl text-[11px] uppercase tracking-[0.18em] text-charcoal/55 leading-relaxed">
           Drop the images that move you. See your palette. Send us your vision.
@@ -333,10 +341,15 @@ function StudioPage() {
           </div>
           <div className="lg:col-span-9">
             <div
-              className="relative w-full overflow-hidden bg-charcoal/[0.04] ring-1 ring-charcoal/10 aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]"
+              className="relative w-full overflow-hidden ring-1 ring-charcoal/10 aspect-[4/5] sm:aspect-[3/2] lg:aspect-[16/9]"
+              style={{
+                background:
+                  "linear-gradient(135deg, color-mix(in oklab, var(--charcoal) 8%, var(--cream)) 0%, color-mix(in oklab, var(--charcoal) 4%, var(--cream)) 100%)",
+              }}
             >
               <video
                 src="/video/stylebrief-howto.mp4"
+                poster="/media/stylebrief/howto-poster.jpg"
                 autoPlay
                 muted
                 loop
