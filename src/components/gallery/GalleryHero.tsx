@@ -13,7 +13,7 @@ export function GalleryHero({ total }: GalleryHeroProps) {
         </p>
         <StaggerHeading
           as="h1"
-          text="The Gallery"
+          text="THE GALLERY"
           mode="words"
           className="page-title text-cream"
         />

@@ -145,17 +145,18 @@ function HomePage() {
               width: "min(92vw, 32rem)",
             }}
           >
-            <h1
+            <p
               className="font-brand text-cream"
               style={{
                 fontWeight: 600,
                 letterSpacing: "0.02em",
                 fontSize: "clamp(2.25rem, 10vw, 3.5rem)",
                 lineHeight: 1,
+                margin: 0,
               }}
             >
               ECLECTIC HIVE
-            </h1>
+            </p>
             <p
               className="mt-2 font-brand italic text-cream/85"
               style={{

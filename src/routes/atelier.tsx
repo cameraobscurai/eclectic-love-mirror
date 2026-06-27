@@ -254,7 +254,7 @@ function AtelierPage() {
               <div ref={headlineRef as unknown as React.RefObject<HTMLDivElement>} style={{ width: "fit-content" }}>
                 <StaggerHeading
                   as="h1"
-                  lines={["IMAGINED.", "DESIGNED.", "REALIZED."]}
+                  lines={["IMAGINED. ", "DESIGNED. ", "REALIZED."]}
                   className="page-title text-charcoal"
                   style={{
                     fontSize: "clamp(3.25rem, 8vw, 6rem)",

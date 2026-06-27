@@ -795,7 +795,14 @@ function CollectionPage() {
         ...(showOverview ? { minHeight: "var(--app-vh, 100dvh)" } : null),
       } as React.CSSProperties}
     >
-      {/* Heading removed — the left "the HIVE" plate IS the page title. */}
+      {/* Heading removed visually — the left "the HIVE" plate IS the page title.
+          Semantic H1 retained for SEO + a11y (off-screen, no layout shift). */}
+      <h1
+        className="sr-only"
+        style={{ position: "absolute", width: 1, height: 1, overflow: "hidden" }}
+      >
+        THE ARCHIVE
+      </h1>
       <div style={{ height: "var(--nav-h)" }} aria-hidden />
 
 
