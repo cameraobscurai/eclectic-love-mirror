@@ -1,145 +1,97 @@
-## v12 — ONE TAKE
+# SOTD Blocker Fix — Surgical Plan
 
-A single 60-second continuous camera move through a 3D gallery of the entire Hive. No scene cuts. Every product, every season, every capability exists as a physical object in one navigable space. The camera is the edit.
-
-Renders headless via Remotion + WebGL/ANGLE in the sandbox.
+Five presentation-only edits. No IA, data, route, or layout changes. Every fix is reversible in one commit. Locked invariants in `docs/DECISIONS.md` and `mem://index.md` are preserved.
 
 ---
 
-### THE SHOT
+## Guardrails (apply to every step)
 
-```text
-START               BACK WALL                MID FIELD              MACRO            HUD            END
-[black]  ─────────► [seasonal video wall] ─► [84 tiles in space] ─► [one chair] ──► [brief HUD] ──► [wordmark]
-                          home reel          tonal sort happens     real dolly-in    pass-through    pull back
-                                              in 3D, in front of                      from interior
-                                              the camera
+- No new routes, no nav renames, no copy rewrites beyond casing.
+- No new dependencies, no new packages, no schema changes.
+- No edits to: `src/integrations/supabase/*`, `routeTree.gen.ts`, `.env`, `supabase/config.toml`.
+- Visual diff each route before/after at 390px + 1280px — pixel parity required outside the targeted element.
+- Each fix lands in its own edit batch so any single one can be reverted cleanly.
+
+---
+
+## 1. `/` duplicate `<h1>`
+
+**File:** `src/routes/index.tsx`
+
+Mobile reel block and desktop block both render `<h1>ECLECTIC HIVE</h1>`. Both are in the DOM regardless of viewport.
+
+**Edit:** Demote the mobile wordmark (inside the frosted band) from `<h1>` to `<p>`. Keep every class, every inline style, every character of copy. Desktop `<h1>` remains the single document title.
+
+**Why this and not the inverse:** desktop H1 already sits in the editorial fold with proper hierarchy and is what crawlers should weight. Mobile band is decorative overlay on a video.
+
+**Verify:** `rg "<h1" src/routes/index.tsx` → 1 match. Playwright `locator('h1').count()` === 1 at 390 + 1280.
+
+---
+
+## 2. `/collection` missing `<h1>`
+
+**File:** read `src/routes/collection*.tsx` first to confirm exact path.
+
+**Edit:** Insert one `<h1>THE ARCHIVE</h1>` directly above the sticky filter band, styled in the existing micro-label register: `text-[11px] uppercase tracking-[0.3em] text-charcoal/60`. Sits on its own line, no layout shift to the grid below.
+
+**Locked invariants preserved:** archive grid, left rail, filter band, Quick View, sort options — all untouched. Copy "THE ARCHIVE" matches the `--archive-*` token namespace and the auction-house register already documented.
+
+**Verify:** one H1 in DOM, no CLS on filter band, grid first-row Y unchanged ±2px.
+
+---
+
+## 3. ALL-CAPS rule on `/gallery` and `/stylebrief`
+
+**Files:**
+- `src/routes/gallery.index.tsx` — "The Gallery" → "THE GALLERY"
+- `src/routes/stylebrief.index.tsx` — "Build Your Style Brief" → "BUILD YOUR STYLE BRIEF"
+
+Text-node edits only. No class changes, no `text-transform: uppercase` band-aid (the rule is source-of-truth caps per memory). Confirm no `<title>`/meta strings need matching updates in the same `head()`.
+
+---
+
+## 4. `/atelier` H1 tokenization
+
+**File:** `src/routes/atelier.tsx`
+
+Current text node `IMAGINED.DESIGNED.REALIZED.` tokenizes to one slug-word.
+
+**Edit:** Add `aria-label="Imagined. Designed. Realized."` to the existing `<h1>`, and insert hairspace (`\u200A`) between the dot-separated words so visible kerning is unchanged but the crawler sees three tokens:
+
+```
+IMAGINED.\u200ADESIGNED.\u200AREALIZED.
 ```
 
-One camera. One take. No cuts. ~60s @ 30fps = 1800f.
+No font, no size, no color change. Tagline lock from DECISIONS.md is preserved (the tagline string itself is unchanged).
+
+**Verify:** screenshot diff against current — no visible kerning change. Screen-reader output reads three words.
 
 ---
 
-### THE STACK
+## 5. `/stylebrief` blank first paint
 
-| Layer       | Tech                                            | Role |
-|-------------|-------------------------------------------------|------|
-| World       | `three` + `@react-three/fiber` + `@remotion/three` | Gallery, product planes, video walls |
-| Camera      | `useCurrentFrame()` driven path                 | Bezier track, deterministic |
-| Optics      | `@remotion/motion-blur` `<CameraMotionBlur>`    | Real shutter-angle blur on whip moments |
-| Lens        | Custom postprocessing shader (R3F `<EffectComposer>`) | Subtle barrel + chromatic aberration + vignette + grain |
-| Home reel   | Three.js `VideoTexture` on a back-wall plane    | Live seasonal clip plays as a wall |
-| Products    | 84 PlaneGeometries with product PNG as texture, alpha-cut | Float in field formations |
-| HUD         | DOM overlay above R3F canvas                    | Labels, timecode, ELECTIC HIVE wordmark |
-| Type        | Cormorant Garamond (display) + JetBrains Mono (HUD) | Mono for timecode keeps editorial |
+**Files:** `src/routes/stylebrief.index.tsx` + hero video wrapper.
 
----
+**Edit, in order:**
 
-### CAMERA CHOREOGRAPHY
+1. Extract a poster from the existing `src/assets/stylebrief-site-v11.mp4` via ffmpeg at t=0.5s → `src/assets/stylebrief-hero-poster.jpg` (1920×1080, q=82, target ≤180KB). One-time script, asset committed.
+2. Wire `<video poster={posterUrl} preload="metadata">` on the existing hero `<video>`. No new component, no wrapper restructure.
+3. Add the poster to `Route.head().links` as `rel="preload" as="image" fetchpriority="high"`.
+4. Add a charcoal→cream CSS gradient backdrop on the immediate video wrapper as a zero-byte fallback that shows before the poster decodes. Uses existing tokens only — no new colors.
 
-```text
-00:00–00:06   black, hairline draws, fade up into 3D space
-00:06–00:14   camera floats forward toward back wall, home reel playing
-00:14–00:22   camera arcs LEFT, the field of 84 tiles materializes around it
-00:22–00:32   TONAL SORT — 16 textile tiles physically migrate to the camera's
-              eyeline in tonal order, others recede in depth (real Z motion, not opacity)
-00:32–00:38   camera DOLLY-IN to the Adelaide chair card, card grows to full frame
-00:38–00:44   chair card dissolves to atelier triptych panels (3 physical panels in space)
-              camera tracks RIGHT past each panel
-00:44–00:50   camera passes THROUGH a swatch — screen fills with #C7B6A1, color name HUD
-00:50–00:56   brief form fades up as a HUD plane the camera passes through
-              palette swatches detach from form and float past as physical cards
-00:56–01:00   camera pulls back to reveal wordmark in deep space, fade to charcoal
-```
+**No video swap, no aspect change, no Remotion re-render.** Same source file, same playback behavior.
 
-No cuts. Every "scene" is a position on one camera path.
+**Verify:** Playwright screenshot at navigation `domcontentloaded` — non-blank. File size delta on first paint > 800KB vs current 141KB baseline. Lighthouse LCP on /stylebrief drops.
 
 ---
 
-### LENS / OPTICAL TREATMENT
+## Final verification
 
-Custom postprocessing pass added to the R3F scene:
+Single Playwright pass after all five land:
 
-- **Vignette** — subtle, anchors the frame
-- **Barrel distortion** — 1–2% only, makes it feel photographed not rendered
-- **Chromatic aberration** — 0.5px on edges, fires harder during whip moments
-- **Film grain** — 3% animated noise, masks compression
-- **`<CameraMotionBlur shutterAngle={180}>`** wraps the whole composition for natural shutter blur on fast moves
+- Per route at 390 + 1280: `h1` count === 1, `h1` accessible name matches expectation.
+- Visual diffs: `/`, `/atelier`, `/collection`, `/gallery`, `/stylebrief` — only the targeted regions changed.
+- First-paint screenshots at `t=0ms` for `/stylebrief` are not blank.
+- No console errors introduced. No new network requests besides the poster preload.
 
-This is the "this looks real" layer. Without it Three.js looks like a game; with it, it looks like a Phantom camera in a real room.
-
----
-
-### MOTION BLUR REALITY CHECK
-
-`<CameraMotionBlur>` works by rendering N samples per frame and compositing. Set `samples={8}` for production. Costs ~8× render time on whip frames but the result is the difference between web 3D and broadcast 3D.
-
----
-
-### TECHNICAL DETAILS
-
-**New dependencies:**
-- `three`
-- `@react-three/fiber`
-- `@react-three/drei` (for `<Plane>`, `<OrbitControls>` dev-only, etc.)
-- `@remotion/three`
-- `@remotion/motion-blur`
-- `postprocessing` (for the lens stack)
-
-**File structure:**
-```
-remotion/src/
-  v12/
-    SiteReelV12.tsx      ─ root composition
-    World.tsx            ─ R3F scene root (lights, fog, floor)
-    CameraRig.tsx        ─ frame-driven camera path
-    BackWall.tsx         ─ seasonal video texture wall
-    ProductField.tsx     ─ 84 product planes, formations, tonal sort
-    AtelierPanels.tsx    ─ triptych in 3D space
-    HudPlane.tsx         ─ brief form as a billboarded plane
-    LensStack.tsx        ─ postprocessing shader pass
-    HudOverlay.tsx       ─ DOM overlay (timecode, labels, wordmark)
-    camera-path.ts       ─ keyframed bezier path data
-```
-
-**Render command — needs `--gl=angle` for WebGL in headless chromium:**
-
-Update `scripts/render-v11.mjs` (or new `render-v12.mjs`) to add:
-
-```js
-chromiumOptions: { gl: 'angle', args: ['--no-sandbox', '--disable-dev-shm-usage'] }
-```
-
-Drop `concurrency: 4` → `concurrency: 2` (3D + motion blur is heavy). Expected render time: 8–12 min. Within sandbox 10-min `code--exec` limit if we go concurrency 2. If we breach, drop to 24fps (1440 frames) or render in two halves and concat with ffmpeg.
-
-**Same composition shape as v11** (1920×1080, charcoal #1a1a1a / white #ffffff / sand #d4cdc4, Cormorant + JetBrains Mono, ALL CAPS HUD).
-
----
-
-### WHAT IT IS NOT
-
-- Not another slideshow
-- Not stitched scenes with transitions
-- Not flat 2D motion graphics
-- Not CSS-animated divs pretending to be 3D
-- Not Premiere-template "modern reveal" energy
-
-It's one camera, one take, our actual world, browser-rendered.
-
----
-
-### DELIVERABLE
-
-`/mnt/documents/eclectic-hive-onetake-v12.mp4` (mp4, ~1080p, ~60s, ~30–40MB), externalized via `lovable-assets` to `src/assets/onetake-v12.mp4.asset.json`.
-
-v11 stays untouched — this is additive.
-
----
-
-### RISKS / DECISIONS NEEDED
-
-1. **Render time**: 3D + 8-sample motion blur will be slow. If it breaches 600s sandbox limit, options are: drop fps to 24, drop motion blur samples to 4, render in halves.
-2. **GPU in sandbox**: WebGL via ANGLE works in headless Chromium but isn't GPU-accelerated. Three.js with 84 textured planes at 1080p should still render — verified by smaller R3F test before committing to full pipeline.
-3. **Approval needed on**: 60s length (vs 45s tighter) and whether to keep v11 in parallel as a "safe" version.
-
-Ready to build on approval.
+If any verification fails, that one fix reverts independently — the other four ship.
