@@ -103,17 +103,10 @@ const DESTINATIONS = [
 ] as const;
 
 function HomePage() {
-  // Posters paint instantly now (preloaded AVIF). Skip the double-rAF gate
-  // and let the loaded state be true on first render — the heading + tagline
-  // + filmstrip animations still play their own transitions.
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    // Flip on the next frame so the CSS transition still fires from the
-    // initial state (otherwise the entrance animation never plays).
-    const r = requestAnimationFrame(() => setLoaded(true));
-    return () => cancelAnimationFrame(r);
-  }, []);
+  // Posters paint instantly now (preloaded AVIF). Start `loaded` true so
+  // SSR + first client paint render the hero visible — no opacity-0 flash
+  // while we wait a frame to fade in. Filmstrip runs its own reveal.
+  const [loaded] = useState(true);
 
   return (
     <main id="main-content" className="bg-paper">
