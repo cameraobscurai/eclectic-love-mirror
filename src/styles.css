@@ -151,6 +151,17 @@
   --canvas-max: 1600px;
   --canvas-px: clamp(1.25rem, 3vw, 4rem);
   --canvas-unit: clamp(0.875rem, 1vw, 1.25rem);
+
+  /* ---------- Editorial polish tokens (Tier 1 unification) ----------
+   * One hairline value replaces the /12, /20, /25 charcoal alphas that
+   * were drifting across the home page. One ease + two durations replace
+   * the ad-hoc 700/1100ms + assorted eases so motion feels from the same
+   * family. Referenced only by inline styles / arbitrary utilities —
+   * safe to add without touching Tailwind theme. */
+  --hairline: color-mix(in oklab, var(--charcoal) 15%, transparent);
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-slow: 900ms;
+  --dur-med: 600ms;
 }
 
 .fluid-canvas {

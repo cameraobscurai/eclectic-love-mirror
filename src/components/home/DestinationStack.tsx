@@ -169,11 +169,11 @@ function DestinationCard({
         {/* hairline that draws in on resolve */}
         <motion.div
           aria-hidden
-          className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px bg-charcoal/20 origin-left"
+          className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px origin-left"
           style={
             isStatic
-              ? { transform: "scaleX(1)" }
-              : { scaleX: detailReveal }
+              ? { background: "var(--hairline)", transform: "scaleX(1)" }
+              : { background: "var(--hairline)", scaleX: detailReveal }
           }
         />
       </div>
