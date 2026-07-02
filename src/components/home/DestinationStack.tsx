@@ -115,10 +115,10 @@ function DestinationCard({
       >
         <div className="flex items-baseline justify-between gap-2">
           <span
-            className="font-brand uppercase text-charcoal/45"
+            className="font-brand uppercase text-charcoal/55"
             style={{
               fontWeight: 400,
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontSize: "clamp(0.5rem, 0.6vw, 0.7rem)",
               fontVariantNumeric: "tabular-nums",
             }}
