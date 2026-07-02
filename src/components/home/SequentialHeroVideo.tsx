@@ -12,24 +12,54 @@ import { PosterPicture } from "./PosterPicture";
  */
 export function SequentialHeroVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Start at 0 for SSR/hydration parity; randomize after mount so repeat
-  // viewers don't always land on the same season (mobile-only component).
+  // Start on the preloaded first clip. Randomizing here made mobile Safari
+  // chase a cold, non-preloaded source and left the poster looking stuck.
   const [index, setIndex] = useState(0);
-  useEffect(() => {
-    setIndex(Math.floor(Math.random() * HERO_CLIPS.length));
-  }, []);
-  const [videoReady, setVideoReady] = useState(false);
-
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
   useEffect(() => {
-    setVideoReady(false);
     const v = videoRef.current;
     if (!v) return;
+
+    let cancelled = false;
+
+    const primeAutoplay = () => {
+      v.autoplay = true;
+      v.defaultMuted = true;
+      v.muted = true;
+      v.playsInline = true;
+      v.setAttribute("autoplay", "");
+      v.setAttribute("muted", "");
+      v.setAttribute("playsinline", "");
+      v.defaultMuted = true;
+      v.setAttribute("webkit-playsinline", "");
+    };
+
+    const tryPlay = () => {
+      if (cancelled) return;
+      primeAutoplay();
+      const p = v.play();
+      if (p && typeof p.then === "function") {
+        p.catch(() => {});
+      }
+    };
+
+    const markReadyAndPlay = () => tryPlay();
+
+    primeAutoplay();
+    v.addEventListener("canplay", markReadyAndPlay);
+    v.addEventListener("playing", markReadyAndPlay);
     v.load();
-    const p = v.play();
-    if (p && typeof p.catch === "function") p.catch(() => {});
+    tryPlay();
+    const retry = window.setTimeout(tryPlay, 250);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(retry);
+      v.removeEventListener("canplay", markReadyAndPlay);
+      v.removeEventListener("playing", markReadyAndPlay);
+    };
   }, [index]);
 
   return (
@@ -47,18 +77,14 @@ export function SequentialHeroVideo() {
       <video
         ref={videoRef}
         key={current.id}
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-          videoReady ? "opacity-100" : "opacity-0"
-        }`}
+        className="absolute inset-0 h-full w-full object-cover"
         src={current.src?.mp4}
+        poster={current.poster}
         autoPlay
         muted
         playsInline
-        // "metadata" lets the browser fetch just enough to begin playback
-        // while the poster owns first paint.
-        preload="metadata"
-        {...({ "webkit-playsinline": "true" } as Record<string, string>)}
-        onLoadedData={() => setVideoReady(true)}
+        preload="auto"
+        {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
         onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
         aria-label={current.label}
       />
