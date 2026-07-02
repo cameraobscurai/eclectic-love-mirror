@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-07-02",
+  "purpose": "Editorial-order changes proposed after photo audit. Owner MUST review before apply. Once approved, run scripts-tmp/apply-editorial-order-proposal.mjs (to be written).",
+  "audit_correction_notes": [
+    "AUDIT FALSE POSITIVES — no change needed:",
+    "  - Rugs: already grouped hides (10-70) then jute/kilim (150+). Auditor claim of 'scattered' was wrong.",
+    "  - Serveware: already grouped trays (420-600), decanters (630-680), tubs (710+). Auditor claim of 'strict alpha' was wrong.",
+    "  - Tables columns: Bartolo 400, Farrow 410, Toshia 420 already adjacent. Already clustered.",
+    "  - Chandelier Gideon 2464: image URL returns 200 with 91KB. Not broken.",
+    "  - Lighting Giesel/Darnell/Maor: all URLs return 200 with 50-200KB. Not broken.",
+    "  - Boulder 3031/3032: title/slug/image filenames all consistent (48\" and 36\" respectively). No swap needed."
+  ],
+  "proposals": [
+    {
+      "category": "seating",
+      "rationale": "Ingram (black leather) at order 60 breaks a light-fabric run. Cluster with Stanhope (chocolate leather, order 30).",
+      "changes": [
+        { "rms_id": "4180", "title": "Ingram Black Leather + Wood Sofa", "current_order": 60, "proposed_order": 35, "why": "Group with Stanhope chocolate leather (30)" }
+      ]
+    },
+    {
+      "category": "candlelight",
+      "rationale": "Alabaster votives currently unordered (fall to alpha). Pair them explicitly.",
+      "changes": [
+        { "rms_id": "3468", "title": "Alabaster 5\" Votive", "current_order": null, "proposed_order": 100, "why": "Pair alabaster group" },
+        { "rms_id": "3776", "title": "Nera 4\" Alabaster Votive", "current_order": null, "proposed_order": 110, "why": "Pair alabaster group" }
+      ]
+    },
+    {
+      "category": "chandeliers",
+      "rationale": "Smoke crystal chandeliers should sit adjacent.",
+      "changes": [
+        { "rms_id": "3227", "title": "Namiah 24\" Smoke Crystal Black Chandelier", "current_order": null, "proposed_order": 100, "why": "Pair crystals" },
+        { "rms_id": "2487", "title": "Dezmelda 24\" Smoke Crystal Chandelier", "current_order": null, "proposed_order": 110, "why": "Pair crystals" }
+      ]
+    },
+    {
+      "category": "large-decor",
+      "rationale": "All four firepits currently unordered. Cluster them.",
+      "changes": [
+        { "rms_id": "3540", "title": "Blaze 48\" Rectangle Weathered Steel Firepit", "current_order": null, "proposed_order": 300, "why": "Firepit cluster" },
+        { "rms_id": "3499", "title": "Ember 38\" Square Weathered Steel Firepit", "current_order": null, "proposed_order": 310, "why": "Firepit cluster" },
+        { "rms_id": "3542", "title": "Jacen Indoor Firepit", "current_order": null, "proposed_order": 320, "why": "Firepit cluster" },
+        { "rms_id": "3878", "title": "Sutton 36\" Black Firepit + Tank Cover", "current_order": null, "proposed_order": 330, "why": "Firepit cluster" }
+      ]
+    },
+    {
+      "category": "styling",
+      "rationale": "Five Tivoli plinths currently share one image and cluster at the end via alpha fallback, creating a 'glitch' row. Spread them across the grid so the repetition is less obvious until per-size photos exist.",
+      "owner_decision_required": true,
+      "notes": "Alternative: request 5 distinct plinth photos from owner (preferred). Reordering is a workaround, not a fix.",
+      "changes": []
+    }
+  ],
+  "deferred_owner_input": [
+    { "rms_id": "3821", "title": "Isaac Beige Sheepskin Fur", "issue": "Image file is named KAINO Beige Sheepskin.png. Rename asset or repoint?" },
+    { "rms_id": "1625", "title": "Darnell LED Uplight", "issue": "Auditor said 'ensure ON stays primary'. Current file is DARNELL LED Uplight 1.png; alt is DARNELL Uplight 2.png. Which is ON?" }
+  ],
+  "reshoot_queue": [
+    { "category": "storage", "rms_ids": ["2919","1928","762","3562","2731","4139","3563","2921","3564","1929"], "reason": "10/11 products at 114-300px source resolution — appear pixelated in grid" },
+    { "category": "candlelight", "rms_id": "3080", "reason": "Kinlee Cocoon Luminary primary and set images are low-res/blurry" },
+    { "category": "large-decor", "rms_ids": ["3540","2464-hudson","daxton","merritt","washington","aya"], "reason": "Blaze firepit fake flame overlay; Hudson/Daxton/Washington are renders; Aya doors show support stands" },
+    { "category": "tables", "reason": "Widespread dark halo / fringe on transparent PNGs — needs remask pass, not per-product fixes" },
+    { "category": "tableware", "rms_ids": ["bronson-glassware","estella-mixed-metal-flatware"], "reason": "Bronson on solid BG breaks transparent standard; Estella is pixelated" }
+  ]
+}
