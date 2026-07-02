@@ -90,7 +90,6 @@ export function SequentialHeroVideo() {
         src={current.src?.mp4}
         autoPlay
         muted
-        defaultMuted
         playsInline
         preload="auto"
         {...({ "webkit-playsinline": "true" } as Record<string, string>)}
