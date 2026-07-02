@@ -196,12 +196,12 @@ function MobilePosterTile({
         style={{ fontWeight: 400 }}
       >
         <span
-          className="text-[9px] tracking-[0.14em] text-charcoal/55"
-          style={{ fontVariantNumeric: "tabular-nums" }}
+          className="text-[9px] uppercase text-charcoal/55"
+          style={{ fontVariantNumeric: "tabular-nums", letterSpacing: "0.22em" }}
         >
           {clip.id}
         </span>
-        <span className="text-[10px] uppercase tracking-[0.16em] truncate">
+        <span className="text-[10px] uppercase truncate text-charcoal/55" style={{ letterSpacing: "0.22em" }}>
           {clip.season}
         </span>
       </figcaption>
@@ -372,12 +372,12 @@ function FilmstripFrame({
         style={{ fontWeight: 400 }}
       >
         <span
-          className="text-[10px] md:text-[11px] tracking-[0.18em] text-charcoal/55"
-          style={{ fontVariantNumeric: "tabular-nums" }}
+          className="text-[10px] md:text-[11px] text-charcoal/55"
+          style={{ fontVariantNumeric: "tabular-nums", letterSpacing: "0.22em" }}
         >
           {clip.id}
         </span>
-        <span className="text-[11px] md:text-[13px] uppercase tracking-[0.22em]">
+        <span className="text-[11px] md:text-[13px] uppercase text-charcoal/55" style={{ letterSpacing: "0.22em" }}>
           {clip.season}
         </span>
       </figcaption>

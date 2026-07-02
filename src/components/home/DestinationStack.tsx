@@ -115,10 +115,10 @@ function DestinationCard({
       >
         <div className="flex items-baseline justify-between gap-2">
           <span
-            className="font-brand uppercase text-charcoal/45"
+            className="font-brand uppercase text-charcoal/55"
             style={{
               fontWeight: 400,
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               fontSize: "clamp(0.5rem, 0.6vw, 0.7rem)",
               fontVariantNumeric: "tabular-nums",
             }}
@@ -169,11 +169,11 @@ function DestinationCard({
         {/* hairline that draws in on resolve */}
         <motion.div
           aria-hidden
-          className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px bg-charcoal/20 origin-left"
+          className="absolute left-5 right-5 md:left-7 md:right-7 top-0 h-px origin-left"
           style={
             isStatic
-              ? { transform: "scaleX(1)" }
-              : { scaleX: detailReveal }
+              ? { background: "var(--hairline)", transform: "scaleX(1)" }
+              : { background: "var(--hairline)", scaleX: detailReveal }
           }
         />
       </div>
@@ -183,10 +183,10 @@ function DestinationCard({
   if (isStatic) {
     return (
       <div
-        className="border border-charcoal/12"
         style={{
           height: "clamp(112px, 7rem + 3vw, 13rem)",
-          animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
+          border: "1px solid var(--hairline)",
+          animation: `dest-fade var(--dur-med) ${index * 80}ms var(--ease-editorial) both`,
         }}
       >
         {inner}
@@ -196,9 +196,10 @@ function DestinationCard({
 
   return (
     <motion.div
-      className="border border-charcoal/12 gpu-accelerated"
+      className="gpu-accelerated"
       style={{
         height: "clamp(148px, 9rem + 3vw, 13rem)",
+        border: "1px solid var(--hairline)",
         x,
         y,
         scale,

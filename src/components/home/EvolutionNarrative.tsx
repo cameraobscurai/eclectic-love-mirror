@@ -298,8 +298,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                 className="flex items-center justify-center gap-4 md:gap-5 mb-8 md:mb-8 w-full"
               >
                 <div
-                  className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"
-                  style={{ transform: `scaleX(${enterT})` }}
+                  className="h-px flex-1 max-w-[4rem] md:max-w-[6rem] origin-right"
+                  style={{ background: "var(--hairline)", transform: `scaleX(${enterT})` }}
                 />
                 <h2
                   id="evolution-heading"
@@ -313,8 +313,8 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   Evolution
                 </h2>
                 <div
-                  className="h-px bg-charcoal/25 flex-1 max-w-[4rem] md:max-w-[6rem] origin-left"
-                  style={{ transform: `scaleX(${enterT})` }}
+                  className="h-px flex-1 max-w-[4rem] md:max-w-[6rem] origin-left"
+                  style={{ background: "var(--hairline)", transform: `scaleX(${enterT})` }}
                 />
               </div>
 
