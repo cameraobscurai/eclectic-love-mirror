@@ -183,10 +183,10 @@ function DestinationCard({
   if (isStatic) {
     return (
       <div
-        className="border border-charcoal/12"
         style={{
           height: "clamp(112px, 7rem + 3vw, 13rem)",
-          animation: `dest-fade 700ms ${index * 80}ms ease-out both`,
+          border: "1px solid var(--hairline)",
+          animation: `dest-fade var(--dur-med) ${index * 80}ms var(--ease-editorial) both`,
         }}
       >
         {inner}
@@ -196,9 +196,10 @@ function DestinationCard({
 
   return (
     <motion.div
-      className="border border-charcoal/12 gpu-accelerated"
+      className="gpu-accelerated"
       style={{
         height: "clamp(148px, 9rem + 3vw, 13rem)",
+        border: "1px solid var(--hairline)",
         x,
         y,
         scale,

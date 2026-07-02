@@ -195,7 +195,7 @@ function HomePage() {
             <div className="mx-auto" style={{ maxWidth: "min(72rem, 100%)" }}>
               <h1
                 className={cn(
-                  "text-center font-display text-charcoal transition-[opacity,transform] ease-out [letter-spacing:-0.012em]",
+                  "text-center font-display text-charcoal transition-[opacity,transform] [letter-spacing:-0.012em]",
                   loaded
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-2",
@@ -206,7 +206,8 @@ function HomePage() {
                   fontSize: "clamp(3.5rem, 1.5rem + 3.2vw, 5.75rem)",
                   lineHeight: 0.95,
                   fontWeight: 600,
-                  transitionDuration: "1100ms",
+                  transitionDuration: "var(--dur-slow)",
+                  transitionTimingFunction: "var(--ease-editorial)",
                 }}
               >
                 ECLECTIC HIVE
@@ -214,7 +215,7 @@ function HomePage() {
 
               <p
                 className={cn(
-                  "mx-auto text-center font-display italic text-charcoal/65 transition-all duration-700 ease-out",
+                  "mx-auto text-center font-display italic text-charcoal/65 transition-all",
                   loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1",
                 )}
                 style={{
@@ -223,6 +224,8 @@ function HomePage() {
                   fontWeight: 400,
                   fontSize: "clamp(0.95rem, 0.6rem + 0.45vw, 1.15rem)",
                   lineHeight: 1.4,
+                  transitionDuration: "var(--dur-med)",
+                  transitionTimingFunction: "var(--ease-editorial)",
                   transitionDelay: loaded ? "350ms" : "0ms",
                 }}
               >
@@ -236,13 +239,14 @@ function HomePage() {
             tiles. Both routes through the same lightbox. */}
         <div
           className={cn(
-            "transition-all ease-out",
+            "transition-all",
             "pb-[calc(var(--fold-tail)*0.6)] md:pb-[var(--fold-tail)]",
             loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
           )}
           style={{
             paddingTop: "var(--fold-strip)",
-            transitionDuration: "650ms",
+            transitionDuration: "var(--dur-med)",
+            transitionTimingFunction: "var(--ease-editorial)",
             transitionDelay: loaded ? "200ms" : "0ms",
           }}
         >
