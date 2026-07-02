@@ -35,6 +35,7 @@ export function SequentialHeroVideo() {
       v.setAttribute("autoplay", "");
       v.setAttribute("muted", "");
       v.setAttribute("playsinline", "");
+      v.defaultMuted = true;
       v.setAttribute("webkit-playsinline", "");
     };
 
@@ -88,11 +89,12 @@ export function SequentialHeroVideo() {
           videoReady ? "opacity-100" : "opacity-0"
         }`}
         src={current.src?.mp4}
+        poster={current.poster}
         autoPlay
         muted
         playsInline
         preload="auto"
-        {...({ "webkit-playsinline": "true" } as Record<string, string>)}
+        {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
         onLoadedData={() => setVideoReady(true)}
         onCanPlay={() => setVideoReady(true)}
         onPlaying={() => setVideoReady(true)}

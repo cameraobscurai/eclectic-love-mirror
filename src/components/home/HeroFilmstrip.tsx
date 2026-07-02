@@ -60,50 +60,27 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [lightboxId, reduced, inView]);
 
-  // Defer video loading until BOTH: (a) the strip is in viewport, and
-  // (b) the browser has gone idle. This keeps the posters as the LCP
-  // and prevents 5 simultaneous Supabase video downloads from saturating
-  // the network during initial paint. Once primed, the videos behave
-  // exactly as before (autoplay muted loop).
+  // Hero videos must begin fetching immediately when visible. The poster still
+  // owns first paint, but waiting for browser idle made the frames look static.
   useEffect(() => {
     if (reduced) return;
     if (!inView) return;
-    let cancelled = false;
-    type IdleWin = Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number;
-      cancelIdleCallback?: (handle: number) => void;
-    };
-    const w = window as IdleWin;
-    const idle = (cb: () => void): number =>
-      typeof w.requestIdleCallback === "function"
-        ? w.requestIdleCallback(cb, { timeout: 1200 })
-        : window.setTimeout(cb, 200);
-    const handle = idle(() => {
-      if (cancelled) return;
-      Object.entries(videoRefs.current).forEach(([_id, v], i) => {
-        if (!v) return;
-        // Stagger the actual loads so we don't hammer the CDN with 5
-        // concurrent requests on slow connections.
-        window.setTimeout(() => {
-          if (cancelled || !v) return;
-          try {
-            v.muted = true;
-            // Promote from preload="none" to actually fetching.
-            v.preload = "auto";
-            v.load();
-            v.play().catch(() => {});
-          } catch {}
-        }, i * 140);
-      });
+    Object.values(videoRefs.current).forEach((v) => {
+      if (!v) return;
+      try {
+        v.autoplay = true;
+        v.defaultMuted = true;
+        v.muted = true;
+        v.playsInline = true;
+        v.setAttribute("autoplay", "");
+        v.setAttribute("muted", "");
+        v.setAttribute("playsinline", "");
+        v.setAttribute("webkit-playsinline", "");
+        v.preload = "auto";
+        v.load();
+        v.play().catch(() => {});
+      } catch {}
     });
-    return () => {
-      cancelled = true;
-      if (typeof w.cancelIdleCallback === "function") {
-        w.cancelIdleCallback(handle);
-      } else {
-        window.clearTimeout(handle);
-      }
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips.length, reduced, inView]);
 
@@ -317,7 +294,8 @@ function FilmstripFrame({
               loop
               autoPlay
               playsInline
-              preload="none"
+              preload="auto"
+              {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
                 "relative h-full w-full object-cover transition-opacity duration-700",
