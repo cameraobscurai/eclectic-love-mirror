@@ -51,8 +51,11 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   rugs: "2rem 2rem 3rem 2rem",
   pillows: "2rem 2.5rem 3rem 2.5rem",
   throws: "2rem 2rem 3rem 2rem",
-  "side-tables": "2rem 3rem 3rem 3rem",
-  lighting: "2rem 3rem 3rem 3rem",
+  // Portrait covers (side-tables 208×234, lighting 245×294) need extra
+  // vertical inset — object-contain otherwise sizes them to full cell
+  // height and they read 30–40% larger than the landscape peers.
+  "side-tables": "3.75rem 3rem 4rem 3rem",
+  lighting: "3rem 3rem 3.5rem 3rem",
   "cocktail-tables": "2rem 2.5rem 3rem 2.5rem",
   sofas: "2rem 2rem 3rem 2rem",
   "coffee-tables": "2rem 2rem 3rem 2rem",
