@@ -34,6 +34,7 @@ import {
 } from "@/lib/collection-parents";
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import type { BrowseGroupId } from "@/lib/collection-browse-groups";
+import { RelatedPieces } from "@/components/collection/RelatedPieces";
 
 const SITE = "https://eclectichive.com";
 
