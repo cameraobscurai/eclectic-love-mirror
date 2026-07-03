@@ -1015,7 +1015,7 @@ function CollectionPage() {
           <LayoutGroup id="collection-overview">
           <motion.div
             layout={!reduced}
-            transition={{ layout: { type: "spring", stiffness: 220, damping: 30, mass: 0.9 } }}
+            transition={{ layout: { duration: 0.42, ease: [0.32, 0.72, 0, 1] } }}
             className={showOverview ? "flex flex-col lg:flex-row" : "grid grid-cols-1"}
             style={
               showOverview
