@@ -252,11 +252,10 @@ function TonalCell({
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
-          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
           style={{
             padding,
             objectPosition: "center center",
-            transition: "transform 500ms ease-out",
           }}
         />
       ) : null}
