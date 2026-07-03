@@ -1084,7 +1084,7 @@ function CollectionPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.22, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: reduced ? 0 : 0.36, ease: [0.22, 0.61, 0.36, 1] }}
               style={{ background: "var(--paper)" }}
             >
               {showOverview ? (
