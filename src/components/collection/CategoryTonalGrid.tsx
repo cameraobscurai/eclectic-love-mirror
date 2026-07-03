@@ -267,7 +267,7 @@ function TonalCell({
           letterSpacing: "0.08em",
           color: "#1a1a1a",
           lineHeight: 1.15,
-          fontSize: "clamp(11px, 1.8vw, 13px)",
+          fontSize: "clamp(10px, 0.9vw, 12px)",
           // 2-line allowance, no ellipsis — labels like "BENCHES &
           // OTTOMANS" and "COCKTAIL TABLES" wrap naturally instead of clip.
           wordBreak: "normal",
