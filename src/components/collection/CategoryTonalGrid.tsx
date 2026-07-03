@@ -51,8 +51,11 @@ const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   rugs: "2rem 2rem 3rem 2rem",
   pillows: "2rem 2.5rem 3rem 2.5rem",
   throws: "2rem 2rem 3rem 2rem",
-  "side-tables": "2rem 3rem 3rem 3rem",
-  lighting: "2rem 3rem 3rem 3rem",
+  // Portrait covers (side-tables 208×234, lighting 245×294) need extra
+  // vertical inset — object-contain otherwise sizes them to full cell
+  // height and they read 30–40% larger than the landscape peers.
+  "side-tables": "3.75rem 3rem 4rem 3rem",
+  lighting: "3rem 3rem 3.5rem 3rem",
   "cocktail-tables": "2rem 2.5rem 3rem 2.5rem",
   sofas: "2rem 2rem 3rem 2rem",
   "coffee-tables": "2rem 2rem 3rem 2rem",
@@ -249,11 +252,10 @@ function TonalCell({
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
-          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.04] will-change-transform"
           style={{
             padding,
             objectPosition: "center center",
-            transition: "transform 500ms ease-out",
           }}
         />
       ) : null}
@@ -265,7 +267,7 @@ function TonalCell({
           letterSpacing: "0.08em",
           color: "#1a1a1a",
           lineHeight: 1.15,
-          fontSize: "clamp(11px, 1.8vw, 13px)",
+          fontSize: "clamp(10px, 0.9vw, 12px)",
           // 2-line allowance, no ellipsis — labels like "BENCHES &
           // OTTOMANS" and "COCKTAIL TABLES" wrap naturally instead of clip.
           wordBreak: "normal",
