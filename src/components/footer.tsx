@@ -5,6 +5,7 @@ const studioLinks = [
   { href: "/atelier", label: "ATELIER BY THE HIVE" },
   { href: "/collection", label: "HIVE SIGNATURE COLLECTION" },
   { href: "/gallery", label: "THE GALLERY" },
+  { href: "/compose", label: "COMPOSE" },
 ] as const;
 
 const informationLinks = [
