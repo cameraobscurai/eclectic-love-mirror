@@ -1192,8 +1192,8 @@ function CollectionPage() {
                             key={`grid-${activeParent}-${activeSubcategory}-${sort}`}
                             className="collection-product-grid"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, transition: { duration: reduced ? 0 : 0.22, ease: [0.25, 0, 0.15, 1] } }}
-                            exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.1, ease: [0.4, 0, 1, 1] } }}
+                            animate={{ opacity: 1, transition: { duration: reduced ? 0 : 0.3, ease: [0.22, 0.61, 0.36, 1] } }}
+                            exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.18, ease: [0.4, 0, 0.6, 1] } }}
                           >
                             {(() => {
                               return visibleBatch.map((p, i) => (
