@@ -155,6 +155,16 @@ const products = all.map((r, i) => {
     }));
     livesFallback++;
   }
+  // Prefer AI-upscaled cover when present. Keeps the original in images[1..]
+  // so nothing is lost visually; only the hero card image changes.
+  if (r.upscaled_cover_url && imgs.length > 0) {
+    const original = imgs[0];
+    imgs = [
+      { url: r.upscaled_cover_url, position: 0, isHero: true, inferredFilename: null, altText: r.title },
+      { ...original, position: 1, isHero: false },
+      ...imgs.slice(1).map((im, i) => ({ ...im, position: i + 2, isHero: false })),
+    ];
+  }
   const description = lp && lp.body ? lp.body : null;
   const aliasedTitle = titleAliasByRms.get(String(r.rms_id)) || r.title;
   const stock = r.quantity_label ?? (r.quantity != null ? String(r.quantity) : null);
