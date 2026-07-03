@@ -9,27 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UtInventoryRouteImport } from './routes/ut-inventory'
 import { Route as TheHive3RouteImport } from './routes/the-hive3'
 import { Route as TheHiveRouteImport } from './routes/the-hive'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProcessRouteImport } from './routes/process'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as Portfolio1RouteImport } from './routes/portfolio-1'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InventoryRouteImport } from './routes/inventory'
+import { Route as Gallery1RouteImport } from './routes/gallery-1'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventGalleryRouteImport } from './routes/event-gallery'
 import { Route as EventCrewRouteImport } from './routes/event-crew'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as Colorado1RouteImport } from './routes/colorado-1'
 import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as CohomeRouteImport } from './routes/cohome'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AtelierRouteImport } from './routes/atelier'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TablewareIndexRouteImport } from './routes/tableware.index'
+import { Route as StylingIndexRouteImport } from './routes/styling.index'
 import { Route as StylebriefIndexRouteImport } from './routes/stylebrief.index'
+import { Route as SeatingIndexRouteImport } from './routes/seating.index'
+import { Route as RugsIndexRouteImport } from './routes/rugs.index'
+import { Route as Lighting1IndexRouteImport } from './routes/lighting1.index'
+import { Route as LightingIndexRouteImport } from './routes/lighting.index'
+import { Route as BarsIndexRouteImport } from './routes/bars.index'
 import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
 import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
 import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
@@ -84,6 +96,11 @@ import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lova
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
+const UtInventoryRoute = UtInventoryRouteImport.update({
+  id: '/ut-inventory',
+  path: '/ut-inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TheHive3Route = TheHive3RouteImport.update({
   id: '/the-hive3',
   path: '/the-hive3',
@@ -114,6 +131,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Portfolio1Route = Portfolio1RouteImport.update({
+  id: '/portfolio-1',
+  path: '/portfolio-1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -122,6 +144,11 @@ const LoginRoute = LoginRouteImport.update({
 const InventoryRoute = InventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Gallery1Route = Gallery1RouteImport.update({
+  id: '/gallery-1',
+  path: '/gallery-1',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -149,6 +176,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComposeRoute = ComposeRouteImport.update({
+  id: '/compose',
+  path: '/compose',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Colorado1Route = Colorado1RouteImport.update({
   id: '/colorado-1',
   path: '/colorado-1',
@@ -157,6 +189,11 @@ const Colorado1Route = Colorado1RouteImport.update({
 const CollectionRoute = CollectionRouteImport.update({
   id: '/collection',
   path: '/collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CohomeRoute = CohomeRouteImport.update({
+  id: '/cohome',
+  path: '/cohome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CareersRoute = CareersRouteImport.update({
@@ -184,9 +221,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TablewareIndexRoute = TablewareIndexRouteImport.update({
+  id: '/tableware/',
+  path: '/tableware/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StylingIndexRoute = StylingIndexRouteImport.update({
+  id: '/styling/',
+  path: '/styling/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StylebriefIndexRoute = StylebriefIndexRouteImport.update({
   id: '/stylebrief/',
   path: '/stylebrief/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SeatingIndexRoute = SeatingIndexRouteImport.update({
+  id: '/seating/',
+  path: '/seating/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RugsIndexRoute = RugsIndexRouteImport.update({
+  id: '/rugs/',
+  path: '/rugs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Lighting1IndexRoute = Lighting1IndexRouteImport.update({
+  id: '/lighting1/',
+  path: '/lighting1/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LightingIndexRoute = LightingIndexRouteImport.update({
+  id: '/lighting/',
+  path: '/lighting/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BarsIndexRoute = BarsIndexRouteImport.update({
+  id: '/bars/',
+  path: '/bars/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
@@ -464,21 +536,26 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/careers': typeof CareersRoute
+  '/cohome': typeof CohomeRoute
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
+  '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/gallery-1': typeof Gallery1Route
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
+  '/portfolio-1': typeof Portfolio1Route
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -526,7 +603,14 @@ export interface FileRoutesByFullPath {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/bars/': typeof BarsIndexRoute
+  '/lighting/': typeof LightingIndexRoute
+  '/lighting1/': typeof Lighting1IndexRoute
+  '/rugs/': typeof RugsIndexRoute
+  '/seating/': typeof SeatingIndexRoute
   '/stylebrief/': typeof StylebriefIndexRoute
+  '/styling/': typeof StylingIndexRoute
+  '/tableware/': typeof TablewareIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -540,21 +624,26 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/careers': typeof CareersRoute
+  '/cohome': typeof CohomeRoute
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
+  '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/gallery-1': typeof Gallery1Route
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
+  '/portfolio-1': typeof Portfolio1Route
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -602,7 +691,14 @@ export interface FileRoutesByTo {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/bars': typeof BarsIndexRoute
+  '/lighting': typeof LightingIndexRoute
+  '/lighting1': typeof Lighting1IndexRoute
+  '/rugs': typeof RugsIndexRoute
+  '/seating': typeof SeatingIndexRoute
   '/stylebrief': typeof StylebriefIndexRoute
+  '/styling': typeof StylingIndexRoute
+  '/tableware': typeof TablewareIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -617,21 +713,26 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/careers': typeof CareersRoute
+  '/cohome': typeof CohomeRoute
   '/collection': typeof CollectionRoute
   '/colorado-1': typeof Colorado1Route
+  '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
   '/gallery': typeof GalleryRoute
+  '/gallery-1': typeof Gallery1Route
   '/inventory': typeof InventoryRoute
   '/login': typeof LoginRoute
+  '/portfolio-1': typeof Portfolio1Route
   '/privacy': typeof PrivacyRoute
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
+  '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -679,7 +780,14 @@ export interface FileRoutesById {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/bars/': typeof BarsIndexRoute
+  '/lighting/': typeof LightingIndexRoute
+  '/lighting1/': typeof Lighting1IndexRoute
+  '/rugs/': typeof RugsIndexRoute
+  '/seating/': typeof SeatingIndexRoute
   '/stylebrief/': typeof StylebriefIndexRoute
+  '/styling/': typeof StylingIndexRoute
+  '/tableware/': typeof TablewareIndexRoute
   '/admin/admin/$threadId': typeof AdminAdminThreadIdRoute
   '/api/public/notify-inquiry': typeof ApiPublicNotifyInquiryRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -695,21 +803,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/atelier'
     | '/careers'
+    | '/cohome'
     | '/collection'
     | '/colorado-1'
+    | '/compose'
     | '/contact'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/gallery-1'
     | '/inventory'
     | '/login'
+    | '/portfolio-1'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/gallery'
@@ -757,7 +870,14 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/bars/'
+    | '/lighting/'
+    | '/lighting1/'
+    | '/rugs/'
+    | '/seating/'
     | '/stylebrief/'
+    | '/styling/'
+    | '/tableware/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -771,21 +891,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/atelier'
     | '/careers'
+    | '/cohome'
     | '/collection'
     | '/colorado-1'
+    | '/compose'
     | '/contact'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/gallery-1'
     | '/inventory'
     | '/login'
+    | '/portfolio-1'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/gallery'
@@ -833,7 +958,14 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/bars'
+    | '/lighting'
+    | '/lighting1'
+    | '/rugs'
+    | '/seating'
     | '/stylebrief'
+    | '/styling'
+    | '/tableware'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -847,21 +979,26 @@ export interface FileRouteTypes {
     | '/admin'
     | '/atelier'
     | '/careers'
+    | '/cohome'
     | '/collection'
     | '/colorado-1'
+    | '/compose'
     | '/contact'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
     | '/gallery'
+    | '/gallery-1'
     | '/inventory'
     | '/login'
+    | '/portfolio-1'
     | '/privacy'
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
     | '/the-hive'
     | '/the-hive3'
+    | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/gallery'
@@ -909,7 +1046,14 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/bars/'
+    | '/lighting/'
+    | '/lighting1/'
+    | '/rugs/'
+    | '/seating/'
     | '/stylebrief/'
+    | '/styling/'
+    | '/tableware/'
     | '/admin/admin/$threadId'
     | '/api/public/notify-inquiry'
     | '/lovable/email/suppression'
@@ -924,21 +1068,26 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AtelierRoute: typeof AtelierRoute
   CareersRoute: typeof CareersRoute
+  CohomeRoute: typeof CohomeRoute
   CollectionRoute: typeof CollectionRoute
   Colorado1Route: typeof Colorado1Route
+  ComposeRoute: typeof ComposeRoute
   ContactRoute: typeof ContactRoute
   EventCrewRoute: typeof EventCrewRoute
   EventGalleryRoute: typeof EventGalleryRoute
   FaqRoute: typeof FaqRoute
   GalleryRoute: typeof GalleryRoute
+  Gallery1Route: typeof Gallery1Route
   InventoryRoute: typeof InventoryRoute
   LoginRoute: typeof LoginRoute
+  Portfolio1Route: typeof Portfolio1Route
   PrivacyRoute: typeof PrivacyRoute
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
+  UtInventoryRoute: typeof UtInventoryRoute
   ApiAdminChatRoute: typeof ApiAdminChatRoute
   ApiAdminRenderRoute: typeof ApiAdminRenderRoute
   BarsSplatRoute: typeof BarsSplatRoute
@@ -974,7 +1123,14 @@ export interface RootRouteChildren {
   TestVariantUploadSplatRoute: typeof TestVariantUploadSplatRoute
   TextilesSplatRoute: typeof TextilesSplatRoute
   UtNewArrivalsSplatRoute: typeof UtNewArrivalsSplatRoute
+  BarsIndexRoute: typeof BarsIndexRoute
+  LightingIndexRoute: typeof LightingIndexRoute
+  Lighting1IndexRoute: typeof Lighting1IndexRoute
+  RugsIndexRoute: typeof RugsIndexRoute
+  SeatingIndexRoute: typeof SeatingIndexRoute
   StylebriefIndexRoute: typeof StylebriefIndexRoute
+  StylingIndexRoute: typeof StylingIndexRoute
+  TablewareIndexRoute: typeof TablewareIndexRoute
   ApiPublicNotifyInquiryRoute: typeof ApiPublicNotifyInquiryRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -984,6 +1140,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/ut-inventory': {
+      id: '/ut-inventory'
+      path: '/ut-inventory'
+      fullPath: '/ut-inventory'
+      preLoaderRoute: typeof UtInventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/the-hive3': {
       id: '/the-hive3'
       path: '/the-hive3'
@@ -1026,6 +1189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portfolio-1': {
+      id: '/portfolio-1'
+      path: '/portfolio-1'
+      fullPath: '/portfolio-1'
+      preLoaderRoute: typeof Portfolio1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -1038,6 +1208,13 @@ declare module '@tanstack/react-router' {
       path: '/inventory'
       fullPath: '/inventory'
       preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery-1': {
+      id: '/gallery-1'
+      path: '/gallery-1'
+      fullPath: '/gallery-1'
+      preLoaderRoute: typeof Gallery1RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -1075,6 +1252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compose': {
+      id: '/compose'
+      path: '/compose'
+      fullPath: '/compose'
+      preLoaderRoute: typeof ComposeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/colorado-1': {
       id: '/colorado-1'
       path: '/colorado-1'
@@ -1087,6 +1271,13 @@ declare module '@tanstack/react-router' {
       path: '/collection'
       fullPath: '/collection'
       preLoaderRoute: typeof CollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cohome': {
+      id: '/cohome'
+      path: '/cohome'
+      fullPath: '/cohome'
+      preLoaderRoute: typeof CohomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/careers': {
@@ -1124,11 +1315,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tableware/': {
+      id: '/tableware/'
+      path: '/tableware'
+      fullPath: '/tableware/'
+      preLoaderRoute: typeof TablewareIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/styling/': {
+      id: '/styling/'
+      path: '/styling'
+      fullPath: '/styling/'
+      preLoaderRoute: typeof StylingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stylebrief/': {
       id: '/stylebrief/'
       path: '/stylebrief'
       fullPath: '/stylebrief/'
       preLoaderRoute: typeof StylebriefIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/seating/': {
+      id: '/seating/'
+      path: '/seating'
+      fullPath: '/seating/'
+      preLoaderRoute: typeof SeatingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rugs/': {
+      id: '/rugs/'
+      path: '/rugs'
+      fullPath: '/rugs/'
+      preLoaderRoute: typeof RugsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting1/': {
+      id: '/lighting1/'
+      path: '/lighting1'
+      fullPath: '/lighting1/'
+      preLoaderRoute: typeof Lighting1IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lighting/': {
+      id: '/lighting/'
+      path: '/lighting'
+      fullPath: '/lighting/'
+      preLoaderRoute: typeof LightingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bars/': {
+      id: '/bars/'
+      path: '/bars'
+      fullPath: '/bars/'
+      preLoaderRoute: typeof BarsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ut-new-arrivals/$': {
@@ -1555,21 +1795,26 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AtelierRoute: AtelierRoute,
   CareersRoute: CareersRoute,
+  CohomeRoute: CohomeRoute,
   CollectionRoute: CollectionRoute,
   Colorado1Route: Colorado1Route,
+  ComposeRoute: ComposeRoute,
   ContactRoute: ContactRoute,
   EventCrewRoute: EventCrewRoute,
   EventGalleryRoute: EventGalleryRoute,
   FaqRoute: FaqRoute,
   GalleryRoute: GalleryRoute,
+  Gallery1Route: Gallery1Route,
   InventoryRoute: InventoryRoute,
   LoginRoute: LoginRoute,
+  Portfolio1Route: Portfolio1Route,
   PrivacyRoute: PrivacyRoute,
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
+  UtInventoryRoute: UtInventoryRoute,
   ApiAdminChatRoute: ApiAdminChatRoute,
   ApiAdminRenderRoute: ApiAdminRenderRoute,
   BarsSplatRoute: BarsSplatRoute,
@@ -1605,7 +1850,14 @@ const rootRouteChildren: RootRouteChildren = {
   TestVariantUploadSplatRoute: TestVariantUploadSplatRoute,
   TextilesSplatRoute: TextilesSplatRoute,
   UtNewArrivalsSplatRoute: UtNewArrivalsSplatRoute,
+  BarsIndexRoute: BarsIndexRoute,
+  LightingIndexRoute: LightingIndexRoute,
+  Lighting1IndexRoute: Lighting1IndexRoute,
+  RugsIndexRoute: RugsIndexRoute,
+  SeatingIndexRoute: SeatingIndexRoute,
   StylebriefIndexRoute: StylebriefIndexRoute,
+  StylingIndexRoute: StylingIndexRoute,
+  TablewareIndexRoute: TablewareIndexRoute,
   ApiPublicNotifyInquiryRoute: ApiPublicNotifyInquiryRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
