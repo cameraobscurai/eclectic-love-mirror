@@ -428,6 +428,9 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
             </div>
           </div>
         </div>
+        </div>
+
+        <RelatedPieces product={product} />
       </main>
       <Footer />
     </div>
