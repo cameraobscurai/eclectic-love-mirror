@@ -196,7 +196,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // falls back to baked so legacy rows with `images = '{}'` don't
       // blank their tiles.
       const liveImages = live.images;
-      const baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
+      let baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
         ? liveImages.map((url, i) => ({
             url,
             position: i,
@@ -205,6 +205,16 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
             altText: null,
           }))
         : p.images;
+
+      // AI-upscaled cover overrides slot 0; original moves to slot 1.
+      if (live.upscaled_cover_url && baseImages.length > 0) {
+        const original = baseImages[0];
+        baseImages = [
+          { url: live.upscaled_cover_url, position: 0, isHero: true, inferredFilename: null, altText: original.altText ?? null },
+          { ...original, position: 1, isHero: false },
+          ...baseImages.slice(1).map((im, i) => ({ ...im, position: i + 2, isHero: false })),
+        ];
+      }
 
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
@@ -230,6 +240,7 @@ type LiveOverlayRow = {
   card_background_url: string | null;
   cover_focal_x: number | null;
   cover_focal_y: number | null;
+  upscaled_cover_url: string | null;
 };
 
 async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
@@ -241,7 +252,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -253,6 +264,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             card_background_url: row.card_background_url,
             cover_focal_x: row.cover_focal_x,
             cover_focal_y: row.cover_focal_y,
+            upscaled_cover_url: row.upscaled_cover_url,
           });
         }
       }
