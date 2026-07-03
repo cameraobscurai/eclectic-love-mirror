@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { motion } from "framer-motion";
+// framer-motion removed — no motion props needed on tile
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
 import {
@@ -68,7 +68,7 @@ export function ProductTile({
     : undefined;
 
   return (
-    <motion.li
+    <li
       ref={ref}
       data-spy-section={spyGroup ?? undefined}
       style={{
@@ -130,7 +130,7 @@ export function ProductTile({
                   onError={() => onImageFailed?.(product.id)}
                   className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
                   style={{
-                    transition: "transform 700ms ease-out",
+                    transition: "transform 380ms ease-out",
                   }}
                 />
               ) : null}
@@ -150,6 +150,6 @@ export function ProductTile({
           </div>
         )}
       </div>
-    </motion.li>
+    </li>
   );
 }

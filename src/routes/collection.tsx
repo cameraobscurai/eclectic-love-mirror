@@ -3,7 +3,7 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import type React from "react";
 import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { LayoutGroup, AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
   getCollectionCatalogBase,
@@ -1012,10 +1012,7 @@ function CollectionPage() {
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
         >
-          <LayoutGroup id="collection-overview">
-          <motion.div
-            layout={!reduced}
-            transition={{ layout: { duration: 0.42, ease: [0.32, 0.72, 0, 1] } }}
+          <div
             className={showOverview ? "flex flex-col lg:flex-row" : "grid grid-cols-1"}
             style={
               showOverview
@@ -1024,8 +1021,7 @@ function CollectionPage() {
             }
           >
             {showOverview && (
-              <motion.aside
-                layout={!reduced}
+              <aside
                 className="hidden lg:flex flex-shrink-0 items-center justify-center overflow-hidden"
                 style={{
                   // H plate width — tuned for the new portrait H artwork.
@@ -1077,18 +1073,19 @@ function CollectionPage() {
                     }}
                   />
                 </picture>
-              </motion.aside>
+              </aside>
             )}
 
             {/* ===== RIGHT: main pane ===== */}
+            <AnimatePresence mode="wait">
             <motion.div
-              layout={!reduced}
-              className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
               key={showOverview ? "overview" : "results"}
-              style={{
-                animation: reduced ? undefined : "collection-fadein 150ms ease-out",
-                background: "var(--paper)",
-              }}
+              className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduced ? 0 : 0.22, ease: [0.4, 0, 0.2, 1] }}
+              style={{ background: "var(--paper)" }}
             >
               {showOverview ? (
                 <>
@@ -1190,9 +1187,13 @@ function CollectionPage() {
                       </div>
                     ) : (
                       <>
-                        <LayoutGroup id="collection-grid">
+                          <AnimatePresence mode="wait">
                           <motion.ul
+                            key={`grid-${activeParent}-${activeSubcategory}-${sort}`}
                             className="collection-product-grid"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1, transition: { duration: reduced ? 0 : 0.22, ease: [0.25, 0, 0.15, 1] } }}
+                            exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.1, ease: [0.4, 0, 1, 1] } }}
                           >
                             {(() => {
                               return visibleBatch.map((p, i) => (
@@ -1207,7 +1208,7 @@ function CollectionPage() {
                               ));
                             })()}
                           </motion.ul>
-                        </LayoutGroup>
+                          </AnimatePresence>
 
 
                         {hasMore && (
@@ -1223,10 +1224,11 @@ function CollectionPage() {
                 </>
               )}
             </motion.div>
-          </motion.div>
-          </LayoutGroup>
+            </AnimatePresence>
+          </div>
         </div>
       </section>
+
 
       {/* Mobile filter bottom-sheet — rendered OUTSIDE <main> so inert on
           <main> never accidentally inerts the sheet itself. */}

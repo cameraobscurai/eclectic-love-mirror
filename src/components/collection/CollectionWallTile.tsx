@@ -33,10 +33,10 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
       onClick={() => onOpen(product.id)}
       className="relative w-full h-full bg-white overflow-visible group cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
       animate={{
-        opacity: dim ? 0.45 : 1,
+        opacity: dim ? 0.3 : 1,
       }}
       transition={{
-        opacity: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+        opacity: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
       }}
       style={{ willChange: "opacity" }}
       aria-label={product.title}
