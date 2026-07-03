@@ -111,7 +111,7 @@ const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
   const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready')
+    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready,upscaled_cover_url')
     .neq('status','draft').neq('public_ready', false).range(from, from+PAGE-1).order('title');
   if (error) { console.error(error); process.exit(1); }
   if (!data.length) break;
@@ -154,6 +154,16 @@ const products = all.map((r, i) => {
       url: u, position: idx, isHero: idx===0, inferredFilename: null, altText: r.title,
     }));
     livesFallback++;
+  }
+  // Prefer AI-upscaled cover when present. Keeps the original in images[1..]
+  // so nothing is lost visually; only the hero card image changes.
+  if (r.upscaled_cover_url && imgs.length > 0) {
+    const original = imgs[0];
+    imgs = [
+      { url: r.upscaled_cover_url, position: 0, isHero: true, inferredFilename: null, altText: r.title },
+      { ...original, position: 1, isHero: false },
+      ...imgs.slice(1).map((im, i) => ({ ...im, position: i + 2, isHero: false })),
+    ];
   }
   const description = lp && lp.body ? lp.body : null;
   const aliasedTitle = titleAliasByRms.get(String(r.rms_id)) || r.title;

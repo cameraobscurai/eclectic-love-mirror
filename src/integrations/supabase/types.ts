@@ -440,6 +440,7 @@ export type Database = {
           status: Database["public"]["Enums"]["item_status"]
           title: string
           updated_at: string
+          upscaled_cover_url: string | null
           weight_kg: number | null
           width_cm: number | null
         }
@@ -490,6 +491,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["item_status"]
           title: string
           updated_at?: string
+          upscaled_cover_url?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
@@ -540,6 +542,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["item_status"]
           title?: string
           updated_at?: string
+          upscaled_cover_url?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
