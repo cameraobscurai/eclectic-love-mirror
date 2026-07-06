@@ -105,23 +105,36 @@ export async function getSnapshotsData(): Promise<SnapshotRow[]> {
   const { data } = await supabaseAdmin.from("boh_tile_snapshots").select("*");
   const rows = new Map((data ?? []).map((r) => [r.route_slug, r]));
 
-  return Promise.all(
-    PAGES.map(async (p) => {
-      const row = rows.get(p.slug);
-      if (!row || !row.storage_path || row.status === "empty") {
-        return { route_slug: p.slug, status: "empty" as const, updated_at: null, url: null };
-      }
-      const { data: signed } = await supabaseAdmin.storage
-        .from("boh-tiles")
-        .createSignedUrl(row.storage_path, 3600);
-      return {
-        route_slug: p.slug,
-        status: row.status as SnapshotRow["status"],
-        updated_at: row.updated_at,
-        url: signed?.signedUrl ?? null,
-      };
-    }),
-  );
+  // Batch: one storage round-trip for all signable paths instead of one per page.
+  const signable: { slug: string; path: string; row: (typeof rows) extends Map<string, infer R> ? R : never }[] = [];
+  for (const p of PAGES) {
+    const row = rows.get(p.slug);
+    if (row && row.storage_path && row.status !== "empty") {
+      signable.push({ slug: p.slug, path: row.storage_path, row });
+    }
+  }
+  const signedMap = new Map<string, string>();
+  if (signable.length > 0) {
+    const { data: signed } = await supabaseAdmin.storage
+      .from("boh-tiles")
+      .createSignedUrls(signable.map((s) => s.path), 3600);
+    (signed ?? []).forEach((s, i) => {
+      if (s?.signedUrl) signedMap.set(signable[i].path, s.signedUrl);
+    });
+  }
+
+  return PAGES.map((p) => {
+    const row = rows.get(p.slug);
+    if (!row || !row.storage_path || row.status === "empty") {
+      return { route_slug: p.slug, status: "empty" as const, updated_at: null, url: null };
+    }
+    return {
+      route_slug: p.slug,
+      status: row.status as SnapshotRow["status"],
+      updated_at: row.updated_at,
+      url: signedMap.get(row.storage_path) ?? null,
+    };
+  });
 }
 
 // ————————————————————————————————————————————— refresh (locked, rate-capped)

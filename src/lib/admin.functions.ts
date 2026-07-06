@@ -77,3 +77,74 @@ export const getInquirySummary = createServerFn({ method: "GET" })
     };
   },
 );
+
+// ---------------------------------------------------------------------------
+// /admin/dashboard inventory stats — computed server-side so the 990 KB baked
+// catalog JSON never ships to the client bundle. Everything the dashboard
+// needs (KPI cards, coverage bars, category mix, image-count histogram) is
+// aggregated here and returned as a small payload.
+// ---------------------------------------------------------------------------
+
+export interface DashboardInventoryStats {
+  total: number;
+  publicReady: number;
+  excluded: number;
+  withImages: number;
+  withDimensions: number;
+  customOrder: number;
+  manualReview: number;
+  imageCoverage: number;
+  dimensionsCoverage: number;
+  topCategories: { display: string; count: number }[];
+  imageBuckets: { label: string; count: number }[];
+}
+
+export const getDashboardInventoryStats = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async (): Promise<DashboardInventoryStats> => {
+    // Dynamic import keeps the baked catalog JSON out of client bundles that
+    // transitively reach this module.
+    const { getCollectionCatalogBase } = await import("@/lib/phase3-catalog");
+    const { products } = await getCollectionCatalogBase();
+
+    const total = products.length;
+    let publicReady = 0;
+    let withImages = 0;
+    let withDimensions = 0;
+    let customOrder = 0;
+    let manualReview = 0;
+    const byCat = new Map<string, number>();
+    const buckets = { "0": 0, "1": 0, "2-3": 0, "4-6": 0, "7+": 0 };
+
+    for (const p of products) {
+      if (p.publicReady) publicReady++;
+      if ((p.imageCount ?? 0) > 0) withImages++;
+      if (p.dimensions) withDimensions++;
+      if (p.isCustomOrder) customOrder++;
+      if (p.needsManualReview) manualReview++;
+      byCat.set(p.displayCategory, (byCat.get(p.displayCategory) ?? 0) + 1);
+      const c = p.imageCount ?? 0;
+      if (c === 0) buckets["0"]++;
+      else if (c === 1) buckets["1"]++;
+      else if (c <= 3) buckets["2-3"]++;
+      else if (c <= 6) buckets["4-6"]++;
+      else buckets["7+"]++;
+    }
+
+    return {
+      total,
+      publicReady,
+      excluded: total - publicReady,
+      withImages,
+      withDimensions,
+      customOrder,
+      manualReview,
+      imageCoverage: total ? withImages / total : 0,
+      dimensionsCoverage: total ? withDimensions / total : 0,
+      topCategories: Array.from(byCat.entries())
+        .map(([display, count]) => ({ display, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10),
+      imageBuckets: Object.entries(buckets).map(([label, count]) => ({ label, count })),
+    };
+  });

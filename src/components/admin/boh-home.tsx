@@ -98,7 +98,9 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
   const sweep = useCallback(async () => {
     if (sweeping) return
     setSweeping(true)
-    pollRef.current = setInterval(loadSnapshots, 2500)
+    // Poll every 10s during a sweep — was 2500ms which fired ~72 storage
+    // reads over a 30s capture. 10s still gives a visible refresh wave.
+    pollRef.current = setInterval(loadSnapshots, 10_000)
     try {
       const res = await refreshBohSnapshots()
       if (res.status === 'rate_limited') {
