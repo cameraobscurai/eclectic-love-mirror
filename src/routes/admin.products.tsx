@@ -169,13 +169,13 @@ function Inner() {
               </tr>
             </thead>
             <tbody>
-              {loading && rows.length === 0 && (
+              {loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">Loading…</td></tr>
               )}
-              {!loading && rows.length === 0 && (
+              {!loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
-              {rows.map((r) => {
+              {visibleRows.map((r) => {
                 const cover = r.upscaled_cover_url ?? (r.images?.[0] ?? null);
                 return (
                   <tr
