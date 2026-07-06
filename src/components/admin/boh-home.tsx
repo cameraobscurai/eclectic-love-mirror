@@ -19,7 +19,7 @@ import {
   refreshBohSnapshots, refreshOneSnapshot,
   type BohRibbon, type SnapshotRow,
 } from '../../lib/boh/boh.functions'
-import { BohTile } from './boh-tile'
+
 import { BohZoom } from './boh-zoom'
 import { BohCommand } from './boh-command'
 import { supabase } from '@/integrations/supabase/client' // ADAPT: client (browser) supabase
@@ -184,36 +184,35 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
           />
           {ribbon?.lastPublishedAt && (<><Dot /><span>PUBLISHED {relTime(ribbon.lastPublishedAt)}</span></>)}
         </div>
-
-        {/* tool rail */}
-        <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: '0 34px', borderBottom: `1px solid ${T.hairline}`, paddingBottom: 18 }}>
-          {TOOL_RAIL.map((t) => (
-            <button key={t.label} onClick={() => go(t.route)} className="boh-rail-link" title={t.desc}>
-              {t.label}
-              {t.countKey && ribbon && (
-                <span style={{ marginLeft: 8, fontFamily: T.mono, fontSize: 10, color: t.countKey === 'openInquiries' && ribbon.openInquiries > 0 ? T.attention : T.dim }}>
-                  {ribbon[t.countKey]}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* page grid */}
-      <div style={{ maxWidth: 1560, margin: '0 auto', padding: '44px 48px 0', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '36px 28px' }}>
-        {PAGES.map((p, i) => (
-          <BohTile
-            key={p.slug}
-            ref={(el) => { cells.current[i] = el }}
-            page={p}
-            snapshot={snapFor(p.slug)}
-            posterOverride={p.slug === 'home' ? HOME_POSTER : undefined}
-            badge={p.slug === 'contact' && ribbon && ribbon.openInquiries > 0 ? `${ribbon.openInquiries} OPEN` : null}
-            onOpen={(rect) => openZoom(i, rect)}
-            onRetry={() => refreshOneSnapshot({ data: { slug: p.slug } }).then(loadSnapshots)}
-          />
-        ))}
+      {/* tool grid — six admin tools in a 3×2 */}
+      <div data-boh-grid style={{ maxWidth: 1560, margin: '0 auto', padding: '44px 48px 0', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px 28px' }}>
+        {TOOL_RAIL.map((t) => {
+          const count = t.countKey && ribbon ? ribbon[t.countKey] : null
+          const accent = t.countKey === 'openInquiries' && ribbon && ribbon.openInquiries > 0
+          return (
+            <button
+              key={t.label}
+              onClick={() => go(t.route)}
+              className="boh-tool-tile"
+              style={{ background: T.panel, border: `1px solid ${T.hairline}`, padding: '28px 26px', textAlign: 'left', cursor: 'pointer', color: T.ink, fontFamily: 'inherit', minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'border-color 0.2s' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <span style={{ fontFamily: T.serif, fontSize: 26, letterSpacing: '0.06em', lineHeight: 1 }}>{t.label}</span>
+                {count != null && (
+                  <span style={{ fontFamily: T.mono, fontSize: 11, color: accent ? T.attention : T.dim, letterSpacing: '0.08em' }}>
+                    {count}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12 }}>
+                <span style={{ fontSize: 11, letterSpacing: '0.14em', color: T.muted, lineHeight: 1.4 }}>{t.desc.toUpperCase()}</span>
+                <span style={{ fontSize: 10, letterSpacing: '0.2em', color: T.faint }}>→</span>
+              </div>
+            </button>
+          )
+        })}
       </div>
 
       {/* category strip */}
@@ -295,6 +294,7 @@ function BohStyles() {
       .boh-ghost-btn { background: transparent; border: 1px solid rgba(235,230,220,0.2); color: ${T.muted}; padding: 7px 12px; font-size: 10px; letter-spacing: 0.16em; cursor: pointer; transition: all 0.2s; font-family: inherit; }
       .boh-ghost-btn:hover:not(:disabled) { border-color: rgba(235,230,220,0.45); color: ${T.ink}; }
       .boh-tile-btn:hover, .boh-tile-btn:focus-visible { border-color: ${T.hairlineHover}; }
+      .boh-tool-tile:hover, .boh-tool-tile:focus-visible { border-color: ${T.hairlineHover}; outline: none; }
       .boh-tile-btn:focus-visible { outline: 1px solid ${T.ink}; outline-offset: 3px; }
       .boh-rail-link { background: none; border: none; padding: 10px 0; color: ${T.muted}; font-size: 11px; letter-spacing: 0.22em; cursor: pointer; transition: color 0.2s; font-family: inherit; }
       .boh-rail-link:hover { color: ${T.ink}; }
