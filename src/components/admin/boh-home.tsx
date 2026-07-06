@@ -48,7 +48,7 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
   const [ribbon, setRibbon] = useState<BohRibbon | null>(null)
   const [snapshots, setSnapshots] = useState<SnapshotRow[]>([])
   const [badges, setBadges] = useState<Record<string, { label: string } | null>>({})
-  const [catsOpen, setCatsOpen] = useState(false)
+  const [catsOpen, setCatsOpen] = useState(true)
   const [sweeping, setSweeping] = useState(false)
   const [cmdOpen, setCmdOpen] = useState(false)
   const [zoom, setZoom] = useState<{ index: number; rect: { left: number; top: number; width: number } } | null>(null)

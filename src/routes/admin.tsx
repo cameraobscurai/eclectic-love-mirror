@@ -12,7 +12,7 @@
  * beforeLoad is UX only — real authorization is requireAdmin on every
  * server function.
  */
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
@@ -29,12 +29,8 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminLayout() {
-  // Compare pathname directly — useMatchRoute({ to: "/admin" }) is false at
-  // "/admin/" because the active match there is the index child, not the
-  // layout. Trailing-slash tolerant.
-  const { pathname } = useLocation();
-  const isBohIndex = pathname === "/admin" || pathname === "/admin/";
-  if (isBohIndex) return <Outlet />;
+  // Sidebar wraps every admin route, including the BOH home at /admin —
+  // Inbox/Photos/etc. are reachable in one click no matter where you are.
   return (
     <AdminShell>
       <Outlet />
