@@ -57,83 +57,123 @@ export const TEAM: TeamMember[] = [
   { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
   { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
-
   { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
   { name: "Regina Mennig", role: "Accounting & Business Manager", image: portrait("Regina.jpg", "Regina Mennig") },
 ];
 
 export function AtelierTeam() {
-  // Public-render gate: a member must have a real name + role. Images only
-  // surface when explicitly approved; otherwise the slot stays as an
-  // aperture under the name + role.
+  // Public-render gate: a member must have a real name + role.
   const visibleMembers = useMemo(
-    () =>
-      TEAM.filter(
-        (m) => m.name.trim().length > 0 && m.role.trim().length > 0,
-      ),
+    () => TEAM.filter((m) => m.name.trim().length > 0 && m.role.trim().length > 0),
     [],
   );
 
+  const principal = visibleMembers.find((m) => m.name === "Jill Livingston");
+  const staff = visibleMembers.filter((m) => m.name !== "Jill Livingston");
+
   return (
     <div>
-      {/* Section header — display title + owner-sourced quiet italic tagline.
-          Tagline stays Title/sentence case per typography rule (only display
-          titles + brand statements go ALL CAPS). */}
-      <div className="mb-12 md:mb-16 flex flex-col items-center text-center">
-        <h2
-          className="page-title text-charcoal"
-          style={{ fontSize: "clamp(2.5rem, 8vw, 6rem)", lineHeight: 1 }}
-        >
-          THE HIVE
-        </h2>
-        <p className="mt-4 font-display italic text-lg md:text-xl leading-relaxed text-charcoal/70 max-w-[40ch]">
-          Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.
-        </p>
-      </div>
+      {/* ------------------------------------------------------------------
+          Principal + team grid
+          Left column pins Jill as the atelier anchor. Right column carries
+          the section statement and the remaining team in a 4×2 grid so no
+          single portrait dangles on its own row.
+          ------------------------------------------------------------------ */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
+        {/* Sticky principal card */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-24 space-y-5">
+            {principal && (
+              <>
+                <div className="aspect-[2/3] bg-cream overflow-hidden">
+                  <MediaAperture
+                    ratio="2/3"
+                    src={
+                      principal.image?.approvedForWeb
+                        ? renderUrl(principal.image.src, { width: 720, quality: 60 })
+                        : undefined
+                    }
+                    srcSet={
+                      principal.image?.approvedForWeb
+                        ? renderSrcSet(principal.image.src, [360, 540, 720, 1080], 60)
+                        : undefined
+                    }
+                    alt={principal.image?.approvedForWeb ? principal.image.alt : `Portrait slot for ${principal.name}`}
+                    sizes="(min-width: 1024px) 20vw, 46vw"
+                    lazy={false}
+                    fetchPriority="high"
+                    prefetchMargin="2000px"
+                    className={principal.imageClassName}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50">
+                    Principal
+                  </p>
+                  <h3 className="font-display text-2xl md:text-3xl text-charcoal leading-tight">
+                    {principal.name}
+                  </h3>
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+                    {principal.role}
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </aside>
 
-      {/* Portrait grid — single 4-column rhythm. Apertures hold the slot
-          until owner-approved portraits land. Names + roles render now.
-          Each portrait reveals independently as it loads — no synchronized
-          first-row gate (that pattern stalled the row when any single image
-          failed to fire onLoad). */}
-      <ul
-        className="mx-auto grid max-w-[1180px] grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-10 md:gap-y-16 text-center"
-      >
-        {visibleMembers.map((member, index) => {
-          const showImage = !!member.image && member.image.approvedForWeb;
-          // First row (lg: 4 cols, md: 3, base: 2) sits just below the fold
-          // after the hero. Load eagerly with high priority so the second
-          // paint isn't blocked by the JS bundle. Everything else lazy-loads
-          // with a generous prefetch margin so it's already in flight by
-          // scroll time.
-          const isFirstRow = index < 4;
-          return (
-            <li key={member.name}>
-              <MediaAperture
-                ratio="2/3"
-                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
-                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
-                alt={
-                  showImage
-                    ? member.image!.alt
-                    : `Portrait slot for ${member.name}`
-                }
-                sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 46vw"
-                lazy={false}
-                fetchPriority={isFirstRow ? "high" : "low"}
-                prefetchMargin="2000px"
-                className={member.imageClassName}
-              />
-              <p className="mt-4 font-display text-lg md:text-xl leading-tight text-charcoal">
-                {member.name}
-              </p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                {member.role}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+        {/* Right column: heading + staff grid */}
+        <div className="lg:col-span-9">
+          <header className="mb-12 md:mb-16 lg:mb-20">
+            <h2
+              className="font-display text-charcoal leading-[1.05]"
+              style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
+            >
+              ARTISTS, DESIGNERS, CRAFTSMEN
+            </h2>
+            <p className="mt-4 max-w-2xl text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
+              Our team moves across disciplines with intention and a shared approach. We are the atelier.
+            </p>
+          </header>
+
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-10 md:gap-y-16 text-center">
+            {staff.map((member, index) => {
+              const showImage = !!member.image && member.image.approvedForWeb;
+              // First row (lg: 4 cols, md: 3, base: 2) sits just below the fold
+              // after the hero. Load eagerly with high priority so the second
+              // paint isn't blocked by the JS bundle. Everything else lazy-loads
+              // with a generous prefetch margin so it's already in flight by
+              // scroll time.
+              const isFirstRow = index < 4;
+              return (
+                <li key={member.name}>
+                  <MediaAperture
+                    ratio="2/3"
+                    src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
+                    srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
+                    alt={
+                      showImage
+                        ? member.image!.alt
+                        : `Portrait slot for ${member.name}`
+                    }
+                    sizes="(min-width: 1024px) 18vw, (min-width: 768px) 30vw, 46vw"
+                    lazy={false}
+                    fetchPriority={isFirstRow ? "high" : "low"}
+                    prefetchMargin="2000px"
+                    className={member.imageClassName}
+                  />
+                  <p className="mt-4 font-display text-lg md:text-xl leading-tight text-charcoal">
+                    {member.name}
+                  </p>
+                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+                    {member.role}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
