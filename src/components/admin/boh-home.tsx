@@ -19,7 +19,7 @@ import {
   refreshBohSnapshots, refreshOneSnapshot,
   type BohRibbon, type SnapshotRow,
 } from '../../lib/boh/boh.functions'
-import { BohTile } from './boh-tile'
+
 import { BohZoom } from './boh-zoom'
 import { BohCommand } from './boh-command'
 import { supabase } from '@/integrations/supabase/client' // ADAPT: client (browser) supabase
@@ -294,6 +294,7 @@ function BohStyles() {
       .boh-ghost-btn { background: transparent; border: 1px solid rgba(235,230,220,0.2); color: ${T.muted}; padding: 7px 12px; font-size: 10px; letter-spacing: 0.16em; cursor: pointer; transition: all 0.2s; font-family: inherit; }
       .boh-ghost-btn:hover:not(:disabled) { border-color: rgba(235,230,220,0.45); color: ${T.ink}; }
       .boh-tile-btn:hover, .boh-tile-btn:focus-visible { border-color: ${T.hairlineHover}; }
+      .boh-tool-tile:hover, .boh-tool-tile:focus-visible { border-color: ${T.hairlineHover}; outline: none; }
       .boh-tile-btn:focus-visible { outline: 1px solid ${T.ink}; outline-offset: 3px; }
       .boh-rail-link { background: none; border: none; padding: 10px 0; color: ${T.muted}; font-size: 11px; letter-spacing: 0.22em; cursor: pointer; transition: color 0.2s; font-family: inherit; }
       .boh-rail-link:hover { color: ${T.ink}; }
