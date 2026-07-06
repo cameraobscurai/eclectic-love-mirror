@@ -78,8 +78,10 @@ import { Route as BarsSplatRouteImport } from './routes/bars.$'
 import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
+import { Route as AdminTeamRouteImport } from './routes/admin.team'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminRenderRouteImport } from './routes/admin.render'
+import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminNewProductRouteImport } from './routes/admin.new-product'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
@@ -441,6 +443,11 @@ const AdminUploadHeroRoute = AdminUploadHeroRouteImport.update({
   path: '/upload-hero',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTeamRoute = AdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -449,6 +456,11 @@ const AdminStudioRoute = AdminStudioRouteImport.update({
 const AdminRenderRoute = AdminRenderRouteImport.update({
   id: '/render',
   path: '/render',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPhotosRoute = AdminPhotosRouteImport.update({
@@ -565,8 +577,10 @@ export interface FileRoutesByFullPath {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
@@ -653,8 +667,10 @@ export interface FileRoutesByTo {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
@@ -742,8 +758,10 @@ export interface FileRoutesById {
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
+  '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
@@ -832,8 +850,10 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
+    | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
@@ -920,8 +940,10 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
+    | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
@@ -1008,8 +1030,10 @@ export interface FileRouteTypes {
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
+    | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
     | '/api/admin-render'
@@ -1623,6 +1647,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUploadHeroRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/team': {
+      id: '/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AdminTeamRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -1635,6 +1666,13 @@ declare module '@tanstack/react-router' {
       path: '/render'
       fullPath: '/admin/render'
       preLoaderRoute: typeof AdminRenderRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/photos': {
@@ -1767,8 +1805,10 @@ interface AdminRouteChildren {
   AdminInsightsRoute: typeof AdminInsightsRoute
   AdminNewProductRoute: typeof AdminNewProductRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
+  AdminProductsRoute: typeof AdminProductsRoute
   AdminRenderRoute: typeof AdminRenderRoute
   AdminStudioRoute: typeof AdminStudioRoute
+  AdminTeamRoute: typeof AdminTeamRoute
   AdminUploadHeroRoute: typeof AdminUploadHeroRoute
 }
 
@@ -1782,8 +1822,10 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminInsightsRoute: AdminInsightsRoute,
   AdminNewProductRoute: AdminNewProductRoute,
   AdminPhotosRoute: AdminPhotosRoute,
+  AdminProductsRoute: AdminProductsRoute,
   AdminRenderRoute: AdminRenderRoute,
   AdminStudioRoute: AdminStudioRoute,
+  AdminTeamRoute: AdminTeamRoute,
   AdminUploadHeroRoute: AdminUploadHeroRoute,
 }
 

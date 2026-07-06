@@ -1,19 +1,19 @@
-// Browser-side admin route guard. Use inside `beforeLoad` on /admin* routes:
+// Browser-side admin route guards. Use inside `beforeLoad` on /admin* routes:
 //
-//   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
+//   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
 //
-// Checks Supabase session client-side (it'll already be hydrated from
-// localStorage on revisit; on first paint we await getUser()), then verifies
-// the admin role via the user's own `user_roles` row. Bounces to /login
-// with a `redirect` search param so we can return after sign-in.
+// Two levels:
+//   - requireStaffOrRedirect  → admin OR staff (product edits, photos, etc.)
+//   - requireAdminOrRedirect  → admin only (team management, destructive ops)
+//
+// The /admin tree is `noindex`; server fns are gated by matching middleware
+// (defense in depth).
 import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
-export async function requireAdminOrRedirect(currentHref: string): Promise<void> {
-  // Skip on SSR — beforeLoad runs on both, but Supabase auth state lives in
-  // the browser. The /admin tree is `noindex` and not pre-rendered; a brief
-  // server-side pass-through is fine because the server functions themselves
-  // are gated by requireAdmin middleware (defense in depth).
+type AppRole = "admin" | "staff" | "user";
+
+async function checkRoles(currentHref: string, roles: readonly AppRole[]): Promise<void> {
   if (typeof window === "undefined") return;
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
@@ -25,10 +25,17 @@ export async function requireAdminOrRedirect(currentHref: string): Promise<void>
     .from("user_roles")
     .select("role")
     .eq("user_id", userData.user.id)
-    .eq("role", "admin")
-    .limit(1);
+    .in("role", roles);
 
   if (roleErr || (roleRows ?? []).length === 0) {
     throw redirect({ to: "/login", search: { redirect: currentHref } });
   }
+}
+
+export function requireAdminOrRedirect(currentHref: string): Promise<void> {
+  return checkRoles(currentHref, ["admin"]);
+}
+
+export function requireStaffOrRedirect(currentHref: string): Promise<void> {
+  return checkRoles(currentHref, ["admin", "staff"]);
 }
