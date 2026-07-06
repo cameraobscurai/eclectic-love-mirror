@@ -469,13 +469,15 @@ function CategoryGrid({
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
             {reorderDisabled
               ? `${visibleItems.length} of ${items.length} shown · ${
-                  sortMode !== "editorial"
+                  missingOnly
+                    ? "Missing-images filter active — reorder disabled"
+                    : sortMode !== "editorial"
                     ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
                     : "Reorder disabled while filtered"
                 }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
-
+          {missingOnly && <MissingFilterChip />}
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} savedAt={savedAt} onRetry={retrySave} />
