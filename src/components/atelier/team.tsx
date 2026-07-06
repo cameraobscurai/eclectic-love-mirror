@@ -56,7 +56,6 @@ export const TEAM: TeamMember[] = [
   { name: "Erin Purnell", role: "Associate Designer", image: portrait("Erin.jpg", "Erin Purnell") },
   { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
   { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
-  { name: "Sam Young", role: "Project Manager", image: portrait("Sam.jpg", "Sam Young") },
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
 
   { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
