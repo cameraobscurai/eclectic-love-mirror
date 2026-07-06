@@ -127,12 +127,12 @@ export function AtelierTeam() {
           <header className="mb-12 md:mb-16 lg:mb-20">
             <h2
               className="font-display text-charcoal leading-[1.05]"
-              style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)" }}
+              style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
             >
-              THE HIVE
+              ARTISTS, DESIGNERS, CRAFTSMEN
             </h2>
             <p className="mt-4 max-w-2xl text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
-              Our team moves across disciplines with intention and a shared approach. We are artists, designers, craftsmen. We are the atelier.
+              Our team moves across disciplines with intention and a shared approach. We are the atelier.
             </p>
           </header>
 
