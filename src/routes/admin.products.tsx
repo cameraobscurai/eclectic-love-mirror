@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AdminShell } from "@/components/admin/admin-shell";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import {
   listProducts,
@@ -10,7 +9,10 @@ import {
   listDistinctCategories,
   listProductAudit,
 } from "@/lib/products-admin.functions";
+import { getCollectionCatalog } from "@/lib/phase3-catalog";
+import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
 
+// AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
 export const Route = createFileRoute("/admin/products")({
   ssr: false,
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
@@ -20,12 +22,10 @@ export const Route = createFileRoute("/admin/products")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: ProductsPage,
-  // `group` is a BOH deep-link (per-parent category tile). Accepted so
-  // the URL doesn't reset. Wiring TODO: the list filters by `cat` (a raw
-  // inventory_items.category string), not by BOH parent/group. Map
-  // group → cat via GROUP_TO_PARENT once we decide the mapping surface.
-  // Never fake it — silent filter failure is what PATCHES.md §2 prevents.
+  component: Inner,
+  // `group` is a BOH deep-link (per-parent category tile). We derive the
+  // rms_id set for that ParentId from the baked catalog and post-filter
+  // the API response client-side (see groupRmsSet below).
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     cat: typeof s.cat === "string" ? s.cat : "",
@@ -44,14 +44,6 @@ type Row = {
 };
 
 const PAGE = 50;
-
-function ProductsPage() {
-  return (
-    <AdminShell>
-      <Inner />
-    </AdminShell>
-  );
-}
 
 function Inner() {
   const search = Route.useSearch();
