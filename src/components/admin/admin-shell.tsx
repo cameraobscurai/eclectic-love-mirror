@@ -92,7 +92,9 @@ const SITE: NavItem[] = [
 // Crumb labels keyed off the path. Falls back to last segment if missing.
 const CRUMB_LABELS: Record<string, string> = {
   "/admin": "Dashboard",
-  "/admin/photos": "Collection",
+  "/admin/products": "Products",
+  "/admin/team": "Team",
+  "/admin/photos": "Collection photos",
   "/admin/render": "Photo studio",
   "/admin/new-product": "New product",
   "/admin/gallery": "Gallery",
@@ -243,7 +245,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
               openCount={openCount}
             />
             <NavGroup label="Inventory" items={INVENTORY} pathname={pathname} />
+            <NavGroup label="Access" items={ACCESS} pathname={pathname} />
             <NavGroup label="Site" items={SITE} pathname={pathname} />
+
           </SidebarContent>
           <SidebarFooter className="border-t border-charcoal/10 px-3 py-3">
             <div className="px-2 group-data-[collapsible=icon]:hidden">
