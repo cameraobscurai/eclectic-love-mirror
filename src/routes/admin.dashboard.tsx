@@ -40,23 +40,6 @@ function AdminDashboard() {
     return () => { alive = false; };
   }, []);
 
-  const [inq, setInq] = useState<InquirySummary | null>(null);
-  const [inqError, setInqError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    getInquirySummary()
-      .then((d) => {
-        if (!alive) return;
-        if (d && Array.isArray((d as InquirySummary).daily)) {
-          setInq(d as InquirySummary);
-        } else {
-          setInqError("Unauthorized or malformed response");
-        }
-      })
-      .catch((e) => alive && setInqError(e?.message ?? "Failed to load inquiries"));
-    return () => {
-      alive = false;
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
   const [inqError, setInqError] = useState<string | null>(null);
