@@ -16,6 +16,8 @@ import {
   Wand2,
   Package,
   Users,
+} from "lucide-react";
+
 
 import {
   Sidebar,
