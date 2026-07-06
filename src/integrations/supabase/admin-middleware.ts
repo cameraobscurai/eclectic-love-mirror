@@ -1,31 +1,36 @@
-// Composed middleware: requireSupabaseAuth + admin role check.
-// Use on every server function that should be admin-only. After this
-// middleware runs, context.supabase is an RLS-respecting client acting as
-// the admin user, and context.userId is verified.
+// Composed middleware for server functions. Two flavors:
+//   - requireAdmin          → admin only (team management, destructive ops)
+//   - requireStaffOrAdmin   → admin OR staff (product editing, photos)
 //
-// If the caller is unauthenticated → 401. Authenticated but not an admin → 403.
+// Both validate the Supabase bearer token, then check role via user_roles.
+// context.supabase is an RLS-respecting client acting as the user; context.userId is verified.
 import { createMiddleware } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "./auth-middleware";
 
-export const requireAdmin = createMiddleware({ type: "function" })
-  .middleware([requireSupabaseAuth])
-  .server(async ({ next, context }) => {
-    const { supabase, userId } = context;
+function makeRoleGate(allowed: readonly string[]) {
+  return createMiddleware({ type: "function" })
+    .middleware([requireSupabaseAuth])
+    .server(async ({ next, context }) => {
+      const { supabase, userId } = context;
 
-    const { data, error } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .limit(1);
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .in("role", allowed as string[])
+        .limit(1);
 
-    if (error) {
-      console.error("[requireAdmin] admin role lookup failed:", error);
-      throw new Response("Forbidden", { status: 403 });
-    }
-    if ((data ?? []).length === 0) {
-      throw new Response("Forbidden: admin role required", { status: 403 });
-    }
+      if (error) {
+        console.error("[roleGate] role lookup failed:", error);
+        throw new Response("Forbidden", { status: 403 });
+      }
+      if ((data ?? []).length === 0) {
+        throw new Response(`Forbidden: ${allowed.join(" or ")} role required`, { status: 403 });
+      }
 
-    return next();
-  });
+      return next();
+    });
+}
+
+export const requireAdmin = makeRoleGate(["admin"]);
+export const requireStaffOrAdmin = makeRoleGate(["admin", "staff"]);
