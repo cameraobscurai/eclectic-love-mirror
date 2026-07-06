@@ -14,7 +14,9 @@ import {
   Sparkles,
   PlusCircle,
   Wand2,
-} from "lucide-react";
+  Package,
+  Users,
+
 import {
   Sidebar,
   SidebarContent,
