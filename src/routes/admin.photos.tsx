@@ -273,19 +273,22 @@ function CategoryGrid({
   // mirrors of the public sort, not editable orderings).
   const subActive = sub !== "all";
   const reorderDisabled = subActive || sortMode !== "editorial";
+  const { filter: filterParam } = Route.useSearch();
+  const missingOnly = filterParam === "missing";
   const visibleItems = useMemo(
     () => {
-      const base = subActive
+      let base = subActive
         ? items.filter((i) => {
             const p = (allProducts ?? []).find((pp) => pp.id === i.id);
             return p ? productMatchesSub(p, parent, sub) : false;
           })
         : items;
+      if (missingOnly) base = base.filter((i) => i.images.length === 0);
       // Guard: dnd-kit's SortableContext throws on null/undefined ids
       // ("Cannot use 'in' operator to search for 'id' in null").
       return base.filter((i) => i.id != null && i.id !== "");
     },
-    [items, subActive, allProducts, parent, sub],
+    [items, subActive, allProducts, parent, sub, missingOnly],
   );
 
 
