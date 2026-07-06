@@ -11,7 +11,7 @@
 // Tile sizing mirrors /collection: one fixed frame and one image-fit rule.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
   DndContext,
