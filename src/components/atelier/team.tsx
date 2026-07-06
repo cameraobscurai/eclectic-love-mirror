@@ -81,36 +81,36 @@ export function AtelierTeam() {
           ------------------------------------------------------------------ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
         {/* Sticky principal card */}
-        <aside className="lg:col-span-3">
-          <div className="lg:sticky lg:top-24 space-y-5">
+        <aside className="lg:col-span-4">
+          <div className="lg:sticky lg:top-24">
             {principal && (
               <>
-                <div className="aspect-[2/3] bg-cream overflow-hidden">
+                <div className="max-h-[72vw] overflow-hidden lg:max-h-none">
                   <MediaAperture
                     ratio="2/3"
                     src={
                       principal.image?.approvedForWeb
-                        ? renderUrl(principal.image.src, { width: 720, quality: 60 })
+                        ? renderUrl(principal.image.src, { width: 900, quality: 60 })
                         : undefined
                     }
                     srcSet={
                       principal.image?.approvedForWeb
-                        ? renderSrcSet(principal.image.src, [360, 540, 720, 1080], 60)
+                        ? renderSrcSet(principal.image.src, [360, 540, 720, 900, 1200], 60)
                         : undefined
                     }
                     alt={principal.image?.approvedForWeb ? principal.image.alt : `Portrait slot for ${principal.name}`}
-                    sizes="(min-width: 1024px) 20vw, 46vw"
+                    sizes="(min-width: 1024px) 28vw, 100vw"
                     lazy={false}
                     fetchPriority="high"
                     prefetchMargin="2000px"
                     className={principal.imageClassName}
                   />
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50">
+                <div className="mt-6 space-y-1.5">
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-charcoal/50">
                     Principal
                   </p>
-                  <h3 className="font-display text-2xl md:text-3xl text-charcoal leading-tight">
+                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl text-charcoal leading-tight">
                     {principal.name}
                   </h3>
                   <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
@@ -123,27 +123,19 @@ export function AtelierTeam() {
         </aside>
 
         {/* Right column: heading + staff grid */}
-        <div className="lg:col-span-9">
-          <header className="mb-12 md:mb-16 lg:mb-20">
-            <h2
-              className="font-display text-charcoal leading-[1.05]"
-              style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
-            >
+        <div className="lg:col-span-8">
+          <header className="mb-10 md:mb-12 lg:mb-14">
+            <h2 className="font-display text-charcoal leading-[1.05] text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,3.5rem)]">
               ARTISTS, DESIGNERS, CRAFTSMEN
             </h2>
-            <p className="mt-4 max-w-2xl text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
+            <p className="mt-4 max-w-2xl text-[11px] md:text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
               Our team moves across disciplines with intention and a shared approach. We are the atelier.
             </p>
           </header>
 
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-10 md:gap-y-16 text-center">
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-7 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
             {staff.map((member, index) => {
               const showImage = !!member.image && member.image.approvedForWeb;
-              // First row (lg: 4 cols, md: 3, base: 2) sits just below the fold
-              // after the hero. Load eagerly with high priority so the second
-              // paint isn't blocked by the JS bundle. Everything else lazy-loads
-              // with a generous prefetch margin so it's already in flight by
-              // scroll time.
               const isFirstRow = index < 4;
               return (
                 <li key={member.name}>
@@ -156,16 +148,16 @@ export function AtelierTeam() {
                         ? member.image!.alt
                         : `Portrait slot for ${member.name}`
                     }
-                    sizes="(min-width: 1024px) 18vw, (min-width: 768px) 30vw, 46vw"
+                    sizes="(min-width: 1024px) 16vw, (min-width: 768px) 26vw, 46vw"
                     lazy={false}
                     fetchPriority={isFirstRow ? "high" : "low"}
                     prefetchMargin="2000px"
                     className={member.imageClassName}
                   />
-                  <p className="mt-4 font-display text-lg md:text-xl leading-tight text-charcoal">
+                  <p className="mt-4 lg:mt-5 font-display text-base md:text-lg lg:text-xl leading-tight text-charcoal">
                     {member.name}
                   </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
+                  <p className="mt-1.5 text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
                     {member.role}
                   </p>
                 </li>
