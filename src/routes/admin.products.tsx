@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AdminShell } from "@/components/admin/admin-shell";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import {
   listProducts,
@@ -10,7 +9,10 @@ import {
   listDistinctCategories,
   listProductAudit,
 } from "@/lib/products-admin.functions";
+import { getCollectionCatalog } from "@/lib/phase3-catalog";
+import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
 
+// AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
 export const Route = createFileRoute("/admin/products")({
   ssr: false,
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
@@ -20,12 +22,10 @@ export const Route = createFileRoute("/admin/products")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: ProductsPage,
-  // `group` is a BOH deep-link (per-parent category tile). Accepted so
-  // the URL doesn't reset. Wiring TODO: the list filters by `cat` (a raw
-  // inventory_items.category string), not by BOH parent/group. Map
-  // group → cat via GROUP_TO_PARENT once we decide the mapping surface.
-  // Never fake it — silent filter failure is what PATCHES.md §2 prevents.
+  component: Inner,
+  // `group` is a BOH deep-link (per-parent category tile). We derive the
+  // rms_id set for that ParentId from the baked catalog and post-filter
+  // the API response client-side (see groupRmsSet below).
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     cat: typeof s.cat === "string" ? s.cat : "",
@@ -45,14 +45,6 @@ type Row = {
 
 const PAGE = 50;
 
-function ProductsPage() {
-  return (
-    <AdminShell>
-      <Inner />
-    </AdminShell>
-  );
-}
-
 function Inner() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -65,6 +57,27 @@ function Inner() {
   const [loading, setLoading] = useState(false);
   const [cats, setCats] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState(search.q);
+
+  // BOH deep-link support: when `?group=<ParentId>` is set, derive the
+  // rms_id set for that parent from the baked catalog and filter the API
+  // response client-side. Not perfect for pagination (server count still
+  // reflects unfiltered) but shows only in-group rows without server churn.
+  const [groupRmsSet, setGroupRmsSet] = useState<Set<string> | null>(null);
+  useEffect(() => {
+    if (!search.group) { setGroupRmsSet(null); return; }
+    let alive = true;
+    getCollectionCatalog()
+      .then((c) => {
+        if (!alive) return;
+        const ids = new Set<string>();
+        for (const p of c.products) {
+          if (productParent(p) === (search.group as ParentId)) ids.add(p.id);
+        }
+        setGroupRmsSet(ids);
+      })
+      .catch(() => alive && setGroupRmsSet(null));
+    return () => { alive = false; };
+  }, [search.group]);
 
   useEffect(() => { catsFn().then(setCats).catch(() => {}); }, [catsFn]);
 
@@ -82,6 +95,12 @@ function Inner() {
     navigate({ search: (s: Record<string, unknown>) => ({ ...s, q: searchInput }) });
   };
 
+  const visibleRows = useMemo(
+    () => (groupRmsSet ? rows.filter((r) => r.rms_id && groupRmsSet.has(r.rms_id)) : rows),
+    [rows, groupRmsSet],
+  );
+  const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
+
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-8 pb-24 max-w-[1500px] mx-auto">
@@ -91,7 +110,21 @@ function Inner() {
           <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
             {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
           </p>
+          {groupLabel && (
+            <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
+              <span className="text-charcoal/60">Group filter:</span>
+              <span className="text-charcoal">{groupLabel}</span>
+              <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
+              <button
+                type="button"
+                onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
+                className="ml-2 text-charcoal/60 hover:text-charcoal"
+                aria-label="Clear group filter"
+              >×</button>
+            </div>
+          )}
         </header>
+
 
         {/* filter row */}
         <form onSubmit={submitSearch} className="mb-6 flex flex-wrap items-center gap-3 border-y border-charcoal/10 py-3 text-[11px] uppercase tracking-[0.16em]">
@@ -136,13 +169,13 @@ function Inner() {
               </tr>
             </thead>
             <tbody>
-              {loading && rows.length === 0 && (
+              {loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">Loading…</td></tr>
               )}
-              {!loading && rows.length === 0 && (
+              {!loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
-              {rows.map((r) => {
+              {visibleRows.map((r) => {
                 const cover = r.upscaled_cover_url ?? (r.images?.[0] ?? null);
                 return (
                   <tr

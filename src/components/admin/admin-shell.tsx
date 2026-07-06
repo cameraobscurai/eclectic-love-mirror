@@ -197,6 +197,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Fetch inbox count once per mount, not on every navigation. Each nav-
+  // triggered refetch hits getInquirySummary which pulls 500 rows.
   useEffect(() => {
     let alive = true;
     getInquirySummary()
@@ -205,7 +207,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return () => {
       alive = false;
     };
-  }, [pathname]);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

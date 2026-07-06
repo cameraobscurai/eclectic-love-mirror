@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { AdminShell } from "@/components/admin/admin-shell";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 import { listTeam, grantRole, revokeRole, inviteStaff } from "@/lib/team-admin.functions";
 
+// AdminShell is provided by the parent /admin layout route — do NOT re-wrap
+// here. Double-wrapping duplicates the sidebar and the inbox-count fetch.
 export const Route = createFileRoute("/admin/team")({
   ssr: false,
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/admin/team")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: () => <AdminShell><TeamInner /></AdminShell>,
+  component: TeamInner,
 });
 
 type Member = {

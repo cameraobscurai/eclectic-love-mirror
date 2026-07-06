@@ -11,7 +11,7 @@
 // Tile sizing mirrors /collection: one fixed frame and one image-fit rule.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
   DndContext,
@@ -74,11 +74,10 @@ const SORT_MODES: { id: SortMode; label: string }[] = [
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
-  // BOH deep-links pass these — accepted so the URL doesn't reset. Wiring
-  // TODO: the binder has parent/sub filters but no "missing images only",
-  // no per-product focus, and no per-page filter concept yet. Add real
-  // setters below when those filters exist. Never fake them — silent
-  // filter failure is the exact bug PATCHES.md §1 exists to prevent.
+  // BOH deep-links:
+  //   ?filter=missing → hide fully-imaged rows (see visibleItems filter)
+  //   ?product=<rms>  → reserved for future auto-open of the editor
+  //   ?page=<pg>      → reserved for page-scoped subsets
   validateSearch: (s: Record<string, unknown>) => ({
     filter: s.filter === "missing" ? ("missing" as const) : undefined,
     product: typeof s.product === "string" ? s.product : undefined,
@@ -273,20 +272,23 @@ function CategoryGrid({
   // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
   // mirrors of the public sort, not editable orderings).
   const subActive = sub !== "all";
-  const reorderDisabled = subActive || sortMode !== "editorial";
+  const { filter: filterParam } = Route.useSearch();
+  const missingOnly = filterParam === "missing";
+  const reorderDisabled = subActive || sortMode !== "editorial" || missingOnly;
   const visibleItems = useMemo(
     () => {
-      const base = subActive
+      let base = subActive
         ? items.filter((i) => {
             const p = (allProducts ?? []).find((pp) => pp.id === i.id);
             return p ? productMatchesSub(p, parent, sub) : false;
           })
         : items;
+      if (missingOnly) base = base.filter((i) => i.images.length === 0);
       // Guard: dnd-kit's SortableContext throws on null/undefined ids
       // ("Cannot use 'in' operator to search for 'id' in null").
       return base.filter((i) => i.id != null && i.id !== "");
     },
-    [items, subActive, allProducts, parent, sub],
+    [items, subActive, allProducts, parent, sub, missingOnly],
   );
 
 
@@ -467,13 +469,15 @@ function CategoryGrid({
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
             {reorderDisabled
               ? `${visibleItems.length} of ${items.length} shown · ${
-                  sortMode !== "editorial"
+                  missingOnly
+                    ? "Missing-images filter active — reorder disabled"
+                    : sortMode !== "editorial"
                     ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
                     : "Reorder disabled while filtered"
                 }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
-
+          {missingOnly && <MissingFilterChip />}
         </div>
         <div className="flex items-center gap-3">
           <SaveBadge state={saveState} savedAt={savedAt} onRetry={retrySave} />
@@ -687,6 +691,21 @@ function CategoryGrid({
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
+
+function MissingFilterChip() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  return (
+    <div className="mt-2 inline-flex items-center gap-2 border border-amber-500/60 bg-amber-50 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-amber-900">
+      <span>Showing products missing images</span>
+      <button
+        type="button"
+        onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, filter: undefined }) })}
+        className="text-amber-900/70 hover:text-amber-900"
+        aria-label="Clear missing filter"
+      >×</button>
+    </div>
+  );
+}
 
 function wallCols(n: number): number {
   if (n <= 0) return 1;
