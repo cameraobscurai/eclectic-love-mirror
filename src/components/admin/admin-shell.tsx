@@ -65,10 +65,15 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
-  { to: "/admin/photos", label: "Collection", icon: ImageIcon },
+  { to: "/admin/products", label: "Products", icon: Package },
+  { to: "/admin/photos", label: "Collection photos", icon: ImageIcon },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
   { to: "/admin/render", label: "Photo studio", icon: Wand2 },
   { to: "/admin/gallery", label: "Gallery", icon: Images },
+];
+
+const ACCESS: NavItem[] = [
+  { to: "/admin/team", label: "Team", icon: Users },
 ];
 void Upload;
 // Hidden utility routes — still reachable by direct URL, just removed from
