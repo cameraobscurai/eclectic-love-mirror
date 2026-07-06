@@ -11,7 +11,9 @@
 import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 
-async function checkRoles(currentHref: string, roles: readonly string[]): Promise<void> {
+type AppRole = "admin" | "staff" | "user";
+
+async function checkRoles(currentHref: string, roles: readonly AppRole[]): Promise<void> {
   if (typeof window === "undefined") return;
 
   const { data: userData, error: userErr } = await supabase.auth.getUser();
@@ -23,7 +25,7 @@ async function checkRoles(currentHref: string, roles: readonly string[]): Promis
     .from("user_roles")
     .select("role")
     .eq("user_id", userData.user.id)
-    .in("role", roles as string[]);
+    .in("role", roles);
 
   if (roleErr || (roleRows ?? []).length === 0) {
     throw redirect({ to: "/login", search: { redirect: currentHref } });

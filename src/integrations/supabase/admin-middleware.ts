@@ -7,7 +7,9 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "./auth-middleware";
 
-function makeRoleGate(allowed: readonly string[]) {
+type AppRole = "admin" | "staff" | "user";
+
+function makeRoleGate(allowed: readonly AppRole[]) {
   return createMiddleware({ type: "function" })
     .middleware([requireSupabaseAuth])
     .server(async ({ next, context }) => {
@@ -17,7 +19,7 @@ function makeRoleGate(allowed: readonly string[]) {
         .from("user_roles")
         .select("role")
         .eq("user_id", userId)
-        .in("role", allowed as string[])
+        .in("role", allowed)
         .limit(1);
 
       if (error) {
