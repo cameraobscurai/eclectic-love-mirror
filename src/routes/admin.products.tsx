@@ -21,11 +21,17 @@ export const Route = createFileRoute("/admin/products")({
     ],
   }),
   component: ProductsPage,
+  // `group` is a BOH deep-link (per-parent category tile). Accepted so
+  // the URL doesn't reset. Wiring TODO: the list filters by `cat` (a raw
+  // inventory_items.category string), not by BOH parent/group. Map
+  // group → cat via GROUP_TO_PARENT once we decide the mapping surface.
+  // Never fake it — silent filter failure is what PATCHES.md §2 prevents.
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     cat: typeof s.cat === "string" ? s.cat : "",
     ready: (s.ready === "yes" || s.ready === "no" ? s.ready : "all") as "yes" | "no" | "all",
     id: typeof s.id === "string" ? s.id : "",
+    group: typeof s.group === "string" ? s.group : undefined,
   }),
 });
 

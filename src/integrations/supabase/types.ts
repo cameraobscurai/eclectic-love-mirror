@@ -213,6 +213,51 @@ export type Database = {
         }
         Relationships: []
       }
+      boh_refresh_runs: {
+        Row: {
+          actor: string
+          finished_at: string | null
+          id: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          actor: string
+          finished_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          actor?: string
+          finished_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      boh_tile_snapshots: {
+        Row: {
+          route_slug: string
+          status: string
+          storage_path: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          route_slug: string
+          status?: string
+          storage_path?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          route_slug?: string
+          status?: string
+          storage_path?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string

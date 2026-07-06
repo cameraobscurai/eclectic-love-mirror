@@ -74,6 +74,16 @@ const SORT_MODES: { id: SortMode; label: string }[] = [
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
+  // BOH deep-links pass these — accepted so the URL doesn't reset. Wiring
+  // TODO: the binder has parent/sub filters but no "missing images only",
+  // no per-product focus, and no per-page filter concept yet. Add real
+  // setters below when those filters exist. Never fake them — silent
+  // filter failure is the exact bug PATCHES.md §1 exists to prevent.
+  validateSearch: (s: Record<string, unknown>) => ({
+    filter: s.filter === "missing" ? ("missing" as const) : undefined,
+    product: typeof s.product === "string" ? s.product : undefined,
+    page: typeof s.page === "string" ? s.page : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Photos · Admin" },
