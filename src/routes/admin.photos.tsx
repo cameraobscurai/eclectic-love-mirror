@@ -692,6 +692,21 @@ function CategoryGrid({
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
+function MissingFilterChip() {
+  const navigate = useNavigate({ from: Route.fullPath });
+  return (
+    <div className="mt-2 inline-flex items-center gap-2 border border-amber-500/60 bg-amber-50 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-amber-900">
+      <span>Showing products missing images</span>
+      <button
+        type="button"
+        onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, filter: undefined }) })}
+        className="text-amber-900/70 hover:text-amber-900"
+        aria-label="Clear missing filter"
+      >×</button>
+    </div>
+  );
+}
+
 function wallCols(n: number): number {
   if (n <= 0) return 1;
   return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
