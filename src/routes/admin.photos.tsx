@@ -272,9 +272,9 @@ function CategoryGrid({
   // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
   // mirrors of the public sort, not editable orderings).
   const subActive = sub !== "all";
-  const reorderDisabled = subActive || sortMode !== "editorial";
   const { filter: filterParam } = Route.useSearch();
   const missingOnly = filterParam === "missing";
+  const reorderDisabled = subActive || sortMode !== "editorial" || missingOnly;
   const visibleItems = useMemo(
     () => {
       let base = subActive
