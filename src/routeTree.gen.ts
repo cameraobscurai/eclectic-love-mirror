@@ -42,6 +42,7 @@ import { Route as RugsIndexRouteImport } from './routes/rugs.index'
 import { Route as Lighting1IndexRouteImport } from './routes/lighting1.index'
 import { Route as LightingIndexRouteImport } from './routes/lighting.index'
 import { Route as BarsIndexRouteImport } from './routes/bars.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as UtNewArrivalsSplatRouteImport } from './routes/ut-new-arrivals.$'
 import { Route as TextilesSplatRouteImport } from './routes/textiles.$'
 import { Route as TestVariantUploadSplatRouteImport } from './routes/test-variant-upload.$'
@@ -89,6 +90,7 @@ import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 import { Route as AdminAdminRouteImport } from './routes/admin.admin'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
@@ -262,6 +264,11 @@ const BarsIndexRoute = BarsIndexRouteImport.update({
   id: '/bars/',
   path: '/bars/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const UtNewArrivalsSplatRoute = UtNewArrivalsSplatRouteImport.update({
   id: '/ut-new-arrivals/$',
@@ -498,6 +505,11 @@ const AdminGalleryRoute = AdminGalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminColorsRoute = AdminColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
@@ -570,6 +582,7 @@ export interface FileRoutesByFullPath {
   '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -617,6 +630,7 @@ export interface FileRoutesByFullPath {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/admin/': typeof AdminIndexRoute
   '/bars/': typeof BarsIndexRoute
   '/lighting/': typeof LightingIndexRoute
   '/lighting1/': typeof Lighting1IndexRoute
@@ -635,7 +649,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
   '/atelier': typeof AtelierRoute
   '/careers': typeof CareersRoute
   '/cohome': typeof CohomeRoute
@@ -660,6 +673,7 @@ export interface FileRoutesByTo {
   '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -707,6 +721,7 @@ export interface FileRoutesByTo {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/admin': typeof AdminIndexRoute
   '/bars': typeof BarsIndexRoute
   '/lighting': typeof LightingIndexRoute
   '/lighting1': typeof Lighting1IndexRoute
@@ -751,6 +766,7 @@ export interface FileRoutesById {
   '/ut-inventory': typeof UtInventoryRoute
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -798,6 +814,7 @@ export interface FileRoutesById {
   '/test-variant-upload/$': typeof TestVariantUploadSplatRoute
   '/textiles/$': typeof TextilesSplatRoute
   '/ut-new-arrivals/$': typeof UtNewArrivalsSplatRoute
+  '/admin/': typeof AdminIndexRoute
   '/bars/': typeof BarsIndexRoute
   '/lighting/': typeof LightingIndexRoute
   '/lighting1/': typeof Lighting1IndexRoute
@@ -843,6 +860,7 @@ export interface FileRouteTypes {
     | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/dashboard'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -890,6 +908,7 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/admin/'
     | '/bars/'
     | '/lighting/'
     | '/lighting1/'
@@ -908,7 +927,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/admin'
     | '/atelier'
     | '/careers'
     | '/cohome'
@@ -933,6 +951,7 @@ export interface FileRouteTypes {
     | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/dashboard'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -980,6 +999,7 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/admin'
     | '/bars'
     | '/lighting'
     | '/lighting1'
@@ -1023,6 +1043,7 @@ export interface FileRouteTypes {
     | '/ut-inventory'
     | '/admin/admin'
     | '/admin/colors'
+    | '/admin/dashboard'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -1070,6 +1091,7 @@ export interface FileRouteTypes {
     | '/test-variant-upload/$'
     | '/textiles/$'
     | '/ut-new-arrivals/$'
+    | '/admin/'
     | '/bars/'
     | '/lighting/'
     | '/lighting1/'
@@ -1394,6 +1416,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/bars/'
       preLoaderRoute: typeof BarsIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/ut-new-arrivals/$': {
       id: '/ut-new-arrivals/$'
@@ -1724,6 +1753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGalleryRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/colors': {
       id: '/admin/colors'
       path: '/colors'
@@ -1798,6 +1834,7 @@ const AdminAdminRouteWithChildren = AdminAdminRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminAdminRoute: typeof AdminAdminRouteWithChildren
   AdminColorsRoute: typeof AdminColorsRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
@@ -1810,11 +1847,13 @@ interface AdminRouteChildren {
   AdminStudioRoute: typeof AdminStudioRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminUploadHeroRoute: typeof AdminUploadHeroRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminRoute: AdminAdminRouteWithChildren,
   AdminColorsRoute: AdminColorsRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
@@ -1827,6 +1866,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminStudioRoute: AdminStudioRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminUploadHeroRoute: AdminUploadHeroRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
