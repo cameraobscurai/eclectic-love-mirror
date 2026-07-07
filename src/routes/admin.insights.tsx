@@ -14,10 +14,13 @@ import {
   getInsights,
   updateInquiryOutcome,
   deleteInquiries,
+  restoreInquiries,
   type InsightsPayload,
   type InsightsInquiry,
   type InquiryStatus,
 } from "@/lib/insights.functions";
+import { toast } from "sonner";
+
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
 export const Route = createFileRoute("/admin/insights")({
@@ -271,9 +274,11 @@ function InquiryInbox({
   onChanged: () => void;
 }) {
   const removeMany = useServerFn(deleteInquiries);
+  const restoreMany = useServerFn(restoreInquiries);
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]["key"]>("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
+
 
   const visible = useMemo(() => {
     if (filter === "all") return inquiries;
@@ -306,16 +311,34 @@ function InquiryInbox({
   async function handleDelete() {
     const ids = [...selected];
     if (ids.length === 0) return;
-    if (!confirm(`Delete ${ids.length} inquir${ids.length === 1 ? "y" : "ies"}? This cannot be undone.`)) return;
     setDeleting(true);
     try {
       await removeMany({ data: { ids } });
       setSelected(new Set());
       onChanged();
+      toast.success(
+        `Deleted ${ids.length} inquir${ids.length === 1 ? "y" : "ies"}`,
+        {
+          duration: 30_000,
+          action: {
+            label: "UNDO",
+            onClick: async () => {
+              try {
+                await restoreMany({ data: { ids } });
+                onChanged();
+                toast.success("Restored");
+              } catch {
+                toast.error("Restore failed");
+              }
+            },
+          },
+        },
+      );
     } finally {
       setDeleting(false);
     }
   }
+
 
   return (
     <div className="space-y-4">
