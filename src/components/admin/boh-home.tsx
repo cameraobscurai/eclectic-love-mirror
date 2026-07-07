@@ -21,7 +21,7 @@ import {
 } from '../../lib/boh/boh.functions'
 
 import { BohZoom } from './boh-zoom'
-import { BohCommand } from './boh-command'
+// ⌘K palette now mounted once in AdminShell (persistent across admin routes).
 import { supabase } from '@/integrations/supabase/client' // ADAPT: client (browser) supabase
 
 const HOME_POSTER = 'https://eclectichive.com/media/home/01-poster.jpg'
@@ -50,7 +50,7 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
   const [badges, setBadges] = useState<Record<string, { label: string } | null>>({})
   const [catsOpen, setCatsOpen] = useState(true)
   const [sweeping, setSweeping] = useState(false)
-  const [cmdOpen, setCmdOpen] = useState(false)
+  // cmdOpen now lives in AdminShell — open via `boh:open-command` event.
   const [zoom, setZoom] = useState<{ index: number; rect: { left: number; top: number; width: number } } | null>(null)
 
   const cells = useRef<(HTMLDivElement | null)[]>([])
@@ -115,15 +115,10 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
 
   useEffect(() => () => clearInterval(pollRef.current), [])
 
-  // — keyboard: ⌘K, arrows over the 6-tile grid
+  // — keyboard: arrows over the 6-tile grid (⌘K handled globally in AdminShell)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setCmdOpen((v) => !v)
-        return
-      }
-      if (cmdOpen || zoom) return
+      if (zoom) return
       if (['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(e.key)) {
         const btns = cells.current.map((c) => c?.querySelector('button') ?? null)
         const i = btns.indexOf(document.activeElement as HTMLButtonElement)
@@ -136,7 +131,7 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [cmdOpen, zoom])
+  }, [zoom])
 
   // — derived
   const h = new Date().getHours()
@@ -159,7 +154,7 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
           <span style={{ fontSize: 11, letterSpacing: '0.2em', color: T.dim }}>{dateLine}</span>
-          <button onClick={() => setCmdOpen(true)} className="boh-ghost-btn">⌘K · SEARCH</button>
+          <button onClick={() => window.dispatchEvent(new Event('boh:open-command'))} className="boh-ghost-btn">⌘K · SEARCH</button>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
             <button onClick={sweep} disabled={sweeping} className="boh-ghost-btn" aria-label="Refresh page snapshots">
               {sweeping ? '↻ CAPTURING…' : '↻ REFRESH'}
@@ -263,7 +258,7 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
           onNavigate={go}
         />
       )}
-      {cmdOpen && <BohCommand onClose={() => setCmdOpen(false)} onZoomPage={openZoom} onNavigate={go} />}
+      {/* ⌘K palette lives in AdminShell */}
     </div>
   )
 }
