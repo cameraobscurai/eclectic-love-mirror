@@ -14,17 +14,24 @@ export function PosterPicture({
   loading = "lazy",
   fetchPriority = "auto",
   alt = "",
+  sizes,
 }: {
   clip: Pick<FilmstripClip, "poster" | "posterAvif" | "posterWebp">;
   className?: string;
   loading?: Loading;
   fetchPriority?: FetchPriority;
   alt?: string;
+  /**
+   * Responsive `sizes` hint forwarded to every `<source>` and the `<img>`.
+   * Without this the browser assumes 100vw and downloads the full-res
+   * AVIF/WebP even for tiny 20vw filmstrip tiles.
+   */
+  sizes?: string;
 }) {
   return (
     <picture>
-      {clip.posterAvif && <source srcSet={clip.posterAvif} type="image/avif" />}
-      {clip.posterWebp && <source srcSet={clip.posterWebp} type="image/webp" />}
+      {clip.posterAvif && <source srcSet={clip.posterAvif} sizes={sizes} type="image/avif" />}
+      {clip.posterWebp && <source srcSet={clip.posterWebp} sizes={sizes} type="image/webp" />}
       <img
         src={clip.poster}
         alt={alt}
@@ -34,6 +41,7 @@ export function PosterPicture({
         loading={loading}
         decoding="async"
         fetchPriority={fetchPriority}
+        sizes={sizes}
         className={cn("h-full w-full object-cover", className)}
       />
     </picture>
