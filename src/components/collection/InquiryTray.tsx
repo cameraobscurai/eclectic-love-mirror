@@ -5,7 +5,9 @@ import { useInquiry } from "@/hooks/use-inquiry";
 export function InquiryTray() {
   const { ids, count, clear } = useInquiry();
   const reduced = useReducedMotion();
-  const href = `/contact?items=${encodeURIComponent(ids.join(","))}#inquiry`;
+  const itemsParam = encodeURIComponent(ids.join(","));
+  const contactHref = `/contact?items=${itemsParam}#inquiry`;
+  const briefHref = `/stylebrief?items=${itemsParam}`;
 
   return (
     <AnimatePresence>
@@ -38,7 +40,13 @@ export function InquiryTray() {
               CLEAR
             </button>
             <Link
-              to={href as never}
+              to={briefHref as never}
+              className="text-[10px] uppercase tracking-[0.22em] text-cream/70 hover:text-cream focus:outline-none focus-visible:ring-2 focus-visible:ring-cream/60 focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-colors"
+            >
+              BUILD A STYLE BRIEF →
+            </Link>
+            <Link
+              to={contactHref as never}
               className="bg-[#fcfcfc] text-charcoal px-4 py-2 text-[11px] uppercase tracking-[0.22em] hover:bg-white/85 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-charcoal transition-all"
             >
               REVIEW INQUIRY
