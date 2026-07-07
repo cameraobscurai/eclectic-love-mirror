@@ -36,6 +36,8 @@ import {
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { getInquirySummary } from "@/lib/admin.functions";
+import { BohCommand } from "@/components/admin/boh-command";
+import { PAGES } from "@/lib/boh/boh.config";
 
 // ---------------------------------------------------------------------------
 // AdminShell — single chrome wrapper for every /admin/* page.
@@ -186,6 +188,26 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const crumbs = useBreadcrumbs(pathname);
   const [email, setEmail] = useState<string | null>(null);
   const [openCount, setOpenCount] = useState<number>(0);
+  const [cmdOpen, setCmdOpen] = useState(false);
+
+  // Global ⌘K — mounts once at shell so palette persists across admin subroutes.
+  // Also listens for `boh:open-command` so in-page buttons (BOH home header)
+  // can open it without re-implementing state.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setCmdOpen((v) => !v);
+      }
+    };
+    const onEvent = () => setCmdOpen(true);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("boh:open-command", onEvent);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("boh:open-command", onEvent);
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -329,6 +351,22 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+      {cmdOpen && (
+        <BohCommand
+          onClose={() => setCmdOpen(false)}
+          onZoomPage={(index) => {
+            setCmdOpen(false);
+            router.navigate({
+              to: "/admin",
+              search: { page: PAGES[index].slug } as never,
+            });
+          }}
+          onNavigate={(route) => {
+            setCmdOpen(false);
+            window.location.assign(route);
+          }}
+        />
+      )}
     </SidebarProvider>
   );
 }
