@@ -369,6 +369,7 @@ export type Database = {
       inquiries: {
         Row: {
           created_at: string
+          deleted_at: string | null
           email: string
           handled: boolean
           id: string
@@ -389,6 +390,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          deleted_at?: string | null
           email: string
           handled?: boolean
           id?: string
@@ -409,6 +411,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          deleted_at?: string | null
           email?: string
           handled?: boolean
           id?: string

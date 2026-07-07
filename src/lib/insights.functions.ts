@@ -83,10 +83,12 @@ export const getInsights = createServerFn({ method: "GET" })
         .select(
           "id, name, email, phone, subject, message, created_at, status, quote_value, outcome_notes, outcome_updated_at",
         )
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(1000),
       getCollectionCatalog(),
     ]);
+
     if (error) throw error;
 
     type Row = NonNullable<typeof rows>[number];
@@ -282,8 +284,8 @@ export const updateInquiryOutcome = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-// Bulk delete — admin-only. Used by the inquiries list to clear out spam /
-// completed rows so the inbox stays scannable.
+// Bulk soft-delete — admin-only. Sets deleted_at so the inbox hides the row
+// but a 30s Undo (restoreInquiries) can bring it back. No permanent loss.
 const DeleteInquiriesSchema = z.object({
   ids: z.array(z.string().uuid()).min(1).max(200),
 });
@@ -295,8 +297,22 @@ export const deleteInquiries = createServerFn({ method: "POST" })
     const { supabase } = context;
     const { error } = await supabase
       .from("inquiries")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .in("id", data.ids);
     if (error) throw error;
     return { ok: true as const, deleted: data.ids.length };
   });
+
+export const restoreInquiries = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((input: unknown) => DeleteInquiriesSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { error } = await supabase
+      .from("inquiries")
+      .update({ deleted_at: null })
+      .in("id", data.ids);
+    if (error) throw error;
+    return { ok: true as const, restored: data.ids.length };
+  });
+
