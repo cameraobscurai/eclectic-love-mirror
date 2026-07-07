@@ -294,7 +294,7 @@ function FilmstripFrame({
               loop
               autoPlay
               playsInline
-              preload="auto"
+              preload="none"
               {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
