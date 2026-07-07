@@ -224,16 +224,18 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
           <span style={{ fontFamily: T.mono, fontSize: 10, color: T.dim }}>/collection?group=…</span>
         </button>
         {catsOpen && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 20, paddingTop: 12, animation: 'bohFadeIn 0.4s ease' }}>
-            {NAV_GROUPS.map((g) => (
-              <button key={g.slug} onClick={() => go(`/admin/products?group=${g.slug}`)} className="boh-cat-card">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 2, paddingTop: 12, animation: 'bohFadeIn 0.4s ease' }}>
+            {NAV_GROUPS.map((g, i) => {
+              const tone = (Math.floor(i / 6) + (i % 6)) % 2 === 0 ? '#ffffff' : '#ebebeb';
+              return (
+              <button key={g.slug} onClick={() => go(`/admin/products?group=${g.slug}`)} className="boh-cat-card" style={{ background: tone, position: 'relative' }}>
                 {g.image ? (
-                  <img src={g.image} alt="" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover', background: '#25231F', display: 'block' }} />
+                  <img src={g.image} alt="" style={{ width: '100%', aspectRatio: '4/3', objectFit: 'contain', background: tone, display: 'block', padding: '1.5rem 1.5rem 2rem' }} />
                 ) : (
-                  <div style={{ width: '100%', aspectRatio: '3/4', background: '#25231F' }} />
+                  <div style={{ width: '100%', aspectRatio: '4/3', background: tone }} />
                 )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '9px 2px 0' }}>
-                  <span style={{ fontSize: 9, letterSpacing: '0.16em', color: '#B9B2A3' }}>{g.name.toUpperCase()}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '10px 14px 12px', background: tone }}>
+                  <span style={{ fontSize: 9, letterSpacing: '0.18em', color: '#1a1a1a' }}>{g.name.toUpperCase()}</span>
                 </div>
                 {badges[g.slug] && (
                   <span
@@ -245,7 +247,8 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
                   </span>
                 )}
               </button>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
