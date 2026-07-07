@@ -83,10 +83,12 @@ export const getInsights = createServerFn({ method: "GET" })
         .select(
           "id, name, email, phone, subject, message, created_at, status, quote_value, outcome_notes, outcome_updated_at",
         )
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(1000),
       getCollectionCatalog(),
     ]);
+
     if (error) throw error;
 
     type Row = NonNullable<typeof rows>[number];
