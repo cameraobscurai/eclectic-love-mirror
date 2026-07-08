@@ -280,6 +280,7 @@ function SketchPage() {
     [N],
   );
 
+  const navigate = Route.useNavigate();
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (openIdx !== null) {
@@ -288,6 +289,13 @@ function SketchPage() {
         if (event.key === "ArrowRight") next();
         return;
       }
+
+      // ESC on the canvas = exit to home (accessibility escape hatch)
+      if (event.key === "Escape") {
+        navigate({ to: "/" });
+        return;
+      }
+
 
       const STEP = 200;
       if (event.key === "ArrowLeft") animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
