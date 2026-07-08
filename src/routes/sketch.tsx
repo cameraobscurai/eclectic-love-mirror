@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useGesture } from "@use-gesture/react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
@@ -125,56 +125,27 @@ function SketchPage() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const initialRange = (() => {
-    const bleed = 3;
-    const worldPitch = PITCH;
-    const cx = -initialX / worldPitch;
-    const cy = -initialY / worldPitch;
-    const cols = Math.ceil(initialVp.w / worldPitch);
-    const rows = Math.ceil(initialVp.h / worldPitch);
+  // Compute render range ONCE from viewport (recompute only on resize).
+  // Bleed is huge — enough to cover ~2 viewports in every direction — so
+  // pan/zoom never triggers React reconciliation. The whole grid stays
+  // mounted; only the parent transform moves. This is how Figma/Miro do it.
+  const range = useMemo(() => {
+    const bleed = 6;
+    const cols = Math.ceil(vp.w / PITCH);
+    const rows = Math.ceil(vp.h / PITCH);
+    // Anchor render window around initial center so the grid stays symmetric
+    const cx = Math.floor(-initialX / PITCH);
+    const cy = Math.floor(-initialY / PITCH);
     return {
-      c0: Math.floor(cx) - bleed,
-      c1: Math.floor(cx) + cols + bleed,
-      r0: Math.floor(cy) - bleed,
-      r1: Math.floor(cy) + rows + bleed,
+      c0: cx - bleed,
+      c1: cx + cols + bleed,
+      r0: cy - bleed,
+      r1: cy + rows + bleed,
     };
-  })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vp.w, vp.h]);
 
-  const [range, setRange] = useState(initialRange);
-  const rangeRef = useRef(range);
-  rangeRef.current = range;
 
-  useEffect(() => {
-    let raf = 0;
-    const bleed = 3;
-    const tick = () => {
-      const currentScale = scale.get();
-      const worldPitch = PITCH * currentScale;
-      const cx = -x.get() / worldPitch;
-      const cy = -y.get() / worldPitch;
-      const cols = Math.ceil(vp.w / worldPitch);
-      const rows = Math.ceil(vp.h / worldPitch);
-      const c0 = Math.floor(cx) - bleed;
-      const c1 = Math.floor(cx) + cols + bleed;
-      const r0 = Math.floor(cy) - bleed;
-      const r1 = Math.floor(cy) + rows + bleed;
-      const current = rangeRef.current;
-
-      if (
-        c0 !== current.c0 ||
-        c1 !== current.c1 ||
-        r0 !== current.r0 ||
-        r1 !== current.r1
-      ) {
-        setRange({ c0, c1, r0, r1 });
-      }
-
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [vp.w, vp.h, x, y, scale]);
 
   const cells = useMemo(() => {
     if (N === 0) return [];
@@ -309,6 +280,7 @@ function SketchPage() {
     [N],
   );
 
+  const navigate = Route.useNavigate();
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (openIdx !== null) {
@@ -317,6 +289,13 @@ function SketchPage() {
         if (event.key === "ArrowRight") next();
         return;
       }
+
+      // ESC on the canvas = exit to home (accessibility escape hatch)
+      if (event.key === "Escape") {
+        navigate({ to: "/" });
+        return;
+      }
+
 
       const STEP = 200;
       if (event.key === "ArrowLeft") animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
@@ -334,7 +313,7 @@ function SketchPage() {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h]);
+  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h, navigate]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -390,74 +369,55 @@ function SketchPage() {
           {cells.map(({ c, r, idx, key }, cellIndex) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
-            const priority = cellIndex < PRIORITY_CELL_COUNT;
-
             return (
-              <button
+              <Tile
                 key={key}
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setOpenIdx(idx);
-                }}
-                className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] hover:shadow-[0_8px_32px_rgba(26,26,26,0.14)] transition-shadow duration-500 group focus:outline-none"
-                style={{
-                  left: c * PITCH,
-                  top: r * PITCH,
-                  width: TILE,
-                  height: TILE,
-                  contain: "layout paint style size",
-                }}
-                aria-label={`Open plate ${(idx + 1).toString().padStart(3, "0")}`}
-                draggable={false}
-              >
-                <img
-                  src={sketch.tileUrl}
-                  alt=""
-                  width={TILE}
-                  height={TILE}
-                  loading="eager"
-                  fetchPriority={priority ? "high" : "auto"}
-                  decoding="async"
-                  draggable={false}
-                  className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                />
-                <span className="absolute bottom-2 right-2 text-[8px] tracking-[0.3em] uppercase text-[#1a1a1a]/40 font-medium pointer-events-none">
-                  {(idx + 1).toString().padStart(3, "0")}
-                </span>
-              </button>
+                tileUrl={sketch.tileUrl}
+                idx={idx}
+                c={c}
+                r={r}
+                priority={cellIndex < PRIORITY_CELL_COUNT}
+                onOpen={setOpenIdx}
+              />
             );
           })}
         </motion.div>
       </div>
 
-      <header className="pointer-events-none absolute top-0 left-0 right-0 px-6 md:px-10 pt-6 md:pt-8 flex justify-between items-center z-10">
-        <h1 className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium">
-          Sketchbook · Archive 001
-        </h1>
-        <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
-          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase opacity-50">
-            {totalLabel} Plates · Loop
+      {/* Persistent top bar — solid backdrop (no blur), always visible,
+          always focusable. Sits above canvas + intro drift. */}
+      <div className="pointer-events-none absolute top-0 left-0 right-0 z-20 flex justify-between items-center gap-4 px-4 md:px-6 pt-4">
+        <div className="pointer-events-auto flex items-center gap-3 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] px-4 py-2.5">
+          <span className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium text-[#1a1a1a]">
+            Sketchbook · 001
           </span>
-          <Link
-            to="/"
-            className="text-[10px] tracking-[0.4em] uppercase font-medium border border-[#1a1a1a]/30 hover:border-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors px-3 py-2 md:px-4 md:py-2 bg-white/70 backdrop-blur-sm"
-          >
-            ← Exit
-          </Link>
+          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/50">
+            · {totalLabel} Plates
+          </span>
         </div>
-      </header>
 
+        <Link
+          to="/"
+          className="pointer-events-auto flex items-center gap-2 bg-[#1a1a1a] text-[#ffffff] text-[11px] md:text-[12px] tracking-[0.35em] uppercase font-medium px-5 py-3 md:px-6 md:py-3 shadow-[0_4px_20px_rgba(26,26,26,0.25)] hover:bg-[#000000] transition-colors"
+          aria-label="Exit sketchbook and return home"
+        >
+          <span aria-hidden="true">✕</span>
+          <span>Exit</span>
+        </Link>
+      </div>
+
+      {/* Bottom hint — auto-fades but only for the ambient tips, never the Exit */}
       <div
-        className={`pointer-events-none absolute bottom-0 left-0 right-0 px-6 md:px-10 pb-6 md:pb-8 flex justify-between items-baseline z-10 transition-opacity duration-[1200ms] ${hintVisible ? "opacity-100" : "opacity-0"}`}
+        className={`pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-4 bg-[#ffffff]/95 px-4 py-2 shadow-[0_2px_12px_rgba(26,26,26,0.08)] transition-opacity duration-[1200ms] ${hintVisible ? "opacity-100" : "opacity-0"}`}
       >
-        <span className="text-[9px] tracking-[0.5em] uppercase opacity-60">
-          Drag · Scroll · Pinch to Zoom
+        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/70">
+          Drag · Scroll · Pinch
         </span>
-        <span className="text-[9px] tracking-[0.4em] uppercase opacity-40">
-          0 = Reset · +/− = Zoom
+        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/40">
+          ESC to exit
         </span>
       </div>
+
 
       {openIdx !== null && sketches[openIdx] && (
         <div
@@ -521,3 +481,60 @@ function SketchPage() {
     </div>
   );
 }
+
+// Memoized tile: props are all primitives so React.memo skips reconciliation
+// on every parent render. Combined with the fixed render range, this means
+// zero React work during pan/zoom — only the parent transform moves.
+type TileProps = {
+  tileUrl: string;
+  idx: number;
+  c: number;
+  r: number;
+  priority: boolean;
+  onOpen: (idx: number) => void;
+};
+
+const Tile = memo(function Tile({
+  tileUrl,
+  idx,
+  c,
+  r,
+  priority,
+  onOpen,
+}: TileProps) {
+  const label = (idx + 1).toString().padStart(3, "0");
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        onOpen(idx);
+      }}
+      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none"
+      style={{
+        left: c * PITCH,
+        top: r * PITCH,
+        width: TILE,
+        height: TILE,
+        contain: "layout paint style size",
+      }}
+      aria-label={`Open plate ${label}`}
+      draggable={false}
+    >
+      <img
+        src={tileUrl}
+        alt=""
+        width={TILE}
+        height={TILE}
+        loading="eager"
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        draggable={false}
+        className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
+      />
+      <span className="absolute bottom-2 right-2 text-[8px] tracking-[0.3em] uppercase text-[#1a1a1a]/40 font-medium pointer-events-none">
+        {label}
+      </span>
+    </button>
+  );
+});
