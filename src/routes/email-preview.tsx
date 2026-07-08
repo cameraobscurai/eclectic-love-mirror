@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { TEMPLATES } from '@/lib/email-templates/registry'
 
-export const Route = createFileRoute('/admin/email-preview')({
+export const Route = createFileRoute('/email-preview')({
+  ssr: false,
   head: () => ({ meta: [{ title: 'Email preview' }, { name: 'robots', content: 'noindex' }] }),
   component: EmailPreview,
 })
