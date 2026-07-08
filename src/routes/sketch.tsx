@@ -138,21 +138,24 @@ function SketchPage() {
     Math.max(ZOOM_MIN, vp.w / Math.max(1, WORLD_W * 2), vp.h / Math.max(1, WORLD_H * 2)),
   );
 
+  // Quantize pan origin in COARSE steps so React only re-renders every
+  // PAN_STEP cells crossed, not every one. Bleed absorbs the difference.
+  const PAN_STEP = 3;
   useMotionValueEvent(x, "change", (latest) => {
-    const qx = Math.floor(-latest / (PITCH * scale.get()));
+    const qx = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qx === prev.qx ? prev : { ...prev, qx }));
   });
 
   useMotionValueEvent(y, "change", (latest) => {
-    const qy = Math.floor(-latest / (PITCH * scale.get()));
+    const qy = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qy === prev.qy ? prev : { ...prev, qy }));
   });
 
   const cells = useMemo(() => {
     if (N === 0) return [];
-    const out: { c: number; r: number; idx: number; key: string; priority: boolean }[] = [];
+    const out: { c: number; r: number; idx: number; key: string }[] = [];
     const s = Math.max(dynamicZoomMin, scale.get());
-    const bleed = 5;
+    const bleed = 6;
     const cols = Math.ceil(vp.w / (PITCH * s));
     const rows = Math.ceil(vp.h / (PITCH * s));
     const c0 = panOrigin.qx - bleed;
@@ -163,8 +166,7 @@ function SketchPage() {
     for (let c = c0; c <= c1; c++) {
       for (let r = r0; r <= r1; r++) {
         const idx = mod(mod(r, ROWS) * COLS + mod(c, COLS), N);
-        const priority = Math.abs(c - panOrigin.qx) <= 2 && Math.abs(r - panOrigin.qy) <= 2;
-        out.push({ c, r, idx, key: `${c},${r}`, priority });
+        out.push({ c, r, idx, key: `${c},${r}` });
       }
     }
 
