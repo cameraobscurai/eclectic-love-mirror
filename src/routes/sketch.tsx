@@ -556,21 +556,14 @@ type TileProps = {
   idx: number;
   c: number;
   r: number;
-  priority: boolean;
-  ready: boolean;
   onOpen: (idx: number) => void;
 };
 
-const Tile = memo(function Tile({
-  tileUrl,
-  idx,
-  c,
-  r,
-  priority,
-  ready,
-  onOpen,
-}: TileProps) {
+const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
   const label = (idx + 1).toString().padStart(3, "0");
+  // Priority derived from stable idx only — never flips during pan, so
+  // React.memo's shallow prop compare always short-circuits.
+  const priority = idx < PRIORITY_CELL_COUNT;
   return (
     <button
       type="button"
@@ -596,7 +589,7 @@ const Tile = memo(function Tile({
         height={TILE}
         loading="eager"
         fetchPriority={priority ? "high" : "auto"}
-        decoding={ready ? "sync" : "async"}
+        decoding="async"
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
       />
