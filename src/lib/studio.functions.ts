@@ -681,9 +681,12 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
     const paths = inspoRecords.map((i) => i.storage_path);
     let signedMap: Record<string, string> = {};
     if (paths.length) {
+      // Signed URLs are re-minted on every share-page load (this loader runs
+      // per view). 7-day TTL is a safety margin for link previews and async
+      // opens; the actual freshness comes from re-signing per request.
       const { data: signed } = await supabaseAdmin
         .storage.from("studio-inspo")
-        .createSignedUrls(paths, 60 * 60 * 24);
+        .createSignedUrls(paths, 60 * 60 * 24 * 7);
       for (const s of signed ?? []) {
         if (s.path && s.signedUrl) signedMap[s.path] = s.signedUrl;
       }
@@ -702,12 +705,21 @@ export const getStyleBoardByToken = createServerFn({ method: "GET" })
       for (const rmsId of pinnedIds) {
         const r = byRms.get(rmsId);
         if (!r) continue;
-        const imgs = (r.images ?? []) as string[];
+        // `images` may be legacy: sometimes string[], sometimes [{ url }, ...].
+        // Blindly casting produces "[object Object]" on the public deck.
+        const first = (r.images as unknown[] | null)?.[0];
+        const image_url =
+          typeof first === "string"
+            ? first
+            : first && typeof first === "object" && "url" in first &&
+                typeof (first as { url: unknown }).url === "string"
+              ? (first as { url: string }).url
+              : null;
         items.push({
           id: String(r.id),
           rms_id: r.rms_id ?? null,
           title: r.title,
-          image_url: imgs[0] ?? null,
+          image_url,
           category: r.category ?? null,
           note: pinNotes[rmsId] ?? "",
         });
