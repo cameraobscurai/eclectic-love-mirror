@@ -1,19 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useGesture } from "@use-gesture/react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
 
-const sketchesQuery = (fn: () => Promise<Sketch[]>) =>
-  queryOptions({
-    queryKey: ["sketches"],
-    queryFn: fn,
-    staleTime: 1000 * 60 * 60,
-  });
+const sketchesQueryOptions = queryOptions<Sketch[]>({
+  queryKey: ["sketches"],
+  queryFn: () => listSketches(),
+  staleTime: 1000 * 60 * 60,
+  gcTime: 1000 * 60 * 60 * 24,
+});
+
+const TILE = 300;
+const GAP = 24;
+const PITCH = TILE + GAP;
+const ZOOM_MIN = 0.4;
+const ZOOM_MAX = 2.0;
+const PRIORITY_CELL_COUNT = 14;
+
+const mod = (n: number, m: number) => ((n % m) + m) % m;
 
 export const Route = createFileRoute("/sketch")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(sketchesQueryOptions),
   head: () => ({
     meta: [
       { title: "Sketchbook — Archive 001" },
@@ -37,22 +46,9 @@ export const Route = createFileRoute("/sketch")({
   ),
 });
 
-// Tile geometry (world space, unscaled)
-const TILE = 300;
-const GAP = 24;
-const PITCH = TILE + GAP;
-
-// Zoom bounds
-const ZOOM_MIN = 0.4;
-const ZOOM_MAX = 2.0;
-
-const mod = (n: number, m: number) => ((n % m) + m) % m;
-
 function SketchPage() {
-  const fn = useServerFn(listSketches);
-  const { data: rawSketches } = useSuspenseQuery(sketchesQuery(fn));
+  const { data: rawSketches } = useSuspenseQuery(sketchesQueryOptions);
 
-  // Deterministic shuffle so color/BW don't clump in upload-order pockets
   const sketches = useMemo(() => {
     const hash = (s: string) => {
       let h = 2166136261;
@@ -74,18 +70,15 @@ function SketchPage() {
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
 
-  // Viewport size
-  const [vp, setVp] = useState({ w: 0, h: 0 });
+  const [vp, setVp] = useState({ w: 1440, h: 900 });
   useEffect(() => {
-    const update = () =>
-      setVp({ w: window.innerWidth, h: window.innerHeight });
+    const update = () => setVp({ w: window.innerWidth, h: window.innerHeight });
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Visible cell range — updated only when range actually changes
-  const [range, setRange] = useState({ c0: -2, c1: 4, r0: -2, r1: 4 });
+  const [range, setRange] = useState({ c0: -2, c1: 5, r0: -2, r1: 5 });
   const rangeRef = useRef(range);
   rangeRef.current = range;
 
@@ -93,8 +86,8 @@ function SketchPage() {
     let raf = 0;
     const bleed = 1;
     const tick = () => {
-      const s = scale.get();
-      const worldPitch = PITCH * s;
+      const currentScale = scale.get();
+      const worldPitch = PITCH * currentScale;
       const cx = -x.get() / worldPitch;
       const cy = -y.get() / worldPitch;
       const cols = Math.ceil(vp.w / worldPitch);
@@ -103,36 +96,44 @@ function SketchPage() {
       const c1 = Math.floor(cx) + cols + bleed;
       const r0 = Math.floor(cy) - bleed;
       const r1 = Math.floor(cy) + rows + bleed;
-      const r = rangeRef.current;
-      if (c0 !== r.c0 || c1 !== r.c1 || r0 !== r.r0 || r1 !== r.r1) {
+      const current = rangeRef.current;
+
+      if (
+        c0 !== current.c0 ||
+        c1 !== current.c1 ||
+        r0 !== current.r0 ||
+        r1 !== current.r1
+      ) {
         setRange({ c0, c1, r0, r1 });
       }
+
       raf = requestAnimationFrame(tick);
     };
+
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [vp.w, vp.h, x, y, scale]);
 
-  // Cell list for current viewport
   const cells = useMemo(() => {
     if (N === 0) return [];
     const out: { c: number; r: number; idx: number; key: string }[] = [];
+
     for (let c = range.c0; c <= range.c1; c++) {
       for (let r = range.r0; r <= range.r1; r++) {
         const idx = mod(mod(r, ROWS) * COLS + mod(c, COLS), N);
         out.push({ c, r, idx, key: `${c},${r}` });
       }
     }
+
     return out;
   }, [range, COLS, ROWS, N]);
 
-  // Zoom around a viewport point
   const applyZoom = useCallback(
     (delta: number, ox: number, oy: number) => {
-      const cur = scale.get();
-      const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, cur * (1 + delta)));
-      if (next === cur) return;
-      const ratio = next / cur;
+      const current = scale.get();
+      const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, current * (1 + delta)));
+      if (next === current) return;
+      const ratio = next / current;
       x.set(ox - (ox - x.get()) * ratio);
       y.set(oy - (oy - y.get()) * ratio);
       scale.set(next);
@@ -140,37 +141,36 @@ function SketchPage() {
     [x, y, scale],
   );
 
-  // Hint state
   const [hintVisible, setHintVisible] = useState(true);
   const dismissHint = useCallback(() => setHintVisible(false), []);
 
-  // Auto-drift intro — 3s gentle pan, cancelled on any interaction
   const [introDone, setIntroDone] = useState(false);
   useEffect(() => {
     if (introDone) return;
-    const t = setTimeout(() => {
+
+    const timeout = setTimeout(() => {
       const ax = animate(x, -220, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
       const ay = animate(y, -80, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
+
       const cancel = () => {
         ax.stop();
         ay.stop();
         setIntroDone(true);
       };
+
       window.addEventListener("pointerdown", cancel, { once: true });
       window.addEventListener("wheel", cancel, { once: true, passive: true });
       window.addEventListener("keydown", cancel, { once: true });
     }, 400);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  // Hint auto-fade after 7s
+    return () => clearTimeout(timeout);
+  }, [introDone, x, y]);
+
   useEffect(() => {
-    const t = setTimeout(() => setHintVisible(false), 7000);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setHintVisible(false), 7000);
+    return () => clearTimeout(timeout);
   }, []);
 
-  // Gestures
   useGesture(
     {
       onDrag: ({ delta: [dx, dy], last, velocity: [vx, vy], direction: [dirX, dirY], tap }) => {
@@ -180,6 +180,7 @@ function SketchPage() {
         y.stop();
         x.set(x.get() + dx);
         y.set(y.get() + dy);
+
         if (last) {
           animate(x, x.get() + dirX * vx * 180, {
             type: "inertia",
@@ -196,6 +197,7 @@ function SketchPage() {
       onWheel: ({ event, delta: [dx, dy], ctrlKey }) => {
         event.preventDefault();
         dismissHint();
+
         if (ctrlKey) {
           applyZoom(-dy * 0.01, event.clientX, event.clientY);
         } else {
@@ -205,10 +207,10 @@ function SketchPage() {
           y.set(y.get() - dy);
         }
       },
-      onPinch: ({ origin: [ox, oy], offset: [d], memo }) => {
+      onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
         dismissHint();
-        const base = memo ?? scale.get() / d;
-        const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, base * d));
+        const base = memo ?? scale.get() / distance;
+        const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, base * distance));
         const ratio = next / scale.get();
         x.set(ox - (ox - x.get()) * ratio);
         y.set(oy - (oy - y.get()) * ratio);
@@ -223,7 +225,6 @@ function SketchPage() {
     },
   );
 
-  // Lightbox
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const close = useCallback(() => setOpenIdx(null), []);
   const prev = useCallback(
@@ -235,52 +236,49 @@ function SketchPage() {
     [N],
   );
 
-  // Keyboard
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+    const onKey = (event: KeyboardEvent) => {
       if (openIdx !== null) {
-        if (e.key === "Escape") close();
-        if (e.key === "ArrowLeft") prev();
-        if (e.key === "ArrowRight") next();
+        if (event.key === "Escape") close();
+        if (event.key === "ArrowLeft") prev();
+        if (event.key === "ArrowRight") next();
         return;
       }
+
       const STEP = 200;
-      if (e.key === "ArrowLeft") animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (e.key === "ArrowRight") animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (e.key === "ArrowUp") animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (e.key === "ArrowDown") animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (e.key === "+" || e.key === "=") applyZoom(0.15, vp.w / 2, vp.h / 2);
-      if (e.key === "-" || e.key === "_") applyZoom(-0.15, vp.w / 2, vp.h / 2);
-      if (e.key === "0") {
+      if (event.key === "ArrowLeft") animate(x, x.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowRight") animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowUp") animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "ArrowDown") animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
+      if (event.key === "+" || event.key === "=") applyZoom(0.15, vp.w / 2, vp.h / 2);
+      if (event.key === "-" || event.key === "_") applyZoom(-0.15, vp.w / 2, vp.h / 2);
+      if (event.key === "0") {
         animate(x, 0);
         animate(y, 0);
         animate(scale, 1);
       }
     };
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h]);
 
-  // Lock page scroll
   useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    const prevOverscroll = document.body.style.overscrollBehavior;
+    const previousOverflow = document.body.style.overflow;
+    const previousOverscroll = document.body.style.overscrollBehavior;
     document.body.style.overflow = "hidden";
     document.body.style.overscrollBehavior = "none";
     return () => {
-      document.body.style.overflow = prevOverflow;
-      document.body.style.overscrollBehavior = prevOverscroll;
+      document.body.style.overflow = previousOverflow;
+      document.body.style.overscrollBehavior = previousOverscroll;
     };
   }, []);
 
   const total = N.toString().padStart(3, "0");
-
-  // Drag tracking for cursor state
   const [grabbing, setGrabbing] = useState(false);
 
   return (
     <div className="fixed inset-0 bg-[#d4cdc4] text-[#1a1a1a] font-serif overflow-hidden select-none">
-      {/* Canvas surface */}
       <div
         ref={containerRef}
         onPointerDown={() => setGrabbing(true)}
@@ -293,15 +291,17 @@ function SketchPage() {
           className="absolute top-0 left-0 will-change-transform"
           style={{ x, y, scale, transformOrigin: "0 0" }}
         >
-          {cells.map(({ c, r, idx, key }) => {
-            const s = sketches[idx];
-            if (!s) return null;
+          {cells.map(({ c, r, idx, key }, cellIndex) => {
+            const sketch = sketches[idx];
+            if (!sketch) return null;
+            const priority = cellIndex < PRIORITY_CELL_COUNT;
+
             return (
               <button
                 key={key}
                 type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={(event) => {
+                  event.stopPropagation();
                   setOpenIdx(idx);
                 }}
                 className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] hover:shadow-[0_8px_32px_rgba(26,26,26,0.14)] transition-shadow duration-500 group focus:outline-none"
@@ -310,14 +310,18 @@ function SketchPage() {
                   top: r * PITCH,
                   width: TILE,
                   height: TILE,
+                  contain: "layout paint style",
                 }}
                 aria-label={`Open plate ${(idx + 1).toString().padStart(3, "0")}`}
                 draggable={false}
               >
                 <img
-                  src={s.url}
+                  src={sketch.tileUrl}
                   alt=""
-                  loading="lazy"
+                  width={TILE}
+                  height={TILE}
+                  loading={priority ? "eager" : "lazy"}
+                  fetchPriority={priority ? "high" : "low"}
                   decoding="async"
                   draggable={false}
                   className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.02]"
@@ -331,7 +335,6 @@ function SketchPage() {
         </motion.div>
       </div>
 
-      {/* Chrome — header */}
       <header className="pointer-events-none absolute top-0 left-0 right-0 px-6 md:px-10 pt-6 md:pt-8 flex justify-between items-baseline z-10">
         <h1 className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium">
           Sketchbook · Archive 001
@@ -341,7 +344,6 @@ function SketchPage() {
         </span>
       </header>
 
-      {/* Chrome — footer hint */}
       <div
         className={`pointer-events-none absolute bottom-0 left-0 right-0 px-6 md:px-10 pb-6 md:pb-8 flex justify-between items-baseline z-10 transition-opacity duration-[1200ms] ${hintVisible ? "opacity-100" : "opacity-0"}`}
       >
@@ -353,7 +355,6 @@ function SketchPage() {
         </span>
       </div>
 
-      {/* Lightbox */}
       {openIdx !== null && sketches[openIdx] && (
         <div
           className="fixed inset-0 z-50 bg-[#1a1a1a]/95 flex items-center justify-center p-4 md:p-12 backdrop-blur-sm"
@@ -361,8 +362,8 @@ function SketchPage() {
         >
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={(event) => {
+              event.stopPropagation();
               prev();
             }}
             className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-[#d4cdc4]/60 hover:text-[#d4cdc4] transition text-[10px] tracking-[0.4em] uppercase"
@@ -372,8 +373,8 @@ function SketchPage() {
           </button>
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={(event) => {
+              event.stopPropagation();
               next();
             }}
             className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-[#d4cdc4]/60 hover:text-[#d4cdc4] transition text-[10px] tracking-[0.4em] uppercase"
@@ -383,8 +384,8 @@ function SketchPage() {
           </button>
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
+            onClick={(event) => {
+              event.stopPropagation();
               close();
             }}
             className="absolute top-4 right-4 md:top-8 md:right-8 text-[#d4cdc4]/60 hover:text-[#d4cdc4] transition text-[10px] tracking-[0.4em] uppercase"
@@ -394,12 +395,13 @@ function SketchPage() {
           </button>
           <div
             className="max-w-[92vw] max-h-[85vh] bg-[#ffffff] p-4 md:p-8 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
           >
             <img
               src={sketches[openIdx].url}
               alt={`Sketch plate ${(openIdx + 1).toString().padStart(3, "0")}`}
               className="max-w-full max-h-[75vh] object-contain mix-blend-multiply"
+              decoding="async"
             />
             <div className="mt-4 pt-3 border-t border-[#1a1a1a]/10 flex justify-between text-[9px] tracking-[0.35em] uppercase text-[#1a1a1a]/60 font-serif">
               <span>Plate</span>
