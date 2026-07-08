@@ -361,42 +361,16 @@ function SketchPage() {
           {cells.map(({ c, r, idx, key }, cellIndex) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
-            const priority = cellIndex < PRIORITY_CELL_COUNT;
-
             return (
-              <button
+              <Tile
                 key={key}
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setOpenIdx(idx);
-                }}
-                className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] hover:shadow-[0_8px_32px_rgba(26,26,26,0.14)] transition-shadow duration-500 group focus:outline-none"
-                style={{
-                  left: c * PITCH,
-                  top: r * PITCH,
-                  width: TILE,
-                  height: TILE,
-                  contain: "layout paint style size",
-                }}
-                aria-label={`Open plate ${(idx + 1).toString().padStart(3, "0")}`}
-                draggable={false}
-              >
-                <img
-                  src={sketch.tileUrl}
-                  alt=""
-                  width={TILE}
-                  height={TILE}
-                  loading="eager"
-                  fetchPriority={priority ? "high" : "auto"}
-                  decoding="async"
-                  draggable={false}
-                  className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                />
-                <span className="absolute bottom-2 right-2 text-[8px] tracking-[0.3em] uppercase text-[#1a1a1a]/40 font-medium pointer-events-none">
-                  {(idx + 1).toString().padStart(3, "0")}
-                </span>
-              </button>
+                tileUrl={sketch.tileUrl}
+                idx={idx}
+                c={c}
+                r={r}
+                priority={cellIndex < PRIORITY_CELL_COUNT}
+                onOpen={setOpenIdx}
+              />
             );
           })}
         </motion.div>
