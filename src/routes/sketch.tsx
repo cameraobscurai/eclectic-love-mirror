@@ -58,11 +58,21 @@ function SketchPage() {
   const ROWS = Math.max(1, Math.ceil(N / COLS));
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+
+  const initialVp =
+    typeof window !== "undefined"
+      ? { w: window.innerWidth, h: window.innerHeight }
+      : { w: 1440, h: 900 };
+
+  // Center the world on first paint (torus, but visually pleasant starting frame)
+  const initialX = -Math.round((PITCH - initialVp.w) / 2);
+  const initialY = -Math.round((PITCH - initialVp.h) / 2);
+
+  const x = useMotionValue(initialX);
+  const y = useMotionValue(initialY);
   const scale = useMotionValue(1);
 
-  const [vp, setVp] = useState({ w: 1440, h: 900 });
+  const [vp, setVp] = useState(initialVp);
   useEffect(() => {
     const update = () => setVp({ w: window.innerWidth, h: window.innerHeight });
     update();
@@ -70,13 +80,28 @@ function SketchPage() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const [range, setRange] = useState({ c0: -2, c1: 5, r0: -2, r1: 5 });
+  const initialRange = (() => {
+    const bleed = 3;
+    const worldPitch = PITCH;
+    const cx = -initialX / worldPitch;
+    const cy = -initialY / worldPitch;
+    const cols = Math.ceil(initialVp.w / worldPitch);
+    const rows = Math.ceil(initialVp.h / worldPitch);
+    return {
+      c0: Math.floor(cx) - bleed,
+      c1: Math.floor(cx) + cols + bleed,
+      r0: Math.floor(cy) - bleed,
+      r1: Math.floor(cy) + rows + bleed,
+    };
+  })();
+
+  const [range, setRange] = useState(initialRange);
   const rangeRef = useRef(range);
   rangeRef.current = range;
 
   useEffect(() => {
     let raf = 0;
-    const bleed = 1;
+    const bleed = 3;
     const tick = () => {
       const currentScale = scale.get();
       const worldPitch = PITCH * currentScale;
@@ -140,22 +165,33 @@ function SketchPage() {
   useEffect(() => {
     if (introDone) return;
 
-    const timeout = setTimeout(() => {
-      const ax = animate(x, -220, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
-      const ay = animate(y, -80, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
+    x.stop();
+    y.stop();
+    const startX = x.get();
+    const startY = y.get();
+    const ax = animate(x, startX - 180, {
+      duration: 6,
+      ease: [0.4, 0, 0.2, 1],
+    });
+    const ay = animate(y, startY - 60, {
+      duration: 6,
+      ease: [0.4, 0, 0.2, 1],
+    });
 
-      const cancel = () => {
-        ax.stop();
-        ay.stop();
-        setIntroDone(true);
-      };
+    const cancel = () => {
+      ax.stop();
+      ay.stop();
+      setIntroDone(true);
+    };
 
-      window.addEventListener("pointerdown", cancel, { once: true });
-      window.addEventListener("wheel", cancel, { once: true, passive: true });
-      window.addEventListener("keydown", cancel, { once: true });
-    }, 400);
+    window.addEventListener("pointerdown", cancel, { once: true });
+    window.addEventListener("wheel", cancel, { once: true, passive: true });
+    window.addEventListener("keydown", cancel, { once: true });
 
-    return () => clearTimeout(timeout);
+    return () => {
+      ax.stop();
+      ay.stop();
+    };
   }, [introDone, x, y]);
 
   useEffect(() => {
@@ -302,7 +338,7 @@ function SketchPage() {
                   top: r * PITCH,
                   width: TILE,
                   height: TILE,
-                  contain: "layout paint style",
+                  contain: "layout paint style size",
                 }}
                 aria-label={`Open plate ${(idx + 1).toString().padStart(3, "0")}`}
                 draggable={false}
@@ -312,8 +348,8 @@ function SketchPage() {
                   alt=""
                   width={TILE}
                   height={TILE}
-                  loading={priority ? "eager" : "lazy"}
-                  fetchPriority={priority ? "high" : "low"}
+                  loading="eager"
+                  fetchPriority={priority ? "high" : "auto"}
                   decoding="async"
                   draggable={false}
                   className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.02]"
@@ -402,6 +438,8 @@ function SketchPage() {
               alt={`Sketch plate ${(openIdx + 1).toString().padStart(3, "0")}`}
               className="max-w-full max-h-[75vh] object-contain mix-blend-multiply"
               decoding="async"
+              loading="eager"
+              fetchPriority="high"
             />
             <div className="mt-4 pt-3 border-t border-[#1a1a1a]/10 flex justify-between text-[9px] tracking-[0.35em] uppercase text-[#1a1a1a]/60 font-serif">
               <span>Plate</span>
