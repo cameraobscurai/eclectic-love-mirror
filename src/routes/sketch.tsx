@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Home, Minimize2 } from "lucide-react";
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
-import { motion, useMotionValue, animate } from "framer-motion";
+import { motion, useMotionValue, animate, useMotionValueEvent } from "framer-motion";
 import { useGesture } from "@use-gesture/react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
 
@@ -101,17 +102,17 @@ function SketchPage() {
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
   const ROWS = Math.max(1, Math.ceil(N / COLS));
+  const WORLD_W = COLS * PITCH;
+  const WORLD_H = ROWS * PITCH;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const initialVp =
-    typeof window !== "undefined"
-      ? { w: window.innerWidth, h: window.innerHeight }
-      : { w: 1440, h: 900 };
+  const initialVp = { w: 1440, h: 900 };
 
-  // Center the world on first paint (torus, but visually pleasant starting frame)
-  const initialX = -Math.round((PITCH - initialVp.w) / 2);
-  const initialY = -Math.round((PITCH - initialVp.h) / 2);
+  // Center the whole world on first paint. IDs wrap at the edges; the render
+  // window tracks pan in coarse cell steps so there is no finite dead zone.
+  const initialX = -Math.round(Math.max(0, WORLD_W - initialVp.w) / 2);
+  const initialY = -Math.round(Math.max(0, WORLD_H - initialVp.h) / 2);
 
   const x = useMotionValue(initialX);
   const y = useMotionValue(initialY);
@@ -125,53 +126,60 @@ function SketchPage() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // Compute render range ONCE from viewport (recompute only on resize).
-  // Bleed is huge — enough to cover ~2 viewports in every direction — so
-  // pan/zoom never triggers React reconciliation. The whole grid stays
-  // mounted; only the parent transform moves. This is how Figma/Miro do it.
-  const range = useMemo(() => {
-    const bleed = 6;
-    const cols = Math.ceil(vp.w / PITCH);
-    const rows = Math.ceil(vp.h / PITCH);
-    // Anchor render window around initial center so the grid stays symmetric
-    const cx = Math.floor(-initialX / PITCH);
-    const cy = Math.floor(-initialY / PITCH);
-    return {
-      c0: cx - bleed,
-      c1: cx + cols + bleed,
-      r0: cy - bleed,
-      r1: cy + rows + bleed,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vp.w, vp.h]);
+  const [panOrigin, setPanOrigin] = useState({
+    qx: Math.floor(-initialX / PITCH),
+    qy: Math.floor(-initialY / PITCH),
+  });
 
+  const dynamicZoomMin = Math.min(
+    1,
+    Math.max(ZOOM_MIN, vp.w / Math.max(1, WORLD_W * 2), vp.h / Math.max(1, WORLD_H * 2)),
+  );
 
+  useMotionValueEvent(x, "change", (latest) => {
+    const qx = Math.floor(-latest / (PITCH * scale.get()));
+    setPanOrigin((prev) => (qx === prev.qx ? prev : { ...prev, qx }));
+  });
+
+  useMotionValueEvent(y, "change", (latest) => {
+    const qy = Math.floor(-latest / (PITCH * scale.get()));
+    setPanOrigin((prev) => (qy === prev.qy ? prev : { ...prev, qy }));
+  });
 
   const cells = useMemo(() => {
     if (N === 0) return [];
-    const out: { c: number; r: number; idx: number; key: string }[] = [];
+    const out: { c: number; r: number; idx: number; key: string; priority: boolean }[] = [];
+    const s = Math.max(dynamicZoomMin, scale.get());
+    const bleed = 5;
+    const cols = Math.ceil(vp.w / (PITCH * s));
+    const rows = Math.ceil(vp.h / (PITCH * s));
+    const c0 = panOrigin.qx - bleed;
+    const c1 = panOrigin.qx + cols + bleed;
+    const r0 = panOrigin.qy - bleed;
+    const r1 = panOrigin.qy + rows + bleed;
 
-    for (let c = range.c0; c <= range.c1; c++) {
-      for (let r = range.r0; r <= range.r1; r++) {
+    for (let c = c0; c <= c1; c++) {
+      for (let r = r0; r <= r1; r++) {
         const idx = mod(mod(r, ROWS) * COLS + mod(c, COLS), N);
-        out.push({ c, r, idx, key: `${c},${r}` });
+        const priority = Math.abs(c - panOrigin.qx) <= 2 && Math.abs(r - panOrigin.qy) <= 2;
+        out.push({ c, r, idx, key: `${c},${r}`, priority });
       }
     }
 
     return out;
-  }, [range, COLS, ROWS, N]);
+  }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, scale]);
 
   const applyZoom = useCallback(
     (delta: number, ox: number, oy: number) => {
       const current = scale.get();
-      const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, current * (1 + delta)));
+      const next = Math.max(dynamicZoomMin, Math.min(ZOOM_MAX, current * (1 + delta)));
       if (next === current) return;
       const ratio = next / current;
+      scale.set(next);
       x.set(ox - (ox - x.get()) * ratio);
       y.set(oy - (oy - y.get()) * ratio);
-      scale.set(next);
     },
-    [x, y, scale],
+    [x, y, scale, dynamicZoomMin],
   );
 
   const [hintVisible, setHintVisible] = useState(true);
@@ -226,15 +234,15 @@ function SketchPage() {
         y.set(y.get() + dy);
 
         if (last) {
-          animate(x, x.get() + dirX * vx * 180, {
+          animate(x, x.get() + dirX * Math.min(vx * 140, 1400), {
             type: "inertia",
-            power: 0.7,
-            timeConstant: 380,
+            power: 0.55,
+            timeConstant: 280,
           });
-          animate(y, y.get() + dirY * vy * 180, {
+          animate(y, y.get() + dirY * Math.min(vy * 140, 1400), {
             type: "inertia",
-            power: 0.7,
-            timeConstant: 380,
+            power: 0.55,
+            timeConstant: 280,
           });
         }
       },
@@ -254,11 +262,11 @@ function SketchPage() {
       onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
         dismissHint();
         const base = memo ?? scale.get() / distance;
-        const next = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, base * distance));
+        const next = Math.max(dynamicZoomMin, Math.min(ZOOM_MAX, base * distance));
         const ratio = next / scale.get();
+        scale.set(next);
         x.set(ox - (ox - x.get()) * ratio);
         y.set(oy - (oy - y.get()) * ratio);
-        scale.set(next);
         return base;
       },
     },
@@ -305,15 +313,19 @@ function SketchPage() {
       if (event.key === "+" || event.key === "=") applyZoom(0.15, vp.w / 2, vp.h / 2);
       if (event.key === "-" || event.key === "_") applyZoom(-0.15, vp.w / 2, vp.h / 2);
       if (event.key === "0") {
-        animate(x, 0);
-        animate(y, 0);
+        animate(x, initialX);
+        animate(y, initialY);
         animate(scale, 1);
       }
     };
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h, navigate]);
+  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h, navigate, initialX, initialY]);
+
+  useEffect(() => {
+    if (scale.get() < dynamicZoomMin) scale.set(dynamicZoomMin);
+  }, [dynamicZoomMin, scale]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -327,7 +339,12 @@ function SketchPage() {
   }, []);
 
   const totalLabel = N.toString().padStart(3, "0");
-  const [grabbing, setGrabbing] = useState(false);
+  const recenter = useCallback(() => {
+    animate(x, initialX, { type: "spring", stiffness: 150, damping: 25 });
+    animate(y, initialY, { type: "spring", stiffness: 150, damping: 25 });
+    animate(scale, 1, { type: "spring", stiffness: 150, damping: 25 });
+  }, [x, y, scale, initialX, initialY]);
+
 
   const pct = total === 0 ? 0 : Math.round((loaded / total) * 100);
 
@@ -356,17 +373,29 @@ function SketchPage() {
 
       <div
         ref={containerRef}
-        onPointerDown={() => setGrabbing(true)}
-        onPointerUp={() => setGrabbing(false)}
-        onPointerLeave={() => setGrabbing(false)}
-        className={`absolute inset-0 touch-none ${grabbing ? "cursor-grabbing" : "cursor-grab"}`}
+        onPointerDown={() => {
+          if (containerRef.current) containerRef.current.style.cursor = "grabbing";
+        }}
+        onPointerUp={() => {
+          if (containerRef.current) containerRef.current.style.cursor = "grab";
+        }}
+        onPointerLeave={() => {
+          if (containerRef.current) containerRef.current.style.cursor = "grab";
+        }}
+        className="absolute inset-0 touch-none cursor-grab"
         style={{ WebkitUserSelect: "none" }}
       >
         <motion.div
-          className="absolute top-0 left-0 will-change-transform"
-          style={{ x, y, scale, transformOrigin: "0 0" }}
+          className={`absolute top-0 left-0 will-change-transform ${ready ? "opacity-100" : "opacity-0"}`}
+          style={{
+            x,
+            y,
+            scale,
+            transformOrigin: "0 0",
+            backfaceVisibility: "hidden",
+          }}
         >
-          {cells.map(({ c, r, idx, key }, cellIndex) => {
+          {cells.map(({ c, r, idx, key, priority }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
             return (
@@ -376,7 +405,8 @@ function SketchPage() {
                 idx={idx}
                 c={c}
                 r={r}
-                priority={cellIndex < PRIORITY_CELL_COUNT}
+                priority={priority || idx < PRIORITY_CELL_COUNT}
+                ready={ready}
                 onOpen={setOpenIdx}
               />
             );
@@ -386,25 +416,53 @@ function SketchPage() {
 
       {/* Persistent top bar — solid backdrop (no blur), always visible,
           always focusable. Sits above canvas + intro drift. */}
-      <div className="pointer-events-none absolute top-0 left-0 right-0 z-20 flex justify-between items-center gap-4 px-4 md:px-6 pt-4">
-        <div className="pointer-events-auto flex items-center gap-3 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] px-4 py-2.5">
-          <span className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium text-[#1a1a1a]">
-            Sketchbook · 001
-          </span>
-          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/50">
-            · {totalLabel} Plates
-          </span>
+      <nav className="pointer-events-none fixed top-0 left-0 right-0 z-[60] flex justify-between items-center gap-4 px-4 md:px-6 pt-4" aria-label="Sketchbook navigation">
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="pointer-events-auto flex items-center gap-3 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] px-4 py-2.5 border-r border-[#1a1a1a]/5">
+            <span className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-bold text-[#1a1a1a]">
+              Archive 001
+            </span>
+          </div>
+          
+          <button
+            type="button"
+            onClick={recenter}
+            className="pointer-events-auto flex items-center gap-2 bg-[#ffffff] text-[#1a1a1a]/70 hover:text-[#1a1a1a] px-4 py-2.5 shadow-[0_2px_18px_rgba(26,26,26,0.08)] transition-all active:scale-95"
+            aria-label="Reset sketchbook view"
+            title="Reset View"
+          >
+            <Minimize2 size={12} />
+            <span className="hidden sm:inline text-[9px] tracking-[0.3em] uppercase font-medium">Reset</span>
+          </button>
         </div>
 
-        <Link
-          to="/"
-          className="pointer-events-auto flex items-center gap-2 bg-[#1a1a1a] text-[#ffffff] text-[11px] md:text-[12px] tracking-[0.35em] uppercase font-medium px-5 py-3 md:px-6 md:py-3 shadow-[0_4px_20px_rgba(26,26,26,0.25)] hover:bg-[#000000] transition-colors"
-          aria-label="Exit sketchbook and return home"
-        >
-          <span aria-hidden="true">✕</span>
-          <span>Exit</span>
-        </Link>
-      </div>
+        <div className="flex items-center gap-3">
+          <div className="pointer-events-auto flex items-center gap-2 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] p-1">
+            <Link
+              to="/collection"
+              className="hidden sm:flex items-center bg-[#ffffff] text-[#1a1a1a] text-[10px] md:text-[11px] tracking-[0.3em] uppercase font-medium px-3 py-2.5 hover:bg-[#f1f1f1] transition-colors"
+              aria-label="Go to collection"
+            >
+              Collection
+            </Link>
+            <Link
+              to="/"
+              className="flex items-center bg-[#ffffff] text-[#1a1a1a]/70 hover:text-[#1a1a1a] p-3 transition-all"
+              aria-label="Return home"
+            >
+              <Home size={14} />
+            </Link>
+          </div>
+          <Link
+            to="/"
+            className="pointer-events-auto flex items-center gap-2 bg-[#1a1a1a] text-[#ffffff] text-[10px] md:text-[11px] tracking-[0.35em] uppercase font-bold px-5 py-3 md:px-6 shadow-[0_4px_20px_rgba(26,26,26,0.25)] hover:bg-[#000000] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            aria-label="Exit sketchbook"
+          >
+            <span aria-hidden="true">✕</span>
+            <span>Exit</span>
+          </Link>
+        </div>
+      </nav>
 
       {/* Bottom hint — auto-fades but only for the ambient tips, never the Exit */}
       <div
@@ -421,7 +479,7 @@ function SketchPage() {
 
       {openIdx !== null && sketches[openIdx] && (
         <div
-          className="fixed inset-0 z-50 bg-[#1a1a1a]/95 flex items-center justify-center p-4 md:p-12 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-[#1a1a1a]/95 flex items-center justify-center p-4 md:p-12"
           onClick={close}
         >
           <button
@@ -491,6 +549,7 @@ type TileProps = {
   c: number;
   r: number;
   priority: boolean;
+  ready: boolean;
   onOpen: (idx: number) => void;
 };
 
@@ -500,6 +559,7 @@ const Tile = memo(function Tile({
   c,
   r,
   priority,
+  ready,
   onOpen,
 }: TileProps) {
   const label = (idx + 1).toString().padStart(3, "0");
@@ -528,7 +588,7 @@ const Tile = memo(function Tile({
         height={TILE}
         loading="eager"
         fetchPriority={priority ? "high" : "auto"}
-        decoding="async"
+        decoding={ready ? "sync" : "async"}
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
       />
