@@ -90,6 +90,7 @@ import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
+import { Route as AdminEmailPreviewRouteImport } from './routes/admin.email-preview'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 import { Route as AdminAdminRouteImport } from './routes/admin.admin'
@@ -505,6 +506,11 @@ const AdminGalleryRoute = AdminGalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEmailPreviewRoute = AdminEmailPreviewRouteImport.update({
+  id: '/email-preview',
+  path: '/email-preview',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -583,6 +589,7 @@ export interface FileRoutesByFullPath {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -674,6 +681,7 @@ export interface FileRoutesByTo {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -767,6 +775,7 @@ export interface FileRoutesById {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -861,6 +870,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
+    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -952,6 +962,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
+    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -1044,6 +1055,7 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
+    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -1753,6 +1765,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGalleryRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/email-preview': {
+      id: '/admin/email-preview'
+      path: '/email-preview'
+      fullPath: '/admin/email-preview'
+      preLoaderRoute: typeof AdminEmailPreviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -1835,6 +1854,7 @@ interface AdminRouteChildren {
   AdminAdminRoute: typeof AdminAdminRouteWithChildren
   AdminColorsRoute: typeof AdminColorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEmailPreviewRoute: typeof AdminEmailPreviewRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
@@ -1854,6 +1874,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminRoute: AdminAdminRouteWithChildren,
   AdminColorsRoute: AdminColorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminEmailPreviewRoute: AdminEmailPreviewRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
