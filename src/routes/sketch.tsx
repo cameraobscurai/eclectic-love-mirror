@@ -138,21 +138,24 @@ function SketchPage() {
     Math.max(ZOOM_MIN, vp.w / Math.max(1, WORLD_W * 2), vp.h / Math.max(1, WORLD_H * 2)),
   );
 
+  // Quantize pan origin in COARSE steps so React only re-renders every
+  // PAN_STEP cells crossed, not every one. Bleed absorbs the difference.
+  const PAN_STEP = 3;
   useMotionValueEvent(x, "change", (latest) => {
-    const qx = Math.floor(-latest / (PITCH * scale.get()));
+    const qx = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qx === prev.qx ? prev : { ...prev, qx }));
   });
 
   useMotionValueEvent(y, "change", (latest) => {
-    const qy = Math.floor(-latest / (PITCH * scale.get()));
+    const qy = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qy === prev.qy ? prev : { ...prev, qy }));
   });
 
   const cells = useMemo(() => {
     if (N === 0) return [];
-    const out: { c: number; r: number; idx: number; key: string; priority: boolean }[] = [];
+    const out: { c: number; r: number; idx: number; key: string }[] = [];
     const s = Math.max(dynamicZoomMin, scale.get());
-    const bleed = 5;
+    const bleed = 6;
     const cols = Math.ceil(vp.w / (PITCH * s));
     const rows = Math.ceil(vp.h / (PITCH * s));
     const c0 = panOrigin.qx - bleed;
@@ -163,8 +166,7 @@ function SketchPage() {
     for (let c = c0; c <= c1; c++) {
       for (let r = r0; r <= r1; r++) {
         const idx = mod(mod(r, ROWS) * COLS + mod(c, COLS), N);
-        const priority = Math.abs(c - panOrigin.qx) <= 2 && Math.abs(r - panOrigin.qy) <= 2;
-        out.push({ c, r, idx, key: `${c},${r}`, priority });
+        out.push({ c, r, idx, key: `${c},${r}` });
       }
     }
 
@@ -185,7 +187,12 @@ function SketchPage() {
   );
 
   const [hintVisible, setHintVisible] = useState(true);
-  const dismissHint = useCallback(() => setHintVisible(false), []);
+  const hintDismissed = useRef(false);
+  const dismissHint = useCallback(() => {
+    if (hintDismissed.current) return;
+    hintDismissed.current = true;
+    setHintVisible(false);
+  }, []);
 
   // Auto-drift intro removed — canvas stays put on load.
 
@@ -403,7 +410,7 @@ function SketchPage() {
             backfaceVisibility: "hidden",
           }}
         >
-          {cells.map(({ c, r, idx, key, priority }) => {
+          {cells.map(({ c, r, idx, key }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
             return (
@@ -413,8 +420,6 @@ function SketchPage() {
                 idx={idx}
                 c={c}
                 r={r}
-                priority={priority || idx < PRIORITY_CELL_COUNT}
-                ready={ready}
                 onOpen={setOpenIdx}
               />
             );
@@ -556,21 +561,14 @@ type TileProps = {
   idx: number;
   c: number;
   r: number;
-  priority: boolean;
-  ready: boolean;
   onOpen: (idx: number) => void;
 };
 
-const Tile = memo(function Tile({
-  tileUrl,
-  idx,
-  c,
-  r,
-  priority,
-  ready,
-  onOpen,
-}: TileProps) {
+const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
   const label = (idx + 1).toString().padStart(3, "0");
+  // Priority derived from stable idx only — never flips during pan, so
+  // React.memo's shallow prop compare always short-circuits.
+  const priority = idx < PRIORITY_CELL_COUNT;
   return (
     <button
       type="button"
@@ -596,7 +594,7 @@ const Tile = memo(function Tile({
         height={TILE}
         loading="eager"
         fetchPriority={priority ? "high" : "auto"}
-        decoding={ready ? "sync" : "async"}
+        decoding="async"
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
       />
