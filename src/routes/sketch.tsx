@@ -376,33 +376,40 @@ function SketchPage() {
         </motion.div>
       </div>
 
-      <header className="pointer-events-none absolute top-0 left-0 right-0 px-6 md:px-10 pt-6 md:pt-8 flex justify-between items-center z-10">
-        <h1 className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium">
-          Sketchbook · Archive 001
-        </h1>
-        <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
-          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase opacity-50">
-            {totalLabel} Plates · Loop
+      {/* Persistent top bar — solid backdrop (no blur), always visible,
+          always focusable. Sits above canvas + intro drift. */}
+      <div className="pointer-events-none absolute top-0 left-0 right-0 z-20 flex justify-between items-center gap-4 px-4 md:px-6 pt-4">
+        <div className="pointer-events-auto flex items-center gap-3 bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.08)] px-4 py-2.5">
+          <span className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium text-[#1a1a1a]">
+            Sketchbook · 001
           </span>
-          <Link
-            to="/"
-            className="text-[10px] tracking-[0.4em] uppercase font-medium border border-[#1a1a1a]/30 hover:border-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors px-3 py-2 md:px-4 md:py-2 bg-white/70 backdrop-blur-sm"
-          >
-            ← Exit
-          </Link>
+          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/50">
+            · {totalLabel} Plates
+          </span>
         </div>
-      </header>
 
+        <Link
+          to="/"
+          className="pointer-events-auto flex items-center gap-2 bg-[#1a1a1a] text-[#ffffff] text-[11px] md:text-[12px] tracking-[0.35em] uppercase font-medium px-5 py-3 md:px-6 md:py-3 shadow-[0_4px_20px_rgba(26,26,26,0.25)] hover:bg-[#000000] transition-colors"
+          aria-label="Exit sketchbook and return home"
+        >
+          <span aria-hidden="true">✕</span>
+          <span>Exit</span>
+        </Link>
+      </div>
+
+      {/* Bottom hint — auto-fades but only for the ambient tips, never the Exit */}
       <div
-        className={`pointer-events-none absolute bottom-0 left-0 right-0 px-6 md:px-10 pb-6 md:pb-8 flex justify-between items-baseline z-10 transition-opacity duration-[1200ms] ${hintVisible ? "opacity-100" : "opacity-0"}`}
+        className={`pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-4 bg-[#ffffff]/95 px-4 py-2 shadow-[0_2px_12px_rgba(26,26,26,0.08)] transition-opacity duration-[1200ms] ${hintVisible ? "opacity-100" : "opacity-0"}`}
       >
-        <span className="text-[9px] tracking-[0.5em] uppercase opacity-60">
-          Drag · Scroll · Pinch to Zoom
+        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/70">
+          Drag · Scroll · Pinch
         </span>
-        <span className="text-[9px] tracking-[0.4em] uppercase opacity-40">
-          0 = Reset · +/− = Zoom
+        <span className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/40">
+          ESC to exit
         </span>
       </div>
+
 
       {openIdx !== null && sketches[openIdx] && (
         <div
