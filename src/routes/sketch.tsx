@@ -208,7 +208,7 @@ function SketchPage() {
 
   const [introDone, setIntroDone] = useState(false);
   useEffect(() => {
-    if (introDone) return;
+    if (introDone || !ready) return;
 
     x.stop();
     y.stop();
@@ -237,7 +237,7 @@ function SketchPage() {
       ax.stop();
       ay.stop();
     };
-  }, [introDone, x, y]);
+  }, [introDone, ready, x, y]);
 
   useEffect(() => {
     const timeout = setTimeout(() => setHintVisible(false), 7000);
