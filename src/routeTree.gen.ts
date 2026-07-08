@@ -24,6 +24,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventGalleryRouteImport } from './routes/event-gallery'
 import { Route as EventCrewRouteImport } from './routes/event-crew'
+import { Route as EmailPreviewRouteImport } from './routes/email-preview'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as Colorado1RouteImport } from './routes/colorado-1'
@@ -90,7 +91,6 @@ import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
-import { Route as AdminEmailPreviewRouteImport } from './routes/admin.email-preview'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
 import { Route as AdminAdminRouteImport } from './routes/admin.admin'
@@ -174,6 +174,11 @@ const EventGalleryRoute = EventGalleryRouteImport.update({
 const EventCrewRoute = EventCrewRouteImport.update({
   id: '/event-crew',
   path: '/event-crew',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailPreviewRoute = EmailPreviewRouteImport.update({
+  id: '/email-preview',
+  path: '/email-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -506,11 +511,6 @@ const AdminGalleryRoute = AdminGalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminEmailPreviewRoute = AdminEmailPreviewRouteImport.update({
-  id: '/email-preview',
-  path: '/email-preview',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -571,6 +571,7 @@ export interface FileRoutesByFullPath {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
@@ -589,7 +590,6 @@ export interface FileRoutesByFullPath {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -663,6 +663,7 @@ export interface FileRoutesByTo {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
@@ -681,7 +682,6 @@ export interface FileRoutesByTo {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -757,6 +757,7 @@ export interface FileRoutesById {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
   '/faq': typeof FaqRoute
@@ -775,7 +776,6 @@ export interface FileRoutesById {
   '/admin/admin': typeof AdminAdminRouteWithChildren
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/email-preview': typeof AdminEmailPreviewRoute
   '/admin/gallery': typeof AdminGalleryRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
@@ -852,6 +852,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
@@ -870,7 +871,6 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
-    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -944,6 +944,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
@@ -962,7 +963,6 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
-    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -1037,6 +1037,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
     | '/faq'
@@ -1055,7 +1056,6 @@ export interface FileRouteTypes {
     | '/admin/admin'
     | '/admin/colors'
     | '/admin/dashboard'
-    | '/admin/email-preview'
     | '/admin/gallery'
     | '/admin/image-health'
     | '/admin/image-qa'
@@ -1131,6 +1131,7 @@ export interface RootRouteChildren {
   Colorado1Route: typeof Colorado1Route
   ComposeRoute: typeof ComposeRoute
   ContactRoute: typeof ContactRoute
+  EmailPreviewRoute: typeof EmailPreviewRoute
   EventCrewRoute: typeof EventCrewRoute
   EventGalleryRoute: typeof EventGalleryRoute
   FaqRoute: typeof FaqRoute
@@ -1301,6 +1302,13 @@ declare module '@tanstack/react-router' {
       path: '/event-crew'
       fullPath: '/event-crew'
       preLoaderRoute: typeof EventCrewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email-preview': {
+      id: '/email-preview'
+      path: '/email-preview'
+      fullPath: '/email-preview'
+      preLoaderRoute: typeof EmailPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -1765,13 +1773,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminGalleryRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/email-preview': {
-      id: '/admin/email-preview'
-      path: '/email-preview'
-      fullPath: '/admin/email-preview'
-      preLoaderRoute: typeof AdminEmailPreviewRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -1854,7 +1855,6 @@ interface AdminRouteChildren {
   AdminAdminRoute: typeof AdminAdminRouteWithChildren
   AdminColorsRoute: typeof AdminColorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminEmailPreviewRoute: typeof AdminEmailPreviewRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
@@ -1874,7 +1874,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAdminRoute: AdminAdminRouteWithChildren,
   AdminColorsRoute: AdminColorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
-  AdminEmailPreviewRoute: AdminEmailPreviewRoute,
   AdminGalleryRoute: AdminGalleryRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
@@ -1903,6 +1902,7 @@ const rootRouteChildren: RootRouteChildren = {
   Colorado1Route: Colorado1Route,
   ComposeRoute: ComposeRoute,
   ContactRoute: ContactRoute,
+  EmailPreviewRoute: EmailPreviewRoute,
   EventCrewRoute: EventCrewRoute,
   EventGalleryRoute: EventGalleryRoute,
   FaqRoute: FaqRoute,
