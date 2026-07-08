@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UtInventoryRouteImport } from './routes/ut-inventory'
 import { Route as TheHive3RouteImport } from './routes/the-hive3'
 import { Route as TheHiveRouteImport } from './routes/the-hive'
+import { Route as SketchRouteImport } from './routes/sketch'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProcessRouteImport } from './routes/process'
@@ -114,6 +115,11 @@ const TheHive3Route = TheHive3RouteImport.update({
 const TheHiveRoute = TheHiveRouteImport.update({
   id: '/the-hive',
   path: '/the-hive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SketchRoute = SketchRouteImport.update({
+  id: '/sketch',
+  path: '/sketch',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -584,6 +590,7 @@ export interface FileRoutesByFullPath {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sketch': typeof SketchRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -676,6 +683,7 @@ export interface FileRoutesByTo {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sketch': typeof SketchRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -770,6 +778,7 @@ export interface FileRoutesById {
   '/process': typeof ProcessRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sketch': typeof SketchRoute
   '/the-hive': typeof TheHiveRoute
   '/the-hive3': typeof TheHive3Route
   '/ut-inventory': typeof UtInventoryRoute
@@ -865,6 +874,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/sketch'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -957,6 +967,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/sketch'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -1050,6 +1061,7 @@ export interface FileRouteTypes {
     | '/process'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/sketch'
     | '/the-hive'
     | '/the-hive3'
     | '/ut-inventory'
@@ -1144,6 +1156,7 @@ export interface RootRouteChildren {
   ProcessRoute: typeof ProcessRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SketchRoute: typeof SketchRoute
   TheHiveRoute: typeof TheHiveRoute
   TheHive3Route: typeof TheHive3Route
   UtInventoryRoute: typeof UtInventoryRoute
@@ -1218,6 +1231,13 @@ declare module '@tanstack/react-router' {
       path: '/the-hive'
       fullPath: '/the-hive'
       preLoaderRoute: typeof TheHiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sketch': {
+      id: '/sketch'
+      path: '/sketch'
+      fullPath: '/sketch'
+      preLoaderRoute: typeof SketchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -1915,6 +1935,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProcessRoute: ProcessRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SketchRoute: SketchRoute,
   TheHiveRoute: TheHiveRoute,
   TheHive3Route: TheHive3Route,
   UtInventoryRoute: UtInventoryRoute,
@@ -1970,13 +1991,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
