@@ -71,8 +71,8 @@ export const listSketches = createServerFn({ method: "GET" }).handler(
             "/storage/v1/render/image/sign/",
           ),
         );
-        tile.searchParams.set("width", "900");
-        tile.searchParams.set("height", "900");
+        tile.searchParams.set("width", "600");
+        tile.searchParams.set("height", "600");
         tile.searchParams.set("resize", "cover");
         tile.searchParams.set("quality", "80");
         tile.searchParams.set("format", "webp");
