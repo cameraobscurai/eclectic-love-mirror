@@ -327,13 +327,21 @@ function SketchPage() {
         </motion.div>
       </div>
 
-      <header className="pointer-events-none absolute top-0 left-0 right-0 px-6 md:px-10 pt-6 md:pt-8 flex justify-between items-baseline z-10">
+      <header className="pointer-events-none absolute top-0 left-0 right-0 px-6 md:px-10 pt-6 md:pt-8 flex justify-between items-center z-10">
         <h1 className="text-[10px] md:text-[11px] tracking-[0.4em] uppercase font-medium">
           Sketchbook · Archive 001
         </h1>
-        <span className="text-[9px] tracking-[0.4em] uppercase opacity-50">
-          {total} Plates · Loop
-        </span>
+        <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
+          <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase opacity-50">
+            {total} Plates · Loop
+          </span>
+          <Link
+            to="/"
+            className="text-[10px] tracking-[0.4em] uppercase font-medium border border-[#1a1a1a]/30 hover:border-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-white transition-colors px-3 py-2 md:px-4 md:py-2 bg-white/70 backdrop-blur-sm"
+          >
+            ← Exit
+          </Link>
+        </div>
       </header>
 
       <div
