@@ -37,7 +37,22 @@ export const Route = createFileRoute("/sketch")({
 
 function SketchPage() {
   const fn = useServerFn(listSketches);
-  const { data: sketches } = useSuspenseQuery(sketchesQuery(fn));
+  const { data: rawSketches } = useSuspenseQuery(sketchesQuery(fn));
+
+  // Deterministic interleave so color/BW don't clump in upload-order pockets.
+  // Hash filename → stable pseudo-random order that stays consistent across renders.
+  const sketches = useMemo(() => {
+    const hash = (s: string) => {
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    };
+    return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
+  }, [rawSketches]);
+
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const close = useCallback(() => setOpenIdx(null), []);
