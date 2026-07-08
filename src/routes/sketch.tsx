@@ -194,6 +194,44 @@ function SketchPage() {
     return () => clearTimeout(timeout);
   }, []);
 
+  // Smooth wheel: accumulate deltas into a target, lerp current toward it.
+  const wheelTargetX = useRef(x.get());
+  const wheelTargetY = useRef(y.get());
+  const wheelRaf = useRef<number | null>(null);
+  const startWheelLerp = useCallback(() => {
+    if (wheelRaf.current !== null) return;
+    const tick = () => {
+      const cx = x.get();
+      const cy = y.get();
+      const tx = wheelTargetX.current;
+      const ty = wheelTargetY.current;
+      const nx = cx + (tx - cx) * 0.18;
+      const ny = cy + (ty - cy) * 0.18;
+      x.set(nx);
+      y.set(ny);
+      if (Math.abs(tx - nx) < 0.5 && Math.abs(ty - ny) < 0.5) {
+        x.set(tx);
+        y.set(ty);
+        wheelRaf.current = null;
+        return;
+      }
+      wheelRaf.current = requestAnimationFrame(tick);
+    };
+    wheelRaf.current = requestAnimationFrame(tick);
+  }, [x, y]);
+
+  // Keep wheel target synced when other inputs (drag, keys, reset) move the canvas.
+  useMotionValueEvent(x, "change", (v) => {
+    if (wheelRaf.current === null) wheelTargetX.current = v;
+  });
+  useMotionValueEvent(y, "change", (v) => {
+    if (wheelRaf.current === null) wheelTargetY.current = v;
+  });
+
+  useEffect(() => () => {
+    if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
+  }, []);
+
   useGesture(
     {
       onDrag: ({ delta: [dx, dy], last, velocity: [vx, vy], direction: [dirX, dirY], tap }) => {
@@ -224,10 +262,9 @@ function SketchPage() {
         if (ctrlKey) {
           applyZoom(-dy * 0.01, event.clientX, event.clientY);
         } else {
-          x.stop();
-          y.stop();
-          x.set(x.get() - dx);
-          y.set(y.get() - dy);
+          wheelTargetX.current -= dx;
+          wheelTargetY.current -= dy;
+          startWheelLerp();
         }
       },
       onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
