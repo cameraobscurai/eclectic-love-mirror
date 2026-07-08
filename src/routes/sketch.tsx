@@ -53,6 +53,51 @@ function SketchPage() {
     return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
   }, [rawSketches]);
 
+  // Preload every tile bitmap into the browser cache + decode it on the GPU
+  // BEFORE rendering the canvas. Once decoded, remounts during pan hit the
+  // cache instantly with zero white-flash and zero re-decode cost.
+  const [loaded, setLoaded] = useState(0);
+  const total = sketches.length;
+  const ready = total > 0 && loaded >= total;
+
+  useEffect(() => {
+    if (total === 0) return;
+    let cancelled = false;
+    let done = 0;
+
+    const preload = (url: string) =>
+      new Promise<void>((resolve) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = url;
+        const finish = () => {
+          if (cancelled) return resolve();
+          done += 1;
+          setLoaded(done);
+          resolve();
+        };
+        // decode() forces the browser to rasterize NOW, not on first paint
+        img
+          .decode()
+          .then(finish)
+          .catch(() => {
+            // fallback: at least wait for network
+            if (img.complete) finish();
+            else {
+              img.onload = finish;
+              img.onerror = finish;
+            }
+          });
+      });
+
+    // Run in parallel — browser will cap concurrency per-origin automatically
+    Promise.all(sketches.map((s) => preload(s.tileUrl))).catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sketches, total]);
+
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
   const ROWS = Math.max(1, Math.ceil(N / COLS));
@@ -163,7 +208,7 @@ function SketchPage() {
 
   const [introDone, setIntroDone] = useState(false);
   useEffect(() => {
-    if (introDone) return;
+    if (introDone || !ready) return;
 
     x.stop();
     y.stop();
@@ -192,7 +237,7 @@ function SketchPage() {
       ax.stop();
       ay.stop();
     };
-  }, [introDone, x, y]);
+  }, [introDone, ready, x, y]);
 
   useEffect(() => {
     const timeout = setTimeout(() => setHintVisible(false), 7000);
@@ -302,11 +347,34 @@ function SketchPage() {
     };
   }, []);
 
-  const total = N.toString().padStart(3, "0");
+  const totalLabel = N.toString().padStart(3, "0");
   const [grabbing, setGrabbing] = useState(false);
+
+  const pct = total === 0 ? 0 : Math.round((loaded / total) * 100);
 
   return (
     <div className="fixed inset-0 bg-[#d4cdc4] text-[#1a1a1a] font-serif overflow-hidden select-none">
+      {/* Loading veil — sits above the canvas until every tile is decoded */}
+      <div
+        className={`absolute inset-0 z-40 bg-[#d4cdc4] flex flex-col items-center justify-center gap-6 transition-opacity duration-700 ${
+          ready ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+        aria-hidden={ready}
+      >
+        <div className="text-[10px] tracking-[0.5em] uppercase text-[#1a1a1a]/70">
+          Loading Sketchbook
+        </div>
+        <div className="w-48 h-px bg-[#1a1a1a]/15 overflow-hidden">
+          <div
+            className="h-full bg-[#1a1a1a] transition-[width] duration-200 ease-out"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/50 tabular-nums">
+          {loaded.toString().padStart(3, "0")} / {totalLabel}
+        </div>
+      </div>
+
       <div
         ref={containerRef}
         onPointerDown={() => setGrabbing(true)}
@@ -369,7 +437,7 @@ function SketchPage() {
         </h1>
         <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
           <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase opacity-50">
-            {total} Plates · Loop
+            {totalLabel} Plates · Loop
           </span>
           <Link
             to="/"
@@ -444,7 +512,7 @@ function SketchPage() {
             <div className="mt-4 pt-3 border-t border-[#1a1a1a]/10 flex justify-between text-[9px] tracking-[0.35em] uppercase text-[#1a1a1a]/60 font-serif">
               <span>Plate</span>
               <span>
-                {(openIdx + 1).toString().padStart(3, "0")} / {total}
+                {(openIdx + 1).toString().padStart(3, "0")} / {totalLabel}
               </span>
             </div>
           </div>
