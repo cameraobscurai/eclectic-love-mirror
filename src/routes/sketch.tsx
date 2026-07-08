@@ -338,7 +338,7 @@ function SketchPage() {
                   top: r * PITCH,
                   width: TILE,
                   height: TILE,
-                  contain: "layout paint style",
+                  contain: "layout paint style size",
                 }}
                 aria-label={`Open plate ${(idx + 1).toString().padStart(3, "0")}`}
                 draggable={false}
@@ -348,8 +348,8 @@ function SketchPage() {
                   alt=""
                   width={TILE}
                   height={TILE}
-                  loading={priority ? "eager" : "lazy"}
-                  fetchPriority={priority ? "high" : "low"}
+                  loading="eager"
+                  fetchPriority={priority ? "high" : "auto"}
                   decoding="async"
                   draggable={false}
                   className="absolute inset-0 w-full h-full object-cover mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.02]"
@@ -438,6 +438,8 @@ function SketchPage() {
               alt={`Sketch plate ${(openIdx + 1).toString().padStart(3, "0")}`}
               className="max-w-full max-h-[75vh] object-contain mix-blend-multiply"
               decoding="async"
+              loading="eager"
+              fetchPriority="high"
             />
             <div className="mt-4 pt-3 border-t border-[#1a1a1a]/10 flex justify-between text-[9px] tracking-[0.35em] uppercase text-[#1a1a1a]/60 font-serif">
               <span>Plate</span>

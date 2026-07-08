@@ -74,7 +74,8 @@ export const listSketches = createServerFn({ method: "GET" }).handler(
         tile.searchParams.set("width", "900");
         tile.searchParams.set("height", "900");
         tile.searchParams.set("resize", "cover");
-        tile.searchParams.set("quality", "92");
+        tile.searchParams.set("quality", "80");
+        tile.searchParams.set("format", "webp");
 
         results.push({
           name: item.path,
