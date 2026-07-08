@@ -313,7 +313,7 @@ function SketchPage() {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h]);
+  }, [openIdx, close, prev, next, x, y, scale, applyZoom, vp.w, vp.h, navigate]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
