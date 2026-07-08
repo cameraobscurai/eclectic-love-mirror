@@ -165,22 +165,33 @@ function SketchPage() {
   useEffect(() => {
     if (introDone) return;
 
-    const timeout = setTimeout(() => {
-      const ax = animate(x, -220, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
-      const ay = animate(y, -80, { duration: 3.4, ease: [0.22, 1, 0.36, 1] });
+    x.stop();
+    y.stop();
+    const startX = x.get();
+    const startY = y.get();
+    const ax = animate(x, startX - 180, {
+      duration: 6,
+      ease: [0.4, 0, 0.2, 1],
+    });
+    const ay = animate(y, startY - 60, {
+      duration: 6,
+      ease: [0.4, 0, 0.2, 1],
+    });
 
-      const cancel = () => {
-        ax.stop();
-        ay.stop();
-        setIntroDone(true);
-      };
+    const cancel = () => {
+      ax.stop();
+      ay.stop();
+      setIntroDone(true);
+    };
 
-      window.addEventListener("pointerdown", cancel, { once: true });
-      window.addEventListener("wheel", cancel, { once: true, passive: true });
-      window.addEventListener("keydown", cancel, { once: true });
-    }, 400);
+    window.addEventListener("pointerdown", cancel, { once: true });
+    window.addEventListener("wheel", cancel, { once: true, passive: true });
+    window.addEventListener("keydown", cancel, { once: true });
 
-    return () => clearTimeout(timeout);
+    return () => {
+      ax.stop();
+      ay.stop();
+    };
   }, [introDone, x, y]);
 
   useEffect(() => {
