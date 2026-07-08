@@ -187,38 +187,7 @@ function SketchPage() {
   const [hintVisible, setHintVisible] = useState(true);
   const dismissHint = useCallback(() => setHintVisible(false), []);
 
-  const [introDone, setIntroDone] = useState(false);
-  useEffect(() => {
-    if (introDone || !ready) return;
-
-    x.stop();
-    y.stop();
-    const startX = x.get();
-    const startY = y.get();
-    const ax = animate(x, startX - 180, {
-      duration: 6,
-      ease: [0.4, 0, 0.2, 1],
-    });
-    const ay = animate(y, startY - 60, {
-      duration: 6,
-      ease: [0.4, 0, 0.2, 1],
-    });
-
-    const cancel = () => {
-      ax.stop();
-      ay.stop();
-      setIntroDone(true);
-    };
-
-    window.addEventListener("pointerdown", cancel, { once: true });
-    window.addEventListener("wheel", cancel, { once: true, passive: true });
-    window.addEventListener("keydown", cancel, { once: true });
-
-    return () => {
-      ax.stop();
-      ay.stop();
-    };
-  }, [introDone, ready, x, y]);
+  // Auto-drift intro removed — canvas stays put on load.
 
   useEffect(() => {
     const timeout = setTimeout(() => setHintVisible(false), 7000);
