@@ -147,9 +147,11 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
 
   pages.push({ kind: "cover", cover });
 
-  // Mood hero — first 3 inspo, or first 3 pinned if no inspo
-  const heroImgs = (board.inspo.length >= 3
-    ? board.inspo.slice(0, 3).map((i) => ({ url: i.url, alt: "" }))
+  // Mood hero — use client's inspiration whenever they gave us any; only fall
+  // back to pinned inventory when zero inspo. The old `>= 3` threshold made
+  // 1–2 inspo boards silently show furniture instead of the client's vision.
+  const heroImgs = (board.inspo.length >= 1
+    ? board.inspo.slice(0, Math.min(3, board.inspo.length)).map((i) => ({ url: i.url, alt: "" }))
     : board.pinned
         .filter((p) => p.image_url)
         .slice(0, 3)

@@ -136,9 +136,25 @@ function StudioPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function addFiles(files: FileList | File[]) {
-    const arr = Array.from(files)
-      .filter((f) => f.type.startsWith("image/") && f.size <= MAX_FILE_BYTES)
+    // Server whitelists JPEG/PNG/WebP/AVIF only. Accepting "image/*" here
+    // lets iPhone HEIC through, then the server rejects mid-upload with no
+    // user-visible reason. Reject at the picker with a clear message.
+    const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+    const raw = Array.from(files);
+    const rejected = raw.filter((f) => !ALLOWED.has(f.type) || f.size > MAX_FILE_BYTES);
+    const arr = raw
+      .filter((f) => ALLOWED.has(f.type) && f.size <= MAX_FILE_BYTES)
       .slice(0, MAX_INSPO - inspo.length);
+    if (rejected.length) {
+      const heic = rejected.some((f) => /heic|heif/i.test(f.type) || /\.hei[cf]$/i.test(f.name));
+      setSubmitError(
+        heic
+          ? "HEIC/HEIF not supported yet — on iPhone: Photos → Share → Options → Most Compatible, then re-upload as JPG."
+          : "Some files were skipped: use JPG, PNG, WebP, or AVIF under 8 MB.",
+      );
+    } else {
+      setSubmitError(null);
+    }
     if (!arr.length) return;
     const next = arr.map((f) => ({
       id: crypto.randomUUID(),
@@ -378,7 +394,7 @@ function StudioPage() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/avif"
             multiple
             className="hidden"
             onChange={(e) => { if (e.target.files) { addFiles(e.target.files); e.target.value = ""; } }}

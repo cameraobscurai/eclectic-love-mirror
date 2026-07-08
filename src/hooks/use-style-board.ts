@@ -202,7 +202,14 @@ export function useStyleBoard(inquiryId: string) {
     setState((s) => ({ ...s, curatorNotes: notes, dirty: true }));
   }, []);
 
-  const analyze = useCallback(async () => {
+  type AnalysisOverride = {
+    palette: ColorInfo[];
+    tones: ToneAnalysis | null;
+    insights: DesignInsight[];
+    perImage: AnalysisResult["perImage"];
+  };
+
+  const analyze = useCallback(async (): Promise<AnalysisOverride | null> => {
     setState((s) => ({ ...s, analyzing: true, error: null }));
     try {
       // Re-sign inspo URLs for stable, non-blob sources (canvas needs CORS-safe URLs).
@@ -225,27 +232,38 @@ export function useStyleBoard(inquiryId: string) {
       const all = [...inspoImgs, ...catImgs];
       if (!all.length) {
         setState((s) => ({ ...s, analyzing: false, error: "Add inspiration images or pin pieces first" }));
-        return;
+        return null;
       }
       if (!canvasRef.current) canvasRef.current = document.createElement("canvas");
       const result = await analyzeMoodboard(all, canvasRef.current);
-      setState((s) => ({
-        ...s,
-        analyzing: false,
+      const override: AnalysisOverride = {
         palette: result.palette,
         tones: result.tones,
         insights: result.insights,
         perImage: result.perImage,
+      };
+      setState((s) => ({
+        ...s,
+        analyzing: false,
+        ...override,
         dirty: true,
       }));
+      return override;
     } catch (e) {
       setState((s) => ({ ...s, analyzing: false, error: (e as Error).message }));
+      return null;
     }
   }, [state.inspo, state.pinned, catalog]);
 
-  const save = useCallback(async (status?: BoardStatus) => {
+  const save = useCallback(async (
+    status?: BoardStatus,
+    overrides?: Partial<Pick<AnalysisOverride, "palette" | "tones" | "insights">>,
+  ) => {
     setState((s) => ({ ...s, saving: true }));
     try {
+      const palette = overrides?.palette ?? state.palette;
+      const tones = overrides?.tones ?? state.tones;
+      const insights = overrides?.insights ?? state.insights;
       const row = (await saveStyleBoard({
         data: {
           inquiryId,
@@ -254,9 +272,9 @@ export function useStyleBoard(inquiryId: string) {
           inspo: state.inspo.map(({ id, name, storage_path }) => ({ id, name, storage_path })),
           pinned: state.pinned,
           pinNotes: state.pinNotes,
-          palette: state.palette as unknown[],
-          tones: (state.tones ?? {}) as Record<string, unknown>,
-          insights: state.insights as unknown[],
+          palette: palette as unknown[],
+          tones: (tones ?? {}) as Record<string, unknown>,
+          insights: insights as unknown[],
           curatorNotes: state.curatorNotes || null,
         },
       })) as import("@/lib/studio.functions").StyleBoardRow;
@@ -278,7 +296,16 @@ export function useStyleBoard(inquiryId: string) {
   const send = useCallback(async () => {
     setState((s) => ({ ...s, sending: true, error: null }));
     try {
-      const saved = await save();
+      // If palette is empty but we have images to analyze, run analyze first
+      // and hand its result directly to save — avoids the stale-closure race
+      // where analyze()'s setState hasn't committed before save() reads state.
+      let overrides: AnalysisOverride | undefined;
+      const hasImages = state.inspo.length > 0 || state.pinned.length > 0;
+      if (!state.palette.length && hasImages) {
+        const fresh = await analyze();
+        if (fresh) overrides = fresh;
+      }
+      const saved = await save(undefined, overrides);
       const boardId = saved?.id ?? state.boardId;
       if (!boardId) throw new Error("Save first");
       const row = (await markBoardSent({ data: { boardId } })) as import("@/lib/studio.functions").StyleBoardRow;
@@ -293,7 +320,7 @@ export function useStyleBoard(inquiryId: string) {
       setState((s) => ({ ...s, sending: false, error: (e as Error).message }));
       return null;
     }
-  }, [save, state.boardId]);
+  }, [analyze, save, state.boardId, state.palette.length, state.inspo.length, state.pinned.length]);
 
   return {
     state,
