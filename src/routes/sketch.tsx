@@ -54,12 +54,12 @@ function SketchPage() {
     return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
   }, [rawSketches]);
 
-  // Preload every tile bitmap into the browser cache + decode it on the GPU
-  // BEFORE rendering the canvas. Once decoded, remounts during pan hit the
-  // cache instantly with zero white-flash and zero re-decode cost.
+  // Progressive reveal: show canvas as soon as the first viewport is decoded,
+  // then stream the rest in the background. No more waiting on 200+ tiles.
   const [loaded, setLoaded] = useState(0);
   const total = sketches.length;
-  const ready = total > 0 && loaded >= total;
+  const FIRST_PAINT_COUNT = Math.min(24, total);
+  const ready = total > 0 && loaded >= FIRST_PAINT_COUNT;
 
   useEffect(() => {
     if (total === 0) return;
@@ -77,12 +77,10 @@ function SketchPage() {
           setLoaded(done);
           resolve();
         };
-        // decode() forces the browser to rasterize NOW, not on first paint
         img
           .decode()
           .then(finish)
           .catch(() => {
-            // fallback: at least wait for network
             if (img.complete) finish();
             else {
               img.onload = finish;
@@ -91,13 +89,17 @@ function SketchPage() {
           });
       });
 
-    // Run in parallel — browser will cap concurrency per-origin automatically
-    Promise.all(sketches.map((s) => preload(s.tileUrl))).catch(() => {});
+    (async () => {
+      const priority = sketches.slice(0, FIRST_PAINT_COUNT);
+      const rest = sketches.slice(FIRST_PAINT_COUNT);
+      await Promise.all(priority.map((s) => preload(s.tileUrl)));
+      Promise.all(rest.map((s) => preload(s.tileUrl))).catch(() => {});
+    })().catch(() => {});
 
     return () => {
       cancelled = true;
     };
-  }, [sketches, total]);
+  }, [sketches, total, FIRST_PAINT_COUNT]);
 
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
