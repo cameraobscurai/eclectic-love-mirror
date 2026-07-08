@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
 
 const sketchesQuery = (fn: () => Promise<Sketch[]>) =>
@@ -37,7 +37,22 @@ export const Route = createFileRoute("/sketch")({
 
 function SketchPage() {
   const fn = useServerFn(listSketches);
-  const { data: sketches } = useSuspenseQuery(sketchesQuery(fn));
+  const { data: rawSketches } = useSuspenseQuery(sketchesQuery(fn));
+
+  // Deterministic interleave so color/BW don't clump in upload-order pockets.
+  // Hash filename → stable pseudo-random order that stays consistent across renders.
+  const sketches = useMemo(() => {
+    const hash = (s: string) => {
+      let h = 2166136261;
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return h >>> 0;
+    };
+    return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
+  }, [rawSketches]);
+
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const close = useCallback(() => setOpenIdx(null), []);
@@ -86,7 +101,7 @@ function SketchPage() {
             Archive Empty
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 md:gap-8 [column-fill:_balance]">
             {sketches.map((s, i) => {
               const fig = (i + 1).toString().padStart(3, "0");
               return (
@@ -94,19 +109,19 @@ function SketchPage() {
                   key={s.name}
                   type="button"
                   onClick={() => setOpenIdx(i)}
-                  className="group text-left focus:outline-none"
+                  className="group text-left focus:outline-none mb-6 md:mb-8 block w-full break-inside-avoid"
                   aria-label={`Open plate ${fig}`}
                 >
                   <div className="bg-[#ffffff] p-4 md:p-6 shadow-[0_4px_20px_rgba(26,26,26,0.03)] transition-all duration-500 group-hover:shadow-[0_8px_30px_rgba(26,26,26,0.08)] group-focus-visible:shadow-[0_8px_30px_rgba(26,26,26,0.12)]">
-                    <div className="aspect-square bg-[#fdfdfd] border border-[#1a1a1a]/5 relative overflow-hidden">
+                    <div className="bg-[#fdfdfd] border border-[#1a1a1a]/5 relative overflow-hidden">
                       <img
                         src={s.url}
                         alt={`Sketch plate ${fig}`}
                         loading="lazy"
                         decoding="async"
-                        className="absolute inset-0 w-full h-full object-contain mix-blend-multiply transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
+                        className="block w-full h-auto mix-blend-multiply transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
                       />
-                      <span className="absolute bottom-3 right-3 text-[9px] tracking-[0.3em] uppercase opacity-40 font-medium">
+                      <span className="absolute bottom-3 right-3 text-[9px] tracking-[0.3em] uppercase opacity-40 font-medium pointer-events-none">
                         Fig. {fig}
                       </span>
                     </div>
@@ -123,6 +138,7 @@ function SketchPage() {
               );
             })}
           </div>
+
         )}
 
         <div className="mt-24 border-t border-[#1a1a1a]/10 pt-10 flex justify-between items-baseline text-[9px] tracking-[0.4em] uppercase opacity-40">
