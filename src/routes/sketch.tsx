@@ -146,12 +146,6 @@ function SketchPage() {
   }, [vp.w, vp.h]);
 
 
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [vp.w, vp.h, x, y, scale]);
 
   const cells = useMemo(() => {
     if (N === 0) return [];
