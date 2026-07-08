@@ -53,6 +53,51 @@ function SketchPage() {
     return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
   }, [rawSketches]);
 
+  // Preload every tile bitmap into the browser cache + decode it on the GPU
+  // BEFORE rendering the canvas. Once decoded, remounts during pan hit the
+  // cache instantly with zero white-flash and zero re-decode cost.
+  const [loaded, setLoaded] = useState(0);
+  const total = sketches.length;
+  const ready = total > 0 && loaded >= total;
+
+  useEffect(() => {
+    if (total === 0) return;
+    let cancelled = false;
+    let done = 0;
+
+    const preload = (url: string) =>
+      new Promise<void>((resolve) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = url;
+        const finish = () => {
+          if (cancelled) return resolve();
+          done += 1;
+          setLoaded(done);
+          resolve();
+        };
+        // decode() forces the browser to rasterize NOW, not on first paint
+        img
+          .decode()
+          .then(finish)
+          .catch(() => {
+            // fallback: at least wait for network
+            if (img.complete) finish();
+            else {
+              img.onload = finish;
+              img.onerror = finish;
+            }
+          });
+      });
+
+    // Run in parallel — browser will cap concurrency per-origin automatically
+    Promise.all(sketches.map((s) => preload(s.tileUrl))).catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [sketches, total]);
+
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
   const ROWS = Math.max(1, Math.ceil(N / COLS));
