@@ -187,7 +187,12 @@ function SketchPage() {
   );
 
   const [hintVisible, setHintVisible] = useState(true);
-  const dismissHint = useCallback(() => setHintVisible(false), []);
+  const hintDismissed = useRef(false);
+  const dismissHint = useCallback(() => {
+    if (hintDismissed.current) return;
+    hintDismissed.current = true;
+    setHintVisible(false);
+  }, []);
 
   // Auto-drift intro removed — canvas stays put on load.
 
