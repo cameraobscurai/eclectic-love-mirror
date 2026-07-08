@@ -405,7 +405,7 @@ function SketchPage() {
             backfaceVisibility: "hidden",
           }}
         >
-          {cells.map(({ c, r, idx, key, priority }) => {
+          {cells.map(({ c, r, idx, key }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
             return (
@@ -415,8 +415,6 @@ function SketchPage() {
                 idx={idx}
                 c={c}
                 r={r}
-                priority={priority || idx < PRIORITY_CELL_COUNT}
-                ready={ready}
                 onOpen={setOpenIdx}
               />
             );
