@@ -1,116 +1,169 @@
-# Collection Photo Audit — Surgical Dev Plan
+# Style Brief / Board — Surgical Fix Plan
 
-Ground rule: **no component, layout, or design-token changes.** Every fix in P0–P2 is a data patch (DB row update + rebake) or a URL correction. UI code stays untouched, so nothing can regress visually except the exact tiles being fixed.
-
-Each phase is independently shippable and reversible. Rebake (`scripts/bake-catalog.mjs`) is the single artifact that must be regenerated at the end of each phase.
-
----
-
-## Phase 0 — Safety net (must run first)
-
-1. Snapshot `src/data/inventory/current_catalog.json` → `scripts-tmp/pre-audit-catalog.json`.
-2. Snapshot the six DB columns we will touch: `id, rms_id, title, slug, primary_image_url, images, editorial_order` → `scripts-tmp/pre-audit-rows.json` (via `supabase--read_query`).
-3. Screenshot each of the 14 category grids at 1280×1800 → `scripts-tmp/pre-audit/{slug}.png`. These are the before-images for visual regression.
-
-Rollback for any later phase = restore the JSON slice, restore the row(s), rebake.
+Ground rules (non-negotiable):
+- No design/layout changes. No refactors. No "while I'm in here" edits.
+- One phase per PR-sized migration/commit. Each phase independently revertible.
+- Every phase ends with a Playwright + DB verification against the exact symptom it claims to fix. No "should work" — prove it.
+- No touching `src/integrations/supabase/*` auto-gen, no schema drops, no bucket policy changes beyond what a phase explicitly requires.
 
 ---
 
-## Phase 1 — P0 data integrity (10 rows)
+## The 5 real defects (ranked by user-visible impact)
 
-Only broken pointers and wrong-color covers. All are single-row DB updates via `supabase--migration`; no schema change.
+| # | Symptom the client sees | Root cause | File:line |
+|---|---|---|---|
+| 1 | Inspo images 404 the day after the share link is opened | `createSignedUrls(paths, 60*60*24)` — 24h TTL baked into the share page | `src/lib/studio.functions.ts:686` |
+| 2 | Public deck "mood hero" shows furniture instead of client's inspiration | `board.inspo.length >= 3` silent fallback to pinned inventory | `src/lib/board-deck.ts:151` |
+| 3 | Pinned tile shows `[object Object]` on public deck | `images` treated as `string[]` without the same `typeof === "string"` guard the email path uses | `src/lib/studio.functions.ts:705` |
+| 4 | Visitor uploads a HEIC from iPhone → submit throws mid-loop → no visible error, form appears frozen | Client accepts `image/*`, server whitelists jpeg/png/webp/avif only, no user-facing error banner on the throw | `src/routes/stylebrief.index.tsx:140`, `src/lib/style-brief.functions.ts:17-23` |
+| 5 | Board saved with empty palette when curator clicks Analyze → Send back-to-back | Stale-closure race: `send()` calls `save()` before `analyze()`'s `setState` has committed | `src/hooks/use-style-board.ts:246` |
 
-| Row | Fix | Verification |
-|---|---|---|
-| Chandelier 2464 (Gideon) | `primary_image_url` → next valid asset in `images[]` | Load `/collection?view=gideon-…` — image renders |
-| Tableware 2810 (Dilani) | URL-encode the space in `primary_image_url` | Same |
-| Pillow 2358 (Navajo Yellow) | Swap primary to the yellow asset already in `images[]` | Cover matches title |
-| Pillow 2644 (Fringe Ivory) | Swap primary to the ivory asset | Cover matches title |
-| Table 3032, 3031 (Boulder swap) | Swap `title` between the two rows OR swap `slug` — owner decides which is truth | Both detail pages resolve, sizes match photos |
-| Furs 3821 (Isaac ↔ Kaino filename) | Confirm with owner: rename asset or repoint | Detail page shows Isaac product |
-| Seating: Adelaide 2970, Thatcher 4052 | Flag-only for now (no swap yet — see Phase 2) | — |
-| Lighting: Giesel/Darnell/Maor 107-byte files | Re-mirror originals from source bucket | HEAD returns >10KB |
-
-Deliverable: one migration file `fix_p0_photo_data.sql` + one rebake.
-Regression risk: near zero (each edit touches one row, verified by URL).
+Everything else in the earlier audit (admin-auth SSR no-op, hardcoded `eclectichive.com` in emails, loader swallowing errors, download-brief clobbering submit error) is real but not what she saw. Parked in Phase 6.
 
 ---
 
-## Phase 2 — P1 cover swaps (11 rows)
+## Phase 0 — Reproduce & snapshot (no code changes)
 
-Pure `primary_image_url` reassignment. The alt image already exists in `images[]`, so nothing to upload.
+Before touching anything, prove each defect exists on the current build.
 
-Seating: Thatcher 4052→idx1, Talon 945→idx2, Vixxen 2747→idx1
-Tables: Bartolo 3107→idx2, Aaron 2861→idx1, Farrow 2764→idx1, Timon 362→idx1
-Lighting: Gemma (ON), Darnell (ON)
-Chandeliers: Gideon 2464 (if Phase 1 chose a temp asset, revisit)
+1. Playwright script `scripts-tmp/repro-glitches.mjs`:
+   - Load an existing share link → screenshot `phase0/1-share-day0.png`.
+   - Fetch every `<img>` on the deck, log status codes → `phase0/deck-image-status.json`.
+   - Attempt a HEIC upload on `/stylebrief` → capture console + screenshot.
+   - Query a board with `inspo_images = []` and `pinned_rms_ids.length >= 3` → screenshot the mood hero.
+2. DB snapshot: `select id, share_token, created_at, inspo_images, pinned_rms_ids, palette from public.style_boards order by created_at desc limit 20` → `scripts-tmp/phase0/boards.json`.
+3. Commit the artifacts. These are the "before" evidence for each phase's verification.
 
-One migration `apply_p1_cover_swaps.sql`, one rebake. Take an after-screenshot per affected category and diff against the Phase 0 snapshot — only the intended tiles should differ.
-
----
-
-## Phase 3 — Storage category rescue (11 products)
-
-10 of 11 are 114–300px. Not a code problem — a source-asset problem.
-
-Two-track:
-- **Track A (owner):** request original photos from owner for Beatrice, Berkshire, Cardea, Dezik, Kalil, Ovalia, Rosa, Salida, Vespa + one more. Manifest lives at `scripts-tmp/storage-reshoot-request.csv`.
-- **Track B (interim):** apply CSS `min-height` to Storage tiles? **No.** That would regress the grid. Instead: temporarily hide the Storage category from the group nav until Track A returns, or leave as-is with a stakeholder note. Owner decision.
-
-No code change in this phase without explicit owner sign-off.
+Exit criteria: at least defects #1, #2, #3 reproduced with screenshots. #4 reproduced with a console throw. #5 reproduced by scripted analyze→send.
 
 ---
 
-## Phase 4 — Editorial order (single JSON patch, no UI change)
+## Phase 1 — Defect #1: inspo image URLs (highest-impact)
 
-`editorial_order` is the source of truth per memory. This phase writes new order values via `/admin/photos` or a scripted `UPDATE`; no component logic changes.
+Root cause: signed URLs expire; the share deck is meant to be a permanent artifact.
 
-Scope per category (from reports):
-- Seating: move Ingram 4180 out of light-run
-- Tables: cluster Bartolo/Farrow/Toshia columns; push light wood later
-- Styling: break up the Tivoli 5-in-a-row at 62–66
-- Rugs: material-block regroup (hides → jute → kilim)
-- Serveware: type-block regroup (decanters, tubs, trays)
-- Candlelight: pair alabaster votives 3468 + 3776
-- Chandeliers: pair crystals (Namiah + Dezmelda), pair leather (Casey + Erizo)
-- Large-Decor: cluster firepits (Blaze, Ember, Jacen, Sutton)
+Fix (single file, single function):
+- `src/lib/studio.functions.ts` `getPublicBoard` (~line 683):
+  - Replace `createSignedUrls(paths, 60*60*24)` with a signed URL that outlives the retainer window. Options in order of preference:
+    - **A (chosen):** sign for 7 days AND cache-bust re-sign on every `getPublicBoard` call — the loader hits this every share view, so URLs are always fresh for any active viewer. TTL = 7d gives a huge margin for email link previews and asynchronous opens.
+    - B: move inspo to a public bucket with random path prefixes. Rejected — requires bucket policy change + migration of existing files.
+- No signature change. No caller change. Same return shape.
 
-Deliverable: `scripts-tmp/editorial-order-proposal.json` — a manifest of `{id, current_order, proposed_order, rationale}` for owner review **before** applying. Never bulk-write order without the manifest (per Core memory).
+Verification:
+- Re-run Phase 0 Playwright against a real share link. All inspo `<img>` return 200.
+- Advance clock: reload the share page 25h later (script uses `Date.now()` offset in a fetch — or just re-hit the loader; each hit re-signs). Confirm URLs regenerate.
+- Diff the `getPublicBoard` return with the previous run — only `signed_url` values may differ.
 
----
-
-## Phase 5 — Background/cutout standard drift (defer)
-
-Tables dark halos, Bronson solid-BG glassware, Rugs in-situ vs flat-lay. These need re-editing of source assets, not code. Add to a `scripts-tmp/reshoot-queue.csv` for owner. **Do not** attempt masking in code — that path has broken the site before per Core memory.
+Rollback: revert one line.
 
 ---
 
-## Guardrails (apply to every phase)
+## Phase 2 — Defect #3: `[object Object]` on public deck
 
-- No edits under `src/components/`, `src/routes/collection.tsx`, `src/lib/collection-*`, `src/lib/image-url.ts`, or `src/styles.css`.
-- No changes to `primaryImage` rendering pipeline, `NormalizedProductImage`, or CDN transform helpers.
-- Every DB write goes through a migration file so it is reviewable and revertible.
-- After each phase: rebake, re-screenshot the affected category grids, diff against Phase 0 snapshots. Only intended tiles may differ.
-- If any unintended diff appears, revert the migration and stop.
+Root cause: `imgs[0]` blindly cast to string when `images` column contains mixed shapes for legacy rows.
+
+Fix (same file as Phase 1, different function — do NOT combine PRs):
+- `src/lib/studio.functions.ts` ~line 705:
+  ```ts
+  const first = (r.images as unknown[])?.[0];
+  const image_url = typeof first === "string" ? first
+    : (first && typeof first === "object" && "url" in first && typeof (first as {url:unknown}).url === "string")
+      ? (first as {url:string}).url
+      : null;
+  ```
+- Mirror the exact guard already used by the email path (per audit). One helper `pickFirstImageUrl(images)` in the same file, used by both call sites. No new file, no export.
+
+Verification:
+- SQL: `select id, images from inventory_items where jsonb_typeof(images->0) = 'object' limit 5` → snapshot 5 offending rows.
+- Load a board that pins one of those rows via `getPublicBoard`. Assert `image_url` is a string URL or `null`, never `[object Object]`.
+- Playwright the share deck → screenshot, diff against Phase 0.
+
+Rollback: revert the helper + two call sites.
 
 ---
 
-## Technical details
+## Phase 3 — Defect #2: mood-hero silent fallback
 
-- Migrations use `supabase--migration`; no direct table drops or column changes.
-- Rebake command: `node scripts/bake-catalog.mjs`.
-- Grid screenshot check: Playwright at 1280×1800, `http://localhost:8080/collection?group={slug}`, top of grid only.
-- All manifests land under `scripts-tmp/` (already gitignored per project convention).
-- No secret changes, no Cloudflare Worker code changes, no SSR touch.
+Root cause: threshold too high; a client who uploads 1–2 inspo photos gets furniture instead.
+
+Fix:
+- `src/lib/board-deck.ts:151`: change `board.inspo.length >= 3` → `board.inspo.length >= 1`.
+- Adjust `.slice(0, 3)` to `.slice(0, Math.min(3, board.inspo.length))` (already safe, but explicit).
+- If 0 inspo → keep existing pinned-fallback path unchanged.
+
+Verification:
+- Build 3 test boards: 0 inspo, 1 inspo, 3 inspo. Render each via `board-deck` builder. Assert mood-hero page uses inspo when count ≥ 1, pinned when count = 0.
+- Playwright screenshot each variant.
+
+Rollback: revert one comparison.
 
 ---
 
-## Suggested execution order
+## Phase 4 — Defect #4: HEIC silent failure
 
-1. Phase 0 (snapshots) — 1 pass.
-2. Phase 1 (P0 data) — one migration, one rebake, verify 10 URLs.
-3. Phase 2 (P1 covers) — one migration, one rebake, verify affected categories.
-4. Phase 4 manifest generation — write the proposal, hand to owner, wait for approval before writing.
-5. Phase 3 & 5 — owner-blocked; open the requests, park.
+Two-part fix; both required.
 
-Total code footprint if everything runs: 2 migration files, 0 component edits, 1–2 manifest JSONs. Nothing to regress.
+**4a. Client-side hard reject** (`src/routes/stylebrief.index.tsx`):
+- Change accept filter from `f.type.startsWith("image/")` to explicit `["image/jpeg","image/png","image/webp","image/avif"].includes(f.type)`.
+- On reject, set a visible per-file toast/banner: `"HEIC/HEIF not supported yet — export as JPG from Photos → Share → Options → Most Compatible"`. Use the existing error surface already present in the component; do NOT introduce a new toast lib.
+- Change the `<input accept="...">` to the same explicit list so iOS Photos picker offers Live Photo → JPG conversion when available.
+
+**4b. Submit try/catch surfaces the throw** (`src/hooks/use-style-board.ts` or the submit handler in `stylebrief.index.tsx` — whichever owns the upload loop):
+- Wrap the upload loop in `try/catch`; on catch set `submitError` state (already exists per audit) with the server's error message.
+
+Verification:
+- Playwright: pick a `.heic` file → assert banner appears, submit button stays enabled, no console throw.
+- Pick a `.jpg` → submit succeeds end-to-end.
+- Confirm the "download brief error overwriting submit error" bug from the audit is NOT re-introduced (Phase 6 handles that properly).
+
+Rollback: revert accept-list + banner.
+
+---
+
+## Phase 5 — Defect #5: analyze→send race
+
+Root cause: `send()` closes over stale `state.palette` because React hasn't flushed `setState` from `analyze()` yet.
+
+Fix (`src/hooks/use-style-board.ts`):
+- Change `analyze()` to return the computed `AnalysisResult` in addition to setting state.
+- Change `save()` to accept an optional `overrides?: Partial<Pick<State, "palette"|"tones"|"insights">>` and prefer overrides over `state.*` when building the payload.
+- Change `send()` to: `const fresh = await analyze(); const saved = await save(undefined, fresh); ...` — no longer relies on state flush ordering.
+- Do NOT rewrite the reducer. Do NOT introduce a `useEffect` chain. Minimum viable change only.
+
+Verification:
+- Unit-level: script that calls `analyze()` then immediately `save()` and asserts the DB row has non-empty palette. Run 20× — 20/20 pass.
+- Playwright: click Analyze → click Send within 100ms. Reload share link. Palette renders.
+
+Rollback: revert the three function signatures.
+
+---
+
+## Phase 6 — Parked (owner-approval gated)
+
+Do NOT bundle with 1–5. Each is its own future PR:
+- Admin auth is client-side on SSR (`requireAdminOrRedirect` no-ops).
+- `boardUrl` in emails hardcodes `eclectichive.com` — breaks preview + draft domain testing.
+- `/stylebrief/$token` loader swallows Supabase errors as `notFound()` — masks real failures.
+- `download-brief` error overwrites `submit-error` state.
+
+---
+
+## Execution order & gates
+
+1. Phase 0 (reproduce) — **must show screenshots to user before Phase 1 ships.**
+2. Phase 1 — ship, verify, wait for user OK.
+3. Phase 2 — ship, verify.
+4. Phase 3 — ship, verify.
+5. Phase 4 — ship, verify.
+6. Phase 5 — ship, verify.
+7. Phase 6 — separate proposal, not this plan.
+
+Between each phase: run the visual regression harness (`scripts/visual-regression/run.mjs`) on `/stylebrief`, `/studio/*`, and `/stylebrief/$token` share views. Zero unintended diffs. If any diff appears outside the phase's target, stop and revert.
+
+## Non-negotiables (guardrails)
+
+- No changes under `src/components/`, `src/routes/collection.tsx`, `src/lib/collection-*`, `src/styles.css`, or any auto-gen.
+- No new dependencies.
+- No schema changes. No policy changes. No new tables.
+- Every DB read/write for verification goes through `supabase--read_query` — no ad-hoc `service_role` scripts outside `scripts-tmp/`.
+- Total code footprint if all 5 phases ship: ~40 lines across 4 files. Anything larger means the plan drifted.
