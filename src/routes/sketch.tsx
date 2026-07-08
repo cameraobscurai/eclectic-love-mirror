@@ -347,7 +347,7 @@ function SketchPage() {
     };
   }, []);
 
-  const total = N.toString().padStart(3, "0");
+  const totalLabel = N.toString().padStart(3, "0");
   const [grabbing, setGrabbing] = useState(false);
 
   return (
@@ -414,7 +414,7 @@ function SketchPage() {
         </h1>
         <div className="flex items-center gap-4 md:gap-6 pointer-events-auto">
           <span className="hidden md:inline text-[9px] tracking-[0.4em] uppercase opacity-50">
-            {total} Plates · Loop
+            {totalLabel} Plates · Loop
           </span>
           <Link
             to="/"
@@ -489,7 +489,7 @@ function SketchPage() {
             <div className="mt-4 pt-3 border-t border-[#1a1a1a]/10 flex justify-between text-[9px] tracking-[0.35em] uppercase text-[#1a1a1a]/60 font-serif">
               <span>Plate</span>
               <span>
-                {(openIdx + 1).toString().padStart(3, "0")} / {total}
+                {(openIdx + 1).toString().padStart(3, "0")} / {totalLabel}
               </span>
             </div>
           </div>
