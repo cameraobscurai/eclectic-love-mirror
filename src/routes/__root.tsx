@@ -184,8 +184,10 @@ function RootComponent() {
   // T18+T22: footer now renders on /contact and /collection too.
   // Only /faq and /privacy keep the self-contained-fold treatment.
   const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isSketch = pathname === "/sketch";
   const hideFooter =
     isAdmin ||
+    isSketch ||
     pathname === "/faq" ||
     pathname === "/privacy" ||
     pathname === "/process";
@@ -199,13 +201,13 @@ function RootComponent() {
       >
         Skip to main content
       </a>
-      {!isAdmin && <Navigation />}
+      {!isAdmin && !isSketch && <Navigation />}
       <div id="devedit-canvas">
         <Outlet />
         {!hideFooter && <Footer />}
       </div>
 
-      {!isAdmin && pathname !== "/contact" && <InquiryTray />}
+      {!isAdmin && !isSketch && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
       <Toaster />
     </QueryClientProvider>
