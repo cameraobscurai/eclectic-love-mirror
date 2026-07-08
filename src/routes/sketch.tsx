@@ -1,16 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useGesture } from "@use-gesture/react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
-
-const sketchesQueryOptions = queryOptions<Sketch[]>({
-  queryKey: ["sketches"],
-  queryFn: () => listSketches(),
-  staleTime: 1000 * 60 * 60,
-  gcTime: 1000 * 60 * 60 * 24,
-});
 
 const TILE = 300;
 const GAP = 24;
@@ -22,7 +14,7 @@ const PRIORITY_CELL_COUNT = 14;
 const mod = (n: number, m: number) => ((n % m) + m) % m;
 
 export const Route = createFileRoute("/sketch")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(sketchesQueryOptions),
+  loader: () => listSketches(),
   head: () => ({
     meta: [
       { title: "Sketchbook — Archive 001" },
@@ -47,7 +39,7 @@ export const Route = createFileRoute("/sketch")({
 });
 
 function SketchPage() {
-  const { data: rawSketches } = useSuspenseQuery(sketchesQueryOptions);
+  const rawSketches = Route.useLoaderData() as Sketch[];
 
   const sketches = useMemo(() => {
     const hash = (s: string) => {
