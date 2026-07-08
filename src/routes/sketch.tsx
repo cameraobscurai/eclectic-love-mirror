@@ -466,3 +466,60 @@ function SketchPage() {
     </div>
   );
 }
+
+// Memoized tile: props are all primitives so React.memo skips reconciliation
+// on every parent render. Combined with the fixed render range, this means
+// zero React work during pan/zoom — only the parent transform moves.
+type TileProps = {
+  tileUrl: string;
+  idx: number;
+  c: number;
+  r: number;
+  priority: boolean;
+  onOpen: (idx: number) => void;
+};
+
+const Tile = memo(function Tile({
+  tileUrl,
+  idx,
+  c,
+  r,
+  priority,
+  onOpen,
+}: TileProps) {
+  const label = (idx + 1).toString().padStart(3, "0");
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        onOpen(idx);
+      }}
+      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none"
+      style={{
+        left: c * PITCH,
+        top: r * PITCH,
+        width: TILE,
+        height: TILE,
+        contain: "layout paint style size",
+      }}
+      aria-label={`Open plate ${label}`}
+      draggable={false}
+    >
+      <img
+        src={tileUrl}
+        alt=""
+        width={TILE}
+        height={TILE}
+        loading="eager"
+        fetchPriority={priority ? "high" : "auto"}
+        decoding="async"
+        draggable={false}
+        className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
+      />
+      <span className="absolute bottom-2 right-2 text-[8px] tracking-[0.3em] uppercase text-[#1a1a1a]/40 font-medium pointer-events-none">
+        {label}
+      </span>
+    </button>
+  );
+});
