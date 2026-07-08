@@ -125,49 +125,26 @@ function SketchPage() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const initialRange = (() => {
-    const bleed = 3;
-    const worldPitch = PITCH;
-    const cx = -initialX / worldPitch;
-    const cy = -initialY / worldPitch;
-    const cols = Math.ceil(initialVp.w / worldPitch);
-    const rows = Math.ceil(initialVp.h / worldPitch);
+  // Compute render range ONCE from viewport (recompute only on resize).
+  // Bleed is huge — enough to cover ~2 viewports in every direction — so
+  // pan/zoom never triggers React reconciliation. The whole grid stays
+  // mounted; only the parent transform moves. This is how Figma/Miro do it.
+  const range = useMemo(() => {
+    const bleed = 6;
+    const cols = Math.ceil(vp.w / PITCH);
+    const rows = Math.ceil(vp.h / PITCH);
+    // Anchor render window around initial center so the grid stays symmetric
+    const cx = Math.floor(-initialX / PITCH);
+    const cy = Math.floor(-initialY / PITCH);
     return {
-      c0: Math.floor(cx) - bleed,
-      c1: Math.floor(cx) + cols + bleed,
-      r0: Math.floor(cy) - bleed,
-      r1: Math.floor(cy) + rows + bleed,
+      c0: cx - bleed,
+      c1: cx + cols + bleed,
+      r0: cy - bleed,
+      r1: cy + rows + bleed,
     };
-  })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vp.w, vp.h]);
 
-  const [range, setRange] = useState(initialRange);
-  const rangeRef = useRef(range);
-  rangeRef.current = range;
-
-  useEffect(() => {
-    let raf = 0;
-    const bleed = 3;
-    const tick = () => {
-      const currentScale = scale.get();
-      const worldPitch = PITCH * currentScale;
-      const cx = -x.get() / worldPitch;
-      const cy = -y.get() / worldPitch;
-      const cols = Math.ceil(vp.w / worldPitch);
-      const rows = Math.ceil(vp.h / worldPitch);
-      const c0 = Math.floor(cx) - bleed;
-      const c1 = Math.floor(cx) + cols + bleed;
-      const r0 = Math.floor(cy) - bleed;
-      const r1 = Math.floor(cy) + rows + bleed;
-      const current = rangeRef.current;
-
-      if (
-        c0 !== current.c0 ||
-        c1 !== current.c1 ||
-        r0 !== current.r0 ||
-        r1 !== current.r1
-      ) {
-        setRange({ c0, c1, r0, r1 });
-      }
 
       raf = requestAnimationFrame(tick);
     };
