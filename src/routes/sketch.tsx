@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import { useGesture } from "@use-gesture/react";
 import { listSketches, type Sketch } from "@/lib/sketch.functions";
