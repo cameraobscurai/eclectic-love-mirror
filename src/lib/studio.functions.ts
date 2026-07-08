@@ -392,8 +392,199 @@ export const markBoardSent = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw error;
+
+    // Fire client email only on the first send. Idempotent thereafter — the
+    // email is keyed by boardId, so re-runs coalesce in email_send_log.
+    if (!existing.share_token) {
+      try {
+        await enqueueStyleBoardEmail({
+          boardId: row.id,
+          shareToken: row.share_token as string,
+          inquiryId: row.inquiry_id as string,
+          projectTitle: (row.project_title as string | null) ?? null,
+          preparedByName: (row.prepared_by_name as string | null) ?? null,
+          palette: (row.palette ?? []) as unknown[],
+          pinnedRmsIds: (row.pinned_rms_ids ?? []) as string[],
+        });
+      } catch (err) {
+        // Do not fail the send action if the email enqueue fails; log and move on.
+        console.error("[markBoardSent] email enqueue failed:", err);
+      }
+    }
+
     return row as unknown as StyleBoardRow;
   });
+
+// ---- Client email on first send ------------------------------------------
+// Renders the `style-board-ready` React Email template and enqueues it on
+// the `transactional_emails` pgmq queue. Mirrors the pattern used by
+// /api/public/notify-inquiry: suppression check, unsubscribe token,
+// pending log row, then rpc('enqueue_email').
+
+function generateUnsubToken(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function enqueueStyleBoardEmail(input: {
+  boardId: string;
+  shareToken: string;
+  inquiryId: string;
+  projectTitle: string | null;
+  preparedByName: string | null;
+  palette: unknown[];
+  pinnedRmsIds: string[];
+}): Promise<void> {
+  const SITE_NAME = "Eclectic Hive";
+  const SENDER_DOMAIN = "notify.eclectichive.com";
+  const FROM_DOMAIN = "eclectichive.com";
+  const TEMPLATE_NAME = "style-board-ready";
+
+  const React = await import("react");
+  const { render } = await import("@react-email/render");
+  const { TEMPLATES } = await import("./email-templates/registry");
+  const template = TEMPLATES[TEMPLATE_NAME];
+  if (!template) throw new Error("style-board-ready template missing");
+
+  // Recipient + name
+  const { data: inq } = await supabaseAdmin
+    .from("inquiries")
+    .select("name,email")
+    .eq("id", input.inquiryId)
+    .maybeSingle();
+  const recipient = (inq?.email ?? "").trim();
+  if (!recipient) throw new Error("Inquiry has no recipient email");
+  const normalizedEmail = recipient.toLowerCase();
+
+  // Suppression check — respects bounces/complaints/unsubscribes.
+  const { data: suppressed } = await supabaseAdmin
+    .from("suppressed_emails")
+    .select("id")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  const messageId = crypto.randomUUID();
+  const idempotencyKey = `style-board-${input.boardId}`;
+
+  if (suppressed) {
+    await supabaseAdmin.from("email_send_log").insert({
+      message_id: messageId,
+      template_name: TEMPLATE_NAME,
+      recipient_email: recipient,
+      status: "suppressed",
+    });
+    return;
+  }
+
+  // Pinned preview — first 4 items with title/category/image.
+  const pinnedPreview: Array<{ title: string; category: string | null; image_url: string | null }> = [];
+  if (input.pinnedRmsIds.length) {
+    const { data: rows } = await supabaseAdmin
+      .from("inventory_items")
+      .select("rms_id,title,category,images")
+      .in("rms_id", input.pinnedRmsIds.slice(0, 8));
+    // Preserve pin order.
+    const byId = new Map((rows ?? []).map((r) => [r.rms_id, r]));
+    for (const id of input.pinnedRmsIds) {
+      const r = byId.get(id);
+      if (!r) continue;
+      const imgs = (r.images ?? []) as Array<{ url?: string } | string>;
+      const first = imgs[0];
+      const url = typeof first === "string" ? first : first?.url ?? null;
+      pinnedPreview.push({
+        title: r.title ?? "",
+        category: r.category ?? null,
+        image_url: url,
+      });
+      if (pinnedPreview.length >= 4) break;
+    }
+  }
+
+  const paletteHex = (input.palette as Array<{ hex?: string }>)
+    .map((s) => s?.hex)
+    .filter((h): h is string => typeof h === "string" && /^#[0-9a-fA-F]{6}$/.test(h))
+    .slice(0, 8);
+
+  const templateData = {
+    clientName: inq?.name ?? "there",
+    projectTitle: input.projectTitle,
+    preparedByName: input.preparedByName,
+    boardUrl: `https://${FROM_DOMAIN}/stylebrief/${input.shareToken}`,
+    pinnedCount: input.pinnedRmsIds.length,
+    paletteCount: paletteHex.length,
+    palette: paletteHex,
+    pinnedPreview,
+  };
+
+  // Unsubscribe token (reuse or mint).
+  let unsubToken: string;
+  const { data: existingTok } = await supabaseAdmin
+    .from("email_unsubscribe_tokens")
+    .select("token, used_at")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+  if (existingTok && !existingTok.used_at) {
+    unsubToken = existingTok.token;
+  } else {
+    unsubToken = generateUnsubToken();
+    await supabaseAdmin
+      .from("email_unsubscribe_tokens")
+      .upsert(
+        { token: unsubToken, email: normalizedEmail },
+        { onConflict: "email", ignoreDuplicates: true },
+      );
+    const { data: stored } = await supabaseAdmin
+      .from("email_unsubscribe_tokens")
+      .select("token")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
+    if (stored?.token) unsubToken = stored.token;
+  }
+
+  const element = React.createElement(template.component, templateData);
+  const html = await render(element);
+  const text = await render(element, { plainText: true });
+  const subject =
+    typeof template.subject === "function" ? template.subject(templateData) : template.subject;
+
+  await supabaseAdmin.from("email_send_log").insert({
+    message_id: messageId,
+    template_name: TEMPLATE_NAME,
+    recipient_email: recipient,
+    status: "pending",
+  });
+
+  const { error: enqueueError } = await supabaseAdmin.rpc("enqueue_email", {
+    queue_name: "transactional_emails",
+    payload: {
+      message_id: messageId,
+      to: recipient,
+      from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+      reply_to: `info@${FROM_DOMAIN}`,
+      sender_domain: SENDER_DOMAIN,
+      subject,
+      html,
+      text,
+      purpose: "transactional",
+      label: TEMPLATE_NAME,
+      idempotency_key: idempotencyKey,
+      unsubscribe_token: unsubToken,
+      queued_at: new Date().toISOString(),
+    },
+  });
+
+  if (enqueueError) {
+    await supabaseAdmin.from("email_send_log").insert({
+      message_id: messageId,
+      template_name: TEMPLATE_NAME,
+      recipient_email: recipient,
+      status: "failed",
+      error_message: enqueueError.message,
+    });
+    throw enqueueError;
+  }
+}
 
 export interface StudioBoardSummary {
   id: string;
