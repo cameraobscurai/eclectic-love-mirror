@@ -350,8 +350,31 @@ function SketchPage() {
   const totalLabel = N.toString().padStart(3, "0");
   const [grabbing, setGrabbing] = useState(false);
 
+  const pct = total === 0 ? 0 : Math.round((loaded / total) * 100);
+
   return (
     <div className="fixed inset-0 bg-[#d4cdc4] text-[#1a1a1a] font-serif overflow-hidden select-none">
+      {/* Loading veil — sits above the canvas until every tile is decoded */}
+      <div
+        className={`absolute inset-0 z-40 bg-[#d4cdc4] flex flex-col items-center justify-center gap-6 transition-opacity duration-700 ${
+          ready ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+        aria-hidden={ready}
+      >
+        <div className="text-[10px] tracking-[0.5em] uppercase text-[#1a1a1a]/70">
+          Loading Sketchbook
+        </div>
+        <div className="w-48 h-px bg-[#1a1a1a]/15 overflow-hidden">
+          <div
+            className="h-full bg-[#1a1a1a] transition-[width] duration-200 ease-out"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="text-[9px] tracking-[0.4em] uppercase text-[#1a1a1a]/50 tabular-nums">
+          {loaded.toString().padStart(3, "0")} / {totalLabel}
+        </div>
+      </div>
+
       <div
         ref={containerRef}
         onPointerDown={() => setGrabbing(true)}
