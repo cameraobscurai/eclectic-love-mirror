@@ -58,11 +58,21 @@ function SketchPage() {
   const ROWS = Math.max(1, Math.ceil(N / COLS));
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
+
+  const initialVp =
+    typeof window !== "undefined"
+      ? { w: window.innerWidth, h: window.innerHeight }
+      : { w: 1440, h: 900 };
+
+  // Center the world on first paint (torus, but visually pleasant starting frame)
+  const initialX = -Math.round((PITCH - initialVp.w) / 2);
+  const initialY = -Math.round((PITCH - initialVp.h) / 2);
+
+  const x = useMotionValue(initialX);
+  const y = useMotionValue(initialY);
   const scale = useMotionValue(1);
 
-  const [vp, setVp] = useState({ w: 1440, h: 900 });
+  const [vp, setVp] = useState(initialVp);
   useEffect(() => {
     const update = () => setVp({ w: window.innerWidth, h: window.innerHeight });
     update();
@@ -70,13 +80,28 @@ function SketchPage() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  const [range, setRange] = useState({ c0: -2, c1: 5, r0: -2, r1: 5 });
+  const initialRange = (() => {
+    const bleed = 3;
+    const worldPitch = PITCH;
+    const cx = -initialX / worldPitch;
+    const cy = -initialY / worldPitch;
+    const cols = Math.ceil(initialVp.w / worldPitch);
+    const rows = Math.ceil(initialVp.h / worldPitch);
+    return {
+      c0: Math.floor(cx) - bleed,
+      c1: Math.floor(cx) + cols + bleed,
+      r0: Math.floor(cy) - bleed,
+      r1: Math.floor(cy) + rows + bleed,
+    };
+  })();
+
+  const [range, setRange] = useState(initialRange);
   const rangeRef = useRef(range);
   rangeRef.current = range;
 
   useEffect(() => {
     let raf = 0;
-    const bleed = 1;
+    const bleed = 3;
     const tick = () => {
       const currentScale = scale.get();
       const worldPitch = PITCH * currentScale;
