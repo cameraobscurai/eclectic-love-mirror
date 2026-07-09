@@ -420,8 +420,17 @@ function SketchPage() {
             scale,
             transformOrigin: "0 0",
             backfaceVisibility: "hidden",
+            // Isolate the blend context so `mix-blend-multiply` on every
+            // tile image resolves inside this one composited layer instead
+            // of forcing a full-page repaint against the page backdrop on
+            // every pan/zoom frame. The background must match the page so
+            // multiply produces the same visual result as blending against
+            // the page directly.
+            isolation: "isolate",
+            backgroundColor: "#d4cdc4",
           }}
         >
+
           {cells.map(({ c, r, idx, key }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
