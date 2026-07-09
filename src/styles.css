@@ -629,3 +629,31 @@ button, a, [role="button"] {
     filter: brightness(var(--pmb1, 1));
   }
 }
+
+/* /sketch — pan-idle perf toggle.
+ * During active pan/zoom, drop the two most expensive per-frame paint ops:
+ *   1. mix-blend-multiply on tile images (breaks the fast compositor path)
+ *   2. box-shadow blur on tile buttons (repainted every transform tick)
+ * Restored 140ms after the last input (see markPanning() in sketch.tsx).
+ * Users cannot resolve blend/shadow detail during motion; on idle the full
+ * editorial treatment snaps back. This is the Figma/Miro pattern.
+ */
+[data-panning] img {
+  mix-blend-mode: normal !important;
+}
+[data-panning] button {
+  box-shadow: none !important;
+}
+
+/* Additional pan-idle wins (per tldraw PR #7826 + Figma architecture notes):
+ * - Drop `isolation` so the transforming layer stops forcing a main-thread
+ *   compositing group every frame.
+ * - Disable pointer-events on tile buttons so hover hit-testing on ~200
+ *   <button>s doesn't run on every pointermove during pan.
+ */
+[data-panning] > div {
+  isolation: auto !important;
+}
+[data-panning] button {
+  pointer-events: none;
+}
