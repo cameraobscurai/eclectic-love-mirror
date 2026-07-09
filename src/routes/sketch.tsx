@@ -54,8 +54,11 @@ function SketchPage() {
     return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
   }, [rawSketches]);
 
-  // Progressive reveal: show canvas as soon as the first viewport is decoded,
-  // then stream the rest in the background. No more waiting on 200+ tiles.
+  // Progressive reveal: decode only the first viewport before lifting the
+  // veil. The rest are handed to the browser's native lazy loader + our
+  // fetchPriority hints — no giant Image() waterfall that saturates the
+  // connection on mobile and pins ~200MB of decoded bitmaps on low-end
+  // devices for tiles the user may never pan to.
   const [loaded, setLoaded] = useState(0);
   const total = sketches.length;
   const FIRST_PAINT_COUNT = Math.min(24, total);
@@ -66,40 +69,30 @@ function SketchPage() {
     let cancelled = false;
     let done = 0;
 
-    const preload = (url: string) =>
-      new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = "async";
-        img.src = url;
-        const finish = () => {
-          if (cancelled) return resolve();
-          done += 1;
-          setLoaded(done);
-          resolve();
-        };
-        img
-          .decode()
-          .then(finish)
-          .catch(() => {
-            if (img.complete) finish();
-            else {
-              img.onload = finish;
-              img.onerror = finish;
-            }
-          });
+    const priority = sketches.slice(0, FIRST_PAINT_COUNT);
+    priority.forEach((s) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = s.tileUrl;
+      const finish = () => {
+        if (cancelled) return;
+        done += 1;
+        setLoaded(done);
+      };
+      img.decode().then(finish).catch(() => {
+        if (img.complete) finish();
+        else {
+          img.onload = finish;
+          img.onerror = finish;
+        }
       });
-
-    (async () => {
-      const priority = sketches.slice(0, FIRST_PAINT_COUNT);
-      const rest = sketches.slice(FIRST_PAINT_COUNT);
-      await Promise.all(priority.map((s) => preload(s.tileUrl)));
-      Promise.all(rest.map((s) => preload(s.tileUrl))).catch(() => {});
-    })().catch(() => {});
+    });
 
     return () => {
       cancelled = true;
     };
   }, [sketches, total, FIRST_PAINT_COUNT]);
+
 
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
@@ -213,7 +206,23 @@ function SketchPage() {
     return () => clearTimeout(timeout);
   }, []);
 
+  // Respect reduced-motion: skip wheel lerp + drag inertia entirely for
+  // users who ask for it (accessibility + battery savings on low-end).
+  const reducedMotion = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      reducedMotion.current = mq.matches;
+    };
+    sync();
+    mq.addEventListener?.("change", sync);
+    return () => mq.removeEventListener?.("change", sync);
+  }, []);
+
   // Smooth wheel: accumulate deltas into a target, lerp current toward it.
+  // 0.28 (was 0.18) — snappier settle, fewer frames of residual drift, less
+  // work on the compositor when the user pauses between wheel bursts.
   const wheelTargetX = useRef(x.get());
   const wheelTargetY = useRef(y.get());
   const wheelRaf = useRef<number | null>(null);
@@ -224,8 +233,8 @@ function SketchPage() {
       const cy = y.get();
       const tx = wheelTargetX.current;
       const ty = wheelTargetY.current;
-      const nx = cx + (tx - cx) * 0.18;
-      const ny = cy + (ty - cy) * 0.18;
+      const nx = cx + (tx - cx) * 0.28;
+      const ny = cy + (ty - cy) * 0.28;
       x.set(nx);
       y.set(ny);
       if (Math.abs(tx - nx) < 0.5 && Math.abs(ty - ny) < 0.5) {
@@ -251,6 +260,7 @@ function SketchPage() {
     if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
   }, []);
 
+
   useGesture(
     {
       onDrag: ({ delta: [dx, dy], last, velocity: [vx, vy], direction: [dirX, dirY], tap }) => {
@@ -261,7 +271,7 @@ function SketchPage() {
         x.set(x.get() + dx);
         y.set(y.get() + dy);
 
-        if (last) {
+        if (last && !reducedMotion.current) {
           animate(x, x.get() + dirX * Math.min(vx * 140, 1400), {
             type: "inertia",
             power: 0.55,
@@ -280,12 +290,17 @@ function SketchPage() {
 
         if (ctrlKey) {
           applyZoom(-dy * 0.01, event.clientX, event.clientY);
+        } else if (reducedMotion.current) {
+          // Direct set — no lerp — for reduced-motion users.
+          x.set(x.get() - dx);
+          y.set(y.get() - dy);
         } else {
           wheelTargetX.current -= dx;
           wheelTargetY.current -= dy;
           startWheelLerp();
         }
       },
+
       onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
         dismissHint();
         const base = memo ?? scale.get() / distance;
@@ -613,8 +628,9 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         alt=""
         width={TILE}
         height={TILE}
-        loading="eager"
-        fetchPriority={priority ? "high" : "auto"}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "low"}
+
         decoding="async"
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
