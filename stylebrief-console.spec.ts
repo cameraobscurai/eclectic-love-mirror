@@ -44,7 +44,7 @@ test.describe('/stylebrief console health', () => {
     await browser.close();
 
     if (errors.length) {
-      console.error('New /stylebrief console errors:\n' + errors.join('\n---\n'));
+      console.error("=== ERRORS START ===\n" + errors.join("\n===\n") + "\n=== ERRORS END ===");
     }
     expect(errors, `Unexpected console errors on /stylebrief:\n${errors.join('\n')}`).toHaveLength(0);
   });
