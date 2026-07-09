@@ -141,6 +141,7 @@ function SketchPage() {
   // Quantize pan origin in COARSE steps so React only re-renders every
   // PAN_STEP cells crossed, not every one. Bleed absorbs the difference.
   const PAN_STEP = 3;
+  const [zoomBucket, setZoomBucket] = useState(0);
   useMotionValueEvent(x, "change", (latest) => {
     const qx = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qx === prev.qx ? prev : { ...prev, qx }));
@@ -149,6 +150,13 @@ function SketchPage() {
   useMotionValueEvent(y, "change", (latest) => {
     const qy = Math.floor(-latest / (PITCH * scale.get() * PAN_STEP)) * PAN_STEP;
     setPanOrigin((prev) => (qy === prev.qy ? prev : { ...prev, qy }));
+  });
+
+  // Bucket zoom into coarse steps so the render-window recomputes when the
+  // user zooms out (more cells fit), without re-rendering on every frame.
+  useMotionValueEvent(scale, "change", (latest) => {
+    const b = Math.round(Math.log2(Math.max(0.1, latest)) * 4);
+    setZoomBucket((prev) => (prev === b ? prev : b));
   });
 
   const cells = useMemo(() => {
@@ -171,7 +179,11 @@ function SketchPage() {
     }
 
     return out;
-  }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, scale]);
+    // zoomBucket forces recompute on coarse zoom changes; scale ref itself
+    // is stable so it can't drive the dep list.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, zoomBucket]);
+
 
   const applyZoom = useCallback(
     (delta: number, ox: number, oy: number) => {
@@ -408,8 +420,17 @@ function SketchPage() {
             scale,
             transformOrigin: "0 0",
             backfaceVisibility: "hidden",
+            // Isolate the blend context so `mix-blend-multiply` on every
+            // tile image resolves inside this one composited layer instead
+            // of forcing a full-page repaint against the page backdrop on
+            // every pan/zoom frame. The background must match the page so
+            // multiply produces the same visual result as blending against
+            // the page directly.
+            isolation: "isolate",
+            backgroundColor: "#d4cdc4",
           }}
         >
+
           {cells.map(({ c, r, idx, key }) => {
             const sketch = sketches[idx];
             if (!sketch) return null;
