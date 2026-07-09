@@ -653,17 +653,29 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         event.stopPropagation();
         onOpen(idx);
       }}
-      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none"
+      // tabIndex=-1: canvas tiles are NOT in the keyboard tab order (the
+      // top-bar controls are). Arrow keys pan the canvas globally; Tab-ing
+      // through hundreds of infinite-wrap tiles has no meaningful nav story.
+      // focus-visible: retains a visible ring when a tile IS focused
+      // programmatically (e.g. after opening a lightbox and returning).
+      tabIndex={-1}
+      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1a1a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#d4cdc4]"
       style={{
         left: c * PITCH,
         top: r * PITCH,
         width: TILE,
         height: TILE,
         contain: "layout paint style size",
+        // Promote only the first-paint priority tiles to their own compositor
+        // layer so their image-decode paint doesn't invalidate the shared
+        // isolation layer's damage rect. Non-priority tiles stay pooled to
+        // avoid ballooning VRAM on mobile.
+        willChange: priority ? "transform" : undefined,
       }}
       aria-label={`Open plate ${label}`}
       draggable={false}
     >
+
       <img
         src={tileUrl}
         alt=""
