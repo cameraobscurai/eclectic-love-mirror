@@ -227,8 +227,9 @@ function SketchPage() {
   }, []);
 
   // Smooth wheel: accumulate deltas into a target, lerp current toward it.
-  // 0.28 (was 0.18) — snappier settle, fewer frames of residual drift, less
-  // work on the compositor when the user pauses between wheel bursts.
+  // Only used for coarse mouse-wheel notches. Trackpads deliver OS-momentum
+  // in tiny pixel deltas — layering our own lerp on top produces the
+  // "molasses" feel users report. Detected below and skipped.
   const wheelTargetX = useRef(x.get());
   const wheelTargetY = useRef(y.get());
   const wheelRaf = useRef<number | null>(null);
@@ -254,17 +255,14 @@ function SketchPage() {
     wheelRaf.current = requestAnimationFrame(tick);
   }, [x, y]);
 
-  // Keep wheel target synced when other inputs (drag, keys, reset) move the canvas.
-  useMotionValueEvent(x, "change", (v) => {
-    if (wheelRaf.current === null) wheelTargetX.current = v;
-  });
-  useMotionValueEvent(y, "change", (v) => {
-    if (wheelRaf.current === null) wheelTargetY.current = v;
-  });
-
   useEffect(() => () => {
     if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
   }, []);
+
+  // Track cursor position so keyboard zoom (+/-) can zoom toward whatever
+  // tile the user is hovering, not the dead-center of the viewport.
+  const lastPointer = useRef({ x: 0, y: 0 });
+
 
 
   useGesture(
