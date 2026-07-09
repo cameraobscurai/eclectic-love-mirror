@@ -156,7 +156,12 @@ function SketchPage() {
     if (N === 0) return [];
     const out: { c: number; r: number; idx: number; key: string }[] = [];
     const s = Math.max(dynamicZoomMin, scale.get());
-    const bleed = 6;
+    // Bleed scales with zoom. At zoom-out (s < 1) the viewport already fits
+    // many more cells; a fixed bleed of 6 there means 288+ tiles in the DOM,
+    // most invisible. Shrink bleed with zoom so mobile at min-zoom carries
+    // ~4× fewer DOM nodes. At zoom=1: bleed=4. At zoom=2: bleed=4. At
+    // zoom=0.4: bleed=2. Never below 2 (avoids visible pop at pan boundaries).
+    const bleed = Math.max(2, Math.round(4 * Math.min(1, s)));
     const cols = Math.ceil(vp.w / (PITCH * s));
     const rows = Math.ceil(vp.h / (PITCH * s));
     const c0 = panOrigin.qx - bleed;
@@ -176,6 +181,7 @@ function SketchPage() {
     // is stable so it can't drive the dep list.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, zoomBucket]);
+
 
 
   const applyZoom = useCallback(
@@ -221,8 +227,9 @@ function SketchPage() {
   }, []);
 
   // Smooth wheel: accumulate deltas into a target, lerp current toward it.
-  // 0.28 (was 0.18) — snappier settle, fewer frames of residual drift, less
-  // work on the compositor when the user pauses between wheel bursts.
+  // Only used for coarse mouse-wheel notches. Trackpads deliver OS-momentum
+  // in tiny pixel deltas — layering our own lerp on top produces the
+  // "molasses" feel users report. Detected below and skipped.
   const wheelTargetX = useRef(x.get());
   const wheelTargetY = useRef(y.get());
   const wheelRaf = useRef<number | null>(null);
@@ -248,17 +255,14 @@ function SketchPage() {
     wheelRaf.current = requestAnimationFrame(tick);
   }, [x, y]);
 
-  // Keep wheel target synced when other inputs (drag, keys, reset) move the canvas.
-  useMotionValueEvent(x, "change", (v) => {
-    if (wheelRaf.current === null) wheelTargetX.current = v;
-  });
-  useMotionValueEvent(y, "change", (v) => {
-    if (wheelRaf.current === null) wheelTargetY.current = v;
-  });
-
   useEffect(() => () => {
     if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
   }, []);
+
+  // Track cursor position so keyboard zoom (+/-) can zoom toward whatever
+  // tile the user is hovering, not the dead-center of the viewport.
+  const lastPointer = useRef({ x: 0, y: 0 });
+
 
 
   useGesture(
@@ -272,15 +276,18 @@ function SketchPage() {
         y.set(y.get() + dy);
 
         if (last && !reducedMotion.current) {
-          animate(x, x.get() + dirX * Math.min(vx * 140, 1400), {
+          // Tighter inertia: shorter tail (200 vs 280) + lower cap (900 vs
+          // 1400) so a fast flick settles in <0.4s and the Reset button
+          // isn't racing an in-flight spring when the user re-engages.
+          animate(x, x.get() + dirX * Math.min(vx * 120, 900), {
             type: "inertia",
-            power: 0.55,
-            timeConstant: 280,
+            power: 0.45,
+            timeConstant: 200,
           });
-          animate(y, y.get() + dirY * Math.min(vy * 140, 1400), {
+          animate(y, y.get() + dirY * Math.min(vy * 120, 900), {
             type: "inertia",
-            power: 0.55,
-            timeConstant: 280,
+            power: 0.45,
+            timeConstant: 200,
           });
         }
       },
@@ -289,12 +296,37 @@ function SketchPage() {
         dismissHint();
 
         if (ctrlKey) {
-          applyZoom(-dy * 0.01, event.clientX, event.clientY);
-        } else if (reducedMotion.current) {
-          // Direct set — no lerp — for reduced-motion users.
+          // Ctrl+wheel = zoom. Standard mouse wheels fire deltaY ≈ 100+ per
+          // notch; unclamped, -dy*0.01 = -1.0 = 100% scale jump in a single
+          // click. Cap the effective delta so one notch is a smooth ~15%
+          // step regardless of device (trackpads already send small deltas).
+          const clamped = Math.sign(dy) * Math.min(Math.abs(dy), 30);
+          applyZoom(-clamped * 0.01, event.clientX, event.clientY);
+          return;
+        }
+
+        // Trackpad heuristic: pixel-mode wheel with small per-event delta =
+        // OS-momentum trackpad. Layering our own lerp on top double-eases
+        // (OS decelerates, then we decelerate again) → the "molasses" feel.
+        // Direct-set matches Figma's trackpad behavior. Coarse mouse wheels
+        // (line-mode or |delta| ≥ 40) still get the lerp for smoothness.
+        const isTrackpad =
+          (event as WheelEvent).deltaMode === 0 &&
+          Math.abs(dx) < 40 &&
+          Math.abs(dy) < 40;
+
+        if (reducedMotion.current || isTrackpad) {
+          x.stop();
+          y.stop();
           x.set(x.get() - dx);
           y.set(y.get() - dy);
         } else {
+          // Resync target from live position on wheel entry — cheaper than
+          // a reactive useMotionValueEvent subscription that fires 60/sec.
+          if (wheelRaf.current === null) {
+            wheelTargetX.current = x.get();
+            wheelTargetY.current = y.get();
+          }
           wheelTargetX.current -= dx;
           wheelTargetY.current -= dy;
           startWheelLerp();
@@ -311,13 +343,20 @@ function SketchPage() {
         y.set(oy - (oy - y.get()) * ratio);
         return base;
       },
+      onMove: ({ event }) => {
+        // Track pointer for zoom-to-cursor on keyboard +/-. Ref write — no
+        // React state, no re-render.
+        lastPointer.current.x = (event as PointerEvent).clientX ?? 0;
+        lastPointer.current.y = (event as PointerEvent).clientY ?? 0;
+      },
     },
     {
       target: containerRef,
       eventOptions: { passive: false },
-      drag: { filterTaps: true, pointer: { keys: false } },
+      drag: { filterTaps: true, tapsThreshold: 8, pointer: { keys: false } },
     },
   );
+
 
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const close = useCallback(() => setOpenIdx(null), []);
@@ -352,8 +391,15 @@ function SketchPage() {
       if (event.key === "ArrowRight") animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
       if (event.key === "ArrowUp") animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
       if (event.key === "ArrowDown") animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (event.key === "+" || event.key === "=") applyZoom(0.15, vp.w / 2, vp.h / 2);
-      if (event.key === "-" || event.key === "_") applyZoom(-0.15, vp.w / 2, vp.h / 2);
+      // Zoom toward the last known cursor position (Figma-style) rather
+      // than the viewport center — makes +/- feel like it's zooming into
+      // whatever the user was looking at. Falls back to center if the
+      // pointer hasn't been over the canvas yet.
+      const zx = lastPointer.current.x || vp.w / 2;
+      const zy = lastPointer.current.y || vp.h / 2;
+      if (event.key === "+" || event.key === "=") applyZoom(0.15, zx, zy);
+      if (event.key === "-" || event.key === "_") applyZoom(-0.15, zx, zy);
+
       if (event.key === "0") {
         animate(x, initialX);
         animate(y, initialY);
@@ -415,18 +461,13 @@ function SketchPage() {
 
       <div
         ref={containerRef}
-        onPointerDown={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grabbing";
-        }}
-        onPointerUp={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grab";
-        }}
-        onPointerLeave={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grab";
-        }}
-        className="absolute inset-0 touch-none cursor-grab"
+        // Cursor swap via CSS pseudo-state — was JS `style.cursor` writes on
+        // every pointerdown/up/leave, which forced style recalcs on a subtree
+        // of ~200 tiles. `active:` covers the down-state with zero JS.
+        className="absolute inset-0 touch-none cursor-grab active:cursor-grabbing"
         style={{ WebkitUserSelect: "none" }}
       >
+
         <motion.div
           className={`absolute top-0 left-0 will-change-transform ${ready ? "opacity-100" : "opacity-0"}`}
           style={{
@@ -612,17 +653,29 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         event.stopPropagation();
         onOpen(idx);
       }}
-      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none"
+      // tabIndex=-1: canvas tiles are NOT in the keyboard tab order (the
+      // top-bar controls are). Arrow keys pan the canvas globally; Tab-ing
+      // through hundreds of infinite-wrap tiles has no meaningful nav story.
+      // focus-visible: retains a visible ring when a tile IS focused
+      // programmatically (e.g. after opening a lightbox and returning).
+      tabIndex={-1}
+      className="absolute block bg-[#ffffff] shadow-[0_2px_18px_rgba(26,26,26,0.06)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1a1a1a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#d4cdc4]"
       style={{
         left: c * PITCH,
         top: r * PITCH,
         width: TILE,
         height: TILE,
         contain: "layout paint style size",
+        // Promote only the first-paint priority tiles to their own compositor
+        // layer so their image-decode paint doesn't invalidate the shared
+        // isolation layer's damage rect. Non-priority tiles stay pooled to
+        // avoid ballooning VRAM on mobile.
+        willChange: priority ? "transform" : undefined,
       }}
       aria-label={`Open plate ${label}`}
       draggable={false}
     >
+
       <img
         src={tileUrl}
         alt=""
