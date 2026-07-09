@@ -54,8 +54,11 @@ function SketchPage() {
     return [...rawSketches].sort((a, b) => hash(a.name) - hash(b.name));
   }, [rawSketches]);
 
-  // Progressive reveal: show canvas as soon as the first viewport is decoded,
-  // then stream the rest in the background. No more waiting on 200+ tiles.
+  // Progressive reveal: decode only the first viewport before lifting the
+  // veil. The rest are handed to the browser's native lazy loader + our
+  // fetchPriority hints — no giant Image() waterfall that saturates the
+  // connection on mobile and pins ~200MB of decoded bitmaps on low-end
+  // devices for tiles the user may never pan to.
   const [loaded, setLoaded] = useState(0);
   const total = sketches.length;
   const FIRST_PAINT_COUNT = Math.min(24, total);
@@ -66,40 +69,30 @@ function SketchPage() {
     let cancelled = false;
     let done = 0;
 
-    const preload = (url: string) =>
-      new Promise<void>((resolve) => {
-        const img = new Image();
-        img.decoding = "async";
-        img.src = url;
-        const finish = () => {
-          if (cancelled) return resolve();
-          done += 1;
-          setLoaded(done);
-          resolve();
-        };
-        img
-          .decode()
-          .then(finish)
-          .catch(() => {
-            if (img.complete) finish();
-            else {
-              img.onload = finish;
-              img.onerror = finish;
-            }
-          });
+    const priority = sketches.slice(0, FIRST_PAINT_COUNT);
+    priority.forEach((s) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = s.tileUrl;
+      const finish = () => {
+        if (cancelled) return;
+        done += 1;
+        setLoaded(done);
+      };
+      img.decode().then(finish).catch(() => {
+        if (img.complete) finish();
+        else {
+          img.onload = finish;
+          img.onerror = finish;
+        }
       });
-
-    (async () => {
-      const priority = sketches.slice(0, FIRST_PAINT_COUNT);
-      const rest = sketches.slice(FIRST_PAINT_COUNT);
-      await Promise.all(priority.map((s) => preload(s.tileUrl)));
-      Promise.all(rest.map((s) => preload(s.tileUrl))).catch(() => {});
-    })().catch(() => {});
+    });
 
     return () => {
       cancelled = true;
     };
   }, [sketches, total, FIRST_PAINT_COUNT]);
+
 
   const N = sketches.length;
   const COLS = Math.max(1, Math.ceil(Math.sqrt(N)));
