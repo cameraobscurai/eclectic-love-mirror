@@ -271,7 +271,7 @@ function SketchPage() {
         x.set(x.get() + dx);
         y.set(y.get() + dy);
 
-        if (last) {
+        if (last && !reducedMotion.current) {
           animate(x, x.get() + dirX * Math.min(vx * 140, 1400), {
             type: "inertia",
             power: 0.55,
@@ -290,12 +290,17 @@ function SketchPage() {
 
         if (ctrlKey) {
           applyZoom(-dy * 0.01, event.clientX, event.clientY);
+        } else if (reducedMotion.current) {
+          // Direct set — no lerp — for reduced-motion users.
+          x.set(x.get() - dx);
+          y.set(y.get() - dy);
         } else {
           wheelTargetX.current -= dx;
           wheelTargetY.current -= dy;
           startWheelLerp();
         }
       },
+
       onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
         dismissHint();
         const base = memo ?? scale.get() / distance;
