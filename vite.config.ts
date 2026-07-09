@@ -6,6 +6,8 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { imagetools } from "vite-imagetools";
+import { VitePWA } from "vite-plugin-pwa";
+
 
 // vite-imagetools: drop one source image into src/assets/, append a query string,
 // and the build emits AVIF/WebP/responsive widths automatically.
@@ -58,6 +60,62 @@ export default defineConfig({
           return params;
         },
       }),
+      // Narrow-scope PWA: no app-shell precache, no manifest, no navigation
+      // fallback. Sole purpose is a runtime CacheFirst store for /sketch tile
+      // images from Supabase's render endpoint so revisits are free.
+      // Registration is gated by src/lib/sw-register.ts (skips dev + Lovable
+      // preview + iframes + ?sw=off).
+      VitePWA({
+        registerType: "autoUpdate",
+        injectRegister: null,
+        manifest: false,
+        devOptions: { enabled: false },
+        filename: "sw.js",
+        workbox: {
+          // No app-shell precache — this SW exists only to cache tile images.
+          globPatterns: [],
+          navigateFallback: null,
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+          runtimeCaching: [
+            {
+              // Supabase image-render endpoint (sketch tiles + any other
+              // render-signed image). Signed URLs rotate tokens each session;
+              // strip the token from the cache key so revisits hit the cache
+              // instead of storing a fresh copy per visit.
+              urlPattern: ({ url }) =>
+                /\/storage\/v1\/render\/image\/sign\//.test(url.pathname),
+              handler: "CacheFirst",
+              options: {
+                cacheName: "sketch-tiles-v1",
+                expiration: {
+                  maxEntries: 500,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                  purgeOnQuotaError: true,
+                },
+                cacheableResponse: { statuses: [0, 200] },
+                plugins: [
+                  {
+                    cacheKeyWillBeUsed: async ({ request }) => {
+                      const u = new URL(request.url);
+                      // Drop the JWT + any transient params; keep only the
+                      // transform params that actually change bytes.
+                      const keep = new URLSearchParams();
+                      for (const k of ["width", "height", "resize", "quality", "format"]) {
+                        const v = u.searchParams.get(k);
+                        if (v) keep.set(k, v);
+                      }
+                      return `${u.origin}${u.pathname}?${keep.toString()}`;
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      }),
     ],
   },
 });
+
