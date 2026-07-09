@@ -629,3 +629,18 @@ button, a, [role="button"] {
     filter: brightness(var(--pmb1, 1));
   }
 }
+
+/* /sketch — pan-idle perf toggle.
+ * During active pan/zoom, drop the two most expensive per-frame paint ops:
+ *   1. mix-blend-multiply on tile images (breaks the fast compositor path)
+ *   2. box-shadow blur on tile buttons (repainted every transform tick)
+ * Restored 140ms after the last input (see markPanning() in sketch.tsx).
+ * Users cannot resolve blend/shadow detail during motion; on idle the full
+ * editorial treatment snaps back. This is the Figma/Miro pattern.
+ */
+[data-panning] img {
+  mix-blend-mode: normal !important;
+}
+[data-panning] button {
+  box-shadow: none !important;
+}
