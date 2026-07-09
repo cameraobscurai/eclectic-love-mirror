@@ -644,3 +644,16 @@ button, a, [role="button"] {
 [data-panning] button {
   box-shadow: none !important;
 }
+
+/* Additional pan-idle wins (per tldraw PR #7826 + Figma architecture notes):
+ * - Drop `isolation` so the transforming layer stops forcing a main-thread
+ *   compositing group every frame.
+ * - Disable pointer-events on tile buttons so hover hit-testing on ~200
+ *   <button>s doesn't run on every pointermove during pan.
+ */
+[data-panning] > div {
+  isolation: auto !important;
+}
+[data-panning] button {
+  pointer-events: none;
+}
