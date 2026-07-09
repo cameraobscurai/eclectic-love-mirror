@@ -324,6 +324,9 @@ function SketchPage() {
       onWheel: ({ event, delta: [dx, dy], ctrlKey }) => {
         event.preventDefault();
         dismissHint();
+        markPanning();
+
+
 
         if (ctrlKey) {
           // Ctrl+wheel = zoom. Standard mouse wheels fire deltaY ≈ 100+ per
