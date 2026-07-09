@@ -276,15 +276,18 @@ function SketchPage() {
         y.set(y.get() + dy);
 
         if (last && !reducedMotion.current) {
-          animate(x, x.get() + dirX * Math.min(vx * 140, 1400), {
+          // Tighter inertia: shorter tail (200 vs 280) + lower cap (900 vs
+          // 1400) so a fast flick settles in <0.4s and the Reset button
+          // isn't racing an in-flight spring when the user re-engages.
+          animate(x, x.get() + dirX * Math.min(vx * 120, 900), {
             type: "inertia",
-            power: 0.55,
-            timeConstant: 280,
+            power: 0.45,
+            timeConstant: 200,
           });
-          animate(y, y.get() + dirY * Math.min(vy * 140, 1400), {
+          animate(y, y.get() + dirY * Math.min(vy * 120, 900), {
             type: "inertia",
-            power: 0.55,
-            timeConstant: 280,
+            power: 0.45,
+            timeConstant: 200,
           });
         }
       },
@@ -293,12 +296,37 @@ function SketchPage() {
         dismissHint();
 
         if (ctrlKey) {
-          applyZoom(-dy * 0.01, event.clientX, event.clientY);
-        } else if (reducedMotion.current) {
-          // Direct set — no lerp — for reduced-motion users.
+          // Ctrl+wheel = zoom. Standard mouse wheels fire deltaY ≈ 100+ per
+          // notch; unclamped, -dy*0.01 = -1.0 = 100% scale jump in a single
+          // click. Cap the effective delta so one notch is a smooth ~15%
+          // step regardless of device (trackpads already send small deltas).
+          const clamped = Math.sign(dy) * Math.min(Math.abs(dy), 30);
+          applyZoom(-clamped * 0.01, event.clientX, event.clientY);
+          return;
+        }
+
+        // Trackpad heuristic: pixel-mode wheel with small per-event delta =
+        // OS-momentum trackpad. Layering our own lerp on top double-eases
+        // (OS decelerates, then we decelerate again) → the "molasses" feel.
+        // Direct-set matches Figma's trackpad behavior. Coarse mouse wheels
+        // (line-mode or |delta| ≥ 40) still get the lerp for smoothness.
+        const isTrackpad =
+          (event as WheelEvent).deltaMode === 0 &&
+          Math.abs(dx) < 40 &&
+          Math.abs(dy) < 40;
+
+        if (reducedMotion.current || isTrackpad) {
+          x.stop();
+          y.stop();
           x.set(x.get() - dx);
           y.set(y.get() - dy);
         } else {
+          // Resync target from live position on wheel entry — cheaper than
+          // a reactive useMotionValueEvent subscription that fires 60/sec.
+          if (wheelRaf.current === null) {
+            wheelTargetX.current = x.get();
+            wheelTargetY.current = y.get();
+          }
           wheelTargetX.current -= dx;
           wheelTargetY.current -= dy;
           startWheelLerp();
@@ -315,13 +343,20 @@ function SketchPage() {
         y.set(oy - (oy - y.get()) * ratio);
         return base;
       },
+      onMove: ({ event }) => {
+        // Track pointer for zoom-to-cursor on keyboard +/-. Ref write — no
+        // React state, no re-render.
+        lastPointer.current.x = (event as PointerEvent).clientX ?? 0;
+        lastPointer.current.y = (event as PointerEvent).clientY ?? 0;
+      },
     },
     {
       target: containerRef,
       eventOptions: { passive: false },
-      drag: { filterTaps: true, pointer: { keys: false } },
+      drag: { filterTaps: true, tapsThreshold: 8, pointer: { keys: false } },
     },
   );
+
 
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   const close = useCallback(() => setOpenIdx(null), []);
