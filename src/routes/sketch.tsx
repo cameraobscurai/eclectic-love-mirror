@@ -628,8 +628,9 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         alt=""
         width={TILE}
         height={TILE}
-        loading="eager"
-        fetchPriority={priority ? "high" : "auto"}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "low"}
+
         decoding="async"
         draggable={false}
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply"
