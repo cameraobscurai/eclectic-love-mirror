@@ -298,8 +298,10 @@ function SketchPage() {
       onDrag: ({ delta: [dx, dy], last, velocity: [vx, vy], direction: [dirX, dirY], tap }) => {
         if (tap) return;
         dismissHint();
+        markPanning();
         x.stop();
         y.stop();
+
         x.set(x.get() + dx);
         y.set(y.get() + dy);
 
