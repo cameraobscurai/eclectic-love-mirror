@@ -461,18 +461,13 @@ function SketchPage() {
 
       <div
         ref={containerRef}
-        onPointerDown={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grabbing";
-        }}
-        onPointerUp={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grab";
-        }}
-        onPointerLeave={() => {
-          if (containerRef.current) containerRef.current.style.cursor = "grab";
-        }}
-        className="absolute inset-0 touch-none cursor-grab"
+        // Cursor swap via CSS pseudo-state — was JS `style.cursor` writes on
+        // every pointerdown/up/leave, which forced style recalcs on a subtree
+        // of ~200 tiles. `active:` covers the down-state with zero JS.
+        className="absolute inset-0 touch-none cursor-grab active:cursor-grabbing"
         style={{ WebkitUserSelect: "none" }}
       >
+
         <motion.div
           className={`absolute top-0 left-0 will-change-transform ${ready ? "opacity-100" : "opacity-0"}`}
           style={{
