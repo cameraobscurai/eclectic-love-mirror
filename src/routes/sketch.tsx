@@ -206,7 +206,23 @@ function SketchPage() {
     return () => clearTimeout(timeout);
   }, []);
 
+  // Respect reduced-motion: skip wheel lerp + drag inertia entirely for
+  // users who ask for it (accessibility + battery savings on low-end).
+  const reducedMotion = useRef(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      reducedMotion.current = mq.matches;
+    };
+    sync();
+    mq.addEventListener?.("change", sync);
+    return () => mq.removeEventListener?.("change", sync);
+  }, []);
+
   // Smooth wheel: accumulate deltas into a target, lerp current toward it.
+  // 0.28 (was 0.18) — snappier settle, fewer frames of residual drift, less
+  // work on the compositor when the user pauses between wheel bursts.
   const wheelTargetX = useRef(x.get());
   const wheelTargetY = useRef(y.get());
   const wheelRaf = useRef<number | null>(null);
@@ -217,8 +233,8 @@ function SketchPage() {
       const cy = y.get();
       const tx = wheelTargetX.current;
       const ty = wheelTargetY.current;
-      const nx = cx + (tx - cx) * 0.18;
-      const ny = cy + (ty - cy) * 0.18;
+      const nx = cx + (tx - cx) * 0.28;
+      const ny = cy + (ty - cy) * 0.28;
       x.set(nx);
       y.set(ny);
       if (Math.abs(tx - nx) < 0.5 && Math.abs(ty - ny) < 0.5) {
@@ -243,6 +259,7 @@ function SketchPage() {
   useEffect(() => () => {
     if (wheelRaf.current !== null) cancelAnimationFrame(wheelRaf.current);
   }, []);
+
 
   useGesture(
     {
