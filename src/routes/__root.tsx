@@ -202,7 +202,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SmoothScroll />
+      {/* Lenis smooth-scroll disabled on /sketch — the sketch canvas owns its
+          own wheel handler + inertia loop, and body overflow is hidden so
+          Lenis can't scroll anything anyway. Removing it drops a 3rd RAF
+          loop that was competing with the wheel-lerp and Framer schedulers. */}
+      {!isSketch && <SmoothScroll />}
+
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-charcoal focus:text-cream focus:outline-none"
