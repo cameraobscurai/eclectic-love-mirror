@@ -167,6 +167,14 @@ function RootComponent() {
     defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } },
   }));
 
+  // Register the tile-cache service worker exactly once on the client.
+  // The wrapper refuses registration in dev, iframes, Lovable preview, and
+  // when ?sw=off is set — see src/lib/sw-register.ts.
+  useEffect(() => {
+    import("../lib/sw-register").then((m) => m.registerAppServiceWorker());
+  }, []);
+
+
   // Send a GA4 page_view on every TanStack route change.
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.gtag !== "function") return;
