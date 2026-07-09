@@ -368,7 +368,9 @@ function SketchPage() {
 
       onPinch: ({ origin: [ox, oy], offset: [distance], memo }) => {
         dismissHint();
+        markPanning();
         const base = memo ?? scale.get() / distance;
+
         const next = Math.max(dynamicZoomMin, Math.min(ZOOM_MAX, base * distance));
         const ratio = next / scale.get();
         scale.set(next);
