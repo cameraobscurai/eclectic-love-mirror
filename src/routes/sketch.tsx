@@ -391,8 +391,15 @@ function SketchPage() {
       if (event.key === "ArrowRight") animate(x, x.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
       if (event.key === "ArrowUp") animate(y, y.get() + STEP, { type: "spring", stiffness: 200, damping: 30 });
       if (event.key === "ArrowDown") animate(y, y.get() - STEP, { type: "spring", stiffness: 200, damping: 30 });
-      if (event.key === "+" || event.key === "=") applyZoom(0.15, vp.w / 2, vp.h / 2);
-      if (event.key === "-" || event.key === "_") applyZoom(-0.15, vp.w / 2, vp.h / 2);
+      // Zoom toward the last known cursor position (Figma-style) rather
+      // than the viewport center — makes +/- feel like it's zooming into
+      // whatever the user was looking at. Falls back to center if the
+      // pointer hasn't been over the canvas yet.
+      const zx = lastPointer.current.x || vp.w / 2;
+      const zy = lastPointer.current.y || vp.h / 2;
+      if (event.key === "+" || event.key === "=") applyZoom(0.15, zx, zy);
+      if (event.key === "-" || event.key === "_") applyZoom(-0.15, zx, zy);
+
       if (event.key === "0") {
         animate(x, initialX);
         animate(y, initialY);
