@@ -666,12 +666,13 @@ const Tile = memo(function Tile({ tileUrl, idx, c, r, onOpen }: TileProps) {
         width: TILE,
         height: TILE,
         contain: "layout paint style size",
-        // Promote only the first-paint priority tiles to their own compositor
-        // layer so their image-decode paint doesn't invalidate the shared
-        // isolation layer's damage rect. Non-priority tiles stay pooled to
-        // avoid ballooning VRAM on mobile.
-        willChange: priority ? "transform" : undefined,
+        // NOTE: Do NOT add `will-change: transform` here. It promotes the
+        // tile to its own compositor layer, which creates a new stacking
+        // context and isolates the image's `mix-blend-multiply` inside that
+        // layer — the img then blends against the button's white bg instead
+        // of the isolation layer's beige, rendering as an opaque white box.
       }}
+
       aria-label={`Open plate ${label}`}
       draggable={false}
     >
