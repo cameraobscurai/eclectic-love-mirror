@@ -156,7 +156,12 @@ function SketchPage() {
     if (N === 0) return [];
     const out: { c: number; r: number; idx: number; key: string }[] = [];
     const s = Math.max(dynamicZoomMin, scale.get());
-    const bleed = 6;
+    // Bleed scales with zoom. At zoom-out (s < 1) the viewport already fits
+    // many more cells; a fixed bleed of 6 there means 288+ tiles in the DOM,
+    // most invisible. Shrink bleed with zoom so mobile at min-zoom carries
+    // ~4× fewer DOM nodes. At zoom=1: bleed=4. At zoom=2: bleed=4. At
+    // zoom=0.4: bleed=2. Never below 2 (avoids visible pop at pan boundaries).
+    const bleed = Math.max(2, Math.round(4 * Math.min(1, s)));
     const cols = Math.ceil(vp.w / (PITCH * s));
     const rows = Math.ceil(vp.h / (PITCH * s));
     const c0 = panOrigin.qx - bleed;
@@ -176,6 +181,7 @@ function SketchPage() {
     // is stable so it can't drive the dep list.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [N, dynamicZoomMin, vp.w, vp.h, panOrigin, ROWS, COLS, zoomBucket]);
+
 
 
   const applyZoom = useCallback(
