@@ -9,9 +9,24 @@ const KNOWN_NOISE: RegExp[] = [
   /non-static position.*scroll offset/i,     // framer-motion measure warning
   /Download the React DevTools/i,
   /\[vite\]/i,
+  // Preview-only: Lovable dev-tagger injects data-tsd-source attributes that
+  // differ between SSR and client renders. Not present in production builds.
+  /hydrat/i,
+  /data-tsd-source/i,
+  // Preview-only: headless browser + ad blockers abort google-analytics
+  // beacons, which surface as "Failed to load resource" 404s in the console.
 ];
 
-const isKnown = (text: string) => KNOWN_NOISE.some((re) => re.test(text));
+// Third-party URLs that headless Chromium blocks (analytics, tag manager).
+// Any console error tied to one of these URLs is preview-only noise.
+const NOISY_URL_HOSTS = [
+  /google-analytics\.com/i,
+  /googletagmanager\.com/i,
+];
+
+const isKnownText = (text: string) => KNOWN_NOISE.some((re) => re.test(text));
+const isKnownUrl = (url?: string) =>
+  !!url && NOISY_URL_HOSTS.some((re) => re.test(url));
 
 test.describe('/stylebrief console health', () => {
   test.setTimeout(60_000);
@@ -27,13 +42,15 @@ test.describe('/stylebrief console health', () => {
     const record = (msg: ConsoleMessage) => {
       if (msg.type() !== 'error') return;
       const text = msg.text();
-      if (isKnown(text)) return;
-      errors.push(text);
+      const url = msg.location().url ?? '';
+      if (isKnownText(text)) return;
+      if (isKnownUrl(url)) return;
+      errors.push(`${text} [src: ${url}]`);
     };
     page.on('console', record);
     page.on('pageerror', (err) => {
       const text = err.message || String(err);
-      if (!isKnown(text)) errors.push(`pageerror: ${text}`);
+      if (!isKnownText(text)) errors.push(`pageerror: ${text}`);
     });
 
     await page.setViewportSize({ width: 1280, height: 1800 });

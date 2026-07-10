@@ -94,6 +94,14 @@ export const Route = createRootRoute({
         type: "font/woff2",
         crossOrigin: "anonymous",
       },
+      // Inline SVG favicon (charcoal "H" mark) — avoids /favicon.ico 404s
+      // without adding a binary asset to the repo.
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href:
+          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='20' fill='%23f5f2ed' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
+      },
     ],
   }),
   shellComponent: RootShell,
