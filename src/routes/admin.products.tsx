@@ -384,6 +384,33 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
 
         {row && (
           <div className="px-6 py-6 space-y-8">
+            {/* Photo manager launcher — best-practice: drag-reorder, upload, cover, focal, storage picker (autosaves) */}
+            <section className="border border-charcoal/15 bg-white/50 p-4">
+              <div className="flex items-start gap-4">
+                <div className="flex -space-x-2">
+                  {(Array.isArray(current.images) ? (current.images as string[]) : []).slice(0, 4).map((u) => (
+                    <img key={u} src={u} alt="" className="w-12 h-12 object-cover border border-charcoal/20 bg-white" />
+                  ))}
+                  {(!Array.isArray(current.images) || (current.images as string[]).length === 0) && (
+                    <div className="w-12 h-12 bg-charcoal/5 border border-charcoal/15" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50">Photos</h3>
+                  <p className="mt-1 text-[11px] text-charcoal/60">
+                    {(Array.isArray(current.images) ? (current.images as string[]).length : 0)} image{((current.images as string[] | undefined)?.length ?? 0) === 1 ? "" : "s"} · first is cover
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPhotoEditor(true)}
+                  className="inline-flex items-center gap-2 border border-charcoal px-3 py-2 text-[10px] uppercase tracking-[0.22em] hover:bg-charcoal hover:text-cream"
+                >
+                  <Images className="h-3.5 w-3.5" /> Manage photos
+                </button>
+              </div>
+            </section>
+
             {FIELD_GROUPS.map((g) => (
               <section key={g.label}>
                 <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">{g.label}</h3>
@@ -400,6 +427,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
                 </div>
               </section>
             ))}
+
 
             <section>
               <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">Recent activity</h3>
