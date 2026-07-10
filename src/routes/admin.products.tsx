@@ -107,12 +107,21 @@ function Inner() {
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-8 pb-24 max-w-[1500px] mx-auto">
-        <header className="mb-8">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
-          <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Products</h1>
-          <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
-            {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
-          </p>
+        <header className="mb-8 flex items-start justify-between gap-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
+            <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Products</h1>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
+              {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
+            </p>
+          </div>
+          <Link
+            to="/admin/new-product"
+            className="inline-flex items-center gap-2 bg-charcoal text-cream px-4 py-2.5 text-[11px] uppercase tracking-[0.22em] hover:bg-charcoal/90 whitespace-nowrap"
+          >
+            <Plus className="h-3.5 w-3.5" /> New product
+          </Link>
+
           {groupLabel && (
             <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
               <span className="text-charcoal/60">Group filter:</span>
