@@ -455,9 +455,28 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
           </div>
         )}
       </aside>
+
+      {photoEditor && row && (
+        <ImageOrderEditor
+          item={{
+            id: row.id,
+            rms_id: (row.rms_id as string | null) ?? null,
+            title: (row.title as string) ?? "",
+            images: Array.isArray(row.images) ? (row.images as string[]) : [],
+            card_background_url: (row.card_background_url as string | null) ?? null,
+          }}
+          onClose={() => setPhotoEditor(false)}
+          onSaved={(next) => {
+            // Reflect autosaved changes locally + refresh parent list.
+            setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+            onSaved();
+          }}
+        />
+      )}
     </div>
   );
 }
+
 
 function FieldRow({
   field, value, changed, onChange,
