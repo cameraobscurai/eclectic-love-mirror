@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { Plus, Images } from "lucide-react";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import {
   listProducts,
@@ -11,6 +12,8 @@ import {
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
 import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
+import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
+
 
 // AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
 export const Route = createFileRoute("/admin/products")({
