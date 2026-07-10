@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { Plus, Images } from "lucide-react";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import {
   listProducts,
@@ -11,6 +12,8 @@ import {
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
 import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
+import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
+
 
 // AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
 export const Route = createFileRoute("/admin/products")({
@@ -104,26 +107,35 @@ function Inner() {
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-8 pb-24 max-w-[1500px] mx-auto">
-        <header className="mb-8">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
-          <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Products</h1>
-          <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
-            {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
-          </p>
-          {groupLabel && (
-            <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
-              <span className="text-charcoal/60">Group filter:</span>
-              <span className="text-charcoal">{groupLabel}</span>
-              <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
-              <button
-                type="button"
-                onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
-                className="ml-2 text-charcoal/60 hover:text-charcoal"
-                aria-label="Clear group filter"
-              >×</button>
-            </div>
-          )}
+        <header className="mb-8 flex items-start justify-between gap-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
+            <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Products</h1>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
+              {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
+            </p>
+            {groupLabel && (
+              <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
+                <span className="text-charcoal/60">Group filter:</span>
+                <span className="text-charcoal">{groupLabel}</span>
+                <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
+                <button
+                  type="button"
+                  onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
+                  className="ml-2 text-charcoal/60 hover:text-charcoal"
+                  aria-label="Clear group filter"
+                >×</button>
+              </div>
+            )}
+          </div>
+          <Link
+            to="/admin/new-product"
+            className="inline-flex items-center gap-2 bg-charcoal text-cream px-4 py-2.5 text-[11px] uppercase tracking-[0.22em] hover:bg-charcoal/90 whitespace-nowrap"
+          >
+            <Plus className="h-3.5 w-3.5" /> New product
+          </Link>
         </header>
+
 
 
         {/* filter row */}
@@ -304,7 +316,9 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const [patch, setPatch] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [photoEditor, setPhotoEditor] = useState(false);
   const [audit, setAudit] = useState<Array<{ id: string; at: string; action: string; before: unknown; after: unknown; actor_id: string | null }>>([]);
+
 
   useEffect(() => {
     setRow(null); setPatch({}); setErr(null);
@@ -370,6 +384,33 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
 
         {row && (
           <div className="px-6 py-6 space-y-8">
+            {/* Photo manager launcher — best-practice: drag-reorder, upload, cover, focal, storage picker (autosaves) */}
+            <section className="border border-charcoal/15 bg-white/50 p-4">
+              <div className="flex items-start gap-4">
+                <div className="flex -space-x-2">
+                  {(Array.isArray(current.images) ? (current.images as string[]) : []).slice(0, 4).map((u) => (
+                    <img key={u} src={u} alt="" className="w-12 h-12 object-cover border border-charcoal/20 bg-white" />
+                  ))}
+                  {(!Array.isArray(current.images) || (current.images as string[]).length === 0) && (
+                    <div className="w-12 h-12 bg-charcoal/5 border border-charcoal/15" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50">Photos</h3>
+                  <p className="mt-1 text-[11px] text-charcoal/60">
+                    {(Array.isArray(current.images) ? (current.images as string[]).length : 0)} image{((current.images as string[] | undefined)?.length ?? 0) === 1 ? "" : "s"} · first is cover
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPhotoEditor(true)}
+                  className="inline-flex items-center gap-2 border border-charcoal px-3 py-2 text-[10px] uppercase tracking-[0.22em] hover:bg-charcoal hover:text-cream"
+                >
+                  <Images className="h-3.5 w-3.5" /> Manage photos
+                </button>
+              </div>
+            </section>
+
             {FIELD_GROUPS.map((g) => (
               <section key={g.label}>
                 <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">{g.label}</h3>
@@ -386,6 +427,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
                 </div>
               </section>
             ))}
+
 
             <section>
               <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">Recent activity</h3>
@@ -413,9 +455,28 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
           </div>
         )}
       </aside>
+
+      {photoEditor && row && (
+        <ImageOrderEditor
+          item={{
+            id: row.id,
+            rms_id: (row.rms_id as string | null) ?? null,
+            title: (row.title as string) ?? "",
+            images: Array.isArray(row.images) ? (row.images as string[]) : [],
+            card_background_url: (row.card_background_url as string | null) ?? null,
+          }}
+          onClose={() => setPhotoEditor(false)}
+          onSaved={(next) => {
+            // Reflect autosaved changes locally + refresh parent list.
+            setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+            onSaved();
+          }}
+        />
+      )}
     </div>
   );
 }
+
 
 function FieldRow({
   field, value, changed, onChange,
