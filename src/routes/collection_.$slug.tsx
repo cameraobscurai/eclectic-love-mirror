@@ -244,7 +244,7 @@ export const Route = createFileRoute("/collection_/$slug")({
   },
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   notFoundComponent: () => (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-3xl px-6 py-32 text-center">
         <h1 className="font-display text-3xl tracking-wide uppercase mb-4">
@@ -297,7 +297,7 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
   }, [navigate, parent]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-4xl px-6 py-32 text-center">
         <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
@@ -336,7 +336,7 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
   const alt = product.primaryImage?.altText || product.title;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-7xl px-6 lg:px-12 pt-28 pb-24">
         <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-8">
