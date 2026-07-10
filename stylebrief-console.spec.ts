@@ -42,9 +42,10 @@ test.describe('/stylebrief console health', () => {
     const record = (msg: ConsoleMessage) => {
       if (msg.type() !== 'error') return;
       const text = msg.text();
+      const url = msg.location().url ?? '';
       if (isKnownText(text)) return;
-      if (isKnownUrl(msg.location().url)) return;
-      errors.push(text);
+      if (isKnownUrl(url)) return;
+      errors.push(`${text} [src: ${url}]`);
     };
     page.on('console', record);
     page.on('pageerror', (err) => {
