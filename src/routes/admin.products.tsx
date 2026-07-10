@@ -114,6 +114,19 @@ function Inner() {
             <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
               {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
             </p>
+            {groupLabel && (
+              <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
+                <span className="text-charcoal/60">Group filter:</span>
+                <span className="text-charcoal">{groupLabel}</span>
+                <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
+                <button
+                  type="button"
+                  onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
+                  className="ml-2 text-charcoal/60 hover:text-charcoal"
+                  aria-label="Clear group filter"
+                >×</button>
+              </div>
+            )}
           </div>
           <Link
             to="/admin/new-product"
@@ -121,21 +134,8 @@ function Inner() {
           >
             <Plus className="h-3.5 w-3.5" /> New product
           </Link>
-
-          {groupLabel && (
-            <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
-              <span className="text-charcoal/60">Group filter:</span>
-              <span className="text-charcoal">{groupLabel}</span>
-              <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
-              <button
-                type="button"
-                onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
-                className="ml-2 text-charcoal/60 hover:text-charcoal"
-                aria-label="Clear group filter"
-              >×</button>
-            </div>
-          )}
         </header>
+
 
 
         {/* filter row */}
