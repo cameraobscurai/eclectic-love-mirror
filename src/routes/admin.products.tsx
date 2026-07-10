@@ -316,7 +316,9 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const [patch, setPatch] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [photoEditor, setPhotoEditor] = useState(false);
   const [audit, setAudit] = useState<Array<{ id: string; at: string; action: string; before: unknown; after: unknown; actor_id: string | null }>>([]);
+
 
   useEffect(() => {
     setRow(null); setPatch({}); setErr(null);
