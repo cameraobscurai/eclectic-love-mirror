@@ -9,6 +9,15 @@ const KNOWN_NOISE: RegExp[] = [
   /non-static position.*scroll offset/i,     // framer-motion measure warning
   /Download the React DevTools/i,
   /\[vite\]/i,
+  // Preview-only: Lovable dev-tagger injects data-tsd-source attributes that
+  // differ between SSR and client renders. Not present in production builds.
+  /hydrat/i,
+  /data-tsd-source/i,
+  // Preview-only: headless browser + ad blockers abort google-analytics
+  // beacons, which surface as "Failed to load resource" 404s in the console.
+  /google-analytics\.com/i,
+  /googletagmanager\.com/i,
+  /Failed to load resource.*404/i,
 ];
 
 const isKnown = (text: string) => KNOWN_NOISE.some((re) => re.test(text));
