@@ -31,7 +31,7 @@ export const Route = createFileRoute("/stylebrief/")({
         rel: "preload",
         as: "image",
         href: "/media/stylebrief/howto-poster.jpg",
-        fetchpriority: "high" as const,
+        fetchPriority: "high" as const,
       },
     ],
   }),
