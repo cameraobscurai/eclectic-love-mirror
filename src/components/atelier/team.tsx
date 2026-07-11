@@ -69,20 +69,19 @@ export function AtelierTeam() {
   );
 
   const principal = visibleMembers.find((m) => m.name === "Jill Livingston");
-  const staff = visibleMembers.filter((m) => m.name !== "Jill Livingston");
+
 
   return (
     <div>
       {/* ------------------------------------------------------------------
           Principal + team grid
-          Left column pins Jill as the atelier anchor. Right column carries
-          the section statement and the remaining team in a 4×2 grid so no
-          single portrait dangles on its own row.
+          Left column pins Jill as the atelier anchor on desktop. Below lg she
+          sits in the staff grid as a regular team member — no separation.
           ------------------------------------------------------------------ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
-        {/* Sticky principal card */}
-        <aside className="lg:col-span-4">
-          <div className="lg:sticky lg:top-24 max-w-[46vw] md:max-w-[26vw] lg:max-w-none">
+        {/* Sticky principal card — desktop only */}
+        <aside className="hidden lg:block lg:col-span-4">
+          <div className="lg:sticky lg:top-24">
             {principal && (
               <>
                 <div>
@@ -134,11 +133,12 @@ export function AtelierTeam() {
           </header>
 
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-7 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
-            {staff.map((member, index) => {
+            {visibleMembers.map((member, index) => {
               const showImage = !!member.image && member.image.approvedForWeb;
               const isFirstRow = index < 4;
+              const isPrincipal = member.name === "Jill Livingston";
               return (
-                <li key={member.name}>
+                <li key={member.name} className={isPrincipal ? "lg:hidden" : undefined}>
                   <MediaAperture
                     ratio="2/3"
                     src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
