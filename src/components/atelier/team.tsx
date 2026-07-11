@@ -69,7 +69,7 @@ export function AtelierTeam() {
   );
 
   const principal = visibleMembers.find((m) => m.name === "Jill Livingston");
-  const staff = visibleMembers.filter((m) => m.name !== "Jill Livingston");
+
 
   return (
     <div>
