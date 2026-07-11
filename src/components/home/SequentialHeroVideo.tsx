@@ -15,6 +15,7 @@ export function SequentialHeroVideo() {
   // Start on the preloaded first clip. Randomizing here made mobile Safari
   // chase a cold, non-preloaded source and left the poster looking stuck.
   const [index, setIndex] = useState(0);
+  const [muted, setMuted] = useState(true);
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
@@ -26,13 +27,19 @@ export function SequentialHeroVideo() {
 
     const primeAutoplay = () => {
       v.autoplay = true;
-      v.defaultMuted = true;
-      v.muted = true;
+      // Only force muted before the user has tapped the sound button. Once
+      // they unmute, respect that state across clip changes.
+      if (muted) {
+        v.defaultMuted = true;
+        v.muted = true;
+        v.setAttribute("muted", "");
+      } else {
+        v.muted = false;
+        v.removeAttribute("muted");
+      }
       v.playsInline = true;
       v.setAttribute("autoplay", "");
-      v.setAttribute("muted", "");
       v.setAttribute("playsinline", "");
-      v.defaultMuted = true;
       v.setAttribute("webkit-playsinline", "");
     };
 
@@ -60,7 +67,21 @@ export function SequentialHeroVideo() {
       v.removeEventListener("canplay", markReadyAndPlay);
       v.removeEventListener("playing", markReadyAndPlay);
     };
-  }, [index]);
+  }, [index, muted]);
+
+  const toggleSound = () => {
+    const v = videoRef.current;
+    setMuted((m) => {
+      const nextMuted = !m;
+      if (v) {
+        v.muted = nextMuted;
+        if (!nextMuted) {
+          v.play().catch(() => {});
+        }
+      }
+      return nextMuted;
+    });
+  };
 
   return (
     <div className="relative h-[100dvh] w-full overflow-hidden bg-charcoal">
@@ -81,16 +102,41 @@ export function SequentialHeroVideo() {
         src={current.src?.mp4}
         poster={current.poster}
         autoPlay
-        muted
+        muted={muted}
         playsInline
         preload="auto"
-        {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
+        {...({ defaultMuted: muted, "webkit-playsinline": "true" } as Record<string, unknown>)}
         onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
         aria-label={current.label}
       />
+
+      {/* Sound toggle — mobile users can tap to hear the season clips. */}
+      <button
+        type="button"
+        onClick={toggleSound}
+        aria-label={muted ? "Unmute video" : "Mute video"}
+        aria-pressed={!muted}
+        className="absolute bottom-6 right-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-charcoal/55 text-paper backdrop-blur-sm active:scale-95 transition-transform"
+      >
+        {muted ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H3v6h3l5 4V5z" />
+            <line x1="22" y1="9" x2="16" y2="15" />
+            <line x1="16" y1="9" x2="22" y2="15" />
+          </svg>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5 6 9H3v6h3l5 4V5z" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+        )}
+      </button>
+
       {/* Preload the next clip only after the first has begun playing,
           so it never competes with the LCP fetch. */}
       <link rel="prefetch" as="video" href={next.src?.mp4} />
     </div>
   );
 }
+
