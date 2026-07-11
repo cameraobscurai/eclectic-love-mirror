@@ -82,7 +82,7 @@ export function AtelierTeam() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
         {/* Sticky principal card */}
         <aside className="lg:col-span-4">
-          <div className="lg:sticky lg:top-24">
+          <div className="lg:sticky lg:top-24 max-w-[46vw] md:max-w-[26vw] lg:max-w-none">
             {principal && (
               <>
                 <div>
