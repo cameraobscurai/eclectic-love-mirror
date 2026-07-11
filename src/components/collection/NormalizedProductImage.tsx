@@ -56,9 +56,9 @@ function fitFromVisualBox(
   // scale mismatch the owner flagged. Keep one target so natural aspect
   // alone determines how tiles read next to each other.
   void renderedW; void renderedH;
-  const targetArea = targetAreaOverride ?? 0.42;
-  const maxW = maxWOverride ?? 0.94;
-  const maxH = maxHOverride ?? 0.82;
+  const targetArea = targetAreaOverride ?? 0.34;
+  const maxW = maxWOverride ?? 0.92;
+  const maxH = maxHOverride ?? 0.74;
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
@@ -70,13 +70,10 @@ function fitFromVisualBox(
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    // Raised upper clamp so narrow-silhouette shots (side tables, floor
-    // lamps, candlesticks photographed with generous negative space) can
-    // scale up enough to read at tile size. Previous 1.35 cap left them
-    // visibly smaller than sofas/dining tables in the same grid.
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.6, 1.9),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.55, 1.35),
   };
 }
+
 
 
 function measureImage(
