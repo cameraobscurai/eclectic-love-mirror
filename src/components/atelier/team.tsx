@@ -75,14 +75,13 @@ export function AtelierTeam() {
     <div>
       {/* ------------------------------------------------------------------
           Principal + team grid
-          Left column pins Jill as the atelier anchor. Right column carries
-          the section statement and the remaining team in a 4×2 grid so no
-          single portrait dangles on its own row.
+          Left column pins Jill as the atelier anchor on desktop. Below lg she
+          sits in the staff grid as a regular team member — no separation.
           ------------------------------------------------------------------ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
-        {/* Sticky principal card */}
-        <aside className="lg:col-span-4">
-          <div className="lg:sticky lg:top-24 max-w-[46vw] md:max-w-[26vw] lg:max-w-none">
+        {/* Sticky principal card — desktop only */}
+        <aside className="hidden lg:block lg:col-span-4">
+          <div className="lg:sticky lg:top-24">
             {principal && (
               <>
                 <div>
