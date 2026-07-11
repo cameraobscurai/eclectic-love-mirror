@@ -85,7 +85,7 @@ export function AtelierTeam() {
           <div className="lg:sticky lg:top-24">
             {principal && (
               <>
-                <div className="max-h-[72vw] overflow-hidden lg:max-h-none">
+                <div>
                   <MediaAperture
                     ratio="2/3"
                     src={

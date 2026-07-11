@@ -74,6 +74,8 @@ function fitFromVisualBox(
   };
 }
 
+
+
 function measureImage(
   img: HTMLImageElement,
   frameAspect = FRAME_ASPECT,
