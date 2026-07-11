@@ -133,11 +133,12 @@ export function AtelierTeam() {
           </header>
 
           <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-7 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
-            {staff.map((member, index) => {
+            {visibleMembers.map((member, index) => {
               const showImage = !!member.image && member.image.approvedForWeb;
               const isFirstRow = index < 4;
+              const isPrincipal = member.name === "Jill Livingston";
               return (
-                <li key={member.name}>
+                <li key={member.name} className={isPrincipal ? "lg:hidden" : undefined}>
                   <MediaAperture
                     ratio="2/3"
                     src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
