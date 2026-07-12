@@ -105,7 +105,7 @@ export function SequentialHeroVideo() {
         muted={muted}
         playsInline
         preload="auto"
-        {...({ defaultMuted: muted, "webkit-playsinline": "true" } as Record<string, unknown>)}
+        {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
         onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
         aria-label={current.label}
       />
