@@ -295,7 +295,7 @@ function FilmstripFrame({
               autoPlay
               playsInline
               preload="none"
-              {...({ defaultMuted: true, "webkit-playsinline": "true" } as Record<string, unknown>)}
+              {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
                 "relative h-full w-full object-cover transition-opacity duration-700",
