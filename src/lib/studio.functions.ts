@@ -713,16 +713,41 @@ export interface PublicStyleBoard {
 }
 
 export const getStyleBoardByToken = createServerFn({ method: "GET" })
-  .inputValidator((d) => z.object({ token: z.string().min(8).max(64) }).parse(d))
+  .inputValidator((d) => z.object({ token: z.string().min(8).max(128) }).parse(d))
   .handler(async ({ data }) => {
-    const { data: board, error } = await supabaseAdmin
+    // Look up by SHA-256 hash of the token. Fall back to legacy raw-token
+    // lookup for any board not yet backfilled (defense in depth — the
+    // migration already backfills everything currently in the table).
+    const tokenHash = await hashShareToken(data.token);
+    const selectCols =
+      "id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes,share_token_expires_at,share_token_revoked_at";
+    let { data: board, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes")
-      .eq("share_token", data.token)
+      .select(selectCols)
+      .eq("share_token_hash", tokenHash)
       .eq("status", "sent")
       .maybeSingle();
     if (error) throw error;
+    if (!board) {
+      const legacy = await supabaseAdmin
+        .from("style_boards")
+        .select(selectCols)
+        .eq("share_token", data.token)
+        .eq("status", "sent")
+        .maybeSingle();
+      if (legacy.error) throw legacy.error;
+      board = legacy.data;
+    }
     if (!board) throw new Response("Not found", { status: 404 });
+
+    // Reject revoked or expired links.
+    const revokedAt = (board as unknown as { share_token_revoked_at: string | null }).share_token_revoked_at;
+    const expiresAt = (board as unknown as { share_token_expires_at: string | null }).share_token_expires_at;
+    if (revokedAt) throw new Response("Not found", { status: 404 });
+    if (expiresAt && new Date(expiresAt).getTime() < Date.now()) {
+      throw new Response("Not found", { status: 404 });
+    }
+
 
     const { data: inq } = await supabaseAdmin
       .from("inquiries")
