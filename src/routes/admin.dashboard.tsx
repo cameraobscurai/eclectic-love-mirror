@@ -4,8 +4,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   getInquirySummary,
   getDashboardInventoryStats,
+  getEmailQueueHealth,
   type InquirySummary,
   type DashboardInventoryStats,
+  type EmailQueueHealth,
 } from "@/lib/admin.functions";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
