@@ -90,6 +90,19 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
 
         const supabase: SupabaseClient<any, any> = createClient(supabaseUrl, supabaseServiceKey)
 
+        const writeHeartbeat = async (processed: number, status: string) => {
+          const { error } = await supabase
+            .from('email_send_state')
+            .update({
+              last_run_at: new Date().toISOString(),
+              last_run_processed: processed,
+              last_run_status: status,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', 1)
+          if (error) console.error('Failed to write email cron heartbeat', error)
+        }
+
         // 1. Check rate-limit cooldown and read queue config
         const { data: state } = await supabase
           .from('email_send_state')
@@ -97,6 +110,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           .single()
 
         if (state?.retry_after_until && new Date(state.retry_after_until) > new Date()) {
+          await writeHeartbeat(0, 'cooldown')
           return Response.json({ skipped: true, reason: 'rate_limited' })
         }
 
