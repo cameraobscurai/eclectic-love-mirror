@@ -192,6 +192,14 @@ function AdminDashboard() {
                             Phone · {r.phone}
                           </p>
                         )}
+                        <InlineReply inquiry={r} onSent={() => {
+                          // Refetch the summary so the row flips to "handled".
+                          getInquirySummary().then((d) => {
+                            if (d && Array.isArray((d as InquirySummary).daily)) {
+                              setInq(d as InquirySummary);
+                            }
+                          }).catch(() => {});
+                        }} />
                       </details>
                     ))}
                   </div>
