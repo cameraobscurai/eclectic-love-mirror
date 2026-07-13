@@ -425,6 +425,7 @@ function InquiryRow({
   )}&body=${encodeURIComponent(
     `Hi ${row.name.split(" ")[0]},\n\n\n\n--- Original Inquiry ---\n${row.message}`
   )}`;
+  const updateOutcome = useServerFn(updateInquiryOutcome);
 
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<InquiryStatus>(row.status);
