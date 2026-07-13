@@ -106,20 +106,22 @@ export function SequentialHeroVideo() {
         />
       </div>
 
-      <video
-        ref={videoRef}
-        key={current.id}
-        className="absolute inset-0 h-full w-full object-cover"
-        src={current.src?.mp4}
-        poster={current.poster}
-        autoPlay
-        muted={muted}
-        playsInline
-        preload="auto"
-        {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
-        onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
-        aria-label={current.label}
-      />
+      {mounted && (
+        <video
+          ref={videoRef}
+          key={current.id}
+          className="absolute inset-0 h-full w-full object-cover"
+          src={current.src?.mp4}
+          poster={current.poster}
+          autoPlay
+          muted={muted}
+          playsInline
+          preload="auto"
+          {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
+          onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
+          aria-label={current.label}
+        />
+      )}
 
       {/* Sound toggle — mobile users can tap to hear the season clips. */}
       <button
