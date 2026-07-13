@@ -79,7 +79,7 @@ export function AtelierTeam() {
         </p>
       </header>
 
-      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-6 md:gap-x-7 lg:gap-x-10 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
+      <ul className="mx-auto max-w-5xl grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-6 md:gap-x-7 lg:gap-x-10 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
         {visibleMembers.map((member, index) => {
           const showImage = !!member.image && member.image.approvedForWeb;
           const isFirstRow = index < 3;
