@@ -44,7 +44,6 @@ function AdminDashboard() {
 
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
-  const [inqError, setInqError] = useState<string | null>(null);
   const [emailHealth, setEmailHealth] = useState<EmailQueueHealth | null>(null);
 
   useEffect(() => {
