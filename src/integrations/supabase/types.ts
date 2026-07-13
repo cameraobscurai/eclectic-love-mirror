@@ -1485,6 +1485,9 @@ export type Database = {
           section_word: string | null
           sent_at: string | null
           share_token: string | null
+          share_token_expires_at: string | null
+          share_token_hash: string | null
+          share_token_revoked_at: string | null
           status: string
           tones: Json
           updated_at: string
@@ -1510,6 +1513,9 @@ export type Database = {
           section_word?: string | null
           sent_at?: string | null
           share_token?: string | null
+          share_token_expires_at?: string | null
+          share_token_hash?: string | null
+          share_token_revoked_at?: string | null
           status?: string
           tones?: Json
           updated_at?: string
@@ -1535,6 +1541,9 @@ export type Database = {
           section_word?: string | null
           sent_at?: string | null
           share_token?: string | null
+          share_token_expires_at?: string | null
+          share_token_hash?: string | null
+          share_token_revoked_at?: string | null
           status?: string
           tones?: Json
           updated_at?: string
