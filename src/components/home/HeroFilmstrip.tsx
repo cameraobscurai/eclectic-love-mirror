@@ -294,7 +294,7 @@ function FilmstripFrame({
             />
           )}
 
-          {hasVideo ? (
+          {hasVideo && mounted ? (
             <video
               ref={registerRef}
               poster={clip.poster}
@@ -317,7 +317,7 @@ function FilmstripFrame({
               {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
               {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
             </video>
-          ) : (
+          ) : !hasVideo ? (
             <img
               src={clip.poster}
               alt={clip.label ?? ""}
