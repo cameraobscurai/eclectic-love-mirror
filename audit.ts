@@ -30,9 +30,11 @@ async function auditPage(page: Page, url: string, name: string) {
   });
 
   try {
-    await page.goto(url, { waitUntil: 'load', timeout: 30000 });
-    // Wait for either product tiles or a known element
-    await page.waitForTimeout(5000); 
+    const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    if (!response || response.status() >= 400) {
+      errors.push(`Page failed to load or returned ${response?.status()}`);
+    }
+    await page.waitForTimeout(3000); 
   } catch (e: any) {
     networkErrors.push(`Navigation Failed: ${e.message}`);
     return { consoleErrors, networkErrors, errors };
@@ -43,14 +45,18 @@ async function auditPage(page: Page, url: string, name: string) {
     const imgs = Array.from(document.querySelectorAll('img')).slice(0, 60);
     return imgs.filter(img => img.naturalWidth === 0).map(img => img.src);
   });
+  const totalImgs = await page.evaluate(() => document.querySelectorAll('img').length);
   if (brokenImages.length > 0) {
     errors.push(`Broken Images (${brokenImages.length}): ${brokenImages.slice(0, 3).join(', ')}`);
+  }
+  if (totalImgs === 0 && name !== 'PDP') {
+    errors.push('No images found on page');
   }
 
   // 4. Filter chips
   const chipCount = await page.getByRole('button').count();
-  if (chipCount === 0) {
-    errors.push('No buttons found (expected filter facets)');
+  if (chipCount === 0 && name !== 'PDP') {
+    errors.push('No buttons/chips found (expected filter facets)');
   }
 
   // 5. Metadata
@@ -61,7 +67,7 @@ async function auditPage(page: Page, url: string, name: string) {
       ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content'),
     };
   });
-  if (!metadata.title || metadata.title === 'Vite + React + TS') errors.push(`Title: ${metadata.title}`);
+  if (!metadata.title || metadata.title === 'Vite + React + TS') errors.push(`Title Invalid: ${metadata.title}`);
   if (!metadata.description) errors.push('Missing Description');
   if (metadata.ogImage && !metadata.ogImage.startsWith('https')) errors.push(`Invalid OG Image: ${metadata.ogImage}`);
   else if (!metadata.ogImage) errors.push('Missing OG Image');
@@ -78,7 +84,7 @@ async function auditPage(page: Page, url: string, name: string) {
 
   // 7. Scroll to bottom
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(1000);
   const footerFound = await page.evaluate(() => !!document.querySelector('footer'));
   if (!footerFound) errors.push('Footer not found');
 
@@ -109,21 +115,21 @@ async function auditPage(page: Page, url: string, name: string) {
     // 1. Audit /collection
     await auditPage(page, 'http://localhost:8080/collection', 'Collection');
 
-    // 2. Audit a category page
-    const categoryUrl = 'http://localhost:8080/collection/pillows-throws';
-    await auditPage(page, categoryUrl, 'Category');
+    // Find any valid link from the collection page to proceed
+    const allLinks = await page.evaluate(() => Array.from(document.querySelectorAll('a')).map(a => a.href));
+    
+    const categoryUrl = allLinks.find(href => href.includes('/collection/') && href !== 'http://localhost:8080/collection' && !href.includes('?'));
+    if (categoryUrl) {
+      await auditPage(page, categoryUrl, 'Category');
+    } else {
+      console.log('\n--- No category links found ---');
+    }
 
-    // 3. Audit a product page (first link found on collection)
-    await page.goto('http://localhost:8080/collection');
-    await page.waitForTimeout(2000);
-    const pdpUrl = await page.evaluate(() => {
-      const link = document.querySelector('a[href*="/product/"]');
-      return link ? (link as HTMLAnchorElement).href : null;
-    });
+    const pdpUrl = allLinks.find(href => href.includes('/product/'));
     if (pdpUrl) {
       await auditPage(page, pdpUrl, 'PDP');
     } else {
-      console.log('\n--- PDP Audit Skipped: No product link found ---');
+      console.log('\n--- No product links found ---');
     }
 
   } catch (err) {
