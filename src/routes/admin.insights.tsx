@@ -20,6 +20,7 @@ import {
   type InquiryStatus,
 } from "@/lib/insights.functions";
 import { toast } from "sonner";
+import { runAdminMutation } from "@/lib/admin/runAdminMutation";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
@@ -442,19 +443,28 @@ function InquiryRow({
     (notes || "") !== (row.outcome_notes ?? "");
 
   async function save() {
+    if (saving) return; // in-flight guard
     setSaving(true);
     try {
       const quoteNum = quote.trim() === "" ? null : Number(quote);
-      await updateOutcome({
-        data: {
-          id: row.id,
-          status,
-          quote_value: quoteNum !== null && Number.isFinite(quoteNum) ? quoteNum : null,
-          outcome_notes: notes.trim() === "" ? null : notes,
-        },
-      });
-      setSavedAt(Date.now());
-      onSaved();
+      const result = await runAdminMutation(
+        () =>
+          updateOutcome({
+            data: {
+              id: row.id,
+              status,
+              quote_value: quoteNum !== null && Number.isFinite(quoteNum) ? quoteNum : null,
+              outcome_notes: notes.trim() === "" ? null : notes,
+            },
+          }),
+        { surface: "insights.updateOutcome" },
+      );
+      if (result.ok) {
+        setSavedAt(Date.now());
+        onSaved();
+      }
+      // On failure, local state (status/quote/notes) intentionally preserved so
+      // the operator can retry without re-typing.
     } finally {
       setSaving(false);
     }

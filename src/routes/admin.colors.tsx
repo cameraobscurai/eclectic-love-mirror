@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   listColorRows,
   overrideColor,
@@ -7,6 +8,7 @@ import {
   clearColorTag,
   type ColorRow,
 } from "@/lib/colors.functions";
+import { runAdminMutation } from "@/lib/admin/runAdminMutation";
 
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
@@ -222,25 +224,49 @@ function ColorsQA() {
             row={selected}
             busy={busy}
             onSave={async (patch) => {
+              if (busy) return;
               setBusy(true);
               try {
-                await overrideColor({ data: { rms_id: selected.rms_id, ...patch } });
-                await refresh();
+                const result = await runAdminMutation(
+                  () => overrideColor({ data: { rms_id: selected.rms_id, ...patch } }),
+                  { surface: "colors.overrideColor" },
+                );
+                if (result.ok) {
+                  toast.success("Color override saved");
+                  await refresh();
+                }
               } finally { setBusy(false); }
             }}
             onLockToggle={async () => {
+              if (busy) return;
               setBusy(true);
               try {
-                await setColorLocked({ data: { rms_id: selected.rms_id, locked: !selected.color_locked } });
-                await refresh();
+                const result = await runAdminMutation(
+                  () => setColorLocked({ data: { rms_id: selected.rms_id, locked: !selected.color_locked } }),
+                  { surface: "colors.setColorLocked" },
+                );
+                if (result.ok) await refresh();
               } finally { setBusy(false); }
             }}
             onClear={async () => {
+              if (busy) return;
               if (!confirm("Clear color tag? (Skipped if locked)")) return;
               setBusy(true);
               try {
-                await clearColorTag({ data: { rms_id: selected.rms_id } });
-                await refresh();
+                const result = await runAdminMutation(
+                  () => clearColorTag({ data: { rms_id: selected.rms_id } }),
+                  { surface: "colors.clearColorTag" },
+                );
+                if (result.ok) {
+                  if (result.data.status === "cleared") {
+                    toast.success("Color tag cleared");
+                  } else if (result.data.status === "locked") {
+                    toast.error("This color is locked. Unlock it before clearing the tag.");
+                  } else {
+                    toast.error("Item not found.");
+                  }
+                  await refresh();
+                }
               } finally { setBusy(false); }
             }}
           />

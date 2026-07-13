@@ -182,12 +182,27 @@ export const setColorLocked = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export type ClearColorResult =
+  | { status: "cleared" }
+  | { status: "locked" }
+  | { status: "not_found" };
+
 export const clearColorTag = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) =>
     z.object({ rms_id: z.string().min(1) }).parse(d),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<ClearColorResult> => {
+    // Look up first so we can distinguish locked vs missing vs cleared.
+    const { data: existing, error: readErr } = await supabaseAdmin
+      .from("inventory_items")
+      .select("rms_id,color_locked")
+      .eq("rms_id", data.rms_id)
+      .maybeSingle();
+    if (readErr) throw readErr;
+    if (!existing) return { status: "not_found" };
+    if (existing.color_locked) return { status: "locked" };
+
     const { error } = await supabaseAdmin
       .from("inventory_items")
       .update({
@@ -206,5 +221,5 @@ export const clearColorTag = createServerFn({ method: "POST" })
       .eq("rms_id", data.rms_id)
       .eq("color_locked", false);
     if (error) throw error;
-    return { ok: true };
+    return { status: "cleared" };
   });
