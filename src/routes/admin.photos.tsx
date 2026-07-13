@@ -699,7 +699,7 @@ function MissingFilterChip() {
       <span>Showing products missing images</span>
       <button
         type="button"
-        onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, filter: undefined }) })}
+        onClick={() => navigate({ search: (s: any) => ({ ...s, filter: undefined }) })}
         className="text-amber-900/70 hover:text-amber-900"
         aria-label="Clear missing filter"
       >×</button>

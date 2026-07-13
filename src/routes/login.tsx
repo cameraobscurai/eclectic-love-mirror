@@ -53,7 +53,7 @@ function LoginPage() {
         "This account is not authorized for admin access. Contact the site owner.",
       );
     }
-    navigate({ to: redirectTo as "/admin" });
+    navigate({ to: redirectTo as "/admin", search: { page: undefined } });
   }
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function LoginPage() {
       if (!data.user || cancelled) return;
       const isAdmin = await checkOwnAdminRole(data.user.id);
       if (cancelled) return;
-      if (isAdmin) navigate({ to: redirectTo as "/admin" });
+      if (isAdmin) navigate({ to: redirectTo as "/admin", search: { page: undefined } });
     })();
     return () => {
       cancelled = true;

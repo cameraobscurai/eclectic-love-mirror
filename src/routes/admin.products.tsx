@@ -95,7 +95,7 @@ function Inner() {
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ search: (s: Record<string, unknown>) => ({ ...s, q: searchInput }) });
+    navigate({ search: (s: any) => ({ ...s, q: searchInput }) });
   };
 
   const visibleRows = useMemo(
@@ -121,7 +121,7 @@ function Inner() {
                 <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
                 <button
                   type="button"
-                  onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, group: undefined }) })}
+                  onClick={() => navigate({ search: (s: any) => ({ ...s, group: undefined }) })}
                   className="ml-2 text-charcoal/60 hover:text-charcoal"
                   aria-label="Clear group filter"
                 >×</button>
@@ -148,7 +148,7 @@ function Inner() {
           />
           <select
             value={search.cat}
-            onChange={(e) => navigate({ search: (s: Record<string, unknown>) => ({ ...s, cat: e.target.value }) })}
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
@@ -156,7 +156,7 @@ function Inner() {
           </select>
           <select
             value={search.ready}
-            onChange={(e) => navigate({ search: (s: Record<string, unknown>) => ({ ...s, ready: e.target.value as "yes"|"no"|"all" }) })}
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, ready: e.target.value as "yes"|"no"|"all" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="all">All statuses</option>
@@ -192,7 +192,7 @@ function Inner() {
                 return (
                   <tr
                     key={r.id}
-                    onClick={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, id: r.id }) })}
+                    onClick={() => navigate({ search: (s: any) => ({ ...s, id: r.id }) })}
                     className="border-b border-charcoal/5 hover:bg-charcoal/[0.03] cursor-pointer"
                   >
                     <td className="px-3 py-2">
@@ -232,7 +232,7 @@ function Inner() {
       {search.id && (
         <EditDrawer
           id={search.id}
-          onClose={() => navigate({ search: (s: Record<string, unknown>) => ({ ...s, id: "" }) })}
+          onClose={() => navigate({ search: (s: any) => ({ ...s, id: "" }) })}
           onSaved={() => {
             // refresh list
             list({ data: { search: search.q, category: search.cat || undefined, publicReady: search.ready, limit: PAGE, offset } })

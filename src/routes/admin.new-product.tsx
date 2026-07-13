@@ -188,7 +188,7 @@ function NewProductPage() {
     setBusy(publicReady ? "publish" : "draft");
     try {
       await ensureRow(publicReady);
-      router.navigate({ to: "/admin/photos" });
+      router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined } });
     } catch (e) {
       setErr((e as Error).message || "Save failed");
       setBusy(null);
@@ -340,7 +340,7 @@ function NewProductPage() {
           <button
             type="button"
             disabled={!!busy}
-            onClick={() => router.navigate({ to: "/admin/photos" })}
+            onClick={() => router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined } })}
             className="ml-auto text-[11px] uppercase tracking-[0.18em] text-charcoal/55 hover:text-charcoal disabled:opacity-40"
           >
             Cancel

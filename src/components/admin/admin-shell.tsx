@@ -233,7 +233,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.navigate({ to: "/login" });
+    router.navigate({ to: "/login", search: { redirect: "/admin" } });
   };
 
   return (
@@ -243,6 +243,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <SidebarHeader className="px-3 py-4">
             <Link
               to="/admin"
+              search={{ page: undefined }}
               className="flex items-center gap-2 px-2 py-1 group"
               aria-label="Admin home"
             >
