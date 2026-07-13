@@ -330,7 +330,7 @@ function FilmstripFrame({
               onLoad={() => setLoaded(true)}
               onError={() => setLoaded(true)}
             />
-          )}
+          ) : null}
         </motion.div>
 
         {/* Subtle hover affordance — a faint vignette + tiny play glyph
