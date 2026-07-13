@@ -335,6 +335,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           }
         }
 
+        await writeHeartbeat(totalProcessed, 'ok')
         return Response.json({ processed: totalProcessed })
       },
     },
