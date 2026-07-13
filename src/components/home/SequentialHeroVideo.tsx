@@ -146,9 +146,9 @@ export function SequentialHeroVideo() {
         )}
       </button>
 
-      {/* Preload the next clip only after the first has begun playing,
-          so it never competes with the LCP fetch. */}
-      <link rel="prefetch" as="video" href={next.src?.mp4} />
+      {/* Preload the next clip only after mount, so React 19 doesn't hoist
+          the <link> into <head> during SSR and cause a hydration diff. */}
+      {mounted && <link rel="prefetch" as="video" href={next.src?.mp4} />}
     </div>
   );
 }
