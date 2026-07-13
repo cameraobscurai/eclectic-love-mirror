@@ -122,7 +122,7 @@ export function AtelierTeam() {
         </aside>
 
         {/* Right column: heading + staff grid */}
-        <div className="lg:col-span-9">
+        <div className="lg:col-span-8">
           <header className="mb-10 md:mb-12 lg:mb-14">
             <h2 className="font-display text-charcoal leading-[1.05] text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,3.5rem)]">
               ARTISTS, DESIGNERS, CRAFTSMEN
