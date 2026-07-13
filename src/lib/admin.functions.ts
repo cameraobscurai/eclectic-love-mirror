@@ -148,3 +148,57 @@ export const getDashboardInventoryStats = createServerFn({ method: "GET" })
       imageBuckets: Object.entries(buckets).map(([label, count]) => ({ label, count })),
     };
   });
+
+// ---------------------------------------------------------------------------
+// Email queue health — surfaces last cron run timestamp so a stalled
+// pg_cron becomes visible instead of silent. The queue processor writes
+// last_run_at/last_run_processed/last_run_status on every invocation.
+// ---------------------------------------------------------------------------
+
+export interface EmailQueueHealth {
+  lastRunAt: string | null;
+  lastRunProcessed: number | null;
+  lastRunStatus: string | null;
+  retryAfterUntil: string | null;
+  pending: number; // rows in email_send_log with status='pending' in last 24h
+  failedLast24h: number;
+  /** true when there is pending work AND lastRunAt is >10 min old (or null). */
+  stalled: boolean;
+}
+
+export const getEmailQueueHealth = createServerFn({ method: "GET" })
+  .middleware([requireAdmin])
+  .handler(async (): Promise<EmailQueueHealth> => {
+    const { data: state } = await supabaseAdmin
+      .from("email_send_state")
+      .select("last_run_at, last_run_processed, last_run_status, retry_after_until")
+      .eq("id", 1)
+      .maybeSingle();
+
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: pending } = await supabaseAdmin
+      .from("email_send_log")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending")
+      .gte("created_at", dayAgo);
+    const { count: failed } = await supabaseAdmin
+      .from("email_send_log")
+      .select("*", { count: "exact", head: true })
+      .in("status", ["failed", "dlq"])
+      .gte("created_at", dayAgo);
+
+    const lastRunAt = (state?.last_run_at as string | null) ?? null;
+    const hasWork = (pending ?? 0) > 0;
+    const tenMinAgo = Date.now() - 10 * 60 * 1000;
+    const stalled = hasWork && (!lastRunAt || new Date(lastRunAt).getTime() < tenMinAgo);
+
+    return {
+      lastRunAt,
+      lastRunProcessed: (state?.last_run_processed as number | null) ?? null,
+      lastRunStatus: (state?.last_run_status as string | null) ?? null,
+      retryAfterUntil: (state?.retry_after_until as string | null) ?? null,
+      pending: pending ?? 0,
+      failedLast24h: failed ?? 0,
+      stalled,
+    };
+  });

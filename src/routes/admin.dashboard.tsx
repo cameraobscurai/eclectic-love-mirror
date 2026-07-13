@@ -4,8 +4,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   getInquirySummary,
   getDashboardInventoryStats,
+  getEmailQueueHealth,
   type InquirySummary,
   type DashboardInventoryStats,
+  type EmailQueueHealth,
 } from "@/lib/admin.functions";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
 
@@ -42,6 +44,15 @@ function AdminDashboard() {
 
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
+  const [emailHealth, setEmailHealth] = useState<EmailQueueHealth | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    getEmailQueueHealth()
+      .then((h) => { if (alive) setEmailHealth(h as EmailQueueHealth); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
   const [inqError, setInqError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -105,6 +116,11 @@ function AdminDashboard() {
             hint={inq ? `${inq.last30d} in last 30 days` : "loading"}
           />
         </section>
+
+        {/* Email queue health — flags a stalled cron */}
+        <EmailQueueHealthCard health={emailHealth} />
+
+
 
         {/* Two-column body */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -439,4 +455,56 @@ function shortDate(iso?: string) {
   if (!iso) return "";
   const [, m, d] = iso.split("-");
   return `${m}/${d}`;
+}
+
+// ---------------------------------------------------------------------------
+// EmailQueueHealthCard — compact panel showing last cron run, pending
+// backlog, and a red badge if the queue looks stalled (>10 min without a
+// run while there's pending work).
+// ---------------------------------------------------------------------------
+
+function EmailQueueHealthCard({ health }: { health: EmailQueueHealth | null }) {
+  if (!health) return null;
+  const lastRunLabel = health.lastRunAt
+    ? relativeTime(health.lastRunAt)
+    : "never";
+  const tone = health.stalled
+    ? "text-red-700 border-red-300 bg-red-50"
+    : "text-charcoal/70 border-charcoal/10 bg-white";
+  return (
+    <section
+      className={`mb-12 border ${tone} px-5 py-4 flex flex-wrap items-center gap-6`}
+      style={{ borderColor: health.stalled ? undefined : "var(--archive-rule)" }}
+    >
+      <div className="text-[11px] uppercase tracking-[0.22em]">
+        Email queue
+      </div>
+      <div className="text-[12px]">
+        Last run: <span className="font-medium">{lastRunLabel}</span>
+        {health.lastRunStatus ? ` · ${health.lastRunStatus}` : ""}
+        {typeof health.lastRunProcessed === "number"
+          ? ` · ${health.lastRunProcessed} sent`
+          : ""}
+      </div>
+      <div className="text-[12px]">
+        Pending (24h): <span className="font-medium">{health.pending}</span>
+      </div>
+      <div className="text-[12px]">
+        Failed (24h): <span className="font-medium">{health.failedLast24h}</span>
+      </div>
+      {health.stalled ? (
+        <div className="text-[11px] uppercase tracking-[0.22em] font-semibold">
+          Stalled — cron not running
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  if (diff < 60_000) return "just now";
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+  return `${Math.floor(diff / 86_400_000)}d ago`;
 }

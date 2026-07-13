@@ -90,6 +90,19 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
 
         const supabase: SupabaseClient<any, any> = createClient(supabaseUrl, supabaseServiceKey)
 
+        const writeHeartbeat = async (processed: number, status: string) => {
+          const { error } = await supabase
+            .from('email_send_state')
+            .update({
+              last_run_at: new Date().toISOString(),
+              last_run_processed: processed,
+              last_run_status: status,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', 1)
+          if (error) console.error('Failed to write email cron heartbeat', error)
+        }
+
         // 1. Check rate-limit cooldown and read queue config
         const { data: state } = await supabase
           .from('email_send_state')
@@ -97,6 +110,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           .single()
 
         if (state?.retry_after_until && new Date(state.retry_after_until) > new Date()) {
+          await writeHeartbeat(0, 'cooldown')
           return Response.json({ skipped: true, reason: 'rate_limited' })
         }
 
@@ -287,6 +301,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
                   .eq('id', 1)
 
                 // Stop processing — remaining messages stay in queue (VT expires, retried next cycle)
+                await writeHeartbeat(totalProcessed, 'rate_limited')
                 return Response.json({ processed: totalProcessed, stopped: 'rate_limited' })
               }
 
@@ -294,6 +309,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
               // message, so move straight to DLQ and stop processing the rest of the batch.
               if (isForbidden(error)) {
                 await moveToDlq(supabase, queue, msg, errorMsg.slice(0, 1000))
+                await writeHeartbeat(totalProcessed, 'forbidden')
                 return Response.json({ processed: totalProcessed, stopped: 'forbidden' })
               }
 
@@ -319,6 +335,7 @@ export const Route = createFileRoute("/lovable/email/queue/process")({
           }
         }
 
+        await writeHeartbeat(totalProcessed, 'ok')
         return Response.json({ processed: totalProcessed })
       },
     },
