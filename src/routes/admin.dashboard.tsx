@@ -45,6 +45,16 @@ function AdminDashboard() {
 
   const [inq, setInq] = useState<InquirySummary | null>(null);
   const [inqError, setInqError] = useState<string | null>(null);
+  const [emailHealth, setEmailHealth] = useState<EmailQueueHealth | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    getEmailQueueHealth()
+      .then((h) => { if (alive) setEmailHealth(h as EmailQueueHealth); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  const [inqError, setInqError] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
