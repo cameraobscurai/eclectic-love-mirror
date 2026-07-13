@@ -94,7 +94,7 @@ export function AtelierTeam() {
                     ? member.image!.alt
                     : `Portrait slot for ${member.name}`
                 }
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 26vw, 46vw"
+                sizes="(min-width: 1024px) 320px, (min-width: 768px) 26vw, 46vw"
                 lazy={false}
                 fetchPriority={isFirstRow ? "high" : "low"}
                 prefetchMargin="2000px"
