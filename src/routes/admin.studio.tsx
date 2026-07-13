@@ -158,7 +158,7 @@ function ToolCard({
 type Tab = "palette" | "tones" | "insights" | "catalog";
 
 function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
-  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send } = useStyleBoard(inquiryId);
+  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send, revoke } = useStyleBoard(inquiryId);
   const [tab, setTab] = useState<Tab>("palette");
   const [copied, setCopied] = useState(false);
 
