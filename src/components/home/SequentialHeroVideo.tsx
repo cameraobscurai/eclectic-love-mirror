@@ -16,10 +16,21 @@ export function SequentialHeroVideo() {
   // chase a cold, non-preloaded source and left the poster looking stuck.
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
+  // Gate the <video> and prefetch <link> behind a client-only mount flag so
+  // SSR renders only the poster + sound button. This keeps the SSR markup
+  // strictly identical between server and first client render — the video
+  // (whose attributes are mutated by autoplay/unmute effects) never enters
+  // the hydration diff.
+  const [mounted, setMounted] = useState(false);
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const v = videoRef.current;
     if (!v) return;
 
@@ -67,7 +78,7 @@ export function SequentialHeroVideo() {
       v.removeEventListener("canplay", markReadyAndPlay);
       v.removeEventListener("playing", markReadyAndPlay);
     };
-  }, [index, muted]);
+  }, [index, muted, mounted]);
 
   const toggleSound = () => {
     const v = videoRef.current;
