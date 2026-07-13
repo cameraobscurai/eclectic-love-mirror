@@ -38,6 +38,16 @@ import { RelatedPieces } from "@/components/collection/RelatedPieces";
 
 const SITE = "https://eclectichive.com";
 
+// Sitewide fallback share image for collection overviews — matches the
+// og:image on /collection so no parent overview ever emits nothing.
+const COLLECTION_DEFAULT_OG =
+  "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png";
+
+function toAbsolute(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${SITE}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
 function productUrl(slug: string) {
   return `${SITE}/collection/${slug}`;
 }
