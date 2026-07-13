@@ -1,6 +1,5 @@
 // Public client-facing style board view. Token in the URL is the only secret.
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { setResponseHeaders } from "@tanstack/react-start/server";
 import { getStyleBoardByToken, type PublicStyleBoard } from "@/lib/studio.functions";
 import { BoardDeck } from "@/components/studio/board/BoardDeck";
 
@@ -11,16 +10,16 @@ export const Route = createFileRoute("/stylebrief/$token")({
       meta: [
         { title: name ? `Style Brief for ${name} · Eclectic Hive` : "Your Style Brief · Eclectic Hive" },
         { name: "robots", content: "noindex, nofollow" },
+        { name: "referrer", content: "no-referrer" },
       ],
     };
   },
   loader: async ({ params }) => {
-    // Harden the public share surface: no referrer leak of the token to
-    // outbound links, no search-engine indexing at the HTTP layer.
-    setResponseHeaders({
-      "Referrer-Policy": "no-referrer",
-      "X-Robots-Tag": "noindex, nofollow",
-    });
+    // Defense-in-depth: <meta name="referrer"> + <meta name="robots"> above
+    // prevent referrer leaks and search indexing without needing a
+    // server-only setResponseHeaders call (which cannot be imported into a
+    // route module — it pulls @tanstack/react-start/server into the client
+    // bundle).
     try {
       return (await getStyleBoardByToken({ data: { token: params.token } })) as PublicStyleBoard;
     } catch {
