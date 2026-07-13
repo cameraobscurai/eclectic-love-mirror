@@ -412,6 +412,89 @@ function SkeletonBlock({ h }: { h: number }) {
   );
 }
 
+function InlineReply({
+  inquiry,
+  onSent,
+}: {
+  inquiry: InquiryRow;
+  onSent: () => void;
+}) {
+  const defaultSubject = inquiry.subject
+    ? `Re: ${inquiry.subject}`
+    : "Re: your inquiry — Eclectic Hive";
+  const [subject, setSubject] = useState(defaultSubject);
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [err, setErr] = useState<string | null>(null);
+
+  const disabled = status === "sending" || !message.trim() || !subject.trim();
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+    setErr(null);
+    try {
+      const res = await replyToInquiry({
+        data: { inquiry_id: inquiry.id, subject, message },
+      });
+      if (res && res.ok === false) {
+        setErr(`Recipient suppressed — not sent.`);
+        setStatus("error");
+        return;
+      }
+      setStatus("sent");
+      setMessage("");
+      onSent();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Failed to send");
+      setStatus("error");
+    }
+  }
+
+  return (
+    <form
+      onSubmit={submit}
+      className="mt-5 border-t pt-4 space-y-3"
+      style={{ borderColor: "var(--archive-rule)" }}
+    >
+      <div className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+        Reply · sends from noreply@ · reply-to info@eclectichive.com
+      </div>
+      <input
+        type="text"
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        className="w-full border border-charcoal/15 bg-white px-3 py-2 text-sm outline-none focus:border-charcoal/50"
+        placeholder="Subject"
+      />
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        rows={6}
+        className="w-full border border-charcoal/15 bg-white px-3 py-2 text-sm leading-relaxed outline-none focus:border-charcoal/50 resize-y"
+        placeholder={`Hi ${inquiry.name.split(" ")[0] || "there"},\n\n`}
+      />
+      <div className="flex items-center gap-4">
+        <button
+          type="submit"
+          disabled={disabled}
+          className="text-[11px] uppercase tracking-[0.22em] px-4 py-2 border border-charcoal bg-charcoal text-cream disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {status === "sending" ? "Sending…" : status === "sent" ? "Sent ✓" : "Send reply"}
+        </button>
+        {err && (
+          <span className="text-[11px] text-red-700">{err}</span>
+        )}
+        {status === "sent" && (
+          <span className="text-[11px] uppercase tracking-[0.2em] text-charcoal/50">
+            Queued · marked handled
+          </span>
+        )}
+      </div>
+    </form>
+  );
+}
+
 function Sparkline({ data, labels }: { data: number[]; labels: string[] }) {
   const w = 600;
   const h = 120;
