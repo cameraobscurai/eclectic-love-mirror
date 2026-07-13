@@ -80,7 +80,7 @@ export function AtelierTeam() {
           ------------------------------------------------------------------ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
         {/* Sticky principal card — desktop only */}
-        <aside className="hidden lg:block lg:col-span-4">
+        <aside className="hidden lg:block lg:col-span-3">
           <div className="lg:sticky lg:top-24">
             {principal && (
               <>
@@ -98,7 +98,7 @@ export function AtelierTeam() {
                         : undefined
                     }
                     alt={principal.image?.approvedForWeb ? principal.image.alt : `Portrait slot for ${principal.name}`}
-                    sizes="(min-width: 1024px) 28vw, 100vw"
+                    sizes="(min-width: 1024px) 22vw, 100vw"
                     lazy={false}
                     fetchPriority="high"
                     prefetchMargin="2000px"
@@ -122,7 +122,7 @@ export function AtelierTeam() {
         </aside>
 
         {/* Right column: heading + staff grid */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-9">
           <header className="mb-10 md:mb-12 lg:mb-14">
             <h2 className="font-display text-charcoal leading-[1.05] text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,3.5rem)]">
               ARTISTS, DESIGNERS, CRAFTSMEN
@@ -132,7 +132,7 @@ export function AtelierTeam() {
             </p>
           </header>
 
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 md:gap-x-7 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
+          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-6 md:gap-x-7 lg:gap-x-10 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
             {visibleMembers.map((member, index) => {
               const showImage = !!member.image && member.image.approvedForWeb;
               const isFirstRow = index < 4;
@@ -148,7 +148,7 @@ export function AtelierTeam() {
                         ? member.image!.alt
                         : `Portrait slot for ${member.name}`
                     }
-                    sizes="(min-width: 1024px) 16vw, (min-width: 768px) 26vw, 46vw"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 26vw, 46vw"
                     lazy={false}
                     fetchPriority={isFirstRow ? "high" : "low"}
                     prefetchMargin="2000px"
