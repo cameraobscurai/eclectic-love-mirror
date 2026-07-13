@@ -238,6 +238,14 @@ function FilmstripFrame({
   parallaxDir,
 }: FrameProps) {
   const [loaded, setLoaded] = useState(false);
+  // Gate the <video> behind a client-only mount flag so SSR renders only the
+  // poster. The video element's attributes (muted, autoplay, webkit-playsinline)
+  // get mutated by effects on the client — keeping it out of SSR prevents
+  // hydration diffs from ever forming.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
   const innerY = useTransform(
     parallaxProgress,
