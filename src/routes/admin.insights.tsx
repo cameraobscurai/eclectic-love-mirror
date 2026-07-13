@@ -420,7 +420,13 @@ function InquiryRow({
   selected: boolean;
   onToggleSelect: () => void;
 }) {
+  const mailtoHref = `mailto:${row.email}?subject=${encodeURIComponent(
+    `RE: ${row.subject || "Inquiry"} — Eclectic Hive`
+  )}&body=${encodeURIComponent(
+    `Hi ${row.name.split(" ")[0]},\n\n\n\n--- Original Inquiry ---\n${row.message}`
+  )}`;
   const updateOutcome = useServerFn(updateInquiryOutcome);
+
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<InquiryStatus>(row.status);
   const [quote, setQuote] = useState<string>(
@@ -473,7 +479,13 @@ function InquiryRow({
         <div className="min-w-0 flex-1">
           <p className="font-display text-lg leading-tight truncate">{row.name}</p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-charcoal/50 truncate">
-            {row.email}
+            <a 
+              href={mailtoHref}
+              onClick={(e) => e.stopPropagation()}
+              className="hover:text-charcoal underline underline-offset-2 decoration-charcoal/20"
+            >
+              {row.email}
+            </a>
             {row.subject ? <> · {row.subject}</> : null}
           </p>
         </div>
@@ -504,6 +516,9 @@ function InquiryRow({
           <div className="md:col-span-7">
             <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">
               Message
+            </p>
+            <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-charcoal/55">
+              Reply · <a className="underline" href={mailtoHref}>Send Email</a>
             </p>
             <pre className="font-sans text-sm leading-relaxed text-charcoal/80 whitespace-pre-wrap">
               {row.message}

@@ -28,26 +28,19 @@ export const reorderItems = createServerFn({ method: "POST" })
     // Admin drag-order is the single source of truth for site display order.
     // Writes editorial_order (gaps of 10 leave room for cheap mid-insert).
     //
-    // Fan out updates in parallel rather than sequentially. Still not a true
-    // SQL transaction (would need an RPC) but: (a) latency drops from O(n)
-    // round-trips to ~1, (b) we collect every failure instead of stopping at
-    // the first, (c) on any failure we throw so the client can roll back the
-    // optimistic UI to its pre-drag snapshot.
-    const results = await Promise.all(
-      data.ids.map(async (rmsId, i) => {
-        const { error } = await supabaseAdmin
-          .from("inventory_items")
-          .update({ editorial_order: (i + 1) * 10 })
-          .eq("rms_id", rmsId);
-        return error ? `${rmsId}: ${error.message}` : null;
-      }),
-    );
-    const errors = results.filter((e): e is string => e !== null);
+    // Atomic via a Postgres RPC (public.reorder_inventory_items) — a single
+    // UPDATE ... FROM jsonb_array_elements runs in one transaction, so a
+    // partial failure can't leave editorial_order half-written.
+    const { error } = await supabaseAdmin.rpc("reorder_inventory_items", {
+      p_updates: data.ids.map((rmsId, i) => ({
+        rms_id: rmsId,
+        editorial_order: (i + 1) * 10,
+      })),
+    });
 
-    if (errors.length) {
-      throw new Error(
-        `REORDER_FAILED: ${errors.length}/${data.ids.length} failed — ${errors[0]}`,
-      );
+    if (error) {
+      console.error("[reorderItems] RPC failed:", error);
+      throw new Error(`REORDER_FAILED: ${error.message}`);
     }
 
     void audit({
