@@ -324,6 +324,20 @@ export function useStyleBoard(inquiryId: string) {
     }
   }, [analyze, save, state.boardId, state.palette.length, state.inspo.length, state.pinned.length]);
 
+  const revoke = useCallback(async () => {
+    if (!state.boardId) return false;
+    try {
+      await revokeShareToken({ data: { boardId: state.boardId } });
+      // Once revoked, the share link no longer resolves. Clear locally so
+      // admin UI hides it and prompts "Send to client" to reissue.
+      setState((s) => ({ ...s, shareToken: null }));
+      return true;
+    } catch (e) {
+      setState((s) => ({ ...s, error: (e as Error).message }));
+      return false;
+    }
+  }, [state.boardId]);
+
   return {
     state,
     catalog,
@@ -336,5 +350,7 @@ export function useStyleBoard(inquiryId: string) {
     analyze,
     save,
     send,
+    revoke,
   };
 }
+
