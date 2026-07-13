@@ -117,6 +117,11 @@ function AdminDashboard() {
           />
         </section>
 
+        {/* Email queue health — flags a stalled cron */}
+        <EmailQueueHealthCard health={emailHealth} />
+
+
+
         {/* Two-column body */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* LEFT — inquiries */}
