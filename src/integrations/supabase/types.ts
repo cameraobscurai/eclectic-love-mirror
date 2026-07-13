@@ -1837,6 +1837,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      reorder_inventory_items: { Args: { p_updates: Json }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
