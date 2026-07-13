@@ -331,8 +331,19 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
                 {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                 {copied ? "Copied" : "Copy"}
               </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (typeof window !== "undefined" && !window.confirm("Revoke this share link? The client link will stop working immediately.")) return;
+                  await revoke();
+                }}
+                className="text-[10px] uppercase tracking-[0.22em] text-red-700/80 hover:text-red-700"
+              >
+                Revoke
+              </button>
             </div>
           )}
+
 
           <div className="mt-8 pt-6 border-t border-charcoal/10">
             <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">
