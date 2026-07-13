@@ -141,7 +141,10 @@ export const Route = createFileRoute("/collection_/$slug")({
       const label = PARENT_LABELS[parent];
       const desc = PARENT_DESCRIPTIONS[parent];
       const url = parentUrl(parent);
-      const img = absoluteCover(parent) ?? data.fallbackImage;
+      const img =
+        absoluteCover(parent) ??
+        toAbsolute(data.fallbackImage) ??
+        COLLECTION_DEFAULT_OG;
       const title = `${label} — Event Rental Archive | Eclectic Hive`;
 
       const jsonLd = {
@@ -151,7 +154,7 @@ export const Route = createFileRoute("/collection_/$slug")({
         description: desc,
         url,
         isPartOf: { "@type": "WebSite", name: "Eclectic Hive", url: SITE },
-        ...(img ? { image: img } : {}),
+        image: img,
       };
 
       return {
@@ -162,13 +165,9 @@ export const Route = createFileRoute("/collection_/$slug")({
           { property: "og:description", content: desc },
           { property: "og:url", content: url },
           { property: "og:type", content: "website" },
-          ...(img
-            ? [
-                { property: "og:image", content: img },
-                { name: "twitter:image", content: img },
-                { name: "twitter:card", content: "summary_large_image" },
-              ]
-            : []),
+          { property: "og:image", content: img },
+          { name: "twitter:image", content: img },
+          { name: "twitter:card", content: "summary_large_image" },
         ],
         links: [{ rel: "canonical", href: url }],
         scripts: [
