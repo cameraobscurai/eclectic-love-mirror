@@ -238,6 +238,14 @@ function FilmstripFrame({
   parallaxDir,
 }: FrameProps) {
   const [loaded, setLoaded] = useState(false);
+  // Gate the <video> behind a client-only mount flag so SSR renders only the
+  // poster. The video element's attributes (muted, autoplay, webkit-playsinline)
+  // get mutated by effects on the client — keeping it out of SSR prevents
+  // hydration diffs from ever forming.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
   const innerY = useTransform(
     parallaxProgress,
@@ -286,7 +294,7 @@ function FilmstripFrame({
             />
           )}
 
-          {hasVideo ? (
+          {hasVideo && mounted ? (
             <video
               ref={registerRef}
               poster={clip.poster}
@@ -309,7 +317,7 @@ function FilmstripFrame({
               {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
               {clip.src?.mp4 && <source src={clip.src.mp4} type="video/mp4" />}
             </video>
-          ) : (
+          ) : !hasVideo ? (
             <img
               src={clip.poster}
               alt={clip.label ?? ""}
@@ -322,7 +330,7 @@ function FilmstripFrame({
               onLoad={() => setLoaded(true)}
               onError={() => setLoaded(true)}
             />
-          )}
+          ) : null}
         </motion.div>
 
         {/* Subtle hover affordance — a faint vignette + tiny play glyph

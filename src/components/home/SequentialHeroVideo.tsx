@@ -16,10 +16,21 @@ export function SequentialHeroVideo() {
   // chase a cold, non-preloaded source and left the poster looking stuck.
   const [index, setIndex] = useState(0);
   const [muted, setMuted] = useState(true);
+  // Gate the <video> and prefetch <link> behind a client-only mount flag so
+  // SSR renders only the poster + sound button. This keeps the SSR markup
+  // strictly identical between server and first client render — the video
+  // (whose attributes are mutated by autoplay/unmute effects) never enters
+  // the hydration diff.
+  const [mounted, setMounted] = useState(false);
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const v = videoRef.current;
     if (!v) return;
 
@@ -67,7 +78,7 @@ export function SequentialHeroVideo() {
       v.removeEventListener("canplay", markReadyAndPlay);
       v.removeEventListener("playing", markReadyAndPlay);
     };
-  }, [index, muted]);
+  }, [index, muted, mounted]);
 
   const toggleSound = () => {
     const v = videoRef.current;
@@ -95,20 +106,22 @@ export function SequentialHeroVideo() {
         />
       </div>
 
-      <video
-        ref={videoRef}
-        key={current.id}
-        className="absolute inset-0 h-full w-full object-cover"
-        src={current.src?.mp4}
-        poster={current.poster}
-        autoPlay
-        muted={muted}
-        playsInline
-        preload="auto"
-        {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
-        onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
-        aria-label={current.label}
-      />
+      {mounted && (
+        <video
+          ref={videoRef}
+          key={current.id}
+          className="absolute inset-0 h-full w-full object-cover"
+          src={current.src?.mp4}
+          poster={current.poster}
+          autoPlay
+          muted={muted}
+          playsInline
+          preload="auto"
+          {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
+          onEnded={() => setIndex((i) => (i + 1) % HERO_CLIPS.length)}
+          aria-label={current.label}
+        />
+      )}
 
       {/* Sound toggle — mobile users can tap to hear the season clips. */}
       <button
@@ -133,9 +146,9 @@ export function SequentialHeroVideo() {
         )}
       </button>
 
-      {/* Preload the next clip only after the first has begun playing,
-          so it never competes with the LCP fetch. */}
-      <link rel="prefetch" as="video" href={next.src?.mp4} />
+      {/* Preload the next clip only after mount, so React 19 doesn't hoist
+          the <link> into <head> during SSR and cause a hydration diff. */}
+      {mounted && <link rel="prefetch" as="video" href={next.src?.mp4} />}
     </div>
   );
 }
