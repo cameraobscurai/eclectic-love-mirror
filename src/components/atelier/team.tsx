@@ -68,104 +68,48 @@ export function AtelierTeam() {
     [],
   );
 
-  const principal = visibleMembers.find((m) => m.name === "Jill Livingston");
-
-
   return (
     <div>
-      {/* ------------------------------------------------------------------
-          Principal + team grid
-          Left column pins Jill as the atelier anchor on desktop. Below lg she
-          sits in the staff grid as a regular team member — no separation.
-          ------------------------------------------------------------------ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16">
-        {/* Sticky principal card — desktop only */}
-        <aside className="hidden lg:block lg:col-span-4">
-          <div className="lg:sticky lg:top-24 max-w-[17rem]">
-            {principal && (
-              <>
-                <div>
-                  <MediaAperture
-                    ratio="2/3"
-                    src={
-                      principal.image?.approvedForWeb
-                        ? renderUrl(principal.image.src, { width: 900, quality: 60 })
-                        : undefined
-                    }
-                    srcSet={
-                      principal.image?.approvedForWeb
-                        ? renderSrcSet(principal.image.src, [360, 540, 720, 900, 1200], 60)
-                        : undefined
-                    }
-                    alt={principal.image?.approvedForWeb ? principal.image.alt : `Portrait slot for ${principal.name}`}
-                    sizes="(min-width: 1024px) 20rem, 100vw"
-                    lazy={false}
-                    fetchPriority="high"
-                    prefetchMargin="2000px"
-                    className={principal.imageClassName}
-                  />
-                </div>
-                <div className="mt-6 space-y-1.5">
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-charcoal/50">
-                    Principal
-                  </p>
-                  <h3 className="font-display text-2xl md:text-3xl lg:text-4xl text-charcoal leading-tight">
-                    {principal.name}
-                  </h3>
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-                    {principal.role}
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </aside>
+      <header className="mb-10 md:mb-12 lg:mb-14">
+        <h2 className="font-display text-charcoal leading-[1.05] text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,3.5rem)]">
+          ARTISTS, DESIGNERS, CRAFTSMEN
+        </h2>
+        <p className="mt-4 max-w-2xl text-[11px] md:text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
+          Our team moves across disciplines with intention and a shared approach. We are the atelier.
+        </p>
+      </header>
 
-        {/* Right column: heading + staff grid */}
-        <div className="lg:col-span-8">
-          <header className="mb-10 md:mb-12 lg:mb-14">
-            <h2 className="font-display text-charcoal leading-[1.05] text-3xl md:text-4xl lg:text-[clamp(2.5rem,4vw,3.5rem)]">
-              ARTISTS, DESIGNERS, CRAFTSMEN
-            </h2>
-            <p className="mt-4 max-w-2xl text-[11px] md:text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
-              Our team moves across disciplines with intention and a shared approach. We are the atelier.
-            </p>
-          </header>
-
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-6 md:gap-x-7 lg:gap-x-10 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
-            {visibleMembers.map((member, index) => {
-              const showImage = !!member.image && member.image.approvedForWeb;
-              const isFirstRow = index < 4;
-              const isPrincipal = member.name === "Jill Livingston";
-              return (
-                <li key={member.name} className={isPrincipal ? "lg:hidden" : undefined}>
-                  <MediaAperture
-                    ratio="2/3"
-                    src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
-                    srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
-                    alt={
-                      showImage
-                        ? member.image!.alt
-                        : `Portrait slot for ${member.name}`
-                    }
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 26vw, 46vw"
-                    lazy={false}
-                    fetchPriority={isFirstRow ? "high" : "low"}
-                    prefetchMargin="2000px"
-                    className={member.imageClassName}
-                  />
-                  <p className="mt-4 lg:mt-5 font-display text-base md:text-lg lg:text-xl leading-tight text-charcoal">
-                    {member.name}
-                  </p>
-                  <p className="mt-1.5 text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
-                    {member.role}
-                  </p>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-6 md:gap-x-7 lg:gap-x-10 gap-y-10 md:gap-y-12 lg:gap-y-14 text-left">
+        {visibleMembers.map((member, index) => {
+          const showImage = !!member.image && member.image.approvedForWeb;
+          const isFirstRow = index < 3;
+          return (
+            <li key={member.name}>
+              <MediaAperture
+                ratio="2/3"
+                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
+                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
+                alt={
+                  showImage
+                    ? member.image!.alt
+                    : `Portrait slot for ${member.name}`
+                }
+                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 26vw, 46vw"
+                lazy={false}
+                fetchPriority={isFirstRow ? "high" : "low"}
+                prefetchMargin="2000px"
+                className={member.imageClassName}
+              />
+              <p className="mt-4 lg:mt-5 font-display text-base md:text-lg lg:text-xl leading-tight text-charcoal">
+                {member.name}
+              </p>
+              <p className="mt-1.5 text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
+                {member.role}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
