@@ -304,6 +304,33 @@ Return JSON matching the schema.`;
   }
 }
 
+// ---- Share-token helpers (PR 3) ------------------------------------------
+// Tokens are 256-bit random values, base64url-encoded. We store only the
+// SHA-256 hash + an expiry + a revoked_at, plus (transitionally) the raw
+// token so admin UI can still show/copy the link after a page reload. A
+// follow-up migration will drop the raw column once admin flow is
+// converted to "show once at issue time".
+
+function generateShareTokenValue(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  // base64url without padding
+  let s = "";
+  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function hashShareToken(token: string): Promise<string> {
+  const buf = new TextEncoder().encode(token);
+  const digest = await crypto.subtle.digest("SHA-256", buf);
+  const bytes = new Uint8Array(digest);
+  let hex = "";
+  for (let i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, "0");
+  return hex;
+}
+
+const DEFAULT_SHARE_TOKEN_TTL_DAYS = 90;
+
 export const markBoardSent = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
@@ -311,14 +338,19 @@ export const markBoardSent = createServerFn({ method: "POST" })
     // Idempotent: if already sent and has a token, return it.
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
+      .select("id,share_token,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
 
-    const token = existing.share_token ?? crypto.randomUUID();
+    const existingToken = (existing as unknown as { share_token: string | null }).share_token;
+    const token = existingToken ?? generateShareTokenValue();
+    const tokenHash = await hashShareToken(token);
     const update: {
       share_token: string;
+      share_token_hash: string;
+      share_token_expires_at?: string;
+      share_token_revoked_at?: null;
       status: "sent";
       sent_at?: string;
       prepared_by_user_id?: string;
@@ -328,12 +360,18 @@ export const markBoardSent = createServerFn({ method: "POST" })
       production_notes?: Record<string, string>;
     } = {
       share_token: token,
+      share_token_hash: tokenHash,
       status: "sent",
     };
 
     // First-send bookkeeping: capture sender + AI copy only on the first send.
-    if (!existing.share_token) {
+    if (!existingToken) {
       update.sent_at = new Date().toISOString();
+      update.share_token_expires_at = new Date(
+        Date.now() + DEFAULT_SHARE_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
+      ).toISOString();
+      // Clear any prior revoke (shouldn't happen on first send, but idempotent).
+      update.share_token_revoked_at = null;
 
       // Capture sender from authenticated admin.
       try {
@@ -350,7 +388,6 @@ export const markBoardSent = createServerFn({ method: "POST" })
       // AI-derive editorial copy if not already set.
       const existingTitle = (existing as unknown as { project_title?: string | null }).project_title;
       if (!existingTitle) {
-        // Fetch client name + pinned item titles grouped by category for the prompt.
         const { data: inq } = await supabaseAdmin
           .from("inquiries")
           .select("name")
@@ -395,11 +432,11 @@ export const markBoardSent = createServerFn({ method: "POST" })
 
     // Fire client email only on the first send. Idempotent thereafter — the
     // email is keyed by boardId, so re-runs coalesce in email_send_log.
-    if (!existing.share_token) {
+    if (!existingToken) {
       try {
         await enqueueStyleBoardEmail({
           boardId: row.id,
-          shareToken: row.share_token as string,
+          shareToken: token,
           inquiryId: row.inquiry_id as string,
           projectTitle: (row.project_title as string | null) ?? null,
           preparedByName: (row.prepared_by_name as string | null) ?? null,
@@ -407,13 +444,30 @@ export const markBoardSent = createServerFn({ method: "POST" })
           pinnedRmsIds: (row.pinned_rms_ids ?? []) as string[],
         });
       } catch (err) {
-        // Do not fail the send action if the email enqueue fails; log and move on.
         console.error("[markBoardSent] email enqueue failed:", err);
       }
     }
 
     return row as unknown as StyleBoardRow;
   });
+
+// Revoke a board's share link. Idempotent — safe to call on already-revoked
+// boards. Public loader rejects tokens with share_token_revoked_at set.
+export const revokeShareToken = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const { data: row, error } = await supabaseAdmin
+      .from("style_boards")
+      .update({ share_token_revoked_at: new Date().toISOString() })
+      .eq("id", data.boardId)
+      .select("id,share_token_revoked_at")
+      .single();
+    if (error) throw error;
+    return { boardId: row.id, revokedAt: (row as unknown as { share_token_revoked_at: string }).share_token_revoked_at };
+  });
+
+
 
 // ---- Client email on first send ------------------------------------------
 // Renders the `style-board-ready` React Email template and enqueues it on
