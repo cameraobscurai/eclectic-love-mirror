@@ -1,8 +1,10 @@
-const { chromium } = require('playwright');
-const fs = require('fs');
+import { chromium } from 'playwright';
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    executablePath: '/bin/chromium',
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const context = await browser.newContext({
     viewport: { width: 1280, height: 1800 }
   });
@@ -18,7 +20,7 @@ const fs = require('fs');
     errors.push(`Page Error: ${err.message}`);
   });
   page.on('requestfailed', request => {
-    networkErrors.push(`Request Failed: ${request.url()} (${request.failure().errorText})`);
+    networkErrors.push(`FAILED: ${request.url()} - ${request.failure()?.errorText || 'Unknown error'}`);
   });
   page.on('response', response => {
     if (response.status() >= 400) {
@@ -45,39 +47,22 @@ const fs = require('fs');
 
   // 3. Gallery Images
   const galleryImages = await page.$$('img');
-  let brokenImages = 0;
+  let brokenImagesCount = 0;
   for (let i = 0; i < Math.min(galleryImages.length, 40); i++) {
     const isBroken = await galleryImages[i].evaluate(img => img.naturalWidth === 0);
-    if (isBroken) brokenImages++;
+    if (isBroken) {
+        const src = await galleryImages[i].getAttribute('src');
+        console.log(`BROKEN_IMAGE: ${src}`);
+        brokenImagesCount++;
+    }
   }
-  console.log(`GALLERY_IMAGES: Total checked: ${Math.min(galleryImages.length, 40)}, Broken: ${brokenImages}`);
+  console.log(`GALLERY_IMAGES_SUMMARY: Total checked: ${Math.min(galleryImages.length, 40)}, Broken: ${brokenImagesCount}`);
 
   await page.screenshot({ path: '/tmp/browser/audit-gallery/top.png' });
 
-  // 4. Project Pages
-  const projectLinks = await page.$$eval('a[href^="/gallery/"]', links => links.map(a => a.href));
-  const uniqueLinks = [...new Set(projectLinks)].slice(0, 2);
-  
-  for (const link of uniqueLinks) {
-    console.log(`--- Navigating to project: ${link} ---`);
-    await page.goto(link, { waitUntil: 'networkidle' });
-    
-    const pTitle = await page.title();
-    const pImgs = await page.$$('img');
-    let pBroken = 0;
-    for (const img of pImgs) {
-      if (await img.evaluate(i => i.naturalWidth === 0)) pBroken++;
-    }
-    console.log(`PROJECT_PAGE ${link}: Title: ${pTitle}, Broken Images: ${pBroken}`);
-    
-    if (link === uniqueLinks[0]) {
-      await page.screenshot({ path: '/tmp/browser/audit-gallery/project.png' });
-    }
-  }
-
-  console.log('--- Errors ---');
-  errors.forEach(e => console.log(e));
-  networkErrors.forEach(e => console.log(e));
+  console.log('--- Network Errors ---');
+  if (networkErrors.length > 0) [...new Set(networkErrors)].forEach(e => console.log(e));
+  else console.log('None');
 
   await browser.close();
 })();

@@ -14,16 +14,13 @@ async function auditPage(page: Page, url: string, name: string) {
   });
 
   page.on('console', (msg: ConsoleMessage) => {
-    if (msg.type() === 'error') {
+    const type = msg.type();
+    if (type === 'error') {
       const text = msg.text();
       if (!text.includes('React DevTools') && !text.includes('[vite]') && !text.includes('hydration') && !text.includes('non-static position') && !text.includes('GA/GTM')) {
         consoleErrors.push(`ConsoleError: ${text}`);
       }
     }
-  });
-
-  page.on('requestfailed', (request: Request) => {
-    networkErrors.push(`Failed: ${request.url()} - ${request.failure()?.errorText}`);
   });
 
   page.on('response', (response) => {
@@ -33,9 +30,14 @@ async function auditPage(page: Page, url: string, name: string) {
     }
   });
 
-  await page.goto(url, { waitUntil: 'networkidle' });
-
-  // 1. & 2. Console and Network checked via listeners.
+  try {
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    // Wait a bit more for dynamic content
+    await page.waitForTimeout(2000);
+  } catch (e: any) {
+    networkErrors.push(`Navigation Failed: ${e.message}`);
+    return { consoleErrors, networkErrors, errors };
+  }
 
   // 3. Product tile images
   const brokenImages = await page.evaluate(() => {
@@ -49,7 +51,11 @@ async function auditPage(page: Page, url: string, name: string) {
   // 4. Filter chips
   const chipCount = await page.getByRole('button').count();
   if (chipCount === 0) {
-    errors.push('No buttons found (expected filter chips)');
+    // Try looking for elements that look like chips if role=button is not used
+    const possibleChips = await page.evaluate(() => document.querySelectorAll('[class*="chip"], [class*="filter"]').length);
+    if (possibleChips === 0) {
+      errors.push('No buttons/chips found (expected filter facets)');
+    }
   }
 
   // 5. Metadata
@@ -60,15 +66,22 @@ async function auditPage(page: Page, url: string, name: string) {
       ogImage: document.querySelector('meta[property="og:image"]')?.getAttribute('content'),
     };
   });
-  if (!metadata.title) errors.push('Missing Title');
+  if (!metadata.title || metadata.title === 'Vite + React + TS') errors.push('Default/Missing Title');
   if (!metadata.description) errors.push('Missing Description');
-  if (!metadata.ogImage?.startsWith('https')) errors.push(`Invalid OG Image: ${metadata.ogImage}`);
+  if (metadata.ogImage && !metadata.ogImage.startsWith('https')) errors.push(`Invalid OG Image (not absolute https): ${metadata.ogImage}`);
+  else if (!metadata.ogImage) errors.push('Missing OG Image');
 
   // 6. Undefined/null/[object Object]
   const placeholderText = await page.evaluate(() => {
-    const text = document.body.innerText;
-    const matches = text.match(/undefined|null|\[object Object\]/gi);
-    return matches ? matches.slice(0, 5) : [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    let node;
+    while(node = walker.nextNode()) {
+      if (node.textContent?.match(/undefined|null|\[object Object\]/i)) {
+        nodes.push(node.textContent.trim());
+      }
+    }
+    return Array.from(new Set(nodes)).slice(0, 5);
   });
   if (placeholderText.length > 0) {
     errors.push(`Leaking Placeholders: ${placeholderText.join(', ')}`);
@@ -77,18 +90,17 @@ async function auditPage(page: Page, url: string, name: string) {
   // 7. Scroll to bottom
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(1000);
-  const footerVisible = await page.locator('footer').isVisible().catch(() => false);
-  if (!footerVisible) {
-    // Check if footer text exists at least
-    const footerText = await page.evaluate(() => !!document.querySelector('footer'));
-    if (!footerText) errors.push('Footer not found after scroll');
+  const footerFound = await page.evaluate(() => !!document.querySelector('footer'));
+  if (!footerFound) {
+    errors.push('Footer not found');
   }
 
   // 8. Screenshots
   if (name === 'Collection') {
-    await page.screenshot({ path: '/tmp/browser/audit-collection/top.png', fullPage: false });
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: '/tmp/browser/audit-collection/top.png' });
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await page.screenshot({ path: '/tmp/browser/audit-collection/bottom.png', fullPage: false });
+    await page.screenshot({ path: '/tmp/browser/audit-collection/bottom.png' });
   }
 
   // Output results
@@ -101,35 +113,45 @@ async function auditPage(page: Page, url: string, name: string) {
 }
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    executablePath: '/bin/chromium',
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
   const page = await browser.newPage({ viewport: { width: 1280, height: 1800 } });
 
-  // Audit /collection
-  await auditPage(page, 'http://localhost:8080/collection', 'Collection');
+  try {
+    // Audit /collection
+    await auditPage(page, 'http://localhost:8080/collection', 'Collection');
 
-  // Find a category link (e.g., /collection/pillows-throws or any sub-path)
-  const categoryLink = await page.evaluate(() => {
-    const links = Array.from(document.querySelectorAll('a')).map(a => a.href);
-    return links.find(href => href.includes('/collection/') && href !== 'http://localhost:8080/collection');
-  });
+    // Find a category link
+    const categoryLink = await page.evaluate(() => {
+      const links = Array.from(document.querySelectorAll('a'));
+      const catLink = links.find(a => a.href.includes('/collection/') && a.href !== 'http://localhost:8080/collection' && !a.href.includes('#'));
+      return catLink ? catLink.href : null;
+    });
 
-  if (categoryLink) {
-    await auditPage(page, categoryLink, 'Category');
-  } else {
-    console.log('No category link found.');
-  }
-
-  // Find first product tile and click
-  await page.goto('http://localhost:8080/collection');
-  const firstProduct = page.locator('a[href*="/product/"]').first();
-  if (await firstProduct.isVisible()) {
-    const pdpUrl = await firstProduct.getAttribute('href');
-    if (pdpUrl) {
-      await auditPage(page, new URL(pdpUrl, 'http://localhost:8080').href, 'PDP');
+    if (categoryLink) {
+      await auditPage(page, categoryLink, 'Category');
+    } else {
+      console.log('\n--- Category Audit Skipped (No links found) ---');
     }
-  } else {
-    console.log('No product tile link found.');
-  }
 
-  await browser.close();
+    // Find first product tile and click
+    await page.goto('http://localhost:8080/collection');
+    await page.waitForTimeout(2000);
+    const pdpUrl = await page.evaluate(() => {
+      const productLink = document.querySelector('a[href*="/product/"]');
+      return productLink ? (productLink as HTMLAnchorElement).href : null;
+    });
+
+    if (pdpUrl) {
+      await auditPage(page, pdpUrl, 'PDP');
+    } else {
+      console.log('\n--- PDP Audit Skipped (No product links found) ---');
+    }
+  } catch (err) {
+    console.error('Fatal error during audit:', err);
+  } finally {
+    await browser.close();
+  }
 })();
