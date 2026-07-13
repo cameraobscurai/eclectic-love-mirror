@@ -138,8 +138,8 @@ export const Route = createFileRoute("/collection")({
           "600+ pieces of curated event furniture, lighting, and tableware available for rental in Denver and beyond.",
       },
       { property: "og:url", content: "https://eclectichive.com/collection" },
-      // og:image intentionally omitted — hosting supplies the project fallback.
-      // Prior /og/collection.jpg was a 404, blanking every social share.
+      { property: "og:image", content: "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png" },
+      { name: "twitter:image", content: "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3146/f0aaf4ee6c705ee2.png" },
     ],
     // Note: previously we preloaded CATEGORY_COVERS here. That preload now
     // now lives in the collection grid so it only runs when the
