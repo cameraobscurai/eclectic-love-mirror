@@ -118,11 +118,11 @@ export const Route = createFileRoute("/atelier")({
       { property: "og:url", content: "https://eclectichive.com/atelier" },
       {
         property: "og:image",
-        content: atelierReplacement.img.src,
+        content: `https://eclectichive.com${atelierReplacement.img.src}`,
       },
       {
         name: "twitter:image",
-        content: atelierReplacement.img.src,
+        content: `https://eclectichive.com${atelierReplacement.img.src}`,
       },
     ],
     links: [
