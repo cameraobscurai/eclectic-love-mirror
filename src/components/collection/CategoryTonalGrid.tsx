@@ -6,6 +6,7 @@ import {
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { NormalizedProductImage } from "./NormalizedProductImage";
 
 interface CategoryTonalGridProps {
   groups: Array<{ id: BrowseGroupId; products: CollectionProduct[] }>;
@@ -40,35 +41,6 @@ const ORDER: BrowseGroupId[] = [
 
 // Greyscale checker pair from the brand baseline.
 const TONES = ["#ffffff", "#f1f1f1"] as const;
-
-// Per-category padding hints. Image silhouettes vary wildly — a rug fills
-// its frame, a side-table is a thin vertical, a chandelier hangs from the
-// top. Without per-category tuning every tile uses the same padding and
-// half look marooned. Values are CSS shorthand "T R B L".
-// Bottom is always larger to clear the label.
-const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
-  // Landscape / near-square covers — tight side inset so the subject
-  // reads at full visual weight against portrait neighbors.
-  rugs: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  throws: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  sofas: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
-  chairs: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  "coffee-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
-  "benches-ottomans": "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
-  bar: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
-  dining: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
-  tableware: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  // Portrait / vertical covers — match landscape padding so they don't
-  // read as shrunk.
-  "side-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  lighting: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  "cocktail-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
-  // Wide, short silhouettes — pull side padding in so the subject fills
-  // the tile instead of floating as a thin sliver.
-  pillows: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(2.25rem, 3vw, 3.25rem)",
-  storage: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(2.25rem, 3vw, 3.25rem)",
-};
-const DEFAULT_PADDING = "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)";
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -201,7 +173,6 @@ export function CategoryTonalGrid({
             heroAlt={t.heroAlt}
             label={t.label}
             tone={tone}
-            padding={PADDING_BY_GROUP[t.id] ?? DEFAULT_PADDING}
             priority={i < 5}
             onSelectCategory={onSelectCategory}
           />
@@ -219,7 +190,6 @@ interface TonalCellProps {
   heroAlt: string;
   label: string;
   tone: string;
-  padding: string;
   priority: boolean;
   onSelectCategory: (id: BrowseGroupId) => void;
 }
@@ -230,7 +200,6 @@ function TonalCell({
   heroAlt,
   label,
   tone,
-  padding,
   priority,
   onSelectCategory,
 }: TonalCellProps) {
@@ -246,20 +215,21 @@ function TonalCell({
       style={{ background: tone, touchAction: "manipulation" }}
     >
       {heroSrc ? (
-        <img
+        <NormalizedProductImage
           src={heroSrc}
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
+          frameAspect={1}
+          targetArea={0.38}
+          maxW={0.84}
+          maxH={0.72}
           width={600}
           height={480}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
           {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
           className="absolute inset-0 h-full w-full object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02] will-change-transform"
-          style={{
-            padding,
-            objectPosition: "center center",
-          }}
+          style={{ objectPosition: "center center" }}
         />
       ) : null}
 
