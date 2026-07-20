@@ -1012,25 +1012,11 @@ function CollectionPage() {
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
           style={showOverview || layout === "wall" ? undefined : { maxWidth: "var(--archive-canvas-max)" }}
         >
-          <div
-            className={showOverview ? "flex flex-col lg:flex-row" : "grid grid-cols-1"}
-            style={
-              showOverview
-                ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
-                : undefined
-            }
-          >
+          <div className={showOverview ? "collection-overview-layout" : "grid grid-cols-1"}>
             {showOverview && (
               <aside
-                className="hidden lg:flex flex-shrink-0 items-center justify-center overflow-hidden"
+                className="collection-overview-plate hidden lg:flex items-center justify-center overflow-hidden"
                 style={{
-                  // H plate width — tuned for the new portrait H artwork.
-                  // Older 32→44% range left "the HIVE" + chair clipping at
-                  // 1200–1500. Pushed up so the full mark shows on common
-                  // square-ish desktops, with a real cap so 1920+ ultrawide
-                  // still leaves the grid room.
-                  // 1024→44% · 1280→46% · 1440→47% · 1920→52%.
-                  width: "clamp(44%, 36% + 8vw, 52%)",
                   background: "var(--paper)",
                 }}
               >
@@ -1080,7 +1066,7 @@ function CollectionPage() {
             <AnimatePresence mode="wait">
             <motion.div
               key={showOverview ? "overview" : "results"}
-              className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
+              className={showOverview ? "collection-overview-pane min-w-0 flex flex-col" : "min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -1128,7 +1114,7 @@ function CollectionPage() {
                     </picture>
                   </div>
                   <div
-                    className="collection-overview-grid-shell lg:flex-1 lg:min-h-0 lg:overflow-hidden"
+                    className="collection-overview-grid-shell"
                   >
                     <CategoryTonalGrid
                       groups={overviewGroups}

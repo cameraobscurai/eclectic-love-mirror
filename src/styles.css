@@ -357,9 +357,43 @@ button, a, [role="button"] {
 }
 
 @media (min-width: 1024px) {
+  .collection-overview-layout {
+    --overview-h: min(
+      calc(var(--app-vh, 100dvh) - var(--nav-h)),
+      37vw,
+      42rem
+    );
+    --overview-plate-w: var(--overview-h);
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    min-height: calc(var(--app-vh, 100dvh) - var(--nav-h));
+  }
+
+  .collection-overview-plate {
+    flex: 0 0 var(--overview-plate-w);
+    width: var(--overview-plate-w);
+  }
+
+  .collection-overview-pane {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: var(--overview-h);
+    align-self: start;
+    overflow: hidden;
+  }
+
+  .collection-overview-plate,
   .collection-overview-grid-shell {
     min-height: 0;
-    height: auto;
+    height: var(--overview-h);
+    align-self: start;
+  }
+
+  .collection-overview-grid-shell {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
   }
 }
 
