@@ -115,11 +115,35 @@ function measureImage(
     return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
   }
 
+  // Sample the four corners to detect the actual background color.
+  // The old code assumed pure white (r,g,b > 242), which failed for
+  // studio-white photos (~232), cream/ivory backdrops, and JPEG-compressed
+  // cutouts — the entire photo got counted as subject and silhouette
+  // measurement collapsed. Median of corner RGB gives a robust background
+  // reference regardless of paper stock.
+  const sampleCorner = (sx: number, sy: number) => {
+    const i = (sy * cw + sx) * 4;
+    return [px[i], px[i + 1], px[i + 2]] as const;
+  };
+  const corners = [
+    sampleCorner(2, 2),
+    sampleCorner(cw - 3, 2),
+    sampleCorner(2, ch - 3),
+    sampleCorner(cw - 3, ch - 3),
+  ];
+  const bgR = corners.map((c) => c[0]).sort((a, b) => a - b)[2];
+  const bgG = corners.map((c) => c[1]).sort((a, b) => a - b)[2];
+  const bgB = corners.map((c) => c[2]).sort((a, b) => a - b)[2];
+  // Only treat as background when it's actually light (>210). Dark corners
+  // mean the photo has no consistent bg — fall through and measure everything.
+  const hasLightBg = bgR > 210 && bgG > 210 && bgB > 210;
+  // Tolerance widens on darker backgrounds to swallow JPEG noise.
+  const bgTol = hasLightBg ? Math.max(14, (255 - Math.min(bgR, bgG, bgB)) * 0.6) : 0;
+
   let minX = cw;
   let minY = ch;
   let maxX = -1;
   let maxY = -1;
-  const px = data.data;
   for (let y = 0; y < ch; y++) {
     for (let x = 0; x < cw; x++) {
       const i = (y * cw + x) * 4;
@@ -128,7 +152,12 @@ function measureImage(
       const r = px[i];
       const g = px[i + 1];
       const b = px[i + 2];
-      if (r > 242 && g > 242 && b > 242) continue;
+      if (
+        hasLightBg &&
+        Math.abs(r - bgR) <= bgTol &&
+        Math.abs(g - bgG) <= bgTol &&
+        Math.abs(b - bgB) <= bgTol
+      ) continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
