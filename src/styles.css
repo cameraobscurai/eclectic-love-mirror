@@ -374,6 +374,14 @@ button, a, [role="button"] {
     width: var(--overview-plate-w);
   }
 
+  .collection-overview-pane {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: var(--overview-h);
+    align-self: start;
+    overflow: hidden;
+  }
+
   .collection-overview-plate,
   .collection-overview-grid-shell {
     min-height: 0;
@@ -382,7 +390,8 @@ button, a, [role="button"] {
   }
 
   .collection-overview-grid-shell {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
+    width: 100%;
     min-width: 0;
   }
 }
