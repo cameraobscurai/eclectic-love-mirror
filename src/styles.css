@@ -357,9 +357,23 @@ button, a, [role="button"] {
 }
 
 @media (min-width: 1024px) {
+  .collection-overview-layout {
+    --overview-plate-w: clamp(22rem, 40vw, 38rem);
+    --overview-h: min(
+      calc(var(--app-vh, 100dvh) - var(--nav-h)),
+      calc(var(--overview-plate-w) * 3 / 5)
+    );
+    display: grid;
+    grid-template-columns: var(--overview-plate-w) minmax(0, 1fr);
+    align-items: stretch;
+    min-height: calc(var(--app-vh, 100dvh) - var(--nav-h));
+  }
+
+  .collection-overview-plate,
   .collection-overview-grid-shell {
     min-height: 0;
-    height: auto;
+    height: var(--overview-h);
+    align-self: start;
   }
 }
 
