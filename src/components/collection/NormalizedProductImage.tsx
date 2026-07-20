@@ -28,7 +28,17 @@ const fitCache = new Map<string, Fit | null>();
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 const TILE_OBJECT_CONTENT = 0.92;
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.78 };
+// Fallback fit for CORS-tainted, decode-failed, or unmeasurable images.
+// Scale sits at the midpoint of the clamp below so a fallback tile reads
+// as a peer next to a measured tile instead of a visible outlier.
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, scale: 0.97 };
+
+// Tight uniform scale clamp. The previous 0.55–1.35 window was wide enough
+// that two correctly-measured tiles could end up 2.45x different in size
+// and both look "valid." Real editorial grids (RH, Aerin, Serena) keep the
+// visual-weight spread inside ~1.4x.
+const SCALE_MIN = 0.82;
+const SCALE_MAX = 1.12;
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -51,14 +61,13 @@ function fitFromVisualBox(
   const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
   if (!renderedW || !renderedH) return null;
 
-  // Uniform targets across silhouettes. Per-aspect overrides caused wide
-  // sofas to balloon while narrower items shrank, producing the chaotic
-  // scale mismatch the owner flagged. Keep one target so natural aspect
-  // alone determines how tiles read next to each other.
-  void renderedW; void renderedH;
-  const targetArea = targetAreaOverride ?? 0.34;
-  const maxW = maxWOverride ?? 0.92;
-  const maxH = maxHOverride ?? 0.74;
+  // One uniform visual-weight target. Caps prevent extremes (thin
+  // chandelier rods, wide banquettes) from either bleeding to the tile
+  // edge or shrinking to nothing. maxH lifted 0.74 → 0.82 so tall
+  // subjects aren't crushed against a low ceiling.
+  const targetArea = targetAreaOverride ?? 0.32;
+  const maxW = maxWOverride ?? 0.86;
+  const maxH = maxHOverride ?? 0.82;
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
@@ -70,7 +79,7 @@ function fitFromVisualBox(
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.55, 1.35),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), SCALE_MIN, SCALE_MAX),
   };
 }
 
@@ -106,11 +115,36 @@ function measureImage(
     return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
   }
 
+  const px = data.data;
+  // Sample the four corners to detect the actual background color.
+  // The old code assumed pure white (r,g,b > 242), which failed for
+  // studio-white photos (~232), cream/ivory backdrops, and JPEG-compressed
+  // cutouts — the entire photo got counted as subject and silhouette
+  // measurement collapsed. Median of corner RGB gives a robust background
+  // reference regardless of paper stock.
+  const sampleCorner = (sx: number, sy: number) => {
+    const i = (sy * cw + sx) * 4;
+    return [px[i], px[i + 1], px[i + 2]] as const;
+  };
+  const corners = [
+    sampleCorner(2, 2),
+    sampleCorner(cw - 3, 2),
+    sampleCorner(2, ch - 3),
+    sampleCorner(cw - 3, ch - 3),
+  ];
+  const bgR = corners.map((c) => c[0]).sort((a, b) => a - b)[2];
+  const bgG = corners.map((c) => c[1]).sort((a, b) => a - b)[2];
+  const bgB = corners.map((c) => c[2]).sort((a, b) => a - b)[2];
+  // Only treat as background when it's actually light (>210). Dark corners
+  // mean the photo has no consistent bg — fall through and measure everything.
+  const hasLightBg = bgR > 210 && bgG > 210 && bgB > 210;
+  // Tolerance widens on darker backgrounds to swallow JPEG noise.
+  const bgTol = hasLightBg ? Math.max(14, (255 - Math.min(bgR, bgG, bgB)) * 0.6) : 0;
+
   let minX = cw;
   let minY = ch;
   let maxX = -1;
   let maxY = -1;
-  const px = data.data;
   for (let y = 0; y < ch; y++) {
     for (let x = 0; x < cw; x++) {
       const i = (y * cw + x) * 4;
@@ -119,7 +153,12 @@ function measureImage(
       const r = px[i];
       const g = px[i + 1];
       const b = px[i + 2];
-      if (r > 242 && g > 242 && b > 242) continue;
+      if (
+        hasLightBg &&
+        Math.abs(r - bgR) <= bgTol &&
+        Math.abs(g - bgG) <= bgTol &&
+        Math.abs(b - bgB) <= bgTol
+      ) continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
