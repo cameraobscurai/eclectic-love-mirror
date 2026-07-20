@@ -358,11 +358,13 @@ button, a, [role="button"] {
 
 @media (min-width: 1024px) {
   .collection-overview-layout {
-    --overview-plate-w: clamp(22rem, 40vw, 38rem);
+    --overview-h: min(calc(var(--app-vh, 100dvh) - var(--nav-h)), 37vw, 42rem);
     --overview-h: min(
       calc(var(--app-vh, 100dvh) - var(--nav-h)),
-      calc(var(--overview-plate-w) * 3 / 5)
+      37vw,
+      42rem
     );
+    --overview-plate-w: var(--overview-h);
     display: flex;
     width: 100%;
     align-items: stretch;

@@ -46,6 +46,10 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
           <NormalizedProductImage
             src={src}
             srcSet={srcSet}
+            frameAspect={1}
+            targetArea={0.84}
+            maxW={0.97}
+            maxH={0.97}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
             className={`w-full h-full ${PRODUCT_TILE_IMAGE_CLASS} pointer-events-none select-none`}
