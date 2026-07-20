@@ -1066,7 +1066,7 @@ function CollectionPage() {
             <AnimatePresence mode="wait">
             <motion.div
               key={showOverview ? "overview" : "results"}
-              className="min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"
+              className={showOverview ? "collection-overview-pane min-w-0 flex flex-col" : "min-w-0 flex-1 flex flex-col lg:min-h-0 lg:overflow-hidden"}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -1114,7 +1114,7 @@ function CollectionPage() {
                     </picture>
                   </div>
                   <div
-                    className="collection-overview-grid-shell lg:flex-1 lg:min-h-0 lg:overflow-hidden"
+                    className="collection-overview-grid-shell"
                   >
                     <CategoryTonalGrid
                       groups={overviewGroups}
