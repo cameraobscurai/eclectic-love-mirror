@@ -363,10 +363,15 @@ button, a, [role="button"] {
       calc(var(--app-vh, 100dvh) - var(--nav-h)),
       calc(var(--overview-plate-w) * 3 / 5)
     );
-    display: grid;
-    grid-template-columns: var(--overview-plate-w) minmax(0, 1fr);
+    display: flex;
+    width: 100%;
     align-items: stretch;
     min-height: calc(var(--app-vh, 100dvh) - var(--nav-h));
+  }
+
+  .collection-overview-plate {
+    flex: 0 0 var(--overview-plate-w);
+    width: var(--overview-plate-w);
   }
 
   .collection-overview-plate,
@@ -374,6 +379,11 @@ button, a, [role="button"] {
     min-height: 0;
     height: var(--overview-h);
     align-self: start;
+  }
+
+  .collection-overview-grid-shell {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 
