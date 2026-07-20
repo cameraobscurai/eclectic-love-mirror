@@ -4,7 +4,7 @@ const routes = ['/collection/pillows-throws','/collection/rugs','/collection/fur
 const viewports = [{name:'desktop',width:1280,height:1800},{name:'mobile',width:390,height:844}];
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({executablePath:'/nix/store/2zqa6kavc8znbgrac1l3pix9lwr3w5nj-playwright-chromium/chrome-linux/chrome', args:['--no-sandbox']});
   for (const route of routes) {
     for (const vp of viewports) {
       const page = await browser.newPage({viewport:{width:vp.width,height:vp.height}});
