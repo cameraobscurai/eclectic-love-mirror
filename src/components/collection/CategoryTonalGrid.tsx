@@ -48,25 +48,28 @@ const TONES = ["#ffffff", "#ebebeb"] as const;
 // half look marooned. Values are CSS shorthand "T R B L".
 // Bottom is always larger to clear the label.
 const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
+  // Landscape / near-square covers — tight side inset so the subject
+  // reads at full visual weight against portrait neighbors.
   rugs: "2rem 2rem 3rem 2rem",
-  pillows: "2rem 2.5rem 3rem 2.5rem",
   throws: "2rem 2rem 3rem 2rem",
-  // Portrait covers (side-tables, lighting) previously used oversized
-  // insets (3.75rem+) which shrank them to ~40% of their landscape peers
-  // in the grid — the owner flagged the side-table tile as visibly tiny.
-  // Match the landscape padding so portrait covers read at comparable size.
-  "side-tables": "2rem 2rem 3rem 2rem",
-  lighting: "2rem 2rem 3rem 2rem",
-
-  "cocktail-tables": "2rem 2.5rem 3rem 2.5rem",
   sofas: "2rem 2rem 3rem 2rem",
+  chairs: "2rem 2rem 3rem 2rem",
   "coffee-tables": "2rem 2rem 3rem 2rem",
   "benches-ottomans": "2rem 2rem 3rem 2rem",
-  bar: "2rem 2rem 3rem 2rem",
+  bar: "2rem 1.5rem 2.75rem 1.5rem",
   dining: "2rem 2rem 3rem 2rem",
-  storage: "2rem 2rem 3rem 2rem",
+  tableware: "2rem 2rem 3rem 2rem",
+  // Portrait / vertical covers — match landscape padding so they don't
+  // read as shrunk.
+  "side-tables": "2rem 2rem 3rem 2rem",
+  lighting: "2rem 2rem 3rem 2rem",
+  "cocktail-tables": "2rem 2rem 3rem 2rem",
+  // Wide, short silhouettes — pull side padding in so the subject fills
+  // the tile instead of floating as a thin sliver.
+  pillows: "2rem 1.5rem 2.75rem 1.5rem",
+  storage: "1.5rem 1rem 2.5rem 1rem",
 };
-const DEFAULT_PADDING = "2rem 2.5rem 3rem 2.5rem";
+const DEFAULT_PADDING = "2rem 2rem 3rem 2rem";
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -157,26 +160,32 @@ export function CategoryTonalGrid({
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          grid-auto-rows: minmax(260px, 1fr);
+          /* Cells hold a squarish 4/5 aspect ratio instead of stretching
+             to fill the flex-1 parent. Previously rows used 1fr + height
+             100%, which produced 200x560 slivers with subjects marooned
+             in whitespace whenever the H-plate column made the parent
+             tall. Aspect-locked rows keep visual weight uniform at every
+             viewport. */
+          grid-auto-rows: auto;
           width: 100%;
           max-width: 1600px;
           margin-inline: auto;
-          height: 100%;
           gap: 0;
           padding: 0;
         }
-        [data-tonal-grid] > button { min-height: 260px; }
+        [data-tonal-grid] > button {
+          aspect-ratio: 4 / 5;
+          min-height: 0;
+        }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: minmax(140px, 1fr);
             max-width: none;
-            height: 100%;
             padding: 0;
             gap: 0;
             background: var(--paper);
           }
-          [data-tonal-grid] > button { min-height: 140px; }
+          [data-tonal-grid] > button { aspect-ratio: 1 / 1; }
         }
       `}</style>
       <div
