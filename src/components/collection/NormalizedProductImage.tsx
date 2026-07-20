@@ -28,7 +28,17 @@ const fitCache = new Map<string, Fit | null>();
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 const TILE_OBJECT_CONTENT = 0.92;
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.66, scale: 0.78 };
+// Fallback fit for CORS-tainted, decode-failed, or unmeasurable images.
+// Scale sits at the midpoint of the clamp below so a fallback tile reads
+// as a peer next to a measured tile instead of a visible outlier.
+const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, scale: 0.97 };
+
+// Tight uniform scale clamp. The previous 0.55–1.35 window was wide enough
+// that two correctly-measured tiles could end up 2.45x different in size
+// and both look "valid." Real editorial grids (RH, Aerin, Serena) keep the
+// visual-weight spread inside ~1.4x.
+const SCALE_MIN = 0.82;
+const SCALE_MAX = 1.12;
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -51,14 +61,13 @@ function fitFromVisualBox(
   const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
   if (!renderedW || !renderedH) return null;
 
-  // Uniform targets across silhouettes. Per-aspect overrides caused wide
-  // sofas to balloon while narrower items shrank, producing the chaotic
-  // scale mismatch the owner flagged. Keep one target so natural aspect
-  // alone determines how tiles read next to each other.
-  void renderedW; void renderedH;
-  const targetArea = targetAreaOverride ?? 0.34;
-  const maxW = maxWOverride ?? 0.92;
-  const maxH = maxHOverride ?? 0.74;
+  // One uniform visual-weight target. Caps prevent extremes (thin
+  // chandelier rods, wide banquettes) from either bleeding to the tile
+  // edge or shrinking to nothing. maxH lifted 0.74 → 0.82 so tall
+  // subjects aren't crushed against a low ceiling.
+  const targetArea = targetAreaOverride ?? 0.32;
+  const maxW = maxWOverride ?? 0.86;
+  const maxH = maxHOverride ?? 0.82;
   const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
   const scaleByArea = Math.sqrt(targetArea / currentArea);
   const scaleByCaps = Math.min(
@@ -70,7 +79,7 @@ function fitFromVisualBox(
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), 0.55, 1.35),
+    scale: clamp(Math.min(scaleByArea, scaleByCaps), SCALE_MIN, SCALE_MAX),
   };
 }
 
