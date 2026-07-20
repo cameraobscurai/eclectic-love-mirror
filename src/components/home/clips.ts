@@ -30,9 +30,9 @@ const posterSet = (id: string) => ({
 const PORTRAIT = 9 / 16;
 
 export const HERO_CLIPS: FilmstripClip[] = [
-  { id: "01", season: "Spring",      ...posterSet("01"), label: "Spring",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/01SPRING-v2.mp4` } },
-  { id: "02", season: "Summer",      ...posterSet("02"), label: "Summer",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/02SUMMER-v2.mp4` } },
-  { id: "03", season: "Late Summer", ...posterSet("03"), label: "Late Summer", aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/03LATESUMER-v2.mp4` } },
-  { id: "04", season: "Autumn",      ...posterSet("04"), label: "Autumn",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/04AUTUMN-v2.mp4` } },
-  { id: "05", season: "Winter",      ...posterSet("05"), label: "Winter",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/05WINTER-v2.mp4` } },
+  { id: "01", season: "Spring",      ...posterSet("01"), label: "Spring",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/01SPRING-v3.mp4` } },
+  { id: "02", season: "Summer",      ...posterSet("02"), label: "Summer",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/02SUMMER-v3.mp4` } },
+  { id: "03", season: "Late Summer", ...posterSet("03"), label: "Late Summer", aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/03LATESUMER-v3.mp4` } },
+  { id: "04", season: "Autumn",      ...posterSet("04"), label: "Autumn",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/04AUTUMN-v3.mp4` } },
+  { id: "05", season: "Winter",      ...posterSet("05"), label: "Winter",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/05WINTER-v3.mp4` } },
 ];
