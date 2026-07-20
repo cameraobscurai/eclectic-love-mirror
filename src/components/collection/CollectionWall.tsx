@@ -76,6 +76,12 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     return { cols: best.cols, rows: best.rows };
   }, [capped.length, size.w, size.h]);
 
+  const cellAspect = useMemo(() => {
+    if (!size.w || !size.h || !cols || !rows) return 1;
+    const aspect = (size.w / cols) / (size.h / rows);
+    return Math.round(aspect * 100) / 100;
+  }, [cols, rows, size.h, size.w]);
+
   // Trim to perfect rectangle (no orphan tiles).
   const trimmed = useMemo(() => capped.slice(0, cols * rows), [capped, cols, rows]);
 
@@ -171,6 +177,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
           >
             <CollectionWallTile
               product={p}
+              cellAspect={cellAspect}
               isHovered={activeId === p.id}
               isAnyHovered={activeId !== null}
               onHover={isMobile ? noopHover : setHoveredId}

@@ -7,6 +7,7 @@ import { NormalizedProductImage } from "./NormalizedProductImage";
 
 interface Props {
   product: CollectionProduct;
+  cellAspect: number;
   isHovered: boolean;
   isAnyHovered: boolean;
   onHover: (id: string | null) => void;
@@ -15,7 +16,7 @@ interface Props {
 
 const WALL_WIDTHS = [600, 900, 1200];
 
-function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onOpen }: Props) {
+function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
 
@@ -46,7 +47,7 @@ function CollectionWallTileImpl({ product, isHovered, isAnyHovered, onHover, onO
           <NormalizedProductImage
             src={src}
             srcSet={srcSet}
-            frameAspect={1}
+            frameAspect={cellAspect}
             targetArea={0.84}
             maxW={0.97}
             maxH={0.97}
@@ -68,5 +69,6 @@ export const CollectionWallTile = memo(
   (prev, next) =>
     prev.isHovered === next.isHovered &&
     prev.isAnyHovered === next.isAnyHovered &&
-    prev.product.id === next.product.id,
+    prev.product.id === next.product.id &&
+    prev.cellAspect === next.cellAspect,
 );
