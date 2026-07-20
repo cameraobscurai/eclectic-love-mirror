@@ -13,9 +13,9 @@ interface CategoryTonalGridProps {
 }
 
 /**
- * Editorial flat grid — 6×3 desktop, 3 cols tablet, 2 cols mobile.
- * Tiles share the parent's full height (no aspect-ratio per tile) so the
- * grid block matches the sibling H-plate height — no dead space below.
+ * Editorial flat grid — 5×3 desktop, 3 cols tablet/mobile.
+ * Desktop tiles use the SAME square-ish module as the H-plate width so the
+ * overview reads as one composed plate, not a tall H beside a tiny strip.
  *
  * Checkerboard tone is computed from row+col parity against the rendered
  * column count, so 2/3/6 col layouts each get a real chess pattern (not
@@ -38,9 +38,8 @@ const ORDER: BrowseGroupId[] = [
   "pillows", "throws", "tableware", "styling", "rugs",
 ];
 
-// Greyscale checker pair — flat white + soft grey. Bumped from #f1f1f1 to
-// #ebebeb so the checker reads at scale without going warm.
-const TONES = ["#ffffff", "#ebebeb"] as const;
+// Greyscale checker pair from the brand baseline.
+const TONES = ["#ffffff", "#f1f1f1"] as const;
 
 // Per-category padding hints. Image silhouettes vary wildly — a rug fills
 // its frame, a side-table is a thin vertical, a chandelier hangs from the
@@ -50,26 +49,26 @@ const TONES = ["#ffffff", "#ebebeb"] as const;
 const PADDING_BY_GROUP: Partial<Record<BrowseGroupId, string>> = {
   // Landscape / near-square covers — tight side inset so the subject
   // reads at full visual weight against portrait neighbors.
-  rugs: "2rem 2rem 3rem 2rem",
-  throws: "2rem 2rem 3rem 2rem",
-  sofas: "2rem 2rem 3rem 2rem",
-  chairs: "2rem 2rem 3rem 2rem",
-  "coffee-tables": "2rem 2rem 3rem 2rem",
-  "benches-ottomans": "2rem 2rem 3rem 2rem",
-  bar: "2rem 1.5rem 2.75rem 1.5rem",
-  dining: "2rem 2rem 3rem 2rem",
-  tableware: "2rem 2rem 3rem 2rem",
+  rugs: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
+  throws: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
+  sofas: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
+  chairs: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
+  "coffee-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
+  "benches-ottomans": "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
+  bar: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
+  dining: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.6vw, 1.75rem) clamp(2.25rem, 3vw, 3.25rem)",
+  tableware: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
   // Portrait / vertical covers — match landscape padding so they don't
   // read as shrunk.
-  "side-tables": "2rem 2rem 3rem 2rem",
-  lighting: "2rem 2rem 3rem 2rem",
-  "cocktail-tables": "2rem 2rem 3rem 2rem",
+  "side-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
+  lighting: "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
+  "cocktail-tables": "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)",
   // Wide, short silhouettes — pull side padding in so the subject fills
   // the tile instead of floating as a thin sliver.
-  pillows: "2rem 1.5rem 2.75rem 1.5rem",
-  storage: "1.5rem 1rem 2.5rem 1rem",
+  pillows: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(2.25rem, 3vw, 3.25rem)",
+  storage: "clamp(1rem, 2.2vw, 2.5rem) clamp(0.75rem, 1.5vw, 1.5rem) clamp(2.25rem, 3vw, 3.25rem)",
 };
-const DEFAULT_PADDING = "2rem 2rem 3rem 2rem";
+const DEFAULT_PADDING = "clamp(1rem, 2.2vw, 2.5rem) clamp(1rem, 2vw, 2.25rem) clamp(2.25rem, 3vw, 3.25rem)";
 
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
@@ -152,35 +151,28 @@ export function CategoryTonalGrid({
 
 
   return (
-    // grid-rows-3 lg + h-full = three equal rows that fill the parent's
-    // height, sharing the H-plate's vertical real estate. No aspect-ratio
-    // on individual tiles — they take their share of the row.
     <>
       <style>{`
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
-          /* Cells hold a squarish 4/5 aspect ratio instead of stretching
-             to fill the flex-1 parent. Previously rows used 1fr + height
-             100%, which produced 200x560 slivers with subjects marooned
-             in whitespace whenever the H-plate column made the parent
-             tall. Aspect-locked rows keep visual weight uniform at every
-             viewport. */
-          grid-auto-rows: auto;
+          grid-auto-rows: 1fr;
           width: 100%;
           max-width: 1600px;
+          height: 100%;
           margin-inline: auto;
           gap: 0;
           padding: 0;
         }
         [data-tonal-grid] > button {
-          aspect-ratio: 4 / 5;
+          aspect-ratio: auto;
           min-height: 0;
         }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, 1fr);
             max-width: none;
+            height: auto;
             padding: 0;
             gap: 0;
             background: var(--paper);
