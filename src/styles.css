@@ -358,7 +358,6 @@ button, a, [role="button"] {
 
 @media (min-width: 1024px) {
   .collection-overview-layout {
-    --overview-h: min(calc(var(--app-vh, 100dvh) - var(--nav-h)), 37vw, 42rem);
     --overview-h: min(
       calc(var(--app-vh, 100dvh) - var(--nav-h)),
       37vw,
