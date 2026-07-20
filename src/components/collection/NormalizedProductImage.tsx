@@ -115,6 +115,7 @@ function measureImage(
     return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
   }
 
+  const px = data.data;
   // Sample the four corners to detect the actual background color.
   // The old code assumed pure white (r,g,b > 242), which failed for
   // studio-white photos (~232), cream/ivory backdrops, and JPEG-compressed
