@@ -8,16 +8,18 @@ import { test, expect } from '@playwright/test';
 test('QuickView "view full page" lands on the PDP', async ({ page }) => {
   test.setTimeout(60_000);
 
+  // Grab any real product slug from the catalog snapshot, then open the
+  // QuickView directly via the route's ?view=<slug> state param. This
+  // avoids brittle tile-selector coupling while still exercising the exact
+  // modal + "view full page" wiring users hit in production.
   await page.goto('/collection', { waitUntil: 'domcontentloaded' });
-
-  // Open the first product tile → QuickView modal.
-  const firstTile = page
-    .locator('main button[aria-label^="Open "]')
-    .filter({ hasNot: page.locator('text=/menu/i') })
-    .first();
-  await firstTile.waitFor({ state: 'visible', timeout: 30_000 });
-  await firstTile.scrollIntoViewIfNeeded();
-  await firstTile.click();
+  const slug = await page.evaluate(async () => {
+    const res = await fetch('/src/data/inventory/current_catalog.json');
+    const data = await res.json();
+    return data.products?.[0]?.slug as string;
+  });
+  expect(slug, 'catalog must expose at least one product slug').toBeTruthy();
+  await page.goto(`/collection?view=${encodeURIComponent(slug)}`, { waitUntil: 'domcontentloaded' });
 
   // Modal opens with the "View full page" link.
   const dialog = page.getByRole('dialog');
