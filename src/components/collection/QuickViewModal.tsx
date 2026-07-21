@@ -294,7 +294,7 @@ export function QuickViewModal({
       role="dialog"
       aria-modal="true"
       aria-label={product.title}
-      className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-6"
+      className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-10 lg:p-14"
     >
       {/* Frosted scrim — dark glass, deeper blur for depth parity with the
           home band. The collection grid behind ghosts through. */}
@@ -330,7 +330,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:w-[calc(100vw-3rem)] md:h-[min(820px,calc(100dvh-3rem))] md:max-w-[1480px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:w-auto md:h-auto md:max-w-[1180px] md:max-h-[min(760px,calc(100dvh-4rem))] md:aspect-[16/10] text-charcoal shadow-[0_40px_100px_-20px_rgba(0,0,0,0.35)] overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
@@ -415,7 +415,7 @@ export function QuickViewModal({
             Mobile stacks: image, then info. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_clamp(340px,30vw,420px)]"
+          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_clamp(320px,32%,400px)]"
         >
           {/* IMAGE COLUMN — fills the body row; aspect-ratio is never forced
               from natural dims so a tall or wide source never overflows.
