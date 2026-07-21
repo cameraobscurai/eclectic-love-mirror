@@ -42,7 +42,7 @@ import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
-import { reorderItems } from "@/lib/photos-admin.functions";
+import { reorderItems, publishCatalogOverlay } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
   PARENT_LABELS,
