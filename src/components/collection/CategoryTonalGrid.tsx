@@ -45,21 +45,21 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
 const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
-  sofas: 0.92,
-  chairs: 0.88,
-  "benches-ottomans": 0.82,
-  "cocktail-tables": 0.82,
-  "side-tables": 0.84,
-  "coffee-tables": 0.94,
-  dining: 0.92,
-  bar: 0.9,
-  lighting: 0.82,
-  storage: 0.92,
-  pillows: 0.92,
-  throws: 0.74,
-  tableware: 0.92,
-  styling: 0.86,
-  rugs: 0.82,
+  sofas: 1,
+  chairs: 0.98,
+  "benches-ottomans": 0.94,
+  "cocktail-tables": 0.94,
+  "side-tables": 0.96,
+  "coffee-tables": 1,
+  dining: 1,
+  bar: 1,
+  lighting: 0.94,
+  storage: 1,
+  pillows: 1,
+  throws: 0.86,
+  tableware: 1,
+  styling: 0.96,
+  rugs: 0.94,
 };
 
 
@@ -230,7 +230,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      <span className="absolute inset-x-2 top-2 bottom-9 sm:inset-x-3 sm:top-3 sm:bottom-10 grid place-items-center pointer-events-none">
+      <span className="absolute inset-x-1 top-1 bottom-7 sm:inset-x-2 sm:top-2 sm:bottom-8 grid place-items-center pointer-events-none">
         {heroSrc ? (
           <img
             src={heroSrc}
@@ -253,7 +253,7 @@ function TonalCell({
       </span>
 
       <span
-        className="absolute left-2 right-2 bottom-3 sm:left-4 sm:right-4 sm:bottom-4 uppercase pointer-events-none"
+        className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-3 uppercase pointer-events-none"
         style={{
           fontFamily: "var(--font-sans)",
           letterSpacing: "0.08em",
