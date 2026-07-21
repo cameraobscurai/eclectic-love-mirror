@@ -346,11 +346,33 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-7xl px-6 lg:px-12 pt-28 pb-24">
-        <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-10">
+        <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-10 flex items-center gap-4 flex-wrap">
+          <button
+            type="button"
+            onClick={() => {
+              // Same-origin history entry → true back-nav preserves the user's
+              // scroll position in /collection via TanStack scrollRestoration.
+              // Fresh tab / cold deep link → fall back to /collection.
+              const cameFromSite =
+                typeof document !== "undefined" &&
+                document.referrer &&
+                new URL(document.referrer).origin === window.location.origin;
+              if (cameFromSite && window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.href = `/collection?group=${encodeURIComponent(product.categorySlug)}`;
+              }
+            }}
+            className="inline-flex items-center gap-2 hover:text-foreground transition-colors"
+            aria-label="Back to collection"
+          >
+            <span aria-hidden>←</span> Back
+          </button>
+          <span aria-hidden className="opacity-30">|</span>
           <Link to="/collection" className="hover:text-foreground transition-colors">
             Collection
           </Link>
-          <span className="mx-2 opacity-50">/</span>
+          <span className="mx-0 opacity-50">/</span>
           <Link
             to="/collection"
             search={{ group: product.categorySlug }}
