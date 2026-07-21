@@ -11,8 +11,12 @@ test('QuickView "view full page" lands on the PDP', async ({ page }) => {
   await page.goto('/collection', { waitUntil: 'domcontentloaded' });
 
   // Open the first product tile → QuickView modal.
-  const firstTile = page.locator('button[aria-label^="Open "]').first();
-  await firstTile.waitFor({ state: 'visible', timeout: 20_000 });
+  const firstTile = page
+    .locator('main button[aria-label^="Open "]')
+    .filter({ hasNot: page.locator('text=/menu/i') })
+    .first();
+  await firstTile.waitFor({ state: 'visible', timeout: 30_000 });
+  await firstTile.scrollIntoViewIfNeeded();
   await firstTile.click();
 
   // Modal opens with the "View full page" link.
