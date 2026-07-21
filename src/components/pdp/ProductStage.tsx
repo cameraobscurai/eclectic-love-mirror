@@ -7,7 +7,8 @@
 //     (max 4), so 1 alt shot is one wide tile, 2 alt shots split evenly,
 //     etc. Everything lines up flush left/right with the hero.
 //   • Click any tile to open the lightbox.
-//   • Never upscales past the source's natural width.
+//   • The stage never re-measures per image. Thumbnail swaps must not resize
+//     the whole media group.
 
 import { useEffect, useState } from "react";
 import { withCdnWidth } from "@/lib/image-url";
@@ -34,12 +35,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = images[activeIdx] ?? images[0];
 
-  // Track the LARGEST natural width we've seen across all images for this
-  // product. Swapping to an alt shot with a smaller intrinsic size must not
-  // shrink the stage — the hero frame stays locked to the primary's scale.
-  const [maxNaturalW, setMaxNaturalW] = useState<number | null>(null);
   useEffect(() => {
-    setMaxNaturalW(null);
     setActiveIdx(0);
   }, [product.id]);
 
@@ -49,15 +45,11 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
   // return to the first shot after browsing alternates.
   const thumbCols = Math.min(Math.max(images.length, 1), 4);
 
-  const stageMaxW = maxNaturalW
-    ? `min(${MAX_STAGE_W}px, ${maxNaturalW}px)`
-    : `${MAX_STAGE_W}px`;
-
   return (
     <div className={cn("flex flex-col items-center", className)}>
       <div
         className="w-full flex flex-col gap-4 md:gap-6"
-        style={{ maxWidth: stageMaxW }}
+        style={{ maxWidth: MAX_STAGE_W }}
       >
         {/* HERO — 4:3 landscape mat fits wide furniture cutouts. */}
         <button
@@ -79,10 +71,6 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
               data-pdp-hero-img
               src={withCdnWidth(active.url, 1200)}
               alt={active.altText ?? product.title}
-              onLoad={(e) => {
-                const el = e.currentTarget;
-                if (el.naturalWidth) setMaxNaturalW((prev) => Math.max(prev ?? 0, el.naturalWidth));
-              }}
               className={cn(
                 "absolute inset-0 w-full h-full object-contain",
                 "p-6 md:p-8",
