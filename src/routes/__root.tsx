@@ -194,6 +194,16 @@ function RootComponent() {
     });
   }, [pathname, search, hash]);
 
+  // Native scroll-to-top on route change. TanStack's scrollRestoration can
+  // preserve the previous page's offset when navigating from deep-scrolled
+  // pages (e.g. home CTAs at the bottom → /collection). This guarantees a
+  // fresh view. Hash navigations are left alone so #anchor links still work.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname, hash]);
+
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
   // footer (long editorial scroll, footer is the natural terminus).
