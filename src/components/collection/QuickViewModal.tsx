@@ -464,8 +464,8 @@ export function QuickViewModal({
 
           {/* INFO RAIL — title + specs + thumbs + CTA, vertical stack. */}
           <div
-            className="relative flex flex-col min-h-0 md:border-l md:border-charcoal/10 px-6 md:px-8 py-6 md:py-10 overflow-y-auto"
-            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.5rem)" }}
+            className="relative flex flex-col min-h-0 md:border-l md:border-charcoal/10 px-5 md:px-8 py-4 md:py-10 overflow-y-auto"
+            style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 1.25rem)" }}
           >
             {/* Title — uppercase per brand voice. When the active image maps to a
                 variant, surface that variant's name as a secondary line so users
