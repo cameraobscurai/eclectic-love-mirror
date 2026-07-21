@@ -236,20 +236,64 @@
   min-block-size: 2.8em;
 }
 
-/* Dev-only floor guide, opt-in via ?debug=media on /collection.
- * Renders a hairline at the shared 90% floor inside each tile's media frame.
+/* Dev-only geometry guides, opt-in via ?debug=media on /collection.
+ * Renders three lines per tile derived from the category fit rule:
+ *   • red   — anchor line (floor / ceiling / center) at --fit-anchor-y
+ *   • blue  — secondary-axis cap band, --fit-secondary-max wide from anchor
+ *   • green — centroid crosshair at (--fit-center-x, --fit-anchor-y)
  * Never visible in production without the query parameter. */
 [data-media-debug="true"] .product-tile-media {
   position: relative;
 }
+/* Anchor line — red */
 [data-media-debug="true"] .product-tile-media::after {
   content: "";
   position: absolute;
   inset-inline: 0;
-  top: 90%;
-  border-top: 1px solid rgb(255 0 0 / 45%);
+  top: var(--fit-anchor-y, 90%);
+  border-top: 1px solid rgb(255 0 0 / 55%);
+  pointer-events: none;
+  z-index: 6;
+}
+/* Centroid crosshair — green */
+[data-media-debug="true"] .product-tile-media::before {
+  content: "";
+  position: absolute;
+  left: var(--fit-center-x, 50%);
+  top: var(--fit-anchor-y, 90%);
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  border: 1px solid rgb(0 160 60 / 80%);
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 7;
+}
+/* Secondary-cap band — blue, direction depends on anchor. */
+[data-media-debug="true"] .product-tile-media > .product-tile-media__cap {
+  display: block;
+}
+.product-tile-media__cap {
+  display: none;
+  position: absolute;
+  inset-inline: 0;
+  border-top: 1px dashed rgb(0 90 200 / 55%);
+  border-bottom: 1px dashed rgb(0 90 200 / 55%);
   pointer-events: none;
   z-index: 5;
+}
+[data-fit-anchor="bottom"] .product-tile-media__cap {
+  top: calc(var(--fit-anchor-y, 90%) - var(--fit-secondary-max, 50%));
+  height: var(--fit-secondary-max, 50%);
+}
+[data-fit-anchor="top"] .product-tile-media__cap {
+  top: var(--fit-anchor-y, 10%);
+  height: var(--fit-secondary-max, 50%);
+}
+[data-fit-anchor="center"] .product-tile-media__cap {
+  top: calc(var(--fit-anchor-y, 50%) - var(--fit-secondary-max, 40%) / 2);
+  height: var(--fit-secondary-max, 40%);
 }
 
 .dark {
