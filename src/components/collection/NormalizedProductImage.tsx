@@ -286,13 +286,16 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
     }
     const f = fit ?? DEFAULT_FIT;
+    // Unmeasured fallbacks in width-mode assume a floor-anchored silhouette
+    // so they line up with peers instead of floating at 0.62.
+    const effectiveBottom = fit ? f.bottom : (fitMode === "width" ? 0.95 : f.bottom);
     const tx = (0.5 - f.cx) * 100;
-    const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
+    const scaledBottom = 0.5 + (effectiveBottom - 0.5) * f.scale;
     const ty = visualAnchorY === "bottom"
       ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY]);
+  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY, fitMode]);
 
 
   return (
