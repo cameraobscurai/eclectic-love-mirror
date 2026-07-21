@@ -34,9 +34,12 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
   const [activeIdx, setActiveIdx] = useState(0);
   const active = images[activeIdx] ?? images[0];
 
-  const [naturalW, setNaturalW] = useState<number | null>(null);
+  // Track the LARGEST natural width we've seen across all images for this
+  // product. Swapping to an alt shot with a smaller intrinsic size must not
+  // shrink the stage — the hero frame stays locked to the primary's scale.
+  const [maxNaturalW, setMaxNaturalW] = useState<number | null>(null);
   useEffect(() => {
-    setNaturalW(null);
+    setMaxNaturalW(null);
     setActiveIdx(0);
   }, [product.id]);
 
@@ -46,8 +49,8 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
   // return to the first shot after browsing alternates.
   const thumbCols = Math.min(Math.max(images.length, 1), 4);
 
-  const stageMaxW = naturalW
-    ? `min(${MAX_STAGE_W}px, ${naturalW}px)`
+  const stageMaxW = maxNaturalW
+    ? `min(${MAX_STAGE_W}px, ${maxNaturalW}px)`
     : `${MAX_STAGE_W}px`;
 
   return (
@@ -78,7 +81,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
               alt={active.altText ?? product.title}
               onLoad={(e) => {
                 const el = e.currentTarget;
-                if (el.naturalWidth) setNaturalW(el.naturalWidth);
+                if (el.naturalWidth) setMaxNaturalW((prev) => Math.max(prev ?? 0, el.naturalWidth));
               }}
               className={cn(
                 "absolute inset-0 w-full h-full object-contain",
