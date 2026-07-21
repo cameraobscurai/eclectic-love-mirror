@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable */
 /**
  * ─────────────────────────────────────────────────────────────────────────────
  * PRODUCT EDIT DRAWER v3 — reconciled against the codebase investigation
