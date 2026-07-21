@@ -10,7 +10,7 @@
 // Renders 6 tiles. Silent when fewer than 3 qualifying candidates exist.
 
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+
 import {
   getCollectionCatalog,
   type CollectionProduct,
@@ -134,13 +134,12 @@ export function RelatedPieces({ product }: { product: CollectionProduct }) {
         <h2 className="font-display text-2xl lg:text-3xl tracking-wide uppercase">
           Related Pieces
         </h2>
-        <Link
-          to="/collection"
-          search={{ group: product.categorySlug }}
+        <a
+          href={`/collection?group=${encodeURIComponent(product.categorySlug)}`}
           className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
           See all {product.displayCategory}
-        </Link>
+        </a>
       </div>
 
       <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
@@ -148,9 +147,8 @@ export function RelatedPieces({ product }: { product: CollectionProduct }) {
           const img = p.primaryImage?.url;
           return (
             <li key={p.id}>
-              <Link
-                to="/collection/$slug"
-                params={{ slug: p.slug }}
+              <a
+                href={`/collection/${p.slug}`}
                 className="group block"
               >
                 <div className="aspect-[4/5] bg-muted/30 overflow-hidden mb-3">
@@ -170,7 +168,7 @@ export function RelatedPieces({ product }: { product: CollectionProduct }) {
                 <p className="text-xs tracking-wide uppercase leading-snug">
                   {p.title}
                 </p>
-              </Link>
+              </a>
             </li>
           );
         })}

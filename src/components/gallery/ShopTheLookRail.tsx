@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link } from "@tanstack/react-router";
+
 import { Check, Plus } from "lucide-react";
 import catalog from "@/data/inventory/current_catalog.json";
 import { useInquiry } from "@/hooks/use-inquiry";
@@ -37,10 +37,8 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
           const selected = has(String(p.id));
           return (
             <li key={p.id} className="shrink-0 w-[112px] snap-start">
-              <Link
-                to="/collection/$slug"
-                params={{ slug: p.slug }}
-                preload="intent"
+              <a
+                href={`/collection/${p.slug}`}
                 className="block aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 {p.primaryImage?.url && (
@@ -51,7 +49,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
                     className="h-full w-full object-cover"
                   />
                 )}
-              </Link>
+              </a>
               <button
                 type="button"
                 onClick={() => toggle(String(p.id))}
