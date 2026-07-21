@@ -160,13 +160,11 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                   </div>
                   <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-charcoal/85 to-transparent">
                     <p className="font-display text-2xl text-cream font-light">
-                      {activeProject.title}
+                      {activeProject.name}
                     </p>
-                    {activeProject.meta && (
-                      <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/55">
-                        {activeProject.meta}
-                      </p>
-                    )}
+                    <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/55">
+                      {activeProject.planner} · {activeProject.year}
+                    </p>
                   </div>
                 </div>
               );
