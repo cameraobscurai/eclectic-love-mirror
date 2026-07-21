@@ -145,19 +145,19 @@ export function CategoryTonalGrid({
         [data-tonal-grid] {
           display: grid;
           grid-template-columns: repeat(5, minmax(0, 1fr));
-          grid-template-rows: repeat(3, minmax(0, 1fr));
+          grid-auto-rows: 1fr;
           width: 100%;
           max-width: none;
-          height: 100%;
-          min-height: 100%;
           margin-inline: auto;
           gap: 0;
           padding: 0;
         }
         [data-tonal-grid] > button {
+          aspect-ratio: 1 / 1;
           min-height: 0;
-          height: 100%;
+          height: auto;
         }
+
         @media (max-width: 1023px) {
           [data-tonal-grid] {
             grid-template-columns: repeat(3, minmax(0, 1fr));
