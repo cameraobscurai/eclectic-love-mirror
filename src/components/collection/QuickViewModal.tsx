@@ -766,7 +766,7 @@ export function QuickViewModal({
           )}
 
             {/* CTA — sits naturally after specs so short rails don't have a void below. */}
-            <div className="mt-6 pt-4">
+            <div className="mt-6 pt-4 space-y-2">
 
               <button
                 onClick={() => inquiry.toggle(product.id)}
@@ -779,6 +779,15 @@ export function QuickViewModal({
               >
                 {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
+              <Link
+                to="/collection/$slug"
+                params={{ slug: product.slug }}
+                preload="intent"
+                onClick={onClose}
+                className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
+              >
+                View full page →
+              </Link>
             </div>
           </div>
         </div>
