@@ -224,13 +224,17 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetWidth,
   focalX,
   focalY,
+  eager = false,
   className,
   style,
   onLoad,
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  const cacheKey = `${src}|${frameAspect}`;
+  // Measurement is a property of the image, not the frame — reusing the same
+  // measurement across wall/grid toggles prevents the "everything goes big
+  // then snaps" pop when frameAspect changes.
+  const cacheKey = src;
   const cached = measurementCache.get(cacheKey);
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
