@@ -414,7 +414,7 @@ export function QuickViewModal({
             Mobile stacks: image, then info. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,1fr)]"
+          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_clamp(340px,30vw,420px)]"
         >
           {/* IMAGE COLUMN — fills the body row; aspect-ratio is never forced
               from natural dims so a tall or wide source never overflows.
