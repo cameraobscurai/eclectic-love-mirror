@@ -4,16 +4,24 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 
-const EDITABLE_FIELDS = [
-  "title", "slug", "description", "price", "status", "category",
+// Staff can edit merchandising/inventory fields; admin adds URL + SEO + injection.
+// rms_id is in NEITHER list — set by import, never editable via drawer.
+const STAFF_EDITABLE_FIELDS = [
+  "title", "description", "price", "status", "category",
   "width_cm", "height_cm", "depth_cm", "weight_kg", "materials", "origin",
-  "images", "meta_title", "meta_description", "og_image",
+  "images",
   "quantity", "quantity_label", "dimensions_raw",
-  "public_ready", "hidden_note", "manual_injection",
+  "public_ready", "hidden_note",
   "editorial_order", "manual_order",
   "card_background_url", "upscaled_cover_url",
   "cover_focal_x", "cover_focal_y",
 ] as const;
+
+const ADMIN_ONLY_FIELDS = [
+  "slug", "meta_title", "meta_description", "og_image", "manual_injection",
+] as const;
+
+const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as const;
 
 type EditableField = typeof EDITABLE_FIELDS[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
