@@ -62,6 +62,8 @@ function fitFromVisualBox(
   targetAreaOverride?: number,
   maxWOverride?: number,
   maxHOverride?: number,
+  fitMode: "area" | "width" = "area",
+  targetWidthOverride?: number,
 ): Fit | null {
   if (!bw || !bh || !naturalAspect) return null;
 
@@ -69,25 +71,36 @@ function fitFromVisualBox(
   const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
   if (!renderedW || !renderedH) return null;
 
-  // One uniform visual-weight target. Caps prevent extremes (thin
-  // chandelier rods, wide banquettes) from either bleeding to the tile
-  // edge or shrinking to nothing. maxH lifted 0.74 → 0.82 so tall
-  // subjects aren't crushed against a low ceiling.
   const targetArea = targetAreaOverride ?? 0.32;
   const maxW = maxWOverride ?? 0.86;
   const maxH = maxHOverride ?? 0.82;
-  const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
-  const scaleByArea = Math.sqrt(targetArea / currentArea);
+
+  let primaryScale: number;
+  if (fitMode === "width") {
+    // Width-band fitting: every silhouette lands at the same horizontal
+    // footprint. Used for seating so a wide sofa and a small loveseat
+    // both read as "the same class of object" on a shared floor line.
+    const targetWidth = targetWidthOverride ?? 0.82;
+    primaryScale = targetWidth / Math.max(0.001, TILE_IMAGE_INSET * renderedW);
+  } else {
+    const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
+    primaryScale = Math.sqrt(targetArea / currentArea);
+  }
   const scaleByCaps = Math.min(
     maxW / Math.max(0.001, TILE_IMAGE_INSET * renderedW),
     maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
   );
 
+  // Tighter clamp for width-band mode — the whole point is uniformity,
+  // so we allow less deviation than the area path.
+  const minScale = fitMode === "width" ? 0.90 : SCALE_MIN;
+  const maxScale = fitMode === "width" ? 1.10 : SCALE_MAX;
+
   return {
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), SCALE_MIN, SCALE_MAX),
+    scale: clamp(Math.min(primaryScale, scaleByCaps), minScale, maxScale),
   };
 }
 
@@ -99,6 +112,8 @@ function measureImage(
   targetArea?: number,
   maxW?: number,
   maxH?: number,
+  fitMode: "area" | "width" = "area",
+  targetWidth?: number,
 ): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
