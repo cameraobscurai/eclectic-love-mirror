@@ -773,3 +773,10 @@ button, a, [role="button"] {
 [data-panning] button {
   pointer-events: none;
 }
+
+/* Product tile → PDP hero morph. Slower, editorial ease so the piece
+   settles instead of snapping. Names are set inline as `hero-<id>`. */
+::view-transition-group([name^="hero-"]) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
