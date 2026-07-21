@@ -440,7 +440,7 @@ export function QuickViewModal({
                       const t = e.currentTarget;
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
-                    className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    className="absolute inset-0 w-full h-full object-contain p-4 md:p-10 drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
                     style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
                   />
                 ) : (
