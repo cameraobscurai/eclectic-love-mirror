@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET public_ready = false, hidden_note = COALESCE(hidden_note, '') || ' [Retired 2026-07-21 per owner request]' WHERE rms_id = '2001';
