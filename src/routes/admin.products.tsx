@@ -481,49 +481,60 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
 function FieldRow({
   field, value, changed, onChange,
 }: {
-  field: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[] };
+  field: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string };
   value: unknown;
   changed: boolean;
   onChange: (v: unknown) => void;
 }) {
   const label = field.key.replace(/_/g, " ");
-  const cls = `w-full bg-transparent border ${changed ? "border-amber-500" : "border-charcoal/15"} px-2 py-1.5 text-[13px] focus:outline-none focus:border-charcoal`;
+  const ro = !!field.readOnly;
+  const cls = `w-full bg-transparent border ${changed ? "border-amber-500" : "border-charcoal/15"} px-2 py-1.5 text-[13px] focus:outline-none focus:border-charcoal ${ro ? "opacity-60 cursor-not-allowed bg-charcoal/[0.03]" : ""}`;
   return (
     <label className="grid grid-cols-[160px_1fr] gap-3 items-start">
-      <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 pt-2">{label}</span>
-      {field.type === "textarea" && (
-        <textarea rows={4} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} className={cls} />
-      )}
-      {field.type === "text" && (
-        <input value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value || null)} className={cls} />
-      )}
-      {field.type === "number" && (
-        <input
-          type="number"
-          value={value == null ? "" : String(value)}
-          onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
-          className={cls}
-        />
-      )}
-      {field.type === "bool" && (
-        <div className="pt-2">
-          <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
-        </div>
-      )}
-      {field.type === "select" && (
-        <select value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} className={cls}>
-          {(field.opts ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
-        </select>
-      )}
-      {field.type === "url-list" && (
-        <textarea
-          rows={4}
-          value={Array.isArray(value) ? (value as string[]).join("\n") : ""}
-          onChange={(e) => onChange(e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))}
-          placeholder="One URL per line"
-          className={cls + " font-mono text-[11px]"}
-        />
-      )}
+      <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 pt-2">
+        {label}
+        {ro && <span className="ml-1 text-charcoal/35 normal-case tracking-normal">(locked)</span>}
+      </span>
+      <div>
+        {field.type === "textarea" && (
+          <textarea rows={4} value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value)} className={cls} />
+        )}
+        {field.type === "text" && (
+          <input value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value || null)} className={cls} />
+        )}
+        {field.type === "number" && (
+          <input
+            type="number"
+            value={value == null ? "" : String(value)}
+            readOnly={ro}
+            onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+            className={cls}
+          />
+        )}
+        {field.type === "bool" && (
+          <div className="pt-2">
+            <input type="checkbox" disabled={ro} checked={!!value} onChange={(e) => onChange(e.target.checked)} />
+          </div>
+        )}
+        {field.type === "select" && (
+          <select value={(value as string) ?? ""} disabled={ro} onChange={(e) => onChange(e.target.value)} className={cls}>
+            {(field.opts ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+        )}
+        {field.type === "url-list" && (
+          <textarea
+            rows={4}
+            value={Array.isArray(value) ? (value as string[]).join("\n") : ""}
+            readOnly={ro}
+            onChange={(e) => onChange(e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))}
+            placeholder="One URL per line"
+            className={cls + " font-mono text-[11px]"}
+          />
+        )}
+        {field.hint && (
+          <p className="mt-1 text-[10px] text-charcoal/45">{field.hint}</p>
+        )}
+      </div>
     </label>
   );
 }
