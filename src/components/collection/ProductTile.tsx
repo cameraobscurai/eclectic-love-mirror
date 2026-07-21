@@ -147,9 +147,11 @@ export function ProductTile({
             </div>
 
 
-            {/* Unified caption - fixed two-line band so every row starts at the same floor. */}
+            {/* Unified caption — reserves 2 lines of height at all breakpoints
+                so tiles don't jump vertically when the title text hydrates or
+                wraps. Must stay in sync with the placeholder branch below. */}
             <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
-               <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 group-hover:text-charcoal transition-colors">
+               <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 [min-height:calc(2*1.375em)] group-hover:text-charcoal transition-colors">
                 {product.title}
               </p>
             </div>
@@ -159,7 +161,9 @@ export function ProductTile({
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
-            <div className="mt-3.5 pb-2 min-h-[1.5em]" />
+            {/* Match the real caption's margin + reserved 2-line height so
+                swap-in never shifts the row. */}
+            <div className="mt-2.5 md:mt-3.5 pb-2 [min-height:calc(2*1.375em)]" />
           </div>
         )}
       </div>
