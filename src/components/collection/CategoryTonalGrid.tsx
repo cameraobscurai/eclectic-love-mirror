@@ -153,7 +153,7 @@ export function CategoryTonalGrid({
           padding: 0;
         }
         [data-tonal-grid] > button {
-          aspect-ratio: 4 / 5;
+          aspect-ratio: 1 / 1;
           min-height: 0;
         }
         @media (max-width: 1023px) {
