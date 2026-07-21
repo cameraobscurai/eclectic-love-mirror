@@ -117,31 +117,60 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
             </div>
           </div>
 
-          {/* Editorial video accent — desktop only, sticks beside the index */}
+          {/* Editorial preview — desktop only, sticks beside the index.
+              Reflects the hovered project; defaults to Dunton when idle. */}
           <aside aria-hidden className="hidden lg:block lg:sticky lg:top-24">
-            <div className="relative w-full h-[calc(100vh-8rem)] overflow-hidden bg-charcoal ring-1 ring-cream/10">
-              <video
-                src="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.mp4"
-                poster="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/03-ceremony.jpg"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-              <div className="absolute inset-x-0 top-0 p-6 bg-gradient-to-b from-charcoal/70 to-transparent">
-                <p className="text-[10px] uppercase tracking-[0.32em] text-cream/70">
-                  In motion
-                </p>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-charcoal/85 to-transparent">
-                <p className="font-display text-2xl text-cream font-light">Dunton Hot Springs</p>
-                <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/55">
-                  Easton Events · 2022
-                </p>
-              </div>
-            </div>
+            {(() => {
+              const activeProject = hoverProject && !hoverProject.pending ? hoverProject : projects[0];
+              if (!activeProject) return null;
+              const heroSrc = activeProject.heroImage.src;
+              const isStorage = heroSrc.includes("/storage/v1/object/public/");
+              const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(heroSrc);
+              const posterSrc = heroSrc.replace(/\.(mp4|webm|mov)(\?|$)/i, ".jpg$2");
+              const displaySrc = isStorage && !isVideo
+                ? renderUrl(heroSrc, { width: 900, quality: 72 })
+                : heroSrc;
+              return (
+                <div className="relative w-full h-[calc(100vh-8rem)] overflow-hidden bg-charcoal ring-1 ring-cream/10">
+                  {isVideo ? (
+                    <video
+                      key={heroSrc}
+                      src={heroSrc}
+                      poster={posterSrc}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      key={heroSrc}
+                      src={displaySrc}
+                      alt=""
+                      draggable={false}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  )}
+                  <div className="absolute inset-x-0 top-0 p-6 bg-gradient-to-b from-charcoal/70 to-transparent">
+                    <p className="text-[10px] uppercase tracking-[0.32em] text-cream/70">
+                      {hoverProject ? "In focus" : "In motion"}
+                    </p>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-charcoal/85 to-transparent">
+                    <p className="font-display text-2xl text-cream font-light">
+                      {activeProject.title}
+                    </p>
+                    {activeProject.meta && (
+                      <p className="mt-1 text-[10px] uppercase tracking-[0.32em] text-cream/55">
+                        {activeProject.meta}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </aside>
         </div>
 
