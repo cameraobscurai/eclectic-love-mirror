@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link } from "@tanstack/react-router";
+
 import { Check, Plus } from "lucide-react";
 import catalog from "@/data/inventory/current_catalog.json";
 import { useInquiry } from "@/hooks/use-inquiry";
