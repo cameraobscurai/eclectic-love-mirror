@@ -308,6 +308,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         recentChanges={audit as never}
         categoryPriceStats={{}}
         liveUrl={liveUrl}
+        sketch={null}
         onClose={onClose}
         onOpenPhotos={() => setPhotoEditor(true)}
         onSave={async (patch: Record<string, unknown>) => {
