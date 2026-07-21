@@ -238,7 +238,10 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      <span className="absolute inset-x-3 top-3 h-[60%] sm:inset-x-5 sm:top-5 sm:h-[58%] grid place-items-center pointer-events-none">
+      {/* Image band: inset on all sides with a reserved label strip at the
+          bottom, then flex-center the image inside so silhouettes sit in
+          the true optical middle of the tile — not floor-anchored. */}
+      <span className="absolute inset-x-3 top-3 bottom-8 sm:inset-x-5 sm:top-5 sm:bottom-10 flex items-center justify-center pointer-events-none">
         {heroSrc ? (
           <img
             src={heroSrc}
@@ -250,9 +253,12 @@ function TonalCell({
             decoding="async"
             {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
             draggable={false}
-            className="block max-h-full max-w-full object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
+            className="block object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
             style={{
-              width: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
+              maxWidth: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
+              maxHeight: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
+              width: "auto",
+              height: "auto",
               objectPosition: "center center",
             }}
           />
