@@ -9,7 +9,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { requireAdmin } from "@/integrations/supabase/admin-middleware";
+import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
 
 // ---------------------------------------------------------------------------
@@ -22,7 +22,7 @@ const reorderInput = z.object({
 });
 
 export const reorderItems = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => reorderInput.parse(d))
   .handler(async ({ data, context }) => {
     // Admin drag-order is the single source of truth for site display order.
@@ -65,7 +65,7 @@ const listFilesInput = z.object({
 });
 
 export const listStorageFiles = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => listFilesInput.parse(d))
   .handler(async ({ data }) => {
     const bucket = supabaseAdmin.storage.from("squarespace-mirror");
@@ -123,7 +123,7 @@ const listCategoryInput = z.object({
 });
 
 export const listCategoryItems = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => listCategoryInput.parse(d))
   .handler(async ({ data }) => {
     const { data: rows, error } = await supabaseAdmin
