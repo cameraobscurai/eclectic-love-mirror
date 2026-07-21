@@ -112,6 +112,8 @@ export function ProductTile({
                   transition: "opacity 240ms ease-out",
                 }}
               />
+              {/* Debug: secondary-cap band (visible only under ?debug=media). */}
+              <div aria-hidden className="product-tile-media__cap" />
 
               {product.primaryImage ? (
                 <NormalizedProductImage
