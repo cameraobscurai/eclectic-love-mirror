@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Images } from "lucide-react";
+import { Plus } from "lucide-react";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import {
   listProducts,
