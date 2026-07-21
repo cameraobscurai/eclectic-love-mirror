@@ -107,10 +107,18 @@ function absoluteCover(parent: ParentId): string | null {
 }
 
 type ParentLoad = { kind: "parent"; parent: ParentId; fallbackImage: string | null };
-type ProductLoad = { kind: "product"; product: CollectionProduct };
+type ProductLoad = {
+  kind: "product";
+  product: CollectionProduct;
+  allProducts: CollectionProduct[];
+};
 type LoadResult = ParentLoad | ProductLoad;
 
 export const Route = createFileRoute("/collection_/$slug")({
+  // The catalog is baked (static JSON) + a live overlay behind a module-level
+  // singleton, so once resolved it doesn't change within a session. Skip
+  // re-running the loader on client-side nav between PDPs.
+  staleTime: Infinity,
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
       const parent = params.slug as ParentId;
@@ -130,7 +138,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       catalog.products.find((p) => p.id === params.slug) ??
       null;
     if (!product) throw notFound();
-    return { kind: "product", product };
+    return { kind: "product", product, allProducts: catalog.products };
   },
   head: ({ loaderData, params }) => {
     const data = loaderData as LoadResult | undefined;
