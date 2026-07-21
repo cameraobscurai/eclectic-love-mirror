@@ -19,18 +19,19 @@ function makeRoleGate(allowed: readonly AppRole[]) {
         .from("user_roles")
         .select("role")
         .eq("user_id", userId)
-        .in("role", allowed)
-        .limit(1);
+        .in("role", allowed as unknown as string[]);
 
       if (error) {
         console.error("[roleGate] role lookup failed:", error);
         throw new Response("Forbidden", { status: 403 });
       }
-      if ((data ?? []).length === 0) {
+      const matched = (data ?? []).map((r) => r.role as AppRole);
+      if (matched.length === 0) {
         throw new Response(`Forbidden: ${allowed.join(" or ")} role required`, { status: 403 });
       }
+      const role: AppRole = matched.includes("admin") ? "admin" : matched[0];
 
-      return next();
+      return next({ context: { role } });
     });
 }
 
