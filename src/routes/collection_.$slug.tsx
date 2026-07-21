@@ -479,7 +479,7 @@ function ProductDetailPage({
         </div>
 
 
-        <RelatedPieces product={product} />
+        <RelatedPieces product={product} allProducts={allProducts} />
       </main>
       <Footer />
     </div>
