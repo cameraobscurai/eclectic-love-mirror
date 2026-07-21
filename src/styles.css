@@ -206,29 +206,50 @@
 
 
 /* Collection product grid contract:
- * mobile = 2-up, tablet/desktop = 3-up, never wider. Keep this centralized so
- * zoom, viewport changes, skeletons, and product lists cannot drift into 4/5/6.
+ * 2-up until the results container is wide enough for 3-up. Uses container
+ * queries so column count follows the actual product canvas (filter rail
+ * present/absent, zoom, etc.), not the raw viewport. Never wider than 3-up.
  */
+.collection-results-container {
+  container-type: inline-size;
+  container-name: collection-results;
+}
+
 .collection-product-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(1rem, 3vw, 1.5rem);
-  row-gap: clamp(1.5rem, 4vw, 2.25rem);
+  column-gap: clamp(1.125rem, 3vw, 2rem);
+  row-gap: clamp(2.5rem, 5vw, 3.75rem);
 }
 
-@media (min-width: 640px) {
+@container collection-results (min-width: 860px) {
   .collection-product-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: clamp(2rem, 4vw, 3.5rem);
-    row-gap: clamp(3rem, 5vw, 4.5rem);
+    column-gap: clamp(2rem, 3.5vw, 3.5rem);
+    row-gap: clamp(3.5rem, 4.5vw, 4.75rem);
   }
 }
 
-@media (min-width: 1024px) {
-  .collection-product-grid {
-    column-gap: clamp(3rem, 4.5vw, 4.5rem);
-    row-gap: clamp(4.5rem, 6vw, 6rem);
-  }
+/* Caption band — reserves a fixed two-line block so every row's media frame
+ * begins at the same structural height regardless of title length. */
+.product-tile-caption {
+  min-block-size: 2.8em;
+}
+
+/* Dev-only floor guide, opt-in via ?debug=media on /collection.
+ * Renders a hairline at the shared 90% floor inside each tile's media frame.
+ * Never visible in production without the query parameter. */
+[data-media-debug="true"] .product-tile-media {
+  position: relative;
+}
+[data-media-debug="true"] .product-tile-media::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 90%;
+  border-top: 1px solid rgb(255 0 0 / 45%);
+  pointer-events: none;
+  z-index: 5;
 }
 
 .dark {
