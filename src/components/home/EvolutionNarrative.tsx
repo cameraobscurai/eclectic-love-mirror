@@ -329,12 +329,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
                   // each resize, so the 17-line manifesto + 5 stanza breaks
                   // always clear the destination cards on any viewport — no
                   // clipping. Never grows past the original clamp ceiling.
-                  ["--line-size" as string]: `min(clamp(0.78rem, 0.55rem + 0.5vw, 1.2rem), ${poemMaxPx}px)`,
+                  ["--line-size" as string]: `min(clamp(0.85rem, 0.6rem + 0.7vw, 1.4rem), ${poemMaxPx}px)`,
                   ["--line-height" as string]: "1.4",
                   ["--stanza-gap" as string]: "calc(var(--line-size) * var(--line-height) * 0.8)",
                   fontSize: "var(--line-size)",
                   lineHeight: "var(--line-height)",
-                  maxWidth: "min(42rem, 86vw)",
+                  maxWidth: "min(52rem, 86vw)",
                 }}
               >
                 {LINES.map((line, i) => {
