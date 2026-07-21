@@ -259,7 +259,19 @@ export const Route = createFileRoute("/collection_/$slug")({
             ]
           : []),
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        ...(img
+          ? [
+              {
+                rel: "preload",
+                as: "image" as const,
+                href: img,
+                fetchpriority: "high" as const,
+              },
+            ]
+          : []),
+      ],
       scripts: [
         {
           type: "application/ld+json",
