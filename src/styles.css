@@ -350,50 +350,39 @@ button, a, [role="button"] {
 }
 
 .collection-overview-grid-shell {
-  /* Mobile/tablet: take whatever's left after the H masthead, but never
-     less than what the tiles need. min-h-0 lets flex-children shrink;
-     min-height ensures the bottom row never clips on short viewports. */
-  min-height: calc(var(--app-vh, 100dvh) - var(--nav-h) - var(--collection-mobile-h-h));
+  min-height: 0;
 }
 
 @media (min-width: 1024px) {
   .collection-overview-layout {
-    --overview-h: min(
-      calc(var(--app-vh, 100dvh) - var(--nav-h)),
-      37vw,
-      42rem
-    );
-    --overview-plate-w: var(--overview-h);
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.36fr) minmax(0, 1fr);
     width: 100%;
-    align-items: stretch;
-    min-height: calc(var(--app-vh, 100dvh) - var(--nav-h));
+    max-width: var(--archive-canvas-max);
+    margin-inline: auto;
+    align-items: start;
+    gap: 0;
+    padding: clamp(1rem, 2vw, 2rem);
+    min-height: 0;
   }
 
   .collection-overview-plate {
-    flex: 0 0 var(--overview-plate-w);
-    width: var(--overview-plate-w);
+    width: 100%;
+    align-self: start;
+    min-height: 0;
   }
 
   .collection-overview-pane {
-    flex: 1 1 auto;
     min-width: 0;
-    height: var(--overview-h);
+    height: auto;
     align-self: start;
-    overflow: hidden;
-  }
-
-  .collection-overview-plate,
-  .collection-overview-grid-shell {
-    min-height: 0;
-    height: var(--overview-h);
-    align-self: start;
+    overflow: visible;
   }
 
   .collection-overview-grid-shell {
-    flex: 1 1 100%;
     width: 100%;
     min-width: 0;
+    height: auto;
   }
 }
 

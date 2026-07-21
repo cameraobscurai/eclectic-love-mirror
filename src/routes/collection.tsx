@@ -1002,11 +1002,6 @@ function CollectionPage() {
           ============================================================ */}
       <section
         className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
-        style={
-          showOverview
-            ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
-            : undefined
-        }
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
@@ -1015,12 +1010,12 @@ function CollectionPage() {
           <div className={showOverview ? "collection-overview-layout" : "grid grid-cols-1"}>
             {showOverview && (
               <aside
-                className="collection-overview-plate hidden lg:flex items-center justify-center overflow-hidden"
+                className="collection-overview-plate hidden lg:flex items-start justify-center overflow-hidden"
                 style={{
                   background: "var(--paper)",
                 }}
               >
-                <picture className="block relative w-full h-full overflow-hidden">
+                <picture className="block relative w-full overflow-hidden">
                   {hiveSignatureHeroSquare.sources.avif && (
                     <source
                       type="image/avif"
@@ -1035,10 +1030,6 @@ function CollectionPage() {
                       sizes="(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw"
                     />
                   )}
-                  {/* Cover-by-width: image fills the aside's width fully so
-                   * the chair + "the HIVE" lockup are never clipped left/
-                   * right. Any extra height bleeds into the artwork's top/
-                   * bottom negative space. Centered vertically. */}
                   <img
                     src={hiveSignatureHeroSquare.img.src}
                     width={hiveSignatureHeroSquare.img.w}
@@ -1048,13 +1039,8 @@ function CollectionPage() {
                     loading="eager"
                     {...({ fetchPriority: "high" } as Record<string, string>)}
                     draggable={false}
-                    className="absolute left-1/2 top-1/2 block"
+                    className="block h-auto w-full object-contain"
                     style={{
-                      width: "100%",
-                      height: "auto",
-                      minHeight: "100%",
-                      transform: "translate(-50%, -50%)",
-                      objectFit: "cover",
                       objectPosition: "center",
                     }}
                   />
