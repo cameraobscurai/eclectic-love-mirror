@@ -441,6 +441,7 @@ export function QuickViewModal({
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
                     className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
