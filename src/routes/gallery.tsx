@@ -128,6 +128,13 @@ export const Route = createFileRoute("/gallery")({
       ],
       links: [
         { rel: "canonical", href: GALLERY_URL },
+        // Preload the LCP hero (same URL as og:image, already computed above).
+        {
+          rel: "preload",
+          as: "image" as const,
+          href: ogImage,
+          fetchpriority: "high" as const,
+        },
         ...(STORAGE_ORIGIN
           ? [
               { rel: "preconnect", href: STORAGE_ORIGIN, crossOrigin: "anonymous" as const },
