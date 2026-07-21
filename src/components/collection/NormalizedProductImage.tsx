@@ -135,7 +135,7 @@ function measureImage(
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
   }
 
   const px = data.data;
