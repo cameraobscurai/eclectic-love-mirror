@@ -175,26 +175,16 @@ function GalleryPage() {
   const [filter, setFilter] = useState<string>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  // Per-gallery admin overrides — keyed by slug, fetched once client-side.
-  const [orders, setOrders] = useState<Map<string, string[]>>(new Map());
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      const { data, error } = await supabase
-        .from("gallery_orders")
-        .select("gallery_slug, order_keys");
-      if (!alive || error || !data) return;
-      const m = new Map<string, string[]>();
-      for (const row of data as { gallery_slug: string; order_keys: string[] | null }[]) {
-        if (row.order_keys && row.order_keys.length > 0) {
-          m.set(row.gallery_slug, row.order_keys);
-        }
-      }
-      setOrders(m);
-    })();
-    return () => {
-      alive = false;
-    };
+  // Per-gallery admin overrides — baked into src/data/gallery/gallery-orders.json
+  // by scripts/bake-catalog.mjs. Static import → zero network, no useEffect,
+  // no post-mount reflow. Admin reorders appear on live after the next bake.
+  const orders = useMemo<Map<string, string[]>>(() => {
+    const m = new Map<string, string[]>();
+    const src = (bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {};
+    for (const [slug, keys] of Object.entries(src)) {
+      if (Array.isArray(keys) && keys.length > 0) m.set(slug, keys);
+    }
+    return m;
   }, []);
 
   // Apply DB overrides over the manifest order. When no override exists for
