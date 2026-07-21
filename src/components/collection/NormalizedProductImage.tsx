@@ -17,6 +17,14 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   targetArea?: number;
   maxW?: number;
   maxH?: number;
+  /** Fit strategy. "area" (default) scales to a target silhouette area —
+   *  correct for varied silhouettes (tables, lighting, decor). "width"
+   *  scales to a target silhouette width — correct for a single typology
+   *  where every object should read at the same horizontal footprint
+   *  (e.g. seating: every sofa/loveseat spans ~the same tile width so
+   *  they all stand on the same floor at comparable size). */
+  fitMode?: "area" | "width";
+  targetWidth?: number;
   /** Admin-set focal point (0–1). When both are numbers, silhouette
    *  measurement is skipped and the image is centered on this point. */
   focalX?: number | null;
