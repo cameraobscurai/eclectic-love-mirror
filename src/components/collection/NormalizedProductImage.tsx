@@ -366,6 +366,12 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     targetWidth,
   ]);
 
+  // Avoid the "big-then-snap" flash: while we're still measuring the
+  // silhouette, the solver would fall back to a ~full-size transform and
+  // pop to the correct scale a tick later. Hold opacity at 0 until
+  // measurement resolves (or focal override is set), then fade in.
+  const ready = hasFocal || measurement !== undefined;
+
   return (
     <img
       {...props}
@@ -377,6 +383,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
         ...style,
         transform,
         transformOrigin: "center center",
+        opacity: ready ? (style?.opacity ?? 1) : 0,
+        transition: "opacity 180ms ease-out",
       }}
     />
   );
