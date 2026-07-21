@@ -1002,11 +1002,6 @@ function CollectionPage() {
           ============================================================ */}
       <section
         className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
-        style={
-          showOverview
-            ? { minHeight: "calc(var(--app-vh, 100dvh) - var(--nav-h))" }
-            : undefined
-        }
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}
