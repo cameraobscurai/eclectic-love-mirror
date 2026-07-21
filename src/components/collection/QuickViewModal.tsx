@@ -784,6 +784,7 @@ export function QuickViewModal({
                 to="/collection/$slug"
                 params={{ slug: product.slug }}
                 preload="intent"
+                viewTransition
                 onClick={onClose}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
