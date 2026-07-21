@@ -367,9 +367,9 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
             <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45">Edit product</p>
             <h2 className="mt-1 font-display text-2xl truncate">{(current?.title as string) ?? "…"}</h2>
             <p className="mt-1 text-[10px] tabular-nums text-charcoal/40">{id}</p>
-            {current?.slug && (
+            {typeof current?.slug === "string" && current.slug && (
               <a
-                href={`https://eclectichive.com/collection/${current.slug as string}`}
+                href={`https://eclectichive.com/collection/${current.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-charcoal/60 hover:text-charcoal underline underline-offset-4"
