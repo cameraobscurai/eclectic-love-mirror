@@ -45,22 +45,23 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
 const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
-  sofas: 1,
-  chairs: 0.98,
-  "benches-ottomans": 0.94,
-  "cocktail-tables": 0.94,
-  "side-tables": 0.76,
-  "coffee-tables": 1,
-  dining: 1,
-  bar: 1,
-  lighting: 0.72,
-  storage: 1,
-  pillows: 1,
-  throws: 0.86,
-  tableware: 1,
-  styling: 0.96,
-  rugs: 0.82,
+  sofas: 0.82,
+  chairs: 0.78,
+  "benches-ottomans": 0.76,
+  "cocktail-tables": 0.76,
+  "side-tables": 0.62,
+  "coffee-tables": 0.82,
+  dining: 0.82,
+  bar: 0.82,
+  lighting: 0.6,
+  storage: 0.82,
+  pillows: 0.82,
+  throws: 0.7,
+  tableware: 0.82,
+  styling: 0.78,
+  rugs: 0.68,
 };
+
 
 
 function preloadGridImage(src: string) {
