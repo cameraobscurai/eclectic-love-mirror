@@ -237,7 +237,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      <span className="absolute inset-x-1 top-1 h-[72%] sm:inset-x-2 sm:top-2 sm:h-[70%] grid place-items-center pointer-events-none">
+      <span className="absolute inset-x-3 top-3 h-[60%] sm:inset-x-5 sm:top-5 sm:h-[58%] grid place-items-center pointer-events-none">
         {heroSrc ? (
           <img
             src={heroSrc}
@@ -251,12 +251,13 @@ function TonalCell({
             draggable={false}
             className="block max-h-full max-w-full object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
             style={{
-              width: `${(COVER_SCALE[id] ?? 0.88) * 100}%`,
+              width: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
               objectPosition: "center center",
             }}
           />
         ) : null}
       </span>
+
 
       <span
         className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-3 uppercase pointer-events-none"
