@@ -10,7 +10,7 @@
 // Renders 6 tiles. Silent when fewer than 3 qualifying candidates exist.
 
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+
 import {
   getCollectionCatalog,
   type CollectionProduct,
