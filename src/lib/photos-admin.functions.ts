@@ -148,3 +148,77 @@ export const listCategoryItems = createServerFn({ method: "POST" })
 
     return { items: sorted };
   });
+
+// ---------------------------------------------------------------------------
+// Publish — materialize the live overlay (editorial_order, images,
+// card_background_url, cover_focal_x/y, upscaled_cover_url) into a single
+// JSON blob at squarespace-mirror/catalog/overlay.json. The public catalog
+// reads that blob in one request instead of paginating inventory_items on
+// every visit. Admins click Publish when a batch of photo/order edits is
+// ready to go live.
+// ---------------------------------------------------------------------------
+
+export const publishCatalogOverlay = createServerFn({ method: "POST" })
+  .middleware([requireStaffOrAdmin])
+  .handler(async ({ context }) => {
+    const PAGE = 1000;
+    const overlay: Record<
+      string,
+      {
+        editorial_order: number | null;
+        images: string[] | null;
+        card_background_url: string | null;
+        cover_focal_x: number | null;
+        cover_focal_y: number | null;
+        upscaled_cover_url: string | null;
+      }
+    > = {};
+
+    let from = 0;
+    for (;;) {
+      const { data, error } = await supabaseAdmin
+        .from("inventory_items")
+        .select(
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url",
+        )
+        .range(from, from + PAGE - 1);
+      if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
+      if (!data || data.length === 0) break;
+      for (const row of data as Array<{ rms_id: string | null } & (typeof overlay)[string]>) {
+        if (!row.rms_id) continue;
+        overlay[row.rms_id] = {
+          editorial_order: row.editorial_order,
+          images: row.images,
+          card_background_url: row.card_background_url,
+          cover_focal_x: row.cover_focal_x,
+          cover_focal_y: row.cover_focal_y,
+          upscaled_cover_url: row.upscaled_cover_url,
+        };
+      }
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+
+    const publishedAt = new Date().toISOString();
+    const payload = JSON.stringify({ publishedAt, count: Object.keys(overlay).length, overlay });
+    const blob = new Blob([payload], { type: "application/json" });
+
+    const { error: upErr } = await supabaseAdmin.storage
+      .from("squarespace-mirror")
+      .upload("catalog/overlay.json", blob, {
+        upsert: true,
+        contentType: "application/json",
+        cacheControl: "60",
+      });
+    if (upErr) throw new Error(`PUBLISH_WRITE_FAILED: ${upErr.message}`);
+
+    void audit({
+      actorId: context.userId,
+      entity: "catalog_overlay",
+      entityId: "catalog/overlay.json",
+      action: "publish",
+      metadata: { count: Object.keys(overlay).length, publishedAt },
+    });
+
+    return { ok: true, publishedAt, count: Object.keys(overlay).length };
+  });

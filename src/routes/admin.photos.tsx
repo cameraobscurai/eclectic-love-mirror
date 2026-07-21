@@ -42,7 +42,7 @@ import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
-import { reorderItems } from "@/lib/photos-admin.functions";
+import { reorderItems, publishCatalogOverlay } from "@/lib/photos-admin.functions";
 import {
   PARENT_ORDER,
   PARENT_LABELS,
@@ -174,6 +174,9 @@ function PhotosManager() {
             );
           })}
         </nav>
+        <div className="mt-6 px-5">
+          <PublishButton />
+        </div>
       </aside>
 
       <main className="flex-1 min-w-0">
@@ -906,4 +909,59 @@ function relativeTime(ts: number): string {
   if (m < 60) return `${m}m ago`;
   const h = Math.round(m / 60);
   return `${h}h ago`;
+}
+
+// Publish button — snapshots the live overlay so /collection reads a single
+// CDN-cacheable JSON blob instead of paginating inventory_items on every
+// visit. Adrienne clicks this after a batch of photo/order edits is ready.
+function PublishButton() {
+  const publishFn = useServerFn(publishCatalogOverlay);
+  const [state, setState] = useState<"idle" | "publishing" | "done" | "error">("idle");
+  const [msg, setMsg] = useState<string | null>(null);
+  const [lastAt, setLastAt] = useState<number | null>(null);
+
+  const onClick = useCallback(async () => {
+    setState("publishing");
+    setMsg(null);
+    try {
+      const res = await publishFn();
+      setState("done");
+      setLastAt(Date.now());
+      setMsg(`${res.count} products published`);
+      invalidateCollectionCatalog();
+    } catch (e) {
+      setState("error");
+      setMsg((e as Error).message);
+    }
+  }, [publishFn]);
+
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-2">
+        Publish
+      </p>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={state === "publishing"}
+        className="w-full border border-charcoal bg-charcoal text-cream px-3 py-2 text-[11px] uppercase tracking-[0.18em] hover:bg-charcoal/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      >
+        {state === "publishing" ? "Publishing…" : "Publish to live site"}
+      </button>
+      <p className="mt-2 text-[10px] leading-snug text-charcoal/55">
+        Snapshots current edits so the live site serves them from cache.
+      </p>
+      {state === "done" && msg && (
+        <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-emerald-700">
+          ✓ {msg}
+          {lastAt && ` · ${relativeTime(lastAt)}`}
+        </p>
+      )}
+      {state === "error" && msg && (
+        <p className="mt-2 text-[10px] leading-snug text-red-700 break-words">
+          Failed: {msg}
+        </p>
+      )}
+    </div>
+  );
 }
