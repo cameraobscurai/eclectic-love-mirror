@@ -1100,8 +1100,9 @@ function CollectionPage() {
                     </picture>
                   </div>
                   <div
-                    className="collection-overview-grid-shell"
+                    className="collection-overview-grid-shell flex-1 min-h-0"
                   >
+
                     <CategoryTonalGrid
                       groups={overviewGroups}
                       onSelectCategory={(id: BrowseGroupId) => selectFromTile(id)}
