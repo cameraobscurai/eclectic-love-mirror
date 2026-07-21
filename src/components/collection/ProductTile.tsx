@@ -63,6 +63,7 @@ export function ProductTile({
   // image load, so any slow image made the tile look "disappeared."
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
+  const fit = resolveFit(product.categorySlug);
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
   const imageSrcSet = product.primaryImage
     ? buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined
