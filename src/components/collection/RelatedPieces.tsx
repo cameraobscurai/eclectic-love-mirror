@@ -149,7 +149,7 @@ export function RelatedPieces({ product }: { product: CollectionProduct }) {
           return (
             <li key={p.id}>
               <Link
-                to="/collection/$slug"
+                to="/collection_/$slug"
                 params={{ slug: p.slug }}
                 className="group block"
               >
