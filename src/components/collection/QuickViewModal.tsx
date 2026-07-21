@@ -781,7 +781,7 @@ export function QuickViewModal({
                 {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
               <Link
-                to="/collection/$slug"
+                to="/collection_/$slug"
                 params={{ slug: product.slug }}
                 preload="intent"
                 viewTransition={{ types: ["hero-morph"] }}
