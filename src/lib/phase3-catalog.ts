@@ -245,6 +245,36 @@ type LiveOverlayRow = {
 
 async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
   const map = new Map<string, LiveOverlayRow>();
+
+  // Fast path: single request for the published overlay snapshot written
+  // by /admin/photos → Publish. One JSON fetch, CDN-cacheable, no pagination.
+  try {
+    const base =
+      (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+        ?.VITE_SUPABASE_URL;
+    if (base) {
+      const res = await fetch(
+        `${base}/storage/v1/object/public/squarespace-mirror/catalog/overlay.json?t=${Math.floor(Date.now() / 60000)}`,
+        { cache: "no-cache" },
+      );
+      if (res.ok) {
+        const payload = (await res.json()) as {
+          overlay: Record<string, LiveOverlayRow>;
+        };
+        if (payload && payload.overlay) {
+          for (const [rmsId, row] of Object.entries(payload.overlay)) {
+            map.set(rmsId, row);
+          }
+          return map;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("[catalog] overlay snapshot fetch failed, falling back:", e);
+  }
+
+  // Fallback: paginated live query. Used until the first Publish runs, or
+  // if the snapshot fetch fails.
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     const PAGE = 1000;
