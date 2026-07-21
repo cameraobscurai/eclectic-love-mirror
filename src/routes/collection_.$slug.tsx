@@ -178,7 +178,15 @@ export const Route = createFileRoute("/collection_/$slug")({
           { name: "twitter:image", content: img },
           { name: "twitter:card", content: "summary_large_image" },
         ],
-        links: [{ rel: "canonical", href: url }],
+        links: [
+          { rel: "canonical", href: url },
+          {
+            rel: "preload",
+            as: "image",
+            href: img,
+            fetchpriority: "high" as const,
+          },
+        ],
         scripts: [
           {
             type: "application/ld+json",
