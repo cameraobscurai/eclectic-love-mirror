@@ -348,7 +348,7 @@ export function QuickViewModal({
         )}
         {/* TOP BAR — eyebrow left, nav right. Frosted strip with bottom hairline. */}
         <div
-          className="flex items-center justify-between px-6 md:px-10 pt-6 md:pt-7 pb-3"
+          className="flex items-center justify-between px-4 md:px-10 pt-4 md:pt-6 pb-2 md:pb-3"
           style={glassBandLightNoTop}
         >
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
@@ -420,10 +420,10 @@ export function QuickViewModal({
               from natural dims so a tall or wide source never overflows.
               The <img> uses object-contain so the full silhouette (including
               the bottom edge) is always visible inside the cell. */}
-          <div className="relative min-w-0 min-h-0 overflow-hidden flex items-center justify-center px-4 md:px-8 py-4 md:py-8 bg-white">
+          <div className="relative min-w-0 min-h-0 overflow-hidden flex items-center justify-center px-2 md:px-6 py-2 md:py-6 bg-white">
             <div
               ref={zoneRef}
-              className="relative w-full h-full min-h-[40vh] md:min-h-0 max-w-full max-h-full"
+              className="relative w-full h-full min-h-[54vh] md:min-h-0 max-w-full max-h-full"
             >
               <AnimatePresence mode="wait">
                 {img ? (
@@ -440,6 +440,7 @@ export function QuickViewModal({
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
                     className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    style={{ transform: "scale(1.14)", transformOrigin: "center center" }}
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
