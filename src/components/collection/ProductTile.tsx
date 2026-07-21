@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { Link } from "@tanstack/react-router";
 // framer-motion removed — no motion props needed on tile
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useNearViewport } from "@/hooks/useNearViewport";
