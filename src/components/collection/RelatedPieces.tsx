@@ -105,10 +105,28 @@ function pickRelated(
   return out;
 }
 
-export function RelatedPieces({ product }: { product: CollectionProduct }) {
-  const [related, setRelated] = useState<CollectionProduct[] | null>(null);
+export function RelatedPieces({
+  product,
+  allProducts,
+}: {
+  product: CollectionProduct;
+  /**
+   * Optional pre-resolved catalog products from the parent route loader.
+   * When supplied, RelatedPieces renders synchronously with no re-fetch and
+   * no null-flash. Legacy call sites without this prop fall back to the
+   * async module-cached getCollectionCatalog().
+   */
+  allProducts?: CollectionProduct[];
+}) {
+  const [related, setRelated] = useState<CollectionProduct[] | null>(() =>
+    allProducts ? pickRelated(product, allProducts) : null,
+  );
 
   useEffect(() => {
+    if (allProducts) {
+      setRelated(pickRelated(product, allProducts));
+      return;
+    }
     let cancelled = false;
     getCollectionCatalog()
       .then((cat) => {
@@ -121,7 +139,7 @@ export function RelatedPieces({ product }: { product: CollectionProduct }) {
     return () => {
       cancelled = true;
     };
-  }, [product]);
+  }, [product, allProducts]);
 
   if (!related || related.length < MIN_TILES) return null;
 
