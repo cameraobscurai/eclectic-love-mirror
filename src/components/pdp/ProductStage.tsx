@@ -81,7 +81,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
               alt={active.altText ?? product.title}
               onLoad={(e) => {
                 const el = e.currentTarget;
-                if (el.naturalWidth) setNaturalW(el.naturalWidth);
+                if (el.naturalWidth) setMaxNaturalW((prev) => Math.max(prev ?? 0, el.naturalWidth));
               }}
               className={cn(
                 "absolute inset-0 w-full h-full object-contain",
