@@ -127,22 +127,21 @@ export function CategoryTonalGrid({
       <style>{`
         [data-tonal-grid] {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          grid-auto-rows: 1fr;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
           width: 100%;
-          max-width: 1600px;
-          height: 100%;
+          max-width: none;
+          height: auto;
           margin-inline: auto;
           gap: 0;
           padding: 0;
         }
         [data-tonal-grid] > button {
-          aspect-ratio: auto;
+          aspect-ratio: 1 / 1;
           min-height: 0;
         }
         @media (max-width: 1023px) {
           [data-tonal-grid] {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             max-width: none;
             height: auto;
             padding: 0;
@@ -220,9 +219,9 @@ function TonalCell({
           sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
           alt={heroAlt}
           frameAspect={1}
-          targetArea={0.38}
-          maxW={0.84}
-          maxH={0.72}
+          targetArea={0.5}
+          maxW={0.9}
+          maxH={0.78}
           width={600}
           height={480}
           loading={priority ? "eager" : "lazy"}
