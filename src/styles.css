@@ -371,8 +371,8 @@ button, a, [role="button"] {
     width: 100%;
     align-self: stretch;
     min-height: 0;
-    /* Tile grid = 5 cols × 3 rows of 4:5 tiles. Plate width : plate height = 8 : 15. */
-    aspect-ratio: 8 / 15;
+    /* 5 cols × 3 rows of 1:1 tiles → plate aspect = 2:3 to fill column height. */
+    aspect-ratio: 2 / 3;
   }
 
   .collection-overview-plate > picture,
