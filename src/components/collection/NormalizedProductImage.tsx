@@ -17,6 +17,14 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   targetArea?: number;
   maxW?: number;
   maxH?: number;
+  /** Fit strategy. "area" (default) scales to a target silhouette area —
+   *  correct for varied silhouettes (tables, lighting, decor). "width"
+   *  scales to a target silhouette width — correct for a single typology
+   *  where every object should read at the same horizontal footprint
+   *  (e.g. seating: every sofa/loveseat spans ~the same tile width so
+   *  they all stand on the same floor at comparable size). */
+  fitMode?: "area" | "width";
+  targetWidth?: number;
   /** Admin-set focal point (0–1). When both are numbers, silhouette
    *  measurement is skipped and the image is centered on this point. */
   focalX?: number | null;
@@ -54,6 +62,8 @@ function fitFromVisualBox(
   targetAreaOverride?: number,
   maxWOverride?: number,
   maxHOverride?: number,
+  fitMode: "area" | "width" = "area",
+  targetWidthOverride?: number,
 ): Fit | null {
   if (!bw || !bh || !naturalAspect) return null;
 
@@ -61,25 +71,36 @@ function fitFromVisualBox(
   const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
   if (!renderedW || !renderedH) return null;
 
-  // One uniform visual-weight target. Caps prevent extremes (thin
-  // chandelier rods, wide banquettes) from either bleeding to the tile
-  // edge or shrinking to nothing. maxH lifted 0.74 → 0.82 so tall
-  // subjects aren't crushed against a low ceiling.
   const targetArea = targetAreaOverride ?? 0.32;
   const maxW = maxWOverride ?? 0.86;
   const maxH = maxHOverride ?? 0.82;
-  const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
-  const scaleByArea = Math.sqrt(targetArea / currentArea);
+
+  let primaryScale: number;
+  if (fitMode === "width") {
+    // Width-band fitting: every silhouette lands at the same horizontal
+    // footprint. Used for seating so a wide sofa and a small loveseat
+    // both read as "the same class of object" on a shared floor line.
+    const targetWidth = targetWidthOverride ?? 0.82;
+    primaryScale = targetWidth / Math.max(0.001, TILE_IMAGE_INSET * renderedW);
+  } else {
+    const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
+    primaryScale = Math.sqrt(targetArea / currentArea);
+  }
   const scaleByCaps = Math.min(
     maxW / Math.max(0.001, TILE_IMAGE_INSET * renderedW),
     maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
   );
 
+  // Tighter clamp for width-band mode — the whole point is uniformity,
+  // so we allow less deviation than the area path.
+  const minScale = fitMode === "width" ? 0.90 : SCALE_MIN;
+  const maxScale = fitMode === "width" ? 1.10 : SCALE_MAX;
+
   return {
     cx: clamp(cx, 0.05, 0.95),
     cy: clamp(cy, 0.05, 0.95),
     bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(scaleByArea, scaleByCaps), SCALE_MIN, SCALE_MAX),
+    scale: clamp(Math.min(primaryScale, scaleByCaps), minScale, maxScale),
   };
 }
 
@@ -91,6 +112,8 @@ function measureImage(
   targetArea?: number,
   maxW?: number,
   maxH?: number,
+  fitMode: "area" | "width" = "area",
+  targetWidth?: number,
 ): Fit | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
@@ -112,7 +135,7 @@ function measureImage(
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH);
+    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
   }
 
   const px = data.data;
@@ -175,7 +198,7 @@ function measureImage(
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH);
+  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
   if (!fit) return null;
 
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
@@ -193,6 +216,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetArea,
   maxW,
   maxH,
+  fitMode = "area",
+  targetWidth,
   focalX,
   focalY,
   className,
@@ -201,7 +226,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
+  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}|${fitMode}|${targetWidth}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
@@ -224,7 +249,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     probe.onload = () => {
       if (cancelled) return;
       try {
-        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
+        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
         fitCache.set(cacheKey, next);
         setFit(next);
       } catch {
@@ -241,7 +266,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     return () => {
       cancelled = true;
     };
-  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fit]);
+  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth, fit]);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);
