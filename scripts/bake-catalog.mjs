@@ -582,3 +582,43 @@ fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'current_catalog.json'), JSON.stringify(payload));
 console.log('wrote current_catalog.json:', products.length, 'products,', facets.length, 'facets');
 console.log('facets:', facets.map(f=>`${f.slug}(${f.count})`).join(' '));
+
+// ---------------------------------------------------------------------------
+// Gallery orders snapshot — bake gallery_orders so /gallery serves the
+// admin-curated plate order from a static JSON file instead of hitting
+// Supabase on every visit. Same publish semantics as the inventory overlay:
+// admin edits appear on live after the next bake (or Publish snapshot).
+// ---------------------------------------------------------------------------
+const galleryOutDir = '/dev-server/src/data/gallery';
+fs.mkdirSync(galleryOutDir, { recursive: true });
+try {
+  const { data: gRows, error: gErr } = await sb
+    .from('gallery_orders')
+    .select('gallery_slug, order_keys');
+  if (gErr) throw gErr;
+  const orders = {};
+  for (const row of gRows ?? []) {
+    if (row.gallery_slug && Array.isArray(row.order_keys) && row.order_keys.length > 0) {
+      orders[row.gallery_slug] = row.order_keys;
+    }
+  }
+  const galleryPayload = {
+    orders,
+    meta: {
+      generatedAt: new Date().toISOString(),
+      count: Object.keys(orders).length,
+    },
+  };
+  fs.writeFileSync(
+    path.join(galleryOutDir, 'gallery-orders.json'),
+    JSON.stringify(galleryPayload),
+  );
+  console.log('wrote gallery-orders.json:', Object.keys(orders).length, 'gallery overrides');
+} catch (e) {
+  console.warn('[bake] gallery_orders snapshot failed:', e?.message ?? e);
+  // Write empty snapshot so the client import never breaks.
+  fs.writeFileSync(
+    path.join(galleryOutDir, 'gallery-orders.json'),
+    JSON.stringify({ orders: {}, meta: { generatedAt: new Date().toISOString(), count: 0 } }),
+  );
+}
