@@ -421,18 +421,21 @@ button, a, [role="button"] {
 @media (min-width: 1024px) {
   .collection-overview-layout {
     display: grid;
-    /* 2:5 — H-plate takes 2 tile-widths, tile grid takes 5 tile-widths.
-       Tiles are square (1:1), so the plate naturally becomes 2:3 tall
-       and the whole composition holds its proportion at every width
-       instead of stretching to fill the viewport. */
-    grid-template-columns: 2fr 5fr;
+    /* Plate leads the composition. It stretches top-to-bottom of the
+       viewport under the nav, and the 5-col tile grid sizes itself to
+       match that height — so tiles shrink/grow with the plate rather
+       than the plate shrinking with the tiles. */
+    grid-template-columns: 3fr 5fr;
     width: 100%;
     max-width: 100%;
     margin-inline: auto;
     align-items: stretch;
     gap: 0;
     padding: 0;
+    height: calc(100dvh - var(--nav-h));
+    min-height: calc(100dvh - var(--nav-h));
   }
+
 
 
   .collection-overview-plate {
