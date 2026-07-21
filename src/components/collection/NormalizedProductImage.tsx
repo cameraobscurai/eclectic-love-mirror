@@ -33,6 +33,11 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  measurement is skipped and the image is centered on this point. */
   focalX?: number | null;
   focalY?: number | null;
+
+  /** Skip the fade-in-on-measure gate. Above-fold tiles (LCP-critical) pass
+   *  eager=true so the tile paints immediately with the fallback fit and
+   *  refines to the measured fit when the silhouette resolves. */
+  eager?: boolean;
 };
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
@@ -219,13 +224,17 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetWidth,
   focalX,
   focalY,
+  eager = false,
   className,
   style,
   onLoad,
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  const cacheKey = `${src}|${frameAspect}`;
+  // Measurement is a property of the image, not the frame — reusing the same
+  // measurement across wall/grid toggles prevents the "everything goes big
+  // then snaps" pop when frameAspect changes.
+  const cacheKey = src;
   const cached = measurementCache.get(cacheKey);
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
@@ -366,11 +375,13 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     targetWidth,
   ]);
 
-  // Avoid the "big-then-snap" flash: while we're still measuring the
-  // silhouette, the solver would fall back to a ~full-size transform and
-  // pop to the correct scale a tick later. Hold opacity at 0 until
-  // measurement resolves (or focal override is set), then fade in.
-  const ready = hasFocal || measurement !== undefined;
+  // Avoid the "big-then-snap" flash on below-fold tiles: while we're still
+  // measuring the silhouette, the solver would fall back to a ~full-size
+  // transform and pop to the correct scale a tick later. Hold opacity at 0
+  // until measurement resolves, then fade in. Above-fold (eager) tiles skip
+  // this gate so LCP stays fast — they render with the fallback fit and
+  // refine when the measurement arrives.
+  const ready = hasFocal || measurement !== undefined || eager;
 
   return (
     <img
@@ -378,13 +389,12 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       ref={ref}
       src={src}
       onLoad={handleLoad}
-      className={className}
+      className={`${className ?? ""} npi-fade`.trim()}
       style={{
         ...style,
         transform,
         transformOrigin: "center center",
         opacity: ready ? (style?.opacity ?? 1) : 0,
-        transition: "opacity 180ms ease-out",
       }}
     />
   );

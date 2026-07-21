@@ -35,6 +35,7 @@ import {
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import type { BrowseGroupId } from "@/lib/collection-browse-groups";
 import { RelatedPieces } from "@/components/collection/RelatedPieces";
+import { ProductStage } from "@/components/pdp/ProductStage";
 
 const SITE = "https://eclectichive.com";
 
@@ -341,9 +342,6 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
 }
 
 function ProductDetailPage({ product }: { product: CollectionProduct }) {
-  const img = product.primaryImage?.url;
-  const alt = product.primaryImage?.altText || product.title;
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
@@ -362,22 +360,12 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
           </Link>
         </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          <div className="aspect-[4/5] bg-muted/30 flex items-center justify-center overflow-hidden">
-            {img ? (
-              <img
-                src={img}
-                alt={alt}
-                className="w-full h-full object-contain"
-                loading="eager"
-                decoding="async"
-              />
-            ) : (
-              <div className="text-xs tracking-widest uppercase text-muted-foreground">
-                No image
-              </div>
-            )}
-          </div>
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_clamp(340px,32vw,440px)] gap-10 lg:gap-16 items-start">
+          {/* Editorial stage — same exhibition surface as QuickView. */}
+          <ProductStage
+            product={product}
+            className="bg-white border border-charcoal/10 min-h-[60vh]"
+          />
 
           <div className="lg:sticky lg:top-28">
             <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">

@@ -296,6 +296,16 @@
   height: var(--fit-secondary-max, 40%);
 }
 
+/* NormalizedProductImage fade: only when the user hasn't asked to reduce
+ * motion. Reduced-motion users get an instant paint instead of a fade. */
+@media (prefers-reduced-motion: no-preference) {
+  .npi-fade {
+    transition: opacity 180ms ease-out;
+  }
+}
+
+
+
 .dark {
   --background: oklch(0.13 0 0);
   --foreground: oklch(0.957 0.008 80);
