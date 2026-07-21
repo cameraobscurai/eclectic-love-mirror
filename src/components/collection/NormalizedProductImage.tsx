@@ -198,7 +198,7 @@ function measureImage(
   const cx = (minX + maxX + 1) / 2 / cw;
   const cy = (minY + maxY + 1) / 2 / ch;
 
-  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH);
+  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
   if (!fit) return null;
 
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
