@@ -784,8 +784,15 @@ export function QuickViewModal({
                 to="/collection/$slug"
                 params={{ slug: product.slug }}
                 preload="intent"
-                viewTransition
-                onClick={onClose}
+                viewTransition={{ types: ["hero-morph"] }}
+                onClick={() => {
+                  // Defer close until after the browser has snapshotted the
+                  // outgoing frame (with the modal + hero still mounted), so
+                  // the shared-element morph has an "old" state to animate from.
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(onClose);
+                  });
+                }}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
                 View full page →
