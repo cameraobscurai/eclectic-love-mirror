@@ -194,14 +194,24 @@ function RootComponent() {
     });
   }, [pathname, search, hash]);
 
-  // Native scroll-to-top on route change. TanStack's scrollRestoration can
-  // preserve the previous page's offset when navigating from deep-scrolled
-  // pages (e.g. home CTAs at the bottom → /collection). This guarantees a
-  // fresh view. Hash navigations are left alone so #anchor links still work.
+  // Native scroll-to-top on FORWARD route change only. TanStack's
+  // scrollRestoration handles back/forward — we must not override it or
+  // returning from a PDP snaps to the top of /collection instead of the
+  // tile the user opened. history.state.__TSR_index increments on push
+  // and stays flat on pop; a ref remembers the last index we saw.
+  const lastIndexRef = useRef<number | null>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (hash) return;
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    const idx =
+      (window.history.state as { __TSR_index?: number } | null)?.__TSR_index ??
+      null;
+    const isForward =
+      lastIndexRef.current === null || idx === null || idx > lastIndexRef.current;
+    lastIndexRef.current = idx;
+    if (isForward) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
   }, [pathname, hash]);
 
   // Routes that should render as a single self-contained fold — no global
