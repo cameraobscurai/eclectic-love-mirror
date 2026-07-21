@@ -407,7 +407,11 @@ function CollectionPage() {
   // All view shows every product whose productParent === activeParent — even
   // items that fail every keyword bucket.
   const groupFiltered = useMemo(() => {
-    if (!activeParent) return searchFiltered;
+    // Global search: when a query is present, ignore the active category so
+    // the search spans the whole catalog. Prevents "why can't I find X?"
+    // when the user is scoped to one parent.
+    const hasQuery = q.trim().length > 0;
+    if (hasQuery || !activeParent) return searchFiltered;
     const parentFiltered = searchFiltered.filter(
       (p) => productParent(p) === activeParent,
     );
@@ -415,7 +419,7 @@ function CollectionPage() {
     return parentFiltered.filter((p) =>
       productMatchesSub(p, activeParent, activeSubcategory),
     );
-  }, [searchFiltered, activeParent, activeSubcategory]);
+  }, [searchFiltered, activeParent, activeSubcategory, q]);
 
   const filtered = useMemo(() => {
     const list = [...groupFiltered];

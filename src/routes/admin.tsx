@@ -14,11 +14,12 @@
  */
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/admin-shell";
-import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { requireStaffOrRedirect } from "@/lib/admin-guard";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
-  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
+  // Layout allows staff; admin-only subroutes have their own requireAdminOrRedirect.
+  beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   head: () => ({
     meta: [
       { title: "Admin · Eclectic Hive" },
