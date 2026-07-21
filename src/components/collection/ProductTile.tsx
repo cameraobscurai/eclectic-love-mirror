@@ -10,6 +10,7 @@ import {
 } from "@/lib/collection-tile-presets";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
+import { resolveFit } from "./categoryFit";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface ProductTileProps {
