@@ -954,7 +954,7 @@ function PublishButton() {
       {state === "done" && msg && (
         <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-emerald-700">
           ✓ {msg}
-          {lastAt && ` · ${timeAgo(lastAt)}`}
+          {lastAt && ` · ${relativeTime(lastAt)}`}
         </p>
       )}
       {state === "error" && msg && (
