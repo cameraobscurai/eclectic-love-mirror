@@ -38,7 +38,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
           return (
             <li key={p.id} className="shrink-0 w-[112px] snap-start">
               <Link
-                to="/collection_/$slug"
+                to="/collection/$slug"
                 params={{ slug: p.slug }}
                 preload="intent"
                 className="block aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
