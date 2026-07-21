@@ -20,6 +20,7 @@ const WALL_WIDTHS = [600, 900, 1200];
 function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
+  const fit = resolveFit(product.categorySlug ?? null);
 
   // Route through Supabase's /render/image transform endpoint via withCdnWidth
   // so the CDN can serve right-sized variants and cache them properly. Native
