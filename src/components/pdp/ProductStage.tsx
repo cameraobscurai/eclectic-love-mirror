@@ -30,18 +30,21 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
         ? [product.primaryImage]
         : [];
 
-  const [primary, ...secondary] = images;
+  // Active image drives the hero viewport. Clicking any thumbnail swaps it in.
+  const [activeIdx, setActiveIdx] = useState(0);
+  const active = images[activeIdx] ?? images[0];
 
   const [naturalW, setNaturalW] = useState<number | null>(null);
   useEffect(() => {
     setNaturalW(null);
+    setActiveIdx(0);
   }, [product.id]);
 
   const heroName = `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 
-  // Thumbnails: cap at 4 per row so tiles stay legible. If more than 4
-  // secondaries, they wrap into a second aligned row.
-  const thumbCols = Math.min(Math.max(secondary.length, 1), 4);
+  // Thumbnails: show ALL images (including primary) so users can always
+  // return to the first shot after browsing alternates.
+  const thumbCols = Math.min(Math.max(images.length, 1), 4);
 
   const stageMaxW = naturalW
     ? `min(${MAX_STAGE_W}px, ${naturalW}px)`
@@ -56,22 +59,23 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
         {/* HERO — 4:3 landscape mat fits wide furniture cutouts. */}
         <button
           type="button"
-          onClick={() => onOpenLightbox?.(0)}
-          disabled={!primary || !onOpenLightbox}
+          onClick={() => onOpenLightbox?.(activeIdx)}
+          disabled={!active || !onOpenLightbox}
           aria-label={
-            primary ? `Open ${product.title} in fullscreen` : undefined
+            active ? `Open ${product.title} in fullscreen` : undefined
           }
           className={cn(
             "group/hero relative w-full bg-[#f9f9f9] aspect-[4/3]",
             "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-            onOpenLightbox && primary ? "cursor-zoom-in" : "cursor-default",
+            onOpenLightbox && active ? "cursor-zoom-in" : "cursor-default",
           )}
         >
-          {primary ? (
+          {active ? (
             <img
+              key={active.url}
               data-pdp-hero-img
-              src={withCdnWidth(primary.url, 1200)}
-              alt={primary.altText ?? product.title}
+              src={withCdnWidth(active.url, 1200)}
+              alt={active.altText ?? product.title}
               onLoad={(e) => {
                 const el = e.currentTarget;
                 if (el.naturalWidth) setNaturalW(el.naturalWidth);
@@ -82,7 +86,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
                 "transition-transform duration-500 ease-out",
                 "group-hover/hero:scale-[1.02]",
               )}
-              style={{ viewTransitionName: heroName }}
+              style={activeIdx === 0 ? { viewTransitionName: heroName } : undefined}
               loading="eager"
               decoding="async"
             />
@@ -93,39 +97,53 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
           )}
         </button>
 
-        {/* THUMBNAIL ROW — aligned flush with hero, equal-width tiles. */}
-        {secondary.length > 0 && (
+        {/* THUMBNAIL ROW — click to swap hero. Includes primary so users can return. */}
+        {images.length > 1 && (
           <div
             className="grid gap-4 md:gap-6"
             style={{
               gridTemplateColumns: `repeat(${thumbCols}, minmax(0, 1fr))`,
             }}
           >
-            {secondary.map((im, i) => (
-              <button
-                key={im.url + i}
-                type="button"
-                onClick={() => onOpenLightbox?.(i + 1)}
-                aria-label={`View image ${i + 2} of ${images.length}`}
-                className={cn(
-                  "group/alt relative bg-[#f9f9f9] aspect-square",
-                  "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                  onOpenLightbox ? "cursor-zoom-in" : "cursor-default",
-                )}
-              >
-                <img
-                  src={withCdnWidth(im.url, 600)}
-                  alt={im.altText ?? `${product.title} — view ${i + 2}`}
+            {images.map((im, i) => {
+              const isActive = i === activeIdx;
+              return (
+                <button
+                  key={im.url + i}
+                  type="button"
+                  onClick={() => setActiveIdx(i)}
+                  onDoubleClick={() => onOpenLightbox?.(i)}
+                  aria-label={`View image ${i + 1} of ${images.length}`}
+                  aria-pressed={isActive}
                   className={cn(
-                    "absolute inset-0 w-full h-full object-contain p-3 md:p-4",
-                    "transition-transform duration-500 ease-out",
-                    "group-hover/alt:scale-[1.02]",
+                    "group/alt relative bg-[#f9f9f9] aspect-square cursor-pointer",
+                    "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                    "transition-opacity duration-200",
+                    "after:absolute after:inset-0 after:pointer-events-none after:transition-colors",
+                    isActive
+                      ? "after:ring-1 after:ring-inset after:ring-charcoal/60 after:[--tw:_] after:shadow-none"
+                      : "opacity-70 hover:opacity-100",
                   )}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </button>
-            ))}
+                  style={
+                    isActive
+                      ? { boxShadow: "inset 0 0 0 1px rgba(26,26,26,0.6)" }
+                      : undefined
+                  }
+                >
+                  <img
+                    src={withCdnWidth(im.url, 600)}
+                    alt={im.altText ?? `${product.title} — view ${i + 1}`}
+                    className={cn(
+                      "absolute inset-0 w-full h-full object-contain p-3 md:p-4",
+                      "transition-transform duration-500 ease-out",
+                      "group-hover/alt:scale-[1.02]",
+                    )}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
