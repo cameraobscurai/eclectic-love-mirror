@@ -266,7 +266,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     return () => {
       cancelled = true;
     };
-  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fit]);
+  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth, fit]);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);
