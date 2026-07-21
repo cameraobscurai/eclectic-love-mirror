@@ -216,6 +216,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetArea,
   maxW,
   maxH,
+  fitMode = "area",
+  targetWidth,
   focalX,
   focalY,
   className,
@@ -224,7 +226,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}`;
+  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}|${fitMode}|${targetWidth}`;
   const cached = fitCache.get(cacheKey);
   const [fit, setFit] = useState<Fit | null | undefined>(cached);
 
@@ -247,7 +249,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     probe.onload = () => {
       if (cancelled) return;
       try {
-        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH);
+        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
         fitCache.set(cacheKey, next);
         setFit(next);
       } catch {
