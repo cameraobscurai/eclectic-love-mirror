@@ -187,6 +187,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const crumbs = useBreadcrumbs(pathname);
   const [email, setEmail] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [openCount, setOpenCount] = useState<number>(0);
   const [cmdOpen, setCmdOpen] = useState(false);
 
@@ -211,8 +212,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let alive = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (alive) setEmail(data.user?.email ?? null);
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!alive) return;
+      setEmail(data.user?.email ?? null);
+      if (data.user) {
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
+          .eq("role", "admin");
+        if (alive) setIsAdmin((roles ?? []).length > 0);
+      }
     });
     return () => {
       alive = false;
