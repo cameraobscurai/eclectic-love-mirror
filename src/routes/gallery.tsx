@@ -16,8 +16,8 @@ import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
 import { morphOpen } from "@/lib/view-transition";
 import { flushSync } from "react-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { applyGalleryOrder, gallerySlug } from "@/lib/gallery-orders";
+import bakedGalleryOrders from "@/data/gallery/gallery-orders.json";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
