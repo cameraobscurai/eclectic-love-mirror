@@ -12,7 +12,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { requireAdmin } from "@/integrations/supabase/admin-middleware";
+import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
 
 const urlSchema = z.string().url().max(2000);
@@ -26,7 +26,7 @@ const updateImagesInput = z.object({
 });
 
 export const updateItemImages = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => updateImagesInput.parse(d))
   .handler(async ({ data, context }) => {
     // 1. Read once — drives both concurrency check AND audit `before`.
@@ -95,7 +95,7 @@ const setBgInput = z.object({
 });
 
 export const setCardBackground = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => setBgInput.parse(d))
   .handler(async ({ data, context }) => {
     // 1. Read once.
@@ -141,7 +141,7 @@ const setFocalInput = z.object({
 });
 
 export const setCoverFocal = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => setFocalInput.parse(d))
   .handler(async ({ data, context }) => {
     // Both must be set or both cleared — no half-set focal points.
@@ -186,7 +186,7 @@ const uploadInput = z.object({
 // which has its own concurrency guard + audit. Hash-based path = automatic
 // dedup: same bytes uploaded twice resolve to the same URL with no waste.
 export const uploadItemImage = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => uploadInput.parse(d))
   .handler(async ({ data, context }) => {
     const bytes = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
@@ -280,7 +280,7 @@ function slugifyTitle(s: string): string {
 }
 
 export const createInventoryItem = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => createItemInput.parse(d))
   .handler(async ({ data, context }) => {
     const rmsId = `MANUAL-${crypto.randomUUID().slice(0, 8)}`;
@@ -328,7 +328,7 @@ const updateMetaInput = z.object({
 });
 
 export const updateInventoryItemMeta = createServerFn({ method: "POST" })
-  .middleware([requireAdmin])
+  .middleware([requireStaffOrAdmin])
   .inputValidator((d: unknown) => updateMetaInput.parse(d))
   .handler(async ({ data, context }) => {
     const patch: Record<string, unknown> = {};
