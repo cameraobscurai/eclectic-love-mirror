@@ -4,6 +4,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
+import { resolveFit } from "./categoryFit";
 
 interface Props {
   product: CollectionProduct;
@@ -19,6 +20,7 @@ const WALL_WIDTHS = [600, 900, 1200];
 function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
+  const fit = resolveFit(product.categorySlug ?? null);
 
   // Route through Supabase's /render/image transform endpoint via withCdnWidth
   // so the CDN can serve right-sized variants and cache them properly. Native
@@ -48,9 +50,7 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             src={src}
             srcSet={srcSet}
             frameAspect={cellAspect}
-            targetArea={0.84}
-            maxW={0.97}
-            maxH={0.97}
+            fit={fit}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
             className={`w-full h-full ${PRODUCT_TILE_IMAGE_CLASS} pointer-events-none select-none`}
