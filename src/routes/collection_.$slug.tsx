@@ -346,7 +346,7 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-7xl px-6 lg:px-12 pt-28 pb-24">
-        <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-8">
+        <nav className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-10">
           <Link to="/collection" className="hover:text-foreground transition-colors">
             Collection
           </Link>
@@ -360,67 +360,63 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
           </Link>
         </nav>
 
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_clamp(340px,32vw,440px)] gap-10 lg:gap-16 items-start">
-          {/* Editorial stage — same exhibition surface as QuickView. */}
-          <ProductStage
-            product={product}
-            className="bg-white border border-charcoal/10 min-h-[60vh]"
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+          {/* Editorial stage — resolution-safe primary + secondary grid. */}
+          <div className="lg:col-span-7">
+            <ProductStage product={product} />
+          </div>
 
-          <div className="lg:sticky lg:top-28">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-4">
+          {/* Meta column — sticky spec sheet. */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
               {product.displayCategory}
             </p>
-            <h1 className="font-display text-3xl lg:text-4xl tracking-wide uppercase mb-6">
+            <h1 className="font-display text-4xl md:text-5xl tracking-wide uppercase leading-[1.1] mb-10">
               {product.title}
             </h1>
 
-            {product.description && (
-              <p className="text-sm leading-relaxed text-foreground/80 mb-8 whitespace-pre-line">
-                {product.description}
-              </p>
-            )}
+            <div className="border-t border-foreground/10 pt-10 space-y-10">
+              <div className="grid grid-cols-2 gap-6">
+                {product.dimensions && (
+                  <div>
+                    <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                      Dimensions
+                    </span>
+                    <p className="text-sm leading-relaxed">{product.dimensions}</p>
+                  </div>
+                )}
+                {(product.stockedQuantity || product.isCustomOrder) && (
+                  <div>
+                    <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                      Availability
+                    </span>
+                    <p className="text-sm leading-relaxed">
+                      {product.isCustomOrder
+                        ? "Made to order"
+                        : product.stockedQuantity}
+                    </p>
+                  </div>
+                )}
+              </div>
 
-            <dl className="space-y-4 border-t border-foreground/10 pt-6 mb-10">
-              {product.dimensions && (
+              {product.description && (
                 <div>
-                  <dt className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-1">
-                    Dimensions
-                  </dt>
-                  <dd className="text-sm">{product.dimensions}</dd>
+                  <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                    Notes
+                  </span>
+                  <p className="text-sm leading-relaxed whitespace-pre-line text-foreground/80">
+                    {product.description}
+                  </p>
                 </div>
               )}
-              {product.stockedQuantity && (
-                <div>
-                  <dt className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-1">
-                    Available
-                  </dt>
-                  <dd className="text-sm">{product.stockedQuantity}</dd>
-                </div>
-              )}
-              {product.isCustomOrder && (
-                <div>
-                  <dt className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-1">
-                    Custom Order
-                  </dt>
-                  <dd className="text-sm">Made to order — lead time on request.</dd>
-                </div>
-              )}
-            </dl>
+            </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="mt-14">
               <Link
                 to="/contact"
-                className="inline-block text-center border border-foreground bg-foreground text-background px-8 py-4 text-[11px] tracking-[0.25em] uppercase hover:bg-transparent hover:text-foreground transition-colors"
+                className="block w-full text-center bg-foreground text-background py-5 text-[11px] tracking-[0.35em] uppercase hover:bg-foreground/85 transition-colors"
               >
                 Inquire About This Piece
-              </Link>
-              <Link
-                to="/collection"
-                search={{ view: product.slug }}
-                className="inline-block text-center border border-foreground/40 px-8 py-4 text-[11px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition-colors"
-              >
-                View in Collection
               </Link>
             </div>
           </div>
