@@ -250,12 +250,12 @@ function Inner() {
 
 type ProductRow = Record<string, unknown> & { id: string; title: string };
 
-const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[] }[] }[] = [
+const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string }[] }[] = [
   {
     label: "Basics",
     fields: [
       { key: "title", type: "text" },
-      { key: "slug", type: "text" },
+      { key: "slug", type: "text", readOnly: true, hint: "URL slug — locked to keep live links working." },
       { key: "category", type: "text" },
       { key: "status", type: "select", opts: ["available", "sold", "hold", "draft"] },
       { key: "public_ready", type: "bool" },
@@ -276,7 +276,7 @@ const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "text
       { key: "quantity", type: "number" },
       { key: "quantity_label", type: "text" },
       { key: "price", type: "number" },
-      { key: "rms_id", type: "text" },
+      { key: "rms_id", type: "text", readOnly: true, hint: "RMS reference — set by import, do not edit." },
     ],
   },
   {
