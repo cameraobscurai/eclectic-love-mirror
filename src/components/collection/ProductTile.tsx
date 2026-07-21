@@ -114,6 +114,9 @@ export function ProductTile({
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
                   visualBaselineY={0.92}
+                  {...(product.categorySlug === "seating"
+                    ? { fitMode: "width" as const, targetWidth: 0.82 }
+                    : {})}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
