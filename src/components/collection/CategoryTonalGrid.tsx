@@ -245,7 +245,6 @@ function TonalCell({
             className="block max-h-full max-w-full object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
             style={{
               width: `${(COVER_SCALE[id] ?? 0.88) * 100}%`,
-              height: `${(COVER_SCALE[id] ?? 0.88) * 100}%`,
               objectPosition: "center center",
             }}
           />
