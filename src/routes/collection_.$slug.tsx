@@ -369,7 +369,13 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
   );
 }
 
-function ProductDetailPage({ product }: { product: CollectionProduct }) {
+function ProductDetailPage({
+  product,
+  allProducts,
+}: {
+  product: CollectionProduct;
+  allProducts: CollectionProduct[];
+}) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
