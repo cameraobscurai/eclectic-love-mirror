@@ -272,15 +272,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </p>
           </SidebarHeader>
           <SidebarContent>
-            <NavGroup label="Overview" items={OVERVIEW} pathname={pathname} />
-            <NavGroup
-              label="Inbox"
-              items={INBOX}
-              pathname={pathname}
-              openCount={openCount}
-            />
+            {isAdmin && (
+              <>
+                <NavGroup label="Overview" items={OVERVIEW} pathname={pathname} />
+                <NavGroup
+                  label="Inbox"
+                  items={INBOX}
+                  pathname={pathname}
+                  openCount={openCount}
+                />
+              </>
+            )}
             <NavGroup label="Inventory" items={INVENTORY} pathname={pathname} />
-            <NavGroup label="Access" items={ACCESS} pathname={pathname} />
+            {isAdmin && <NavGroup label="Access" items={ACCESS} pathname={pathname} />}
             <NavGroup label="Site" items={SITE} pathname={pathname} />
 
           </SidebarContent>
