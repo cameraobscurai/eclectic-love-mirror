@@ -102,12 +102,14 @@ export function Navigation() {
     };
   }, []);
 
+  const matchesPrefix = (p: string) => {
+    const bare = p.endsWith("/") ? p.slice(0, -1) : p;
+    return pathname === bare || pathname.startsWith(bare + "/");
+  };
   const isLightPage =
-    LIGHT_BG_PAGES.includes(pathname) ||
-    LIGHT_BG_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+    LIGHT_BG_PAGES.includes(pathname) || LIGHT_BG_PREFIXES.some(matchesPrefix);
   const isWhitePage =
-    WHITE_BG_PAGES.includes(pathname) ||
-    WHITE_BG_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));
+    WHITE_BG_PAGES.includes(pathname) || WHITE_BG_PREFIXES.some(matchesPrefix);
 
   useEffect(() => {
     const onScroll = () => {
