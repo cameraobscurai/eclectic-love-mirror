@@ -4,6 +4,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
+import { resolveFit } from "./categoryFit";
 
 interface Props {
   product: CollectionProduct;
