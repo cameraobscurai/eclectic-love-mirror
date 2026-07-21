@@ -371,10 +371,8 @@ button, a, [role="button"] {
     width: 100%;
     align-self: stretch;
     min-height: 0;
-    /* Tile grid is 5 cols × 3 rows of 1:1 tiles → total height = 3/5 of its width.
-       Right pane width = 5fr of container → right height = (5/7 * 100%) * 3/5 = 3/7 of container width.
-       H-plate width = 2/7 of container width. So plate aspect = 2/7 : 3/7 = 2:3. */
-    aspect-ratio: 2 / 3;
+    /* Tile grid = 5 cols × 3 rows of 4:5 tiles. Plate width : plate height = 8 : 15. */
+    aspect-ratio: 8 / 15;
   }
 
   .collection-overview-plate > picture,
