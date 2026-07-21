@@ -49,17 +49,17 @@ const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
   chairs: 0.98,
   "benches-ottomans": 0.94,
   "cocktail-tables": 0.94,
-  "side-tables": 0.96,
+  "side-tables": 0.76,
   "coffee-tables": 1,
   dining: 1,
   bar: 1,
-  lighting: 0.94,
+  lighting: 0.72,
   storage: 1,
   pillows: 1,
   throws: 0.86,
   tableware: 1,
   styling: 0.96,
-  rugs: 0.94,
+  rugs: 0.82,
 };
 
 
