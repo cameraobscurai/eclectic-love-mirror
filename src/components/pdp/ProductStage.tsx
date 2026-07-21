@@ -109,6 +109,7 @@ export function ProductStage({ product, className, onActiveImageChange }: Props)
                 exit={{ opacity: 0 }}
                 transition={{ duration: reduced ? 0 : 0.25 }}
                 className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
                 loading="eager"
                 decoding="async"
               />

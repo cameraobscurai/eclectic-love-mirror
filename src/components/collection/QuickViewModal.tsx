@@ -441,6 +441,7 @@ export function QuickViewModal({
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
                     className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                    style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
@@ -783,6 +784,7 @@ export function QuickViewModal({
                 to="/collection/$slug"
                 params={{ slug: product.slug }}
                 preload="intent"
+                viewTransition
                 onClick={onClose}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
