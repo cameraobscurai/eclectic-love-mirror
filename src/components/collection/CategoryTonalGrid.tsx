@@ -45,22 +45,23 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
 const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
-  sofas: 1,
-  chairs: 0.98,
-  "benches-ottomans": 0.94,
-  "cocktail-tables": 0.94,
-  "side-tables": 0.76,
-  "coffee-tables": 1,
-  dining: 1,
-  bar: 1,
-  lighting: 0.72,
-  storage: 1,
-  pillows: 1,
-  throws: 0.86,
-  tableware: 1,
-  styling: 0.96,
-  rugs: 0.82,
+  sofas: 0.82,
+  chairs: 0.78,
+  "benches-ottomans": 0.76,
+  "cocktail-tables": 0.76,
+  "side-tables": 0.62,
+  "coffee-tables": 0.82,
+  dining: 0.82,
+  bar: 0.82,
+  lighting: 0.6,
+  storage: 0.82,
+  pillows: 0.82,
+  throws: 0.7,
+  tableware: 0.82,
+  styling: 0.78,
+  rugs: 0.68,
 };
+
 
 
 function preloadGridImage(src: string) {
@@ -237,7 +238,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      <span className="absolute inset-x-1 top-1 h-[72%] sm:inset-x-2 sm:top-2 sm:h-[70%] grid place-items-center pointer-events-none">
+      <span className="absolute inset-x-3 top-3 h-[60%] sm:inset-x-5 sm:top-5 sm:h-[58%] grid place-items-center pointer-events-none">
         {heroSrc ? (
           <img
             src={heroSrc}
@@ -251,12 +252,13 @@ function TonalCell({
             draggable={false}
             className="block max-h-full max-w-full object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
             style={{
-              width: `${(COVER_SCALE[id] ?? 0.88) * 100}%`,
+              width: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
               objectPosition: "center center",
             }}
           />
         ) : null}
       </span>
+
 
       <span
         className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-3 uppercase pointer-events-none"
