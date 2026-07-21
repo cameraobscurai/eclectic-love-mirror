@@ -94,7 +94,13 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              style={{ aspectRatio: tileAspect }}
+              data-fit-anchor={fit.anchor}
+              style={{
+                aspectRatio: tileAspect,
+                ["--fit-anchor-y" as string]: `${fit.anchorY * 100}%`,
+                ["--fit-center-x" as string]: `${fit.centerX * 100}%`,
+                ["--fit-secondary-max" as string]: `${fit.secondaryMax * 100}%`,
+              }}
             >
               {/* Skeleton overlay */}
               <div
