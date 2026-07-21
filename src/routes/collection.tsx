@@ -1010,12 +1010,12 @@ function CollectionPage() {
           <div className={showOverview ? "collection-overview-layout" : "grid grid-cols-1"}>
             {showOverview && (
               <aside
-                className="collection-overview-plate hidden lg:flex items-start justify-center overflow-hidden"
+                className="collection-overview-plate hidden lg:flex items-stretch justify-center overflow-hidden"
                 style={{
                   background: "var(--paper)",
                 }}
               >
-                <picture className="block relative w-full overflow-hidden">
+                <picture className="block relative w-full h-full overflow-hidden">
                   {hiveSignatureHeroSquare.sources.avif && (
                     <source
                       type="image/avif"
@@ -1039,7 +1039,7 @@ function CollectionPage() {
                     loading="eager"
                     {...({ fetchPriority: "high" } as Record<string, string>)}
                     draggable={false}
-                    className="block h-auto w-full object-contain"
+                    className="block h-full w-full object-cover"
                     style={{
                       objectPosition: "center",
                     }}
