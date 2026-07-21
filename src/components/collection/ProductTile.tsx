@@ -81,9 +81,10 @@ export function ProductTile({
         containIntrinsicSize: "auto 300px",
       }}
     >
-      <div>
+      <div className="relative group/tile">
 
         {showInternals ? (
+          <>
           <button
             onClick={onOpen}
             onMouseEnter={preloadQuickView}
@@ -154,6 +155,21 @@ export function ProductTile({
               </p>
             </div>
           </button>
+
+          {/* Secondary action: navigate to full PDP. Sits over the media frame,
+              revealed on hover/focus. stopPropagation prevents the primary
+              QuickView button from firing. Always tab-reachable for a11y. */}
+          <Link
+            to="/collection/$slug"
+            params={{ slug: product.slug }}
+            preload="intent"
+            onClick={(e) => e.stopPropagation()}
+            aria-label={`View ${product.title} on its own page`}
+            className="absolute top-2 right-2 z-10 px-2.5 py-1.5 text-[9px] md:text-[10px] uppercase tracking-[0.14em] font-medium bg-white/95 text-charcoal ring-1 ring-charcoal/15 backdrop-blur-sm opacity-0 translate-y-1 group-hover/tile:opacity-100 group-hover/tile:translate-y-0 focus-visible:opacity-100 focus-visible:translate-y-0 focus:outline-none focus-visible:ring-charcoal/60 transition-all duration-200 hover:bg-charcoal hover:text-white hover:ring-charcoal pointer-events-auto"
+          >
+            View page →
+          </Link>
+          </>
         ) : (
           <div aria-hidden className="block w-full bg-white">
             <div className="w-full bg-white" style={{ aspectRatio: tileAspect }} />
