@@ -50,9 +50,9 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             src={src}
             srcSet={srcSet}
             frameAspect={cellAspect}
-            targetArea={0.84}
-            maxW={0.97}
-            maxH={0.97}
+            fit={fit}
+            focalX={product.focalX ?? null}
+            focalY={product.focalY ?? null}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
             className={`w-full h-full ${PRODUCT_TILE_IMAGE_CLASS} pointer-events-none select-none`}
