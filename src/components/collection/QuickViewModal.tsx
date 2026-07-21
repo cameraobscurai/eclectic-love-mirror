@@ -424,7 +424,7 @@ export function QuickViewModal({
           <div className="relative min-w-0 min-h-0 overflow-hidden flex items-center justify-center px-2 md:px-6 py-2 md:py-6 bg-white">
             <div
               ref={zoneRef}
-              className="relative w-full h-full min-h-[54vh] md:min-h-0 max-w-full max-h-full"
+              className="relative w-full h-full min-h-[54vh] md:min-h-0 max-w-[640px] max-h-[70vh] md:max-h-[640px] aspect-[4/3]"
             >
               <AnimatePresence mode="wait">
                 {img ? (
