@@ -174,6 +174,9 @@ function PhotosManager() {
             );
           })}
         </nav>
+        <div className="mt-6 px-5">
+          <PublishButton />
+        </div>
       </aside>
 
       <main className="flex-1 min-w-0">
