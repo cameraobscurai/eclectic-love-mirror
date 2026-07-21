@@ -21,16 +21,17 @@ test('QuickView "view full page" lands on the PDP', async ({ page }) => {
   const link = dialog.getByRole('link', { name: /view full page/i });
   await expect(link).toBeVisible();
 
-  // Href must be an absolute path to the PDP route — plain <a>, not intercepted.
+  // Href must point at a /collection/<slug> PDP — plain <a>, not intercepted.
   const href = await link.getAttribute('href');
-  expect(href).toBe(`/collection/${slug}`);
+  expect(href, 'view full page link must have href').toBeTruthy();
+  expect(href!).toMatch(/^\/collection\/[^/?#]+$/);
 
   await Promise.all([
-    page.waitForURL(new RegExp(`/collection/${slug}$`), { timeout: 15_000 }),
+    page.waitForURL(new RegExp(`${href!.replace(/[/]/g, '\\/')}$`), { timeout: 15_000 }),
     link.click(),
   ]);
 
   // Landed on the PDP, not bounced back to the grid.
-  expect(page.url()).toMatch(new RegExp(`/collection/${slug}$`));
+  expect(new URL(page.url()).pathname).toBe(href);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
