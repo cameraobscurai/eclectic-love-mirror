@@ -91,7 +91,7 @@ export function ProductTile({
           >
             {/* Media frame */}
             <div
-              className="relative w-full bg-white overflow-hidden"
+              className="product-tile-media relative w-full bg-white overflow-hidden"
               style={{ aspectRatio: tileAspect }}
             >
               {/* Skeleton overlay */}
@@ -136,8 +136,8 @@ export function ProductTile({
               ) : null}
             </div>
 
-            {/* Unified caption - "The Museum Label" */}
-            <div className="mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
+            {/* Unified caption - fixed two-line band so every row starts at the same floor. */}
+            <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
                <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 group-hover:text-charcoal transition-colors">
                 {product.title}
               </p>
