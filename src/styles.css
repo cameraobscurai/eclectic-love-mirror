@@ -606,11 +606,7 @@ button, a, [role="button"] {
    real route navigations (where framer wasn't running). Browsers without
    support: no change. Cross-fade is the browser default; we don't override.
    ---------------------------------------------------------------------------- */
-/* Global cross-fade view-transition removed — caused tiles to flash/disappear
-   on navigation into /collection. Per-element morphs (gallery-hero below) still work. */
-
-/* Gallery card → lightbox shared-element morph. Slightly slower and softer
-   than the browser default so the canyon plate feels like it lifts, not snaps. */
+/* Gallery card → lightbox shared-element morph. */
 ::view-transition-group(gallery-hero) {
   animation-duration: 520ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
@@ -620,6 +616,49 @@ button, a, [role="button"] {
   animation-duration: 360ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   mix-blend-mode: normal;
+}
+
+/* PDP hero morph — editorial, quick, decisive. Custom curve borrowed from
+   Prada/Casa Carta motion work: fast lift, gentle settle. Root cross-fade is
+   kept short so surrounding chrome doesn't drag the eye. */
+::view-transition-group(root) {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(root) {
+  animation: vt-fade-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 320ms cubic-bezier(0, 0, 0.2, 1) 80ms both;
+}
+[style*="view-transition-name: hero-"],
+::view-transition-group([class*="hero-"]) {
+  /* placeholder to keep specificity for wildcarded hero-<id> groups below */
+}
+html::view-transition-group(*):where([style*="hero-"]) { }
+
+/* Wildcard-ish rule via attribute selectors isn't supported for VT names,
+   so the actual hero-<id> tuning is delivered by scoping through the
+   default group animation and letting the shared name morph naturally.
+   The signature curve + duration are set on all VT groups: */
+::view-transition-group(*) {
+  animation-duration: 460ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+  }
 }
 
 /* Hide scrollbars (used by carousels where a custom indicator replaces them). */
