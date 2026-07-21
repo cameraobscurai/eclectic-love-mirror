@@ -307,7 +307,7 @@ export const Route = createFileRoute("/collection_/$slug")({
 function SlugRoutePage() {
   const data = Route.useLoaderData() as LoadResult;
   if (data.kind === "parent") return <ParentLandingPage parent={data.parent} />;
-  return <ProductDetailPage product={data.product} />;
+  return <ProductDetailPage product={data.product} allProducts={data.allProducts} />;
 }
 
 // Category landing: SSR emits real h1 + intro copy for crawlers; on mount,
