@@ -606,11 +606,7 @@ button, a, [role="button"] {
    real route navigations (where framer wasn't running). Browsers without
    support: no change. Cross-fade is the browser default; we don't override.
    ---------------------------------------------------------------------------- */
-/* Global cross-fade view-transition removed — caused tiles to flash/disappear
-   on navigation into /collection. Per-element morphs (gallery-hero below) still work. */
-
-/* Gallery card → lightbox shared-element morph. Slightly slower and softer
-   than the browser default so the canyon plate feels like it lifts, not snaps. */
+/* Gallery card → lightbox shared-element morph. */
 ::view-transition-group(gallery-hero) {
   animation-duration: 520ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
@@ -620,6 +616,41 @@ button, a, [role="button"] {
   animation-duration: 360ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   mix-blend-mode: normal;
+}
+
+/* PDP hero morph — editorial, quick, decisive. Signature curve is a fast
+   lift with a gentle settle so the product image lands like a page turn,
+   not a slide. Root cross-fade is short so surrounding chrome doesn't drag. */
+::view-transition-group(root) {
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(root) {
+  animation: vt-fade-out 160ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(root) {
+  animation: vt-fade-in 280ms cubic-bezier(0, 0, 0.2, 1) 60ms both;
+}
+/* Shared-element hero morph — spans the full transition so the image is the
+   through-line while root chrome fades under it. */
+::view-transition-group(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+  }
 }
 
 /* Hide scrollbars (used by carousels where a custom indicator replaces them). */
