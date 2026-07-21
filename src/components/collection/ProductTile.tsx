@@ -108,16 +108,11 @@ export function ProductTile({
 
               {product.primaryImage ? (
                 <NormalizedProductImage
-                  {...overrides}
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
+                  fit={resolveFit(product.categorySlug)}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
-                  visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
-                  visualBaselineY={0.92}
-                  {...(product.categorySlug === "seating"
-                    ? { fitMode: "width" as const, targetWidth: 0.82 }
-                    : {})}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
@@ -139,6 +134,7 @@ export function ProductTile({
                 />
               ) : null}
             </div>
+
 
             {/* Unified caption - fixed two-line band so every row starts at the same floor. */}
             <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
