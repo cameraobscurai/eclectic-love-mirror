@@ -1,135 +1,86 @@
 import { forwardRef, useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
 import type React from "react";
+import type { FitRule } from "./categoryFit";
 
 type Fit = {
   cx: number;
   cy: number;
   bottom: number;
+  top: number;
   scale: number;
 };
 
 type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
+
+  /** New category-aware fit rule. When supplied, takes over scaling +
+   *  anchoring entirely — the solver in this file is the single source of
+   *  truth for x/y/scale. Legacy props below are ignored. */
+  fit?: FitRule;
+
+  // ── Legacy props (still used by admin.photos and CollectionWallTile) ──
   visualOffsetY?: number;
   visualAnchorY?: "center" | "bottom";
   visualBaselineY?: number;
   targetArea?: number;
   maxW?: number;
   maxH?: number;
-  /** Fit strategy. "area" (default) scales to a target silhouette area —
-   *  correct for varied silhouettes (tables, lighting, decor). "width"
-   *  scales to a target silhouette width — correct for a single typology
-   *  where every object should read at the same horizontal footprint
-   *  (e.g. seating: every sofa/loveseat spans ~the same tile width so
-   *  they all stand on the same floor at comparable size). */
   fitMode?: "area" | "width";
   targetWidth?: number;
+
   /** Admin-set focal point (0–1). When both are numbers, silhouette
    *  measurement is skipped and the image is centered on this point. */
   focalX?: number | null;
   focalY?: number | null;
 };
 
-const fitCache = new Map<string, Fit | null>();
+// Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
+// across rules on the same image — the SOLVER runs per-rule, the MEASUREMENT
+// is shared.
+type Measurement = {
+  renderedW: number;
+  renderedH: number;
+  bw: number;
+  bh: number;
+  cx: number;
+  cy: number;
+  bottom: number;
+  top: number;
+  naturalAspect: number;
+};
+const measurementCache = new Map<string, Measurement | null>();
 
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
-const TILE_OBJECT_CONTENT = 0.92;
-// Fallback fit for CORS-tainted, decode-failed, or unmeasurable images.
-// Scale sits at the midpoint of the clamp below so a fallback tile reads
-// as a peer next to a measured tile instead of a visible outlier.
-const DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, scale: 0.97 };
 
-// Tight uniform scale clamp. The previous 0.55–1.35 window was wide enough
-// that two correctly-measured tiles could end up 2.45x different in size
-// and both look "valid." Real editorial grids (RH, Aerin, Serena) keep the
-// visual-weight spread inside ~1.4x.
-const SCALE_MIN = 0.82;
-const SCALE_MAX = 1.12;
+// Legacy area/width path retained for non-fit-rule callers.
+const LEGACY_TILE_OBJECT_CONTENT = 0.92;
+const LEGACY_DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, top: 0.38, scale: 0.97 };
+const LEGACY_SCALE_MIN = 0.82;
+const LEGACY_SCALE_MAX = 1.12;
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function fitFromVisualBox(
-  cx: number,
-  cy: number,
-  bw: number,
-  bh: number,
-  naturalAspect: number,
-  frameAspect = FRAME_ASPECT,
-  targetAreaOverride?: number,
-  maxWOverride?: number,
-  maxHOverride?: number,
-  fitMode: "area" | "width" = "area",
-  targetWidthOverride?: number,
-): Fit | null {
-  if (!bw || !bh || !naturalAspect) return null;
-
-  const renderedW = naturalAspect >= frameAspect ? bw : (naturalAspect / frameAspect) * bw;
-  const renderedH = naturalAspect >= frameAspect ? (frameAspect / naturalAspect) * bh : bh;
-  if (!renderedW || !renderedH) return null;
-
-  const targetArea = targetAreaOverride ?? 0.32;
-  const maxW = maxWOverride ?? 0.86;
-  const maxH = maxHOverride ?? 0.82;
-
-  let primaryScale: number;
-  if (fitMode === "width") {
-    // Width-band fitting: every silhouette lands at the same horizontal
-    // footprint AND under a shared height cap. A tall/narrow loveseat
-    // scaled to hit sofa-width would balloon vertically — capping by
-    // height too makes tall pieces narrower instead of taller, so all
-    // seating reads at comparable visual weight.
-    const targetWidth = targetWidthOverride ?? 0.82;
-    const targetHeight = 0.52;
-    const widthScale = targetWidth / Math.max(0.001, TILE_IMAGE_INSET * renderedW);
-    const heightScale = targetHeight / Math.max(0.001, TILE_IMAGE_INSET * renderedH);
-    primaryScale = Math.min(widthScale, heightScale);
-  } else {
-    const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
-    primaryScale = Math.sqrt(targetArea / currentArea);
-  }
-  const scaleByCaps = Math.min(
-    maxW / Math.max(0.001, TILE_IMAGE_INSET * renderedW),
-    maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
-  );
-
-  // Wider clamp floor for width-band mode so tall silhouettes can
-  // actually shrink to match sofa visual weight instead of getting
-  // pinned back up to 0.90.
-  const minScale = fitMode === "width" ? 0.55 : SCALE_MIN;
-  const maxScale = fitMode === "width" ? 1.10 : SCALE_MAX;
-
-  return {
-    cx: clamp(cx, 0.05, 0.95),
-    cy: clamp(cy, 0.05, 0.95),
-    bottom: clamp(cy + bh / 2, 0.05, 0.95),
-    scale: clamp(Math.min(primaryScale, scaleByCaps), minScale, maxScale),
-  };
-}
-
-
+// ────────────────────────────────────────────────────────────────────────
+// Measurement — canvas-based silhouette bbox in tile-space.
+// ────────────────────────────────────────────────────────────────────────
 
 function measureImage(
   img: HTMLImageElement,
-  frameAspect = FRAME_ASPECT,
-  targetArea?: number,
-  maxW?: number,
-  maxH?: number,
-  fitMode: "area" | "width" = "area",
-  targetWidth?: number,
-): Fit | null {
+  frameAspect: number,
+): Measurement | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
   const naturalAspect = w / h;
 
   const maxSide = 180;
-  const scale = Math.min(1, maxSide / Math.max(w, h));
-  const cw = Math.max(1, Math.round(w * scale));
-  const ch = Math.max(1, Math.round(h * scale));
+  const scaleDown = Math.min(1, maxSide / Math.max(w, h));
+  const cw = Math.max(1, Math.round(w * scaleDown));
+  const ch = Math.max(1, Math.round(h * scaleDown));
   const canvas = document.createElement("canvas");
   canvas.width = cw;
   canvas.height = ch;
@@ -141,16 +92,11 @@ function measureImage(
   try {
     data = ctx.getImageData(0, 0, cw, ch);
   } catch {
-    return fitFromVisualBox(0.5, 0.5, 1, 1, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
+    return null;
   }
 
   const px = data.data;
-  // Sample the four corners to detect the actual background color.
-  // The old code assumed pure white (r,g,b > 242), which failed for
-  // studio-white photos (~232), cream/ivory backdrops, and JPEG-compressed
-  // cutouts — the entire photo got counted as subject and silhouette
-  // measurement collapsed. Median of corner RGB gives a robust background
-  // reference regardless of paper stock.
+  // Corner-median background detection — see prior implementation notes.
   const sampleCorner = (sx: number, sy: number) => {
     const i = (sy * cw + sx) * 4;
     return [px[i], px[i + 1], px[i + 2]] as const;
@@ -164,10 +110,7 @@ function measureImage(
   const bgR = corners.map((c) => c[0]).sort((a, b) => a - b)[2];
   const bgG = corners.map((c) => c[1]).sort((a, b) => a - b)[2];
   const bgB = corners.map((c) => c[2]).sort((a, b) => a - b)[2];
-  // Only treat as background when it's actually light (>210). Dark corners
-  // mean the photo has no consistent bg — fall through and measure everything.
   const hasLightBg = bgR > 210 && bgG > 210 && bgB > 210;
-  // Tolerance widens on darker backgrounds to swallow JPEG noise.
   const bgTol = hasLightBg ? Math.max(14, (255 - Math.min(bgR, bgG, bgB)) * 0.6) : 0;
 
   let minX = cw;
@@ -197,30 +140,75 @@ function measureImage(
 
   if (maxX < 0 || maxY < 0) return null;
 
-  const bw = (maxX - minX + 1) / cw;
-  const bh = (maxY - minY + 1) / ch;
-  if (bw <= 0 || bh <= 0) return null;
-
-  const cx = (minX + maxX + 1) / 2 / cw;
-  const cy = (minY + maxY + 1) / 2 / ch;
-
-  const fit = fitFromVisualBox(cx, cy, bw, bh, naturalAspect, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
-  if (!fit) return null;
-
+  // Rendered frame: the image letterboxed into the tile's frame aspect.
+  const renderedW = naturalAspect >= frameAspect ? 1 : naturalAspect / frameAspect;
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
   const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
-  // Width mode floors every silhouette on the same line — use the true
-  // measured bottom in tile-space with no TILE_OBJECT_CONTENT compression.
-  // Area mode retains the legacy compression to preserve non-seating tiles.
-  const visualBottom = fitMode === "width"
-    ? contentTop + ((maxY + 1) / ch) * renderedH
-    : (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
-  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.99) };
+  const contentLeft = naturalAspect >= frameAspect ? 0 : (1 - renderedW) / 2;
+
+  // Silhouette bbox in tile-space (0–1).
+  const bw = ((maxX - minX + 1) / cw) * renderedW;
+  const bh = ((maxY - minY + 1) / ch) * renderedH;
+  const cx = contentLeft + ((minX + maxX + 1) / 2 / cw) * renderedW;
+  const cy = contentTop + ((minY + maxY + 1) / 2 / ch) * renderedH;
+  const top = contentTop + (minY / ch) * renderedH;
+  const bottom = contentTop + ((maxY + 1) / ch) * renderedH;
+
+  return {
+    renderedW,
+    renderedH,
+    bw,
+    bh,
+    cx,
+    cy,
+    top,
+    bottom,
+    naturalAspect,
+  };
 }
+
+// ────────────────────────────────────────────────────────────────────────
+// The rigorous solver — takes a FitRule + measurement, returns Fit.
+// ────────────────────────────────────────────────────────────────────────
+
+function solveFit(m: Measurement, rule: FitRule): Fit {
+  const inset = TILE_IMAGE_INSET;
+  const wInsetFrame = inset * m.renderedW * m.bw;
+  const hInsetFrame = inset * m.renderedH * m.bh;
+
+  // 1. Primary-axis target scale.
+  let sTarget: number;
+  if (rule.primary === "width") {
+    sTarget = rule.primaryTarget / Math.max(0.001, wInsetFrame);
+  } else if (rule.primary === "height") {
+    sTarget = rule.primaryTarget / Math.max(0.001, hInsetFrame);
+  } else {
+    const currentArea = Math.max(0.001, wInsetFrame * hInsetFrame);
+    sTarget = rule.primaryTarget / Math.sqrt(currentArea);
+  }
+
+  // 2. Secondary-axis cap (skip for area primary).
+  let sCap = Infinity;
+  if (rule.primary === "width") {
+    sCap = rule.secondaryMax / Math.max(0.001, hInsetFrame);
+  } else if (rule.primary === "height") {
+    sCap = rule.secondaryMax / Math.max(0.001, wInsetFrame);
+  }
+
+  // 3. Final scale.
+  const s = clamp(Math.min(sTarget, sCap), rule.clampMin, rule.clampMax);
+
+  return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Component
+// ────────────────────────────────────────────────────────────────────────
 
 export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(function NormalizedProductImage({
   src,
   frameAspect = FRAME_ASPECT,
+  fit: fitRule,
   visualOffsetY = 0,
   visualAnchorY = "center",
   visualBaselineY = 0.66,
@@ -237,20 +225,16 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  const cacheKey = `${src}|${frameAspect}|${targetArea}|${maxW}|${maxH}|${fitMode}|${targetWidth}`;
-  const cached = fitCache.get(cacheKey);
-  const [fit, setFit] = useState<Fit | null | undefined>(cached);
+  const cacheKey = `${src}|${frameAspect}`;
+  const cached = measurementCache.get(cacheKey);
+  const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
-  // Measure via a side-channel Image() with crossOrigin set BEFORE src so
-  // the browser fetches with CORS mode from the start and the canvas is not
-  // tainted by a pre-existing no-cors cache entry. The visible <img> can
-  // load from cache normally. Skipped entirely when admin focal is set.
   useEffect(() => {
     if (hasFocal) return;
     if (!src) return;
-    const existing = fitCache.get(cacheKey);
+    const existing = measurementCache.get(cacheKey);
     if (existing !== undefined) {
-      if (existing !== fit) setFit(existing);
+      if (existing !== measurement) setMeasurement(existing);
       return;
     }
     let cancelled = false;
@@ -260,59 +244,133 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     probe.onload = () => {
       if (cancelled) return;
       try {
-        const next = measureImage(probe, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth);
-        fitCache.set(cacheKey, next);
-        setFit(next);
+        const next = measureImage(probe, frameAspect);
+        measurementCache.set(cacheKey, next);
+        setMeasurement(next);
       } catch {
-        fitCache.set(cacheKey, null);
-        setFit(null);
+        measurementCache.set(cacheKey, null);
+        setMeasurement(null);
       }
     };
     probe.onerror = () => {
       if (cancelled) return;
-      fitCache.set(cacheKey, null);
-      setFit(null);
+      measurementCache.set(cacheKey, null);
+      setMeasurement(null);
     };
     probe.src = src;
     return () => {
       cancelled = true;
     };
-  }, [src, cacheKey, hasFocal, frameAspect, targetArea, maxW, maxH, fitMode, targetWidth, fit]);
+  }, [src, cacheKey, hasFocal, frameAspect, measurement]);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);
   };
 
   const transform = useMemo(() => {
-    // Admin focal override: center the focal pixel in the frame at scale 1.
-    // Bypasses silhouette measurement entirely. visualOffsetY still applies.
+    // Admin focal override — bypass everything.
     if (hasFocal) {
       const tx = (0.5 - (focalX as number)) * 100;
       const ty = (0.5 + visualOffsetY - (focalY as number)) * 100;
       return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
     }
-    const f = fit ?? DEFAULT_FIT;
-    // Unmeasured fallbacks in width-mode assume a floor-anchored silhouette
-    // so they line up with peers instead of floating at 0.62.
-    const effectiveBottom = fit ? f.bottom : (fitMode === "width" ? 0.95 : f.bottom);
-    const tx = (0.5 - f.cx) * 100;
-    const scaledBottom = 0.5 + (effectiveBottom - 0.5) * f.scale;
+
+    // ── New solver path ──
+    if (fitRule) {
+      let f: Fit;
+      if (measurement) {
+        f = solveFit(measurement, fitRule);
+      } else {
+        const fb = fitRule.fallback;
+        f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
+      }
+      const tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
+      let ty: number;
+      if (fitRule.anchor === "bottom") {
+        const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledBottom) * 100;
+      } else if (fitRule.anchor === "top") {
+        const scaledTop = 0.5 + (f.top - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledTop) * 100;
+      } else {
+        const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
+      }
+      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
+    }
+
+    // ── Legacy path (admin.photos, CollectionWallTile) ──
+    let legacyFit: Fit;
+    if (measurement) {
+      // Reuse measurement via the legacy area/width math.
+      const wInsetFrame = TILE_IMAGE_INSET * measurement.renderedW * measurement.bw;
+      const hInsetFrame = TILE_IMAGE_INSET * measurement.renderedH * measurement.bh;
+      const legacyTargetArea = targetArea ?? 0.32;
+      const legacyMaxW = maxW ?? 0.86;
+      const legacyMaxH = maxH ?? 0.82;
+      let primaryScale: number;
+      if (fitMode === "width") {
+        const tW = targetWidth ?? 0.82;
+        const wS = tW / Math.max(0.001, wInsetFrame);
+        const hS = 0.52 / Math.max(0.001, hInsetFrame);
+        primaryScale = Math.min(wS, hS);
+      } else {
+        const currentArea = Math.max(0.001, wInsetFrame * hInsetFrame);
+        primaryScale = Math.sqrt(legacyTargetArea / currentArea);
+      }
+      const scaleByCaps = Math.min(
+        legacyMaxW / Math.max(0.001, wInsetFrame),
+        legacyMaxH / Math.max(0.001, hInsetFrame),
+      );
+      const minScale = fitMode === "width" ? 0.55 : LEGACY_SCALE_MIN;
+      const maxScale = fitMode === "width" ? 1.1 : LEGACY_SCALE_MAX;
+      const s = clamp(Math.min(primaryScale, scaleByCaps), minScale, maxScale);
+
+      // Legacy bottom compression (area path only).
+      const visualBottom = fitMode === "width"
+        ? measurement.bottom
+        : (1 - LEGACY_TILE_OBJECT_CONTENT) / 2 + measurement.bottom * LEGACY_TILE_OBJECT_CONTENT;
+      legacyFit = {
+        scale: s,
+        cx: clamp(measurement.cx, 0.05, 0.95),
+        cy: clamp(measurement.cy, 0.05, 0.95),
+        bottom: clamp(visualBottom, 0.05, 0.99),
+        top: measurement.top,
+      };
+    } else {
+      legacyFit = { ...LEGACY_DEFAULT_FIT };
+      if (measurement === null && fitMode === "width") {
+        legacyFit.bottom = 0.95;
+      }
+    }
+
+    const tx = (0.5 - legacyFit.cx) * 100;
+    const scaledBottom = 0.5 + (legacyFit.bottom - 0.5) * legacyFit.scale;
     const ty = visualAnchorY === "bottom"
       ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
-      : (0.5 + visualOffsetY - f.cy) * 100;
-    return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY, fitMode]);
-
+      : (0.5 + visualOffsetY - legacyFit.cy) * 100;
+    return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${legacyFit.scale.toFixed(4)})`;
+  }, [
+    measurement,
+    fitRule,
+    hasFocal,
+    focalX,
+    focalY,
+    visualOffsetY,
+    visualAnchorY,
+    visualBaselineY,
+    targetArea,
+    maxW,
+    maxH,
+    fitMode,
+    targetWidth,
+  ]);
 
   return (
     <img
       {...props}
       ref={ref}
       src={src}
-      // Required for canvas-based silhouette measurement. Without this the
-      // browser taints the canvas on cross-origin images (Supabase CDN) and
-      // getImageData throws — fit falls back to a generic shrink that
-      // miscenters wide objects (e.g. sofa legs clipped at the bottom).
       onLoad={handleLoad}
       className={className}
       style={{
@@ -323,4 +381,3 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     />
   );
 });
-

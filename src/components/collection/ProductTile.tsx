@@ -10,6 +10,7 @@ import {
 } from "@/lib/collection-tile-presets";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
+import { resolveFit } from "./categoryFit";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface ProductTileProps {
@@ -62,6 +63,7 @@ export function ProductTile({
   // image load, so any slow image made the tile look "disappeared."
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
+  const fit = resolveFit(product.categorySlug);
   const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
   const imageSrcSet = product.primaryImage
     ? buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined
@@ -92,7 +94,13 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              style={{ aspectRatio: tileAspect }}
+              data-fit-anchor={fit.anchor}
+              style={{
+                aspectRatio: tileAspect,
+                ["--fit-anchor-y" as string]: `${fit.anchorY * 100}%`,
+                ["--fit-center-x" as string]: `${fit.centerX * 100}%`,
+                ["--fit-secondary-max" as string]: `${fit.secondaryMax * 100}%`,
+              }}
             >
               {/* Skeleton overlay */}
               <div
@@ -104,19 +112,16 @@ export function ProductTile({
                   transition: "opacity 240ms ease-out",
                 }}
               />
+              {/* Debug: secondary-cap band (visible only under ?debug=media). */}
+              <div aria-hidden className="product-tile-media__cap" />
 
               {product.primaryImage ? (
                 <NormalizedProductImage
-                  {...overrides}
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
+                  fit={resolveFit(product.categorySlug)}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
-                  visualAnchorY={alignToSharedBaseline ? "bottom" : "center"}
-                  visualBaselineY={0.92}
-                  {...(product.categorySlug === "seating"
-                    ? { fitMode: "width" as const, targetWidth: 0.82 }
-                    : {})}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
@@ -138,6 +143,7 @@ export function ProductTile({
                 />
               ) : null}
             </div>
+
 
             {/* Unified caption - fixed two-line band so every row starts at the same floor. */}
             <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
