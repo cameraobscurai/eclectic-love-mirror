@@ -230,7 +230,7 @@ function TonalCell({
       className="group relative min-w-0 overflow-hidden text-left transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/35 focus-visible:ring-inset"
       style={{ background: tone, touchAction: "manipulation" }}
     >
-      <span className="absolute inset-x-1 top-1 bottom-7 sm:inset-x-2 sm:top-2 sm:bottom-8 grid place-items-center pointer-events-none">
+      <span className="absolute inset-x-1 top-1 h-[72%] sm:inset-x-2 sm:top-2 sm:h-[70%] grid place-items-center pointer-events-none">
         {heroSrc ? (
           <img
             src={heroSrc}
