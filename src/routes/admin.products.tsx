@@ -9,6 +9,7 @@ import {
   updateProduct,
   listDistinctCategories,
   listProductAudit,
+  getMyRole,
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
 import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
