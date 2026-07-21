@@ -294,7 +294,7 @@ export function QuickViewModal({
       role="dialog"
       aria-modal="true"
       aria-label={product.title}
-      className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-6"
+      className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-10 lg:p-14"
     >
       {/* Frosted scrim — dark glass, deeper blur for depth parity with the
           home band. The collection grid behind ghosts through. */}
