@@ -1164,6 +1164,10 @@ function CollectionPage() {
                       </div>
                     ) : (
                       <>
+                        <div
+                          className="collection-results-container"
+                          data-media-debug={mediaDebug || undefined}
+                        >
                           <AnimatePresence mode="wait">
                           <motion.ul
                             key={`grid-${activeParent}-${activeSubcategory}-${sort}`}
@@ -1186,6 +1190,7 @@ function CollectionPage() {
                             })()}
                           </motion.ul>
                           </AnimatePresence>
+                        </div>
 
 
                         {hasMore && (
