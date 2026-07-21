@@ -33,6 +33,11 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  measurement is skipped and the image is centered on this point. */
   focalX?: number | null;
   focalY?: number | null;
+
+  /** Skip the fade-in-on-measure gate. Above-fold tiles (LCP-critical) pass
+   *  eager=true so the tile paints immediately with the fallback fit and
+   *  refines to the measured fit when the silhouette resolves. */
+  eager?: boolean;
 };
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
