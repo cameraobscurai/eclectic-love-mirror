@@ -35,7 +35,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
 
-import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
@@ -73,7 +73,7 @@ const SORT_MODES: { id: SortMode; label: string }[] = [
 
 
 export const Route = createFileRoute("/admin/photos")({
-  beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
+  beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   // BOH deep-links:
   //   ?filter=missing → hide fully-imaged rows (see visibleItems filter)
   //   ?product=<rms>  → reserved for future auto-open of the editor

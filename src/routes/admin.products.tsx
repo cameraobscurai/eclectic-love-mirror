@@ -250,12 +250,12 @@ function Inner() {
 
 type ProductRow = Record<string, unknown> & { id: string; title: string };
 
-const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[] }[] }[] = [
+const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string }[] }[] = [
   {
     label: "Basics",
     fields: [
       { key: "title", type: "text" },
-      { key: "slug", type: "text" },
+      { key: "slug", type: "text", readOnly: true, hint: "URL slug — locked to keep live links working." },
       { key: "category", type: "text" },
       { key: "status", type: "select", opts: ["available", "sold", "hold", "draft"] },
       { key: "public_ready", type: "bool" },
@@ -276,7 +276,7 @@ const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "text
       { key: "quantity", type: "number" },
       { key: "quantity_label", type: "text" },
       { key: "price", type: "number" },
-      { key: "rms_id", type: "text" },
+      { key: "rms_id", type: "text", readOnly: true, hint: "RMS reference — set by import, do not edit." },
     ],
   },
   {
@@ -367,6 +367,16 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
             <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45">Edit product</p>
             <h2 className="mt-1 font-display text-2xl truncate">{(current?.title as string) ?? "…"}</h2>
             <p className="mt-1 text-[10px] tabular-nums text-charcoal/40">{id}</p>
+            {typeof current?.slug === "string" && current.slug && (
+              <a
+                href={`https://eclectichive.com/collection/${current.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-charcoal/60 hover:text-charcoal underline underline-offset-4"
+              >
+                View on live site ↗
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <button onClick={onClose} className="text-[11px] uppercase tracking-[0.18em] text-charcoal/60 hover:text-charcoal px-2 py-1">Close</button>
@@ -481,49 +491,60 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
 function FieldRow({
   field, value, changed, onChange,
 }: {
-  field: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[] };
+  field: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string };
   value: unknown;
   changed: boolean;
   onChange: (v: unknown) => void;
 }) {
   const label = field.key.replace(/_/g, " ");
-  const cls = `w-full bg-transparent border ${changed ? "border-amber-500" : "border-charcoal/15"} px-2 py-1.5 text-[13px] focus:outline-none focus:border-charcoal`;
+  const ro = !!field.readOnly;
+  const cls = `w-full bg-transparent border ${changed ? "border-amber-500" : "border-charcoal/15"} px-2 py-1.5 text-[13px] focus:outline-none focus:border-charcoal ${ro ? "opacity-60 cursor-not-allowed bg-charcoal/[0.03]" : ""}`;
   return (
     <label className="grid grid-cols-[160px_1fr] gap-3 items-start">
-      <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 pt-2">{label}</span>
-      {field.type === "textarea" && (
-        <textarea rows={4} value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} className={cls} />
-      )}
-      {field.type === "text" && (
-        <input value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value || null)} className={cls} />
-      )}
-      {field.type === "number" && (
-        <input
-          type="number"
-          value={value == null ? "" : String(value)}
-          onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
-          className={cls}
-        />
-      )}
-      {field.type === "bool" && (
-        <div className="pt-2">
-          <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
-        </div>
-      )}
-      {field.type === "select" && (
-        <select value={(value as string) ?? ""} onChange={(e) => onChange(e.target.value)} className={cls}>
-          {(field.opts ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
-        </select>
-      )}
-      {field.type === "url-list" && (
-        <textarea
-          rows={4}
-          value={Array.isArray(value) ? (value as string[]).join("\n") : ""}
-          onChange={(e) => onChange(e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))}
-          placeholder="One URL per line"
-          className={cls + " font-mono text-[11px]"}
-        />
-      )}
+      <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 pt-2">
+        {label}
+        {ro && <span className="ml-1 text-charcoal/35 normal-case tracking-normal">(locked)</span>}
+      </span>
+      <div>
+        {field.type === "textarea" && (
+          <textarea rows={4} value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value)} className={cls} />
+        )}
+        {field.type === "text" && (
+          <input value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value || null)} className={cls} />
+        )}
+        {field.type === "number" && (
+          <input
+            type="number"
+            value={value == null ? "" : String(value)}
+            readOnly={ro}
+            onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+            className={cls}
+          />
+        )}
+        {field.type === "bool" && (
+          <div className="pt-2">
+            <input type="checkbox" disabled={ro} checked={!!value} onChange={(e) => onChange(e.target.checked)} />
+          </div>
+        )}
+        {field.type === "select" && (
+          <select value={(value as string) ?? ""} disabled={ro} onChange={(e) => onChange(e.target.value)} className={cls}>
+            {(field.opts ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+        )}
+        {field.type === "url-list" && (
+          <textarea
+            rows={4}
+            value={Array.isArray(value) ? (value as string[]).join("\n") : ""}
+            readOnly={ro}
+            onChange={(e) => onChange(e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))}
+            placeholder="One URL per line"
+            className={cls + " font-mono text-[11px]"}
+          />
+        )}
+        {field.hint && (
+          <p className="mt-1 text-[10px] text-charcoal/45">{field.hint}</p>
+        )}
+      </div>
     </label>
   );
 }
