@@ -329,7 +329,7 @@ export function QuickViewModal({
           if (!canDrag) return;
           if (info.offset.y > 140 || info.velocity.y > 500) onClose();
         }}
-        className="relative w-full h-[100dvh] md:h-auto md:max-h-[88dvh] md:max-w-[1080px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
+        className="relative w-full h-[100dvh] md:w-[calc(100vw-3rem)] md:h-[min(820px,calc(100dvh-3rem))] md:max-w-[1480px] text-charcoal shadow-2xl overflow-hidden grid grid-rows-[auto_minmax(0,1fr)] md:rounded-none rounded-t-2xl"
         style={{
           touchAction: canDrag ? "pan-y" : undefined,
           // Temporary hard reset to a pure white product stage until the new
@@ -414,7 +414,7 @@ export function QuickViewModal({
             Mobile stacks: image, then info. */}
         <div
           ref={stageRef}
-          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1.55fr)_minmax(280px,1fr)]"
+          className="relative min-h-0 overflow-hidden bg-white grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_clamp(340px,30vw,420px)]"
         >
           {/* IMAGE COLUMN — fills the body row; aspect-ratio is never forced
               from natural dims so a tall or wide source never overflows.
@@ -440,7 +440,6 @@ export function QuickViewModal({
                       setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                     }}
                     className="absolute inset-0 w-full h-full object-contain drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
-                    style={{ transform: "scale(1.14)", transformOrigin: "center center" }}
                   />
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
