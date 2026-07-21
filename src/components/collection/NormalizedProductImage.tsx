@@ -203,8 +203,13 @@ function measureImage(
 
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
   const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
-  const visualBottom = (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
-  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.95) };
+  // Width mode floors every silhouette on the same line — use the true
+  // measured bottom in tile-space with no TILE_OBJECT_CONTENT compression.
+  // Area mode retains the legacy compression to preserve non-seating tiles.
+  const visualBottom = fitMode === "width"
+    ? contentTop + ((maxY + 1) / ch) * renderedH
+    : (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
+  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.99) };
 }
 
 export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(function NormalizedProductImage({
@@ -281,13 +286,16 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
     }
     const f = fit ?? DEFAULT_FIT;
+    // Unmeasured fallbacks in width-mode assume a floor-anchored silhouette
+    // so they line up with peers instead of floating at 0.62.
+    const effectiveBottom = fit ? f.bottom : (fitMode === "width" ? 0.95 : f.bottom);
     const tx = (0.5 - f.cx) * 100;
-    const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
+    const scaledBottom = 0.5 + (effectiveBottom - 0.5) * f.scale;
     const ty = visualAnchorY === "bottom"
       ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
       : (0.5 + visualOffsetY - f.cy) * 100;
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY]);
+  }, [fit, visualAnchorY, visualBaselineY, visualOffsetY, hasFocal, focalX, focalY, fitMode]);
 
 
   return (
