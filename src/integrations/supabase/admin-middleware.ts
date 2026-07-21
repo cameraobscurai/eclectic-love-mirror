@@ -19,7 +19,7 @@ function makeRoleGate(allowed: readonly AppRole[]) {
         .from("user_roles")
         .select("role")
         .eq("user_id", userId)
-        .in("role", allowed as unknown as string[]);
+        .in("role", allowed as readonly AppRole[] as never);
 
       if (error) {
         console.error("[roleGate] role lookup failed:", error);
