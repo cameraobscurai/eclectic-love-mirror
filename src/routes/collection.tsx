@@ -194,6 +194,19 @@ function CollectionPage() {
   const navigate = useNavigate({ from: "/collection" });
   const reduced = useReducedMotion();
 
+  // Dev-only geometry guide, opt-in via ?debug=media. Read on mount only —
+  // no re-render on nav, no schema change to the route's typed search.
+  const [mediaDebug, setMediaDebug] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      setMediaDebug(params.get("debug") === "media");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   // Resolve effective parent + sub synchronously so first paint already
   // reflects legacy-URL migration. Without this, a stale `?group=sofas`
   // URL renders one frame as "no category" before the URL-rewriting
