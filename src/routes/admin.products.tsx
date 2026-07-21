@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Plus } from "lucide-react";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
+import { ProductEditDrawer } from "@/components/admin/ProductEditDrawer";
 import {
   listProducts,
   getProduct,
@@ -245,3 +246,93 @@ function Inner() {
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// Edit drawer wrapper — fetches row/audit/cats/role, renders <ProductEditDrawer>.
+// The photo editor (ImageOrderEditor) is launched from the drawer's onOpenPhotos.
+// ---------------------------------------------------------------------------
+
+type ProductRow = Record<string, unknown> & {
+  id: string; title: string; slug?: string | null; rms_id?: string | null;
+  images?: string[] | null; card_background_url?: string | null;
+};
+
+function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void; onSaved: () => void }) {
+  const get = useServerFn(getProduct);
+  const upd = useServerFn(updateProduct);
+  const auditFn = useServerFn(listProductAudit);
+  const catsFn = useServerFn(listDistinctCategories);
+  const roleFn = useServerFn(getMyRole);
+  const [row, setRow] = useState<ProductRow | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [audit, setAudit] = useState<any[]>([]);
+  const [cats, setCats] = useState<string[]>([]);
+  const [role, setRole] = useState<"admin" | "staff">("staff");
+  const [photoEditor, setPhotoEditor] = useState(false);
+
+  const refetch = () => {
+    get({ data: { id } }).then((r) => setRow(r as ProductRow)).catch(() => {});
+    auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+  };
+
+  useEffect(() => {
+    setRow(null); setAudit([]);
+    refetch();
+    catsFn().then(setCats).catch(() => {});
+    roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  if (!row) {
+    return (
+      <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
+        <button onClick={onClose} aria-label="Close" className="flex-1 bg-charcoal/40" />
+        <aside className="w-full max-w-[720px] bg-cream border-l border-charcoal/15 p-10 text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+          Loading…
+        </aside>
+      </div>
+    );
+  }
+
+  const liveUrl = typeof row.slug === "string" && row.slug
+    ? `https://eclectichive.com/collection/${row.slug}`
+    : undefined;
+
+  return (
+    <>
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      <ProductEditDrawer
+        product={row as any}
+        categories={cats}
+        role={role}
+        recentChanges={audit}
+        categoryPriceStats={{}}
+        liveUrl={liveUrl}
+        onClose={onClose}
+        onOpenPhotos={() => setPhotoEditor(true)}
+        onSave={async (patch: Record<string, unknown>) => {
+          const updated = await upd({ data: { id, patch } });
+          setRow(updated as ProductRow);
+          onSaved();
+          auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+        }}
+      />
+      {photoEditor && (
+        <ImageOrderEditor
+          item={{
+            id: row.id,
+            rms_id: (row.rms_id as string | null) ?? null,
+            title: (row.title as string) ?? "",
+            images: Array.isArray(row.images) ? (row.images as string[]) : [],
+            card_background_url: (row.card_background_url as string | null) ?? null,
+          }}
+          onClose={() => setPhotoEditor(false)}
+          onSaved={(next) => {
+            setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+            onSaved();
+          }}
+        />
+      )}
+    </>
+  );
+}
