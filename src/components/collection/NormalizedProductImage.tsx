@@ -78,10 +78,15 @@ function fitFromVisualBox(
   let primaryScale: number;
   if (fitMode === "width") {
     // Width-band fitting: every silhouette lands at the same horizontal
-    // footprint. Used for seating so a wide sofa and a small loveseat
-    // both read as "the same class of object" on a shared floor line.
+    // footprint AND under a shared height cap. A tall/narrow loveseat
+    // scaled to hit sofa-width would balloon vertically — capping by
+    // height too makes tall pieces narrower instead of taller, so all
+    // seating reads at comparable visual weight.
     const targetWidth = targetWidthOverride ?? 0.82;
-    primaryScale = targetWidth / Math.max(0.001, TILE_IMAGE_INSET * renderedW);
+    const targetHeight = 0.52;
+    const widthScale = targetWidth / Math.max(0.001, TILE_IMAGE_INSET * renderedW);
+    const heightScale = targetHeight / Math.max(0.001, TILE_IMAGE_INSET * renderedH);
+    primaryScale = Math.min(widthScale, heightScale);
   } else {
     const currentArea = Math.max(0.001, TILE_IMAGE_INSET * TILE_IMAGE_INSET * renderedW * renderedH);
     primaryScale = Math.sqrt(targetArea / currentArea);
@@ -91,9 +96,10 @@ function fitFromVisualBox(
     maxH / Math.max(0.001, TILE_IMAGE_INSET * renderedH),
   );
 
-  // Tighter clamp for width-band mode — the whole point is uniformity,
-  // so we allow less deviation than the area path.
-  const minScale = fitMode === "width" ? 0.90 : SCALE_MIN;
+  // Wider clamp floor for width-band mode so tall silhouettes can
+  // actually shrink to match sofa visual weight instead of getting
+  // pinned back up to 0.90.
+  const minScale = fitMode === "width" ? 0.55 : SCALE_MIN;
   const maxScale = fitMode === "width" ? 1.10 : SCALE_MAX;
 
   return {
