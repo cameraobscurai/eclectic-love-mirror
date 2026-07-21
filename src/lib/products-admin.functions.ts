@@ -4,16 +4,24 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 
-const EDITABLE_FIELDS = [
-  "title", "slug", "description", "price", "status", "category",
+// Staff can edit merchandising/inventory fields; admin adds URL + SEO + injection.
+// rms_id is in NEITHER list — set by import, never editable via drawer.
+const STAFF_EDITABLE_FIELDS = [
+  "title", "description", "price", "status", "category",
   "width_cm", "height_cm", "depth_cm", "weight_kg", "materials", "origin",
-  "images", "meta_title", "meta_description", "og_image",
+  "images",
   "quantity", "quantity_label", "dimensions_raw",
-  "public_ready", "hidden_note", "manual_injection",
+  "public_ready", "hidden_note",
   "editorial_order", "manual_order",
   "card_background_url", "upscaled_cover_url",
   "cover_focal_x", "cover_focal_y",
 ] as const;
+
+const ADMIN_ONLY_FIELDS = [
+  "slug", "meta_title", "meta_description", "og_image", "manual_injection",
+] as const;
+
+const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as const;
 
 type EditableField = typeof EDITABLE_FIELDS[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
@@ -70,12 +78,33 @@ export const updateProduct = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .inputValidator((d: { id: string; patch: PatchInput }) => d)
   .handler(async ({ data, context }) => {
+    const role = (context as { role?: "admin" | "staff" | "user" }).role ?? "staff";
+    const allowed = role === "admin"
+      ? new Set<string>([...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS])
+      : new Set<string>(STAFF_EDITABLE_FIELDS);
+
     const patch: Record<string, unknown> = {};
-    for (const k of EDITABLE_FIELDS) {
-      if (k in data.patch) patch[k] = data.patch[k];
+    for (const [k, v] of Object.entries(data.patch)) {
+      if (allowed.has(k)) patch[k] = v;
     }
     if (Object.keys(patch).length === 0) {
       throw new Response("No editable fields in patch", { status: 400 });
+    }
+
+    // Server-side validation mirror for numeric fields.
+    if ("price" in patch && patch.price != null) {
+      const p = Number(patch.price);
+      if (!Number.isFinite(p) || p < 0) {
+        throw new Response("Price must be a non-negative number.", { status: 400 });
+      }
+      patch.price = p;
+    }
+    if ("quantity" in patch && patch.quantity != null) {
+      const q = Number(patch.quantity);
+      if (!Number.isFinite(q) || q < 0 || !Number.isInteger(q)) {
+        throw new Response("Quantity must be a non-negative whole number.", { status: 400 });
+      }
+      patch.quantity = q;
     }
 
     const { data: row, error } = await context.supabase
@@ -87,6 +116,13 @@ export const updateProduct = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Response(error.message, { status: 500 });
     return row;
+  });
+
+export const getMyRole = createServerFn({ method: "POST" })
+  .middleware([requireStaffOrAdmin])
+  .handler(async ({ context }) => {
+    const role = (context as { role?: "admin" | "staff" | "user" }).role ?? "staff";
+    return { role };
   });
 
 export const listDistinctCategories = createServerFn({ method: "POST" })

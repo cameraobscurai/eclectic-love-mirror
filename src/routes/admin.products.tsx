@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Images } from "lucide-react";
+import { Plus } from "lucide-react";
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
+import { ProductEditDrawer } from "@/components/admin/ProductEditDrawer";
 import {
   listProducts,
   getProduct,
   updateProduct,
   listDistinctCategories,
   listProductAudit,
+  getMyRole,
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
 import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
@@ -244,229 +246,79 @@ function Inner() {
   );
 }
 
+
 // ---------------------------------------------------------------------------
-// Edit drawer
+// Edit drawer wrapper — fetches row/audit/cats/role, renders <ProductEditDrawer>.
+// The photo editor (ImageOrderEditor) is launched from the drawer's onOpenPhotos.
 // ---------------------------------------------------------------------------
 
-type ProductRow = Record<string, unknown> & { id: string; title: string };
-
-const FIELD_GROUPS: { label: string; fields: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string }[] }[] = [
-  {
-    label: "Basics",
-    fields: [
-      { key: "title", type: "text" },
-      { key: "slug", type: "text", readOnly: true, hint: "URL slug — locked to keep live links working." },
-      { key: "category", type: "text" },
-      { key: "status", type: "select", opts: ["available", "sold", "hold", "draft"] },
-      { key: "public_ready", type: "bool" },
-      { key: "hidden_note", type: "text" },
-    ],
-  },
-  {
-    label: "Description",
-    fields: [
-      { key: "description", type: "textarea" },
-      { key: "materials", type: "text" },
-      { key: "origin", type: "text" },
-    ],
-  },
-  {
-    label: "Inventory",
-    fields: [
-      { key: "quantity", type: "number" },
-      { key: "quantity_label", type: "text" },
-      { key: "price", type: "number" },
-      { key: "rms_id", type: "text", readOnly: true, hint: "RMS reference — set by import, do not edit." },
-    ],
-  },
-  {
-    label: "Dimensions",
-    fields: [
-      { key: "dimensions_raw", type: "text" },
-      { key: "width_cm", type: "number" },
-      { key: "height_cm", type: "number" },
-      { key: "depth_cm", type: "number" },
-      { key: "weight_kg", type: "number" },
-    ],
-  },
-  {
-    label: "Images",
-    fields: [
-      { key: "upscaled_cover_url", type: "text" },
-      { key: "card_background_url", type: "text" },
-      { key: "images", type: "url-list" },
-    ],
-  },
-  {
-    label: "Order & SEO",
-    fields: [
-      { key: "editorial_order", type: "number" },
-      { key: "meta_title", type: "text" },
-      { key: "meta_description", type: "textarea" },
-      { key: "og_image", type: "text" },
-    ],
-  },
-];
+type ProductRow = Record<string, unknown> & {
+  id: string; title: string; slug?: string | null; rms_id?: string | null;
+  images?: string[] | null; card_background_url?: string | null;
+};
 
 function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void; onSaved: () => void }) {
   const get = useServerFn(getProduct);
   const upd = useServerFn(updateProduct);
   const auditFn = useServerFn(listProductAudit);
+  const catsFn = useServerFn(listDistinctCategories);
+  const roleFn = useServerFn(getMyRole);
   const [row, setRow] = useState<ProductRow | null>(null);
-  const [patch, setPatch] = useState<Record<string, unknown>>({});
-  const [saving, setSaving] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [audit, setAudit] = useState<any[]>([]);
+  const [cats, setCats] = useState<string[]>([]);
+  const [role, setRole] = useState<"admin" | "staff">("staff");
   const [photoEditor, setPhotoEditor] = useState(false);
-  const [audit, setAudit] = useState<Array<{ id: string; at: string; action: string; before: unknown; after: unknown; actor_id: string | null }>>([]);
 
+  const refetch = () => {
+    get({ data: { id } }).then((r) => setRow(r as ProductRow)).catch(() => {});
+    auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+  };
 
   useEffect(() => {
-    setRow(null); setPatch({}); setErr(null);
-    get({ data: { id } }).then((r) => setRow(r as ProductRow)).catch((e) => setErr(String(e?.message ?? e)));
-    auditFn({ data: { entityId: id, limit: 10 } }).then(setAudit).catch(() => {});
-  }, [id, get, auditFn]);
+    setRow(null); setAudit([]);
+    refetch();
+    catsFn().then(setCats).catch(() => {});
+    roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  const dirty = Object.keys(patch).length > 0;
-  const current = useMemo(() => ({ ...(row ?? {}), ...patch }) as ProductRow, [row, patch]);
+  if (!row) {
+    return (
+      <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
+        <button onClick={onClose} aria-label="Close" className="flex-1 bg-charcoal/40" />
+        <aside className="w-full max-w-[720px] bg-cream border-l border-charcoal/15 p-10 text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
+          Loading…
+        </aside>
+      </div>
+    );
+  }
 
-  const setField = (key: string, val: unknown) => {
-    setPatch((p) => {
-      const next = { ...p };
-      // if reverting to original, drop from patch
-      if (row && JSON.stringify(row[key] ?? null) === JSON.stringify(val ?? null)) {
-        delete next[key];
-      } else {
-        next[key] = val;
-      }
-      return next;
-    });
-  };
-
-  const save = async () => {
-    if (!dirty) return;
-    setSaving(true); setErr(null);
-    try {
-      const updated = await upd({ data: { id, patch } });
-      setRow(updated as ProductRow);
-      setPatch({});
-      onSaved();
-      auditFn({ data: { entityId: id, limit: 10 } }).then(setAudit).catch(() => {});
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : String(e));
-    } finally {
-      setSaving(false);
-    }
-  };
+  const liveUrl = typeof row.slug === "string" && row.slug
+    ? `https://eclectichive.com/collection/${row.slug}`
+    : undefined;
 
   return (
-    <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
-      <button onClick={onClose} aria-label="Close" className="flex-1 bg-charcoal/40" />
-      <aside className="w-full max-w-[720px] bg-cream border-l border-charcoal/15 overflow-y-auto">
-        <header className="sticky top-0 z-10 bg-cream border-b border-charcoal/10 px-6 py-4 flex items-start gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.24em] text-charcoal/45">Edit product</p>
-            <h2 className="mt-1 font-display text-2xl truncate">{(current?.title as string) ?? "…"}</h2>
-            <p className="mt-1 text-[10px] tabular-nums text-charcoal/40">{id}</p>
-            {typeof current?.slug === "string" && current.slug && (
-              <a
-                href={`https://eclectichive.com/collection/${current.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-charcoal/60 hover:text-charcoal underline underline-offset-4"
-              >
-                View on live site ↗
-              </a>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={onClose} className="text-[11px] uppercase tracking-[0.18em] text-charcoal/60 hover:text-charcoal px-2 py-1">Close</button>
-            <button
-              onClick={save}
-              disabled={!dirty || saving}
-              className="text-[11px] uppercase tracking-[0.18em] border border-charcoal px-3 py-1 bg-charcoal text-cream disabled:opacity-30"
-            >{saving ? "Saving…" : dirty ? `Save ${Object.keys(patch).length}` : "Saved"}</button>
-          </div>
-        </header>
-
-        {err && <div className="mx-6 mt-4 p-3 border border-red-300 bg-red-50 text-[12px] text-red-800">{err}</div>}
-
-        {!row && !err && <div className="p-10 text-[11px] uppercase tracking-[0.22em] text-charcoal/40">Loading…</div>}
-
-        {row && (
-          <div className="px-6 py-6 space-y-8">
-            {/* Photo manager launcher — best-practice: drag-reorder, upload, cover, focal, storage picker (autosaves) */}
-            <section className="border border-charcoal/15 bg-white/50 p-4">
-              <div className="flex items-start gap-4">
-                <div className="flex -space-x-2">
-                  {(Array.isArray(current.images) ? (current.images as string[]) : []).slice(0, 4).map((u) => (
-                    <img key={u} src={u} alt="" className="w-12 h-12 object-cover border border-charcoal/20 bg-white" />
-                  ))}
-                  {(!Array.isArray(current.images) || (current.images as string[]).length === 0) && (
-                    <div className="w-12 h-12 bg-charcoal/5 border border-charcoal/15" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50">Photos</h3>
-                  <p className="mt-1 text-[11px] text-charcoal/60">
-                    {(Array.isArray(current.images) ? (current.images as string[]).length : 0)} image{((current.images as string[] | undefined)?.length ?? 0) === 1 ? "" : "s"} · first is cover
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPhotoEditor(true)}
-                  className="inline-flex items-center gap-2 border border-charcoal px-3 py-2 text-[10px] uppercase tracking-[0.22em] hover:bg-charcoal hover:text-cream"
-                >
-                  <Images className="h-3.5 w-3.5" /> Manage photos
-                </button>
-              </div>
-            </section>
-
-            {FIELD_GROUPS.map((g) => (
-              <section key={g.label}>
-                <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">{g.label}</h3>
-                <div className="space-y-3">
-                  {g.fields.map((f) => (
-                    <FieldRow
-                      key={f.key}
-                      field={f}
-                      value={current[f.key]}
-                      changed={f.key in patch}
-                      onChange={(v) => setField(f.key, v)}
-                    />
-                  ))}
-                </div>
-              </section>
-            ))}
-
-
-            <section>
-              <h3 className="text-[10px] uppercase tracking-[0.26em] text-charcoal/50 mb-3">Recent activity</h3>
-              {audit.length === 0 ? (
-                <p className="text-[11px] text-charcoal/45">No changes logged yet.</p>
-              ) : (
-                <ul className="space-y-2 text-[11px]">
-                  {audit.map((a) => {
-                    const fields = a.after && typeof a.after === "object" ? Object.keys(a.after as Record<string, unknown>) : [];
-                    return (
-                      <li key={a.id} className="border-l-2 border-charcoal/15 pl-3 py-1">
-                        <div className="flex justify-between gap-3">
-                          <span className="uppercase tracking-[0.14em] text-charcoal/70">{a.action}</span>
-                          <span className="tabular-nums text-charcoal/45">{new Date(a.at).toLocaleString()}</span>
-                        </div>
-                        {fields.length > 0 && (
-                          <div className="text-charcoal/55 truncate">{fields.join(", ")}</div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </section>
-          </div>
-        )}
-      </aside>
-
-      {photoEditor && row && (
+    <>
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      <ProductEditDrawer
+        product={row as any}
+        categories={cats}
+        role={role}
+        recentChanges={audit as never}
+        categoryPriceStats={{}}
+        liveUrl={liveUrl}
+        sketch={null}
+        onClose={onClose}
+        onOpenPhotos={() => setPhotoEditor(true)}
+        onSave={async (patch: Record<string, unknown>) => {
+          const updated = await upd({ data: { id, patch } });
+          setRow(updated as ProductRow);
+          onSaved();
+          auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
+        }}
+      />
+      {photoEditor && (
         <ImageOrderEditor
           item={{
             id: row.id,
@@ -477,74 +329,11 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
           }}
           onClose={() => setPhotoEditor(false)}
           onSaved={(next) => {
-            // Reflect autosaved changes locally + refresh parent list.
             setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
             onSaved();
           }}
         />
       )}
-    </div>
-  );
-}
-
-
-function FieldRow({
-  field, value, changed, onChange,
-}: {
-  field: { key: string; type: "text" | "textarea" | "number" | "bool" | "url-list" | "select"; opts?: string[]; readOnly?: boolean; hint?: string };
-  value: unknown;
-  changed: boolean;
-  onChange: (v: unknown) => void;
-}) {
-  const label = field.key.replace(/_/g, " ");
-  const ro = !!field.readOnly;
-  const cls = `w-full bg-transparent border ${changed ? "border-amber-500" : "border-charcoal/15"} px-2 py-1.5 text-[13px] focus:outline-none focus:border-charcoal ${ro ? "opacity-60 cursor-not-allowed bg-charcoal/[0.03]" : ""}`;
-  return (
-    <label className="grid grid-cols-[160px_1fr] gap-3 items-start">
-      <span className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55 pt-2">
-        {label}
-        {ro && <span className="ml-1 text-charcoal/35 normal-case tracking-normal">(locked)</span>}
-      </span>
-      <div>
-        {field.type === "textarea" && (
-          <textarea rows={4} value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value)} className={cls} />
-        )}
-        {field.type === "text" && (
-          <input value={(value as string) ?? ""} readOnly={ro} onChange={(e) => onChange(e.target.value || null)} className={cls} />
-        )}
-        {field.type === "number" && (
-          <input
-            type="number"
-            value={value == null ? "" : String(value)}
-            readOnly={ro}
-            onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
-            className={cls}
-          />
-        )}
-        {field.type === "bool" && (
-          <div className="pt-2">
-            <input type="checkbox" disabled={ro} checked={!!value} onChange={(e) => onChange(e.target.checked)} />
-          </div>
-        )}
-        {field.type === "select" && (
-          <select value={(value as string) ?? ""} disabled={ro} onChange={(e) => onChange(e.target.value)} className={cls}>
-            {(field.opts ?? []).map((o) => <option key={o} value={o}>{o}</option>)}
-          </select>
-        )}
-        {field.type === "url-list" && (
-          <textarea
-            rows={4}
-            value={Array.isArray(value) ? (value as string[]).join("\n") : ""}
-            readOnly={ro}
-            onChange={(e) => onChange(e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))}
-            placeholder="One URL per line"
-            className={cls + " font-mono text-[11px]"}
-          />
-        )}
-        {field.hint && (
-          <p className="mt-1 text-[10px] text-charcoal/45">{field.hint}</p>
-        )}
-      </div>
-    </label>
+    </>
   );
 }
