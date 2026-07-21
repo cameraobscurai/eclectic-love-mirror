@@ -107,10 +107,18 @@ function absoluteCover(parent: ParentId): string | null {
 }
 
 type ParentLoad = { kind: "parent"; parent: ParentId; fallbackImage: string | null };
-type ProductLoad = { kind: "product"; product: CollectionProduct };
+type ProductLoad = {
+  kind: "product";
+  product: CollectionProduct;
+  allProducts: CollectionProduct[];
+};
 type LoadResult = ParentLoad | ProductLoad;
 
 export const Route = createFileRoute("/collection_/$slug")({
+  // The catalog is baked (static JSON) + a live overlay behind a module-level
+  // singleton, so once resolved it doesn't change within a session. Skip
+  // re-running the loader on client-side nav between PDPs.
+  staleTime: Infinity,
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
       const parent = params.slug as ParentId;
@@ -130,7 +138,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       catalog.products.find((p) => p.id === params.slug) ??
       null;
     if (!product) throw notFound();
-    return { kind: "product", product };
+    return { kind: "product", product, allProducts: catalog.products };
   },
   head: ({ loaderData, params }) => {
     const data = loaderData as LoadResult | undefined;
@@ -170,7 +178,15 @@ export const Route = createFileRoute("/collection_/$slug")({
           { name: "twitter:image", content: img },
           { name: "twitter:card", content: "summary_large_image" },
         ],
-        links: [{ rel: "canonical", href: url }],
+        links: [
+          { rel: "canonical", href: url },
+          {
+            rel: "preload",
+            as: "image",
+            href: img,
+            fetchpriority: "high" as const,
+          },
+        ],
         scripts: [
           {
             type: "application/ld+json",
@@ -243,7 +259,19 @@ export const Route = createFileRoute("/collection_/$slug")({
             ]
           : []),
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        ...(img
+          ? [
+              {
+                rel: "preload",
+                as: "image" as const,
+                href: img,
+                fetchpriority: "high" as const,
+              },
+            ]
+          : []),
+      ],
       scripts: [
         {
           type: "application/ld+json",
@@ -279,7 +307,7 @@ export const Route = createFileRoute("/collection_/$slug")({
 function SlugRoutePage() {
   const data = Route.useLoaderData() as LoadResult;
   if (data.kind === "parent") return <ParentLandingPage parent={data.parent} />;
-  return <ProductDetailPage product={data.product} />;
+  return <ProductDetailPage product={data.product} allProducts={data.allProducts} />;
 }
 
 // Category landing: SSR emits real h1 + intro copy for crawlers; on mount,
@@ -341,7 +369,13 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
   );
 }
 
-function ProductDetailPage({ product }: { product: CollectionProduct }) {
+function ProductDetailPage({
+  product,
+  allProducts,
+}: {
+  product: CollectionProduct;
+  allProducts: CollectionProduct[];
+}) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
@@ -445,7 +479,7 @@ function ProductDetailPage({ product }: { product: CollectionProduct }) {
         </div>
 
 
-        <RelatedPieces product={product} />
+        <RelatedPieces product={product} allProducts={allProducts} />
       </main>
       <Footer />
     </div>
