@@ -203,8 +203,13 @@ function measureImage(
 
   const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
   const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
-  const visualBottom = (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
-  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.95) };
+  // Width mode floors every silhouette on the same line — use the true
+  // measured bottom in tile-space with no TILE_OBJECT_CONTENT compression.
+  // Area mode retains the legacy compression to preserve non-seating tiles.
+  const visualBottom = fitMode === "width"
+    ? contentTop + ((maxY + 1) / ch) * renderedH
+    : (1 - TILE_OBJECT_CONTENT) / 2 + (contentTop + ((maxY + 1) / ch) * renderedH) * TILE_OBJECT_CONTENT;
+  return { ...fit, bottom: clamp(visualBottom, 0.05, 0.99) };
 }
 
 export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(function NormalizedProductImage({
