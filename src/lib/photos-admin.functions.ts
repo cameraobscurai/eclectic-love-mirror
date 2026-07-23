@@ -212,13 +212,48 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       });
     if (upErr) throw new Error(`PUBLISH_WRITE_FAILED: ${upErr.message}`);
 
+    // Gallery orders — snapshot admin-curated plate order per gallery so
+    // /gallery serves the same one-request static blob instead of hitting
+    // Supabase live. Baked JSON remains the ultimate fallback; this
+    // snapshot beats a full rebake by moments when admins reorder.
+    let galleryCount = 0;
+    try {
+      const { data: gRows, error: gErr } = await supabaseAdmin
+        .from("gallery_orders")
+        .select("gallery_slug, order_keys");
+      if (gErr) throw gErr;
+      const orders: Record<string, string[]> = {};
+      for (const row of (gRows ?? []) as Array<{
+        gallery_slug: string | null;
+        order_keys: string[] | null;
+      }>) {
+        if (row.gallery_slug && Array.isArray(row.order_keys) && row.order_keys.length > 0) {
+          orders[row.gallery_slug] = row.order_keys;
+        }
+      }
+      galleryCount = Object.keys(orders).length;
+      const gPayload = JSON.stringify({ publishedAt, count: galleryCount, orders });
+      const gBlob = new Blob([gPayload], { type: "application/json" });
+      const { error: gUpErr } = await supabaseAdmin.storage
+        .from("squarespace-mirror")
+        .upload("catalog/gallery-orders.json", gBlob, {
+          upsert: true,
+          contentType: "application/json",
+          cacheControl: "60",
+        });
+      if (gUpErr) throw gUpErr;
+    } catch (e) {
+      // Non-fatal — inventory overlay already published. Log and continue.
+      console.warn("[publish] gallery-orders snapshot failed:", e);
+    }
+
     void audit({
       actorId: context.userId,
       entity: "catalog_overlay",
       entityId: "catalog/overlay.json",
       action: "publish",
-      metadata: { count: Object.keys(overlay).length, publishedAt },
+      metadata: { count: Object.keys(overlay).length, galleryCount, publishedAt },
     });
 
-    return { ok: true, publishedAt, count: Object.keys(overlay).length };
+    return { ok: true, publishedAt, count: Object.keys(overlay).length, galleryCount };
   });
