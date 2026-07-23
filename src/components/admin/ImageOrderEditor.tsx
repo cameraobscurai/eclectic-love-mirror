@@ -433,7 +433,16 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
             First image is the cover · Drag to reorder · Autosaves
           </p>
         </div>
-      </div>
+    </div>
+  );
+
+  if (embedded) return inner;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onClick={() => void handleClose()}
+    >
+      {inner}
     </div>
   );
 }
