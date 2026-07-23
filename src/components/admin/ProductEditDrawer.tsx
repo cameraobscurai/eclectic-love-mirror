@@ -715,26 +715,22 @@ export function ProductEditDrawer({
               {GROUPS.map((g) => {
                 if (g.adminOnly && !isAdmin) return null;
                 if (g.id === "photos") {
-                  const count = product?.images?.length || 0;
+                  if (!product) return null;
                   return (
                     <section key={g.id} style={{ marginBottom: 34 }}>
                       <SectionHeader>{g.title}</SectionHeader>
-                      <div className="flex items-center gap-4">
-                        <div style={{ width: 72, height: 72, flexShrink: 0, background: count ? T.white : "#f5f3ef", border: T.hairline, display: "grid", placeItems: "center", overflow: "hidden" }}>
-                          <span style={{ fontFamily: T.serif, fontSize: 28, color: T.sand }}>{(draft.values.title || "?").charAt(0)}</span>
-                        </div>
-                        <div>
-                          <p style={{ fontFamily: T.sans, fontSize: 12, color: "rgba(26,26,26,0.6)" }}>
-                            {count ? `${count} photo${count === 1 ? "" : "s"} · first one is the cover` : "No photos yet — the tile shows a blank frame until there is one"}
-                          </p>
-                          <button onClick={onOpenPhotos}
-                            style={{ ...micro(10, T.trackLabel, T.charcoal), background: "none", border: T.hairline, padding: "8px 14px", marginTop: 8, cursor: "pointer" }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = T.charcoal; e.currentTarget.style.color = T.paper; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = T.charcoal; }}>
-                            {count ? "Edit photos & order" : "Add photos"}
-                          </button>
-                        </div>
-                      </div>
+                      <ImageOrderEditor
+                        embedded
+                        item={{
+                          id: product.id,
+                          rms_id: (product.rms_id as string | null) ?? null,
+                          title: (product.title as string) ?? draft.values.title ?? "",
+                          images: Array.isArray(product.images) ? (product.images as string[]) : [],
+                          card_background_url: (product.card_background_url as string | null) ?? null,
+                        }}
+                        onClose={() => { /* embedded: no-op, drawer owns close */ }}
+                        onSaved={() => { /* parent refetches via its own onSave path */ }}
+                      />
                     </section>
                   );
                 }
