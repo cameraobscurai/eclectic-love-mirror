@@ -674,7 +674,8 @@ export function ProductEditDrawer({
         <style>{`
           @keyframes eh-drawer-in { from { transform: translateX(24px); opacity: 0 } to { transform: none; opacity: 1 } }
           @media (prefers-reduced-motion: reduce) { aside { animation: none !important } }
-          .eh-cols { display: grid; grid-template-columns: minmax(0,1fr) 292px; gap: 0; height: 100%; }
+          .eh-cols { display: grid; grid-template-columns: minmax(0,1fr) 292px; gap: 0; height: 100%; min-height: 0; }
+          .eh-cols > * { min-height: 0; height: 100%; }
           .eh-preview-col { border-left: ${T.hairlineSoft}; }
           @media (max-width: 860px) { .eh-cols { grid-template-columns: minmax(0,1fr) } .eh-preview-col { display: none } }
         `}</style>
