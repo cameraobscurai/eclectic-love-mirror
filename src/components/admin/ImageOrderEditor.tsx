@@ -153,13 +153,15 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   }, []);
 
   // Escape key closes the modal — keyboard-first users were trapped before.
+  // Skipped in embedded mode so the parent drawer owns the Escape key.
   useEffect(() => {
+    if (embedded) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") void handleClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [handleClose]);
+  }, [handleClose, embedded]);
 
   const apply = (next: string[]) => {
     setUrls(next);
