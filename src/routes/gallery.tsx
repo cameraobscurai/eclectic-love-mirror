@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
@@ -175,16 +175,40 @@ function GalleryPage() {
   const [filter, setFilter] = useState<string>("All");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  // Per-gallery admin overrides — baked into src/data/gallery/gallery-orders.json
-  // by scripts/bake-catalog.mjs. Static import → zero network, no useEffect,
-  // no post-mount reflow. Admin reorders appear on live after the next bake.
+  // Per-gallery admin overrides — baked snapshot from scripts/bake-catalog.mjs
+  // is the guaranteed floor. On mount, try the published snapshot
+  // (squarespace-mirror/catalog/gallery-orders.json) so admin Publish clicks
+  // reach live between full bakes. Both are one-request, CDN-cacheable.
+  const [liveOrders, setLiveOrders] = useState<Record<string, string[]> | null>(null);
   const orders = useMemo<Map<string, string[]>>(() => {
     const m = new Map<string, string[]>();
-    const src = (bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {};
+    const src =
+      liveOrders ??
+      ((bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {});
     for (const [slug, keys] of Object.entries(src)) {
       if (Array.isArray(keys) && keys.length > 0) m.set(slug, keys);
     }
     return m;
+  }, [liveOrders]);
+
+  useEffect(() => {
+    let alive = true;
+    const base = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+      ?.VITE_SUPABASE_URL;
+    if (!base) return;
+    fetch(
+      `${base}/storage/v1/object/public/squarespace-mirror/catalog/gallery-orders.json?t=${Math.floor(Date.now() / 60000)}`,
+      { cache: "no-cache" },
+    )
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload: { orders?: Record<string, string[]> } | null) => {
+        if (!alive || !payload?.orders) return;
+        setLiveOrders(payload.orders);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // Apply DB overrides over the manifest order. When no override exists for
