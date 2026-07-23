@@ -90,6 +90,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
+import { ImageOrderEditor } from "./ImageOrderEditor";
 
 /* ═════════════ TOKENS (src/styles.css + glass.ts) ═════════════ */
 
