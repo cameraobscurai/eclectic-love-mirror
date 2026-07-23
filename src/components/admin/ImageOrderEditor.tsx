@@ -41,9 +41,11 @@ type Props = {
   item: Item;
   onClose: () => void;
   onSaved: (next: { images: string[]; card_background_url: string | null }) => void;
+  /** When true, render inline (no fixed modal shell, no backdrop, no close X). */
+  embedded?: boolean;
 };
 
-export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
+export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: Props) {
   const [urls, setUrls] = useState<string[]>(item.images ?? []);
   const [bg, setBg] = useState<string | null>(item.card_background_url ?? null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
