@@ -41,9 +41,11 @@ type Props = {
   item: Item;
   onClose: () => void;
   onSaved: (next: { images: string[]; card_background_url: string | null }) => void;
+  /** When true, render inline (no fixed modal shell, no backdrop, no close X). */
+  embedded?: boolean;
 };
 
-export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
+export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: Props) {
   const [urls, setUrls] = useState<string[]>(item.images ?? []);
   const [bg, setBg] = useState<string | null>(item.card_background_url ?? null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
@@ -151,13 +153,15 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
   }, []);
 
   // Escape key closes the modal — keyboard-first users were trapped before.
+  // Skipped in embedded mode so the parent drawer owns the Escape key.
   useEffect(() => {
+    if (embedded) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") void handleClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [handleClose]);
+  }, [handleClose, embedded]);
 
   const apply = (next: string[]) => {
     setUrls(next);
@@ -256,41 +260,37 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id]);
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      onClick={() => void handleClose()}
-    >
-      <div
-        className="bg-white max-w-5xl w-full max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
+  const saveIndicator = (
+    <span className="text-[11px] uppercase tracking-widest">
+      {saveState === "saving" && (
+        <span className="text-neutral-500 inline-flex items-center gap-1">
+          <Loader2 className="h-3 w-3 animate-spin" /> Saving
+        </span>
+      )}
+      {saveState === "saved" && <span className="text-emerald-600">Saved</span>}
+      {saveState === "error" && (
+        <span className="text-red-600" title={errMsg ?? ""}>Error — reverted</span>
+      )}
+    </span>
+  );
+
+  const shellClass = embedded
+    ? "bg-white w-full flex flex-col border border-neutral-200"
+    : "bg-white max-w-5xl w-full max-h-[90vh] flex flex-col";
+
+  const inner = (
+    <div className={shellClass} onClick={(e) => e.stopPropagation()}>
+      {/* Header — hidden in embedded mode (parent drawer already shows title) */}
+      {!embedded && (
         <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3">
           <div>
-            <h2 className="font-serif text-xl text-[hsl(var(--charcoal))]">
-              {item.title}
-            </h2>
+            <h2 className="font-serif text-xl text-[hsl(var(--charcoal))]">{item.title}</h2>
             <p className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5">
               {urls.length} {urls.length === 1 ? "image" : "images"} · RMS {item.rms_id ?? "—"}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[11px] uppercase tracking-widest">
-              {saveState === "saving" && (
-                <span className="text-neutral-500 flex items-center gap-1">
-                  <Loader2 className="h-3 w-3 animate-spin" /> Saving
-                </span>
-              )}
-              {saveState === "saved" && (
-                <span className="text-emerald-600">Saved</span>
-              )}
-              {saveState === "error" && (
-                <span className="text-red-600" title={errMsg ?? ""}>
-                  Error — reverted
-                </span>
-              )}
-            </span>
+            {saveIndicator}
             <button
               onClick={() => void handleClose()}
               className="p-1 hover:bg-neutral-100 border border-neutral-300"
@@ -300,6 +300,17 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
             </button>
           </div>
         </div>
+      )}
+
+      {embedded && (
+        <div className="flex items-center justify-between px-5 py-2 border-b border-neutral-200 bg-neutral-50/60">
+          <p className="text-[10px] uppercase tracking-widest text-neutral-500">
+            {urls.length} {urls.length === 1 ? "image" : "images"} · first is the cover
+          </p>
+          {saveIndicator}
+        </div>
+      )}
+
 
         {/* Tabs */}
         <div className="flex items-center border-b border-neutral-200 px-5">
@@ -422,7 +433,16 @@ export function ImageOrderEditor({ item, onClose, onSaved }: Props) {
             First image is the cover · Drag to reorder · Autosaves
           </p>
         </div>
-      </div>
+    </div>
+  );
+
+  if (embedded) return inner;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      onClick={() => void handleClose()}
+    >
+      {inner}
     </div>
   );
 }
