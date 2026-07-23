@@ -260,41 +260,37 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item.id]);
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      onClick={() => void handleClose()}
-    >
-      <div
-        className="bg-white max-w-5xl w-full max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
+  const saveIndicator = (
+    <span className="text-[11px] uppercase tracking-widest">
+      {saveState === "saving" && (
+        <span className="text-neutral-500 inline-flex items-center gap-1">
+          <Loader2 className="h-3 w-3 animate-spin" /> Saving
+        </span>
+      )}
+      {saveState === "saved" && <span className="text-emerald-600">Saved</span>}
+      {saveState === "error" && (
+        <span className="text-red-600" title={errMsg ?? ""}>Error — reverted</span>
+      )}
+    </span>
+  );
+
+  const shellClass = embedded
+    ? "bg-white w-full flex flex-col border border-neutral-200"
+    : "bg-white max-w-5xl w-full max-h-[90vh] flex flex-col";
+
+  const inner = (
+    <div className={shellClass} onClick={(e) => e.stopPropagation()}>
+      {/* Header — hidden in embedded mode (parent drawer already shows title) */}
+      {!embedded && (
         <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3">
           <div>
-            <h2 className="font-serif text-xl text-[hsl(var(--charcoal))]">
-              {item.title}
-            </h2>
+            <h2 className="font-serif text-xl text-[hsl(var(--charcoal))]">{item.title}</h2>
             <p className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5">
               {urls.length} {urls.length === 1 ? "image" : "images"} · RMS {item.rms_id ?? "—"}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[11px] uppercase tracking-widest">
-              {saveState === "saving" && (
-                <span className="text-neutral-500 flex items-center gap-1">
-                  <Loader2 className="h-3 w-3 animate-spin" /> Saving
-                </span>
-              )}
-              {saveState === "saved" && (
-                <span className="text-emerald-600">Saved</span>
-              )}
-              {saveState === "error" && (
-                <span className="text-red-600" title={errMsg ?? ""}>
-                  Error — reverted
-                </span>
-              )}
-            </span>
+            {saveIndicator}
             <button
               onClick={() => void handleClose()}
               className="p-1 hover:bg-neutral-100 border border-neutral-300"
@@ -304,6 +300,17 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
             </button>
           </div>
         </div>
+      )}
+
+      {embedded && (
+        <div className="flex items-center justify-between px-5 py-2 border-b border-neutral-200 bg-neutral-50/60">
+          <p className="text-[10px] uppercase tracking-widest text-neutral-500">
+            {urls.length} {urls.length === 1 ? "image" : "images"} · first is the cover
+          </p>
+          {saveIndicator}
+        </div>
+      )}
+
 
         {/* Tabs */}
         <div className="flex items-center border-b border-neutral-200 px-5">
