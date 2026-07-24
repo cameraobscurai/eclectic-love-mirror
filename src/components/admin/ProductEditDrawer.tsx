@@ -780,11 +780,13 @@ export function ProductEditDrawer({
                           <span style={{ color: "rgba(26,26,26,0.38)", marginLeft: 8, fontSize: 11 }}>{c.when}</span>
                         </div>
                         {canUndoField(c.field) && (
-                          <button onClick={() => undoChange(c)} disabled={saving}
-                            style={{ ...micro(9, T.trackLabel, "rgba(26,26,26,0.5)"), background: "none", border: "none", cursor: saving ? "default" : "pointer", flexShrink: 0 }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = T.charcoal)}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,26,0.5)")}>Undo</button>
+                          <button onClick={() => undoChange(c)} disabled={saving || undoBlocked}
+                            title={undoBlocked ? "Save or discard your current edits before undoing history." : undefined}
+                            style={{ ...micro(9, T.trackLabel, undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"), background: "none", border: "none", cursor: (saving || undoBlocked) ? "not-allowed" : "pointer", flexShrink: 0 }}
+                            onMouseEnter={(e) => { if (!undoBlocked && !saving) e.currentTarget.style.color = T.charcoal; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"; }}>Undo</button>
                         )}
+
                       </li>
                     ))}
                   </ol>
