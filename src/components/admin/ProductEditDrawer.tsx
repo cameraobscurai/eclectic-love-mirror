@@ -91,6 +91,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ImageOrderEditor } from "./ImageOrderEditor";
+import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
 /* ═════════════ TOKENS (src/styles.css + glass.ts) ═════════════ */
 
