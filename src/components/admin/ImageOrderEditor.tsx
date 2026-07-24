@@ -47,6 +47,9 @@ type Props = {
 };
 
 export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: Props) {
+  // Lock body scroll only when this owns its own overlay (parent drawer
+  // already locks in embedded mode).
+  useBodyScrollLock(!embedded);
   const [urls, setUrls] = useState<string[]>(item.images ?? []);
   const [bg, setBg] = useState<string | null>(item.card_background_url ?? null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
