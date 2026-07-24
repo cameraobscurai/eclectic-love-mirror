@@ -234,7 +234,7 @@ function RootComponent() {
           own wheel handler + inertia loop, and body overflow is hidden so
           Lenis can't scroll anything anyway. Removing it drops a 3rd RAF
           loop that was competing with the wheel-lerp and Framer schedulers. */}
-      {!isSketch && <SmoothScroll />}
+      {!isSketch && !isAdmin && <SmoothScroll />}
 
       <a
         href="#main-content"
