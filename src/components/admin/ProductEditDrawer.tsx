@@ -585,11 +585,13 @@ export function ProductEditDrawer({
   /* Raw audit rows in → flat per-field diffs, computed here (§4). */
   const flatChanges = useMemo(() => flattenAuditRows(recentChanges), [recentChanges]);
 
+  useBodyScrollLock(true);
+
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") requestClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, []);
 
   const requestClose = () => (draft.dirtyCount > 0 ? setConfirmDiscard(true) : onClose());
 
