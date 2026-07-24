@@ -301,14 +301,30 @@ function useDraft(product) {
   }, [product]);
 
   const [values, setValues] = useState(initial);
-  useEffect(() => setValues(initial), [initial]);
+  /* Baseline the draft diffs against. Advances only for fields the user
+     hasn't touched, so a refetch (e.g. after photo save or Undo) never
+     stomps in-progress text edits in other fields. */
+  const [baseline, setBaseline] = useState(initial);
+
+  useEffect(() => {
+    setValues((current) => {
+      const next = { ...current };
+      for (const k of Object.keys(FIELD_META)) {
+        const wasDirty = String(current[k] ?? "") !== String(baseline[k] ?? "");
+        if (!wasDirty) next[k] = initial[k];
+      }
+      return next;
+    });
+    setBaseline(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial]);
 
   const dirty = useMemo(() => {
     const d = {};
     for (const k of Object.keys(FIELD_META))
-      if (String(values[k] ?? "") !== String(initial[k] ?? "")) d[k] = true;
+      if (String(values[k] ?? "") !== String(baseline[k] ?? "")) d[k] = true;
     return d;
-  }, [values, initial]);
+  }, [values, baseline]);
 
   const errors = useMemo(() => {
     const e = {};
@@ -324,7 +340,7 @@ function useDraft(product) {
     dirtyCount: Object.keys(dirty).length,
     hasErrors: Object.keys(errors).length > 0,
     setField: (k, v) => setValues((s) => ({ ...s, [k]: v })),
-    reset: () => setValues(initial),
+    reset: () => setValues(baseline),
     buildPatch: () => {
       const patch = {};
       for (const k of Object.keys(dirty)) {
@@ -338,6 +354,7 @@ function useDraft(product) {
     },
   };
 }
+
 
 /* ═════════════ ATOMS ═════════════ */
 
@@ -606,19 +623,22 @@ export function ProductEditDrawer({
   };
 
   /* Undo = single-field patch from the snapshot's exact prior value (§7).
-     Cannot stomp other fields; only offered where this role may edit. */
+     Blocked while other edits are dirty so Undo can't quietly drop them:
+     the user's own pending work is more important than reverting history. */
   const canUndoField = (field) => {
     const meta = FIELD_META[field];
     return !!meta && !meta.neverEditable && (isAdmin || meta.staffEditable);
   };
+  const undoBlocked = draft.dirtyCount > 0;
   const undoChange = async (c) => {
-    if (saving || !canUndoField(c.field)) return;
+    if (saving || undoBlocked || !canUndoField(c.field)) return;
     setSaving(true);
     try {
       await onSave({ [c.field]: c.rawBefore ?? null });
       setSavedAt(Date.now());
     } finally { setSaving(false); }
   };
+
 
   const visibilityWarning = (() => {
     if (nowLive && !readiness.publicReadyOk) {
@@ -760,11 +780,13 @@ export function ProductEditDrawer({
                           <span style={{ color: "rgba(26,26,26,0.38)", marginLeft: 8, fontSize: 11 }}>{c.when}</span>
                         </div>
                         {canUndoField(c.field) && (
-                          <button onClick={() => undoChange(c)} disabled={saving}
-                            style={{ ...micro(9, T.trackLabel, "rgba(26,26,26,0.5)"), background: "none", border: "none", cursor: saving ? "default" : "pointer", flexShrink: 0 }}
-                            onMouseEnter={(e) => (e.currentTarget.style.color = T.charcoal)}
-                            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(26,26,26,0.5)")}>Undo</button>
+                          <button onClick={() => undoChange(c)} disabled={saving || undoBlocked}
+                            title={undoBlocked ? "Save or discard your current edits before undoing history." : undefined}
+                            style={{ ...micro(9, T.trackLabel, undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"), background: "none", border: "none", cursor: (saving || undoBlocked) ? "not-allowed" : "pointer", flexShrink: 0 }}
+                            onMouseEnter={(e) => { if (!undoBlocked && !saving) e.currentTarget.style.color = T.charcoal; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = undoBlocked ? "rgba(26,26,26,0.25)" : "rgba(26,26,26,0.5)"; }}>Undo</button>
                         )}
+
                       </li>
                     ))}
                   </ol>
