@@ -32,6 +32,7 @@ export const listProducts = createServerFn({ method: "POST" })
     search?: string;
     category?: string;
     publicReady?: "yes" | "no" | "all";
+    rmsIds?: string[];
     limit?: number;
     offset?: number;
   }) => d)
@@ -39,6 +40,11 @@ export const listProducts = createServerFn({ method: "POST" })
     const { supabase } = context;
     const limit = Math.min(data.limit ?? 50, 200);
     const offset = data.offset ?? 0;
+
+    // Group filter passed empty set → no matches, short-circuit.
+    if (data.rmsIds && data.rmsIds.length === 0) {
+      return { rows: [], count: 0, limit, offset };
+    }
 
     let q = supabase
       .from("inventory_items")
@@ -53,6 +59,7 @@ export const listProducts = createServerFn({ method: "POST" })
     if (data.category) q = q.eq("category", data.category);
     if (data.publicReady === "yes") q = q.eq("public_ready", true);
     if (data.publicReady === "no") q = q.eq("public_ready", false);
+    if (data.rmsIds && data.rmsIds.length > 0) q = q.in("rms_id", data.rmsIds);
 
     const { data: rows, count, error } = await q;
     if (error) throw new Response(error.message, { status: 500 });

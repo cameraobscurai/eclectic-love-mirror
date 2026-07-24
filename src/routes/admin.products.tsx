@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Plus } from "lucide-react";
@@ -64,46 +64,52 @@ function Inner() {
   const [searchInput, setSearchInput] = useState(search.q);
 
   // BOH deep-link support: when `?group=<ParentId>` is set, derive the
-  // rms_id set for that parent from the baked catalog and filter the API
-  // response client-side. Not perfect for pagination (server count still
-  // reflects unfiltered) but shows only in-group rows without server churn.
-  const [groupRmsSet, setGroupRmsSet] = useState<Set<string> | null>(null);
+  // rms_id list for that parent from the baked catalog and pass it to the
+  // server as a proper filter (client-side page-only filtering was broken
+  // when the first page contained no matching rows).
+  const [groupRmsIds, setGroupRmsIds] = useState<string[] | null>(null);
   useEffect(() => {
-    if (!search.group) { setGroupRmsSet(null); return; }
+    if (!search.group) { setGroupRmsIds(null); return; }
     let alive = true;
     getCollectionCatalog()
       .then((c) => {
         if (!alive) return;
-        const ids = new Set<string>();
+        const ids: string[] = [];
         for (const p of c.products) {
-          if (productParent(p) === (search.group as ParentId)) ids.add(p.id);
+          if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
         }
-        setGroupRmsSet(ids);
+        setGroupRmsIds(ids);
       })
-      .catch(() => alive && setGroupRmsSet(null));
+      .catch(() => alive && setGroupRmsIds([]));
     return () => { alive = false; };
   }, [search.group]);
 
   useEffect(() => { catsFn().then(setCats).catch(() => {}); }, [catsFn]);
 
   useEffect(() => {
+    // Wait for group resolution before firing the list query.
+    if (search.group && groupRmsIds === null) return;
     setLoading(true);
-    list({ data: { search: search.q, category: search.cat || undefined, publicReady: search.ready, limit: PAGE, offset } })
+    list({ data: {
+      search: search.q,
+      category: search.cat || undefined,
+      publicReady: search.ready,
+      rmsIds: groupRmsIds ?? undefined,
+      limit: PAGE,
+      offset,
+    } })
       .then((r) => { setRows(r.rows as Row[]); setCount(r.count); })
       .finally(() => setLoading(false));
-  }, [list, search.q, search.cat, search.ready, offset]);
+  }, [list, search.q, search.cat, search.ready, search.group, groupRmsIds, offset]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready]);
+  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     navigate({ search: (s: any) => ({ ...s, q: searchInput }) });
   };
 
-  const visibleRows = useMemo(
-    () => (groupRmsSet ? rows.filter((r) => r.rms_id && groupRmsSet.has(r.rms_id)) : rows),
-    [rows, groupRmsSet],
-  );
+  const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
 
   return (
@@ -120,7 +126,7 @@ function Inner() {
               <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
                 <span className="text-charcoal/60">Group filter:</span>
                 <span className="text-charcoal">{groupLabel}</span>
-                <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
+                <span className="text-charcoal/45 tabular-nums">({count} match{count === 1 ? "" : "es"})</span>
                 <button
                   type="button"
                   onClick={() => navigate({ search: (s: any) => ({ ...s, group: undefined }) })}
