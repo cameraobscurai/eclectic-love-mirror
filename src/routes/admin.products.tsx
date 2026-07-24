@@ -126,7 +126,7 @@ function Inner() {
               <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
                 <span className="text-charcoal/60">Group filter:</span>
                 <span className="text-charcoal">{groupLabel}</span>
-                <span className="text-charcoal/45 tabular-nums">({visibleRows.length}/{rows.length} on page)</span>
+                <span className="text-charcoal/45 tabular-nums">({count} match{count === 1 ? "" : "es"})</span>
                 <button
                   type="button"
                   onClick={() => navigate({ search: (s: any) => ({ ...s, group: undefined }) })}
