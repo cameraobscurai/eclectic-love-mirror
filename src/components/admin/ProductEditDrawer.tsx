@@ -301,14 +301,30 @@ function useDraft(product) {
   }, [product]);
 
   const [values, setValues] = useState(initial);
-  useEffect(() => setValues(initial), [initial]);
+  /* Baseline the draft diffs against. Advances only for fields the user
+     hasn't touched, so a refetch (e.g. after photo save or Undo) never
+     stomps in-progress text edits in other fields. */
+  const [baseline, setBaseline] = useState(initial);
+
+  useEffect(() => {
+    setValues((current) => {
+      const next = { ...current };
+      for (const k of Object.keys(FIELD_META)) {
+        const wasDirty = String(current[k] ?? "") !== String(baseline[k] ?? "");
+        if (!wasDirty) next[k] = initial[k];
+      }
+      return next;
+    });
+    setBaseline(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial]);
 
   const dirty = useMemo(() => {
     const d = {};
     for (const k of Object.keys(FIELD_META))
-      if (String(values[k] ?? "") !== String(initial[k] ?? "")) d[k] = true;
+      if (String(values[k] ?? "") !== String(baseline[k] ?? "")) d[k] = true;
     return d;
-  }, [values, initial]);
+  }, [values, baseline]);
 
   const errors = useMemo(() => {
     const e = {};
@@ -324,7 +340,7 @@ function useDraft(product) {
     dirtyCount: Object.keys(dirty).length,
     hasErrors: Object.keys(errors).length > 0,
     setField: (k, v) => setValues((s) => ({ ...s, [k]: v })),
-    reset: () => setValues(initial),
+    reset: () => setValues(baseline),
     buildPatch: () => {
       const patch = {};
       for (const k of Object.keys(dirty)) {
@@ -338,6 +354,7 @@ function useDraft(product) {
     },
   };
 }
+
 
 /* ═════════════ ATOMS ═════════════ */
 
