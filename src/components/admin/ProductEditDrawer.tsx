@@ -623,19 +623,22 @@ export function ProductEditDrawer({
   };
 
   /* Undo = single-field patch from the snapshot's exact prior value (§7).
-     Cannot stomp other fields; only offered where this role may edit. */
+     Blocked while other edits are dirty so Undo can't quietly drop them:
+     the user's own pending work is more important than reverting history. */
   const canUndoField = (field) => {
     const meta = FIELD_META[field];
     return !!meta && !meta.neverEditable && (isAdmin || meta.staffEditable);
   };
+  const undoBlocked = draft.dirtyCount > 0;
   const undoChange = async (c) => {
-    if (saving || !canUndoField(c.field)) return;
+    if (saving || undoBlocked || !canUndoField(c.field)) return;
     setSaving(true);
     try {
       await onSave({ [c.field]: c.rawBefore ?? null });
       setSavedAt(Date.now());
     } finally { setSaving(false); }
   };
+
 
   const visibilityWarning = (() => {
     if (nowLive && !readiness.publicReadyOk) {
