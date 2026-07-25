@@ -51,7 +51,10 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
         className="w-full flex flex-col gap-4 md:gap-6"
         style={{ maxWidth: MAX_STAGE_W }}
       >
-        {/* HERO — 4:3 landscape mat fits wide furniture cutouts. */}
+        {/* HERO — 4:3 landscape mat fits wide furniture cutouts.
+            Background lives on the inner mat, NOT the button, so the button
+            itself doesn't outrank the img as the LCP candidate before the
+            image paints. */}
         <button
           type="button"
           onClick={() => onOpenLightbox?.(activeIdx)}
@@ -60,17 +63,22 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
             active ? `Open ${product.title} in fullscreen` : undefined
           }
           className={cn(
-            "group/hero relative w-full bg-[#f9f9f9] aspect-[4/3]",
+            "group/hero relative w-full aspect-[4/3]",
             "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
             onOpenLightbox && active ? "cursor-zoom-in" : "cursor-default",
           )}
         >
+          <div className="absolute inset-0 bg-[#f9f9f9]" aria-hidden="true" />
           {active ? (
             <img
               key={active.url}
               data-pdp-hero-img
               src={withCdnWidth(active.url, 1200)}
               alt={active.altText ?? product.title}
+              // Explicit intrinsic size lets the LCP algorithm identify the
+              // img as the largest paintable element before decode completes.
+              width={1200}
+              height={900}
               className={cn(
                 "absolute inset-0 w-full h-full object-contain",
                 "p-6 md:p-8",
