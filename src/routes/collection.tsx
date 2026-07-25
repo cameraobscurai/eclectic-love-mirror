@@ -152,7 +152,16 @@ export const Route = createFileRoute("/collection")({
     // so the browser only fetches the variant matching its viewport.
     links: [
       { rel: "canonical", href: "https://eclectichive.com/collection" },
-      { ...heroPreloadLink(hiveSignatureHeroSquare, "46vw"), media: "(min-width: 1024px)" },
+      // sizes strings MUST match the `<source sizes>` values below at the
+      // render sites; otherwise the preload scanner picks a different
+      // width variant than <picture> paints and the download is wasted.
+      {
+        ...heroPreloadLink(
+          hiveSignatureHeroSquare,
+          "(min-width: 1920px) 52vw, (min-width: 1440px) 47vw, (min-width: 1280px) 46vw, 44vw",
+        ),
+        media: "(min-width: 1024px)",
+      },
       { ...heroPreloadLink(hiveSignatureHeroMobile, "100vw"), media: "(max-width: 1023px)" },
     ],
   }),
