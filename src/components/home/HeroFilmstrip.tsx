@@ -246,11 +246,14 @@ function FilmstripFrame({
   useEffect(() => {
     setMounted(true);
   }, []);
+  // Treat reduced-motion as false during SSR/first paint so client and server
+  // render identical markup; flip to the real value after mount.
+  const rm = mounted && reduced;
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
   const innerY = useTransform(
     parallaxProgress,
     [0, 1],
-    reduced ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
+    rm ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
   );
 
   const figureRef = useRef<HTMLElement | null>(null);
@@ -299,10 +302,10 @@ function FilmstripFrame({
               ref={registerRef}
               poster={clip.poster}
               muted
-              loop
-              autoPlay
+              loop={!rm}
+              autoPlay={!rm}
               playsInline
-              preload="none"
+              preload={rm ? "none" : "auto"}
               {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
@@ -311,7 +314,7 @@ function FilmstripFrame({
               )}
               onLoadedData={(e) => {
                 setLoaded(true);
-                e.currentTarget.play().catch(() => {});
+                if (!rm) e.currentTarget.play().catch(() => {});
               }}
             >
               {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
@@ -335,7 +338,7 @@ function FilmstripFrame({
 
         {/* Subtle hover affordance — a faint vignette + tiny play glyph
             that fades in. No icon clutter at rest. */}
-        {hasVideo && !reduced && (
+        {hasVideo && !rm && (
           <div
             aria-hidden
             className={cn(
@@ -358,7 +361,7 @@ function FilmstripFrame({
           </div>
         )}
 
-        {hasVideo && reduced && (
+        {hasVideo && rm && (
           <button
             type="button"
             onClick={(e) => {

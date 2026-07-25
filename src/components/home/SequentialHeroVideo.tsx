@@ -22,15 +22,23 @@ export function SequentialHeroVideo() {
   // (whose attributes are mutated by autoplay/unmute effects) never enters
   // the hydration diff.
   const [mounted, setMounted] = useState(false);
+  const [reduced, setReduced] = useState(false);
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined" && window.matchMedia) {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const update = () => setReduced(mq.matches);
+      update();
+      mq.addEventListener?.("change", update);
+      return () => mq.removeEventListener?.("change", update);
+    }
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || reduced) return;
     const v = videoRef.current;
     if (!v) return;
 
@@ -106,7 +114,7 @@ export function SequentialHeroVideo() {
         />
       </div>
 
-      {mounted && (
+      {mounted && !reduced && (
         <video
           ref={videoRef}
           key={current.id}
@@ -123,32 +131,34 @@ export function SequentialHeroVideo() {
         />
       )}
 
-      {/* Sound toggle — mobile users can tap to hear the season clips. */}
-      <button
-        type="button"
-        onClick={toggleSound}
-        aria-label={muted ? "Unmute video" : "Mute video"}
-        aria-pressed={!muted}
-        className="absolute bottom-6 right-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-charcoal/55 text-paper backdrop-blur-sm active:scale-95 transition-transform"
-      >
-        {muted ? (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M11 5 6 9H3v6h3l5 4V5z" />
-            <line x1="22" y1="9" x2="16" y2="15" />
-            <line x1="16" y1="9" x2="22" y2="15" />
-          </svg>
-        ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M11 5 6 9H3v6h3l5 4V5z" />
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-          </svg>
-        )}
-      </button>
+      {/* Sound toggle — hidden when reduced motion is preferred. */}
+      {!reduced && (
+        <button
+          type="button"
+          onClick={toggleSound}
+          aria-label={muted ? "Unmute video" : "Mute video"}
+          aria-pressed={!muted}
+          className="absolute bottom-6 right-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-charcoal/55 text-paper backdrop-blur-sm active:scale-95 transition-transform"
+        >
+          {muted ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5z" />
+              <line x1="22" y1="9" x2="16" y2="15" />
+              <line x1="16" y1="9" x2="22" y2="15" />
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4V5z" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+          )}
+        </button>
+      )}
 
       {/* Preload the next clip only after mount, so React 19 doesn't hoist
           the <link> into <head> during SSR and cause a hydration diff. */}
-      {mounted && <link rel="prefetch" as="video" href={next.src?.mp4} />}
+      {mounted && !reduced && <link rel="prefetch" as="video" href={next.src?.mp4} />}
     </div>
   );
 }
