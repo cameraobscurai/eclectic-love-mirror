@@ -13,11 +13,12 @@ interface Props {
   isAnyHovered: boolean;
   onHover: (id: string | null) => void;
   onOpen: (id: string) => void;
+  onImageFailed?: (id: string) => void;
 }
 
 const WALL_WIDTHS = [600, 900, 1200];
 
-function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
+function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen, onImageFailed }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
   const fit = resolveFit(product.categorySlug ?? null);
