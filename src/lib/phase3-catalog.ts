@@ -259,19 +259,30 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
         (import.meta as unknown as { env?: Record<string, string | undefined> }).env
           ?.VITE_SUPABASE_URL;
       if (base) {
-        const res = await fetch(
-          `${base}/storage/v1/object/public/squarespace-mirror/catalog/overlay.json?t=${Math.floor(Date.now() / 60000)}`,
+        // Resolve manifest pointer first, then fetch the immutable overlay blob.
+        // Manifest is tiny + short-TTL; blob is immutable + long-TTL.
+        const manRes = await fetch(
+          `${base}/storage/v1/object/public/squarespace-mirror/catalog/manifest.json?t=${Math.floor(Date.now() / 60000)}`,
           { cache: "no-cache" },
         );
-        if (res.ok) {
-          const payload = (await res.json()) as {
-            overlay: Record<string, LiveOverlayRow>;
-          };
-          if (payload && payload.overlay) {
-            for (const [rmsId, row] of Object.entries(payload.overlay)) {
-              map.set(rmsId, row);
+        if (manRes.ok) {
+          const manifest = (await manRes.json()) as { overlayKey?: string };
+          if (manifest.overlayKey) {
+            const res = await fetch(
+              `${base}/storage/v1/object/public/squarespace-mirror/${manifest.overlayKey}`,
+              { cache: "force-cache" },
+            );
+            if (res.ok) {
+              const payload = (await res.json()) as {
+                overlay: Record<string, LiveOverlayRow>;
+              };
+              if (payload && payload.overlay) {
+                for (const [rmsId, row] of Object.entries(payload.overlay)) {
+                  map.set(rmsId, row);
+                }
+                return map;
+              }
             }
-            return map;
           }
         } else if (typeof sessionStorage !== "undefined") {
           sessionStorage.setItem(MISSING_KEY, "1");
