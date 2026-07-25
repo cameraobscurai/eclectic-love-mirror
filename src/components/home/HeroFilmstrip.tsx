@@ -338,7 +338,7 @@ function FilmstripFrame({
 
         {/* Subtle hover affordance — a faint vignette + tiny play glyph
             that fades in. No icon clutter at rest. */}
-        {hasVideo && !reduced && (
+        {hasVideo && !rm && (
           <div
             aria-hidden
             className={cn(
