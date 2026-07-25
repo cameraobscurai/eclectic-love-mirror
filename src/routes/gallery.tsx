@@ -202,22 +202,30 @@ function GalleryPage() {
     if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(MISSING_KEY) === "1") {
       return;
     }
-    fetch(
-      `${base}/storage/v1/object/public/squarespace-mirror/catalog/gallery-orders.json?t=${Math.floor(Date.now() / 60000)}`,
-      { cache: "no-cache" },
-    )
-      .then((res) => {
-        if (!res.ok) {
+    (async () => {
+      try {
+        const manRes = await fetch(
+          `${base}/storage/v1/object/public/squarespace-mirror/catalog/manifest.json?t=${Math.floor(Date.now() / 60000)}`,
+          { cache: "no-cache" },
+        );
+        if (!manRes.ok) {
           if (typeof sessionStorage !== "undefined") sessionStorage.setItem(MISSING_KEY, "1");
-          return null;
+          return;
         }
-        return res.json();
-      })
-      .then((payload: { orders?: Record<string, string[]> } | null) => {
+        const manifest = (await manRes.json()) as { galleryOrdersKey?: string | null };
+        if (!manifest.galleryOrdersKey) return;
+        const res = await fetch(
+          `${base}/storage/v1/object/public/squarespace-mirror/${manifest.galleryOrdersKey}`,
+          { cache: "force-cache" },
+        );
+        if (!res.ok) return;
+        const payload = (await res.json()) as { orders?: Record<string, string[]> } | null;
         if (!alive || !payload?.orders) return;
         setLiveOrders(payload.orders);
-      })
-      .catch(() => {});
+      } catch {
+        /* baked fallback covers us */
+      }
+    })();
     return () => {
       alive = false;
     };

@@ -26,6 +26,15 @@ const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as cons
 type EditableField = typeof EDITABLE_FIELDS[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
 
+// PostgREST .or() treats `,` `.` `(` `)` as syntax tokens for unquoted values.
+// The correct injection-safe pattern is to wrap the value in double quotes and
+// escape embedded `"` and `\` — inside quoted values the delimiters are
+// literal. Backslash-escaping the delimiters on a bare value does NOT work
+// (the parser still splits on the literal `,`/`)`).
+function quotePostgrestFilterValue(raw: string): string {
+  return `"${raw.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
 export const listProducts = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .inputValidator((d: {
@@ -53,8 +62,8 @@ export const listProducts = createServerFn({ method: "POST" })
       .range(offset, offset + limit - 1);
 
     if (data.search?.trim()) {
-      const s = data.search.trim();
-      q = q.or(`title.ilike.%${s}%,rms_id.ilike.%${s}%,slug.ilike.%${s}%`);
+      const s = quotePostgrestFilterValue(`%${data.search.trim()}%`);
+      q = q.or(`title.ilike.${s},rms_id.ilike.${s},slug.ilike.${s}`);
     }
     if (data.category) q = q.eq("category", data.category);
     if (data.publicReady === "yes") q = q.eq("public_ready", true);
