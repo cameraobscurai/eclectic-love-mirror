@@ -753,7 +753,7 @@ export function ProductEditDrawer({
           border: "none", cursor: "pointer",
         }} />
 
-      <aside className="relative h-full w-full flex flex-col" style={{
+      <aside ref={asideRef} className="relative h-full w-full flex flex-col" style={{
         maxWidth: 920, background: T.paper, borderLeft: T.hairline,
         boxShadow: "-24px 0 64px -32px rgba(26,26,26,0.35)",
         animation: "eh-drawer-in 320ms cubic-bezier(0.32,0.72,0,1) both",
