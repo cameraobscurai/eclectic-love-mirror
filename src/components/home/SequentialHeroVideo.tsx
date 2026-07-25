@@ -22,11 +22,19 @@ export function SequentialHeroVideo() {
   // (whose attributes are mutated by autoplay/unmute effects) never enters
   // the hydration diff.
   const [mounted, setMounted] = useState(false);
+  const [reduced, setReduced] = useState(false);
   const current = HERO_CLIPS[index];
   const next = HERO_CLIPS[(index + 1) % HERO_CLIPS.length];
 
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined" && window.matchMedia) {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const update = () => setReduced(mq.matches);
+      update();
+      mq.addEventListener?.("change", update);
+      return () => mq.removeEventListener?.("change", update);
+    }
   }, []);
 
   useEffect(() => {
