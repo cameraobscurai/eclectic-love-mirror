@@ -62,8 +62,8 @@ export const listProducts = createServerFn({ method: "POST" })
       .range(offset, offset + limit - 1);
 
     if (data.search?.trim()) {
-      const s = escapePostgrestFilterValue(data.search.trim());
-      q = q.or(`title.ilike.%${s}%,rms_id.ilike.%${s}%,slug.ilike.%${s}%`);
+      const s = quotePostgrestFilterValue(`%${data.search.trim()}%`);
+      q = q.or(`title.ilike.${s},rms_id.ilike.${s},slug.ilike.${s}`);
     }
     if (data.category) q = q.eq("category", data.category);
     if (data.publicReady === "yes") q = q.eq("public_ready", true);
