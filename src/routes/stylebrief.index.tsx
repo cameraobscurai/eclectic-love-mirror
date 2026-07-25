@@ -27,6 +27,7 @@ export const Route = createFileRoute("/stylebrief/")({
       { property: "og:description", content: "Build your style brief in minutes." },
     ],
     links: [
+      { rel: "canonical", href: "https://eclectichive.com/stylebrief" },
       {
         rel: "preload",
         as: "image",

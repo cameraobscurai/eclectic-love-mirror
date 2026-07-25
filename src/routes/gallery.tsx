@@ -196,11 +196,23 @@ function GalleryPage() {
     const base = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
       ?.VITE_SUPABASE_URL;
     if (!base) return;
+    // Skip the fetch once we've seen the snapshot 404 this tab — the baked
+    // fallback already covers us, no reason to spam 400s on every visit.
+    const MISSING_KEY = "eh:gallery-orders-missing";
+    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(MISSING_KEY) === "1") {
+      return;
+    }
     fetch(
       `${base}/storage/v1/object/public/squarespace-mirror/catalog/gallery-orders.json?t=${Math.floor(Date.now() / 60000)}`,
       { cache: "no-cache" },
     )
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => {
+        if (!res.ok) {
+          if (typeof sessionStorage !== "undefined") sessionStorage.setItem(MISSING_KEY, "1");
+          return null;
+        }
+        return res.json();
+      })
       .then((payload: { orders?: Record<string, string[]> } | null) => {
         if (!alive || !payload?.orders) return;
         setLiveOrders(payload.orders);
