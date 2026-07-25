@@ -602,6 +602,21 @@ button, a, [role="button"] {
 }
 
 /* ----------------------------------------------------------------------------
+   Navigation focus rings — keyboard-visible only. Scoped to the site header
+   and mobile menu so ambient interactive chrome (tiles, links inside content)
+   keep their existing focus styles.
+   ---------------------------------------------------------------------------- */
+header nav a:focus-visible,
+header nav button:focus-visible,
+[role="dialog"][aria-label="Navigation menu"] a:focus-visible,
+[role="dialog"][aria-label="Navigation menu"] button:focus-visible {
+  outline: 2px solid var(--sand, #d4cdc4);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+
+/* ----------------------------------------------------------------------------
    View Transitions — additive layer over framer-motion. Activates only on
    real route navigations (where framer wasn't running). Browsers without
    support: no change. Cross-fade is the browser default; we don't override.
