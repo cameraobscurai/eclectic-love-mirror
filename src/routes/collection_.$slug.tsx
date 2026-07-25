@@ -36,7 +36,6 @@ import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import type { BrowseGroupId } from "@/lib/collection-browse-groups";
 import { RelatedPieces } from "@/components/collection/RelatedPieces";
 import { ProductStage } from "@/components/pdp/ProductStage";
-import { withCdnWidth } from "@/lib/image-url";
 
 const SITE = "https://eclectichive.com";
 
@@ -262,18 +261,6 @@ export const Route = createFileRoute("/collection_/$slug")({
       ],
       links: [
         { rel: "canonical", href: url },
-        ...(img
-          ? [
-              {
-                rel: "preload",
-                as: "image" as const,
-                // Match the actual painted src in ProductStage (withCdnWidth 1200)
-                // so the preload hit is reused instead of triggering a second fetch.
-                href: withCdnWidth(img, 1200),
-                fetchPriority: "high" as const,
-              },
-            ]
-          : []),
       ],
       scripts: [
         {
