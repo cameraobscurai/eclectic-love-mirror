@@ -58,6 +58,7 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             loading="lazy"
             decoding="async"
             draggable={false}
+            onError={() => onImageFailed?.(product.id)}
           />
         )}
       </div>
