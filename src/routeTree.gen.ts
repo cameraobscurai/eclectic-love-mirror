@@ -88,6 +88,7 @@ import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminPhotosRouteImport } from './routes/admin.photos'
 import { Route as AdminNewProductRouteImport } from './routes/admin.new-product'
 import { Route as AdminInsightsRouteImport } from './routes/admin.insights'
+import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
@@ -497,6 +498,11 @@ const AdminInsightsRoute = AdminInsightsRouteImport.update({
   path: '/insights',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminInquiriesRoute = AdminInquiriesRouteImport.update({
+  id: '/inquiries',
+  path: '/inquiries',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminIncomingRoute = AdminIncomingRouteImport.update({
   id: '/incoming',
   path: '/incoming',
@@ -601,6 +607,7 @@ export interface FileRoutesByFullPath {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
+  '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -694,6 +701,7 @@ export interface FileRoutesByTo {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
+  '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -789,6 +797,7 @@ export interface FileRoutesById {
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
+  '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/insights': typeof AdminInsightsRoute
   '/admin/new-product': typeof AdminNewProductRoute
   '/admin/photos': typeof AdminPhotosRoute
@@ -885,6 +894,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
+    | '/admin/inquiries'
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
@@ -978,6 +988,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
+    | '/admin/inquiries'
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
@@ -1072,6 +1083,7 @@ export interface FileRouteTypes {
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
+    | '/admin/inquiries'
     | '/admin/insights'
     | '/admin/new-product'
     | '/admin/photos'
@@ -1765,6 +1777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInsightsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/inquiries': {
+      id: '/admin/inquiries'
+      path: '/inquiries'
+      fullPath: '/admin/inquiries'
+      preLoaderRoute: typeof AdminInquiriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/incoming': {
       id: '/admin/incoming'
       path: '/incoming'
@@ -1879,6 +1898,7 @@ interface AdminRouteChildren {
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
+  AdminInquiriesRoute: typeof AdminInquiriesRoute
   AdminInsightsRoute: typeof AdminInsightsRoute
   AdminNewProductRoute: typeof AdminNewProductRoute
   AdminPhotosRoute: typeof AdminPhotosRoute
@@ -1898,6 +1918,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
+  AdminInquiriesRoute: AdminInquiriesRoute,
   AdminInsightsRoute: AdminInsightsRoute,
   AdminNewProductRoute: AdminNewProductRoute,
   AdminPhotosRoute: AdminPhotosRoute,

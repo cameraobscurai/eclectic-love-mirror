@@ -248,30 +248,40 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
 
   // Fast path: single request for the published overlay snapshot written
   // by /admin/photos → Publish. One JSON fetch, CDN-cacheable, no pagination.
-  try {
-    const base =
-      (import.meta as unknown as { env?: Record<string, string | undefined> }).env
-        ?.VITE_SUPABASE_URL;
-    if (base) {
-      const res = await fetch(
-        `${base}/storage/v1/object/public/squarespace-mirror/catalog/overlay.json?t=${Math.floor(Date.now() / 60000)}`,
-        { cache: "no-cache" },
-      );
-      if (res.ok) {
-        const payload = (await res.json()) as {
-          overlay: Record<string, LiveOverlayRow>;
-        };
-        if (payload && payload.overlay) {
-          for (const [rmsId, row] of Object.entries(payload.overlay)) {
-            map.set(rmsId, row);
+  // Cache "snapshot missing" in sessionStorage so we don't spam 400s on
+  // every route change until an admin clicks Publish for the first time.
+  const MISSING_KEY = "eh:overlay-missing";
+  const missing =
+    typeof sessionStorage !== "undefined" && sessionStorage.getItem(MISSING_KEY) === "1";
+  if (!missing) {
+    try {
+      const base =
+        (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+          ?.VITE_SUPABASE_URL;
+      if (base) {
+        const res = await fetch(
+          `${base}/storage/v1/object/public/squarespace-mirror/catalog/overlay.json?t=${Math.floor(Date.now() / 60000)}`,
+          { cache: "no-cache" },
+        );
+        if (res.ok) {
+          const payload = (await res.json()) as {
+            overlay: Record<string, LiveOverlayRow>;
+          };
+          if (payload && payload.overlay) {
+            for (const [rmsId, row] of Object.entries(payload.overlay)) {
+              map.set(rmsId, row);
+            }
+            return map;
           }
-          return map;
+        } else if (typeof sessionStorage !== "undefined") {
+          sessionStorage.setItem(MISSING_KEY, "1");
         }
       }
+    } catch {
+      /* fall through to paginated live query */
     }
-  } catch (e) {
-    console.warn("[catalog] overlay snapshot fetch failed, falling back:", e);
   }
+
 
   // Fallback: paginated live query. Used until the first Publish runs, or
   // if the snapshot fetch fails.
