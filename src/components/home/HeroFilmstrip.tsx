@@ -314,7 +314,7 @@ function FilmstripFrame({
               )}
               onLoadedData={(e) => {
                 setLoaded(true);
-                if (!reduced) e.currentTarget.play().catch(() => {});
+                if (!rm) e.currentTarget.play().catch(() => {});
               }}
             >
               {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
