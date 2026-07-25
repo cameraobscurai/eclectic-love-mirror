@@ -422,30 +422,37 @@ export const markBoardSent = createServerFn({ method: "POST" })
       }
     }
 
+    // Enqueue BEFORE flipping status. If enqueue throws, the board stays in
+    // its pre-send state (existingToken still falsy) so a retry legitimately
+    // re-attempts the enqueue. Prevents the previous silent failure mode
+    // (status flipped to "sent" but no email ever queued).
+    if (!existingToken) {
+      await enqueueStyleBoardEmail({
+        boardId: data.boardId,
+        shareToken: token,
+        inquiryId: existing.inquiry_id as string,
+        projectTitle: (update.project_title as string | null) ?? null,
+        preparedByName: (update.prepared_by_name as string | null) ?? null,
+        palette: (existing.palette ?? []) as unknown[],
+        pinnedRmsIds: (existing.pinned_rms_ids ?? []) as string[],
+      });
+    }
+
     const { data: row, error } = await supabaseAdmin
       .from("style_boards")
       .update(update)
       .eq("id", data.boardId)
       .select("*")
       .single();
-    if (error) throw error;
-
-    // Fire client email only on the first send. Idempotent thereafter — the
-    // email is keyed by boardId, so re-runs coalesce in email_send_log.
-    if (!existingToken) {
-      try {
-        await enqueueStyleBoardEmail({
-          boardId: row.id,
-          shareToken: token,
-          inquiryId: row.inquiry_id as string,
-          projectTitle: (row.project_title as string | null) ?? null,
-          preparedByName: (row.prepared_by_name as string | null) ?? null,
-          palette: (row.palette ?? []) as unknown[],
-          pinnedRmsIds: (row.pinned_rms_ids ?? []) as string[],
-        });
-      } catch (err) {
-        console.error("[markBoardSent] email enqueue failed:", err);
-      }
+    if (error) {
+      // Email is already enqueued (idempotently keyed by boardId in
+      // email_send_log). Do NOT re-enqueue on retry — a retried
+      // markBoardSent call is safe: enqueueStyleBoardEmail coalesces.
+      console.error(
+        `[markBoardSent] status update failed after email enqueue for board ${data.boardId}:`,
+        error,
+      );
+      throw error;
     }
 
     return row as unknown as StyleBoardRow;
