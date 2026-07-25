@@ -299,10 +299,10 @@ function FilmstripFrame({
               ref={registerRef}
               poster={clip.poster}
               muted
-              loop
-              autoPlay
+              loop={!reduced}
+              autoPlay={!reduced}
               playsInline
-              preload="none"
+              preload={reduced ? "none" : "auto"}
               {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
@@ -311,7 +311,7 @@ function FilmstripFrame({
               )}
               onLoadedData={(e) => {
                 setLoaded(true);
-                e.currentTarget.play().catch(() => {});
+                if (!reduced) e.currentTarget.play().catch(() => {});
               }}
             >
               {clip.src?.webm && <source src={clip.src.webm} type="video/webm" />}
