@@ -135,7 +135,7 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
               clip={clip}
               reduced={!!reduced}
               isHover={hoverId === clip.id}
-              priority={i >= 1 && i <= 3}
+              priority={i <= 3}
               onHoverChange={setHoverId}
               onOpen={(rect) => handleOpen(clip.id, rect)}
               onManualPlay={handleManualPlay}
