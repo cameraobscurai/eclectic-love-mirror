@@ -302,10 +302,10 @@ function FilmstripFrame({
               ref={registerRef}
               poster={clip.poster}
               muted
-              loop={!reduced}
-              autoPlay={!reduced}
+              loop={!rm}
+              autoPlay={!rm}
               playsInline
-              preload={reduced ? "none" : "auto"}
+              preload={rm ? "none" : "auto"}
               {...({ "webkit-playsinline": "true" } as Record<string, unknown>)}
               aria-label={clip.label}
               className={cn(
