@@ -114,7 +114,7 @@ export function SequentialHeroVideo() {
         />
       </div>
 
-      {mounted && (
+      {mounted && !reduced && (
         <video
           ref={videoRef}
           key={current.id}
