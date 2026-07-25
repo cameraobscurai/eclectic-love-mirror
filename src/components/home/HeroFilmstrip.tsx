@@ -361,7 +361,7 @@ function FilmstripFrame({
           </div>
         )}
 
-        {hasVideo && reduced && (
+        {hasVideo && rm && (
           <button
             type="button"
             onClick={(e) => {
