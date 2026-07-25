@@ -168,7 +168,7 @@ export const Route = createFileRoute("/collection")({
   // route until the catalog resolves.
   staleTime: Infinity,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
-  notFoundComponent: () => <div className="p-12">Not found</div>,
+  notFoundComponent: () => <CollectionNotFound />,
   component: CollectionPage,
 });
 
