@@ -26,6 +26,13 @@ const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as cons
 type EditableField = typeof EDITABLE_FIELDS[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
 
+// PostgREST .or()/filter grammar treats `,` `.` `(` `)` as syntax tokens and
+// `\` as the escape char. Untrusted input must be backslash-escaped or an
+// attacker can inject additional filter clauses.
+function escapePostgrestFilterValue(raw: string): string {
+  return raw.replace(/[\\,.()]/g, (ch) => `\\${ch}`);
+}
+
 export const listProducts = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .inputValidator((d: {
