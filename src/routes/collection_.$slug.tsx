@@ -184,7 +184,7 @@ export const Route = createFileRoute("/collection_/$slug")({
             rel: "preload",
             as: "image",
             href: img,
-            fetchpriority: "high" as const,
+            fetchPriority: "high" as const,
           },
         ],
         scripts: [
@@ -267,7 +267,7 @@ export const Route = createFileRoute("/collection_/$slug")({
                 rel: "preload",
                 as: "image" as const,
                 href: img,
-                fetchpriority: "high" as const,
+                fetchPriority: "high" as const,
               },
             ]
           : []),

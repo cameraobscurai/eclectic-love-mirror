@@ -133,7 +133,7 @@ export const Route = createFileRoute("/gallery")({
           rel: "preload",
           as: "image" as const,
           href: ogImage,
-          fetchpriority: "high" as const,
+          fetchPriority: "high" as const,
         },
         ...(STORAGE_ORIGIN
           ? [
