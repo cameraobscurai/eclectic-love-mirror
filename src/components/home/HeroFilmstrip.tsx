@@ -246,11 +246,14 @@ function FilmstripFrame({
   useEffect(() => {
     setMounted(true);
   }, []);
+  // Treat reduced-motion as false during SSR/first paint so client and server
+  // render identical markup; flip to the real value after mount.
+  const rm = mounted && reduced;
   const hasVideo = !!clip.src?.mp4 || !!clip.src?.webm;
   const innerY = useTransform(
     parallaxProgress,
     [0, 1],
-    reduced ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
+    rm ? [0, 0] : [-14 * parallaxDir, 14 * parallaxDir],
   );
 
   const figureRef = useRef<HTMLElement | null>(null);
