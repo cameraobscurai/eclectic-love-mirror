@@ -1161,6 +1161,7 @@ function CollectionPage() {
                     <CollectionWall
                       products={visibleProducts}
                       onOpen={(id) => setQuickViewId(id)}
+                      onImageFailed={markFailed}
                       cap={600}
                     />
                   )}
