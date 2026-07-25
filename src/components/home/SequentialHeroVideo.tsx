@@ -38,7 +38,7 @@ export function SequentialHeroVideo() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || reduced) return;
     const v = videoRef.current;
     if (!v) return;
 
