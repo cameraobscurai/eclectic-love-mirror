@@ -89,7 +89,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ImageOrderEditor } from "./ImageOrderEditor";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
@@ -604,11 +604,74 @@ export function ProductEditDrawer({
 
   useBodyScrollLock(true);
 
+  const asideRef = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const onKey = (e) => { if (e.key === "Escape") requestClose(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Focus trap + background inertness. Saves the previously-focused element,
+  // moves focus into the drawer, marks the rest of #root inert so screen
+  // readers and Tab can't escape, then restores everything on unmount.
+  useEffect(() => {
+    const prev = document.activeElement as HTMLElement | null;
+    const aside = asideRef.current;
+    if (!aside) return;
+    // Move focus to the first focusable inside the drawer.
+    const focusables = () =>
+      Array.from(
+        aside.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null || el === document.activeElement);
+    const first = focusables()[0];
+    first?.focus();
+
+    // Mark siblings inert so background is fully unreachable.
+    const root = document.getElementById("root") || document.body;
+    const siblings = Array.from(root.parentElement?.children ?? []).filter(
+      (n) => n !== aside.parentElement && n !== aside && !(n as HTMLElement).contains(aside)
+    ) as HTMLElement[];
+    const prevInert: Array<[HTMLElement, string | null, string | null]> = siblings.map((s) => [
+      s,
+      s.getAttribute("inert"),
+      s.getAttribute("aria-hidden"),
+    ]);
+    siblings.forEach((s) => {
+      if (s.contains(aside)) return;
+      s.setAttribute("inert", "");
+      s.setAttribute("aria-hidden", "true");
+    });
+
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const list = focusables();
+      if (list.length === 0) { e.preventDefault(); return; }
+      const firstEl = list[0];
+      const lastEl = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && document.activeElement === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      }
+    };
+    aside.addEventListener("keydown", onTab);
+
+    return () => {
+      aside.removeEventListener("keydown", onTab);
+      prevInert.forEach(([s, inertPrev, hiddenPrev]) => {
+        if (inertPrev === null) s.removeAttribute("inert");
+        else s.setAttribute("inert", inertPrev);
+        if (hiddenPrev === null) s.removeAttribute("aria-hidden");
+        else s.setAttribute("aria-hidden", hiddenPrev);
+      });
+      prev?.focus?.();
+    };
+  }, []);
+
 
   const requestClose = () => (draft.dirtyCount > 0 ? setConfirmDiscard(true) : onClose());
 
@@ -690,7 +753,7 @@ export function ProductEditDrawer({
           border: "none", cursor: "pointer",
         }} />
 
-      <aside className="relative h-full w-full flex flex-col" style={{
+      <aside ref={asideRef} className="relative h-full w-full flex flex-col" style={{
         maxWidth: 920, background: T.paper, borderLeft: T.hairline,
         boxShadow: "-24px 0 64px -32px rgba(26,26,26,0.35)",
         animation: "eh-drawer-in 320ms cubic-bezier(0.32,0.72,0,1) both",

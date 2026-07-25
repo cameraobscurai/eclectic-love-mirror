@@ -80,6 +80,9 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
               style={activeIdx === 0 ? { viewTransitionName: heroName } : undefined}
               loading="eager"
               decoding="async"
+              {...(activeIdx === 0
+                ? ({ fetchPriority: "high" } as Record<string, string>)
+                : {})}
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em] text-charcoal/40">

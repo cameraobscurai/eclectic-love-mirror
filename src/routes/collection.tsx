@@ -168,7 +168,18 @@ export const Route = createFileRoute("/collection")({
   // route until the catalog resolves.
   staleTime: Infinity,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
-  notFoundComponent: () => <div className="p-12">Not found</div>,
+  notFoundComponent: () => (
+    <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
+      <div className="max-w-lg text-center">
+        <p className="text-[10px] tracking-[0.28em] uppercase text-muted-foreground mb-4">404 — Not Found</p>
+        <h1 className="font-display text-3xl md:text-4xl tracking-wide uppercase mb-6">This Page Is Not In The Archive</h1>
+        <p className="text-sm tracking-[0.16em] uppercase text-muted-foreground mb-8">The link may be retired or mistyped.</p>
+        <a href="/collection" className="inline-block border border-foreground/40 px-6 py-3 text-[11px] tracking-[0.24em] uppercase hover:bg-foreground hover:text-background transition-colors">
+          Browse The Collection
+        </a>
+      </div>
+    </main>
+  ),
   component: CollectionPage,
 });
 
