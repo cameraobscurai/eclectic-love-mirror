@@ -26,11 +26,13 @@ const EDITABLE_FIELDS = [...STAFF_EDITABLE_FIELDS, ...ADMIN_ONLY_FIELDS] as cons
 type EditableField = typeof EDITABLE_FIELDS[number];
 type PatchInput = Partial<Record<EditableField, unknown>>;
 
-// PostgREST .or()/filter grammar treats `,` `.` `(` `)` as syntax tokens and
-// `\` as the escape char. Untrusted input must be backslash-escaped or an
-// attacker can inject additional filter clauses.
-function escapePostgrestFilterValue(raw: string): string {
-  return raw.replace(/[\\,.()]/g, (ch) => `\\${ch}`);
+// PostgREST .or() treats `,` `.` `(` `)` as syntax tokens for unquoted values.
+// The correct injection-safe pattern is to wrap the value in double quotes and
+// escape embedded `"` and `\` — inside quoted values the delimiters are
+// literal. Backslash-escaping the delimiters on a bare value does NOT work
+// (the parser still splits on the literal `,`/`)`).
+function quotePostgrestFilterValue(raw: string): string {
+  return `"${raw.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 export const listProducts = createServerFn({ method: "POST" })
