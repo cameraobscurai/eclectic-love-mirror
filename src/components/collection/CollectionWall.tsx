@@ -5,6 +5,7 @@ import { CollectionWallTile } from "./CollectionWallTile";
 interface Props {
   products: CollectionProduct[];
   onOpen: (id: string) => void;
+  onImageFailed?: (id: string) => void;
   /** Hard ceiling — auto-fit packs everything into one viewport, so very
    *  large categories get trimmed. Switch back to scroll view to see all. */
   cap?: number;
