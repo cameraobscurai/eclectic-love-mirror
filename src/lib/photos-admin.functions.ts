@@ -200,23 +200,27 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
     }
 
     const publishedAt = new Date().toISOString();
+    const stamp = publishedAt.replace(/[:.]/g, "-");
     const payload = JSON.stringify({ publishedAt, count: Object.keys(overlay).length, overlay });
     const blob = new Blob([payload], { type: "application/json" });
 
+    // Immutable, timestamped key — never overwritten, so concurrent readers
+    // never see a torn write. Manifest below is the sole mutable pointer.
+    const overlayKey = `catalog/overlay-${stamp}.json`;
     const { error: upErr } = await supabaseAdmin.storage
       .from("squarespace-mirror")
-      .upload("catalog/overlay.json", blob, {
-        upsert: true,
+      .upload(overlayKey, blob, {
+        upsert: false,
         contentType: "application/json",
-        cacheControl: "60",
+        cacheControl: "31536000, immutable",
       });
     if (upErr) throw new Error(`PUBLISH_WRITE_FAILED: ${upErr.message}`);
 
     // Gallery orders — snapshot admin-curated plate order per gallery so
     // /gallery serves the same one-request static blob instead of hitting
-    // Supabase live. Baked JSON remains the ultimate fallback; this
-    // snapshot beats a full rebake by moments when admins reorder.
+    // Supabase live. Baked JSON remains the ultimate fallback.
     let galleryCount = 0;
+    let galleryOrdersKey: string | null = null;
     try {
       const { data: gRows, error: gErr } = await supabaseAdmin
         .from("gallery_orders")
@@ -234,23 +238,38 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       galleryCount = Object.keys(orders).length;
       const gPayload = JSON.stringify({ publishedAt, count: galleryCount, orders });
       const gBlob = new Blob([gPayload], { type: "application/json" });
+      const key = `catalog/gallery-orders-${stamp}.json`;
       const { error: gUpErr } = await supabaseAdmin.storage
         .from("squarespace-mirror")
-        .upload("catalog/gallery-orders.json", gBlob, {
-          upsert: true,
+        .upload(key, gBlob, {
+          upsert: false,
           contentType: "application/json",
-          cacheControl: "60",
+          cacheControl: "31536000, immutable",
         });
       if (gUpErr) throw gUpErr;
+      galleryOrdersKey = key;
     } catch (e) {
       // Non-fatal — inventory overlay already published. Log and continue.
       console.warn("[publish] gallery-orders snapshot failed:", e);
     }
 
+    // Single small atomic write — the only mutable pointer readers consult.
+    // Publish becomes visible at this instant; the immutable blobs above are
+    // already durable.
+    const manifest = { publishedAt, overlayKey, galleryOrdersKey };
+    const { error: manErr } = await supabaseAdmin.storage
+      .from("squarespace-mirror")
+      .upload(
+        "catalog/manifest.json",
+        new Blob([JSON.stringify(manifest)], { type: "application/json" }),
+        { upsert: true, contentType: "application/json", cacheControl: "60" },
+      );
+    if (manErr) throw new Error(`PUBLISH_MANIFEST_FAILED: ${manErr.message}`);
+
     void audit({
       actorId: context.userId,
       entity: "catalog_overlay",
-      entityId: "catalog/overlay.json",
+      entityId: overlayKey,
       action: "publish",
       metadata: { count: Object.keys(overlay).length, galleryCount, publishedAt },
     });
