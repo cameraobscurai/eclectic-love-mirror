@@ -269,7 +269,7 @@ export const Route = createFileRoute("/collection_/$slug")({
                 as: "image" as const,
                 // Match the actual painted src in ProductStage (withCdnWidth 1200)
                 // so the preload hit is reused instead of triggering a second fetch.
-                href: img.includes("?") ? img : `${img}?width=1200`,
+                href: withCdnWidth(img, 1200),
                 fetchPriority: "high" as const,
               },
             ]
