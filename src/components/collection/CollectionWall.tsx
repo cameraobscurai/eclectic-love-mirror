@@ -5,7 +5,7 @@ import { CollectionWallTile } from "./CollectionWallTile";
 interface Props {
   products: CollectionProduct[];
   onOpen: (id: string) => void;
-  onImageFailed?: (id: string) => void;
+  
   /** Hard ceiling — auto-fit packs everything into one viewport, so very
    *  large categories get trimmed. Switch back to scroll view to see all. */
   cap?: number;
@@ -17,7 +17,7 @@ interface Props {
  * dim-everyone-else. Adapted from the Local Lvrs Lab grid for Hive's
  * cutout-on-white aesthetic.
  */
-export function CollectionWall({ products, onOpen, onImageFailed, cap = 240 }: Props) {
+export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -183,8 +183,8 @@ export function CollectionWall({ products, onOpen, onImageFailed, cap = 240 }: P
               isAnyHovered={activeId !== null}
               onHover={isMobile ? noopHover : setHoveredId}
               onOpen={onOpen}
-              onImageFailed={onImageFailed}
             />
+
           </div>
         ))}
 

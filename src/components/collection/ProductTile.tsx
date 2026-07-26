@@ -64,9 +64,13 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const fit = resolveFit(product.categorySlug);
-  const imageSrc = product.primaryImage ? withCdnWidth(product.primaryImage.url, 600) : "";
-  const imageSrcSet = product.primaryImage
-    ? buildCdnSrcSet(product.primaryImage.url, [400, 600, 900]) || undefined
+  const rawUrl = product.primaryImage?.url ?? null;
+  // Fallback chain: on CDN-transform error, retry with the raw URL so
+  // transient render-transform failures never leave a question-mark tile.
+  const [useRaw, setUseRaw] = useState(false);
+  const imageSrc = rawUrl ? (useRaw ? rawUrl : withCdnWidth(rawUrl, 600)) : "";
+  const imageSrcSet = rawUrl && !useRaw
+    ? buildCdnSrcSet(rawUrl, [400, 600, 900]) || undefined
     : undefined;
 
   return (
@@ -137,7 +141,10 @@ export function ProductTile({
                     fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
                   } as Record<string, string>)}
                   onLoad={markLoaded}
-                  onError={() => onImageFailed?.(product.id)}
+                  onError={() => {
+                    if (!useRaw) setUseRaw(true);
+                    else onImageFailed?.(product.id);
+                  }}
                   className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
                   style={{
                     transition: "transform 380ms ease-out",
