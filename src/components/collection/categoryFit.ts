@@ -75,7 +75,6 @@ const DEFAULT_RULE: FitRule = {
 
 const RULES: Record<string, FitRule> = {
   seating: {
-    primary: "width",
     // Height cap raised so loveseats/banquettes with square-ish silhouettes
     // don't get clamped small next to long horizontal sofas. Target width
     // is what carries visual weight — let height breathe.
