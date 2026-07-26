@@ -17,7 +17,7 @@ interface Props {
  * dim-everyone-else. Adapted from the Local Lvrs Lab grid for Hive's
  * cutout-on-white aesthetic.
  */
-export function CollectionWall({ products, onOpen, onImageFailed, cap = 240 }: Props) {
+export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [hoveredId, setHoveredId] = useState<string | null>(null);
