@@ -24,6 +24,31 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
+const FLOOR_ANCHORED_CATEGORIES = new Set([
+  "seating",
+  "tables",
+  "bars",
+  "lighting",
+  "large-decor",
+  "storage",
+]);
+
+function getGridPlacement(categorySlug: string | null | undefined) {
+  if (categorySlug && FLOOR_ANCHORED_CATEGORIES.has(categorySlug)) {
+    return {
+      anchor: "bottom" as const,
+      baseline: 0.86,
+      debugAnchorY: "86%",
+    };
+  }
+
+  return {
+    anchor: "center" as const,
+    baseline: 0.5,
+    debugAnchorY: "50%",
+  };
+}
+
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
@@ -63,6 +88,7 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
+  const placement = getGridPlacement(product.categorySlug);
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
@@ -97,10 +123,10 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              data-fit-anchor="center"
+              data-fit-anchor={placement.anchor}
               style={{
                 aspectRatio: tileAspect,
-                ["--fit-anchor-y" as string]: "50%",
+                ["--fit-anchor-y" as string]: placement.debugAnchorY,
                 ["--fit-center-x" as string]: "50%",
                 ["--fit-secondary-max" as string]: "70%",
               }}
@@ -127,6 +153,8 @@ export function ProductTile({
                   maxW={overrides?.maxW ?? 0.78}
                   maxH={overrides?.maxH ?? 0.7}
                   eager={index < HIGH_FETCH_COUNT}
+                  visualAnchorY={placement.anchor}
+                  visualBaselineY={placement.baseline}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
