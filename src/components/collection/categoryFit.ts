@@ -76,23 +76,27 @@ const DEFAULT_RULE: FitRule = {
 const RULES: Record<string, FitRule> = {
   seating: {
     primary: "width",
+    // Height cap raised so loveseats/banquettes with square-ish silhouettes
+    // don't get clamped small next to long horizontal sofas. Target width
+    // is what carries visual weight — let height breathe.
+    primary: "width",
     primaryTarget: 0.82,
-    secondaryMax: 0.52,
+    secondaryMax: 0.75,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
-    clampMin: 0.55,
+    clampMin: 0.7,
     clampMax: 1.1,
     fallback: FLOOR_FALLBACK,
   },
   tables: {
     primary: "width",
     primaryTarget: 0.8,
-    secondaryMax: 0.5,
+    secondaryMax: 0.7,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
-    clampMin: 0.55,
+    clampMin: 0.7,
     clampMax: 1.1,
     fallback: FLOOR_FALLBACK,
   },
