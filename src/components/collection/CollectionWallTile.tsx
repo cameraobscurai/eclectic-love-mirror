@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
@@ -13,21 +13,23 @@ interface Props {
   isAnyHovered: boolean;
   onHover: (id: string | null) => void;
   onOpen: (id: string) => void;
-  onImageFailed?: (id: string) => void;
 }
 
 const WALL_WIDTHS = [600, 900, 1200];
 
-function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen, onImageFailed }: Props) {
+function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
   const fit = resolveFit(product.categorySlug ?? null);
 
-  // Route through Supabase's /render/image transform endpoint via withCdnWidth
-  // so the CDN can serve right-sized variants and cache them properly. Native
-  // loading="lazy" already gates off-screen requests — no IO observer needed.
-  const src = url ? withCdnWidth(url, 1200) : "";
-  const srcSet = url ? buildCdnSrcSet(url, WALL_WIDTHS) : "";
+  // Fallback chain: CDN-transformed → raw original URL. Some Supabase render
+  // transforms 400 transiently or reject certain source formats; falling back
+  // to the raw object URL keeps the tile visible instead of a question mark.
+  const [useRaw, setUseRaw] = useState(false);
+  useEffect(() => setUseRaw(false), [url]);
+
+  const src = url ? (useRaw ? url : withCdnWidth(url, 1200)) : "";
+  const srcSet = url && !useRaw ? buildCdnSrcSet(url, WALL_WIDTHS) : "";
 
   return (
     <motion.button
@@ -58,7 +60,9 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             loading="lazy"
             decoding="async"
             draggable={false}
-            onError={() => onImageFailed?.(product.id)}
+            onError={() => {
+              if (!useRaw) setUseRaw(true);
+            }}
           />
         )}
       </div>
@@ -74,3 +78,4 @@ export const CollectionWallTile = memo(
     prev.product.id === next.product.id &&
     prev.cellAspect === next.cellAspect,
 );
+
