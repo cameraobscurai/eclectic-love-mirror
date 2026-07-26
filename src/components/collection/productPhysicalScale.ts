@@ -1,4 +1,5 @@
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { isSeatingCategory } from "./categoryAliases";
 
 export function parseWidthInches(dimensions: string | null | undefined): number | null {
   if (!dimensions) return null;
@@ -10,7 +11,7 @@ export function parseWidthInches(dimensions: string | null | undefined): number 
 }
 
 export function physicalScale(product: CollectionProduct): number {
-  if (product.categorySlug !== "seating") return 1;
+  if (!isSeatingCategory(product.categorySlug)) return 1;
 
   const width = parseWidthInches(product.dimensions);
   if (!width) return 1;

@@ -12,6 +12,7 @@ import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { physicalScale } from "./productPhysicalScale";
+import { isFloorAnchoredCategory } from "./categoryAliases";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -25,17 +26,8 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-const FLOOR_ANCHORED_CATEGORIES = new Set([
-  "seating",
-  "tables",
-  "bars",
-  "lighting",
-  "large-decor",
-  "storage",
-]);
-
 function getGridPlacement(categorySlug: string | null | undefined) {
-  if (categorySlug && FLOOR_ANCHORED_CATEGORIES.has(categorySlug)) {
+  if (isFloorAnchoredCategory(categorySlug)) {
     return {
       anchor: "bottom" as const,
       baseline: 0.84,
