@@ -480,22 +480,11 @@ function CollectionPage() {
     });
   }, [groupFiltered, sort, q, activeParent]);
 
-  // Failed-image filter (per-session)
-  const [failedIds, setFailedIds] = useState<Set<string>>(() => new Set());
-  const markFailed = (id: string) =>
-    setFailedIds((prev) => {
-      if (prev.has(id)) return prev;
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  const visibleProducts = useMemo(
-    () =>
-      failedIds.size === 0
-        ? filtered
-        : filtered.filter((p) => !failedIds.has(p.id)),
-    [filtered, failedIds],
-  );
+  // Never hide products on image error — tiles fall back to the raw URL
+  // (bypassing the CDN transform) internally. Question-mark tiles were the
+  // symptom of the CDN transform failing transiently; hiding the product
+  // was worse than the broken image.
+  const visibleProducts = filtered;
 
 
 
