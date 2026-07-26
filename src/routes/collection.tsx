@@ -1158,7 +1158,7 @@ function CollectionPage() {
                 <>
                   <div
                     style={{
-                      paddingTop: "1.75rem",
+                      paddingTop: "clamp(2.5rem, 5vw, 5rem)",
                       paddingBottom: "2rem",
                     }}
                   >

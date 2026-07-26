@@ -231,10 +231,12 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  // Measurement is a property of the image, not the frame — reusing the same
-  // measurement across wall/grid toggles prevents the "everything goes big
-  // then snaps" pop when frameAspect changes.
-  const cacheKey = src;
+  // Measurement is in frame-space, not just image-space: measureImage()
+  // letterboxes the natural image into the current frameAspect before it
+  // computes the silhouette bounds. Key by both URL and frame shape so the
+  // viewport wall and the normal browsing grid cannot reuse incompatible
+  // geometry and make neighboring products jump to different scales.
+  const cacheKey = `${src}|frame:${frameAspect.toFixed(4)}`;
   const cached = measurementCache.get(cacheKey);
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 

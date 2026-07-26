@@ -10,7 +10,6 @@ import {
 } from "@/lib/collection-tile-presets";
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
-import { resolveFit } from "./categoryFit";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 
 interface ProductTileProps {
@@ -63,7 +62,6 @@ export function ProductTile({
   // image load, so any slow image made the tile look "disappeared."
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
-  const fit = resolveFit(product.categorySlug);
   const rawUrl = product.primaryImage?.url ?? null;
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
@@ -99,12 +97,12 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              data-fit-anchor={fit.anchor}
+              data-fit-anchor="center"
               style={{
                 aspectRatio: tileAspect,
-                ["--fit-anchor-y" as string]: `${fit.anchorY * 100}%`,
-                ["--fit-center-x" as string]: `${fit.centerX * 100}%`,
-                ["--fit-secondary-max" as string]: `${fit.secondaryMax * 100}%`,
+                ["--fit-anchor-y" as string]: "50%",
+                ["--fit-center-x" as string]: "50%",
+                ["--fit-secondary-max" as string]: "70%",
               }}
             >
               {/* Skeleton overlay */}
@@ -125,7 +123,9 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  fit={resolveFit(product.categorySlug)}
+                  targetArea={overrides?.targetArea ?? 0.24}
+                  maxW={overrides?.maxW ?? 0.78}
+                  maxH={overrides?.maxH ?? 0.7}
                   eager={index < HIGH_FETCH_COUNT}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   focalX={product.coverFocalX ?? null}
