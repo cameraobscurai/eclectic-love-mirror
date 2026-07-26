@@ -75,12 +75,13 @@ const DEFAULT_RULE: FitRule = {
 
 const RULES: Record<string, FitRule> = {
   seating: {
-    // Height cap raised so loveseats/banquettes with square-ish silhouettes
-    // don't get clamped small next to long horizontal sofas. Target width
-    // is what carries visual weight — let height breathe.
+    // Width is the visual-weight axis for seating; the height cap must never
+    // bind for realistic silhouette aspects (chairs ~1.0, loveseats ~1.2,
+    // sofas ~2+), or squarer items render narrower than long sofas. Cap set
+    // just under the frame so extreme tall silhouettes still can't overflow.
     primary: "width",
     primaryTarget: 0.82,
-    secondaryMax: 0.75,
+    secondaryMax: 0.92,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
@@ -91,7 +92,7 @@ const RULES: Record<string, FitRule> = {
   tables: {
     primary: "width",
     primaryTarget: 0.8,
-    secondaryMax: 0.7,
+    secondaryMax: 0.88,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
