@@ -44,6 +44,7 @@ function getGridPlacement(categorySlug: string | null | undefined) {
       targetArea: 0.2,
       maxW: 0.78,
       maxH: 0.56,
+      minScale: 0.62,
     };
   }
 
@@ -56,7 +57,30 @@ function getGridPlacement(categorySlug: string | null | undefined) {
     targetArea: 0.24,
     maxW: 0.78,
     maxH: 0.7,
+    minScale: undefined,
   };
+}
+
+function parseWidthInches(dimensions: string | null | undefined): number | null {
+  if (!dimensions) return null;
+  const widthMatch = dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|in)?\s*w\b/i);
+  if (widthMatch) return Number(widthMatch[1]);
+
+  const firstDimension = dimensions.match(/(\d+(?:\.\d+)?)/);
+  return firstDimension ? Number(firstDimension[1]) : null;
+}
+
+function physicalScale(product: CollectionProduct): number {
+  if (product.categorySlug !== "seating") return 1;
+
+  const width = parseWidthInches(product.dimensions);
+  if (!width) return 1;
+
+  // Sofas and loveseats were drifting because photo normalization made a
+  // 52" loveseat occupy the same visual mass as a 98" sofa. Keep the floor
+  // baseline shared, but scale seating by real inventory width with a gentle
+  // clamp so smaller pieces read smaller without disappearing.
+  return Math.max(0.78, Math.min(1, Math.sqrt(width / 78)));
 }
 
 
@@ -99,6 +123,7 @@ export function ProductTile({
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
   const placement = getGridPlacement(product.categorySlug);
+  const itemScale = physicalScale(product);
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
@@ -161,7 +186,8 @@ export function ProductTile({
                   frameAspect={frameAspect}
                   targetArea={overrides?.targetArea ?? placement.targetArea}
                   maxW={overrides?.maxW ?? placement.maxW}
-                  maxH={overrides?.maxH ?? placement.maxH}
+                  maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
+                  minScale={placement.minScale}
                   fitMode={placement.fitMode}
                   targetWidth={placement.targetWidth}
                   eager={index < HIGH_FETCH_COUNT}
