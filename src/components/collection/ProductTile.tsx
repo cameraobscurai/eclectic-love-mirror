@@ -78,9 +78,9 @@ function physicalScale(product: CollectionProduct): number {
 
   // Sofas and loveseats were drifting because photo normalization made a
   // 52" loveseat occupy the same visual mass as a 98" sofa. Keep the floor
-  // baseline shared, but scale seating by real inventory width with a gentle
-  // clamp so smaller pieces read smaller without disappearing.
-  return Math.max(0.78, Math.min(1, Math.sqrt(width / 78)));
+  // baseline shared, but scale seating by real inventory width; the lower
+  // clamp keeps small chairs/loveseats visible without letting them dominate.
+  return Math.max(0.72, Math.min(1, width / 78));
 }
 
 
@@ -185,9 +185,9 @@ export function ProductTile({
                   src={imageSrc}
                   frameAspect={frameAspect}
                   targetArea={overrides?.targetArea ?? placement.targetArea}
-                  maxW={overrides?.maxW ?? placement.maxW}
+                  maxW={(overrides?.maxW ?? placement.maxW) * itemScale}
                   maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
-                  minScale={placement.minScale}
+                  minScale={placement.minScale ? placement.minScale * itemScale : undefined}
                   fitMode={placement.fitMode}
                   targetWidth={placement.targetWidth}
                   eager={index < HIGH_FETCH_COUNT}
