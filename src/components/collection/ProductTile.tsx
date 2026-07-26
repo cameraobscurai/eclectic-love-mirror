@@ -141,7 +141,10 @@ export function ProductTile({
                     fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
                   } as Record<string, string>)}
                   onLoad={markLoaded}
-                  onError={() => onImageFailed?.(product.id)}
+                  onError={() => {
+                    if (!useRaw) setUseRaw(true);
+                    else onImageFailed?.(product.id);
+                  }}
                   className={`absolute inset-0 h-full w-full ${PRODUCT_TILE_IMAGE_CLASS} will-change-transform group-hover:scale-[1.015]`}
                   style={{
                     transition: "transform 380ms ease-out",
