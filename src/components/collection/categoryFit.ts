@@ -10,6 +10,8 @@
  * here — no component edits required.
  */
 
+import { canonicalCategorySlug } from "./categoryAliases";
+
 export type FitAnchor = "bottom" | "top" | "center";
 export type FitPrimary = "width" | "height" | "area";
 
@@ -235,8 +237,9 @@ const RULES: Record<string, FitRule> = {
 };
 
 export function resolveFit(categorySlug: string | null | undefined): FitRule {
-  if (!categorySlug) return DEFAULT_RULE;
-  return RULES[categorySlug] ?? DEFAULT_RULE;
+  const canonical = canonicalCategorySlug(categorySlug);
+  if (!canonical) return DEFAULT_RULE;
+  return RULES[canonical] ?? DEFAULT_RULE;
 }
 
 export { DEFAULT_RULE };
