@@ -5,6 +5,7 @@ import { PRODUCT_TILE_IMAGE_CLASS } from "@/lib/collection-tile-presets";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { resolveFit } from "./categoryFit";
+import { physicalScale } from "./productPhysicalScale";
 
 interface Props {
   product: CollectionProduct;
@@ -21,6 +22,20 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
   const fit = resolveFit(product.categorySlug ?? null);
+  const itemScale = physicalScale(product);
+  const scaledFit = itemScale === 1
+    ? fit
+    : {
+        ...fit,
+        primaryTarget: fit.primaryTarget * itemScale,
+        secondaryMax: fit.secondaryMax * itemScale,
+        clampMin: fit.clampMin * itemScale,
+        clampMax: fit.clampMax * itemScale,
+        fallback: {
+          ...fit.fallback,
+          scale: fit.fallback.scale * itemScale,
+        },
+      };
 
   // Fallback chain: CDN-transformed → raw original URL. Some Supabase render
   // transforms 400 transiently or reject certain source formats; falling back
@@ -53,9 +68,10 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             src={src}
             srcSet={srcSet}
             frameAspect={cellAspect}
-            fit={fit}
+            fit={scaledFit}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
+            eager
             className={`w-full h-full ${PRODUCT_TILE_IMAGE_CLASS} pointer-events-none select-none`}
             loading="lazy"
             decoding="async"

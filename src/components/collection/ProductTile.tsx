@@ -11,6 +11,7 @@ import {
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
+import { physicalScale } from "./productPhysicalScale";
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -60,29 +61,6 @@ function getGridPlacement(categorySlug: string | null | undefined) {
     minScale: undefined,
   };
 }
-
-function parseWidthInches(dimensions: string | null | undefined): number | null {
-  if (!dimensions) return null;
-  const widthMatch = dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|in)?\s*w\b/i);
-  if (widthMatch) return Number(widthMatch[1]);
-
-  const firstDimension = dimensions.match(/(\d+(?:\.\d+)?)/);
-  return firstDimension ? Number(firstDimension[1]) : null;
-}
-
-function physicalScale(product: CollectionProduct): number {
-  if (product.categorySlug !== "seating") return 1;
-
-  const width = parseWidthInches(product.dimensions);
-  if (!width) return 1;
-
-  // Sofas and loveseats were drifting because photo normalization made a
-  // 52" loveseat occupy the same visual mass as a 98" sofa. Keep the floor
-  // baseline shared, but scale seating by real inventory width; the lower
-  // clamp keeps small chairs/loveseats visible without letting them dominate.
-  return Math.max(0.72, Math.min(1, width / 78));
-}
-
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
@@ -184,7 +162,7 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  targetArea={overrides?.targetArea ?? placement.targetArea}
+                  targetArea={(overrides?.targetArea ?? placement.targetArea) * itemScale * itemScale}
                   maxW={(overrides?.maxW ?? placement.maxW) * itemScale}
                   maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
                   minScale={placement.minScale ? placement.minScale * itemScale : undefined}
