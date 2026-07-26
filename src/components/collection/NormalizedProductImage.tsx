@@ -178,8 +178,8 @@ function measureImage(
 
 function solveFit(m: Measurement, rule: FitRule): Fit {
   const inset = TILE_IMAGE_INSET;
-  const wInsetFrame = inset * m.renderedW * m.bw;
-  const hInsetFrame = inset * m.renderedH * m.bh;
+  const wInsetFrame = inset * m.bw;
+  const hInsetFrame = inset * m.bh;
 
   // 1. Primary-axis target scale.
   let sTarget: number;
@@ -314,8 +314,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     let legacyFit: Fit;
     if (measurement) {
       // Reuse measurement via the legacy area/width math.
-      const wInsetFrame = TILE_IMAGE_INSET * measurement.renderedW * measurement.bw;
-      const hInsetFrame = TILE_IMAGE_INSET * measurement.renderedH * measurement.bh;
+      const wInsetFrame = TILE_IMAGE_INSET * measurement.bw;
+      const hInsetFrame = TILE_IMAGE_INSET * measurement.bh;
       const legacyTargetArea = targetArea ?? 0.32;
       const legacyMaxW = maxW ?? 0.86;
       const legacyMaxH = maxH ?? 0.82;
@@ -323,8 +323,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       if (fitMode === "width") {
         const tW = targetWidth ?? 0.82;
         const wS = tW / Math.max(0.001, wInsetFrame);
-        const hS = 0.52 / Math.max(0.001, hInsetFrame);
-        primaryScale = Math.min(wS, hS);
+        primaryScale = wS;
       } else {
         const currentArea = Math.max(0.001, wInsetFrame * hInsetFrame);
         primaryScale = Math.sqrt(legacyTargetArea / currentArea);

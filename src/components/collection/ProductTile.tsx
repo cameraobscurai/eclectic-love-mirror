@@ -39,6 +39,11 @@ function getGridPlacement(categorySlug: string | null | undefined) {
       anchor: "bottom" as const,
       baseline: 0.86,
       debugAnchorY: "86%",
+      fitMode: "width" as const,
+      targetWidth: 0.74,
+      targetArea: 0.24,
+      maxW: 0.78,
+      maxH: 0.64,
     };
   }
 
@@ -46,6 +51,11 @@ function getGridPlacement(categorySlug: string | null | undefined) {
     anchor: "center" as const,
     baseline: 0.5,
     debugAnchorY: "50%",
+    fitMode: "area" as const,
+    targetWidth: undefined,
+    targetArea: 0.24,
+    maxW: 0.78,
+    maxH: 0.7,
   };
 }
 
@@ -149,9 +159,11 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  targetArea={overrides?.targetArea ?? 0.24}
-                  maxW={overrides?.maxW ?? 0.78}
-                  maxH={overrides?.maxH ?? 0.7}
+                  targetArea={overrides?.targetArea ?? placement.targetArea}
+                  maxW={overrides?.maxW ?? placement.maxW}
+                  maxH={overrides?.maxH ?? placement.maxH}
+                  fitMode={placement.fitMode}
+                  targetWidth={placement.targetWidth}
                   eager={index < HIGH_FETCH_COUNT}
                   visualAnchorY={placement.anchor}
                   visualBaselineY={placement.baseline}
