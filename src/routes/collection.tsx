@@ -1027,7 +1027,7 @@ function CollectionPage() {
           Right: overview gallery OR category hero + grid.
           ============================================================ */}
       <section
-        className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 lg:px-12 pt-0"}
+        className={showOverview ? "px-0 pt-0" : layout === "wall" ? "px-0 pt-0" : "px-6 pt-6 lg:px-12 lg:pt-8"}
       >
         <div
           className={showOverview || layout === "wall" ? "" : "mx-auto"}

@@ -26,6 +26,7 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   targetArea?: number;
   maxW?: number;
   maxH?: number;
+  minScale?: number;
   fitMode?: "area" | "width";
   targetWidth?: number;
 
@@ -220,6 +221,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   targetArea,
   maxW,
   maxH,
+  minScale,
   fitMode = "area",
   targetWidth,
   focalX,
@@ -332,9 +334,9 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
         legacyMaxW / Math.max(0.001, wInsetFrame),
         legacyMaxH / Math.max(0.001, hInsetFrame),
       );
-      const minScale = fitMode === "width" ? 0.55 : LEGACY_SCALE_MIN;
+      const resolvedMinScale = minScale ?? (fitMode === "width" ? 0.55 : LEGACY_SCALE_MIN);
       const maxScale = fitMode === "width" ? 1.1 : LEGACY_SCALE_MAX;
-      const s = clamp(Math.min(primaryScale, scaleByCaps), minScale, maxScale);
+      const s = clamp(Math.min(primaryScale, scaleByCaps), resolvedMinScale, maxScale);
 
       // Legacy bottom compression (area path only).
       const visualBottom = fitMode === "width"
@@ -372,6 +374,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     targetArea,
     maxW,
     maxH,
+    minScale,
     fitMode,
     targetWidth,
   ]);
