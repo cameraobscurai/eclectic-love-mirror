@@ -1205,7 +1205,6 @@ function CollectionPage() {
                                   product={p}
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
-                                  onImageFailed={markFailed}
                                   alignToSharedBaseline={true}
                                 />
                               ));
