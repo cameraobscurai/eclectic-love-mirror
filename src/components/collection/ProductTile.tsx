@@ -125,7 +125,9 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  fit={resolveFit(product.categorySlug)}
+                  targetArea={overrides?.targetArea ?? 0.24}
+                  maxW={overrides?.maxW ?? 0.78}
+                  maxH={overrides?.maxH ?? 0.7}
                   eager={index < HIGH_FETCH_COUNT}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
                   focalX={product.coverFocalX ?? null}
