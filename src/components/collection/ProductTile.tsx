@@ -37,13 +37,13 @@ function getGridPlacement(categorySlug: string | null | undefined) {
   if (categorySlug && FLOOR_ANCHORED_CATEGORIES.has(categorySlug)) {
     return {
       anchor: "bottom" as const,
-      baseline: 0.86,
-      debugAnchorY: "86%",
-      fitMode: "width" as const,
-      targetWidth: 0.74,
-      targetArea: 0.24,
+      baseline: 0.84,
+      debugAnchorY: "84%",
+      fitMode: "area" as const,
+      targetWidth: undefined,
+      targetArea: 0.2,
       maxW: 0.78,
-      maxH: 0.64,
+      maxH: 0.56,
     };
   }
 
