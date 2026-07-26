@@ -183,8 +183,8 @@ export function CollectionWall({ products, onOpen, onImageFailed, cap = 240 }: P
               isAnyHovered={activeId !== null}
               onHover={isMobile ? noopHover : setHoveredId}
               onOpen={onOpen}
-              onImageFailed={onImageFailed}
             />
+
           </div>
         ))}
 
