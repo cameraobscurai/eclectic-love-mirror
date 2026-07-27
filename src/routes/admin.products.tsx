@@ -371,6 +371,13 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         sketch={null}
         onClose={onClose}
         onOpenPhotos={() => setPhotoEditor(true)}
+        onPhotosSaved={(next: { images: string[]; card_background_url: string | null }) => {
+          // Keep the drawer's preview + readiness checklist in step with the
+          // photo editor instead of waiting for a close/reopen.
+          setRow((prev) => (prev ? { ...prev, images: next.images, card_background_url: next.card_background_url } : prev));
+          onSaved();
+        }}
+
         onSave={async (patch: Record<string, unknown>) => {
           const updated = await upd({ data: { id, patch } });
           setRow(updated as ProductRow);
