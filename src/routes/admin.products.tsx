@@ -265,10 +265,9 @@ function Inner() {
           id={search.id}
           onClose={() => navigate({ search: (s: any) => ({ ...s, id: "" }) })}
           onSaved={() => {
-            // refresh list
-            list({ data: { search: search.q, category: search.cat || undefined, publicReady: search.ready, limit: PAGE, offset } })
-              .then((r) => { setRows(r.rows as Row[]); setCount(r.count); });
+            queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
           }}
+
         />
       )}
     </div>
