@@ -605,11 +605,15 @@ export function ProductEditDrawer({
   useBodyScrollLock(true);
 
   const asideRef = useRef<HTMLElement | null>(null);
+  // The Escape listener mounts once; without a ref it closes over the initial
+  // (clean) draft and silently discards unsaved edits.
+  const requestCloseRef = useRef<() => void>(() => {});
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") requestClose(); };
+    const onKey = (e) => { if (e.key === "Escape") requestCloseRef.current(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
 
   // Focus trap + background inertness. Saves the previously-focused element,
   // moves focus into the drawer, marks the rest of #root inert so screen
