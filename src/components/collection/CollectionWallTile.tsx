@@ -69,6 +69,8 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             srcSet={srcSet}
             frameAspect={cellAspect}
             fit={scaledFit}
+            focalX={product.coverFocalX ?? null}
+            focalY={product.coverFocalY ?? null}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
             eager
@@ -92,6 +94,9 @@ export const CollectionWallTile = memo(
     prev.isHovered === next.isHovered &&
     prev.isAnyHovered === next.isAnyHovered &&
     prev.product.id === next.product.id &&
+    prev.product.primaryImage?.url === next.product.primaryImage?.url &&
+    prev.product.categorySlug === next.product.categorySlug &&
+    prev.product.dimensions === next.product.dimensions &&
     prev.cellAspect === next.cellAspect,
 );
 
