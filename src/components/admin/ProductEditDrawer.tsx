@@ -834,7 +834,8 @@ export function ProductEditDrawer({
                           card_background_url: (product.card_background_url as string | null) ?? null,
                         }}
                         onClose={() => { /* embedded: no-op, drawer owns close */ }}
-                        onSaved={() => { /* parent refetches via its own onSave path */ }}
+                        onSaved={(next) => onPhotosSaved?.(next)}
+
                       />
                     </section>
                   );
