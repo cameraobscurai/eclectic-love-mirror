@@ -59,6 +59,9 @@ export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
+      // Fallback title so routes without their own head() (404, redirect
+      // stubs) never ship an empty <title>. Leaf routes override this.
+      { title: "Eclectic Hive" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "author", content: "Eclectic Hive" },
       { name: "theme-color", content: "#1a1a1a" },

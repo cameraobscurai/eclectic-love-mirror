@@ -124,11 +124,11 @@ const suggestionGroupLabel: React.CSSProperties = {
 export const Route = createFileRoute("/collection")({
   head: () => ({
     meta: [
-      { title: "Event Furniture & Decor Rentals — Denver, CO | Eclectic Hive" },
+      { title: "Event Furniture & Decor Rentals — Eclectic Hive" },
       {
         name: "description",
         content:
-          "Browse 600+ event rental pieces — sofas, lounge seating, tables, bars, lighting, tableware, rugs, and bespoke decor. Curated for weddings and brand events across Denver and Colorado.",
+          "Browse 600+ event rental pieces — seating, tables, bars, lighting, tableware, rugs, and bespoke decor for weddings and brand events in Denver.",
       },
       { name: "keywords", content: "event furniture rental denver, wedding rentals denver, lounge furniture rental colorado, bar rental denver, tableware rental denver" },
       { property: "og:title", content: "Event Rentals — Hive Signature Collection" },
@@ -871,7 +871,7 @@ function CollectionPage() {
                 <button
                   ref={filtersTriggerRef}
                   onClick={() => setSheetOpen(true)}
-                  className="lg:hidden inline-flex items-center gap-2 h-10 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
+                  className="lg:hidden inline-flex items-center gap-2 h-11 px-3 border border-charcoal/15 text-[11px] uppercase tracking-[0.2em] hover:bg-charcoal hover:text-white focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-colors"
                   aria-label="Open filters"
                   aria-haspopup="dialog"
                 >
