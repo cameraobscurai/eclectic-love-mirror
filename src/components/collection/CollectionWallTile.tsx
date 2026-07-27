@@ -69,6 +69,8 @@ function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, 
             srcSet={srcSet}
             frameAspect={cellAspect}
             fit={scaledFit}
+            focalX={product.coverFocalX ?? null}
+            focalY={product.coverFocalY ?? null}
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             alt={product.title}
             eager
