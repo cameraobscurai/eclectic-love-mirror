@@ -55,52 +55,74 @@ function Inner() {
   const navigate = useNavigate({ from: Route.fullPath });
   const list = useServerFn(listProducts);
   const catsFn = useServerFn(listDistinctCategories);
+  const queryClient = useQueryClient();
 
-  const [rows, setRows] = useState<Row[]>([]);
-  const [count, setCount] = useState(0);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [cats, setCats] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState(search.q);
+
+  // Categories rarely change — cache hard so switching pages never refetches.
+  const { data: cats = [] } = useQuery({
+    queryKey: ["admin", "product-categories"],
+    queryFn: () => catsFn(),
+    staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000,
+  });
 
   // BOH deep-link support: when `?group=<ParentId>` is set, derive the
   // rms_id list for that parent from the baked catalog and pass it to the
   // server as a proper filter (client-side page-only filtering was broken
   // when the first page contained no matching rows).
-  const [groupRmsIds, setGroupRmsIds] = useState<string[] | null>(null);
-  useEffect(() => {
-    if (!search.group) { setGroupRmsIds(null); return; }
-    let alive = true;
-    getCollectionCatalog()
-      .then((c) => {
-        if (!alive) return;
-        const ids: string[] = [];
-        for (const p of c.products) {
-          if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
-        }
-        setGroupRmsIds(ids);
-      })
-      .catch(() => alive && setGroupRmsIds([]));
-    return () => { alive = false; };
-  }, [search.group]);
+  const { data: groupRmsIds = null } = useQuery({
+    queryKey: ["admin", "group-rms", search.group ?? null],
+    enabled: Boolean(search.group),
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const c = await getCollectionCatalog();
+      const ids: string[] = [];
+      for (const p of c.products) {
+        if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
+      }
+      return ids;
+    },
+  });
 
-  useEffect(() => { catsFn().then(setCats).catch(() => {}); }, [catsFn]);
+  const listArgs = {
+    search: search.q,
+    category: search.cat || undefined,
+    publicReady: search.ready,
+    rmsIds: groupRmsIds ?? undefined,
+    limit: PAGE,
+    offset,
+  };
 
+  const {
+    data: page,
+    isFetching,
+    isPending,
+  } = useQuery({
+    queryKey: ["admin", "products", listArgs],
+    // Don't fire until the group filter (if any) has resolved.
+    enabled: !search.group || groupRmsIds !== null,
+    queryFn: () => list({ data: listArgs }),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+  });
+
+  const rows = (page?.rows ?? []) as Row[];
+  const count = page?.count ?? 0;
+  const loading = isPending || isFetching;
+
+  // Warm the next page in the background so paging feels instant.
   useEffect(() => {
-    // Wait for group resolution before firing the list query.
-    if (search.group && groupRmsIds === null) return;
-    setLoading(true);
-    list({ data: {
-      search: search.q,
-      category: search.cat || undefined,
-      publicReady: search.ready,
-      rmsIds: groupRmsIds ?? undefined,
-      limit: PAGE,
-      offset,
-    } })
-      .then((r) => { setRows(r.rows as Row[]); setCount(r.count); })
-      .finally(() => setLoading(false));
-  }, [list, search.q, search.cat, search.ready, search.group, groupRmsIds, offset]);
+    if (!page || offset + PAGE >= count) return;
+    const nextArgs = { ...listArgs, offset: offset + PAGE };
+    queryClient.prefetchQuery({
+      queryKey: ["admin", "products", nextArgs],
+      queryFn: () => list({ data: nextArgs }),
+      staleTime: 30_000,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, offset, count]);
 
   useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
 
@@ -111,6 +133,7 @@ function Inner() {
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
+
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
