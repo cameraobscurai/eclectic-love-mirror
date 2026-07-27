@@ -678,6 +678,7 @@ export function ProductEditDrawer({
 
 
   const requestClose = () => (draft.dirtyCount > 0 ? setConfirmDiscard(true) : onClose());
+  requestCloseRef.current = requestClose;
 
   const save = async () => {
     if (draft.hasErrors || draft.dirtyCount === 0 || saving) return;
@@ -686,8 +687,14 @@ export function ProductEditDrawer({
       await onSave(draft.buildPatch());
       setSavedAt(Date.now());
       setConfirmDiscard(false);
+      toast.success("Saved");
+    } catch (err) {
+      // Never fail silently — a save that didn't land must be visible.
+      const msg = err instanceof Error ? err.message : String(err ?? "Save failed");
+      toast.error("Save failed — your edits are still here", { description: msg });
     } finally { setSaving(false); }
   };
+
 
   /* Undo = single-field patch from the snapshot's exact prior value (§7).
      Blocked while other edits are dirty so Undo can't quietly drop them:
