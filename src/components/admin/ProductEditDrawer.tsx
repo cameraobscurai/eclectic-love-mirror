@@ -589,8 +589,9 @@ function RateContext({ category, price, stats }) {
 
 export function ProductEditDrawer({
   product, categories, role = "staff", recentChanges = [], categoryPriceStats = {},
-  onSave, onClose, onOpenPhotos, liveUrl, sketch,
+  onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved,
 }) {
+
   const draft = useDraft(product);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState(null);
