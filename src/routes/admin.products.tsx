@@ -214,12 +214,22 @@ function Inner() {
               </tr>
             </thead>
             <tbody>
-              {loading && visibleRows.length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">Loading…</td></tr>
-              )}
+              {loading && visibleRows.length === 0 &&
+                Array.from({ length: 12 }).map((_, i) => (
+                  <tr key={`sk-${i}`} className="border-b border-charcoal/5">
+                    <td className="px-3 py-2"><div className="w-10 h-10 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-10 bg-charcoal/5 animate-pulse" /></td>
+                  </tr>
+                ))}
               {!loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
+
               {visibleRows.map((r) => {
                 const cover = r.upscaled_cover_url ?? (r.images?.[0] ?? null);
                 return (
