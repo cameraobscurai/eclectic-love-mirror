@@ -712,7 +712,12 @@ export function ProductEditDrawer({
     try {
       await onSave({ [c.field]: c.rawBefore ?? null });
       setSavedAt(Date.now());
+      toast.success("Change undone");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err ?? "Undo failed");
+      toast.error("Undo failed", { description: msg });
     } finally { setSaving(false); }
+
   };
 
 
