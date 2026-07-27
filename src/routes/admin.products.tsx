@@ -304,6 +304,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const catsFn = useServerFn(listDistinctCategories);
   const roleFn = useServerFn(getMyRole);
   const [row, setRow] = useState<ProductRow | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [audit, setAudit] = useState<any[]>([]);
   const [cats, setCats] = useState<string[]>([]);
@@ -311,7 +312,10 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const [photoEditor, setPhotoEditor] = useState(false);
 
   const refetch = () => {
-    get({ data: { id } }).then((r) => setRow(r as ProductRow)).catch(() => {});
+    setLoadError(null);
+    get({ data: { id } })
+      .then((r) => setRow(r as ProductRow))
+      .catch((e) => setLoadError(e instanceof Error ? e.message : "Could not load this product."));
     auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
   };
 
@@ -328,11 +332,22 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
       <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true">
         <button onClick={onClose} aria-label="Close" className="flex-1 bg-charcoal/40" />
         <aside className="w-full max-w-[720px] bg-cream border-l border-charcoal/15 p-10 text-[11px] uppercase tracking-[0.22em] text-charcoal/40">
-          Loading…
+          {loadError ? (
+            <div className="space-y-4 text-charcoal">
+              <p className="text-destructive normal-case tracking-normal">{loadError}</p>
+              <div className="flex gap-3">
+                <button onClick={refetch} className="border border-charcoal/30 px-3 py-1">Retry</button>
+                <button onClick={onClose} className="border border-charcoal/20 px-3 py-1">Close</button>
+              </div>
+            </div>
+          ) : (
+            "Loading…"
+          )}
         </aside>
       </div>
     );
   }
+
 
   const liveUrl = typeof row.slug === "string" && row.slug
     ? `https://eclectichive.com/collection/${row.slug}`
