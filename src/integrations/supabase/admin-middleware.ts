@@ -16,6 +16,14 @@ type AppRole = "admin" | "staff" | "user";
 const ROLE_TTL_MS = 60_000;
 const roleCache = new Map<string, { roles: AppRole[]; expires: number }>();
 
+// Any code path that mutates user_roles MUST call this so a revoked admin
+// cannot keep passing the gate for the remainder of the TTL.
+export function invalidateRoleCache(userId?: string) {
+  if (userId) roleCache.delete(userId);
+  else roleCache.clear();
+}
+
+
 async function loadRoles(
   supabase: { from: (t: "user_roles") => any },
   userId: string,

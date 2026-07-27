@@ -90,8 +90,10 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ImageOrderEditor } from "./ImageOrderEditor";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
+
 
 /* ═════════════ TOKENS (src/styles.css + glass.ts) ═════════════ */
 
@@ -587,8 +589,9 @@ function RateContext({ category, price, stats }) {
 
 export function ProductEditDrawer({
   product, categories, role = "staff", recentChanges = [], categoryPriceStats = {},
-  onSave, onClose, onOpenPhotos, liveUrl, sketch,
+  onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved,
 }) {
+
   const draft = useDraft(product);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState(null);
@@ -605,11 +608,15 @@ export function ProductEditDrawer({
   useBodyScrollLock(true);
 
   const asideRef = useRef<HTMLElement | null>(null);
+  // The Escape listener mounts once; without a ref it closes over the initial
+  // (clean) draft and silently discards unsaved edits.
+  const requestCloseRef = useRef<() => void>(() => {});
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") requestClose(); };
+    const onKey = (e) => { if (e.key === "Escape") requestCloseRef.current(); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
 
   // Focus trap + background inertness. Saves the previously-focused element,
   // moves focus into the drawer, marks the rest of #root inert so screen
@@ -674,6 +681,7 @@ export function ProductEditDrawer({
 
 
   const requestClose = () => (draft.dirtyCount > 0 ? setConfirmDiscard(true) : onClose());
+  requestCloseRef.current = requestClose;
 
   const save = async () => {
     if (draft.hasErrors || draft.dirtyCount === 0 || saving) return;
@@ -682,8 +690,14 @@ export function ProductEditDrawer({
       await onSave(draft.buildPatch());
       setSavedAt(Date.now());
       setConfirmDiscard(false);
+      toast.success("Saved");
+    } catch (err) {
+      // Never fail silently — a save that didn't land must be visible.
+      const msg = err instanceof Error ? err.message : String(err ?? "Save failed");
+      toast.error("Save failed — your edits are still here", { description: msg });
     } finally { setSaving(false); }
   };
+
 
   /* Undo = single-field patch from the snapshot's exact prior value (§7).
      Blocked while other edits are dirty so Undo can't quietly drop them:
@@ -699,7 +713,12 @@ export function ProductEditDrawer({
     try {
       await onSave({ [c.field]: c.rawBefore ?? null });
       setSavedAt(Date.now());
+      toast.success("Change undone");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err ?? "Undo failed");
+      toast.error("Undo failed", { description: msg });
     } finally { setSaving(false); }
+
   };
 
 
@@ -731,16 +750,17 @@ export function ProductEditDrawer({
       }
       return <LockedChip key={k} meta={meta} value={product?.[k]} />;
     }
-    const common = { key: k, k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
-    if (meta.type === "toggle") return <ToggleField {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
-    if (meta.type === "status") return <SelectField {...common} options={STATUS_OPTIONS} />;
-    if (meta.type === "category") return <SelectField {...common} options={(categories || []).map((c) => ({ value: c, label: c }))} />;
-    if (meta.type === "textarea") return <TextField {...common} rows={4} />;
+    const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
+    if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
+    if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
+    if (meta.type === "category") return <SelectField key={k} {...common} options={(categories || []).map((c) => ({ value: c, label: c }))} />;
+    if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (
-      <TextField {...common}
+      <TextField key={k} {...common}
         trailing={!common.error ? <RateContext category={draft.values.category} price={draft.values.price} stats={categoryPriceStats} /> : null} />
     );
-    return <TextField {...common} />;
+    return <TextField key={k} {...common} />;
+
   };
 
   return (
@@ -815,7 +835,8 @@ export function ProductEditDrawer({
                           card_background_url: (product.card_background_url as string | null) ?? null,
                         }}
                         onClose={() => { /* embedded: no-op, drawer owns close */ }}
-                        onSaved={() => { /* parent refetches via its own onSave path */ }}
+                        onSaved={(next) => onPhotosSaved?.(next)}
+
                       />
                     </section>
                   );
