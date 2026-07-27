@@ -281,7 +281,9 @@ function Inner() {
           onClose={() => navigate({ search: (s: any) => ({ ...s, id: "" }) })}
           onSaved={() => {
             queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
+            queryClient.invalidateQueries({ queryKey: ["admin", "product-categories"] });
           }}
+
 
         />
       )}
