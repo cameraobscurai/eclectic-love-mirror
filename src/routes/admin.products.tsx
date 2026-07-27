@@ -185,7 +185,7 @@ function Inner() {
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
-            {cats.map((c) => <option key={c} value={c}>{c}</option>)}
+            {cats.map((c: string) => <option key={c} value={c}>{c}</option>)}
           </select>
           <select
             value={search.ready}
