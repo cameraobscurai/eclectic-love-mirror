@@ -61,6 +61,9 @@ function Inner() {
 
   const [offset, setOffset] = useState(0);
   const [searchInput, setSearchInput] = useState(search.q);
+  // Keep the box in sync when the URL changes from history nav / cleared filters.
+  useEffect(() => { setSearchInput(search.q); }, [search.q]);
+
 
   // Categories rarely change — cache hard so switching pages never refetches.
   const { data: cats = [] } = useQuery({
