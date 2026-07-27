@@ -94,6 +94,9 @@ export const CollectionWallTile = memo(
     prev.isHovered === next.isHovered &&
     prev.isAnyHovered === next.isAnyHovered &&
     prev.product.id === next.product.id &&
+    prev.product.primaryImage?.url === next.product.primaryImage?.url &&
+    prev.product.categorySlug === next.product.categorySlug &&
+    prev.product.dimensions === next.product.dimensions &&
     prev.cellAspect === next.cellAspect,
 );
 
