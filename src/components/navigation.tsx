@@ -367,6 +367,10 @@ export function Navigation() {
         aria-modal="true"
         aria-label="Navigation menu"
         aria-hidden={!isOpen}
+        // `inert` while closed: without it the hidden menu's links stay in the
+        // tab order, so keyboard users tab into an invisible dialog
+        // (axe `aria-hidden-focus`, serious).
+        inert={!isOpen}
         onKeyDown={(e) => {
           if (e.key === "Escape") setIsOpen(false);
         }}

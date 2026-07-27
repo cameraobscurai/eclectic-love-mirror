@@ -10,11 +10,11 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Eclectic Hive — Denver Event Rentals, Wedding Furniture & Design" },
+      { title: "Eclectic Hive — Denver Event & Wedding Rentals" },
       {
         name: "description",
         content:
-          "Denver's luxury event rental house. Furniture, lighting & tableware for weddings, galas, and brand events — plus full-service design and custom fabrication across Colorado.",
+          "Denver's luxury event rental house. Furniture, lighting and tableware for weddings, galas, and brand events — plus design and custom fabrication.",
       },
       { name: "keywords", content: "denver event rentals, denver wedding rentals, colorado event furniture rental, luxury event design denver, wedding furniture rental denver, custom fabrication colorado, event production denver" },
       { name: "geo.region", content: "US-CO" },
