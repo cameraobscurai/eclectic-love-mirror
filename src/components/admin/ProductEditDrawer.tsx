@@ -750,16 +750,17 @@ export function ProductEditDrawer({
       }
       return <LockedChip key={k} meta={meta} value={product?.[k]} />;
     }
-    const common = { key: k, k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
-    if (meta.type === "toggle") return <ToggleField {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
-    if (meta.type === "status") return <SelectField {...common} options={STATUS_OPTIONS} />;
-    if (meta.type === "category") return <SelectField {...common} options={(categories || []).map((c) => ({ value: c, label: c }))} />;
-    if (meta.type === "textarea") return <TextField {...common} rows={4} />;
+    const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
+    if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
+    if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
+    if (meta.type === "category") return <SelectField key={k} {...common} options={(categories || []).map((c) => ({ value: c, label: c }))} />;
+    if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (
-      <TextField {...common}
+      <TextField key={k} {...common}
         trailing={!common.error ? <RateContext category={draft.values.category} price={draft.values.price} stats={categoryPriceStats} /> : null} />
     );
-    return <TextField {...common} />;
+    return <TextField key={k} {...common} />;
+
   };
 
   return (
