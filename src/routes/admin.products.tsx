@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
+
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { ProductEditDrawer } from "@/components/admin/ProductEditDrawer";
 import {
@@ -55,52 +57,74 @@ function Inner() {
   const navigate = useNavigate({ from: Route.fullPath });
   const list = useServerFn(listProducts);
   const catsFn = useServerFn(listDistinctCategories);
+  const queryClient = useQueryClient();
 
-  const [rows, setRows] = useState<Row[]>([]);
-  const [count, setCount] = useState(0);
   const [offset, setOffset] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [cats, setCats] = useState<string[]>([]);
   const [searchInput, setSearchInput] = useState(search.q);
+
+  // Categories rarely change — cache hard so switching pages never refetches.
+  const { data: cats = [] } = useQuery({
+    queryKey: ["admin", "product-categories"],
+    queryFn: () => catsFn(),
+    staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000,
+  });
 
   // BOH deep-link support: when `?group=<ParentId>` is set, derive the
   // rms_id list for that parent from the baked catalog and pass it to the
   // server as a proper filter (client-side page-only filtering was broken
   // when the first page contained no matching rows).
-  const [groupRmsIds, setGroupRmsIds] = useState<string[] | null>(null);
-  useEffect(() => {
-    if (!search.group) { setGroupRmsIds(null); return; }
-    let alive = true;
-    getCollectionCatalog()
-      .then((c) => {
-        if (!alive) return;
-        const ids: string[] = [];
-        for (const p of c.products) {
-          if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
-        }
-        setGroupRmsIds(ids);
-      })
-      .catch(() => alive && setGroupRmsIds([]));
-    return () => { alive = false; };
-  }, [search.group]);
+  const { data: groupRmsIds = null } = useQuery({
+    queryKey: ["admin", "group-rms", search.group ?? null],
+    enabled: Boolean(search.group),
+    staleTime: 5 * 60_000,
+    queryFn: async () => {
+      const c = await getCollectionCatalog();
+      const ids: string[] = [];
+      for (const p of c.products) {
+        if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
+      }
+      return ids;
+    },
+  });
 
-  useEffect(() => { catsFn().then(setCats).catch(() => {}); }, [catsFn]);
+  const listArgs = {
+    search: search.q,
+    category: search.cat || undefined,
+    publicReady: search.ready,
+    rmsIds: groupRmsIds ?? undefined,
+    limit: PAGE,
+    offset,
+  };
 
+  const {
+    data: page,
+    isFetching,
+    isPending,
+  } = useQuery({
+    queryKey: ["admin", "products", listArgs],
+    // Don't fire until the group filter (if any) has resolved.
+    enabled: !search.group || groupRmsIds !== null,
+    queryFn: () => list({ data: listArgs }),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+  });
+
+  const rows = (page?.rows ?? []) as Row[];
+  const count = page?.count ?? 0;
+  const loading = isPending || isFetching;
+
+  // Warm the next page in the background so paging feels instant.
   useEffect(() => {
-    // Wait for group resolution before firing the list query.
-    if (search.group && groupRmsIds === null) return;
-    setLoading(true);
-    list({ data: {
-      search: search.q,
-      category: search.cat || undefined,
-      publicReady: search.ready,
-      rmsIds: groupRmsIds ?? undefined,
-      limit: PAGE,
-      offset,
-    } })
-      .then((r) => { setRows(r.rows as Row[]); setCount(r.count); })
-      .finally(() => setLoading(false));
-  }, [list, search.q, search.cat, search.ready, search.group, groupRmsIds, offset]);
+    if (!page || offset + PAGE >= count) return;
+    const nextArgs = { ...listArgs, offset: offset + PAGE };
+    queryClient.prefetchQuery({
+      queryKey: ["admin", "products", nextArgs],
+      queryFn: () => list({ data: nextArgs }),
+      staleTime: 30_000,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, offset, count]);
 
   useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
 
@@ -111,6 +135,7 @@ function Inner() {
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
+
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
@@ -160,7 +185,7 @@ function Inner() {
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
-            {cats.map((c) => <option key={c} value={c}>{c}</option>)}
+            {cats.map((c: string) => <option key={c} value={c}>{c}</option>)}
           </select>
           <select
             value={search.ready}
@@ -189,12 +214,22 @@ function Inner() {
               </tr>
             </thead>
             <tbody>
-              {loading && visibleRows.length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">Loading…</td></tr>
-              )}
+              {loading && visibleRows.length === 0 &&
+                Array.from({ length: 12 }).map((_, i) => (
+                  <tr key={`sk-${i}`} className="border-b border-charcoal/5">
+                    <td className="px-3 py-2"><div className="w-10 h-10 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-10 bg-charcoal/5 animate-pulse" /></td>
+                  </tr>
+                ))}
               {!loading && visibleRows.length === 0 && (
                 <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
+
               {visibleRows.map((r) => {
                 const cover = r.upscaled_cover_url ?? (r.images?.[0] ?? null);
                 return (
@@ -242,10 +277,9 @@ function Inner() {
           id={search.id}
           onClose={() => navigate({ search: (s: any) => ({ ...s, id: "" }) })}
           onSaved={() => {
-            // refresh list
-            list({ data: { search: search.q, category: search.cat || undefined, publicReady: search.ready, limit: PAGE, offset } })
-              .then((r) => { setRows(r.rows as Row[]); setCount(r.count); });
+            queryClient.invalidateQueries({ queryKey: ["admin", "products"] });
           }}
+
         />
       )}
     </div>
