@@ -176,7 +176,29 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
         })}
       </div>
 
+      {/* Single site-level audio control for the desktop strip. Audio follows
+          the hovered frame; every other frame stays muted. */}
+      {mounted && !reduced && clips.some((c) => c.src?.mp4 || c.src?.webm) && (
+        <button
+          type="button"
+          onClick={() => setSoundOn((s) => !s)}
+          aria-pressed={soundOn}
+          aria-label={soundOn ? "Mute hero videos" : "Unmute hero videos"}
+          className={cn(
+            "hidden md:flex absolute right-4 lg:right-6 top-4 z-20 items-center gap-2",
+            "rounded-full bg-paper/85 px-3 py-2 text-charcoal backdrop-blur-sm",
+            "font-brand text-[10px] uppercase transition-colors hover:bg-paper",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40",
+          )}
+          style={{ letterSpacing: "0.22em" }}
+        >
+          {soundOn ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+          <span>{soundOn ? "Sound on" : "Sound off"}</span>
+        </button>
+      )}
+
       <Lightbox clip={activeClip} originRect={originRect} onClose={() => setLightboxId(null)} />
+
     </div>
   );
 }
