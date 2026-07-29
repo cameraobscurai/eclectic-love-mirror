@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
-import { Play, X } from "lucide-react";
+import { Play, X, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
@@ -28,6 +28,18 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [lightboxId, setLightboxId] = useState<string | null>(null);
   const [inView, setInView] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  // One audio source at a time: the strip is five simultaneous videos, so
+  // unmuting all of them would stack five overlapping tracks.
+  const [soundOn, setSoundOn] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // The frame that owns audio when sound is on: whichever is hovered, else the
+  // centre frame (always rendered — the outer two are hidden below lg).
+  const audioId = hoverId ?? clips[Math.floor(clips.length / 2)]?.id ?? null;
 
   // Pause everything when the strip leaves the viewport.
   useEffect(() => {
@@ -49,38 +61,48 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [inView]);
 
-  // Strip videos always stay muted. Lightbox handles its own audio.
+  // Audio routing. Only the active frame may be unmuted, and only while the
+  // lightbox is closed (the lightbox owns its own audio).
   useEffect(() => {
     if (reduced) return;
-    Object.values(videoRefs.current).forEach((v) => {
+    const wantsAudio = soundOn && !lightboxId && inView;
+    Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
-      v.muted = true;
+      const live = wantsAudio && id === audioId;
+      v.muted = !live;
+      if (live) v.volume = 1;
       if (lightboxId && inView) v.pause();
       else if (inView) v.play().catch(() => {});
     });
-  }, [lightboxId, reduced, inView]);
+  }, [lightboxId, reduced, inView, soundOn, audioId]);
+
 
   // Hero videos must begin fetching immediately when visible. The poster still
   // owns first paint, but waiting for browser idle made the frames look static.
   useEffect(() => {
     if (reduced) return;
     if (!inView) return;
-    Object.values(videoRefs.current).forEach((v) => {
+    Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
+      // Don't clobber a user's unmute choice on the frame that owns audio.
+      const keepAudio = soundOn && !lightboxId && id === audioId;
       try {
         v.autoplay = true;
-        v.defaultMuted = true;
-        v.muted = true;
         v.playsInline = true;
         v.setAttribute("autoplay", "");
-        v.setAttribute("muted", "");
         v.setAttribute("playsinline", "");
         v.setAttribute("webkit-playsinline", "");
+        if (!keepAudio) {
+          v.defaultMuted = true;
+          v.muted = true;
+          v.setAttribute("muted", "");
+        }
         v.preload = "auto";
-        v.load();
+        if (!keepAudio) v.load();
         v.play().catch(() => {});
       } catch {}
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips.length, reduced, inView]);
 
@@ -154,7 +176,29 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
         })}
       </div>
 
+      {/* Single site-level audio control for the desktop strip. Audio follows
+          the hovered frame; every other frame stays muted. */}
+      {mounted && !reduced && clips.some((c) => c.src?.mp4 || c.src?.webm) && (
+        <button
+          type="button"
+          onClick={() => setSoundOn((s) => !s)}
+          aria-pressed={soundOn}
+          aria-label={soundOn ? "Mute hero videos" : "Unmute hero videos"}
+          className={cn(
+            "hidden md:flex absolute right-4 lg:right-6 top-4 z-20 items-center gap-2",
+            "rounded-full bg-paper/85 px-3 py-2 text-charcoal backdrop-blur-sm",
+            "font-brand text-[10px] uppercase transition-colors hover:bg-paper",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal/40",
+          )}
+          style={{ letterSpacing: "0.22em" }}
+        >
+          {soundOn ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+          <span>{soundOn ? "Sound on" : "Sound off"}</span>
+        </button>
+      )}
+
       <Lightbox clip={activeClip} originRect={originRect} onClose={() => setLightboxId(null)} />
+
     </div>
   );
 }
