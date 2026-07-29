@@ -28,6 +28,18 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [lightboxId, setLightboxId] = useState<string | null>(null);
   const [inView, setInView] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  // One audio source at a time: the strip is five simultaneous videos, so
+  // unmuting all of them would stack five overlapping tracks.
+  const [soundOn, setSoundOn] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // The frame that owns audio when sound is on: whichever is hovered, else the
+  // centre frame (always rendered — the outer two are hidden below lg).
+  const audioId = hoverId ?? clips[Math.floor(clips.length / 2)]?.id ?? null;
 
   // Pause everything when the strip leaves the viewport.
   useEffect(() => {
@@ -49,16 +61,21 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [inView]);
 
-  // Strip videos always stay muted. Lightbox handles its own audio.
+  // Audio routing. Only the active frame may be unmuted, and only while the
+  // lightbox is closed (the lightbox owns its own audio).
   useEffect(() => {
     if (reduced) return;
-    Object.values(videoRefs.current).forEach((v) => {
+    const wantsAudio = soundOn && !lightboxId && inView;
+    Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
-      v.muted = true;
+      const live = wantsAudio && id === audioId;
+      v.muted = !live;
+      if (live) v.volume = 1;
       if (lightboxId && inView) v.pause();
       else if (inView) v.play().catch(() => {});
     });
-  }, [lightboxId, reduced, inView]);
+  }, [lightboxId, reduced, inView, soundOn, audioId]);
+
 
   // Hero videos must begin fetching immediately when visible. The poster still
   // owns first paint, but waiting for browser idle made the frames look static.
