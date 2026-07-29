@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
-import { Play, X } from "lucide-react";
+import { Play, X, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { HERO_CLIPS, type FilmstripClip } from "./clips";
