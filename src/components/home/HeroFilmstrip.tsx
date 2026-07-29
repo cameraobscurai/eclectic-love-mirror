@@ -82,22 +82,27 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   useEffect(() => {
     if (reduced) return;
     if (!inView) return;
-    Object.values(videoRefs.current).forEach((v) => {
+    Object.entries(videoRefs.current).forEach(([id, v]) => {
       if (!v) return;
+      // Don't clobber a user's unmute choice on the frame that owns audio.
+      const keepAudio = soundOn && !lightboxId && id === audioId;
       try {
         v.autoplay = true;
-        v.defaultMuted = true;
-        v.muted = true;
         v.playsInline = true;
         v.setAttribute("autoplay", "");
-        v.setAttribute("muted", "");
         v.setAttribute("playsinline", "");
         v.setAttribute("webkit-playsinline", "");
+        if (!keepAudio) {
+          v.defaultMuted = true;
+          v.muted = true;
+          v.setAttribute("muted", "");
+        }
         v.preload = "auto";
-        v.load();
+        if (!keepAudio) v.load();
         v.play().catch(() => {});
       } catch {}
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clips.length, reduced, inView]);
 
