@@ -1,97 +1,51 @@
-# Next Sequence — Depicted Step by Step
+## Revised plan — Steps 1, 2, 3
 
-Ordered by risk (low → higher) and by what unblocks the next step. Every step is independently shippable and independently revertable.
-
----
-
-## Step 1 — Finish the Publish story (30 min, zero risk)
-
-**Problem:** `publishCatalogOverlay` snapshots inventory only. Admin gallery reorders in `/admin/photos` won't reach live until the next full `bake-catalog.mjs` run. Half a feature.
-
-**Change:**
-- `src/lib/photos-admin.functions.ts` → extend `publishCatalogOverlay` to also read `gallery_orders` and write `squarespace-mirror/catalog/gallery-orders.json`.
-- `src/routes/gallery.tsx` → try the static snapshot first (same pattern as inventory overlay), fall back to the baked JSON we just shipped.
-- Publish button label stays "Publish to live site" — one button, both surfaces.
-
-**Verify:** reorder a gallery in `/admin/photos`, click Publish, hard-reload `/gallery`, confirm new order without a rebake.
+I re-checked all three against current code before rewriting. One is already done.
 
 ---
 
-## Step 2 — Desktop hero unmute parity (20 min, zero risk)
+### Step 1 — Publish also snapshots gallery order — **ALREADY SHIPPED**
 
-**Problem:** Mobile `SequentialHeroVideo` has a tap-to-unmute button. Desktop `HeroFilmstrip` does not. Jill's complaint was site-wide, we only fixed half.
+`publishCatalogOverlay` in `src/lib/photos-admin.functions.ts` now reads `gallery_orders` and writes a timestamped `catalog/gallery-orders-{stamp}.json` blob. `src/routes/gallery.tsx` tries that overlay first and falls back to the baked `src/data/gallery/gallery-orders.json`.
 
-**Change:** port the unmute chip pattern from `SequentialHeroVideo.tsx` into `HeroFilmstrip.tsx`. Same iconography, same position bias, same "sticky-unmuted" behavior across clip transitions.
-
-**Verify:** Playwright on desktop viewport, click chip, assert `video.muted === false` on the active clip and the next one after transition.
+Nothing to build. What's left is a **verification pass**, not code: reorder a gallery in `/admin/photos`, hit Publish, hard-reload `/gallery`, confirm the new order lands without a rebake. If it fails, that's a bug report, not this step.
 
 ---
 
-## Step 3 — Repo hygiene sweep (1 hour, zero risk, do while builds run)
+### Step 2 — Desktop hero unmute parity — **OPEN, still correct**
 
-**Problem:** ~200 files in `scripts-tmp/` + a dozen root-level `.mjs`/`.cjs`/`.py`/`.js` audit scripts pollute the tree and slow every `rg` I run.
+Mobile `SequentialHeroVideo` has the full pattern: a `muted` state, an aria-labelled toggle, and re-application of the user's choice across clip changes. Desktop `HeroFilmstrip` hard-forces `v.muted = true` on every strip video; only the lightbox ever unmutes.
 
-**Change:**
-- Move keepers to `scripts/audit/` (already the convention).
-- `rm -rf scripts-tmp/`.
-- Delete root-level one-shot scripts (`audit.mjs`, `audit.ts`, `audit_*.{cjs,mjs,py}`, `scan_tmp.cjs`, `tmp_script.cjs`, `tiles_tmp_script*.cjs`, `screenshot*.{js,mjs,cjs}`, `take_screenshot.*`, `list_links.js`, `get_dims.*`, `download_*.py`, `chandeliers_data.json`, `analyze_*.mjs`).
-- Grep every deletion against `src/`, `scripts/`, `supabase/`, `package.json`, `.lovable/` per the dead-code fear rule. Anything imported anywhere stays.
+Revision to the original plan: the strip is **five simultaneous videos**, not one. Copying the mobile chip verbatim would unmute all five at once — five overlapping audio tracks. Correct behavior is one audio source at a time.
 
-**Verify:** `bun run build` + `console-health.spec.ts` still green.
-
----
-
-## Step 4 — Pass 4 from the plan: platform-native scroll reveal (half day, low risk)
-
-**Problem:** `EvolutionNarrative` drives its reveal off `requestAnimationFrame` + scroll listeners. Modern Chromium/Safari support scroll-driven animations natively (`animation-timeline: view()`), which is smoother and cheaper.
-
-**Change:**
-- Port the reveal to CSS `@property` + `animation-timeline: view()` inside `@supports (animation-timeline: view())`.
-- Keep the existing JS path inside `@supports not (animation-timeline: view())` as the Firefox fallback.
-- No behavior change at resolved state.
-
-**Verify:** visual diff Chromium (native path) vs. Firefox (JS path); both land on identical final frame. Reduced-motion respected in both.
+- Audio follows the **active/hovered** frame only; every other frame stays muted.
+- The chip is a single site-level control, not one per frame.
+- The choice persists across frame transitions, same as mobile.
+- Respects `prefers-reduced-motion`/no-video fallback — no chip when there's no video.
 
 ---
 
-## Step 5 — Prototype Pass 5 before coding it (async, blocks Step 6)
+### Step 3 — Repo hygiene sweep — **OPEN, scope confirmed larger than written**
 
-**Problem:** "The Index That Grows" unifies `DestinationStack`, `GalleryIndex`, and the atelier FAQ accordion into one signature component (`<GrowingIndex>`). Touches 4 surfaces. Wrong choice = rework across all of them.
+Actual count: **148 files in `scripts-tmp/`** and **56 root-level loose scripts** (`.mjs`/`.cjs`/`.py`/`.js`/`.ts`).
 
-**Change:** I generate 2-3 rendered HTML prototypes via `design--create_directions` covering:
-- Row density + tabular-nums numbering style
-- Preview thumbnail geometry (fixed square vs. aspect-adaptive)
-- Hairline/border weight in the paper palette
+Revision: the original plan said "delete." Given the standing dead-code rule, deletion is the last step, not the first.
 
-You pick one via `questions--ask_questions`. No code lands until you pick.
+1. Produce a **manifest** classifying every candidate: referenced / unreferenced / ambiguous. Grep each name against `src/`, `scripts/`, `supabase/`, `package.json`, `playwright.config.ts`, and `.lovable/`.
+2. Move genuine keepers into `scripts/audit/` (the existing convention).
+3. Show you the delete list. Nothing is removed until you look at it.
+4. Then remove, and verify with a build plus `console-health.spec.ts`.
 
----
-
-## Step 6 — Ship Pass 5 (1-1.5 days, medium risk, gated on Step 5)
-
-**Change:** Build `<GrowingIndex>` from the chosen prototype. Migrate one surface at a time:
-1. `/gallery` (smallest blast radius, lowest traffic)
-2. `/atelier` FAQ
-3. `/collection` overview aside (if applicable)
-4. Home `DestinationStack` last
-
-Keep old components alive per surface until migration proves out.
-
-**Verify:** visual regression screenshots on all 4 surfaces before/after each migration. `console-health.spec.ts` + `audit-pages.spec.ts` after each.
+Note: `console-health.spec.ts`, `audit-pages.spec.ts`, and the other root `.spec.ts` files are **live CI specs** — they are not junk and stay put.
 
 ---
 
-## Not on this list (deliberately)
+## Recommended order
 
-- **Product photo consistency** — not a code fix. Needs an owner call with Jill on which SKUs get re-shot.
-- **Pass 0/1/2/3 from `.lovable/plan.md`** — already shipped in the meeting-prep sprint.
-- **Any memory rewrites** — hold until each step ships and holds for 24h, per project discipline.
+Step 2 first — it's the only one with a user-facing outcome, and it's the remaining half of the owner's original sound complaint. Step 3 second, since it's zero-risk but noisy and better done in one uninterrupted pass. Step 1 is just the verification click-through, which can happen any time.
 
-## Suggested cadence
+## Technical notes
 
-- **Today:** Steps 1, 2, 3 (all ship in the same session, all zero-to-low risk).
-- **Tomorrow AM:** Step 4.
-- **Tomorrow PM:** Step 5 prototypes → you pick.
-- **Day 3-4:** Step 6 rollout, one surface per commit.
-
-Want me to start with Step 1?
+- Step 2 touches `src/components/home/HeroFilmstrip.tsx` only; the mobile component is not modified.
+- Verification for Step 2 is Playwright at desktop viewport: click the chip, assert `muted === false` on the active clip and `true` on the other four, then assert the state survives a frame transition.
+- Step 3 will not touch `remotion/`, `scripts/visual-regression/`, or anything under `scripts/` that `package.json` references.
