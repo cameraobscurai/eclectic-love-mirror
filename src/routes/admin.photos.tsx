@@ -40,6 +40,8 @@ import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
+import { resolveProductFit } from "@/components/collection/productFit";
+
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { reorderItems, publishCatalogOverlay } from "@/lib/photos-admin.functions";
