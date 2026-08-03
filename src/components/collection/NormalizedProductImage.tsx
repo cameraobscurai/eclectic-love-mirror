@@ -204,8 +204,19 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
     sCap = rule.secondaryMax / Math.max(0.001, wInsetFrame);
   }
 
+  // 2b. Absolute silhouette caps, applied in every mode. These are what stop a
+  // tall-backed piece from towering over the long low sofa beside it, and stop
+  // a long sofa from overflowing the tile once mass matching is in play.
+  if (rule.widthMax != null) {
+    sCap = Math.min(sCap, rule.widthMax / Math.max(0.001, wInsetFrame));
+  }
+  if (rule.heightMax != null) {
+    sCap = Math.min(sCap, rule.heightMax / Math.max(0.001, hInsetFrame));
+  }
+
   // 3. Final scale.
   const s = clamp(Math.min(sTarget, sCap), rule.clampMin, rule.clampMax);
+
 
   return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
 }

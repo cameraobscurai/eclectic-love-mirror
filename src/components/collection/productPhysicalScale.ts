@@ -6,66 +6,105 @@ export type ScalableProduct = {
   dimensions?: string | null;
 };
 
+export type PhysicalDims = { width: number; height: number } | null;
 
-export function parseWidthInches(dimensions: string | null | undefined): number | null {
+const NUM = String.raw`(\d+(?:\.\d+)?)`;
+const UNIT = String.raw`\s*(?:"|”|''|in\b|inches)?\s*`;
+
+/**
+ * Parse real-world inches out of catalog dimension strings.
+ * Handles `52"W x 30"D x 36.5"H`, `58"w x 18"D x 22"H`,
+ * `36"Dia x 18.5"H`, and trailing notes like `- 20" Seat Height`.
+ */
+export function parseDimensionsInches(dimensions: string | null | undefined): PhysicalDims {
   if (!dimensions) return null;
+  const s = dimensions.replace(/seat\s+height/gi, "");
 
-  // Prefer an explicit width token: 52"W, 52 in W, W 52.
-  const explicit =
-    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|”|in\b|inches)?\s*w\b/i) ??
-    dimensions.match(/\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
-  if (explicit) return Number(explicit[1]);
+  const wMatch =
+    s.match(new RegExp(`${NUM}${UNIT}w\\b`, "i")) ??
+    s.match(new RegExp(`${NUM}${UNIT}dia(?:meter)?\\b`, "i"));
+  const hMatch = s.match(new RegExp(`${NUM}${UNIT}h\\b`, "i"));
 
-  // Otherwise accept the first number of a W x D x H triple only. A lone
-  // number is ambiguous (could be depth or height) and must not drive scale.
-  const triple = dimensions.match(
-    /(\d+(?:\.\d+)?)\s*(?:"|”|in\b)?\s*[x×]\s*\d+(?:\.\d+)?/i,
-  );
-  return triple ? Number(triple[1]) : null;
+  let width = wMatch ? Number(wMatch[1]) : null;
+  let height = hMatch ? Number(hMatch[1]) : null;
+
+  if (width == null || height == null) {
+    // Fall back to a bare `W x D x H` triple.
+    const triple = s.match(
+      new RegExp(`${NUM}${UNIT}[x×]${UNIT}${NUM}${UNIT}[x×]${UNIT}${NUM}`, "i"),
+    );
+    if (triple) {
+      width = width ?? Number(triple[1]);
+      height = height ?? Number(triple[3]);
+    }
+  }
+
+  if (!width || !height || !Number.isFinite(width) || !Number.isFinite(height)) return null;
+  if (width <= 0 || height <= 0) return null;
+  return { width, height };
+}
+
+/** Back-compat helper — width only. */
+export function parseWidthInches(dimensions: string | null | undefined): number | null {
+  return parseDimensionsInches(dimensions)?.width ?? null;
 }
 
 /**
- * Reference width (inches) that reads as "full tile" for each floor-standing
- * category, and the smallest scale a narrow item may fall to.
+ * Reference size (inches) that reads as "full tile" for each floor-standing
+ * category. `width`/`height` describe the archetype piece; scaling is driven by
+ * the geometric mean of the two so a squat-but-tall loveseat and a long low
+ * sofa are compared on real *mass*, not on one axis.
  *
- * The range is deliberately narrow. Real-size differentiation is a nuance —
- * a 52" loveseat should read *slightly* smaller than a 96" sofa, not half its
- * size. Wide floors here were the cause of grids where silhouette widths never
- * landed on a common line and tiles looked randomly sized.
- *
- * Categories absent from this map are unscaled (scale 1) — small objects
- * (tableware, pillows, styling) are normalized by area, not real size.
+ * Categories absent from this map are unscaled — small objects (tableware,
+ * pillows, styling) are normalized by silhouette area, not real size.
  */
-const WIDTH_BENCHMARKS: Record<string, { reference: number; floor: number }> = {
-  seating: { reference: 78, floor: 0.88 },
-  tables: { reference: 72, floor: 0.88 },
-  bars: { reference: 60, floor: 0.9 },
-  storage: { reference: 54, floor: 0.9 },
-  "large-decor": { reference: 48, floor: 0.9 },
+const SIZE_BENCHMARKS: Record<string, { width: number; height: number }> = {
+  seating: { width: 78, height: 35 },
+  tables: { width: 72, height: 30 },
+  bars: { width: 60, height: 42 },
+  storage: { width: 54, height: 40 },
+  "large-decor": { width: 48, height: 40 },
 };
 
 /**
- * Compression exponent. Raw width ratio is flattened before it is mapped into
- * the [floor, 1] band so the difference between a 52" and a 96" piece is a few
- * percent of tile width rather than a third of it.
+ * Compression exponent. Raw real-size ratio is flattened before use so the
+ * difference between a 52" loveseat and a 96" sofa is a readable nuance rather
+ * than a 2x tile-mass gap.
  */
-const COMPRESSION = 0.4;
+const COMPRESSION = 0.6;
+const MIN_RATIO = 0.82;
+const MAX_RATIO = 1.12;
 
-export function physicalScale(product: ScalableProduct): number {
-  const canonical = canonicalCategorySlug(product.categorySlug);
-  if (!canonical) return 1;
-
-  const benchmark = WIDTH_BENCHMARKS[canonical];
-  if (!benchmark) return 1;
-
-  const width = parseWidthInches(product.dimensions);
-  // No usable measurement: sit at the top of the band rather than inventing a
-  // shrink. Unmeasured items are the majority in several categories, and any
-  // other choice makes them visibly disagree with their measured neighbours.
-  if (!width || !Number.isFinite(width) || width <= 0) return 1;
-
-  const ratio = Math.min(1, width / benchmark.reference);
-  const compressed = Math.pow(ratio, COMPRESSION);
-  return benchmark.floor + (1 - benchmark.floor) * compressed;
+function compress(ratio: number) {
+  return Math.min(MAX_RATIO, Math.max(MIN_RATIO, Math.pow(ratio, COMPRESSION)));
 }
 
+export type PhysicalScale = {
+  /** Overall mass multiplier from real size (geometric mean of W and H). */
+  size: number;
+  /** Height-only multiplier — caps genuinely short pieces that photograph tall. */
+  height: number;
+  /** True when real dimensions were parsed for a benchmarked category. */
+  measured: boolean;
+};
+
+export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
+  const canonical = canonicalCategorySlug(product.categorySlug);
+  const benchmark = canonical ? SIZE_BENCHMARKS[canonical] : undefined;
+  if (!benchmark) return { size: 1, height: 1, measured: false };
+
+  const dims = parseDimensionsInches(product.dimensions);
+  // No usable measurement: sit at the neutral rule rather than inventing a
+  // shrink. Unmeasured items would otherwise disagree with measured neighbours.
+  if (!dims) return { size: 1, height: 1, measured: false };
+
+  const refSize = Math.sqrt(benchmark.width * benchmark.height);
+  const size = compress(Math.sqrt(dims.width * dims.height) / refSize);
+  const height = compress(dims.height / benchmark.height);
+  return { size, height, measured: true };
+}
+
+/** Legacy single-number accessor. */
+export function physicalScale(product: ScalableProduct): number {
+  return physicalScaleFor(product).size;
+}
