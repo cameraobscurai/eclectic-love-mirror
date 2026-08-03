@@ -11,8 +11,8 @@ import {
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { physicalScale } from "./productPhysicalScale";
-import { isFloorAnchoredCategory } from "./categoryAliases";
+import { resolveProductFit } from "./productFit";
+
 
 interface ProductTileProps {
   product: CollectionProduct;
@@ -26,33 +26,8 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-function getGridPlacement(categorySlug: string | null | undefined) {
-  if (isFloorAnchoredCategory(categorySlug)) {
-    return {
-      anchor: "bottom" as const,
-      baseline: 0.84,
-      debugAnchorY: "84%",
-      fitMode: "area" as const,
-      targetWidth: undefined,
-      targetArea: 0.2,
-      maxW: 0.78,
-      maxH: 0.56,
-      minScale: 0.62,
-    };
-  }
 
-  return {
-    anchor: "center" as const,
-    baseline: 0.5,
-    debugAnchorY: "50%",
-    fitMode: "area" as const,
-    targetWidth: undefined,
-    targetArea: 0.24,
-    maxW: 0.78,
-    maxH: 0.7,
-    minScale: undefined,
-  };
-}
+
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
@@ -92,8 +67,8 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
-  const placement = getGridPlacement(product.categorySlug);
-  const itemScale = physicalScale(product);
+  const fitRule = resolveProductFit(product);
+
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
@@ -128,10 +103,11 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              data-fit-anchor={placement.anchor}
+              data-fit-anchor={fitRule.anchor}
               style={{
                 aspectRatio: tileAspect,
-                ["--fit-anchor-y" as string]: placement.debugAnchorY,
+                ["--fit-anchor-y" as string]: `${(fitRule.anchorY * 100).toFixed(1)}%`,
+
                 ["--fit-center-x" as string]: "50%",
                 ["--fit-secondary-max" as string]: "70%",
               }}
@@ -154,16 +130,10 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  targetArea={(overrides?.targetArea ?? placement.targetArea) * itemScale * itemScale}
-                  maxW={(overrides?.maxW ?? placement.maxW) * itemScale}
-                  maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
-                  minScale={placement.minScale ? placement.minScale * itemScale : undefined}
-                  fitMode={placement.fitMode}
-                  targetWidth={placement.targetWidth}
+                  fit={fitRule}
                   eager={index < HIGH_FETCH_COUNT}
-                  visualAnchorY={placement.anchor}
-                  visualBaselineY={placement.baseline}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
+
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
