@@ -54,5 +54,10 @@ export function resolveProductFit(product: FittableProduct): FitRule {
     // Real height drives the ceiling: a genuinely 36" piece may sit a touch
     // taller than a 34" one, and nothing may exceed the category headroom.
     heightMax: Math.min(baseHeight(rule), baseHeight(rule) * 0.72 * phys.height),
+    // Caps are the governing constraint once real dimensions are known, so the
+    // category floor must not out-vote them (that floor was what let a tall
+    // loveseat keep towering over the sofa beside it).
+    clampMin: Math.min(rule.clampMin, 0.3),
   };
 }
+
