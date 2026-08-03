@@ -1,5 +1,11 @@
-import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { canonicalCategorySlug } from "./categoryAliases";
+
+/** Minimal shape needed to scale a product — any catalog/admin row satisfies it. */
+export type ScalableProduct = {
+  categorySlug?: string | null;
+  dimensions?: string | null;
+};
+
 
 export function parseWidthInches(dimensions: string | null | undefined): number | null {
   if (!dimensions) return null;
