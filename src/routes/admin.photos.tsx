@@ -825,12 +825,10 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
   return (
     <div className="h-full w-full">
       <NormalizedProductImage
-        {...overrides}
         src={hero}
         frameAspect={frameAspectFor(item)}
+        fit={resolveProductFit(item)}
         visualOffsetY={overrides?.visualOffsetY ?? 0}
-        visualAnchorY="center"
-        visualBaselineY={0.66}
         alt=""
         loading="lazy"
         draggable={false}
@@ -839,6 +837,7 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
     </div>
   );
 }
+
 
 function SaveBadge({
   state,
