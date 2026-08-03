@@ -26,33 +26,8 @@ const EAGER_RENDER_COUNT = 18;
 const EAGER_LOAD_COUNT = 12;
 const HIGH_FETCH_COUNT = 4;
 
-function getGridPlacement(categorySlug: string | null | undefined) {
-  if (isFloorAnchoredCategory(categorySlug)) {
-    return {
-      anchor: "bottom" as const,
-      baseline: 0.84,
-      debugAnchorY: "84%",
-      fitMode: "area" as const,
-      targetWidth: undefined,
-      targetArea: 0.2,
-      maxW: 0.78,
-      maxH: 0.56,
-      minScale: 0.62,
-    };
-  }
 
-  return {
-    anchor: "center" as const,
-    baseline: 0.5,
-    debugAnchorY: "50%",
-    fitMode: "area" as const,
-    targetWidth: undefined,
-    targetArea: 0.24,
-    maxW: 0.78,
-    maxH: 0.7,
-    minScale: undefined,
-  };
-}
+
 
 let quickViewWarmed = false;
 const preloadQuickView = () => {
