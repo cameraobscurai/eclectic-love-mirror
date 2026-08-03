@@ -25,7 +25,17 @@ export type FitFallback = {
 
 export type FitRule = {
   primary: FitPrimary;
+  /**
+   * How much the primary-axis match bends toward equal visual *mass*.
+   * 0 = pure width (or height) matching; 1 = pure area matching.
+   * Lets a tall, short-bodied loveseat stop out-massing a long low sofa that
+   * shares its silhouette width. Paired with `refAspect`.
+   */
+  aspectBlend?: number;
+  /** Silhouette aspect (w/h) that renders exactly at `primaryTarget`. */
+  refAspect?: number;
   /** Silhouette W, H, or √area target in tile units (0–1). */
+
   primaryTarget: number;
   /** Secondary-axis cap (opposite of primary). Ignored for area. */
   secondaryMax: number;
