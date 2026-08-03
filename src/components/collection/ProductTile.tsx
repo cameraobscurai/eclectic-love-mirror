@@ -129,16 +129,10 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  targetArea={(overrides?.targetArea ?? placement.targetArea) * itemScale * itemScale}
-                  maxW={(overrides?.maxW ?? placement.maxW) * itemScale}
-                  maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
-                  minScale={placement.minScale ? placement.minScale * itemScale : undefined}
-                  fitMode={placement.fitMode}
-                  targetWidth={placement.targetWidth}
+                  fit={fitRule}
                   eager={index < HIGH_FETCH_COUNT}
-                  visualAnchorY={placement.anchor}
-                  visualBaselineY={placement.baseline}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
+
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
                   srcSet={imageSrcSet}
