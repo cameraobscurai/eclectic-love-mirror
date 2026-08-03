@@ -25,7 +25,17 @@ export type FitFallback = {
 
 export type FitRule = {
   primary: FitPrimary;
+  /**
+   * How much the primary-axis match bends toward equal visual *mass*.
+   * 0 = pure width (or height) matching; 1 = pure area matching.
+   * Lets a tall, short-bodied loveseat stop out-massing a long low sofa that
+   * shares its silhouette width. Paired with `refAspect`.
+   */
+  aspectBlend?: number;
+  /** Silhouette aspect (w/h) that renders exactly at `primaryTarget`. */
+  refAspect?: number;
   /** Silhouette W, H, or √area target in tile units (0–1). */
+
   primaryTarget: number;
   /** Secondary-axis cap (opposite of primary). Ignored for area. */
   secondaryMax: number;
@@ -77,13 +87,15 @@ const DEFAULT_RULE: FitRule = {
 
 const RULES: Record<string, FitRule> = {
   seating: {
-    // Width is the visual-weight axis for seating; the height cap must never
-    // bind for realistic silhouette aspects (chairs ~1.0, loveseats ~1.2,
-    // sofas ~2+), or squarer items render narrower than long sofas. Cap set
-    // just under the frame so extreme tall silhouettes still can't overflow.
+    // Width alone is the wrong axis for seating. A 1.5-aspect carved loveseat
+    // (Cosette) matched on width to a 3.4-aspect sofa ends up with ~2x its
+    // silhouette area — reads as a giant next to its neighbours. Blend toward
+    // equal mass and let the height cap actually bind on tall backs.
     primary: "width",
+    aspectBlend: 0.65,
+    refAspect: 2.4,
     primaryTarget: 0.82,
-    secondaryMax: 0.92,
+    secondaryMax: 0.58,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
@@ -93,11 +105,14 @@ const RULES: Record<string, FitRule> = {
   },
   tables: {
     primary: "width",
+    aspectBlend: 0.5,
+    refAspect: 2.0,
     primaryTarget: 0.8,
-    secondaryMax: 0.88,
+    secondaryMax: 0.6,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
+
     clampMin: 0.7,
     clampMax: 1.1,
     fallback: FLOOR_FALLBACK,
