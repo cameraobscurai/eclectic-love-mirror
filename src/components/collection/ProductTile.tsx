@@ -11,8 +11,8 @@ import {
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { physicalScale } from "./productPhysicalScale";
-import { isFloorAnchoredCategory } from "./categoryAliases";
+import { resolveProductFit } from "./productFit";
+
 
 interface ProductTileProps {
   product: CollectionProduct;
