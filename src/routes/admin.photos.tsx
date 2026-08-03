@@ -101,6 +101,8 @@ type Item = {
   card_background_url: string | null;
   variantCount: number;
   useWideFrame: boolean;
+  categorySlug: string | null;
+  dimensions: string | null;
 };
 
 function adapt(p: CollectionProduct): Item {
@@ -112,9 +114,12 @@ function adapt(p: CollectionProduct): Item {
     images: p.images.map((i) => i.url),
     card_background_url: null,
     variantCount: p.variants?.length ?? 0,
+    categorySlug: p.categorySlug ?? null,
+    dimensions: p.dimensions ?? null,
     useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
+
 
 function AdminPhotosPage() {
   return <PhotosManager />;
