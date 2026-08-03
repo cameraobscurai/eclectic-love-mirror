@@ -103,10 +103,11 @@ export function ProductTile({
             {/* Media frame */}
             <div
               className="product-tile-media relative w-full bg-white overflow-hidden"
-              data-fit-anchor={placement.anchor}
+              data-fit-anchor={fitRule.anchor}
               style={{
                 aspectRatio: tileAspect,
-                ["--fit-anchor-y" as string]: placement.debugAnchorY,
+                ["--fit-anchor-y" as string]: `${(fitRule.anchorY * 100).toFixed(1)}%`,
+
                 ["--fit-center-x" as string]: "50%",
                 ["--fit-secondary-max" as string]: "70%",
               }}
