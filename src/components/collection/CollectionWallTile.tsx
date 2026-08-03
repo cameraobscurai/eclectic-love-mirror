@@ -21,21 +21,8 @@ const WALL_WIDTHS = [600, 900, 1200];
 function CollectionWallTileImpl({ product, cellAspect, isHovered, isAnyHovered, onHover, onOpen }: Props) {
   const url = product.primaryImage?.url ?? null;
   const dim = isAnyHovered && !isHovered;
-  const fit = resolveFit(product.categorySlug ?? null);
-  const itemScale = physicalScale(product);
-  const scaledFit = itemScale === 1
-    ? fit
-    : {
-        ...fit,
-        primaryTarget: fit.primaryTarget * itemScale,
-        secondaryMax: fit.secondaryMax * itemScale,
-        clampMin: fit.clampMin * itemScale,
-        clampMax: fit.clampMax * itemScale,
-        fallback: {
-          ...fit.fallback,
-          scale: fit.fallback.scale * itemScale,
-        },
-      };
+  const scaledFit = resolveProductFit(product);
+
 
   // Fallback chain: CDN-transformed → raw original URL. Some Supabase render
   // transforms 400 transiently or reject certain source formats; falling back
