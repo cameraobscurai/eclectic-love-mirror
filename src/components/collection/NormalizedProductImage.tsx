@@ -52,11 +52,6 @@ const measurementCache = new Map<string, Measurement | null>();
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 
-// Legacy area/width path retained for non-fit-rule callers.
-const LEGACY_TILE_OBJECT_CONTENT = 0.92;
-const LEGACY_DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, top: 0.38, scale: 0.97 };
-const LEGACY_SCALE_MIN = 0.82;
-const LEGACY_SCALE_MAX = 1.12;
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
