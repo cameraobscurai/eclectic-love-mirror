@@ -41,7 +41,7 @@ const WIDTH_BENCHMARKS: Record<string, { reference: number; floor: number }> = {
   "large-decor": { reference: 48, floor: 0.72 },
 };
 
-export function physicalScale(product: CollectionProduct): number {
+export function physicalScale(product: ScalableProduct): number {
   const canonical = canonicalCategorySlug(product.categorySlug);
   if (!canonical) return 1;
 
