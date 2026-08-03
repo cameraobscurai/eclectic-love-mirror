@@ -14,21 +14,12 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
 
-  /** New category-aware fit rule. When supplied, takes over scaling +
-   *  anchoring entirely — the solver in this file is the single source of
-   *  truth for x/y/scale. Legacy props below are ignored. */
-  fit?: FitRule;
+  /** Category-aware fit rule — the single source of truth for x/y/scale.
+   *  Resolve it with resolveProductFit() so every surface agrees. */
+  fit: FitRule;
 
-  // ── Legacy props (still used by admin.photos and CollectionWallTile) ──
+  /** Fine nudge applied after the solver, in tile units. */
   visualOffsetY?: number;
-  visualAnchorY?: "center" | "bottom";
-  visualBaselineY?: number;
-  targetArea?: number;
-  maxW?: number;
-  maxH?: number;
-  minScale?: number;
-  fitMode?: "area" | "width";
-  targetWidth?: number;
 
   /** Admin-set focal point (0–1). When both are numbers, silhouette
    *  measurement is skipped and the image is centered on this point. */
@@ -40,6 +31,7 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  refines to the measured fit when the silhouette resolves. */
   eager?: boolean;
 };
+
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
 // across rules on the same image — the SOLVER runs per-rule, the MEASUREMENT
