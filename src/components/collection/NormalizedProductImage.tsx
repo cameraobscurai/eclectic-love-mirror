@@ -180,6 +180,22 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
     sTarget = rule.primaryTarget / Math.sqrt(currentArea);
   }
 
+  // 1b. Bend the axis match toward equal visual mass. Matching silhouettes on
+  // width alone makes a tall, short-bodied piece (aspect ~1.5) occupy roughly
+  // twice the area of a long low one (aspect ~3.4) at the same width. The
+  // correction is s *= (aspect / refAspect)^(blend/2), which is exactly the
+  // geometric interpolation between axis matching and area matching.
+  const blend = rule.aspectBlend ?? 0;
+  if (blend > 0 && rule.primary !== "area") {
+    const aspect = wInsetFrame / Math.max(0.001, hInsetFrame);
+    const ref = rule.refAspect ?? 1;
+    if (aspect > 0 && ref > 0) {
+      const exponent = rule.primary === "width" ? blend / 2 : -blend / 2;
+      sTarget *= Math.pow(aspect / ref, exponent);
+    }
+  }
+
+
   // 2. Secondary-axis cap (skip for area primary).
   let sCap = Infinity;
   if (rule.primary === "width") {
