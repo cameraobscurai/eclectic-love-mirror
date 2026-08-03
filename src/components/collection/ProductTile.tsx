@@ -67,8 +67,8 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
-  const placement = getGridPlacement(product.categorySlug);
-  const itemScale = physicalScale(product);
+  const fitRule = resolveProductFit(product);
+
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
