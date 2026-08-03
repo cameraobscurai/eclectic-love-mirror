@@ -39,6 +39,10 @@ export type FitRule = {
   primaryTarget: number;
   /** Secondary-axis cap (opposite of primary). Ignored for area. */
   secondaryMax: number;
+  /** Hard silhouette width cap in tile units. Applied on every primary mode. */
+  widthMax?: number;
+  /** Hard silhouette height cap in tile units. Applied on every primary mode. */
+  heightMax?: number;
   anchor: FitAnchor;
   /** Tile-space y for the anchor edge (0 = top, 1 = bottom). */
   anchorY: number;
