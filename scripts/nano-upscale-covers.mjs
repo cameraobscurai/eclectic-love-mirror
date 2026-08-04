@@ -172,7 +172,7 @@ async function main() {
     return;
   }
 
-  let ok = 0, fail = 0;
+  let ok = 0, fail = 0, skipped = 0;
   for (let i = 0; i < targets.length; i++) {
     const row = targets[i];
     const src = coverUrl(row.images);
@@ -181,8 +181,21 @@ async function main() {
     process.stdout.write(`[${i + 1}/${targets.length}] ${row.rms_id} ${row.title?.slice(0, 40)}... `);
     try {
       const orig = await fetchBuf(src);
+      const inSize = imageSize(orig);
       const b64 = orig.toString('base64');
       const out = await upscale(b64);
+      const outSize = imageSize(out);
+
+      // Never let a "upscale" shrink the asset. Lite caps near 1MP, so on a
+      // source that is already larger the result is a downgrade — discard it
+      // and leave the original cover untouched.
+      if (inSize && outSize && outSize.w * outSize.h <= inSize.w * inSize.h) {
+        console.log(`skip (${outSize.w}x${outSize.h} <= ${inSize.w}x${inSize.h})`);
+        log({ ok: false, skipped: true, rms_id: row.rms_id, src, inSize, outSize });
+        skipped++;
+        continue;
+      }
+
       const publicUrl = await uploadPng(out, storagePath);
       const { error: upErr } = await sb
         .from('inventory_items')
@@ -190,8 +203,8 @@ async function main() {
         .eq('id', row.id);
       if (upErr) throw upErr;
       const dt = ((Date.now() - t0) / 1000).toFixed(1);
-      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB`);
-      log({ ok: true, rms_id: row.rms_id, src, publicUrl, ms: Date.now() - t0 });
+      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB ${inSize?.w}x${inSize?.h} -> ${outSize?.w}x${outSize?.h}`);
+      log({ ok: true, rms_id: row.rms_id, src, publicUrl, inSize, outSize, ms: Date.now() - t0 });
       ok++;
     } catch (e) {
       console.log(`FAIL ${e.message}`);
