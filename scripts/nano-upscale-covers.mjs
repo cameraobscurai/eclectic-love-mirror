@@ -140,6 +140,7 @@ async function main() {
   console.log(`  already upscaled:   ${rows.filter(r => r.upscaled_cover_url).length}`);
   console.log(`  → to process:       ${targets.length}`);
   console.log(`  estimated cost:     ~${(targets.length * COST_PER).toFixed(2)} credits`);
+  console.log(`  model:              ${MODEL}`);
   console.log(`  log:                ${LOG_PATH}`);
 
   if (!APPLY) {
