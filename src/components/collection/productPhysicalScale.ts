@@ -20,20 +20,42 @@ export function parseWidthInches(dimensions: string | null | undefined): number 
 
 /**
  * Reference width (inches) that reads as "full tile" for each floor-standing
- * category. Items narrower than the benchmark shrink proportionally so a 52"
- * loveseat never carries the same visual mass as a 98" sofa, and a 20" side
- * table never reads as large as a 96" dining table.
+ * category, plus the fallback used when an item has no parseable width.
+ *
+ * `reference` is the measured p90 width of the live catalog for that category,
+ * not a guess. Anything at or above p90 reads full-tile; everything else is
+ * compressed toward the floor. Using a reference below p90 (the old numbers)
+ * clamped most of a category to a single size and erased scale entirely.
+ *
+ * `typical` is the measured median. Items with no parseable dimensions get it
+ * instead of 1 — an unknown item must NOT default to the largest size on the
+ * grid, which is what the old `return 1` did to 27/76 tables and 17/26
+ * large-decor pieces.
  *
  * Categories absent from this map are unscaled (scale 1) — small objects
  * (tableware, pillows, styling) are normalized by area, not real size.
+ *
+ * Measured 2026-08-04 against src/data/inventory/current_catalog.json.
+ * Re-measure with scripts/audit/width-percentiles.mjs after a re-import.
  */
-const WIDTH_BENCHMARKS: Record<string, { reference: number; floor: number }> = {
-  seating: { reference: 78, floor: 0.64 },
-  tables: { reference: 72, floor: 0.62 },
-  bars: { reference: 60, floor: 0.7 },
-  storage: { reference: 54, floor: 0.7 },
-  "large-decor": { reference: 48, floor: 0.72 },
+const WIDTH_BENCHMARKS: Record<
+  string,
+  { reference: number; typical: number; floor: number }
+> = {
+  seating: { reference: 84, typical: 28, floor: 0.42 },
+  tables: { reference: 96, typical: 40, floor: 0.35 },
+  bars: { reference: 144, typical: 87, floor: 0.4 },
+  storage: { reference: 76, typical: 46, floor: 0.5 },
+  "large-decor": { reference: 108, typical: 48, floor: 0.44 },
 };
+
+/**
+ * Real width ratios span ~6:1 (a 16" stool vs a 98" sofa). Rendering that
+ * linearly makes small pieces vanish, so the ratio is square-rooted: visual
+ * AREA tracks real width instead of visual width. A 6:1 real range becomes a
+ * legible ~2.4:1 on the grid, and the ordering is still truthful.
+ */
+const COMPRESSION = 0.5;
 
 export function physicalScale(product: CollectionProduct): number {
   const canonical = canonicalCategorySlug(product.categorySlug);
@@ -42,8 +64,11 @@ export function physicalScale(product: CollectionProduct): number {
   const benchmark = WIDTH_BENCHMARKS[canonical];
   if (!benchmark) return 1;
 
-  const width = parseWidthInches(product.dimensions);
-  if (!width || !Number.isFinite(width) || width <= 0) return 1;
+  const parsed = parseWidthInches(product.dimensions);
+  const width =
+    parsed && Number.isFinite(parsed) && parsed > 0 ? parsed : benchmark.typical;
 
-  return Math.max(benchmark.floor, Math.min(1, width / benchmark.reference));
+  const ratio = Math.min(1, width / benchmark.reference);
+  return Math.max(benchmark.floor, Math.min(1, Math.pow(ratio, COMPRESSION)));
 }
+
