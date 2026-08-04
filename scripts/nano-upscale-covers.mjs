@@ -13,6 +13,7 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
+import { normalizeCover, padToSquare, CANVAS } from './lib/cover-canvas.mjs';
 
 const args = Object.fromEntries(
   process.argv.slice(2).map(a => {
@@ -30,6 +31,8 @@ const LITE = !!args.lite;
 const COST_PER = LITE ? 0.09 : 0.271;
 // Keep the result even when it has fewer pixels than the source.
 const FORCE = !!args.force;
+// Framing is imposed after the fact, not asked for in the prompt.
+const NORMALIZE = args.normalize !== 'false' && !args['no-normalize'];
 
 if (!CATEGORY) {
   console.error('Missing --category=<slug>. E.g. tables, lighting, seating.');
@@ -186,15 +189,24 @@ async function main() {
     try {
       const orig = await fetchBuf(src);
       const inSize = imageSize(orig);
-      const b64 = orig.toString('base64');
-      const out = await upscale(b64);
+      const fed = NORMALIZE ? await padToSquare(orig) : orig;
+      const b64 = fed.toString('base64');
+      const raw = await upscale(b64);
+      let out = raw;
+      let frameNote = 'raw';
+      if (NORMALIZE) {
+        const norm = await normalizeCover(raw, CATEGORY, { canvas: CANVAS });
+        out = norm.buf;
+        frameNote = norm.note;
+      }
       const outSize = imageSize(out);
 
       // By default don't let an "upscale" shrink the asset. But pixel count is
       // not the same as quality: a clean 1000px re-render can beat a soft
       // 1400px original. --force keeps the result regardless.
-      if (!FORCE && inSize && outSize && outSize.w * outSize.h <= inSize.w * inSize.h) {
-        console.log(`skip (${outSize.w}x${outSize.h} <= ${inSize.w}x${inSize.h})`);
+      const rawSize = imageSize(raw);
+      if (!FORCE && inSize && rawSize && rawSize.w * rawSize.h <= inSize.w * inSize.h) {
+        console.log(`skip (${rawSize.w}x${rawSize.h} <= ${inSize.w}x${inSize.h})`);
         log({ ok: false, skipped: true, rms_id: row.rms_id, src, inSize, outSize });
         skipped++;
         continue;
@@ -207,8 +219,8 @@ async function main() {
         .eq('id', row.id);
       if (upErr) throw upErr;
       const dt = ((Date.now() - t0) / 1000).toFixed(1);
-      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB ${inSize?.w}x${inSize?.h} -> ${outSize?.w}x${outSize?.h}`);
-      log({ ok: true, rms_id: row.rms_id, src, publicUrl, inSize, outSize, ms: Date.now() - t0 });
+      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB ${inSize?.w}x${inSize?.h} -> ${outSize?.w}x${outSize?.h} [${frameNote}]`);
+      log({ ok: true, rms_id: row.rms_id, src, publicUrl, inSize, rawSize, outSize, frameNote, ms: Date.now() - t0 });
       ok++;
     } catch (e) {
       console.log(`FAIL ${e.message}`);
