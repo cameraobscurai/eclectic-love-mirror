@@ -44,7 +44,9 @@ if (!SUPABASE_URL || !SERVICE_KEY || !LOVABLE_KEY) {
 const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
 
 const BUCKET = 'squarespace-mirror';
-const PROMPT = 'show me image 1 with upscaled details and textures, natural shadow on white background';
+// Simple beats elaborate here — the model re-renders cleanly with almost no
+// direction, and a long prompt just invites it to reinterpret the product.
+const PROMPT = args.prompt || 'upscale this on white';
 const MODEL = LITE ? 'google/gemini-3.1-flash-lite-image' : 'google/gemini-3.1-flash-image';
 
 const LOG_DIR = '/tmp/upscale-runs';
@@ -186,10 +188,10 @@ async function main() {
       const out = await upscale(b64);
       const outSize = imageSize(out);
 
-      // Never let a "upscale" shrink the asset. Lite caps near 1MP, so on a
-      // source that is already larger the result is a downgrade — discard it
-      // and leave the original cover untouched.
-      if (inSize && outSize && outSize.w * outSize.h <= inSize.w * inSize.h) {
+      // By default don't let an "upscale" shrink the asset. But pixel count is
+      // not the same as quality: a clean 1000px re-render can beat a soft
+      // 1400px original. --force keeps the result regardless.
+      if (!FORCE && inSize && outSize && outSize.w * outSize.h <= inSize.w * inSize.h) {
         console.log(`skip (${outSize.w}x${outSize.h} <= ${inSize.w}x${inSize.h})`);
         log({ ok: false, skipped: true, rms_id: row.rms_id, src, inSize, outSize });
         skipped++;
