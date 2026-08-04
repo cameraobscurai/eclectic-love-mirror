@@ -25,7 +25,9 @@ const CATEGORY = args.category;
 const APPLY = !!args.apply;
 const LIMIT = args.limit ? parseInt(args.limit, 10) : null;
 const REDO = !!args.redo;
-const COST_PER = 0.271;
+// --lite routes to Nano Banana 2 Lite (cheaper, faster, different request body).
+const LITE = !!args.lite;
+const COST_PER = LITE ? 0.09 : 0.271;
 
 if (!CATEGORY) {
   console.error('Missing --category=<slug>. E.g. tables, lighting, seating.');
