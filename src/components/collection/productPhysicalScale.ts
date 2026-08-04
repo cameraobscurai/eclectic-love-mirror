@@ -81,7 +81,7 @@ const SUBCATEGORY_TYPICAL: Record<string, number> = {
  * Categories absent from this map are unscaled (scale 1) — small objects
  * (tableware, pillows, styling) are normalized by area, not real size.
  *
- * Measured 2026-08-04 against src/data/inventory/current_catalog.json.
+ * Measured 2026-08-04 (feet-aware parser) against src/data/inventory/current_catalog.json.
  * Re-measure with scripts/audit/width-percentiles.mjs after a re-import.
  */
 const WIDTH_BENCHMARKS: Record<
@@ -90,9 +90,9 @@ const WIDTH_BENCHMARKS: Record<
 > = {
   seating: { reference: 84, typical: 28, floor: 0.42 },
   tables: { reference: 96, typical: 40, floor: 0.35 },
-  bars: { reference: 144, typical: 87, floor: 0.4 },
+  bars: { reference: 144, typical: 96, floor: 0.4 },
   storage: { reference: 76, typical: 46, floor: 0.5 },
-  "large-decor": { reference: 108, typical: 48, floor: 0.44 },
+  "large-decor": { reference: 240, typical: 82, floor: 0.34 },
 };
 
 /**
