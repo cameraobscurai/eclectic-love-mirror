@@ -66,6 +66,26 @@ async function fetchBuf(url) {
   return Buffer.from(await r.arrayBuffer());
 }
 
+// Minimal dimension reader for PNG / JPEG buffers — no native deps.
+function imageSize(buf) {
+  if (buf.length > 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+  if (buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i < buf.length - 9) {
+      if (buf[i] !== 0xff) { i++; continue; }
+      const marker = buf[i + 1];
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  }
+  return null;
+}
+
+
 // Nano Banana 2 Lite takes the Vertex generateContent body; the full Nano Banana 2
 // takes the OpenRouter chat shape. Same endpoint, same normalized b64 response.
 function requestBody(b64) {
