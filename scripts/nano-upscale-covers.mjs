@@ -28,6 +28,8 @@ const REDO = !!args.redo;
 // --lite routes to Nano Banana 2 Lite (cheaper, faster, different request body).
 const LITE = !!args.lite;
 const COST_PER = LITE ? 0.09 : 0.271;
+// Keep the result even when it has fewer pixels than the source.
+const FORCE = !!args.force;
 
 if (!CATEGORY) {
   console.error('Missing --category=<slug>. E.g. tables, lighting, seating.');
