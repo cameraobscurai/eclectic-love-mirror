@@ -25,7 +25,9 @@ const CATEGORY = args.category;
 const APPLY = !!args.apply;
 const LIMIT = args.limit ? parseInt(args.limit, 10) : null;
 const REDO = !!args.redo;
-const COST_PER = 0.271;
+// --lite routes to Nano Banana 2 Lite (cheaper, faster, different request body).
+const LITE = !!args.lite;
+const COST_PER = LITE ? 0.09 : 0.271;
 
 if (!CATEGORY) {
   console.error('Missing --category=<slug>. E.g. tables, lighting, seating.');
@@ -43,7 +45,7 @@ const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: fal
 
 const BUCKET = 'squarespace-mirror';
 const PROMPT = 'show me image 1 with upscaled details and textures, natural shadow on white background';
-const MODEL = 'google/gemini-3.1-flash-image';
+const MODEL = LITE ? 'google/gemini-3.1-flash-lite-image' : 'google/gemini-3.1-flash-image';
 
 const LOG_DIR = '/tmp/upscale-runs';
 fs.mkdirSync(LOG_DIR, { recursive: true });
@@ -64,21 +66,60 @@ async function fetchBuf(url) {
   return Buffer.from(await r.arrayBuffer());
 }
 
+// Minimal dimension reader for PNG / JPEG buffers — no native deps.
+function imageSize(buf) {
+  if (buf.length > 24 && buf.readUInt32BE(0) === 0x89504e47) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+  if (buf[0] === 0xff && buf[1] === 0xd8) {
+    let i = 2;
+    while (i < buf.length - 9) {
+      if (buf[i] !== 0xff) { i++; continue; }
+      const marker = buf[i + 1];
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + buf.readUInt16BE(i + 2);
+    }
+  }
+  return null;
+}
+
+
+// Nano Banana 2 Lite takes the Vertex generateContent body; the full Nano Banana 2
+// takes the OpenRouter chat shape. Same endpoint, same normalized b64 response.
+function requestBody(b64) {
+  if (LITE) {
+    return {
+      model: MODEL,
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: PROMPT },
+          { inlineData: { mimeType: 'image/png', data: b64 } },
+        ],
+      }],
+      generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+    };
+  }
+  return {
+    model: MODEL,
+    messages: [{
+      role: 'user',
+      content: [
+        { type: 'text', text: PROMPT },
+        { type: 'image_url', image_url: { url: `data:image/png;base64,${b64}` } },
+      ],
+    }],
+    modalities: ['image', 'text'],
+  };
+}
+
 async function upscale(b64) {
   const r = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
     method: 'POST',
     headers: { Authorization: `Bearer ${LOVABLE_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'text', text: PROMPT },
-          { type: 'image_url', image_url: { url: `data:image/png;base64,${b64}` } },
-        ],
-      }],
-      modalities: ['image', 'text'],
-    }),
+    body: JSON.stringify(requestBody(b64)),
   });
   if (!r.ok) throw new Error(`gateway ${r.status}: ${(await r.text()).slice(0, 300)}`);
   const data = await r.json();
@@ -119,6 +160,7 @@ async function main() {
   console.log(`  already upscaled:   ${rows.filter(r => r.upscaled_cover_url).length}`);
   console.log(`  → to process:       ${targets.length}`);
   console.log(`  estimated cost:     ~${(targets.length * COST_PER).toFixed(2)} credits`);
+  console.log(`  model:              ${MODEL}`);
   console.log(`  log:                ${LOG_PATH}`);
 
   if (!APPLY) {
@@ -130,7 +172,7 @@ async function main() {
     return;
   }
 
-  let ok = 0, fail = 0;
+  let ok = 0, fail = 0, skipped = 0;
   for (let i = 0; i < targets.length; i++) {
     const row = targets[i];
     const src = coverUrl(row.images);
@@ -139,8 +181,21 @@ async function main() {
     process.stdout.write(`[${i + 1}/${targets.length}] ${row.rms_id} ${row.title?.slice(0, 40)}... `);
     try {
       const orig = await fetchBuf(src);
+      const inSize = imageSize(orig);
       const b64 = orig.toString('base64');
       const out = await upscale(b64);
+      const outSize = imageSize(out);
+
+      // Never let a "upscale" shrink the asset. Lite caps near 1MP, so on a
+      // source that is already larger the result is a downgrade — discard it
+      // and leave the original cover untouched.
+      if (inSize && outSize && outSize.w * outSize.h <= inSize.w * inSize.h) {
+        console.log(`skip (${outSize.w}x${outSize.h} <= ${inSize.w}x${inSize.h})`);
+        log({ ok: false, skipped: true, rms_id: row.rms_id, src, inSize, outSize });
+        skipped++;
+        continue;
+      }
+
       const publicUrl = await uploadPng(out, storagePath);
       const { error: upErr } = await sb
         .from('inventory_items')
@@ -148,8 +203,8 @@ async function main() {
         .eq('id', row.id);
       if (upErr) throw upErr;
       const dt = ((Date.now() - t0) / 1000).toFixed(1);
-      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB`);
-      log({ ok: true, rms_id: row.rms_id, src, publicUrl, ms: Date.now() - t0 });
+      console.log(`ok ${dt}s ${(out.length / 1024).toFixed(0)}KB ${inSize?.w}x${inSize?.h} -> ${outSize?.w}x${outSize?.h}`);
+      log({ ok: true, rms_id: row.rms_id, src, publicUrl, inSize, outSize, ms: Date.now() - t0 });
       ok++;
     } catch (e) {
       console.log(`FAIL ${e.message}`);
@@ -158,7 +213,7 @@ async function main() {
     }
   }
 
-  console.log(`\n=== done: ${ok} ok, ${fail} fail ===`);
+  console.log(`\n=== done: ${ok} ok, ${skipped} skipped (would downgrade), ${fail} fail ===`);
   console.log(`log: ${LOG_PATH}`);
   console.log(`next: node scripts/bake-catalog.mjs && commit`);
 }
