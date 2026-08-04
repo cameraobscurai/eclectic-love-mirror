@@ -12,6 +12,10 @@ const catalog = JSON.parse(
   readFileSync(new URL('../../src/data/inventory/current_catalog.json', import.meta.url)),
 );
 
+const FEET = [
+  /(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*w\b/i,
+  /(\d+(?:\.\d+)?)\s*(?:'|’|ft\b)\s*[x×]/i,
+];
 const PATTERNS = [
   /(\d+(?:\.\d+)?)\s*(?:"|”|in\b|inches)?\s*w\b/i,
   /\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i,
@@ -19,7 +23,9 @@ const PATTERNS = [
 ];
 const parseWidth = (d) => {
   if (!d) return null;
-  for (const p of PATTERNS) { const m = d.match(p); if (m) return Number(m[1]); }
+  const sane = (n) => (n > 360 ? null : n);
+  for (const p of FEET) { const m = d.match(p); if (m) return sane(Number(m[1]) * 12); }
+  for (const p of PATTERNS) { const m = d.match(p); if (m) return sane(Number(m[1])); }
   return null;
 };
 
@@ -38,4 +44,21 @@ for (const cat of CATEGORIES) {
     `  p10=${q(0.1)}  p50=${q(0.5)} (typical)  p90=${q(0.9)} (reference)  max=${widths.at(-1)}`,
   );
 }
-console.log('\nreference := p90, typical := p50. Update productPhysicalScale.ts if these drift.\n');
+console.log('\nreference := p90 (category). Update WIDTH_BENCHMARKS if these drift.\n');
+
+// Subcategory medians drive SUBCATEGORY_TYPICAL — the fallback for items with
+// no parseable width. Category medians are too blunt (side tables vs dining).
+const bySub = {};
+for (const p of catalog.products) {
+  if (!CATEGORIES.includes(p.categorySlug)) continue;
+  const w = parseWidth(p.dimensions);
+  if (!w) continue;
+  const sub = p.liveSubcategories?.[0]?.trim().toLowerCase() ?? '(none)';
+  (bySub[sub] ??= []).push(w);
+}
+console.log('subcategory medians — SUBCATEGORY_TYPICAL:\n');
+for (const k of Object.keys(bySub).sort()) {
+  const a = bySub[k].sort((x, y) => x - y);
+  console.log(`  ${k.padEnd(22)} n=${String(a.length).padStart(3)}  median=${a[Math.floor(a.length / 2)]}`);
+}
+console.log('');
