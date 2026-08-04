@@ -45,7 +45,7 @@ const sb = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: fal
 
 const BUCKET = 'squarespace-mirror';
 const PROMPT = 'show me image 1 with upscaled details and textures, natural shadow on white background';
-const MODEL = 'google/gemini-3.1-flash-image';
+const MODEL = LITE ? 'google/gemini-3.1-flash-lite-image' : 'google/gemini-3.1-flash-image';
 
 const LOG_DIR = '/tmp/upscale-runs';
 fs.mkdirSync(LOG_DIR, { recursive: true });
@@ -66,21 +66,40 @@ async function fetchBuf(url) {
   return Buffer.from(await r.arrayBuffer());
 }
 
+// Nano Banana 2 Lite takes the Vertex generateContent body; the full Nano Banana 2
+// takes the OpenRouter chat shape. Same endpoint, same normalized b64 response.
+function requestBody(b64) {
+  if (LITE) {
+    return {
+      model: MODEL,
+      contents: [{
+        role: 'user',
+        parts: [
+          { text: PROMPT },
+          { inlineData: { mimeType: 'image/png', data: b64 } },
+        ],
+      }],
+      generationConfig: { responseModalities: ['TEXT', 'IMAGE'] },
+    };
+  }
+  return {
+    model: MODEL,
+    messages: [{
+      role: 'user',
+      content: [
+        { type: 'text', text: PROMPT },
+        { type: 'image_url', image_url: { url: `data:image/png;base64,${b64}` } },
+      ],
+    }],
+    modalities: ['image', 'text'],
+  };
+}
+
 async function upscale(b64) {
   const r = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
     method: 'POST',
     headers: { Authorization: `Bearer ${LOVABLE_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'text', text: PROMPT },
-          { type: 'image_url', image_url: { url: `data:image/png;base64,${b64}` } },
-        ],
-      }],
-      modalities: ['image', 'text'],
-    }),
+    body: JSON.stringify(requestBody(b64)),
   });
   if (!r.ok) throw new Error(`gateway ${r.status}: ${(await r.text()).slice(0, 300)}`);
   const data = await r.json();
