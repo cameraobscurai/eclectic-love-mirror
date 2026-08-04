@@ -213,7 +213,7 @@ async function main() {
     }
   }
 
-  console.log(`\n=== done: ${ok} ok, ${fail} fail ===`);
+  console.log(`\n=== done: ${ok} ok, ${skipped} skipped (would downgrade), ${fail} fail ===`);
   console.log(`log: ${LOG_PATH}`);
   console.log(`next: node scripts/bake-catalog.mjs && commit`);
 }
