@@ -187,8 +187,13 @@ function NewProductPage() {
     setErr(null);
     setBusy(publicReady ? "publish" : "draft");
     try {
-      await ensureRow(publicReady);
-      router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined } });
+      const row = await ensureRow(publicReady);
+      // Land in the full editor for the piece just created — dropping the user
+      // on /admin/photos made new items feel like they vanished.
+      router.navigate({
+        to: "/admin/products",
+        search: { q: "", cat: "", ready: "all", id: row.id, group: undefined },
+      });
     } catch (e) {
       setErr((e as Error).message || "Save failed");
       setBusy(null);
