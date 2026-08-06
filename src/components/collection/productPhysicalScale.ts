@@ -103,8 +103,11 @@ const WIDTH_BENCHMARKS: Record<
   tables: { reference: 96, typical: 40, floor: 0.35 },
   // Height axis: carts ~31", standard bars 35–44", trunk bars 58–59".
   bars: { reference: 48, typical: 41, floor: 0.62, axis: "height" },
-  storage: { reference: 76, typical: 46, floor: 0.5 },
-  "large-decor": { reference: 240, typical: 82, floor: 0.34 },
+  // Height axis: both categories are FITTED on height in categoryFit.ts.
+  // Scaling them by width repeated the trunk-bar bug — a tall narrow cabinet
+  // or a 22"-wide 8'-tall screen got floored purely for being narrow.
+  storage: { reference: 92, typical: 72, floor: 0.5, axis: "height" },
+  "large-decor": { reference: 120, typical: 84, floor: 0.4, axis: "height" },
 };
 
 /** Height counterpart of parseWidthInches — `41"H`, `4'H`, or the W×D×H tail. */
