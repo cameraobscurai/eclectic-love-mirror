@@ -462,6 +462,7 @@ export function GalleryLightbox({
                 {project.summary}
               </p>
             )}
+            <GalleryCreditsBlock credits={project.credits} />
             {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
               <ShopTheLookRail slugs={project.relatedInventorySlugs} />
             )}
