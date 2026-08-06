@@ -26,6 +26,13 @@ import { supabase } from '@/integrations/supabase/client' // ADAPT: client (brow
 
 const HOME_POSTER = 'https://eclectichive.com/media/home/01-poster.jpg'
 
+// Preferred first-name display for staff whose auth metadata doesn't match
+// how they want to be greeted.
+const STAFF_NAME_BY_EMAIL: Record<string, string> = {
+  'amoon@eclectichive.com': 'Adrienne',
+  'aohman@eclectichive.com': 'Adrienne',
+}
+
 export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
   const navigate = useNavigate()
   // FIX 4: derive the greeting name client-side (route is ssr:false; the
@@ -35,13 +42,16 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
     supabase.auth.getUser().then(({ data }) => {
       const u = data.user
       if (!u) return
+      const email = u.email?.toLowerCase() ?? ''
       setSessionName(
-        (u.user_metadata?.first_name as string | undefined) ??
+        STAFF_NAME_BY_EMAIL[email] ??
+          (u.user_metadata?.first_name as string | undefined) ??
           u.email?.split('@')[0] ??
           null,
       )
     })
   }, [])
+
   const firstName = firstNameProp ?? sessionName ?? 'there'
   const search = useSearch({ strict: false }) as { page?: string }
 
