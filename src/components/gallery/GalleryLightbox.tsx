@@ -6,6 +6,7 @@ import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { CrossfadeImage } from "./CrossfadeImage";
 import { LightboxParallax } from "./LightboxParallax";
 import { ShopTheLookRail } from "./ShopTheLookRail";
+import { GalleryCreditsBlock } from "./GalleryCredits";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
@@ -21,23 +22,40 @@ interface GalleryLightboxProps {
   projects: GalleryProject[];
   initialProjectIndex: number;
   onClose: () => void;
+  /** Plate to open on (deep links). Defaults to the first plate. */
+  initialPlateIndex?: number;
+  /** Fired whenever the visible plate changes — used to sync the URL. */
+  onPlateChange?: (index: number) => void;
+  /**
+   * When provided, PREV/NEXT project delegates to the parent (page mode
+   * navigates to the sibling permalink) instead of swapping in place.
+   */
+  onProjectChange?: (index: number) => void;
 }
 
 export function GalleryLightbox({
   projects,
   initialProjectIndex,
   onClose,
+  initialPlateIndex = 0,
+  onPlateChange,
+  onProjectChange,
 }: GalleryLightboxProps) {
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
-  const [plateIndex, setPlateIndex] = useState(0);
+  const [plateIndex, setPlateIndex] = useState(initialPlateIndex);
   const [plateChanging, setPlateChanging] = useState(false);
   const [mobileDetailsOpen, setMobileDetailsOpen] = useState(false);
+
+  // Follow the parent when it drives the project (page mode / permalinks).
+  useEffect(() => {
+    setProjectIndex(initialProjectIndex);
+  }, [initialProjectIndex]);
 
   const project = projects[projectIndex];
   const pending = !!project.pending;
   const plates =
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
-  const plate = plates[plateIndex];
+  const plate = plates[Math.min(plateIndex, plates.length - 1)] ?? plates[0];
   const plateIsVideo = !!plate.video;
   const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
 
@@ -100,16 +118,24 @@ export function GalleryLightbox({
   const [zoomScale, setZoomScale] = useState(1);
   const isZoomed = zoomScale > 1.02;
 
-  // Reset plate (and zoom) when project changes.
+  // Reset plate (and zoom) when project changes — but not on first mount,
+  // where `initialPlateIndex` may point at a deep-linked plate.
+  const firstProjectRun = useRef(true);
   useEffect(() => {
+    if (firstProjectRun.current) {
+      firstProjectRun.current = false;
+      return;
+    }
     setPlateIndex(0);
     zoomApiRef.current?.resetTransform();
   }, [projectIndex]);
 
-  // Reset zoom when plate changes inside a project.
+  // Reset zoom when plate changes inside a project, and report it upward so
+  // the URL can carry the plate.
   useEffect(() => {
     zoomApiRef.current?.resetTransform();
-  }, [plateIndex]);
+    onPlateChange?.(plateIndex);
+  }, [plateIndex, onPlateChange]);
 
 
   // plateChanging is now driven by CrossfadeImage's actual decode lifecycle
@@ -151,14 +177,19 @@ export function GalleryLightbox({
 
   const stepProject = useCallback(
     (dir: -1 | 1) => {
-      setProjectIndex((i) => {
+      const wrap = (i: number) => {
         const next = i + dir;
         if (next < 0) return projects.length - 1;
         if (next > projects.length - 1) return 0;
         return next;
-      });
+      };
+      if (onProjectChange) {
+        onProjectChange(wrap(projectIndex));
+        return;
+      }
+      setProjectIndex(wrap);
     },
-    [projects.length]
+    [projects.length, onProjectChange, projectIndex]
   );
 
   // Keyboard nav.
@@ -431,6 +462,7 @@ export function GalleryLightbox({
                 {project.summary}
               </p>
             )}
+            <GalleryCreditsBlock credits={project.credits} />
             {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
               <ShopTheLookRail slugs={project.relatedInventorySlugs} />
             )}
@@ -535,6 +567,7 @@ export function GalleryLightbox({
                 {project.summary}
               </p>
             )}
+            <GalleryCreditsBlock credits={project.credits} />
             {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
               <ShopTheLookRail slugs={project.relatedInventorySlugs} />
             )}

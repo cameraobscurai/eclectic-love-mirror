@@ -72,6 +72,19 @@ export interface GalleryProject {
   coverDirective?: CoverDirective;
   /** Catalog slugs to surface as a "Shop the Look" rail in the lightbox. */
   relatedInventorySlugs?: string[];
+  /** Editorial credits — rendered in the lightbox sidebar and detail page. */
+  credits?: GalleryCredits;
+}
+
+/** Standard editorial credit block. Every field optional; empty ones are dropped. */
+export interface GalleryCredits {
+  photographer?: string;
+  florist?: string;
+  venue?: string;
+  caterer?: string;
+  rentals?: string;
+  /** Anything that doesn't fit the fixed slots — label/name pairs. */
+  additional?: { label: string; name: string }[];
 }
 
 import {

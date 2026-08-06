@@ -68,6 +68,7 @@ import { Route as LightingSplatRouteImport } from './routes/lighting.$'
 import { Route as LightSplatRouteImport } from './routes/light.$'
 import { Route as LargeDecor1SplatRouteImport } from './routes/large-decor1.$'
 import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
+import { Route as GallerySlugRouteImport } from './routes/gallery_.$slug'
 import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as DiningSplatRouteImport } from './routes/dining.$'
@@ -398,6 +399,11 @@ const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
   path: '/large-decor/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GallerySlugRoute = GallerySlugRouteImport.update({
+  id: '/gallery_/$slug',
+  path: '/gallery/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FursPeltsSplatRoute = FursPeltsSplatRouteImport.update({
   id: '/furs-pelts/$',
   path: '/furs-pelts/$',
@@ -628,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/gallery/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -722,6 +729,7 @@ export interface FileRoutesByTo {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/gallery/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -818,6 +826,7 @@ export interface FileRoutesById {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
+  '/gallery_/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -915,6 +924,7 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
+    | '/gallery/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1009,6 +1019,7 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
+    | '/gallery/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1104,6 +1115,7 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
+    | '/gallery_/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1184,6 +1196,7 @@ export interface RootRouteChildren {
   DiningSplatRoute: typeof DiningSplatRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   FursPeltsSplatRoute: typeof FursPeltsSplatRoute
+  GallerySlugRoute: typeof GallerySlugRoute
   LargeDecorSplatRoute: typeof LargeDecorSplatRoute
   LargeDecor1SplatRoute: typeof LargeDecor1SplatRoute
   LightSplatRoute: typeof LightSplatRoute
@@ -1637,6 +1650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LargeDecorSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gallery_/$slug': {
+      id: '/gallery_/$slug'
+      path: '/gallery/$slug'
+      fullPath: '/gallery/$slug'
+      preLoaderRoute: typeof GallerySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/furs-pelts/$': {
       id: '/furs-pelts/$'
       path: '/furs-pelts/$'
@@ -1972,6 +1992,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiningSplatRoute: DiningSplatRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   FursPeltsSplatRoute: FursPeltsSplatRoute,
+  GallerySlugRoute: GallerySlugRoute,
   LargeDecorSplatRoute: LargeDecorSplatRoute,
   LargeDecor1SplatRoute: LargeDecor1SplatRoute,
   LightSplatRoute: LightSplatRoute,
@@ -2012,13 +2033,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

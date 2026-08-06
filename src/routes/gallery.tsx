@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
 import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
-import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import {
   galleryProjects,
   GALLERY_EXCLUDE_PLANNERS,
@@ -14,10 +13,8 @@ import {
 } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
-import { morphOpen } from "@/lib/view-transition";
-import { flushSync } from "react-dom";
-import { applyGalleryOrder, gallerySlug } from "@/lib/gallery-orders";
-import bakedGalleryOrders from "@/data/gallery/gallery-orders.json";
+import { gallerySlug } from "@/lib/gallery-orders";
+import { useOrderedGalleryProjects } from "@/hooks/use-gallery-projects";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
@@ -57,10 +54,10 @@ export const Route = createFileRoute("/gallery")({
             position: i + 1,
             item: {
               "@type": "CreativeWork",
-              "@id": `${GALLERY_URL}#project-${p.number}`,
+              "@id": `${SITE_URL}/gallery/${gallerySlug(p)}#project`,
               name: p.name,
               description: p.summary,
-              url: `${GALLERY_URL}#project-${p.number}`,
+              url: `${SITE_URL}/gallery/${gallerySlug(p)}`,
               ...(heroIsStorage
                 ? { image: renderUrl(p.heroImage.src, { width: 1600, quality: 80 }) }
                 : {}),
@@ -173,81 +170,11 @@ const REGION_FILTERS: string[] = (() => {
 
 function GalleryPage() {
   const [filter, setFilter] = useState<string>("All");
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const navigate = useNavigate();
 
-  // Per-gallery admin overrides — baked snapshot from scripts/bake-catalog.mjs
-  // is the guaranteed floor. On mount, try the published snapshot
-  // (squarespace-mirror/catalog/gallery-orders.json) so admin Publish clicks
-  // reach live between full bakes. Both are one-request, CDN-cacheable.
-  const [liveOrders, setLiveOrders] = useState<Record<string, string[]> | null>(null);
-  const orders = useMemo<Map<string, string[]>>(() => {
-    const m = new Map<string, string[]>();
-    const src =
-      liveOrders ??
-      ((bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {});
-    for (const [slug, keys] of Object.entries(src)) {
-      if (Array.isArray(keys) && keys.length > 0) m.set(slug, keys);
-    }
-    return m;
-  }, [liveOrders]);
-
-  useEffect(() => {
-    let alive = true;
-    const base = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
-      ?.VITE_SUPABASE_URL;
-    if (!base) return;
-    // Skip the fetch once we've seen the snapshot 404 this tab — the baked
-    // fallback already covers us, no reason to spam 400s on every visit.
-    const MISSING_KEY = "eh:gallery-orders-missing";
-    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(MISSING_KEY) === "1") {
-      return;
-    }
-    (async () => {
-      try {
-        const manRes = await fetch(
-          `${base}/storage/v1/object/public/squarespace-mirror/catalog/manifest.json?t=${Math.floor(Date.now() / 60000)}`,
-          { cache: "no-cache" },
-        );
-        if (!manRes.ok) {
-          if (typeof sessionStorage !== "undefined") sessionStorage.setItem(MISSING_KEY, "1");
-          return;
-        }
-        const manifest = (await manRes.json()) as { galleryOrdersKey?: string | null };
-        if (!manifest.galleryOrdersKey) return;
-        const res = await fetch(
-          `${base}/storage/v1/object/public/squarespace-mirror/${manifest.galleryOrdersKey}`,
-          { cache: "force-cache" },
-        );
-        if (!res.ok) return;
-        const payload = (await res.json()) as { orders?: Record<string, string[]> } | null;
-        if (!alive || !payload?.orders) return;
-        setLiveOrders(payload.orders);
-      } catch {
-        /* baked fallback covers us */
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  // Apply DB overrides over the manifest order. When no override exists for
-  // a gallery, the project passes through unchanged (manifest + promoteHeroes
-  // fallback continues to apply).
-  const overriddenProjects = useMemo<GalleryProject[]>(() => {
-    if (orders.size === 0) return galleryProjects;
-    return galleryProjects.map((p) => {
-      const keys = orders.get(gallerySlug(p));
-      if (!keys) return p;
-      return {
-        ...p,
-        detailImages: applyGalleryOrder(p.detailImages, {
-          gallery_slug: gallerySlug(p),
-          order_keys: keys,
-        }),
-      };
-    });
-  }, [orders]);
+  // Static content + admin plate-order overrides (baked floor, live snapshot
+  // layered on when published). Shared with /gallery/{slug}.
+  const overriddenProjects = useOrderedGalleryProjects();
 
   const visibleProjects: GalleryProject[] = useMemo(() => {
     if (filter === "All") return overriddenProjects;
@@ -261,17 +188,15 @@ function GalleryPage() {
     return base;
   }, [overriddenProjects]);
 
-  // Open lightbox at the real project index (independent of current filter view).
-  const handleOpen = (visibleIndex: number, sourceEl?: HTMLElement | null) => {
+  // Projects are real pages now — open = navigate to the permalink.
+  const handleOpen = (visibleIndex: number) => {
     const project = visibleProjects[visibleIndex];
     if (!project) return;
-    const realIndex = overriddenProjects.findIndex((p) => p.number === project.number);
-    const next = realIndex >= 0 ? realIndex : 0;
-    morphOpen(
-      sourceEl ?? null,
-      () => flushSync(() => setOpenIndex(next)),
-      () => document.querySelector<HTMLElement>('[data-vt-dest="gallery-hero"]'),
-    );
+    navigate({
+      to: "/gallery/$slug",
+      params: { slug: gallerySlug(project) },
+      search: {},
+    });
   };
 
   return (
@@ -283,6 +208,20 @@ function GalleryPage() {
       <GalleryFilmstrip projects={visibleProjects} onOpen={handleOpen} />
 
       <GalleryIndex projects={visibleProjects} onOpen={handleOpen} />
+
+      {/* Crawlable permalinks — the filmstrip/index rows are buttons, so this
+          gives crawlers a real href to every project page. */}
+      <nav aria-label="All projects" className="sr-only">
+        <ul>
+          {overriddenProjects.map((p) => (
+            <li key={p.number}>
+              <Link to="/gallery/$slug" params={{ slug: gallerySlug(p) }}>
+                {p.name} — {p.planner}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <GalleryCta />
 
@@ -312,14 +251,6 @@ function GalleryPage() {
           />
         </div>
       </section>
-
-      {openIndex !== null && (
-        <GalleryLightbox
-          projects={overriddenProjects}
-          initialProjectIndex={openIndex}
-          onClose={() => setOpenIndex(null)}
-        />
-      )}
     </main>
   );
 }
