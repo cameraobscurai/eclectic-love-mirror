@@ -7,7 +7,7 @@ import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 // Staff can edit merchandising/inventory fields; admin adds URL + SEO + injection.
 // rms_id is in NEITHER list — set by import, never editable via drawer.
 const STAFF_EDITABLE_FIELDS = [
-  "title", "description", "price", "status", "category",
+  "title", "description", "price", "status", "category", "subcategory_slug",
   "width_cm", "height_cm", "depth_cm", "weight_kg", "materials", "origin",
   "images",
   "quantity", "quantity_label", "dimensions_raw",

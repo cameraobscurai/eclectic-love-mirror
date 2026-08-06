@@ -89,7 +89,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { mergeCategoryOptions } from "@/lib/admin-categories";
+import { mergeCategoryOptions, subcategoryOptions } from "@/lib/admin-categories";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImageOrderEditor } from "./ImageOrderEditor";
@@ -139,6 +139,10 @@ const FIELD_META = {
   category: {
     group: "basics", label: "Category", type: "category", staffEditable: true,
     help: "Which shelf of the archive this lives on.",
+  },
+  subcategory_slug: {
+    group: "basics", label: "Subcategory", type: "subcategory", staffEditable: true,
+    help: "Optional. The chip it files under inside its category (e.g. Cocktail Tables). Leave blank to let the site decide.",
   },
   status: {
     group: "basics", label: "Status", type: "status", staffEditable: true,
@@ -750,6 +754,14 @@ export function ProductEditDrawer({
     const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
     if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
     if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
+    if (meta.type === "subcategory") {
+      const subs = subcategoryOptions(draft.values.category, draft.values.subcategory_slug);
+      return (
+        <SelectField key={k} {...common}
+          options={[{ value: "", label: subs.length ? "— Let the site decide —" : "— None for this category —" },
+                    ...subs.map((s) => ({ value: s.id, label: s.label }))]} />
+      );
+    }
     if (meta.type === "category") return <SelectField key={k} {...common} options={mergeCategoryOptions(categories || []).map((c) => ({ value: c.slug, label: c.label }))} />;
     if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (

@@ -495,6 +495,7 @@ export type Database = {
           rms_id: string | null
           slug: string
           status: Database["public"]["Enums"]["item_status"]
+          subcategory_slug: string | null
           title: string
           updated_at: string
           upscaled_cover_url: string | null
@@ -546,6 +547,7 @@ export type Database = {
           rms_id?: string | null
           slug: string
           status?: Database["public"]["Enums"]["item_status"]
+          subcategory_slug?: string | null
           title: string
           updated_at?: string
           upscaled_cover_url?: string | null
@@ -597,6 +599,7 @@ export type Database = {
           rms_id?: string | null
           slug?: string
           status?: Database["public"]["Enums"]["item_status"]
+          subcategory_slug?: string | null
           title?: string
           updated_at?: string
           upscaled_cover_url?: string | null

@@ -227,6 +227,13 @@ function classifySub(parent: ParentId, p: CollectionProduct): string | null {
   const liveSubs = p.liveSubcategories || [];
   const liveLower = liveSubs.map((s) => s.toLowerCase());
 
+  // Owner-selected subcategory (admin editor) wins over everything else.
+  const owner = (p.ownerSubcategory || "").trim();
+  if (owner) {
+    const hit = (PARENT_SUBS[parent] || []).find((s) => s.id === owner);
+    if (hit) return hit.id;
+  }
+
   // Hard overrides — structural form trumps live-site labels.
   // A banquette is normally a bench, BUT respect the live site when it
   // explicitly tags one under Sofas & Loveseats (e.g. Rosalind round banquette).
