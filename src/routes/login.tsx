@@ -282,7 +282,7 @@ function LoginPage() {
         >
           {mode === "signin" ? (
             <>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
                 NO PASSWORD? EMAIL ME A LINK
               </button>
               <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
@@ -290,7 +290,7 @@ function LoginPage() {
               </button>
             </>
           ) : (
-            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
               ← BACK TO SIGN IN
             </button>
           )}
