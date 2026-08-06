@@ -106,6 +106,7 @@ function LoginPage() {
           },
         });
         if (error) throw error;
+        setLinkSentAt(Date.now());
         setInfo("Sign-in link sent. Open the email on this device and you're in.");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
