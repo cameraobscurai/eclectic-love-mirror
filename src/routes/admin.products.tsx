@@ -14,6 +14,8 @@ import {
   listDistinctCategories,
   listProductAudit,
   getMyRole,
+  deleteProduct,
+
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
 import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
@@ -350,6 +352,8 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const auditFn = useServerFn(listProductAudit);
   const catsFn = useServerFn(listDistinctCategories);
   const roleFn = useServerFn(getMyRole);
+  const del = useServerFn(deleteProduct);
+
   const [row, setRow] = useState<ProductRow | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -413,6 +417,12 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         sketch={null}
         onClose={onClose}
         onOpenPhotos={() => setPhotoEditor(true)}
+        onDelete={async () => {
+          await del({ data: { id } });
+          onSaved();
+          onClose();
+        }}
+
         onPhotosSaved={(next: { images: string[]; card_background_url: string | null }) => {
           // Keep the drawer's preview + readiness checklist in step with the
           // photo editor instead of waiting for a close/reopen.
