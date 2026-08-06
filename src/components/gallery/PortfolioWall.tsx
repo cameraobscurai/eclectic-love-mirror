@@ -26,10 +26,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 //     through is instant instead of a second network round-trip.
 // ---------------------------------------------------------------------------
 
-const INITIAL_COUNT = 30;
-const STEP = 30;
+const DESKTOP_INITIAL = 30;
+const DESKTOP_STEP = 30;
+const MOBILE_INITIAL = 10;
+const MOBILE_STEP = 10;
 const MAX_PER_PROJECT = 6;
 const EAGER_COUNT = 10;
+
 
 interface Plate {
   key: string;
