@@ -94,6 +94,13 @@ export function ProductTile({
   const rawUrl = product.primaryImage?.url ?? null;
   const placement = getGridPlacement(product.categorySlug);
   const itemScale = physicalScale(product);
+  // The grid tile is AREA-driven. Multiplying targetArea by itemScale squared
+  // made rendered area track real width linearly, which crushed chairs next to
+  // sofas (27" vs 84" -> 32% of the area). Apply itemScale to area once and its
+  // square root to the caps: visual area now tracks the already-compressed
+  // scale, so ordering stays truthful without the double penalty.
+  const areaScale = itemScale;
+  const linearScale = Math.sqrt(itemScale);
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
   const [useRaw, setUseRaw] = useState(false);
@@ -154,10 +161,10 @@ export function ProductTile({
                   ref={captureLoadedImage}
                   src={imageSrc}
                   frameAspect={frameAspect}
-                  targetArea={(overrides?.targetArea ?? placement.targetArea) * itemScale * itemScale}
-                  maxW={(overrides?.maxW ?? placement.maxW) * itemScale}
-                  maxH={(overrides?.maxH ?? placement.maxH) * itemScale}
-                  minScale={placement.minScale ? placement.minScale * itemScale : undefined}
+                  targetArea={(overrides?.targetArea ?? placement.targetArea) * areaScale}
+                  maxW={(overrides?.maxW ?? placement.maxW) * linearScale}
+                  maxH={(overrides?.maxH ?? placement.maxH) * linearScale}
+                  minScale={placement.minScale ? placement.minScale * linearScale : undefined}
                   fitMode={placement.fitMode}
                   targetWidth={placement.targetWidth}
                   eager={index < HIGH_FETCH_COUNT}
