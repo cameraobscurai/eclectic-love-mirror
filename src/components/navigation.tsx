@@ -137,7 +137,8 @@ export function Navigation() {
   useEffect(() => {
     setIsOpen(false);
     setDropdownOpen(false);
-  }, [pathname]);
+  }, [pathname, location.search]);
+
 
   // Touch / outside-click handler so the desktop dropdown also works on iOS
   // Safari and touch laptops (where :hover never persists on a non-anchor).
@@ -265,10 +266,13 @@ export function Navigation() {
                             ) {
                               e.preventDefault();
                               setDropdownOpen(true);
+                            } else {
+                              setDropdownOpen(false);
                             }
                           }
                         : undefined
                     }
+
                     className={cn(
                       "relative group text-[11px] xl:text-[12px] tracking-[0.3em] uppercase font-light transition-colors duration-300",
                       dark
@@ -309,11 +313,17 @@ export function Navigation() {
                               search={{ group: pid, subcategory: "all", q: "", sort: "type", layout: "grid", view: "" }}
                               preload="intent"
                               role="menuitem"
-                              onClick={() => setDropdownOpen(false)}
+                              onClick={(e) => {
+                                setDropdownOpen(false);
+                                // Remove focus so the focus-within state doesn't keep the
+                                // dropdown visible after a menu item is selected.
+                                e.currentTarget.blur();
+                              }}
                               className="block px-5 py-3 text-[10px] tracking-[0.24em] uppercase text-charcoal/70 hover:text-charcoal hover:bg-charcoal/[0.03] whitespace-nowrap transition-colors duration-150"
                             >
                               {PARENT_LABELS[pid]}
                             </Link>
+
                           </li>
                         ))}
                       </ul>
