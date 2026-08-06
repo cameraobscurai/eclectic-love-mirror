@@ -65,7 +65,7 @@ function Inner() {
   // Keep the box in sync when the URL changes from history nav / cleared filters.
   // Only when they actually diverge, so the debounce below can't clobber typing.
   useEffect(() => {
-    setSearchInput((cur) => (cur === search.q ? cur : search.q));
+    setSearchInput((cur: string) => (cur === search.q ? cur : search.q));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.q]);
 
