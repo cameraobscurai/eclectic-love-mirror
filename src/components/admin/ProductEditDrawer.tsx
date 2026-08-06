@@ -170,13 +170,9 @@ const FIELD_META = {
     group: "details", label: "Counted as", type: "text", staffEditable: true,
     help: 'Optional unit — "sets", "pairs", "per dozen".',
   },
-  price: {
-    group: "details", label: "Rental rate", type: "price", staffEditable: true,
-    help: "Per event, in dollars. Used in proposals and quotes — never shown on the public site.",
-    validate: (v) =>
-      v !== "" && v != null && (!Number.isFinite(+v) || +v < 0)
-        ? "The rate needs to be a number, like 85 or 85.50." : null,
-  },
+  // Rental rate (`price`) is intentionally NOT editable here — pricing lives
+  // outside the inventory tool. Do not re-add a rate field to this drawer.
+
   public_ready: {
     group: "visibility", label: "Visible on site", type: "toggle", staffEditable: true,
     help: "Controls whether this piece appears in the public collection.",
@@ -283,8 +279,8 @@ function computeReadiness(values, product) {
     { id: "category", label: "On a shelf (category)", pass: !!values.category },
     { id: "dims", label: "Dimensions on record", pass: !!String(values.dimensions_raw ?? "").trim() },
     { id: "desc", label: "Described in the Hive voice", pass: String(values.description ?? "").trim().length >= 20 },
-    { id: "rate", label: "Rate set for proposals", pass: values.price !== "" && values.price != null && +values.price > 0, internal: true },
   ];
+
   const missing = checks.filter((c) => !c.pass);
   const publicMissing = missing.filter((c) => !c.internal);
   return { checks, missing, publicMissing, ready: missing.length === 0, publicReadyOk: publicMissing.length === 0 };
