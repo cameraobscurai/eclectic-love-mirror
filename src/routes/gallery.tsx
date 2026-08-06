@@ -54,10 +54,10 @@ export const Route = createFileRoute("/gallery")({
             position: i + 1,
             item: {
               "@type": "CreativeWork",
-              "@id": `${GALLERY_URL}#project-${p.number}`,
+              "@id": `${SITE_URL}/gallery/${gallerySlug(p)}#project`,
               name: p.name,
               description: p.summary,
-              url: `${GALLERY_URL}#project-${p.number}`,
+              url: `${SITE_URL}/gallery/${gallerySlug(p)}`,
               ...(heroIsStorage
                 ? { image: renderUrl(p.heroImage.src, { width: 1600, quality: 80 }) }
                 : {}),
