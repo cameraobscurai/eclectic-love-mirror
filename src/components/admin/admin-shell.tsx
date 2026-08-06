@@ -38,6 +38,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { getInquirySummary } from "@/lib/admin.functions";
 import { BohCommand } from "@/components/admin/boh-command";
+import { PublishBar } from "@/components/admin/PublishBar";
+
 import { PAGES } from "@/lib/boh/boh.config";
 
 // ---------------------------------------------------------------------------
