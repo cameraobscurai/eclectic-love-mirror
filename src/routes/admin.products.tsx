@@ -1,3 +1,4 @@
+import { mergeCategoryOptions } from "@/lib/admin-categories";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -188,7 +189,7 @@ function Inner() {
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
-            {cats.map((c: string) => <option key={c} value={c}>{c}</option>)}
+            {mergeCategoryOptions(cats).map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
           <select
             value={search.ready}
