@@ -69,10 +69,18 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                     <button
                       type="button"
                       onClick={() => onOpen(i)}
-                      onMouseEnter={() => setHoverIdx(i)}
+                      onMouseEnter={() => {
+                        setHoverIdx(i);
+                        warm(p);
+                      }}
+                      onTouchStart={() => warm(p)}
                       onMouseLeave={() => setHoverIdx((prev) => (prev === i ? null : prev))}
-                      onFocus={() => setHoverIdx(i)}
+                      onFocus={() => {
+                        setHoverIdx(i);
+                        warm(p);
+                      }}
                       onBlur={() => setHoverIdx(null)}
+
                       className="w-full group py-5 lg:py-7 border-b border-cream/10 flex items-center gap-6 lg:gap-12 text-left hover:bg-cream/5 transition-colors px-4 -mx-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
                     >
                       <span className="text-cream/30 text-sm tracking-[0.18em] w-8 shrink-0 tabular-nums">
