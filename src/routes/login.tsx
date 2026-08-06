@@ -298,9 +298,22 @@ function LoginPage() {
         </div>
 
         {info && (
-          <p className="uppercase mt-6 text-center" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
-            {info}
-          </p>
+          <div className="mt-6 text-center">
+            <p className="uppercase" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
+              {info}
+            </p>
+            {mode === "link" && linkSentAt && (
+              <button
+                type="button"
+                onClick={handleResendLink}
+                disabled={busy}
+                className="uppercase mt-3 disabled:opacity-50"
+                style={{ fontSize: "10px", letterSpacing: "0.18em", color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              >
+                {busy ? "SENDING…" : "RESEND SIGN-IN LINK"}
+              </button>
+            )}
+          </div>
         )}
         {error && (
           <p className="uppercase mt-6 text-center" style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
