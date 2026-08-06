@@ -257,14 +257,20 @@ function LoginPage() {
           style={{ fontSize: "10px", letterSpacing: "0.18em" }}
         >
           {mode === "signin" ? (
-            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-              FORGOT PASSWORD?
-            </button>
+            <>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                NO PASSWORD? EMAIL ME A LINK
+              </button>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+                FORGOT PASSWORD?
+              </button>
+            </>
           ) : (
             <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
               ← BACK TO SIGN IN
             </button>
           )}
+
         </div>
 
         {info && (
