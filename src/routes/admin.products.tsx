@@ -417,6 +417,12 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         sketch={null}
         onClose={onClose}
         onOpenPhotos={() => setPhotoEditor(true)}
+        onDelete={async () => {
+          await del({ data: { id } });
+          onSaved();
+          onClose();
+        }}
+
         onPhotosSaved={(next: { images: string[]; card_background_url: string | null }) => {
           // Keep the drawer's preview + readiness checklist in step with the
           // photo editor instead of waiting for a close/reopen.
