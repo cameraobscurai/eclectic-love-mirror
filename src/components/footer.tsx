@@ -10,7 +10,7 @@ const studioLinks = [
 
 const informationLinks = [
   { href: "/atelier", label: "FAQ", hash: "working-with-the-hive" },
-  { href: "https://eclectic-hive.breezy.hr/", label: "CAREERS", external: true },
+  { href: "/careers", label: "CAREERS" },
   { href: "/privacy", label: "PRIVACY" },
 ] as const;
 
