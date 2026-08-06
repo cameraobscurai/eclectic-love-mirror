@@ -331,7 +331,8 @@ function NewProductPage() {
             className="inline-flex items-center gap-2 bg-charcoal text-cream px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40"
           >
             {busy === "publish" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {busy === "publish" ? "Publishing…" : "Publish to live catalog"}
+            {busy === "publish" ? "Saving…" : "Save & mark ready"}
+
           </button>
           <button
             type="button"
