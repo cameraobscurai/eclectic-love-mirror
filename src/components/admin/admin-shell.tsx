@@ -71,9 +71,12 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/products", label: "Inventory", icon: Package },
   { to: "/admin/photos", label: "Collection photos", icon: ImageIcon },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
-  { to: "/admin/render", label: "Photo studio", icon: Wand2 },
-  { to: "/admin/gallery", label: "Gallery", icon: Images },
+  // Hidden (routes still live, reachable by direct URL): /admin/render
+  // (Photo studio) and /admin/gallery — not part of Adrienne's daily loop.
 ];
+void Wand2;
+void Images;
+
 
 const HELP: NavItem[] = [
   { to: "/admin/guide", label: "Inventory guide", icon: BookOpen },

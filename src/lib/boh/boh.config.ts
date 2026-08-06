@@ -100,14 +100,13 @@ export interface BohTool {
 
 export const TOOL_RAIL: BohTool[] = [
   { label: "INBOX", route: "/admin/insights", desc: "Inquiry pipeline · new → quoted → booked", countKey: "openInquiries" },
-  { label: "PHOTOS", route: "/admin/photos", desc: "Image binder" },
-  { label: "COLORS", route: "/admin/colors", desc: "AI color tags" },
   { label: "PRODUCTS", route: "/admin/products", desc: "Catalog records", countKey: "totalItems" },
+  { label: "PHOTOS", route: "/admin/photos", desc: "Image binder" },
   { label: "TEAM", route: "/admin/team", desc: "Roles & invites" },
-  // was /admin/insights#health (anchor doesn't exist); image-health is the
-  // real catalog-health surface and keeps this distinct from INBOX
-  { label: "HEALTH", route: "/admin/image-health", desc: "Image & catalog health" },
+  // Hidden, routes still live: /admin/colors (AI color tags),
+  // /admin/image-health (diagnostics). Diagnostic surfaces, not daily tools.
 ];
+
 
 // ————————————————————————————————————————————— per-page tools (zoom rail)
 export interface PageTool {
