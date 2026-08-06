@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
 import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
-import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
 import {
   galleryProjects,
   GALLERY_EXCLUDE_PLANNERS,
@@ -14,10 +13,8 @@ import {
 } from "@/content/gallery-projects";
 import pressLogos from "@/assets/press-logos-transparent.webp";
 import { STORAGE_ORIGIN, renderUrl } from "@/lib/storage-image";
-import { morphOpen } from "@/lib/view-transition";
-import { flushSync } from "react-dom";
-import { applyGalleryOrder, gallerySlug } from "@/lib/gallery-orders";
-import bakedGalleryOrders from "@/data/gallery/gallery-orders.json";
+import { gallerySlug } from "@/lib/gallery-orders";
+import { useOrderedGalleryProjects } from "@/hooks/use-gallery-projects";
 
 // ---------------------------------------------------------------------------
 // Gallery — editorial five-section layout per design spec.
