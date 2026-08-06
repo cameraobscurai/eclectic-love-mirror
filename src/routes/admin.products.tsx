@@ -63,7 +63,24 @@ function Inner() {
   const [offset, setOffset] = useState(0);
   const [searchInput, setSearchInput] = useState(search.q);
   // Keep the box in sync when the URL changes from history nav / cleared filters.
-  useEffect(() => { setSearchInput(search.q); }, [search.q]);
+  // Only when they actually diverge, so the debounce below can't clobber typing.
+  useEffect(() => {
+    setSearchInput((cur: string) => (cur === search.q ? cur : search.q));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.q]);
+
+  // Live search: 250ms after the last keystroke the URL `q` updates, which
+  // refires the list query. `replace: true` keeps one history entry per
+  // search session instead of one per character. Enter still flushes early.
+  useEffect(() => {
+    if (searchInput === search.q) return;
+    const t = setTimeout(() => {
+      navigate({ search: (s: any) => ({ ...s, q: searchInput }), replace: true });
+    }, 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput, search.q]);
+
 
 
   // Categories rarely change — cache hard so switching pages never refetches.
@@ -132,10 +149,14 @@ function Inner() {
 
   useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
 
+  // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ search: (s: any) => ({ ...s, q: searchInput }) });
+    navigate({ search: (s: any) => ({ ...s, q: searchInput }), replace: true });
   };
+
+  const searchPending = searchInput !== search.q;
+
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
@@ -177,12 +198,30 @@ function Inner() {
 
         {/* filter row */}
         <form onSubmit={submitSearch} className="mb-6 flex flex-wrap items-center gap-3 border-y border-charcoal/10 py-3 text-[11px] uppercase tracking-[0.16em]">
-          <input
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search title, RMS id, slug"
-            className="flex-1 min-w-[260px] bg-transparent border-b border-charcoal/20 px-1 py-1 outline-none focus:border-charcoal"
-          />
+          <div className="relative flex-1 min-w-[260px] flex items-center gap-2">
+            <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search title, RMS id, slug"
+              aria-label="Search inventory"
+              className="flex-1 bg-transparent border-b border-charcoal/20 px-1 py-1 outline-none focus:border-charcoal"
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput("");
+                  navigate({ search: (s: any) => ({ ...s, q: "" }), replace: true });
+                }}
+                aria-label="Clear search"
+                className="text-charcoal/45 hover:text-charcoal text-[13px] leading-none px-1"
+              >×</button>
+            )}
+            <span className="w-16 text-[9px] tracking-[0.2em] text-charcoal/40 tabular-nums">
+              {searchPending || (loading && search.q) ? "…" : ""}
+            </span>
+          </div>
+
           <select
             value={search.cat}
             onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
@@ -200,7 +239,9 @@ function Inner() {
             <option value="yes">Public-ready</option>
             <option value="no">Hidden</option>
           </select>
-          <button type="submit" className="border border-charcoal px-3 py-1 hover:bg-charcoal hover:text-cream">Search</button>
+          {/* Results narrow as you type; this is just a keyboard-friendly flush. */}
+          <button type="submit" className="sr-only">Search</button>
+
         </form>
 
         {/* table */}
