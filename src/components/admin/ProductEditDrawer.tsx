@@ -858,8 +858,16 @@ export function ProductEditDrawer({
                   <section key={g.id} style={{ marginBottom: 34 }}>
                     <SectionHeader>{g.title}</SectionHeader>
                     {keys.map(fieldControl)}
+                    {g.id === "visibility" && product && onDelete && (
+                      <DeleteZone
+                        title={(draft.values.title as string) || (product.title as string) || "this piece"}
+                        disabled={saving}
+                        onDelete={onDelete}
+                      />
+                    )}
                   </section>
                 );
+
               })}
 
               {flatChanges.length > 0 && (
