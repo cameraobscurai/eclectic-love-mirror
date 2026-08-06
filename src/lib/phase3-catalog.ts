@@ -46,6 +46,9 @@ export interface CollectionProduct {
   publicReady: boolean;
   scrapedOrder: number;
   subcategory: string | null;
+  /** Owner-selected subcategory slug from inventory_items.subcategory_slug.
+   *  Overrides keyword classification when it matches the parent's sub list. */
+  ownerSubcategory?: string | null;
   /**
    * Owner-curated rank within the live eclectichive.com category page.
    * Lower = higher up in her grid. Null when the product is not on her
@@ -226,6 +229,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         coverFocalY: live.cover_focal_y ?? p.coverFocalY ?? null,
         images,
         primaryImage: images[0] ?? null,
+        ownerSubcategory: live.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
     });
     // Products added since the last bake exist only in the overlay. Append
@@ -274,6 +278,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         publicReady: true,
         scrapedOrder: Number.MAX_SAFE_INTEGER,
         subcategory: null,
+        ownerSubcategory: live.subcategory_slug ?? null,
         ownerSiteRank: null,
         editorialOrder: live.editorial_order ?? null,
         cardBackgroundUrl: live.card_background_url ?? null,
@@ -304,6 +309,8 @@ type LiveOverlayRow = {
   cover_focal_x: number | null;
   cover_focal_y: number | null;
   upscaled_cover_url: string | null;
+  /** Owner-selected subcategory (inventory_items.subcategory_slug). */
+  subcategory_slug?: string | null;
   /** Identity fields — present only in overlays published after 2026-08-06.
    *  Used to render products added since the last catalog bake. */
   title?: string | null;
@@ -376,7 +383,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -396,6 +403,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             dimensions_raw: row.dimensions_raw,
             quantity_label: row.quantity_label,
             public_ready: row.public_ready,
+            subcategory_slug: row.subcategory_slug ?? null,
           });
         }
       }
