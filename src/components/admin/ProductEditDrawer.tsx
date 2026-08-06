@@ -279,7 +279,7 @@ function computeReadiness(values, product) {
     { id: "category", label: "On a shelf (category)", pass: !!values.category },
     { id: "dims", label: "Dimensions on record", pass: !!String(values.dimensions_raw ?? "").trim() },
     { id: "desc", label: "Described in the Hive voice", pass: String(values.description ?? "").trim().length >= 20 },
-    { id: "rate", label: "Rate set for proposals", pass: values.price !== "" && values.price != null && +values.price > 0, internal: true },
+    ];
   ];
   const missing = checks.filter((c) => !c.pass);
   const publicMissing = missing.filter((c) => !c.internal);
