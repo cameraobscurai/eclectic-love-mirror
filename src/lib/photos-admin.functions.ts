@@ -162,6 +162,10 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .handler(async ({ context }) => {
     const PAGE = 1000;
+    // Identity fields (title/slug/category/…) ride along so the public
+    // catalog can render products that were added AFTER the last bake.
+    // Without them a brand-new product stays invisible until someone runs
+    // scripts/bake-catalog.mjs — which Adrienne cannot do.
     const overlay: Record<
       string,
       {
@@ -171,6 +175,13 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         cover_focal_x: number | null;
         cover_focal_y: number | null;
         upscaled_cover_url: string | null;
+        title: string | null;
+        slug: string | null;
+        category: string | null;
+        description: string | null;
+        dimensions_raw: string | null;
+        quantity_label: string | null;
+        public_ready: boolean | null;
       }
     > = {};
 
@@ -179,7 +190,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -193,11 +204,19 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           cover_focal_x: row.cover_focal_x,
           cover_focal_y: row.cover_focal_y,
           upscaled_cover_url: row.upscaled_cover_url,
+          title: row.title,
+          slug: row.slug,
+          category: row.category,
+          description: row.description ? row.description.slice(0, 500) : null,
+          dimensions_raw: row.dimensions_raw,
+          quantity_label: row.quantity_label,
+          public_ready: row.public_ready,
         };
       }
       if (data.length < PAGE) break;
       from += PAGE;
     }
+
 
     const publishedAt = new Date().toISOString();
     const stamp = publishedAt.replace(/[:.]/g, "-");

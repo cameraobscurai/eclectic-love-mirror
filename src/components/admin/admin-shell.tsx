@@ -38,6 +38,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { getInquirySummary } from "@/lib/admin.functions";
 import { BohCommand } from "@/components/admin/boh-command";
+import { PublishBar } from "@/components/admin/PublishBar";
+
 import { PAGES } from "@/lib/boh/boh.config";
 
 // ---------------------------------------------------------------------------
@@ -351,6 +353,8 @@ export function AdminShell({ children }: { children: ReactNode }) {
               })}
             </nav>
             <div className="ml-auto flex items-center gap-2">
+              <PublishBar />
+
               <Link
                 to="/"
                 className="inline-flex items-center gap-1.5 border border-charcoal/20 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-charcoal/75 hover:bg-charcoal/5 hover:text-charcoal"

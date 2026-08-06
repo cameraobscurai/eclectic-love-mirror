@@ -228,7 +228,70 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         primaryImage: images[0] ?? null,
       };
     });
-    cached = { products, facets: base.facets, total: products.length };
+    // Products added since the last bake exist only in the overlay. Append
+    // them so /admin → New product → Publish is enough to go live.
+    //
+    // "known" must also cover variant rows folded into family tiles at bake
+    // time — they are public-ready with images, so without this they would
+    // reappear as duplicate standalone tiles.
+    const known = new Set<string>();
+    for (const p of base.products) {
+      known.add(p.id);
+      for (const v of p.variants ?? []) known.add(v.id);
+    }
+
+    const additions: CollectionProduct[] = [];
+    for (const [rmsId, live] of overlay) {
+      if (known.has(rmsId)) continue;
+      if (live.public_ready !== true) continue;
+      if (!live.title || !live.category) continue;
+      const urls = Array.isArray(live.images) ? live.images : [];
+      const imgs: CollectionImage[] = urls.map((url, i) => ({
+        url,
+        position: i,
+        isHero: i === 0,
+        inferredFilename: null,
+        altText: null,
+      }));
+      if (imgs.length === 0) continue;
+      additions.push({
+        id: rmsId,
+        sourceUrl: "",
+        slug: live.slug ?? rmsId,
+        categorySlug: live.category,
+        displayCategory:
+          base.facets.find((f) => f.slug === live.category)?.display ?? live.category,
+        title: live.title,
+        description: live.description ?? null,
+        dimensions: live.dimensions_raw ?? null,
+        stockedQuantity: live.quantity_label ?? null,
+        isCustomOrder: false,
+        confidence: 1,
+        needsManualReview: false,
+        images: imgs,
+        primaryImage: imgs[0],
+        imageCount: imgs.length,
+        publicReady: true,
+        scrapedOrder: Number.MAX_SAFE_INTEGER,
+        subcategory: null,
+        ownerSiteRank: null,
+        editorialOrder: live.editorial_order ?? null,
+        cardBackgroundUrl: live.card_background_url ?? null,
+        coverFocalX: live.cover_focal_x ?? null,
+        coverFocalY: live.cover_focal_y ?? null,
+      });
+    }
+
+    const all = additions.length > 0 ? [...products, ...additions] : products;
+    const facets =
+      additions.length > 0
+        ? base.facets.map((f) => ({
+            ...f,
+            count: f.count + additions.filter((a) => a.categorySlug === f.slug).length,
+          }))
+        : base.facets;
+
+    cached = { products: all, facets, total: all.length };
     return cached;
   })();
   return loadPromise;
@@ -241,7 +304,17 @@ type LiveOverlayRow = {
   cover_focal_x: number | null;
   cover_focal_y: number | null;
   upscaled_cover_url: string | null;
+  /** Identity fields — present only in overlays published after 2026-08-06.
+   *  Used to render products added since the last catalog bake. */
+  title?: string | null;
+  slug?: string | null;
+  category?: string | null;
+  description?: string | null;
+  dimensions_raw?: string | null;
+  quantity_label?: string | null;
+  public_ready?: boolean | null;
 };
+
 
 async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
   const map = new Map<string, LiveOverlayRow>();
@@ -303,7 +376,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -316,9 +389,17 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             cover_focal_x: row.cover_focal_x,
             cover_focal_y: row.cover_focal_y,
             upscaled_cover_url: row.upscaled_cover_url,
+            title: row.title,
+            slug: row.slug,
+            category: row.category,
+            description: row.description,
+            dimensions_raw: row.dimensions_raw,
+            quantity_label: row.quantity_label,
+            public_ready: row.public_ready,
           });
         }
       }
+
       if (data.length < PAGE) break;
       from += PAGE;
     }
