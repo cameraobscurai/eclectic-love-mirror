@@ -42,6 +42,7 @@ function NewProductPage() {
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0].slug);
+  const [subcategory, setSubcategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [dimensions, setDimensions] = useState("");
 
@@ -71,6 +72,7 @@ function NewProductPage() {
           id: draft.id,
           title: titleTrim,
           category: category as "seating",
+          subcategorySlug: subcategory || null,
           quantity: quantityValue,
           dimensionsRaw: dimensionsValue,
           publicReady,
@@ -82,6 +84,7 @@ function NewProductPage() {
       data: {
         title: titleTrim,
         category: category as "seating",
+        subcategorySlug: subcategory || null,
         quantity: quantityValue,
         quantityLabel: null,
         dimensionsRaw: dimensionsValue,
@@ -209,12 +212,30 @@ function NewProductPage() {
         <Field label="Category">
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setSubcategory("");
+            }}
             className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal"
           >
             {CATEGORIES.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.label}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <Field label="Subcategory (optional)">
+          <select
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal"
+          >
+            <option value="">— Let the site decide —</option>
+            {subcategoryOptions(category, subcategory).map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label}
               </option>
             ))}
           </select>
