@@ -210,7 +210,7 @@ const GROUPS = [
   { id: "basics", title: "Basics" },
   { id: "photos", title: "Photos" },
   { id: "story", title: "Story" },
-  { id: "details", title: "Details & rate" },
+  { id: "details", title: "Details" },
   { id: "visibility", title: "Visibility & order" },
   { id: "system", title: "System" },
   { id: "seo", title: "Search (SEO)", adminOnly: true },
