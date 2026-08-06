@@ -6,7 +6,7 @@
 // navigate to sibling permalinks; close returns to the index.
 // ---------------------------------------------------------------------------
 
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
@@ -122,6 +122,7 @@ function GalleryProjectPage() {
   const { slug } = Route.useParams();
   const { plate } = Route.useSearch();
   const navigate = useNavigate();
+  const router = useRouter();
   const projects = useOrderedGalleryProjects();
 
   const index = useMemo(
