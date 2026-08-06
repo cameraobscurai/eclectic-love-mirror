@@ -864,11 +864,12 @@ header nav button:focus-visible,
 
 /* ----------------------------------------------------------------------------
    Closing-sequence card stack (gallery).
-   Each panel pins to the top of the viewport; the next panel slides over it
-   while the covered one settles back in Z (scale + dim + hairline shadow).
+   Cards pin at staggered top offsets, so each one parks a little lower than
+   the one before it and the next slides over it — a physical pile, not four
+   empty full-screen panels. The covered card settles back in Z (scale + dim).
    No JS, no scroll listener, no `perspective` container — scale only, so no
    photograph is ever resampled through a 3D projection.
-   Desktop + fine pointer only; short viewports and reduced-motion get the
+   Desktop + tall viewports only; short screens and reduced-motion keep the
    plain stacked sections they had before.
 ---------------------------------------------------------------------------- */
 .stack-seq { position: relative; }
@@ -881,19 +882,19 @@ header nav button:focus-visible,
       view-timeline-name: --stack-card;
       view-timeline-axis: block;
     }
-    /* Each card owns one viewport of scroll; the pinned face fills it. */
     .stack-card-pin {
       position: sticky;
-      top: 0;
-      min-height: 100svh;
+      /* Each card parks 22px below the previous one, so the pile is legible. */
+      top: calc(var(--i, 0) * 22px);
+    }
+    .stack-card-face {
+      min-height: 46svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-    }
-    .stack-card-face {
-      border-top: 1px solid color-mix(in oklab, var(--cream, #fff) 8%, transparent);
-      border-radius: 20px 20px 0 0;
-      box-shadow: 0 -24px 60px -30px rgb(0 0 0 / 0.9);
+      border-top: 1px solid color-mix(in oklab, var(--cream, #fff) 9%, transparent);
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -22px 50px -28px rgb(0 0 0 / 0.95);
       transform-origin: 50% 0%;
       will-change: transform, opacity;
       animation: stack-settle linear both;
@@ -901,12 +902,14 @@ header nav button:focus-visible,
       animation-range: exit 0% exit 100%;
     }
     /* Nothing covers the last card — it must not dim itself off the page. */
-    .stack-card--last .stack-card-face { animation: none; }
-    .stack-card--last .stack-card-pin { min-height: 0; }
+    .stack-card--last .stack-card-face {
+      animation: none;
+      min-height: 0;
+    }
   }
 }
 
 @keyframes stack-settle {
   from { transform: scale(1); opacity: 1; }
-  to   { transform: scale(0.94); opacity: 0.45; }
+  to   { transform: scale(0.965); opacity: 0.5; }
 }
