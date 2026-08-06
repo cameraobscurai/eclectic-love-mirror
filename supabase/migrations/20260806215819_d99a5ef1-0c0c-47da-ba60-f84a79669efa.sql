@@ -1,0 +1,1 @@
+UPDATE public.inventory_items SET images = ARRAY[images[2], images[3], images[1], images[4]] WHERE rms_id = '4180';
