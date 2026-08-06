@@ -130,8 +130,18 @@ function GalleryProjectPage() {
   );
 
   const onClose = useCallback(() => {
+    // If the user arrived from inside the site (index row, portfolio wall),
+    // pop the history entry instead of pushing a new one — the router's
+    // scroll restoration then drops them back exactly where they clicked,
+    // which is what "closing" feels like on macOS/iOS. Direct/shared links
+    // have no in-app history, so those fall through to a normal navigate.
+    if (typeof window !== "undefined" && window.history.state?.__cameFromApp) {
+      window.history.back();
+      return;
+    }
     navigate({ to: "/gallery" });
   }, [navigate]);
+
 
   const onProjectChange = useCallback(
     (next: number) => {
