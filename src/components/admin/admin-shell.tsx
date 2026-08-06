@@ -16,6 +16,7 @@ import {
   Wand2,
   Package,
   Users,
+  BookOpen,
 } from "lucide-react";
 
 
@@ -74,6 +75,10 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/gallery", label: "Gallery", icon: Images },
 ];
 
+const HELP: NavItem[] = [
+  { to: "/admin/guide", label: "Inventory guide", icon: BookOpen },
+];
+
 const ACCESS: NavItem[] = [
   { to: "/admin/team", label: "Team", icon: Users },
 ];
@@ -100,6 +105,7 @@ const CRUMB_LABELS: Record<string, string> = {
   "/admin/render": "Photo studio",
   "/admin/new-product": "New product",
   "/admin/gallery": "Gallery",
+  "/admin/guide": "Inventory guide",
   "/admin/upload-hero": "Upload hero",
   "/admin/insights": "Inquiries & insights",
   "/admin/colors": "Color QA",
@@ -284,6 +290,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               </>
             )}
             <NavGroup label="Inventory" items={INVENTORY} pathname={pathname} />
+            <NavGroup label="Help" items={HELP} pathname={pathname} />
             {isAdmin && <NavGroup label="Access" items={ACCESS} pathname={pathname} />}
             <NavGroup label="Site" items={SITE} pathname={pathname} />
 
