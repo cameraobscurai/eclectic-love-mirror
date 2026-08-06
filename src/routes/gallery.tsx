@@ -236,7 +236,7 @@ function GalleryPage() {
           Pure CSS scroll-driven; falls back to plain stacked sections where
           view() timelines or reduced-motion say no. See .stack-* in styles.css. */}
       <div className="stack-seq">
-        <div className="stack-card">
+        <div className="stack-card" style={{ "--i": 0 } as React.CSSProperties}>
           <div className="stack-card-pin">
             <div className="stack-card-face seam-emerge">
               <GalleryCta />
@@ -245,7 +245,7 @@ function GalleryPage() {
         </div>
 
         {/* In partnership with — planner rolodex (ticker), trade-proof bridge to venues */}
-        <div className="stack-card">
+        <div className="stack-card" style={{ "--i": 1 } as React.CSSProperties}>
           <div className="stack-card-pin">
             <div className="stack-card-face">
               <PartnerTicker />
@@ -254,7 +254,7 @@ function GalleryPage() {
         </div>
 
         {/* Delivered to — venue index (derived from gallery project locations) */}
-        <div className="stack-card">
+        <div className="stack-card" style={{ "--i": 2 } as React.CSSProperties}>
           <div className="stack-card-pin">
             <div className="stack-card-face">
               <VenueIndex projects={overriddenProjects} />
@@ -264,7 +264,7 @@ function GalleryPage() {
 
         {/* As Featured In — transparent press logos on charcoal.
             Width matches the CTA headline measure above for axial continuity. */}
-        <div className="stack-card stack-card--last">
+        <div className="stack-card stack-card--last" style={{ "--i": 3 } as React.CSSProperties}>
           <div className="stack-card-pin">
             <div className="stack-card-face">
               <section aria-labelledby="press-heading" className="bg-charcoal pt-10 lg:pt-12 pb-16 lg:pb-20 px-6 lg:px-12">
