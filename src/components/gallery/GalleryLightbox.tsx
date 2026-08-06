@@ -21,23 +21,40 @@ interface GalleryLightboxProps {
   projects: GalleryProject[];
   initialProjectIndex: number;
   onClose: () => void;
+  /** Plate to open on (deep links). Defaults to the first plate. */
+  initialPlateIndex?: number;
+  /** Fired whenever the visible plate changes — used to sync the URL. */
+  onPlateChange?: (index: number) => void;
+  /**
+   * When provided, PREV/NEXT project delegates to the parent (page mode
+   * navigates to the sibling permalink) instead of swapping in place.
+   */
+  onProjectChange?: (index: number) => void;
 }
 
 export function GalleryLightbox({
   projects,
   initialProjectIndex,
   onClose,
+  initialPlateIndex = 0,
+  onPlateChange,
+  onProjectChange,
 }: GalleryLightboxProps) {
   const [projectIndex, setProjectIndex] = useState(initialProjectIndex);
-  const [plateIndex, setPlateIndex] = useState(0);
+  const [plateIndex, setPlateIndex] = useState(initialPlateIndex);
   const [plateChanging, setPlateChanging] = useState(false);
   const [mobileDetailsOpen, setMobileDetailsOpen] = useState(false);
+
+  // Follow the parent when it drives the project (page mode / permalinks).
+  useEffect(() => {
+    setProjectIndex(initialProjectIndex);
+  }, [initialProjectIndex]);
 
   const project = projects[projectIndex];
   const pending = !!project.pending;
   const plates =
     project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
-  const plate = plates[plateIndex];
+  const plate = plates[Math.min(plateIndex, plates.length - 1)] ?? plates[0];
   const plateIsVideo = !!plate.video;
   const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
 
