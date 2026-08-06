@@ -57,7 +57,7 @@ export const TEAM: TeamMember[] = [
   { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
   { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
   { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
-  { name: "Judy Morales", role: "Human Resources", image: portrait("Judy.jpg", "Judy Morales") },
+  
   { name: "Regina Mennig", role: "Accounting & Business Manager", image: portrait("Regina.jpg", "Regina Mennig") },
 ];
 
