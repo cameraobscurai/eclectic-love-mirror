@@ -6,6 +6,8 @@ import {
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { NormalizedProductImage } from "./NormalizedProductImage";
+
 
 interface CategoryTonalGridProps {
   groups: Array<{ id: BrowseGroupId; products: CollectionProduct[] }>;
