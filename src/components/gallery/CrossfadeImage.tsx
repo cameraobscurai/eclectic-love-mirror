@@ -42,6 +42,8 @@ export function CrossfadeImage({
   const current = useRef(identity);
   const loadingCb = useRef(onLoadingChange);
   loadingCb.current = onLoadingChange;
+  const layersRef = useRef(layers);
+  layersRef.current = layers;
 
   useEffect(() => {
     if (identity === current.current) return;
@@ -77,9 +79,6 @@ export function CrossfadeImage({
       cancelled = true;
     };
   }, [identity, src, srcSet, sizes, duration]);
-
-  const layersRef = useRef(layers);
-  layersRef.current = layers;
 
   return (
     <>

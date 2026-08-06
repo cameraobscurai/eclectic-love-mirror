@@ -347,6 +347,7 @@ export function GalleryLightbox({
                       srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
                       sizes="(min-width: 1024px) 66vw, 100vw"
                       alt={plate.alt}
+                      className="absolute inset-0 h-full w-full object-contain"
                       onLoadingChange={handleLoadingChange}
                     />
                   </div>
