@@ -86,14 +86,44 @@ const SUBCATEGORY_TYPICAL: Record<string, number> = {
  */
 const WIDTH_BENCHMARKS: Record<
   string,
-  { reference: number; typical: number; floor: number }
+  {
+    reference: number;
+    typical: number;
+    floor: number;
+    /**
+     * Which real-world dimension drives the size ratio. Must match the fit
+     * rule's `primary` axis in categoryFit.ts, or the two systems fight:
+     * bars are fitted on HEIGHT, so scaling them by width shrank a 59"-tall
+     * trunk bar to the floor value purely for being 25" wide.
+     */
+    axis?: "width" | "height";
+  }
 > = {
   seating: { reference: 84, typical: 28, floor: 0.42 },
   tables: { reference: 96, typical: 40, floor: 0.35 },
-  bars: { reference: 144, typical: 96, floor: 0.4 },
+  // Height axis: carts ~31", standard bars 35–44", trunk bars 58–59".
+  bars: { reference: 48, typical: 41, floor: 0.62, axis: "height" },
   storage: { reference: 76, typical: 46, floor: 0.5 },
   "large-decor": { reference: 240, typical: 82, floor: 0.34 },
 };
+
+/** Height counterpart of parseWidthInches — `41"H`, `4'H`, or the W×D×H tail. */
+export function parseHeightInches(dimensions: string | null | undefined): number | null {
+  if (!dimensions) return null;
+
+  const feet = dimensions.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*h\b/i);
+  if (feet) return sane(Number(feet[1]) * 12);
+
+  const explicit =
+    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|”|in\b|inches)?\s*h\b/i) ??
+    dimensions.match(/\bh\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+  if (explicit) return sane(Number(explicit[1]));
+
+  const triple = dimensions.match(
+    /[x×]\s*\d+(?:\.\d+)?\s*(?:"|”|in\b)?\s*[x×]\s*(\d+(?:\.\d+)?)/i,
+  );
+  return triple ? sane(Number(triple[1])) : null;
+}
 
 /**
  * Real width ratios span ~6:1 (a 16" stool vs a 98" sofa). Rendering that
@@ -110,10 +140,15 @@ export function physicalScale(product: CollectionProduct): number {
   const benchmark = WIDTH_BENCHMARKS[canonical];
   if (!benchmark) return 1;
 
-  const parsed = parseWidthInches(product.dimensions);
+  const parsed =
+    benchmark.axis === "height"
+      ? parseHeightInches(product.dimensions)
+      : parseWidthInches(product.dimensions);
   const sub = product.liveSubcategories?.[0]?.trim().toLowerCase();
   const fallback =
-    (sub ? SUBCATEGORY_TYPICAL[sub] : undefined) ?? benchmark.typical;
+    benchmark.axis === "height"
+      ? benchmark.typical
+      : ((sub ? SUBCATEGORY_TYPICAL[sub] : undefined) ?? benchmark.typical);
   const width =
     parsed && Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 
