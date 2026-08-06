@@ -4,6 +4,8 @@ import type { GalleryProject } from "@/content/gallery-projects";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { gallerySlug } from "@/lib/gallery-orders";
 import { prefetchImage } from "@/lib/prefetch-image";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 
 // ---------------------------------------------------------------------------
 // Portfolio Wall — secondary, lower-page gallery.
