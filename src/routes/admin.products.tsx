@@ -198,12 +198,30 @@ function Inner() {
 
         {/* filter row */}
         <form onSubmit={submitSearch} className="mb-6 flex flex-wrap items-center gap-3 border-y border-charcoal/10 py-3 text-[11px] uppercase tracking-[0.16em]">
-          <input
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search title, RMS id, slug"
-            className="flex-1 min-w-[260px] bg-transparent border-b border-charcoal/20 px-1 py-1 outline-none focus:border-charcoal"
-          />
+          <div className="relative flex-1 min-w-[260px] flex items-center gap-2">
+            <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search title, RMS id, slug"
+              aria-label="Search inventory"
+              className="flex-1 bg-transparent border-b border-charcoal/20 px-1 py-1 outline-none focus:border-charcoal"
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput("");
+                  navigate({ search: (s: any) => ({ ...s, q: "" }), replace: true });
+                }}
+                aria-label="Clear search"
+                className="text-charcoal/45 hover:text-charcoal text-[13px] leading-none px-1"
+              >×</button>
+            )}
+            <span className="w-16 text-[9px] tracking-[0.2em] text-charcoal/40 tabular-nums">
+              {searchPending || (loading && search.q) ? "…" : ""}
+            </span>
+          </div>
+
           <select
             value={search.cat}
             onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
