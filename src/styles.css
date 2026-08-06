@@ -888,7 +888,7 @@ header nav button:focus-visible,
       top: calc(var(--i, 0) * 22px);
     }
     .stack-card-face {
-      min-height: 46svh;
+      min-height: 34svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
