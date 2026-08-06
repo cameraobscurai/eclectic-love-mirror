@@ -29,7 +29,21 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
     });
   }, []);
 
+  // Intent-prefetch: warm the lightbox-sized hero + first plate the instant a
+  // row is hovered/focused, so opening feels like the image was already there.
+  const warm = useCallback((p: GalleryProject) => {
+    const targets = [p.heroImage, p.detailImages[0]].filter(Boolean) as { src: string }[];
+    for (const t of targets) {
+      if (!t.src.includes("/storage/v1/object/public/")) continue;
+      prefetchImage(
+        renderUrl(t.src, { width: 1600, quality: 78 }),
+        renderSrcSet(t.src, [1200, 1600, 2000], 78),
+      );
+    }
+  }, []);
+
   const hoverProject = hoverIdx !== null ? projects[hoverIdx] : null;
+
   const hoverIsStorage =
     !!hoverProject && hoverProject.heroImage.src.includes("/storage/v1/object/public/");
 
