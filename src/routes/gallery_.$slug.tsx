@@ -135,12 +135,13 @@ function GalleryProjectPage() {
     // scroll restoration then drops them back exactly where they clicked,
     // which is what "closing" feels like on macOS/iOS. Direct/shared links
     // have no in-app history, so those fall through to a normal navigate.
-    if (typeof window !== "undefined" && window.history.state?.__cameFromApp) {
-      window.history.back();
+    if (router.history.canGoBack()) {
+      router.history.back();
       return;
     }
     navigate({ to: "/gallery" });
-  }, [navigate]);
+  }, [navigate, router]);
+
 
 
   const onProjectChange = useCallback(
