@@ -5,6 +5,7 @@ import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
 import { GalleryIndex } from "@/components/gallery/GalleryIndex";
 import { GalleryCta } from "@/components/gallery/GalleryCta";
+import { PortfolioWall } from "@/components/gallery/PortfolioWall";
 import {
   galleryProjects,
   GALLERY_EXCLUDE_PLANNERS,
@@ -222,6 +223,9 @@ function GalleryPage() {
           ))}
         </ul>
       </nav>
+
+      {/* Secondary gallery — every plate across every project, interleaved */}
+      <PortfolioWall projects={visibleProjects} />
 
       <GalleryCta />
 
