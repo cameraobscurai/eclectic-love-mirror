@@ -213,7 +213,7 @@ function LoginPage() {
             />
           </div>
 
-          {mode !== "forgot" && (
+          {mode === "signin" && (
             <div>
               <label className="block uppercase mb-2" style={labelStyle}>PASSWORD</label>
               <input
@@ -241,8 +241,15 @@ function LoginPage() {
               marginTop: 8,
             }}
           >
-            {busy ? "…" : mode === "forgot" ? "SEND RESET LINK" : "SIGN IN"}
+            {busy
+              ? "…"
+              : mode === "forgot"
+                ? "SEND RESET LINK"
+                : mode === "link"
+                  ? "EMAIL ME A SIGN-IN LINK"
+                  : "SIGN IN"}
           </button>
+
         </form>
 
         <div
