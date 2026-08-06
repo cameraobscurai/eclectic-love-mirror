@@ -1,9 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { gallerySlug } from "@/lib/gallery-orders";
 import { prefetchImage } from "@/lib/prefetch-image";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 
 // ---------------------------------------------------------------------------
 // Portfolio Wall — secondary, lower-page gallery.
@@ -24,10 +26,13 @@ import { prefetchImage } from "@/lib/prefetch-image";
 //     through is instant instead of a second network round-trip.
 // ---------------------------------------------------------------------------
 
-const INITIAL_COUNT = 30;
-const STEP = 30;
+const DESKTOP_INITIAL = 30;
+const DESKTOP_STEP = 30;
+const MOBILE_INITIAL = 10;
+const MOBILE_STEP = 10;
 const MAX_PER_PROJECT = 6;
 const EAGER_COUNT = 10;
+
 
 interface Plate {
   key: string;
@@ -109,13 +114,23 @@ function PlateTile({ plate, index }: { plate: Plate; index: number }) {
 }
 
 export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
+  const isMobile = useIsMobile();
   const plates = useMemo(() => buildPlates(projects), [projects]);
-  const [shown, setShown] = useState(INITIAL_COUNT);
+  const initialCount = isMobile ? MOBILE_INITIAL : DESKTOP_INITIAL;
+  const step = isMobile ? MOBILE_STEP : DESKTOP_STEP;
+  const [shown, setShown] = useState(initialCount);
+
+  // Reset the visible window when the breakpoint changes so mobile doesn't
+  // inherit a 30-item desktop scroll, and desktop doesn't stay collapsed.
+  useEffect(() => {
+    setShown(initialCount);
+  }, [initialCount]);
 
   if (plates.length === 0) return null;
 
   const visible = plates.slice(0, shown);
   const hasMore = shown < plates.length;
+
 
   return (
     <section
@@ -146,7 +161,7 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
           <div className="mt-12 flex justify-center">
             <button
               type="button"
-              onClick={() => setShown((n) => n + STEP)}
+              onClick={() => setShown((n) => n + step)}
               className="border border-cream/25 px-10 py-4 text-[10px] uppercase tracking-[0.32em] text-cream/80 transition-colors hover:border-cream/60 hover:text-cream focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/50"
             >
               Load More
@@ -157,3 +172,4 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
     </section>
   );
 }
+
