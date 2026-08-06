@@ -230,7 +230,16 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     });
     // Products added since the last bake exist only in the overlay. Append
     // them so /admin → New product → Publish is enough to go live.
-    const known = new Set(base.products.map((p) => p.id));
+    //
+    // "known" must also cover variant rows folded into family tiles at bake
+    // time — they are public-ready with images, so without this they would
+    // reappear as duplicate standalone tiles.
+    const known = new Set<string>();
+    for (const p of base.products) {
+      known.add(p.id);
+      for (const v of p.variants ?? []) known.add(v.id);
+    }
+
     const additions: CollectionProduct[] = [];
     for (const [rmsId, live] of overlay) {
       if (known.has(rmsId)) continue;
