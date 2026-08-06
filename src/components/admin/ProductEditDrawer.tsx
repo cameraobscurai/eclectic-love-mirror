@@ -89,6 +89,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+import { mergeCategoryOptions } from "@/lib/admin-categories";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImageOrderEditor } from "./ImageOrderEditor";
@@ -749,7 +750,7 @@ export function ProductEditDrawer({
     const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
     if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
     if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
-    if (meta.type === "category") return <SelectField key={k} {...common} options={(categories || []).map((c) => ({ value: c, label: c }))} />;
+    if (meta.type === "category") return <SelectField key={k} {...common} options={mergeCategoryOptions(categories || []).map((c) => ({ value: c.slug, label: c.label }))} />;
     if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (
       <TextField key={k} {...common}

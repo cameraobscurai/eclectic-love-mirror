@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ADMIN_CATEGORIES } from "@/lib/admin-categories";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
@@ -19,22 +20,8 @@ import {
 // saves patch metadata via updateInventoryItemMeta.
 // ---------------------------------------------------------------------------
 
-const CATEGORIES: { slug: string; label: string }[] = [
-  { slug: "seating", label: "Seating" },
-  { slug: "tables", label: "Tables" },
-  { slug: "bars", label: "Cocktail & Bar" },
-  { slug: "tableware", label: "Tableware" },
-  { slug: "serveware", label: "Serveware" },
-  { slug: "pillows-throws", label: "Pillows & Throws" },
-  { slug: "rugs", label: "Rugs" },
-  { slug: "lighting", label: "Lighting" },
-  { slug: "candlelight", label: "Candlelight" },
-  { slug: "chandeliers", label: "Chandeliers" },
-  { slug: "large-decor", label: "Large Decor" },
-  { slug: "styling", label: "Styling" },
-  { slug: "storage", label: "Storage" },
-  { slug: "furs-pelts", label: "Furs & Pelts" },
-];
+
+const CATEGORIES = ADMIN_CATEGORIES;
 
 export const Route = createFileRoute("/admin/new-product")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
