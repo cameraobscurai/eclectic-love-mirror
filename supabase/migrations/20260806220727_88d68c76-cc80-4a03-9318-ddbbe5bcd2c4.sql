@@ -1,0 +1,1 @@
+CREATE POLICY "Staff can delete items" ON public.inventory_items FOR DELETE TO authenticated USING (public.is_staff_or_admin(auth.uid()));
