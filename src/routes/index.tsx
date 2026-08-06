@@ -138,29 +138,36 @@ function HomePage() {
               width: "min(92vw, 32rem)",
             }}
           >
+            {/* Wordmark — same lockup as nav/footer: Saol light, wide
+                tracking, uppercase. Do not thicken or tighten this; the
+                heavy tight cut reads as a different typeface. */}
             <p
               className="font-brand text-cream"
               style={{
-                fontWeight: 600,
-                letterSpacing: "0.02em",
-                fontSize: "clamp(2.25rem, 10vw, 3.5rem)",
-                lineHeight: 1,
+                fontWeight: 300,
+                letterSpacing: "0.16em",
+                textIndent: "0.16em",
+                fontSize: "clamp(1.6rem, 7.2vw, 2.5rem)",
+                lineHeight: 1.12,
                 margin: 0,
               }}
             >
               ECLECTIC HIVE
             </p>
             <p
-              className="mt-2 font-brand italic text-cream/85"
+              className="mt-3 text-cream/80"
               style={{
+                fontFamily: "var(--font-sans)",
                 fontWeight: 400,
-                fontSize: "clamp(0.78rem, 3.2vw, 0.95rem)",
-                lineHeight: 1.4,
-                letterSpacing: "0.02em",
+                textTransform: "uppercase",
+                fontSize: "clamp(0.6rem, 2.6vw, 0.72rem)",
+                lineHeight: 1.6,
+                letterSpacing: "0.2em",
               }}
             >
               Designing for Weddings, Corporate, &amp; Social Events
             </p>
+
           </div>
         </div>
       </section>

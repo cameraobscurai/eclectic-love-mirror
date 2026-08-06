@@ -6,6 +6,8 @@ import {
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { NormalizedProductImage } from "./NormalizedProductImage";
+
 
 interface CategoryTonalGridProps {
   groups: Array<{ id: BrowseGroupId; products: CollectionProduct[] }>;
@@ -44,23 +46,25 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
-const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
-  sofas: 0.82,
-  chairs: 0.78,
-  "benches-ottomans": 0.76,
-  "cocktail-tables": 0.76,
-  "side-tables": 0.62,
-  "coffee-tables": 0.82,
-  dining: 0.82,
-  bar: 0.82,
-  lighting: 0.6,
-  storage: 0.82,
-  pillows: 0.82,
-  throws: 0.7,
-  tableware: 0.82,
-  styling: 0.78,
-  rugs: 0.68,
+/**
+ * Cover sizing is measured, not eyeballed. Every cover is staged in the SAME
+ * square frame and scaled so its SILHOUETTE occupies the same share of that
+ * frame's area — that is what makes a throw and a dining table read as one
+ * set. The old per-category `COVER_SCALE` percentages capped the raw file
+ * box instead, so a product photo with generous built-in whitespace (throws,
+ * cocktail tables) rendered tiny next to a tightly cropped one.
+ *
+ * A couple of shapes need a nudge: rugs and throws are flat planes that read
+ * heavier than their area suggests; chandeliers read lighter.
+ */
+const COVER_AREA_DEFAULT = 0.34;
+const COVER_AREA: Partial<Record<BrowseGroupId, number>> = {
+  rugs: 0.3,
+  throws: 0.3,
+  pillows: 0.32,
+  lighting: 0.38,
 };
+
 
 
 
@@ -239,31 +243,35 @@ function TonalCell({
       style={{ background: tone, touchAction: "manipulation" }}
     >
       {/* Image band: inset on all sides with a reserved label strip at the
-          bottom, then flex-center the image inside so silhouettes sit in
-          the true optical middle of the tile — not floor-anchored. */}
+          bottom. Inside it every cover is staged in an identical SQUARE
+          frame so the silhouette-area normalization below is comparable
+          tile to tile. Do not go back to width/height percentage caps. */}
       <span className="absolute inset-x-3 top-3 bottom-8 sm:inset-x-5 sm:top-5 sm:bottom-10 flex items-center justify-center pointer-events-none">
         {heroSrc ? (
-          <img
-            src={heroSrc}
-            sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
-            alt={heroAlt}
-            width={600}
-            height={480}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
-            draggable={false}
-            className="block object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
-            style={{
-              maxWidth: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
-              maxHeight: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
-              width: "auto",
-              height: "auto",
-              objectPosition: "center center",
-            }}
-          />
+          <span className="relative block w-full max-h-full aspect-square overflow-hidden">
+            <NormalizedProductImage
+              src={heroSrc}
+              frameAspect={1}
+              fitMode="area"
+              targetArea={COVER_AREA[id] ?? COVER_AREA_DEFAULT}
+              maxW={0.88}
+              maxH={0.88}
+              minScale={0.3}
+              eager={priority}
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
+              alt={heroAlt}
+              width={600}
+              height={600}
+              loading={priority ? "eager" : "lazy"}
+              decoding="async"
+              {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-contain transition-transform duration-[260ms] ease-out"
+            />
+          </span>
         ) : null}
       </span>
+
 
 
       <span
