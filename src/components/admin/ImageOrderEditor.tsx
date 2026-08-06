@@ -304,7 +304,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   }, [item.id]);
 
   const saveIndicator = (
-    <span className="text-[11px] uppercase tracking-widest">
+    <span className="text-[11px] uppercase tracking-widest inline-flex items-center gap-2">
       {saveState === "saving" && (
         <span className="text-neutral-500 inline-flex items-center gap-1">
           <Loader2 className="h-3 w-3 animate-spin" /> Saving
@@ -313,6 +313,14 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
       {saveState === "saved" && <span className="text-emerald-600">Saved</span>}
       {saveState === "error" && (
         <span className="text-red-600" title={errMsg ?? ""}>Error — reverted</span>
+      )}
+      {publishState === "publishing" && (
+        <span className="text-neutral-500 inline-flex items-center gap-1">
+          <Loader2 className="h-3 w-3 animate-spin" /> Pushing to site
+        </span>
+      )}
+      {publishState === "live" && (
+        <span className="text-emerald-700">Live on site</span>
       )}
     </span>
   );
