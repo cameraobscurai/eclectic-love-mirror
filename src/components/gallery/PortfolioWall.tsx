@@ -93,8 +93,8 @@ function PlateTile({ plate, index }: { plate: Plate; index: number }) {
       <img
         ref={attach}
         src={renderUrl(plate.src, { width: 560, quality: 72 })}
-        srcSet={renderSrcSet(plate.src, [320, 480, 640], 72)}
-        sizes="(min-width: 1024px) 19vw, (min-width: 640px) 32vw, 48vw"
+        srcSet={renderSrcSet(plate.src, [320, 480, 640, 900], 72)}
+        sizes="(min-width: 1024px) 19vw, (min-width: 640px) 32vw, 50vw"
         alt={plate.alt}
         loading={eager ? "eager" : "lazy"}
         fetchPriority={index < 5 ? "high" : "low"}
@@ -120,10 +120,10 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
   return (
     <section
       aria-labelledby="portfolio-wall-heading"
-      className="bg-charcoal px-6 lg:px-12 pt-20 pb-20 lg:pt-24 lg:pb-28"
+      className="bg-charcoal px-0 lg:px-12 pt-16 pb-16 lg:pt-24 lg:pb-28"
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="flex items-baseline justify-between gap-6 mb-8">
+        <div className="flex items-baseline justify-between gap-6 mb-6 px-6 lg:px-0 lg:mb-8">
           <h2
             id="portfolio-wall-heading"
             className="text-cream/40 text-[10px] uppercase tracking-[0.34em]"
@@ -140,6 +140,7 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
             <PlateTile key={plate.key} plate={plate} index={i} />
           ))}
         </div>
+
 
         {hasMore && (
           <div className="mt-12 flex justify-center">
