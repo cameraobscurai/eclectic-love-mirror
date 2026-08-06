@@ -114,8 +114,11 @@ function PlateTile({ plate, index }: { plate: Plate; index: number }) {
 }
 
 export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
+  const isMobile = useIsMobile();
   const plates = useMemo(() => buildPlates(projects), [projects]);
-  const [shown, setShown] = useState(INITIAL_COUNT);
+  const initialCount = isMobile ? MOBILE_INITIAL : DESKTOP_INITIAL;
+  const step = isMobile ? MOBILE_STEP : DESKTOP_STEP;
+  const [shown, setShown] = useState(initialCount);
 
   if (plates.length === 0) return null;
 
@@ -151,7 +154,7 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
           <div className="mt-12 flex justify-center">
             <button
               type="button"
-              onClick={() => setShown((n) => n + STEP)}
+              onClick={() => setShown((n) => n + step)}
               className="border border-cream/25 px-10 py-4 text-[10px] uppercase tracking-[0.32em] text-cream/80 transition-colors hover:border-cream/60 hover:text-cream focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/50"
             >
               Load More
@@ -162,3 +165,4 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
     </section>
   );
 }
+
