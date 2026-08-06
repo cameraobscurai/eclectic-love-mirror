@@ -176,14 +176,19 @@ export function GalleryLightbox({
 
   const stepProject = useCallback(
     (dir: -1 | 1) => {
-      setProjectIndex((i) => {
+      const wrap = (i: number) => {
         const next = i + dir;
         if (next < 0) return projects.length - 1;
         if (next > projects.length - 1) return 0;
         return next;
-      });
+      };
+      if (onProjectChange) {
+        onProjectChange(wrap(projectIndex));
+        return;
+      }
+      setProjectIndex(wrap);
     },
-    [projects.length]
+    [projects.length, onProjectChange, projectIndex]
   );
 
   // Keyboard nav.
