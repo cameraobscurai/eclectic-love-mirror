@@ -367,7 +367,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -380,9 +380,17 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             cover_focal_x: row.cover_focal_x,
             cover_focal_y: row.cover_focal_y,
             upscaled_cover_url: row.upscaled_cover_url,
+            title: row.title,
+            slug: row.slug,
+            category: row.category,
+            description: row.description,
+            dimensions_raw: row.dimensions_raw,
+            quantity_label: row.quantity_label,
+            public_ready: row.public_ready,
           });
         }
       }
+
       if (data.length < PAGE) break;
       from += PAGE;
     }
