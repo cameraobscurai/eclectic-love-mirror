@@ -124,6 +124,27 @@ function LoginPage() {
     }
   }
 
+  async function handleResendLink() {
+    if (!email) return;
+    setError(null); setInfo(null); setBusy(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`,
+        },
+      });
+      if (error) throw error;
+      setLinkSentAt(Date.now());
+      setInfo("A new sign-in link has been sent. Check your inbox.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to resend link.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+
   const labelStyle = {
     fontSize: "10px",
     letterSpacing: "0.22em",
