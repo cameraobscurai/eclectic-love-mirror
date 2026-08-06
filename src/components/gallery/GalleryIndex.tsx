@@ -1,6 +1,8 @@
 import { useRef, useState, useCallback } from "react";
 import type { GalleryProject } from "@/content/gallery-projects";
-import { renderUrl } from "@/lib/storage-image";
+import { renderUrl, renderSrcSet } from "@/lib/storage-image";
+import { prefetchImage } from "@/lib/prefetch-image";
+
 
 interface GalleryIndexProps {
   projects: GalleryProject[];
@@ -27,7 +29,21 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
     });
   }, []);
 
+  // Intent-prefetch: warm the lightbox-sized hero + first plate the instant a
+  // row is hovered/focused, so opening feels like the image was already there.
+  const warm = useCallback((p: GalleryProject) => {
+    const targets = [p.heroImage, p.detailImages[0]].filter(Boolean) as { src: string }[];
+    for (const t of targets) {
+      if (!t.src.includes("/storage/v1/object/public/")) continue;
+      prefetchImage(
+        renderUrl(t.src, { width: 1600, quality: 78 }),
+        renderSrcSet(t.src, [1200, 1600, 2000], 78),
+      );
+    }
+  }, []);
+
   const hoverProject = hoverIdx !== null ? projects[hoverIdx] : null;
+
   const hoverIsStorage =
     !!hoverProject && hoverProject.heroImage.src.includes("/storage/v1/object/public/");
 
@@ -53,10 +69,18 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                     <button
                       type="button"
                       onClick={() => onOpen(i)}
-                      onMouseEnter={() => setHoverIdx(i)}
+                      onMouseEnter={() => {
+                        setHoverIdx(i);
+                        warm(p);
+                      }}
+                      onTouchStart={() => warm(p)}
                       onMouseLeave={() => setHoverIdx((prev) => (prev === i ? null : prev))}
-                      onFocus={() => setHoverIdx(i)}
+                      onFocus={() => {
+                        setHoverIdx(i);
+                        warm(p);
+                      }}
                       onBlur={() => setHoverIdx(null)}
+
                       className="w-full group py-5 lg:py-7 border-b border-cream/10 flex items-center gap-6 lg:gap-12 text-left hover:bg-cream/5 transition-colors px-4 -mx-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
                     >
                       <span className="text-cream/30 text-sm tracking-[0.18em] w-8 shrink-0 tabular-nums">

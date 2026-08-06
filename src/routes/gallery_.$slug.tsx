@@ -6,7 +6,7 @@
 // navigate to sibling permalinks; close returns to the index.
 // ---------------------------------------------------------------------------
 
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate, useRouter } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 
 import { GalleryLightbox } from "@/components/gallery/GalleryLightbox";
@@ -122,6 +122,7 @@ function GalleryProjectPage() {
   const { slug } = Route.useParams();
   const { plate } = Route.useSearch();
   const navigate = useNavigate();
+  const router = useRouter();
   const projects = useOrderedGalleryProjects();
 
   const index = useMemo(
@@ -130,8 +131,19 @@ function GalleryProjectPage() {
   );
 
   const onClose = useCallback(() => {
+    // If the user arrived from inside the site (index row, portfolio wall),
+    // pop the history entry instead of pushing a new one — the router's
+    // scroll restoration then drops them back exactly where they clicked,
+    // which is what "closing" feels like on macOS/iOS. Direct/shared links
+    // have no in-app history, so those fall through to a normal navigate.
+    if (router.history.canGoBack()) {
+      router.history.back();
+      return;
+    }
     navigate({ to: "/gallery" });
-  }, [navigate]);
+  }, [navigate, router]);
+
+
 
   const onProjectChange = useCallback(
     (next: number) => {
