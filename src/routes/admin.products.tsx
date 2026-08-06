@@ -63,7 +63,24 @@ function Inner() {
   const [offset, setOffset] = useState(0);
   const [searchInput, setSearchInput] = useState(search.q);
   // Keep the box in sync when the URL changes from history nav / cleared filters.
-  useEffect(() => { setSearchInput(search.q); }, [search.q]);
+  // Only when they actually diverge, so the debounce below can't clobber typing.
+  useEffect(() => {
+    setSearchInput((cur) => (cur === search.q ? cur : search.q));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.q]);
+
+  // Live search: 250ms after the last keystroke the URL `q` updates, which
+  // refires the list query. `replace: true` keeps one history entry per
+  // search session instead of one per character. Enter still flushes early.
+  useEffect(() => {
+    if (searchInput === search.q) return;
+    const t = setTimeout(() => {
+      navigate({ search: (s: any) => ({ ...s, q: searchInput }), replace: true });
+    }, 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput, search.q]);
+
 
 
   // Categories rarely change — cache hard so switching pages never refetches.
