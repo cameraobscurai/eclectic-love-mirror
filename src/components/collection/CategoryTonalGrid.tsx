@@ -44,23 +44,25 @@ const TONES = ["#ffffff", "#f1f1f1"] as const;
 // Column counts per breakpoint — must match Tailwind classes below.
 const COLS = { base: 2, sm: 3, lg: 5 } as const;
 
-const COVER_SCALE: Partial<Record<BrowseGroupId, number>> = {
-  sofas: 0.82,
-  chairs: 0.78,
-  "benches-ottomans": 0.76,
-  "cocktail-tables": 0.76,
-  "side-tables": 0.62,
-  "coffee-tables": 0.82,
-  dining: 0.82,
-  bar: 0.82,
-  lighting: 0.6,
-  storage: 0.82,
-  pillows: 0.82,
-  throws: 0.7,
-  tableware: 0.82,
-  styling: 0.78,
-  rugs: 0.68,
+/**
+ * Cover sizing is measured, not eyeballed. Every cover is staged in the SAME
+ * square frame and scaled so its SILHOUETTE occupies the same share of that
+ * frame's area — that is what makes a throw and a dining table read as one
+ * set. The old per-category `COVER_SCALE` percentages capped the raw file
+ * box instead, so a product photo with generous built-in whitespace (throws,
+ * cocktail tables) rendered tiny next to a tightly cropped one.
+ *
+ * A couple of shapes need a nudge: rugs and throws are flat planes that read
+ * heavier than their area suggests; chandeliers read lighter.
+ */
+const COVER_AREA_DEFAULT = 0.34;
+const COVER_AREA: Partial<Record<BrowseGroupId, number>> = {
+  rugs: 0.3,
+  throws: 0.3,
+  pillows: 0.32,
+  lighting: 0.38,
 };
+
 
 
 
