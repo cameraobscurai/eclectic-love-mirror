@@ -819,3 +819,45 @@ header nav button:focus-visible,
 [data-panning] button {
   pointer-events: none;
 }
+
+/* ----------------------------------------------------------------------------
+   Crossfade layer — used by CrossfadeImage so a swapped hero never hard-cuts.
+---------------------------------------------------------------------------- */
+@keyframes crossfade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ----------------------------------------------------------------------------
+   Gallery wall → CTA seam.
+   One depth cue at one seam, not a page-wide parallax system. Scroll-driven
+   in CSS (no scroll listener), so lightbox scroll restoration and route view
+   transitions can never desync it. Opacity + small Y only — never translateZ
+   or perspective, which soften photography edges.
+---------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .seam-recede {
+      animation: seam-recede linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 70%;
+    }
+    .seam-emerge {
+      animation: seam-emerge linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes seam-recede {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0.85; transform: translate3d(0, -12px, 0); }
+}
+@keyframes seam-emerge {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Mobile: opacity only — at phone scroll velocity any translate reads as jank. */
+@media (max-width: 767px) {
+  @keyframes seam-recede { from { opacity: 1; } to { opacity: 0.9; } }
+  @keyframes seam-emerge { from { opacity: 0; } to { opacity: 1; } }
+}

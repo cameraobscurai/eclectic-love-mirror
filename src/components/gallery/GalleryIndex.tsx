@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from "react";
 import type { GalleryProject } from "@/content/gallery-projects";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { prefetchImage } from "@/lib/prefetch-image";
+import { CrossfadeImage } from "@/components/gallery/CrossfadeImage";
 
 
 interface GalleryIndexProps {
@@ -125,16 +126,15 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
               style={{ willChange: "transform" }}
             >
               {hoverProject && !hoverProject.pending && (
-                <div className="w-full h-full bg-charcoal ring-1 ring-cream/15 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden">
-                  <img
+                <div className="relative w-full h-full bg-charcoal ring-1 ring-cream/15 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] overflow-hidden">
+                  <CrossfadeImage
+                    srcKey={hoverProject.heroImage.src}
                     src={
                       hoverIsStorage
-                        ? renderUrl(hoverProject.heroImage.src, { width: 480, quality: 70 })
+                        ? renderUrl(hoverProject.heroImage.src, { width: 720, quality: 78 })
                         : hoverProject.heroImage.src
                     }
-                    alt=""
-                    className="w-full h-full object-cover"
-                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
               )}
@@ -169,11 +169,9 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                       className="absolute inset-0 h-full w-full object-cover"
                     />
                   ) : (
-                    <img
-                      key={heroSrc}
+                    <CrossfadeImage
+                      srcKey={heroSrc}
                       src={displaySrc}
-                      alt=""
-                      draggable={false}
                       className="absolute inset-0 h-full w-full object-cover"
                     />
                   )}

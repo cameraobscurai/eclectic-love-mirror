@@ -224,10 +224,16 @@ function GalleryPage() {
         </ul>
       </nav>
 
-      {/* Secondary gallery — every plate across every project, interleaved */}
-      <PortfolioWall projects={visibleProjects} />
+      {/* Secondary gallery — every plate across every project, interleaved.
+          The wall recedes and the CTA emerges across the same seam (CSS
+          scroll-driven; see .seam-recede / .seam-emerge in styles.css). */}
+      <div className="seam-recede">
+        <PortfolioWall projects={visibleProjects} />
+      </div>
 
-      <GalleryCta />
+      <div className="seam-emerge">
+        <GalleryCta />
+      </div>
 
       {/* In partnership with — planner rolodex (ticker), trade-proof bridge to venues */}
       <PartnerTicker />
