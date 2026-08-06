@@ -241,31 +241,35 @@ function TonalCell({
       style={{ background: tone, touchAction: "manipulation" }}
     >
       {/* Image band: inset on all sides with a reserved label strip at the
-          bottom, then flex-center the image inside so silhouettes sit in
-          the true optical middle of the tile — not floor-anchored. */}
+          bottom. Inside it every cover is staged in an identical SQUARE
+          frame so the silhouette-area normalization below is comparable
+          tile to tile. Do not go back to width/height percentage caps. */}
       <span className="absolute inset-x-3 top-3 bottom-8 sm:inset-x-5 sm:top-5 sm:bottom-10 flex items-center justify-center pointer-events-none">
         {heroSrc ? (
-          <img
-            src={heroSrc}
-            sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
-            alt={heroAlt}
-            width={600}
-            height={480}
-            loading={priority ? "eager" : "lazy"}
-            decoding="async"
-            {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
-            draggable={false}
-            className="block object-contain transition-transform duration-[260ms] ease-out group-hover:scale-[1.02]"
-            style={{
-              maxWidth: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
-              maxHeight: `${(COVER_SCALE[id] ?? 0.72) * 100}%`,
-              width: "auto",
-              height: "auto",
-              objectPosition: "center center",
-            }}
-          />
+          <span className="relative block w-full max-h-full aspect-square overflow-hidden">
+            <NormalizedProductImage
+              src={heroSrc}
+              frameAspect={1}
+              fitMode="area"
+              targetArea={COVER_AREA[id] ?? COVER_AREA_DEFAULT}
+              maxW={0.88}
+              maxH={0.88}
+              minScale={0.3}
+              eager={priority}
+              sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
+              alt={heroAlt}
+              width={600}
+              height={600}
+              loading={priority ? "eager" : "lazy"}
+              decoding="async"
+              {...({ fetchPriority: priority ? "high" : "auto" } as Record<string, string>)}
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-contain transition-transform duration-[260ms] ease-out"
+            />
+          </span>
         ) : null}
       </span>
+
 
 
       <span
