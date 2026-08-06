@@ -93,6 +93,7 @@ import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
+import { Route as AdminGuideRouteImport } from './routes/admin.guide'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
@@ -524,6 +525,11 @@ const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
   path: '/image-health',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGuideRoute = AdminGuideRouteImport.update({
+  id: '/guide',
+  path: '/guide',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -610,6 +616,7 @@ export interface FileRoutesByFullPath {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -705,6 +712,7 @@ export interface FileRoutesByTo {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -802,6 +810,7 @@ export interface FileRoutesById {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -900,6 +909,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
+    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -995,6 +1005,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
+    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -1091,6 +1102,7 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
+    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -1825,6 +1837,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageHealthRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/guide': {
+      id: '/admin/guide'
+      path: '/guide'
+      fullPath: '/admin/guide'
+      preLoaderRoute: typeof AdminGuideRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/gallery': {
       id: '/admin/gallery'
       path: '/gallery'
@@ -1915,6 +1934,7 @@ interface AdminRouteChildren {
   AdminColorsRoute: typeof AdminColorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminGuideRoute: typeof AdminGuideRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
@@ -1935,6 +1955,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminColorsRoute: AdminColorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminGalleryRoute: AdminGalleryRoute,
+  AdminGuideRoute: AdminGuideRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
@@ -2033,13 +2054,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
