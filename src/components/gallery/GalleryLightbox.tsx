@@ -117,16 +117,24 @@ export function GalleryLightbox({
   const [zoomScale, setZoomScale] = useState(1);
   const isZoomed = zoomScale > 1.02;
 
-  // Reset plate (and zoom) when project changes.
+  // Reset plate (and zoom) when project changes — but not on first mount,
+  // where `initialPlateIndex` may point at a deep-linked plate.
+  const firstProjectRun = useRef(true);
   useEffect(() => {
+    if (firstProjectRun.current) {
+      firstProjectRun.current = false;
+      return;
+    }
     setPlateIndex(0);
     zoomApiRef.current?.resetTransform();
   }, [projectIndex]);
 
-  // Reset zoom when plate changes inside a project.
+  // Reset zoom when plate changes inside a project, and report it upward so
+  // the URL can carry the plate.
   useEffect(() => {
     zoomApiRef.current?.resetTransform();
-  }, [plateIndex]);
+    onPlateChange?.(plateIndex);
+  }, [plateIndex, onPlateChange]);
 
 
   // plateChanging is now driven by CrossfadeImage's actual decode lifecycle
