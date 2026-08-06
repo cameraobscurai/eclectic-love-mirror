@@ -239,7 +239,9 @@ function Inner() {
             <option value="yes">Public-ready</option>
             <option value="no">Hidden</option>
           </select>
-          <button type="submit" className="border border-charcoal px-3 py-1 hover:bg-charcoal hover:text-cream">Search</button>
+          {/* Results narrow as you type; this is just a keyboard-friendly flush. */}
+          <button type="submit" className="sr-only">Search</button>
+
         </form>
 
         {/* table */}
