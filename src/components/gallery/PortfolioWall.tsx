@@ -120,10 +120,17 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
   const step = isMobile ? MOBILE_STEP : DESKTOP_STEP;
   const [shown, setShown] = useState(initialCount);
 
+  // Reset the visible window when the breakpoint changes so mobile doesn't
+  // inherit a 30-item desktop scroll, and desktop doesn't stay collapsed.
+  useEffect(() => {
+    setShown(initialCount);
+  }, [initialCount]);
+
   if (plates.length === 0) return null;
 
   const visible = plates.slice(0, shown);
   const hasMore = shown < plates.length;
+
 
   return (
     <section
