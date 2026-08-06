@@ -149,10 +149,14 @@ function Inner() {
 
   useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
 
+  // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ search: (s: any) => ({ ...s, q: searchInput }) });
+    navigate({ search: (s: any) => ({ ...s, q: searchInput }), replace: true });
   };
+
+  const searchPending = searchInput !== search.q;
+
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
