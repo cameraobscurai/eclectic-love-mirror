@@ -1,51 +1,55 @@
-## Revised plan — Steps 1, 2, 3
+# Gallery expansion
 
-I re-checked all three against current code before rewriting. One is already done.
+Not a redesign. The visual system, hero, filmstrip, index, tickers, and press band stay exactly as they are. This adds the structural layer the gallery is missing so the owner can actually grow it.
 
----
+## The core problem
 
-### Step 1 — Publish also snapshots gallery order — **ALREADY SHIPPED**
+A project is not a place. Clicking a project opens an overlay held in component state — no URL, no back button, no share link, no per-project preview image, nothing for Google or Pinterest or a press mention to point at. The gallery is the taste surface and the referral channel, and right now none of it is addressable.
 
-`publishCatalogOverlay` in `src/lib/photos-admin.functions.ts` now reads `gallery_orders` and writes a timestamped `catalog/gallery-orders-{stamp}.json` blob. `src/routes/gallery.tsx` tries that overlay first and falls back to the baked `src/data/gallery/gallery-orders.json`.
+Second problem: adding a project is a code change. 15 projects live in a hand-authored array wired to a 1,045-line manifest file. The owner cannot add a gallery.
 
-Nothing to build. What's left is a **verification pass**, not code: reorder a gallery in `/admin/photos`, hit Publish, hard-reload `/gallery`, confirm the new order lands without a rebake. If it fails, that's a bug report, not this step.
+Third: there are no credits. Only the planner. No photographer, florist, venue, caterer — the standard editorial furniture for this industry.
 
----
+## P0
 
-### Step 2 — Desktop hero unmute parity — **OPEN, still correct**
+**1. Project permalinks — `/gallery/{slug}`**
+A real page per project. Reuses the existing lightbox internals in page mode, not a rewrite. Per-project title, description, og:image, and JSON-LD. Slug helper already exists.
+Touches: new `src/routes/gallery.$slug.tsx`, `GalleryLightbox`, `GalleryIndex`, `GalleryFilmstrip`. Effort: M.
 
-Mobile `SequentialHeroVideo` has the full pattern: a `muted` state, an aria-labelled toggle, and re-application of the user's choice across clip changes. Desktop `HeroFilmstrip` hard-forces `v.muted = true` on every strip video; only the lightbox ever unmutes.
+**2. URL state for the overlay**
+Opening a project pushes history; back closes it; refresh restores it; a plate index is linkable.
+Touches: `src/routes/gallery.tsx`, `GalleryLightbox`. Effort: S–M.
 
-Revision to the original plan: the strip is **five simultaneous videos**, not one. Copying the mobile chip verbatim would unmute all five at once — five overlapping audio tracks. Correct behavior is one audio source at a time.
+**3. Credits block**
+Add optional `credits` (photographer, florist, venue, caterer, rentals) to the project type; render in the lightbox sidebar and the new detail page. Schema and UI are small; the real work is the owner supplying the data.
+Touches: `src/content/gallery-projects.ts`, lightbox sidebar. Effort: S.
 
-- Audio follows the **active/hovered** frame only; every other frame stays muted.
-- The chip is a single site-level control, not one per frame.
-- The choice persists across frame transitions, same as mobile.
-- Respects `prefers-reduced-motion`/no-video fallback — no chip when there's no video.
+## P1
 
----
+**4. Admin: add and manage projects**
+Today `/admin/gallery` only reorders plates inside a project. Extend it to add a project, hide one, reorder the index, and set the cover — so new galleries stop being a code change.
+Touches: `admin.gallery.tsx`, new table + functions. Effort: L.
 
-### Step 3 — Repo hygiene sweep — **OPEN, scope confirmed larger than written**
+**5. Video as a first-class plate**
+Video detection is regex duplicated across components. One helper, plus a sound toggle and duration mark on video plates.
+Touches: `GalleryIndex`, `GalleryFilmstrip`, `GalleryLightbox`, new util. Effort: S.
 
-Actual count: **148 files in `scripts-tmp/`** and **56 root-level loose scripts** (`.mjs`/`.cjs`/`.py`/`.js`/`.ts`).
+**6. Scroll choreography on entry**
+Extend the reveal already partly present on the cards with a restrained scroll-velocity parallax, reusing the lightbox parallax pattern. Subtle, not scrollytelling.
+Effort: M.
 
-Revision: the original plan said "delete." Given the standing dead-code rule, deletion is the last step, not the first.
+## P2
 
-1. Produce a **manifest** classifying every candidate: referenced / unreferenced / ambiguous. Grep each name against `src/`, `scripts/`, `supabase/`, `package.json`, `playwright.config.ts`, and `.lovable/`.
-2. Move genuine keepers into `scripts/audit/` (the existing convention).
-3. Show you the delete list. Nothing is removed until you look at it.
-4. Then remove, and verify with a build plus `console-health.spec.ts`.
+- Per-project OG image pipeline.
+- Split `gallery-manifests.ts` per project; paginate past ~30 projects.
+- Map view using the `coords` field that already exists and is unused.
 
-Note: `console-health.spec.ts`, `audit-pages.spec.ts`, and the other root `.spec.ts` files are **live CI specs** — they are not junk and stay put.
+## Explicitly excluded
 
----
-
-## Recommended order
-
-Step 2 first — it's the only one with a user-facing outcome, and it's the remaining half of the owner's original sound complaint. Step 3 second, since it's zero-risk but noisy and better done in one uninterrupted pass. Step 1 is just the verification click-through, which can happen any time.
+Masonry or full-bleed scrollytelling rewrite. A new filter/tag paradigm (re-enabling the existing hidden filters is fine; inventing a new one is not). Rebuilding the lightbox from scratch. Any type or color change.
 
 ## Technical notes
 
-- Step 2 touches `src/components/home/HeroFilmstrip.tsx` only; the mobile component is not modified.
-- Verification for Step 2 is Playwright at desktop viewport: click the chip, assert `muted === false` on the active clip and `true` on the other four, then assert the state survives a frame transition.
-- Step 3 will not touch `remotion/`, `scripts/visual-regression/`, or anything under `scripts/` that `package.json` references.
+- `gallerySlug()` in `src/lib/gallery-orders.ts` is already the stable key — permalinks and admin records both key off it.
+- The baked-orders-plus-live-snapshot pattern in `gallery.tsx` is sound and should be the model for any new admin-controlled gallery data.
+- Detail route reuses `GalleryLightbox` internals. If that reuse turns out not to be feasible, stop and flag rather than rebuilding it.
