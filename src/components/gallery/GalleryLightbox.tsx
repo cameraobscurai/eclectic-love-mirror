@@ -6,6 +6,7 @@ import { GalleryLightboxRail } from "./GalleryLightboxRail";
 import { CrossfadeImage } from "./CrossfadeImage";
 import { LightboxParallax } from "./LightboxParallax";
 import { ShopTheLookRail } from "./ShopTheLookRail";
+import { GalleryCreditsBlock } from "./GalleryCredits";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 
