@@ -29,6 +29,9 @@ import {
   setCardBackground,
   uploadItemImage,
 } from "@/lib/inventory-images.functions";
+import { publishCatalogOverlay } from "@/lib/photos-admin.functions";
+import { invalidateCollectionCatalog } from "@/lib/phase3-catalog";
+import { clearPublishPending, markPublishPending } from "@/lib/publish-pending";
 
 type Item = {
   id: string;
@@ -60,11 +63,16 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   const [uploading, setUploading] = useState(false);
   const [dropActive, setDropActive] = useState(false);
   const [tab, setTab] = useState<"manage" | "pick">("manage");
+  const [publishState, setPublishState] = useState<"idle" | "publishing" | "live">(
+    "idle",
+  );
 
   const lastSavedRef = useRef<string[]>(item.images ?? []);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publishTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const update = useServerFn(updateItemImages);
+  const publish = useServerFn(publishCatalogOverlay);
   const setBgFn = useServerFn(setCardBackground);
   const uploadFn = useServerFn(uploadItemImage);
 
@@ -72,6 +80,35 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
+
+  // The public collection reads a PUBLISHED snapshot, not the database. A
+  // saved reorder is invisible on the site until that snapshot is rebuilt —
+  // which is why "it saves but nothing changes on the front end". Photo edits
+  // are low-risk and staff-visible, so publish them automatically shortly
+  // after the last change instead of relying on someone remembering the
+  // Publish button.
+  const schedulePublish = useCallback(() => {
+    markPublishPending();
+    if (publishTimer.current) clearTimeout(publishTimer.current);
+    publishTimer.current = setTimeout(() => {
+      publishTimer.current = null;
+      setPublishState("publishing");
+      void publish()
+        .then(() => {
+          invalidateCollectionCatalog();
+          clearPublishPending();
+          setPublishState("live");
+          setTimeout(
+            () => setPublishState((s) => (s === "live" ? "idle" : s)),
+            4000,
+          );
+        })
+        .catch(() => {
+          // Non-fatal: the edit is saved. The header Publish button stays lit.
+          setPublishState("idle");
+        });
+    }, 1500);
+  }, [publish]);
 
   const flushSave = useCallback(
     async (next: string[]) => {
@@ -92,6 +129,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
         setSaveState("saved");
         setErrMsg(null);
         onSaved({ images: next, card_background_url: bg });
+        schedulePublish();
       } catch (e) {
         const msg = (e as Error).message || "Save failed";
         setErrMsg(msg);
@@ -117,7 +155,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
         throw e;
       }
     },
-    [item.id, update, onSaved, bg],
+    [item.id, update, onSaved, bg, schedulePublish],
   );
 
   const scheduleSave = useCallback(
@@ -196,6 +234,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     try {
       await setBgFn({ data: { id: item.id, url: next } });
       onSaved({ images: urls, card_background_url: next });
+      schedulePublish();
     } catch (e) {
       setErrMsg((e as Error).message);
       setBg(bg);
