@@ -1,6 +1,8 @@
 import { useRef, useState, useCallback } from "react";
 import type { GalleryProject } from "@/content/gallery-projects";
-import { renderUrl } from "@/lib/storage-image";
+import { renderUrl, renderSrcSet } from "@/lib/storage-image";
+import { prefetchImage } from "@/lib/prefetch-image";
+
 
 interface GalleryIndexProps {
   projects: GalleryProject[];
