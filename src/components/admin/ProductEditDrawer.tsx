@@ -587,12 +587,71 @@ function RateContext({ category, price, stats }) {
   );
 }
 
+/* ═════════════ DANGER ZONE ═════════════ */
+
+function DeleteZone({ title, disabled, onDelete }) {
+  const [armed, setArmed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  return (
+    <div style={{ marginTop: 22, paddingTop: 16, borderTop: T.hairlineSoft }}>
+      {!armed ? (
+        <button type="button" onClick={() => { setErr(null); setArmed(true); }} disabled={disabled}
+          style={{
+            fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
+            color: T.destructive, background: "none", border: `1px solid ${T.destructive}`,
+            padding: "8px 14px", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.5 : 1,
+          }}>
+          Delete this piece
+        </button>
+      ) : (
+        <div style={{ border: `1px solid ${T.destructive}`, padding: 14 }}>
+          <p style={{ fontFamily: T.sans, fontSize: 12.5, lineHeight: 1.55, color: T.charcoal, margin: 0 }}>
+            Are you sure you want to delete <strong>{title}</strong>? This removes it from the
+            database for good — photos, notes and history included. It can’t be undone.
+          </p>
+          {err && (
+            <p style={{ fontFamily: T.sans, fontSize: 12, color: T.destructive, marginTop: 8 }}>{err}</p>
+          )}
+          <div className="flex gap-3" style={{ marginTop: 12 }}>
+            <button type="button" disabled={busy}
+              onClick={async () => {
+                setBusy(true); setErr(null);
+                try { await onDelete(); }
+                catch (e) {
+                  setErr(e instanceof Error ? e.message : "Could not delete this piece. Try again.");
+                  setBusy(false);
+                }
+              }}
+              style={{
+                fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
+                color: "#fff", background: T.destructive, border: `1px solid ${T.destructive}`,
+                padding: "8px 14px", cursor: busy ? "wait" : "pointer",
+              }}>
+              {busy ? "Deleting…" : "Yes, delete it"}
+            </button>
+            <button type="button" onClick={() => setArmed(false)} disabled={busy}
+              style={{
+                fontFamily: T.sans, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
+                color: T.charcoal, background: "none", border: T.hairline, padding: "8px 14px", cursor: "pointer",
+              }}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ═════════════ THE DRAWER (portable) ═════════════ */
 
 export function ProductEditDrawer({
   product, categories, role = "staff", recentChanges = [], categoryPriceStats = {},
-  onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved,
+  onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved, onDelete,
 }) {
+
 
   const draft = useDraft(product);
   const [saving, setSaving] = useState(false);
