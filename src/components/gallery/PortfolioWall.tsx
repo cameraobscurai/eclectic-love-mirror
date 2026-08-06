@@ -26,8 +26,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 //     through is instant instead of a second network round-trip.
 // ---------------------------------------------------------------------------
 
-const DESKTOP_INITIAL = 30;
-const DESKTOP_STEP = 30;
+const DESKTOP_INITIAL = 24;
+const DESKTOP_STEP = 24;
 const MOBILE_INITIAL = 10;
 const MOBILE_STEP = 10;
 const MAX_PER_PROJECT = 6;
