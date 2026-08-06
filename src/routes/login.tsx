@@ -96,6 +96,15 @@ function LoginPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await verifyAdminAndRoute();
+      } else if (mode === "link") {
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`,
+          },
+        });
+        if (error) throw error;
+        setInfo("Sign-in link sent. Open the email on this device and you're in.");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${window.location.origin}/reset-password`,
@@ -104,6 +113,7 @@ function LoginPage() {
         setInfo("Password reset email sent. Check your inbox.");
         setMode("signin");
       }
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed.");
     } finally {
