@@ -28,8 +28,10 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("signin");
+  const [linkSentAt, setLinkSentAt] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   // Staff OR admin may enter the backend — /admin gates the rest per route.
   async function checkOwnAdminRole(userId: string) {
@@ -104,6 +106,7 @@ function LoginPage() {
           },
         });
         if (error) throw error;
+        setLinkSentAt(Date.now());
         setInfo("Sign-in link sent. Open the email on this device and you're in.");
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -120,6 +123,27 @@ function LoginPage() {
       setBusy(false);
     }
   }
+
+  async function handleResendLink() {
+    if (!email) return;
+    setError(null); setInfo(null); setBusy(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`,
+        },
+      });
+      if (error) throw error;
+      setLinkSentAt(Date.now());
+      setInfo("A new sign-in link has been sent. Check your inbox.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to resend link.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
   const labelStyle = {
     fontSize: "10px",
@@ -258,7 +282,7 @@ function LoginPage() {
         >
           {mode === "signin" ? (
             <>
-              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+              <button type="button" onClick={() => { setError(null); setInfo(null); setMode("link"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
                 NO PASSWORD? EMAIL ME A LINK
               </button>
               <button type="button" onClick={() => { setError(null); setInfo(null); setMode("forgot"); }} style={{ color: "rgba(26,26,26,0.55)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
@@ -266,7 +290,7 @@ function LoginPage() {
               </button>
             </>
           ) : (
-            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
+            <button type="button" onClick={() => { setError(null); setInfo(null); setMode("signin"); setLinkSentAt(null); }} style={{ color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}>
               ← BACK TO SIGN IN
             </button>
           )}
@@ -274,9 +298,22 @@ function LoginPage() {
         </div>
 
         {info && (
-          <p className="uppercase mt-6 text-center" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
-            {info}
-          </p>
+          <div className="mt-6 text-center">
+            <p className="uppercase" style={{ color: "#1a1a1a", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
+              {info}
+            </p>
+            {mode === "link" && linkSentAt && (
+              <button
+                type="button"
+                onClick={handleResendLink}
+                disabled={busy}
+                className="uppercase mt-3 disabled:opacity-50"
+                style={{ fontSize: "10px", letterSpacing: "0.18em", color: "rgba(26,26,26,0.7)", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              >
+                {busy ? "SENDING…" : "RESEND SIGN-IN LINK"}
+              </button>
+            )}
+          </div>
         )}
         {error && (
           <p className="uppercase mt-6 text-center" style={{ color: "#a83232", fontSize: "11px", letterSpacing: "0.08em", lineHeight: 1.6 }}>
