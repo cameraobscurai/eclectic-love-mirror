@@ -61,7 +61,7 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
           Project Index
         </h2>
         <div className="grid lg:grid-cols-[1fr_minmax(440px,38vw)] gap-10 lg:gap-20 items-start">
-          <div ref={containerRef} className="relative" onMouseMove={onMove}>
+          <div ref={containerRef} className="relative min-w-0" onMouseMove={onMove}>
             <ul>
               {projects.map((p, i) => {
                 const pending = !!p.pending;

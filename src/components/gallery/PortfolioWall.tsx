@@ -93,8 +93,8 @@ function PlateTile({ plate, index }: { plate: Plate; index: number }) {
       <img
         ref={attach}
         src={renderUrl(plate.src, { width: 560, quality: 72 })}
-        srcSet={renderSrcSet(plate.src, [320, 480, 640], 72)}
-        sizes="(min-width: 1024px) 19vw, (min-width: 640px) 32vw, 48vw"
+        srcSet={renderSrcSet(plate.src, [320, 480, 640, 900], 72)}
+        sizes="(min-width: 1024px) 19vw, (min-width: 640px) 32vw, 50vw"
         alt={plate.alt}
         loading={eager ? "eager" : "lazy"}
         fetchPriority={index < 5 ? "high" : "low"}
