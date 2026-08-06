@@ -126,6 +126,18 @@ interface RawCatalog extends CatalogPayload {
 
 let cached: CatalogPayload | null = null;
 let loadPromise: Promise<CatalogPayload> | null = null;
+let cachedAt = 0;
+
+/**
+ * How long a merged catalog (baked JSON + published overlay) may be reused.
+ *
+ * In the browser this is effectively "forever" for one page view. On the
+ * server the module lives for the whole worker lifetime, so an unbounded
+ * memo meant a published photo reorder never appeared on SSR'd pages until
+ * the worker recycled — the exact "I reordered, it saved, the site didn't
+ * change" report. A short TTL keeps SSR cheap and still self-heals.
+ */
+const CATALOG_TTL_MS = 30_000;
 let baseCached: CatalogPayload | null = null;
 let baseLoadPromise: Promise<CatalogPayload> | null = null;
 let categoryDisplayOrder: string[] = [];
@@ -177,7 +189,11 @@ export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
 }
 
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
-  if (cached) return cached;
+  if (cached && Date.now() - cachedAt < CATALOG_TTL_MS) return cached;
+  if (cached) {
+    cached = null;
+    loadPromise = null;
+  }
   if (loadPromise) return loadPromise;
   loadPromise = (async () => {
     const base = await getCollectionCatalogBase();
@@ -297,6 +313,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         : base.facets;
 
     cached = { products: all, facets, total: all.length };
+    cachedAt = Date.now();
     return cached;
   })();
   return loadPromise;
@@ -422,6 +439,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
  *  the editorial_order overlay. Used by /admin/photos after a reorder save. */
 export function invalidateCollectionCatalog(): void {
   cached = null;
+  cachedAt = 0;
   loadPromise = null;
 }
 
