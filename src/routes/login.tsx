@@ -28,8 +28,10 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("signin");
+  const [linkSentAt, setLinkSentAt] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
 
   // Staff OR admin may enter the backend — /admin gates the rest per route.
   async function checkOwnAdminRole(userId: string) {
