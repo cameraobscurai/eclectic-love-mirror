@@ -861,3 +861,55 @@ header nav button:focus-visible,
   @keyframes seam-recede { from { opacity: 1; } to { opacity: 0.9; } }
   @keyframes seam-emerge { from { opacity: 0; } to { opacity: 1; } }
 }
+
+/* ----------------------------------------------------------------------------
+   Closing-sequence card stack (gallery).
+   Cards pin at staggered top offsets, so each one parks a little lower than
+   the one before it and the next slides over it — a physical pile, not four
+   empty full-screen panels. The covered card settles back in Z (scale + dim).
+   No JS, no scroll listener, no `perspective` container — scale only, so no
+   photograph is ever resampled through a 3D projection.
+   Desktop + tall viewports only; short screens and reduced-motion keep the
+   plain stacked sections they had before.
+---------------------------------------------------------------------------- */
+.stack-seq { position: relative; }
+.stack-card-pin { position: relative; }
+.stack-card-face { background-color: var(--charcoal, #1a1a1a); }
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
+    .stack-card {
+      view-timeline-name: --stack-card;
+      view-timeline-axis: block;
+    }
+    .stack-card-pin {
+      position: sticky;
+      /* Each card parks 22px below the previous one, so the pile is legible. */
+      top: calc(var(--i, 0) * 22px);
+    }
+    .stack-card-face {
+      min-height: 34svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top: 1px solid color-mix(in oklab, var(--cream, #fff) 9%, transparent);
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -22px 50px -28px rgb(0 0 0 / 0.95);
+      transform-origin: 50% 0%;
+      will-change: transform, opacity;
+      animation: stack-settle linear both;
+      animation-timeline: --stack-card;
+      animation-range: exit 0% exit 100%;
+    }
+    /* Nothing covers the last card — it must not dim itself off the page. */
+    .stack-card--last .stack-card-face {
+      animation: none;
+      min-height: 0;
+    }
+  }
+}
+
+@keyframes stack-settle {
+  from { transform: scale(1); opacity: 1; }
+  to   { transform: scale(0.965); opacity: 0.5; }
+}

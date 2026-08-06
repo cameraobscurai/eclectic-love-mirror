@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { GalleryHero } from "@/components/gallery/GalleryHero";
 import { GalleryFilters } from "@/components/gallery/GalleryFilters";
 import { GalleryFilmstrip } from "@/components/gallery/GalleryFilmstrip";
@@ -231,36 +231,64 @@ function GalleryPage() {
         <PortfolioWall projects={visibleProjects} />
       </div>
 
-      <div className="seam-emerge">
-        <GalleryCta />
-      </div>
-
-      {/* In partnership with — planner rolodex (ticker), trade-proof bridge to venues */}
-      <PartnerTicker />
-
-      {/* Delivered to — venue index (derived from gallery project locations) */}
-      <VenueIndex projects={overriddenProjects} />
-
-      {/* As Featured In — transparent press logos on charcoal.
-          Width matches the CTA headline measure above for axial continuity. */}
-      <section aria-labelledby="press-heading" className="bg-charcoal pt-10 lg:pt-12 pb-16 lg:pb-20 px-6 lg:px-12">
-        <div className="max-w-[1600px] mx-auto">
-          <h2
-            id="press-heading"
-            className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"
-          >
-            AS FEATURED IN
-          </h2>
-          <img
-            src={pressLogos}
-            alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
-            className="w-full h-auto object-contain select-none mx-auto opacity-90"
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-          />
+      {/* Closing sequence — stacked panels. Each pins to the top and the next
+          slides over it, the covered card settling back in Z (scale + dim).
+          Pure CSS scroll-driven; falls back to plain stacked sections where
+          view() timelines or reduced-motion say no. See .stack-* in styles.css. */}
+      <div className="stack-seq">
+        <div className="stack-card" style={{ "--i": 0 } as CSSProperties}>
+          <div className="stack-card-pin">
+            <div className="stack-card-face seam-emerge">
+              <GalleryCta />
+            </div>
+          </div>
         </div>
-      </section>
+
+        {/* In partnership with — planner rolodex (ticker), trade-proof bridge to venues */}
+        <div className="stack-card" style={{ "--i": 1 } as CSSProperties}>
+          <div className="stack-card-pin">
+            <div className="stack-card-face">
+              <PartnerTicker />
+            </div>
+          </div>
+        </div>
+
+        {/* Delivered to — venue index (derived from gallery project locations) */}
+        <div className="stack-card" style={{ "--i": 2 } as CSSProperties}>
+          <div className="stack-card-pin">
+            <div className="stack-card-face">
+              <VenueIndex projects={overriddenProjects} />
+            </div>
+          </div>
+        </div>
+
+        {/* As Featured In — transparent press logos on charcoal.
+            Width matches the CTA headline measure above for axial continuity. */}
+        <div className="stack-card stack-card--last" style={{ "--i": 3 } as CSSProperties}>
+          <div className="stack-card-pin">
+            <div className="stack-card-face">
+              <section aria-labelledby="press-heading" className="bg-charcoal pt-10 lg:pt-12 pb-16 lg:pb-20 px-6 lg:px-12">
+                <div className="max-w-[1600px] mx-auto">
+                  <h2
+                    id="press-heading"
+                    className="text-cream/40 text-[10px] uppercase tracking-[0.32em] text-center mb-6"
+                  >
+                    AS FEATURED IN
+                  </h2>
+                  <img
+                    src={pressLogos}
+                    alt="Featured in Elle, Harper's Bazaar, The Knot, Vogue, Martha Stewart Weddings, and Brides"
+                    className="w-full h-auto object-contain select-none mx-auto opacity-90"
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                  />
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
