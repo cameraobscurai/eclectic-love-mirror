@@ -90,6 +90,7 @@
  */
 
 import { mergeCategoryOptions, subcategoryOptions } from "@/lib/admin-categories";
+import { markPublishPending } from "@/lib/publish-pending";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImageOrderEditor } from "./ImageOrderEditor";
@@ -692,6 +693,7 @@ export function ProductEditDrawer({
       setSavedAt(Date.now());
       setConfirmDiscard(false);
       toast.success("Saved");
+      markPublishPending();
     } catch (err) {
       // Never fail silently — a save that didn't land must be visible.
       const msg = err instanceof Error ? err.message : String(err ?? "Save failed");
