@@ -168,3 +168,23 @@ export const listProductAudit = createServerFn({ method: "POST" })
     if (error) throw new Response(error.message, { status: 500 });
     return rows ?? [];
   });
+
+// Hard-delete a single inventory row. Staff + admin (RLS: "Staff can delete
+// items"). Single-row only, always confirmed in the UI — never bulk.
+export const deleteProduct = createServerFn({ method: "POST" })
+  .middleware([requireStaffOrAdmin])
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: row, error: readErr } = await supabase
+      .from("inventory_items")
+      .select("id, title, rms_id")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (readErr) throw new Response(readErr.message, { status: 500 });
+    if (!row) throw new Response("That piece no longer exists.", { status: 404 });
+
+    const { error } = await supabase.from("inventory_items").delete().eq("id", data.id);
+    if (error) throw new Response(error.message, { status: 500 });
+    return { ok: true, id: data.id, title: row.title as string };
+  });
