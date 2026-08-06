@@ -183,6 +183,28 @@ export function BohHome({ firstName: firstNameProp }: { firstName?: string }) {
         </div>
       </div>
 
+      {/* start here — the three doors inventory work actually goes through */}
+      <div style={{ maxWidth: 1560, margin: '0 auto', padding: '34px 48px 0', boxSizing: 'border-box' }}>
+        <div style={{ fontSize: 10, letterSpacing: '0.26em', color: T.dim, marginBottom: 12 }}>START HERE</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
+          {[
+            { label: 'ADD A PRODUCT', route: '/admin/new-product' },
+            { label: 'EDIT INVENTORY', route: '/admin/products' },
+            { label: 'HOW-TO GUIDE', route: '/admin/guide' },
+          ].map((s) => (
+            <button
+              key={s.route}
+              onClick={() => go(s.route)}
+              style={{ background: T.panel, border: `1px solid ${T.hairline}`, padding: '20px 22px', textAlign: 'left', cursor: 'pointer', color: T.ink, fontFamily: 'inherit', fontSize: 12, letterSpacing: '0.2em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              {s.label}
+              <span style={{ fontSize: 10, letterSpacing: '0.2em', color: T.faint }}>→</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+
       {/* tool grid — six admin tools in a 3×2 */}
       <div data-boh-grid style={{ maxWidth: 1560, margin: '0 auto', padding: '44px 48px 0', boxSizing: 'border-box', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '28px 28px' }}>
         {TOOL_RAIL.map((t) => {
