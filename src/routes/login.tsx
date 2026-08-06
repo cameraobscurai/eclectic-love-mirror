@@ -19,7 +19,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-type Mode = "signin" | "forgot";
+type Mode = "signin" | "forgot" | "link";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -31,18 +31,19 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Staff OR admin may enter the backend — /admin gates the rest per route.
   async function checkOwnAdminRole(userId: string) {
     const { data, error } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
-      .eq("role", "admin")
+      .in("role", ["admin", "staff"])
       .limit(1);
     if (error) throw error;
     return (data ?? []).length > 0;
   }
 
-  // After auth: verify admin role; otherwise sign out and surface message.
+  // After auth: verify backend access; otherwise sign out and surface message.
   async function verifyAdminAndRoute() {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) throw new Error("Sign-in succeeded but no session.");
@@ -55,6 +56,7 @@ function LoginPage() {
     }
     navigate({ to: redirectTo as "/admin", search: { page: undefined } });
   }
+
 
   useEffect(() => {
     let cancelled = false;
