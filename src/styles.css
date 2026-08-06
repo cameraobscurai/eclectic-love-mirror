@@ -878,15 +878,19 @@ header nav button:focus-visible,
 
 @supports (animation-timeline: view()) {
   @media (min-width: 1024px) and (min-height: 720px) and (prefers-reduced-motion: no-preference) {
+    /* Sticky must live on the direct child of .stack-seq: an element can only
+       travel inside its own containing block, and the old inner wrapper was
+       exactly as tall as the card, so it had zero travel and never pinned.
+       Scroll-driven timelines ignore sticky offsets, so `exit` still fires
+       off the in-flow position as the next card slides over this one. */
     .stack-card {
       view-timeline-name: --stack-card;
       view-timeline-axis: block;
-    }
-    .stack-card-pin {
       position: sticky;
       /* Each card parks 22px below the previous one, so the pile is legible. */
       top: calc(var(--i, 0) * 22px);
     }
+
     .stack-card-face {
       min-height: 34svh;
       display: flex;
