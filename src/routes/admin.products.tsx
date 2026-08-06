@@ -352,6 +352,8 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const auditFn = useServerFn(listProductAudit);
   const catsFn = useServerFn(listDistinctCategories);
   const roleFn = useServerFn(getMyRole);
+  const del = useServerFn(deleteProduct);
+
   const [row, setRow] = useState<ProductRow | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
