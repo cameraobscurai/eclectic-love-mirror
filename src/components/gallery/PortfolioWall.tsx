@@ -7,6 +7,7 @@ import { prefetchImage } from "@/lib/prefetch-image";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
+
 // ---------------------------------------------------------------------------
 // Portfolio Wall — secondary, lower-page gallery.
 //
@@ -131,6 +132,27 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
   const visible = plates.slice(0, shown);
   const hasMore = shown < plates.length;
 
+  // Track the real column count so we can pad the final row with charcoal
+  // spacers instead of leaving an empty grid cell that shows bg-cream/10.
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const [columnCount, setColumnCount] = useState(5);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el || typeof window === "undefined") return;
+
+    const update = () => {
+      const columns = window.getComputedStyle(el).gridTemplateColumns.split(" ").length;
+      setColumnCount(columns);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const fillCount = columnCount > 0 ? (columnCount - (visible.length % columnCount)) % columnCount : 0;
 
   return (
     <section
@@ -150,10 +172,21 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-cream/10">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-cream/10"
+        >
           {visible.map((plate, i) => (
             <PlateTile key={plate.key} plate={plate} index={i} />
           ))}
+          {fillCount > 0 &&
+            Array.from({ length: fillCount }).map((_, i) => (
+              <div
+                key={`portfolio-spacer-${i}`}
+                className="aspect-[4/5] bg-charcoal"
+                aria-hidden="true"
+              />
+            ))}
         </div>
 
 
