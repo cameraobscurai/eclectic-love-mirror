@@ -204,17 +204,30 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // products may use the RMS id as their primary id.
     const overlay = await fetchLiveOverlay();
 
+    // Filename-level identity so the same photo under a different signed /
+    // versioned URL is not duplicated inside a family tile.
+    const imgKey = (url: string) => {
+      try {
+        const base = decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
+        return base.replace(/\+/g, " ").trim().toLowerCase() || url;
+      } catch {
+        return url;
+      }
+    };
+
     const products = base.products.map((p) => {
       const live = overlay.get(p.id);
-      if (!live) return p;
-      const eo = live.editorial_order !== undefined && live.editorial_order !== null
+      const members = p.variants ?? [];
+      const hasFamily = members.length > 0;
+      if (!live && !hasFamily) return p;
+      const eo = live?.editorial_order !== undefined && live?.editorial_order !== null
         ? live.editorial_order
         : (p.editorialOrder ?? null);
 
       // Live images win when the row has a non-empty array. Empty/null
       // falls back to baked so legacy rows with `images = '{}'` don't
       // blank their tiles.
-      const liveImages = live.images;
+      const liveImages = live?.images;
       let baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
         ? liveImages.map((url, i) => ({
             url,
@@ -225,8 +238,75 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           }))
         : p.images;
 
+      // FAMILY TILES (tableware collections like EDEN): the baked tile merges
+      // photos from every variant row, but the overlay is keyed per RMS row.
+      // Without this, a family tile would collapse to just the lead row's
+      // single photo — which is exactly why only one image showed publicly.
+      // Rebuild the merged set: group/"Set" shots from the bake (never owned
+      // by a variant row) first, then each member's live images in order.
+      let variantsOut = members;
+      if (hasFamily) {
+        const memberIds = [p.id, ...members.map((v) => v.id)];
+        const liveMemberUrls: string[] = [];
+        let anyLive = false;
+        for (const id of memberIds) {
+          const row = overlay.get(id);
+          if (!row || !Array.isArray(row.images) || row.images.length === 0) continue;
+          anyLive = true;
+          for (const u of row.images) liveMemberUrls.push(u);
+        }
+        if (anyLive) {
+          const variantKeys = new Set(
+            members
+              .map((v) => (v.imageUrl ? imgKey(v.imageUrl) : ""))
+              .filter(Boolean),
+          );
+          const seen = new Set<string>();
+          const merged: CollectionImage[] = [];
+          const push = (url: string, altText: string | null) => {
+            const k = imgKey(url);
+            if (seen.has(k)) return;
+            seen.add(k);
+            merged.push({
+              url,
+              position: merged.length,
+              isHero: merged.length === 0,
+              inferredFilename: null,
+              altText,
+            });
+          };
+          // Owner control: any photo on the LEAD row that isn't one of the
+          // variant shots is a collection/group photo she uploaded — it wins
+          // the cover slot, in her drag order.
+          const leadRow = overlay.get(p.id);
+          for (const u of (Array.isArray(leadRow?.images) ? leadRow.images : [])) {
+            if (variantKeys.has(imgKey(u))) continue;
+            push(u, null);
+          }
+          // Then baked group shots (the "Set" photo) — no variant row owns these.
+          for (const img of p.images) {
+            if (variantKeys.has(imgKey(img.url))) continue;
+            push(img.url, img.altText);
+          }
+          for (const u of liveMemberUrls) push(u, null);
+
+          baseImages = merged;
+          variantsOut = members.map((v) => {
+            const row = overlay.get(v.id);
+            const firstLive = Array.isArray(row?.images) ? row?.images[0] : undefined;
+            return {
+              ...v,
+              title: row?.title ?? v.title,
+              dimensions: row?.dimensions_raw ?? v.dimensions,
+              stockedQuantity: row?.quantity_label ?? v.stockedQuantity,
+              imageUrl: firstLive ?? v.imageUrl ?? null,
+            };
+          });
+        }
+      }
+
       // AI-upscaled cover overrides slot 0; original moves to slot 1.
-      if (live.upscaled_cover_url && baseImages.length > 0) {
+      if (live?.upscaled_cover_url && baseImages.length > 0) {
         const original = baseImages[0];
         baseImages = [
           { url: live.upscaled_cover_url, position: 0, isHero: true, inferredFilename: null, altText: original.altText ?? null },
@@ -240,14 +320,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       return {
         ...p,
         editorialOrder: eo,
-        cardBackgroundUrl: live.card_background_url ?? p.cardBackgroundUrl ?? null,
-        coverFocalX: live.cover_focal_x ?? p.coverFocalX ?? null,
-        coverFocalY: live.cover_focal_y ?? p.coverFocalY ?? null,
+        cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
+        coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
+        coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
         images,
         primaryImage: images[0] ?? null,
-        ownerSubcategory: live.subcategory_slug ?? p.ownerSubcategory ?? null,
+        imageCount: images.length,
+        variants: variantsOut,
+        ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
     });
+
     // Products added since the last bake exist only in the overlay. Append
     // them so /admin → New product → Publish is enough to go live.
     //
