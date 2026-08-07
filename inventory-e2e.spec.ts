@@ -23,7 +23,12 @@ const CONSOLE_NOISE = [
   /Lit is in dev mode/i,
   /React Router Future Flag/i,
   /was preloaded using link preload but not used/i,
+  // A Supabase auth token refresh that was in flight when the test navigated
+  // away aborts as "Failed to fetch". It's a teardown artifact of page.goto(),
+  // not an app error — app-level fetch failures don't carry a supabase frame.
+  /Failed to fetch[\s\S]*supabase/i,
 ];
+
 
 const NETWORK_NOISE = [/favicon/i, /\/@vite\//, /\/__/, /hot-update/];
 
