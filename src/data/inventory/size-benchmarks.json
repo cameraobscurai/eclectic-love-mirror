@@ -1,0 +1,198 @@
+{
+  "generatedAt": "2026-08-07T10:32:45.723Z",
+  "source": "src/data/inventory/current_catalog.json",
+  "categories": {
+    "bars": {
+      "mass": 61.4,
+      "height": 41,
+      "n": 31
+    },
+    "candlelight": {
+      "mass": 8.6,
+      "height": 13,
+      "n": 10
+    },
+    "chandeliers": {
+      "mass": 17,
+      "height": 18,
+      "n": 11
+    },
+    "large-decor": {
+      "mass": 71.3,
+      "height": 83,
+      "n": 18
+    },
+    "lighting": {
+      "mass": 13.9,
+      "height": 22.3,
+      "n": 27
+    },
+    "pillows-throws": {
+      "mass": 12.4,
+      "height": 16,
+      "n": 107
+    },
+    "rugs": {
+      "mass": 59.5,
+      "height": 0,
+      "n": 26
+    },
+    "seating": {
+      "mass": 30.4,
+      "height": 32,
+      "n": 100
+    },
+    "serveware": {
+      "mass": 8.7,
+      "height": 5,
+      "n": 33
+    },
+    "storage": {
+      "mass": 55.1,
+      "height": 71,
+      "n": 11
+    },
+    "styling": {
+      "mass": 8.8,
+      "height": 10.3,
+      "n": 49
+    },
+    "tables": {
+      "mass": 24.2,
+      "height": 20.8,
+      "n": 74
+    },
+    "tableware": {
+      "mass": 4.7,
+      "height": 6,
+      "n": 9
+    }
+  },
+  "subcategories": {
+    "bars/bars": {
+      "mass": 60.9,
+      "height": 40.5,
+      "n": 30
+    },
+    "candlelight/candlelight": {
+      "mass": 8.6,
+      "height": 13,
+      "n": 10
+    },
+    "chandeliers/chandeliers": {
+      "mass": 16.6,
+      "height": 19,
+      "n": 10
+    },
+    "large-decor/other": {
+      "mass": 35.8,
+      "height": 63,
+      "n": 9
+    },
+    "large-decor/walls": {
+      "mass": 91.2,
+      "height": 96,
+      "n": 8
+    },
+    "lighting/lamps": {
+      "mass": 19.2,
+      "height": 23,
+      "n": 19
+    },
+    "lighting/specialty": {
+      "mass": 8.7,
+      "height": 11.8,
+      "n": 4
+    },
+    "pillows-throws/pillows": {
+      "mass": 12.4,
+      "height": 16,
+      "n": 107
+    },
+    "rugs/rugs": {
+      "mass": 59.5,
+      "height": 0,
+      "n": 26
+    },
+    "seating/benches": {
+      "mass": 35.7,
+      "height": 18.5,
+      "n": 7
+    },
+    "seating/chairs": {
+      "mass": 30,
+      "height": 34,
+      "n": 38
+    },
+    "seating/dining chairs": {
+      "mass": 26.1,
+      "height": 32.5,
+      "n": 8
+    },
+    "seating/ottomans": {
+      "mass": 18,
+      "height": 18,
+      "n": 15
+    },
+    "seating/sofas & loveseats": {
+      "mass": 50.1,
+      "height": 31.5,
+      "n": 23
+    },
+    "seating/stools": {
+      "mass": 26.8,
+      "height": 42,
+      "n": 5
+    },
+    "serveware/serveware": {
+      "mass": 9.3,
+      "height": 6,
+      "n": 29
+    },
+    "storage/storage": {
+      "mass": 54.6,
+      "height": 70,
+      "n": 10
+    },
+    "styling/accents": {
+      "mass": 8.2,
+      "height": 9.3,
+      "n": 39
+    },
+    "styling/crates & baskets": {
+      "mass": 14.4,
+      "height": 13,
+      "n": 9
+    },
+    "tables/cocktail tables": {
+      "mass": 30.2,
+      "height": 42,
+      "n": 8
+    },
+    "tables/coffee tables": {
+      "mass": 27.1,
+      "height": 15,
+      "n": 18
+    },
+    "tables/community tables": {
+      "mass": 56.5,
+      "height": 41.5,
+      "n": 4
+    },
+    "tables/dining tables": {
+      "mass": 48.3,
+      "height": 30,
+      "n": 7
+    },
+    "tables/side tables": {
+      "mass": 17.4,
+      "height": 20,
+      "n": 27
+    },
+    "tableware/glassware": {
+      "mass": 4.7,
+      "height": 6,
+      "n": 9
+    }
+  }
+}
