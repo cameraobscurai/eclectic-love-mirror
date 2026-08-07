@@ -239,8 +239,8 @@ function ContactPage() {
 
     setSubmitting(true);
     try {
-    const subjectParts = [scope || "Style Brief Request", projectDate].filter(Boolean);
-    const subject = subjectParts.join(" · ");
+    const generatedSubject = [scope || "Style Brief Request", projectDate].filter(Boolean).join(" · ");
+    const subject = urlSubject || generatedSubject;
 
     const selectedLines = effectiveIds.map((id) => {
       const p = piecesById.get(id);
