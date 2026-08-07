@@ -163,7 +163,7 @@ export function ProductTile({
             {/* Unified caption — reserves 2 lines of height at all breakpoints
                 so tiles don't jump vertically when the title text hydrates or
                 wraps. Must stay in sync with the placeholder branch below. */}
-            <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 transition-colors duration-300">
+            <div className="product-tile-caption mt-2.5 md:mt-3.5 pb-2 text-center transition-colors duration-300">
                <p className="text-[10px] md:text-[11px] lg:text-[12px] leading-snug text-charcoal/80 uppercase tracking-[0.08em] line-clamp-2 [min-height:calc(2*1.375em)] group-hover:text-charcoal transition-colors">
                 {product.title}
               </p>

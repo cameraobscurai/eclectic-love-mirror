@@ -122,14 +122,17 @@ const RULES: Record<string, FitRule> = {
     fallback: FLOOR_FALLBACK,
   },
   bars: {
+    // Bars are the widest pieces in the catalog (up to 16'), so the width cap
+    // is what actually binds for a standard bar. Both targets were set low
+    // enough that every bar floated in dead space.
     primary: "height",
-    primaryTarget: 0.6,
-    secondaryMax: 0.7,
+    primaryTarget: 0.7,
+    secondaryMax: 0.82,
     anchor: "bottom",
     anchorY: 0.9,
     centerX: 0.5,
     clampMin: 0.55,
-    clampMax: 1.1,
+    clampMax: 1.15,
     fallback: FLOOR_FALLBACK,
   },
   lighting: {
