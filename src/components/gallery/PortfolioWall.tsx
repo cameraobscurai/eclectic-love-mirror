@@ -127,13 +127,8 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
     setShown(initialCount);
   }, [initialCount]);
 
-  if (plates.length === 0) return null;
-
-  const visible = plates.slice(0, shown);
-  const hasMore = shown < plates.length;
-
-  // Track the real column count so we can pad the final row with charcoal
-  // spacers instead of leaving an empty grid cell that shows bg-cream/10.
+  // Track the real column count so the visible window always lands on a
+  // complete row — no orphan cell, no spacer patch.
   const gridRef = useRef<HTMLDivElement | null>(null);
   const [columnCount, setColumnCount] = useState(5);
 
@@ -143,7 +138,7 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
 
     const update = () => {
       const columns = window.getComputedStyle(el).gridTemplateColumns.split(" ").length;
-      setColumnCount(columns);
+      setColumnCount((prev) => (prev === columns ? prev : columns));
     };
 
     update();
@@ -152,7 +147,16 @@ export function PortfolioWall({ projects }: { projects: GalleryProject[] }) {
     return () => ro.disconnect();
   }, []);
 
-  const fillCount = columnCount > 0 ? (columnCount - (visible.length % columnCount)) % columnCount : 0;
+  if (plates.length === 0) return null;
+
+  // Round the window UP to a full row so the grid always ends flush.
+  const cols = Math.max(1, columnCount);
+  const rounded = Math.min(Math.ceil(shown / cols) * cols, plates.length);
+  const visible = plates.slice(0, rounded);
+  const hasMore = rounded < plates.length;
+
+  // Only the very last page can be short (plates.length isn't row-aligned).
+  const fillCount = (cols - (visible.length % cols)) % cols;
 
   return (
     <section
