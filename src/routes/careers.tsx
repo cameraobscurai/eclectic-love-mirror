@@ -4,12 +4,12 @@ const JOBS = [
   {
     title: "Fabricator & Set Design",
     location: "Denver, Colorado",
-    href: "https://www.indeed.com/viewjob?cmp=Eclectic-Hive-Event-Design&t=Project+Manager&jk=78a3e58fbf2fb6ef&q=eclectic+hive&xpse=SoCh67I3gsoOyZATiL0LbzkdCdPP&xfps=acdca76f-3ee8-442e-b170-a7793731cd9e&xkcb=SoBR67M3gsXxZpxXYp0KbzkdCdPP&vjs=3",
+    href: "https://www.indeed.com/viewjob?cmp=Eclectic-Hive-Event-Design&t=Set+Designer&jk=af09123fee4150ab&q=eclectic+hive&xpse=SoBX67I3gsoPNggNDz0LbzkdCdPP&xfps=8058ef96-2784-47ea-a402-5c066345a650&xkcb=SoDl67M3gsXxZpxXYp0KbzkdCdPP&vjs=3",
   },
   {
     title: "Project Manager - Events",
     location: "Denver, Colorado",
-    href: "https://www.indeed.com/viewjob?cmp=Eclectic-Hive-Event-Design&t=Set+Designer&jk=af09123fee4150ab&q=eclectic+hive&xpse=SoBX67I3gsoPNggNDz0LbzkdCdPP&xfps=8058ef96-2784-47ea-a402-5c066345a650&xkcb=SoDl67M3gsXxZpxXYp0KbzkdCdPP&vjs=3",
+    href: "https://www.indeed.com/viewjob?cmp=Eclectic-Hive-Event-Design&t=Project+Manager&jk=78a3e58fbf2fb6ef&q=eclectic+hive&xpse=SoCh67I3gsoOyZATiL0LbzkdCdPP&xfps=acdca76f-3ee8-442e-b170-a7793731cd9e&xkcb=SoBR67M3gsXxZpxXYp0KbzkdCdPP&vjs=3",
   },
 ] as const;
 
