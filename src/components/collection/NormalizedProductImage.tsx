@@ -14,21 +14,12 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
   frameAspect?: number;
 
-  /** New category-aware fit rule. When supplied, takes over scaling +
-   *  anchoring entirely — the solver in this file is the single source of
-   *  truth for x/y/scale. Legacy props below are ignored. */
-  fit?: FitRule;
+  /** Category-aware fit rule — the single source of truth for x/y/scale.
+   *  Resolve it with resolveProductFit() so every surface agrees. */
+  fit: FitRule;
 
-  // ── Legacy props (still used by admin.photos and CollectionWallTile) ──
+  /** Fine nudge applied after the solver, in tile units. */
   visualOffsetY?: number;
-  visualAnchorY?: "center" | "bottom";
-  visualBaselineY?: number;
-  targetArea?: number;
-  maxW?: number;
-  maxH?: number;
-  minScale?: number;
-  fitMode?: "area" | "width";
-  targetWidth?: number;
 
   /** Admin-set focal point (0–1). When both are numbers, silhouette
    *  measurement is skipped and the image is centered on this point. */
@@ -40,6 +31,7 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  refines to the measured fit when the silhouette resolves. */
   eager?: boolean;
 };
+
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
 // across rules on the same image — the SOLVER runs per-rule, the MEASUREMENT
@@ -60,11 +52,6 @@ const measurementCache = new Map<string, Measurement | null>();
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 
-// Legacy area/width path retained for non-fit-rule callers.
-const LEGACY_TILE_OBJECT_CONTENT = 0.92;
-const LEGACY_DEFAULT_FIT: Fit = { cx: 0.5, cy: 0.5, bottom: 0.62, top: 0.38, scale: 0.97 };
-const LEGACY_SCALE_MIN = 0.82;
-const LEGACY_SCALE_MAX = 1.12;
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -193,6 +180,22 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
     sTarget = rule.primaryTarget / Math.sqrt(currentArea);
   }
 
+  // 1b. Bend the axis match toward equal visual mass. Matching silhouettes on
+  // width alone makes a tall, short-bodied piece (aspect ~1.5) occupy roughly
+  // twice the area of a long low one (aspect ~3.4) at the same width. The
+  // correction is s *= (aspect / refAspect)^(blend/2), which is exactly the
+  // geometric interpolation between axis matching and area matching.
+  const blend = rule.aspectBlend ?? 0;
+  if (blend > 0 && rule.primary !== "area") {
+    const aspect = wInsetFrame / Math.max(0.001, hInsetFrame);
+    const ref = rule.refAspect ?? 1;
+    if (aspect > 0 && ref > 0) {
+      const exponent = rule.primary === "width" ? blend / 2 : -blend / 2;
+      sTarget *= Math.pow(aspect / ref, exponent);
+    }
+  }
+
+
   // 2. Secondary-axis cap (skip for area primary).
   let sCap = Infinity;
   if (rule.primary === "width") {
@@ -201,8 +204,19 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
     sCap = rule.secondaryMax / Math.max(0.001, wInsetFrame);
   }
 
+  // 2b. Absolute silhouette caps, applied in every mode. These are what stop a
+  // tall-backed piece from towering over the long low sofa beside it, and stop
+  // a long sofa from overflowing the tile once mass matching is in play.
+  if (rule.widthMax != null) {
+    sCap = Math.min(sCap, rule.widthMax / Math.max(0.001, wInsetFrame));
+  }
+  if (rule.heightMax != null) {
+    sCap = Math.min(sCap, rule.heightMax / Math.max(0.001, hInsetFrame));
+  }
+
   // 3. Final scale.
   const s = clamp(Math.min(sTarget, sCap), rule.clampMin, rule.clampMax);
+
 
   return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
 }
@@ -216,14 +230,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   frameAspect = FRAME_ASPECT,
   fit: fitRule,
   visualOffsetY = 0,
-  visualAnchorY = "center",
-  visualBaselineY = 0.66,
-  targetArea,
-  maxW,
-  maxH,
-  minScale,
-  fitMode = "area",
-  targetWidth,
+
   focalX,
   focalY,
   eager = false,
@@ -288,80 +295,27 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
     }
 
-    // ── New solver path ──
-    if (fitRule) {
-      let f: Fit;
-      if (measurement) {
-        f = solveFit(measurement, fitRule);
-      } else {
-        const fb = fitRule.fallback;
-        f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
-      }
-      const tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
-      let ty: number;
-      if (fitRule.anchor === "bottom") {
-        const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
-        ty = (fitRule.anchorY + visualOffsetY - scaledBottom) * 100;
-      } else if (fitRule.anchor === "top") {
-        const scaledTop = 0.5 + (f.top - 0.5) * f.scale;
-        ty = (fitRule.anchorY + visualOffsetY - scaledTop) * 100;
-      } else {
-        const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
-        ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
-      }
-      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-    }
-
-    // ── Legacy path (admin.photos, CollectionWallTile) ──
-    let legacyFit: Fit;
+    // ── The one solver path ──
+    let f: Fit;
     if (measurement) {
-      // Reuse measurement via the legacy area/width math.
-      const wInsetFrame = TILE_IMAGE_INSET * measurement.bw;
-      const hInsetFrame = TILE_IMAGE_INSET * measurement.bh;
-      const legacyTargetArea = targetArea ?? 0.32;
-      const legacyMaxW = maxW ?? 0.86;
-      const legacyMaxH = maxH ?? 0.82;
-      let primaryScale: number;
-      if (fitMode === "width") {
-        const tW = targetWidth ?? 0.82;
-        const wS = tW / Math.max(0.001, wInsetFrame);
-        primaryScale = wS;
-      } else {
-        const currentArea = Math.max(0.001, wInsetFrame * hInsetFrame);
-        primaryScale = Math.sqrt(legacyTargetArea / currentArea);
-      }
-      const scaleByCaps = Math.min(
-        legacyMaxW / Math.max(0.001, wInsetFrame),
-        legacyMaxH / Math.max(0.001, hInsetFrame),
-      );
-      const resolvedMinScale = minScale ?? (fitMode === "width" ? 0.55 : LEGACY_SCALE_MIN);
-      const maxScale = fitMode === "width" ? 1.1 : LEGACY_SCALE_MAX;
-      const s = clamp(Math.min(primaryScale, scaleByCaps), resolvedMinScale, maxScale);
-
-      // Legacy bottom compression (area path only).
-      const visualBottom = fitMode === "width"
-        ? measurement.bottom
-        : (1 - LEGACY_TILE_OBJECT_CONTENT) / 2 + measurement.bottom * LEGACY_TILE_OBJECT_CONTENT;
-      legacyFit = {
-        scale: s,
-        cx: clamp(measurement.cx, 0.05, 0.95),
-        cy: clamp(measurement.cy, 0.05, 0.95),
-        bottom: clamp(visualBottom, 0.05, 0.99),
-        top: measurement.top,
-      };
+      f = solveFit(measurement, fitRule);
     } else {
-      legacyFit = { ...LEGACY_DEFAULT_FIT };
-      if (measurement === null && fitMode === "width") {
-        legacyFit.bottom = 0.95;
-      }
+      const fb = fitRule.fallback;
+      f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
     }
-
-    const tx = (0.5 - legacyFit.cx) * 100;
-    const scaledBottom = 0.5 + (legacyFit.bottom - 0.5) * legacyFit.scale;
-    const ty = visualAnchorY === "bottom"
-      ? (visualBaselineY + visualOffsetY - scaledBottom) * 100
-      : (0.5 + visualOffsetY - legacyFit.cy) * 100;
-    return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${legacyFit.scale.toFixed(4)})`;
+    const tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
+    let ty: number;
+    if (fitRule.anchor === "bottom") {
+      const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
+      ty = (fitRule.anchorY + visualOffsetY - scaledBottom) * 100;
+    } else if (fitRule.anchor === "top") {
+      const scaledTop = 0.5 + (f.top - 0.5) * f.scale;
+      ty = (fitRule.anchorY + visualOffsetY - scaledTop) * 100;
+    } else {
+      const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
+      ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
+    }
+    return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [
     measurement,
     fitRule,
@@ -369,15 +323,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     focalX,
     focalY,
     visualOffsetY,
-    visualAnchorY,
-    visualBaselineY,
-    targetArea,
-    maxW,
-    maxH,
-    minScale,
-    fitMode,
-    targetWidth,
   ]);
+
 
   // Avoid the "big-then-snap" flash on below-fold tiles: while we're still
   // measuring the silhouette, the solver would fall back to a ~full-size

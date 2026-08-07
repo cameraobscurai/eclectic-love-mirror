@@ -40,6 +40,8 @@ import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
+import { resolveProductFit } from "@/components/collection/productFit";
+
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { reorderItems, publishCatalogOverlay } from "@/lib/photos-admin.functions";
@@ -101,6 +103,8 @@ type Item = {
   card_background_url: string | null;
   variantCount: number;
   useWideFrame: boolean;
+  categorySlug: string | null;
+  dimensions: string | null;
 };
 
 function adapt(p: CollectionProduct): Item {
@@ -112,9 +116,12 @@ function adapt(p: CollectionProduct): Item {
     images: p.images.map((i) => i.url),
     card_background_url: null,
     variantCount: p.variants?.length ?? 0,
+    categorySlug: p.categorySlug ?? null,
+    dimensions: p.dimensions ?? null,
     useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
+
 
 function AdminPhotosPage() {
   return <PhotosManager />;
@@ -825,12 +832,10 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
   return (
     <div className="h-full w-full">
       <NormalizedProductImage
-        {...overrides}
         src={hero}
         frameAspect={frameAspectFor(item)}
+        fit={resolveProductFit(item)}
         visualOffsetY={overrides?.visualOffsetY ?? 0}
-        visualAnchorY="center"
-        visualBaselineY={0.66}
         alt=""
         loading="lazy"
         draggable={false}
@@ -839,6 +844,7 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
     </div>
   );
 }
+
 
 function SaveBadge({
   state,

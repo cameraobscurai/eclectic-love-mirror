@@ -17,14 +17,10 @@ export const PRODUCT_TILE_WIDE_FRAME_ASPECT = 8 / 5;
 export const PRODUCT_TILE_IMAGE_CLASS = "object-contain object-center";
 
 /**
- * Per-product fit overrides — only for tiles where the global silhouette
- * caps in NormalizedProductImage produce a visibly small subject (wide bars
- * and consoles that hit the silhouette > 1.45 branch:
- * targetArea=0.16, maxW=0.78, maxH=0.32). Bumps are tuned per-product, not
- * global, so neighboring tiles in the same row are unaffected.
+ * Per-product vertical nudges. Scale and anchoring come from the single fit
+ * pipeline (`resolveProductFit`); this is only for hand-tuned offsets on
+ * individual products whose silhouette measurement sits off-baseline.
  */
-export const PRODUCT_TILE_OVERRIDES: Record<
-  string,
-  { targetArea?: number; maxW?: number; maxH?: number; visualOffsetY?: number }
-> = {
+export const PRODUCT_TILE_OVERRIDES: Record<string, { visualOffsetY?: number }> = {
 };
+

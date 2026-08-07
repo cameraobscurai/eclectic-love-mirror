@@ -14,6 +14,8 @@ import { useEffect, useState } from "react";
 import { withCdnWidth } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
+import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
+import { resolveProductFit } from "@/components/collection/productFit";
 
 interface Props {
   product: CollectionProduct;
@@ -38,6 +40,11 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
   useEffect(() => {
     setActiveIdx(0);
   }, [product.id]);
+
+  // Same solver as the browse grid, detail context: the PDP hero keeps the
+  // cross-product size relationship a shopper just saw in the archive instead
+  // of letting every product fill the mat edge to edge.
+  const heroFit = resolveProductFit(product, "detail");
 
   const heroName = `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}`;
 
@@ -70,28 +77,32 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
         >
           <div className="absolute inset-0 bg-[#f9f9f9]" aria-hidden="true" />
           {active ? (
-            <img
-              key={active.url}
-              data-pdp-hero-img
-              src={withCdnWidth(active.url, 1200)}
-              alt={active.altText ?? product.title}
-              // Explicit intrinsic size lets the LCP algorithm identify the
-              // img as the largest paintable element before decode completes.
-              width={1200}
-              height={900}
-              className={cn(
-                "absolute inset-0 w-full h-full object-contain",
-                "p-6 md:p-8",
-                "transition-transform duration-500 ease-out",
-                "group-hover/hero:scale-[1.02]",
-              )}
-              style={activeIdx === 0 ? { viewTransitionName: heroName } : undefined}
-              loading="eager"
-              decoding="async"
-              {...(activeIdx === 0
-                ? ({ fetchPriority: "high" } as Record<string, string>)
-                : {})}
-            />
+            /* The solver owns the img transform, so the hover zoom lives on
+               this wrapper — putting both on one element would fight. */
+            <div className="absolute inset-0 transition-transform duration-500 ease-out group-hover/hero:scale-[1.02]">
+              <NormalizedProductImage
+                key={active.url}
+                data-pdp-hero-img
+                src={withCdnWidth(active.url, 1200)}
+                alt={active.altText ?? product.title}
+                frameAspect={4 / 3}
+                fit={heroFit}
+                eager
+                focalX={product.coverFocalX ?? null}
+                focalY={product.coverFocalY ?? null}
+                // Explicit intrinsic size lets the LCP algorithm identify the
+                // img as the largest paintable element before decode completes.
+                width={1200}
+                height={900}
+                className={cn("absolute inset-0 w-full h-full object-contain", "p-6 md:p-8")}
+                style={activeIdx === 0 ? { viewTransitionName: heroName } : undefined}
+                loading="eager"
+                decoding="async"
+                {...(activeIdx === 0
+                  ? ({ fetchPriority: "high" } as Record<string, string>)
+                  : {})}
+              />
+            </div>
           ) : (
             <div className="absolute inset-0 grid place-items-center text-[11px] uppercase tracking-[0.24em] text-charcoal/40">
               No image

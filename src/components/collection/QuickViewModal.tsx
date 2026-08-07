@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
 import { Link } from "@tanstack/react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { createPortal } from "react-dom";
@@ -11,6 +12,8 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
 
 
 import { withCdnWidth } from "@/lib/image-url";
+import { NormalizedProductImage } from "./NormalizedProductImage";
+import { resolveProductFit } from "./productFit";
 import { glassBand, glassBandLightNoBottom, glassBandLightNoTop } from "@/lib/glass";
 import { analytics } from "@/lib/analytics";
 
@@ -162,6 +165,9 @@ export function QuickViewModal({
       : variants.find((v) => v.id === selectedKey) ?? imageDerivedVariant ?? null;
 
   const activeImg = imgFromIdx;
+  // Same solver as the browse grid, detail context. Keeps cross-product scale
+  // honest when a shopper opens a tile.
+  const detailFit = useMemo(() => resolveProductFit(product, "detail"), [product]);
   const activeVariant = selectedVariant;
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
   const isSetActive = selectedKey === "set" || (selectedKey === null && imageDerivedVariant === null);
@@ -419,8 +425,9 @@ export function QuickViewModal({
         >
           {/* IMAGE COLUMN — fills the body row; aspect-ratio is never forced
               from natural dims so a tall or wide source never overflows.
-              The <img> uses object-contain so the full silhouette (including
-              the bottom edge) is always visible inside the cell. */}
+              The silhouette runs through the same solver the browse grid uses
+              (detail context), so a sofa still reads bigger than a candlestick
+              instead of both filling the frame edge to edge. */}
           <div className="relative min-w-0 min-h-0 overflow-hidden flex items-center justify-center px-2 md:px-6 py-2 md:py-6 bg-white">
             <div
               ref={zoneRef}
@@ -428,27 +435,37 @@ export function QuickViewModal({
             >
               <AnimatePresence mode="wait">
                 {img ? (
-                  <motion.img
+                  <motion.div
                     key={img.url}
-                    src={withCdnWidth(img.url, 1500)}
-                    alt={img.altText ?? product.title}
+                    className="absolute inset-0"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduced ? 0 : 0.25 }}
-                    onLoad={(e) => {
-                      const t = e.currentTarget;
-                      setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
-                    }}
-                    className="absolute inset-0 w-full h-full object-contain p-4 md:p-10 drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
-                    style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
-                  />
+                  >
+                    <NormalizedProductImage
+                      src={withCdnWidth(img.url, 1500)}
+                      alt={img.altText ?? product.title}
+                      frameAspect={4 / 3}
+                      fit={detailFit}
+                      eager
+                      focalX={product.coverFocalX ?? null}
+                      focalY={product.coverFocalY ?? null}
+                      onLoad={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        const t = e.currentTarget;
+                        setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
+                      }}
+                      className="absolute inset-0 w-full h-full object-contain p-4 md:p-10 drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
+                      style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
+                    />
+                  </motion.div>
                 ) : (
                   <div className="absolute inset-0 grid place-items-center text-charcoal/30">
                     No image
                   </div>
                 )}
               </AnimatePresence>
+
 
               {/* Variant label — surfaced over the image so the active piece
                   in a multi-piece set (e.g. "7\" GOBLET") is identifiable
