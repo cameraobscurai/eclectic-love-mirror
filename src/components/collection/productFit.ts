@@ -79,7 +79,22 @@ export function resolveProductFit(
   const phys = physicalScaleFor(product);
   const gain = context === "detail" ? DETAIL_GAIN : 1;
 
-  if (!phys.measured) return withGain(rule, gain);
+  if (!phys.measured) {
+    // Small centred objects keep their layout mode; real size only nudges how
+    // much of the tile they claim, so a crate still out-masses a votive.
+    const rel = relativeMassFor(product);
+    return withGain(
+      rel === 1
+        ? rule
+        : {
+            ...rule,
+            primaryTarget: rule.primaryTarget * rel,
+            fallback: { ...rule.fallback, scale: rule.fallback.scale * rel },
+          },
+      gain,
+    );
+  }
+
 
   return withGain(
     {
