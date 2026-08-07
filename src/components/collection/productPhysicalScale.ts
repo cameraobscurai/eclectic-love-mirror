@@ -1,5 +1,16 @@
-import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { canonicalCategorySlug } from "./categoryAliases";
+
+/** Minimal shape needed to scale a product — any catalog/admin row satisfies it. */
+export type ScalableProduct = {
+  categorySlug?: string | null;
+  dimensions?: string | null;
+  liveSubcategories?: string[] | null;
+};
+
+export type PhysicalDims = { width: number; height: number } | null;
+
+const NUM = String.raw`(\d+(?:\.\d+)?)`;
+const UNIT = String.raw`\s*(?:"|”|''|in\b|inches)?\s*`;
 
 /**
  * Nothing in this inventory is wider than 30 feet. A larger value is a data
@@ -7,42 +18,94 @@ import { canonicalCategorySlug } from "./categoryAliases";
  * not be allowed to skew the scale reference — treat it as unknown.
  */
 const MAX_SANE_INCHES = 360;
-const sane = (n: number) => (n > MAX_SANE_INCHES ? null : n);
+const sane = (n: number | null | undefined): number | null =>
+  n == null || !Number.isFinite(n) || n <= 0 || n > MAX_SANE_INCHES ? null : n;
 
-export function parseWidthInches(dimensions: string | null | undefined): number | null {
+/** Feet tokens (`12'W`, `4.5' x 3'`) are common in the RMS export. */
+function feetWidth(s: string): number | null {
+  const m =
+    s.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*w\b/i) ??
+    s.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b)\s*[x×]/i);
+  return m ? sane(Number(m[1]) * 12) : null;
+}
+
+function feetHeight(s: string): number | null {
+  const m = s.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*h\b/i);
+  return m ? sane(Number(m[1]) * 12) : null;
+}
+
+/**
+ * Parse real-world inches out of catalog dimension strings.
+ * Handles `52"W x 30"D x 36.5"H`, `58"w x 18"D x 22"H`,
+ * `36"Dia x 18.5"H`, `12'W x 30"H`, and trailing notes like `- 20" Seat Height`.
+ */
+export function parseDimensionsInches(
+  dimensions: string | null | undefined,
+): PhysicalDims {
   if (!dimensions) return null;
+  const s = dimensions.replace(/seat\s+height/gi, "");
 
-  // Feet first — `12'W` and `4.5'W` are common in the RMS export and were
-  // previously unparseable, which silently sent 13 of the widest pieces
-  // (every 12' ARCUS bar) down the unknown-width path.
-  const feet =
-    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*w\b/i) ??
-    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b)\s*[x×]/i);
-  if (feet) return sane(Number(feet[1]) * 12);
+  const wMatch =
+    s.match(new RegExp(`${NUM}${UNIT}w\\b`, "i")) ??
+    s.match(new RegExp(`${NUM}${UNIT}dia(?:meter)?\\b`, "i"));
+  const hMatch = s.match(new RegExp(`${NUM}${UNIT}h\\b`, "i"));
 
-  // Explicit width token: 52"W, 52 in W, W 52.
+  let width = feetWidth(s) ?? (wMatch ? sane(Number(wMatch[1])) : null);
+  let height = feetHeight(s) ?? (hMatch ? sane(Number(hMatch[1])) : null);
+
+  if (width == null || height == null) {
+    // Fall back to a bare `W x D x H` triple.
+    const triple = s.match(
+      new RegExp(`${NUM}${UNIT}[x×]${UNIT}${NUM}${UNIT}[x×]${UNIT}${NUM}`, "i"),
+    );
+    if (triple) {
+      width = width ?? sane(Number(triple[1]));
+      height = height ?? sane(Number(triple[3]));
+    }
+  }
+
+  if (!width || !height) return null;
+  return { width, height };
+}
+
+/** Back-compat helper — width only, feet-aware and sanity-capped. */
+export function parseWidthInches(
+  dimensions: string | null | undefined,
+): number | null {
+  if (!dimensions) return null;
+  const s = dimensions.replace(/seat\s+height/gi, "");
+  const feet = feetWidth(s);
+  if (feet) return feet;
   const explicit =
-    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|”|in\b|inches)?\s*w\b/i) ??
-    dimensions.match(/\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+    s.match(new RegExp(`${NUM}${UNIT}w\\b`, "i")) ??
+    s.match(/\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
   if (explicit) return sane(Number(explicit[1]));
-
-  // Otherwise accept the first number of a W x D x H triple only. A lone
-  // number is ambiguous (could be depth or height) and must not drive scale.
-  const triple = dimensions.match(
-    /(\d+(?:\.\d+)?)\s*(?:"|”|in\b)?\s*[x×]\s*\d+(?:\.\d+)?/i,
-  );
+  const triple = s.match(new RegExp(`${NUM}${UNIT}[x×]\\s*\\d+(?:\\.\\d+)?`, "i"));
   return triple ? sane(Number(triple[1])) : null;
 }
 
 /**
- * Median width per live subcategory, measured from the catalog. This is the
- * fallback for an item with no parseable dimensions.
+ * Reference size (inches) that reads as "full tile" for each floor-standing
+ * category. `width`/`height` describe the archetype piece; scaling is driven by
+ * the geometric mean of the two so a squat-but-tall loveseat and a long low
+ * sofa are compared on real *mass*, not on one axis.
  *
- * The category median is far too blunt here: `tables` has a median of 40",
- * but its side tables median 20" and its dining tables median 96". Falling
- * back to 40" made every unknown side table render larger than the side
- * tables whose real width we actually know — visible as a block of
- * identically oversized tiles in the lounge-tables grid.
+ * Categories absent from this map are unscaled — small objects (tableware,
+ * pillows, styling) are normalized by silhouette area, not real size.
+ */
+const SIZE_BENCHMARKS: Record<string, { width: number; height: number }> = {
+  seating: { width: 78, height: 35 },
+  tables: { width: 72, height: 30 },
+  bars: { width: 60, height: 42 },
+  storage: { width: 54, height: 40 },
+  "large-decor": { width: 48, height: 40 },
+};
+
+/**
+ * Median width per live subcategory, measured from the catalog. Used only as a
+ * width fallback when an item has no parseable dimensions at all — the category
+ * median is far too blunt (`tables` medians 40", but its side tables median 20"
+ * and its dining tables 96").
  */
 const SUBCATEGORY_TYPICAL: Record<string, number> = {
   benches: 63,
@@ -63,100 +126,56 @@ const SUBCATEGORY_TYPICAL: Record<string, number> = {
   structures: 168,
 };
 
-
 /**
- * Reference width (inches) that reads as "full tile" for each floor-standing
- * category, plus the fallback used when an item has no parseable width.
- *
- * `reference` is the measured p90 width of the live catalog for that category,
- * not a guess. Anything at or above p90 reads full-tile; everything else is
- * compressed toward the floor. Using a reference below p90 (the old numbers)
- * clamped most of a category to a single size and erased scale entirely.
- *
- * `typical` is the measured median. Items with no parseable dimensions get it
- * instead of 1 — an unknown item must NOT default to the largest size on the
- * grid, which is what the old `return 1` did to 27/76 tables and 17/26
- * large-decor pieces.
- *
- * Categories absent from this map are unscaled (scale 1) — small objects
- * (tableware, pillows, styling) are normalized by area, not real size.
- *
- * Measured 2026-08-04 (feet-aware parser) against src/data/inventory/current_catalog.json.
- * Re-measure with scripts/audit/width-percentiles.mjs after a re-import.
+ * Compression exponent. Raw real-size ratio is flattened before use so the
+ * difference between a 52" loveseat and a 96" sofa is a readable nuance rather
+ * than a 2x tile-mass gap.
  */
-const WIDTH_BENCHMARKS: Record<
-  string,
-  {
-    reference: number;
-    typical: number;
-    floor: number;
-    /**
-     * Which real-world dimension drives the size ratio. Must match the fit
-     * rule's `primary` axis in categoryFit.ts, or the two systems fight:
-     * bars are fitted on HEIGHT, so scaling them by width shrank a 59"-tall
-     * trunk bar to the floor value purely for being 25" wide.
-     */
-    axis?: "width" | "height";
-  }
-> = {
-  seating: { reference: 84, typical: 28, floor: 0.42 },
-  tables: { reference: 96, typical: 40, floor: 0.35 },
-  // Height axis: carts ~31", standard bars 35–44", trunk bars 58–59".
-  bars: { reference: 48, typical: 41, floor: 0.62, axis: "height" },
-  // Height axis: both categories are FITTED on height in categoryFit.ts.
-  // Scaling them by width repeated the trunk-bar bug — a tall narrow cabinet
-  // or a 22"-wide 8'-tall screen got floored purely for being narrow.
-  storage: { reference: 92, typical: 72, floor: 0.5, axis: "height" },
-  "large-decor": { reference: 120, typical: 84, floor: 0.4, axis: "height" },
-};
+const COMPRESSION = 0.6;
+const MIN_RATIO = 0.82;
+const MAX_RATIO = 1.12;
 
-/** Height counterpart of parseWidthInches — `41"H`, `4'H`, or the W×D×H tail. */
-export function parseHeightInches(dimensions: string | null | undefined): number | null {
-  if (!dimensions) return null;
-
-  const feet = dimensions.match(/(\d+(?:\.\d+)?)\s*(?:'|’|ft\b|feet)\s*h\b/i);
-  if (feet) return sane(Number(feet[1]) * 12);
-
-  const explicit =
-    dimensions.match(/(\d+(?:\.\d+)?)\s*(?:"|”|in\b|inches)?\s*h\b/i) ??
-    dimensions.match(/\bh\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
-  if (explicit) return sane(Number(explicit[1]));
-
-  const triple = dimensions.match(
-    /[x×]\s*\d+(?:\.\d+)?\s*(?:"|”|in\b)?\s*[x×]\s*(\d+(?:\.\d+)?)/i,
-  );
-  return triple ? sane(Number(triple[1])) : null;
+function compress(ratio: number) {
+  return Math.min(MAX_RATIO, Math.max(MIN_RATIO, Math.pow(ratio, COMPRESSION)));
 }
 
-/**
- * Real width ratios span ~6:1 (a 16" stool vs a 98" sofa). Rendering that
- * linearly makes small pieces vanish, so the ratio is square-rooted: visual
- * AREA tracks real width instead of visual width. A 6:1 real range becomes a
- * legible ~2.4:1 on the grid, and the ordering is still truthful.
- */
-const COMPRESSION = 0.5;
+export type PhysicalScale = {
+  /** Overall mass multiplier from real size (geometric mean of W and H). */
+  size: number;
+  /** Height-only multiplier — caps genuinely short pieces that photograph tall. */
+  height: number;
+  /** True when real dimensions were parsed for a benchmarked category. */
+  measured: boolean;
+};
 
-export function physicalScale(product: CollectionProduct): number {
+export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
   const canonical = canonicalCategorySlug(product.categorySlug);
-  if (!canonical) return 1;
+  const benchmark = canonical ? SIZE_BENCHMARKS[canonical] : undefined;
+  if (!benchmark) return { size: 1, height: 1, measured: false };
 
-  const benchmark = WIDTH_BENCHMARKS[canonical];
-  if (!benchmark) return 1;
+  const refSize = Math.sqrt(benchmark.width * benchmark.height);
+  const dims = parseDimensionsInches(product.dimensions);
 
-  const parsed =
-    benchmark.axis === "height"
-      ? parseHeightInches(product.dimensions)
-      : parseWidthInches(product.dimensions);
+  if (dims) {
+    return {
+      size: compress(Math.sqrt(dims.width * dims.height) / refSize),
+      height: compress(dims.height / benchmark.height),
+      measured: true,
+    };
+  }
+
+  // Width-only measurement still carries real signal; assume the category's
+  // archetype height so the mass term stays truthful on the axis we know.
   const sub = product.liveSubcategories?.[0]?.trim().toLowerCase();
-  const fallback =
-    benchmark.axis === "height"
-      ? benchmark.typical
-      : ((sub ? SUBCATEGORY_TYPICAL[sub] : undefined) ?? benchmark.typical);
   const width =
-    parsed && Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+    parseWidthInches(product.dimensions) ??
+    (sub ? SUBCATEGORY_TYPICAL[sub] : undefined);
+  if (!width) return { size: 1, height: 1, measured: false };
 
-
-  const ratio = Math.min(1, width / benchmark.reference);
-  return Math.max(benchmark.floor, Math.min(1, Math.pow(ratio, COMPRESSION)));
+  return {
+    size: compress(Math.sqrt(width * benchmark.height) / refSize),
+    height: 1,
+    measured: true,
+  };
 }
 

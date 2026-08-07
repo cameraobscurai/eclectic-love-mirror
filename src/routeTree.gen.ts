@@ -68,7 +68,6 @@ import { Route as LightingSplatRouteImport } from './routes/lighting.$'
 import { Route as LightSplatRouteImport } from './routes/light.$'
 import { Route as LargeDecor1SplatRouteImport } from './routes/large-decor1.$'
 import { Route as LargeDecorSplatRouteImport } from './routes/large-decor.$'
-import { Route as GallerySlugRouteImport } from './routes/gallery_.$slug'
 import { Route as FursPeltsSplatRouteImport } from './routes/furs-pelts.$'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as DiningSplatRouteImport } from './routes/dining.$'
@@ -93,7 +92,6 @@ import { Route as AdminInquiriesRouteImport } from './routes/admin.inquiries'
 import { Route as AdminIncomingRouteImport } from './routes/admin.incoming'
 import { Route as AdminImageQaRouteImport } from './routes/admin.image-qa'
 import { Route as AdminImageHealthRouteImport } from './routes/admin.image-health'
-import { Route as AdminGuideRouteImport } from './routes/admin.guide'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminColorsRouteImport } from './routes/admin.colors'
@@ -400,11 +398,6 @@ const LargeDecorSplatRoute = LargeDecorSplatRouteImport.update({
   path: '/large-decor/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GallerySlugRoute = GallerySlugRouteImport.update({
-  id: '/gallery_/$slug',
-  path: '/gallery/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FursPeltsSplatRoute = FursPeltsSplatRouteImport.update({
   id: '/furs-pelts/$',
   path: '/furs-pelts/$',
@@ -525,11 +518,6 @@ const AdminImageHealthRoute = AdminImageHealthRouteImport.update({
   path: '/image-health',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminGuideRoute = AdminGuideRouteImport.update({
-  id: '/guide',
-  path: '/guide',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -616,7 +604,6 @@ export interface FileRoutesByFullPath {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -641,7 +628,6 @@ export interface FileRoutesByFullPath {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
-  '/gallery/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -712,7 +698,6 @@ export interface FileRoutesByTo {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -737,7 +722,6 @@ export interface FileRoutesByTo {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
-  '/gallery/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -810,7 +794,6 @@ export interface FileRoutesById {
   '/admin/colors': typeof AdminColorsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/guide': typeof AdminGuideRoute
   '/admin/image-health': typeof AdminImageHealthRoute
   '/admin/image-qa': typeof AdminImageQaRoute
   '/admin/incoming': typeof AdminIncomingRoute
@@ -835,7 +818,6 @@ export interface FileRoutesById {
   '/dining/$': typeof DiningSplatRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/furs-pelts/$': typeof FursPeltsSplatRoute
-  '/gallery_/$slug': typeof GallerySlugRoute
   '/large-decor/$': typeof LargeDecorSplatRoute
   '/large-decor1/$': typeof LargeDecor1SplatRoute
   '/light/$': typeof LightSplatRoute
@@ -909,7 +891,6 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
-    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -934,7 +915,6 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
-    | '/gallery/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1005,7 +985,6 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
-    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -1030,7 +1009,6 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
-    | '/gallery/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1102,7 +1080,6 @@ export interface FileRouteTypes {
     | '/admin/colors'
     | '/admin/dashboard'
     | '/admin/gallery'
-    | '/admin/guide'
     | '/admin/image-health'
     | '/admin/image-qa'
     | '/admin/incoming'
@@ -1127,7 +1104,6 @@ export interface FileRouteTypes {
     | '/dining/$'
     | '/email/unsubscribe'
     | '/furs-pelts/$'
-    | '/gallery_/$slug'
     | '/large-decor/$'
     | '/large-decor1/$'
     | '/light/$'
@@ -1208,7 +1184,6 @@ export interface RootRouteChildren {
   DiningSplatRoute: typeof DiningSplatRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   FursPeltsSplatRoute: typeof FursPeltsSplatRoute
-  GallerySlugRoute: typeof GallerySlugRoute
   LargeDecorSplatRoute: typeof LargeDecorSplatRoute
   LargeDecor1SplatRoute: typeof LargeDecor1SplatRoute
   LightSplatRoute: typeof LightSplatRoute
@@ -1662,13 +1637,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LargeDecorSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/gallery_/$slug': {
-      id: '/gallery_/$slug'
-      path: '/gallery/$slug'
-      fullPath: '/gallery/$slug'
-      preLoaderRoute: typeof GallerySlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/furs-pelts/$': {
       id: '/furs-pelts/$'
       path: '/furs-pelts/$'
@@ -1837,13 +1805,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImageHealthRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/guide': {
-      id: '/admin/guide'
-      path: '/guide'
-      fullPath: '/admin/guide'
-      preLoaderRoute: typeof AdminGuideRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/gallery': {
       id: '/admin/gallery'
       path: '/gallery'
@@ -1934,7 +1895,6 @@ interface AdminRouteChildren {
   AdminColorsRoute: typeof AdminColorsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
-  AdminGuideRoute: typeof AdminGuideRoute
   AdminImageHealthRoute: typeof AdminImageHealthRoute
   AdminImageQaRoute: typeof AdminImageQaRoute
   AdminIncomingRoute: typeof AdminIncomingRoute
@@ -1955,7 +1915,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminColorsRoute: AdminColorsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminGalleryRoute: AdminGalleryRoute,
-  AdminGuideRoute: AdminGuideRoute,
   AdminImageHealthRoute: AdminImageHealthRoute,
   AdminImageQaRoute: AdminImageQaRoute,
   AdminIncomingRoute: AdminIncomingRoute,
@@ -2013,7 +1972,6 @@ const rootRouteChildren: RootRouteChildren = {
   DiningSplatRoute: DiningSplatRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   FursPeltsSplatRoute: FursPeltsSplatRoute,
-  GallerySlugRoute: GallerySlugRoute,
   LargeDecorSplatRoute: LargeDecorSplatRoute,
   LargeDecor1SplatRoute: LargeDecor1SplatRoute,
   LightSplatRoute: LightSplatRoute,
