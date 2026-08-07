@@ -252,11 +252,22 @@ function TonalCell({
             <NormalizedProductImage
               src={heroSrc}
               frameAspect={1}
-              fitMode="area"
-              targetArea={COVER_AREA[id] ?? COVER_AREA_DEFAULT}
-              maxW={0.88}
-              maxH={0.88}
-              minScale={0.3}
+              // Covers are staged in a square frame and normalized by
+              // silhouette area. The unified solver expresses that target as
+              // √area, so the tuned area fractions convert here.
+              fit={{
+                primary: "area",
+                primaryTarget: Math.sqrt(COVER_AREA[id] ?? COVER_AREA_DEFAULT),
+                secondaryMax: 0.88,
+                widthMax: 0.88,
+                heightMax: 0.88,
+                anchor: "center",
+                anchorY: 0.5,
+                centerX: 0.5,
+                clampMin: 0.3,
+                clampMax: 1.2,
+                fallback: { scale: 0.95, cx: 0.5, cy: 0.5, bottom: 0.75, top: 0.25 },
+              }}
               eager={priority}
               sizes="(min-width: 1024px) 20vw, (min-width: 640px) 32vw, 48vw"
               alt={heroAlt}
