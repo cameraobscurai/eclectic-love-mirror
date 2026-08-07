@@ -5,6 +5,7 @@ export type ScalableProduct = {
   categorySlug?: string | null;
   dimensions?: string | null;
   liveSubcategories?: string[] | null;
+  subcategory?: string | null;
 };
 
 export type PhysicalDims = { width: number; height: number } | null;
