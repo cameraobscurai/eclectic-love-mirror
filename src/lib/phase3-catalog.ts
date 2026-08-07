@@ -206,14 +206,28 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
 
     // Filename-level identity so the same photo under a different signed /
     // versioned URL is not duplicated inside a family tile.
+    //
+    // Re-uploads through the admin land in squarespace-mirror with a hex
+    // prefix and underscore separators ("593a2c94135d-FLORENCE_Lantern_2.png")
+    // while the baked copy keeps the original name ("FLORENCE Lantern 2.png").
+    // Without normalising both, a family tile shows the same photo twice —
+    // which is exactly what /collection/florence-weathered-zinc-lantern did.
     const imgKey = (url: string) => {
       try {
         const base = decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
-        return base.replace(/\+/g, " ").trim().toLowerCase() || url;
+        const ext = (base.match(/\.[a-z0-9]+$/i)?.[0] ?? "").toLowerCase();
+        const stem = base
+          .slice(0, base.length - ext.length)
+          .replace(/^[0-9a-f]{8,}-/i, "")
+          .replace(/[_+\-\s]+/g, " ")
+          .trim()
+          .toLowerCase();
+        return (stem ? stem + ext : base.toLowerCase()) || url;
       } catch {
         return url;
       }
     };
+
 
     const products = base.products.map((p) => {
       const live = overlay.get(p.id);
