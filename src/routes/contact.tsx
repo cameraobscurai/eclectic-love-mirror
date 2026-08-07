@@ -87,6 +87,7 @@ function ContactPage() {
   // Merge URL ?items=… with local inquiry store. URL wins for ordering.
   // Read URL only after mount to avoid SSR/client hydration mismatch (#418).
   const [urlIds, setUrlIds] = useState<string[]>([]);
+  const [urlSubject, setUrlSubject] = useState<string>("");
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const raw = params.get("items") ?? "";
@@ -96,6 +97,7 @@ function ContactPage() {
         .map((s) => s.trim())
         .filter(Boolean),
     );
+    setUrlSubject((params.get("subject") ?? "").slice(0, 250));
   }, []);
   const initialIds = useMemo(
     () => [...urlIds, ...storeIds.filter((id) => !urlIds.includes(id))],
