@@ -7,6 +7,7 @@ import { prefetchImage } from "@/lib/prefetch-image";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
+
 // ---------------------------------------------------------------------------
 // Portfolio Wall — secondary, lower-page gallery.
 //
