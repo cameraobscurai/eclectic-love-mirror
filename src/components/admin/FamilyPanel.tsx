@@ -18,10 +18,8 @@ type Family = {
  */
 export function FamilyPanel({
   rmsId,
-  onOpenMember,
 }: {
   rmsId: string | null;
-  onOpenMember?: (rmsId: string) => void;
 }) {
   const [fam, setFam] = useState<Family | null>(null);
 
@@ -112,10 +110,9 @@ export function FamilyPanel({
                 ? " · landing image comes from here"
                 : ""}
             </span>
-            {m.id !== rmsId && onOpenMember && (
-              <button
-                type="button"
-                onClick={() => onOpenMember(m.id)}
+            {m.id !== rmsId && (
+              <a
+                href={`/admin/products?q=${encodeURIComponent(m.title)}`}
                 style={{
                   fontSize: 9,
                   letterSpacing: "0.16em",
@@ -127,8 +124,8 @@ export function FamilyPanel({
                   flexShrink: 0,
                 }}
               >
-                Open
-              </button>
+                Find
+              </a>
             )}
           </li>
         ))}
