@@ -15,6 +15,7 @@
     "check:sitemap": "node scripts/check-sitemap.mjs",
     "fit:check": "node scripts/audit/tile-fit-harness.mjs --ci",
     "fit:baseline": "node scripts/audit/tile-fit-harness.mjs --baseline",
+    "size:baseline": "bun run scripts/bake-size-benchmarks.ts",
     "test:e2e": "playwright test",
     "visual:check": "playwright test layout-visual.spec.ts",
     "visual:baseline": "playwright test layout-visual.spec.ts --update-snapshots"

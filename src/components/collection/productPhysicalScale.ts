@@ -5,6 +5,7 @@ export type ScalableProduct = {
   categorySlug?: string | null;
   dimensions?: string | null;
   liveSubcategories?: string[] | null;
+  subcategory?: string | null;
 };
 
 export type PhysicalDims = { width: number; height: number } | null;
@@ -85,97 +86,124 @@ export function parseWidthInches(
 }
 
 /**
- * Reference size (inches) that reads as "full tile" for each floor-standing
- * category. `width`/`height` describe the archetype piece; scaling is driven by
- * the geometric mean of the two so a squat-but-tall loveseat and a long low
- * sofa are compared on real *mass*, not on one axis.
+ * Neighbour-relative sizing.
  *
- * Categories absent from this map are unscaled — small objects (tableware,
- * pillows, styling) are normalized by silhouette area, not real size.
+ * Products are never judged against an abstract archetype — they are judged
+ * against the pieces beside them. So scaling runs in two tiers, both derived
+ * from the catalog itself (see scripts/bake-size-benchmarks.ts):
+ *
+ *   1. Item vs. its subcategory median  — tight compression. A 96" sofa reads
+ *      a touch larger than a 52" loveseat, not twice as large.
+ *   2. Subcategory vs. its category median — looser compression. Side tables
+ *      genuinely read smaller than dining tables, which is the cohesion a
+ *      single per-category constant can never express.
+ *
+ * An item with no parseable dimensions inherits its subcategory median exactly
+ * (tier 1 = 1.0), so it lands level with its neighbours instead of floating at
+ * whatever size its photographer happened to crop.
  */
-const SIZE_BENCHMARKS: Record<string, { width: number; height: number }> = {
-  seating: { width: 78, height: 35 },
-  tables: { width: 72, height: 30 },
-  bars: { width: 60, height: 42 },
-  storage: { width: 54, height: 40 },
-  "large-decor": { width: 48, height: 40 },
-};
+import BENCHMARKS from "@/data/inventory/size-benchmarks.json";
+
+type Benchmark = { mass: number; height: number; n: number };
+
+const CATEGORY_BENCHMARKS = BENCHMARKS.categories as Record<string, Benchmark>;
+const SUBCATEGORY_BENCHMARKS = BENCHMARKS.subcategories as Record<string, Benchmark>;
 
 /**
- * Median width per live subcategory, measured from the catalog. Used only as a
- * width fallback when an item has no parseable dimensions at all — the category
- * median is far too blunt (`tables` medians 40", but its side tables median 20"
- * and its dining tables 96").
+ * Categories whose tiles stand on a floor (or hang from a ceiling) and whose
+ * real-world size is the dominant read. Only these switch the fit solver into
+ * real-size mass matching; small centred objects get the multiplier applied to
+ * their existing area target instead, which keeps their layout mode intact.
  */
-const SUBCATEGORY_TYPICAL: Record<string, number> = {
-  benches: 63,
-  chairs: 27,
-  "dining chairs": 22,
-  ottomans: 18,
-  "sofas & loveseats": 82.5,
-  stools: 16.5,
-  "cocktail tables": 23.5,
-  "coffee tables": 48,
-  "community tables": 94,
-  consoles: 52,
-  "dining tables": 96,
-  "side tables": 20,
-  bars: 96,
-  storage: 46,
-  walls: 111,
-  structures: 168,
-};
+const REAL_SIZE_CATEGORIES = new Set([
+  "seating",
+  "tables",
+  "bars",
+  "storage",
+  "large-decor",
+  "lighting",
+  "chandeliers",
+  "candlelight",
+]);
 
-/**
- * Compression exponent. Raw real-size ratio is flattened before use so the
- * difference between a 52" loveseat and a 96" sofa is a readable nuance rather
- * than a 2x tile-mass gap.
- */
-const COMPRESSION = 0.6;
-const MIN_RATIO = 0.82;
-const MAX_RATIO = 1.12;
+/** Width-only rows: assume the catalog's typical width:height ratio. */
+const WIDTH_ONLY_HEIGHT_RATIO = 0.62;
 
-function compress(ratio: number) {
-  return Math.min(MAX_RATIO, Math.max(MIN_RATIO, Math.pow(ratio, COMPRESSION)));
+const clamp = (n: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, n));
+
+/** Ratios are flattened before use — real size is a nuance, not a multiplier war. */
+const compress = (ratio: number, exponent: number, min: number, max: number) =>
+  ratio > 0 ? clamp(Math.pow(ratio, exponent), min, max) : 1;
+
+const WITHIN = { exponent: 0.45, min: 0.82, max: 1.18 };
+const TIER = { exponent: 0.4, min: 0.72, max: 1.32 };
+const HEIGHT = { exponent: 0.4, min: 0.8, max: 1.2 };
+
+function subcategoryKey(product: ScalableProduct, category: string): string | null {
+  const sub = (product.liveSubcategories?.[0] ?? product.subcategory ?? "")
+    .trim()
+    .toLowerCase();
+  return sub ? `${category}/${sub}` : null;
+}
+
+/** Real-world mass (inches) for one product, or null when nothing is parseable. */
+function productMass(product: ScalableProduct): { mass: number; height: number | null } | null {
+  const dims = parseDimensionsInches(product.dimensions);
+  if (dims) return { mass: Math.sqrt(dims.width * dims.height), height: dims.height };
+  const width = parseWidthInches(product.dimensions);
+  if (width) return { mass: width * WIDTH_ONLY_HEIGHT_RATIO, height: null };
+  return null;
 }
 
 export type PhysicalScale = {
-  /** Overall mass multiplier from real size (geometric mean of W and H). */
+  /** Overall mass multiplier relative to the product's neighbours. */
   size: number;
   /** Height-only multiplier — caps genuinely short pieces that photograph tall. */
   height: number;
-  /** True when real dimensions were parsed for a benchmarked category. */
+  /** True when this category should be solved by real-world mass. */
   measured: boolean;
 };
 
 export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
   const canonical = canonicalCategorySlug(product.categorySlug);
-  const benchmark = canonical ? SIZE_BENCHMARKS[canonical] : undefined;
-  if (!benchmark) return { size: 1, height: 1, measured: false };
+  const category = canonical ? CATEGORY_BENCHMARKS[canonical] : undefined;
+  if (!canonical || !category) return { size: 1, height: 1, measured: false };
 
-  const refSize = Math.sqrt(benchmark.width * benchmark.height);
-  const dims = parseDimensionsInches(product.dimensions);
+  const key = subcategoryKey(product, canonical);
+  const shelf = (key ? SUBCATEGORY_BENCHMARKS[key] : undefined) ?? category;
 
-  if (dims) {
-    return {
-      size: compress(Math.sqrt(dims.width * dims.height) / refSize),
-      height: compress(dims.height / benchmark.height),
-      measured: true,
-    };
-  }
+  // Tier 2: how this shelf sits inside its category.
+  const tier = compress(shelf.mass / category.mass, TIER.exponent, TIER.min, TIER.max);
 
-  // Width-only measurement still carries real signal; assume the category's
-  // archetype height so the mass term stays truthful on the axis we know.
-  const sub = product.liveSubcategories?.[0]?.trim().toLowerCase();
-  const width =
-    parseWidthInches(product.dimensions) ??
-    (sub ? SUBCATEGORY_TYPICAL[sub] : undefined);
-  if (!width) return { size: 1, height: 1, measured: false };
+  // Tier 1: how this item sits inside its shelf.
+  const measuredItem = productMass(product);
+  const within = measuredItem
+    ? compress(measuredItem.mass / shelf.mass, WITHIN.exponent, WITHIN.min, WITHIN.max)
+    : 1;
+
+  const refHeight = shelf.height || category.height;
+  const height =
+    measuredItem?.height && refHeight
+      ? compress(measuredItem.height / refHeight, HEIGHT.exponent, HEIGHT.min, HEIGHT.max)
+      : 1;
 
   return {
-    size: compress(Math.sqrt(width * benchmark.height) / refSize),
-    height: 1,
-    measured: true,
+    size: clamp(tier * within, 0.68, 1.32),
+    height,
+    measured: REAL_SIZE_CATEGORIES.has(canonical),
   };
 }
+
+/**
+ * Neighbour-relative multiplier for categories that are *not* solved by real
+ * size (tableware, pillows, styling, serveware, rugs, furs). Same two-tier
+ * logic, applied as a gentle nudge to the category's area target so a crate
+ * still reads bigger than a votive without changing how either is laid out.
+ */
+export function relativeMassFor(product: ScalableProduct): number {
+  const scale = physicalScaleFor(product);
+  return scale.measured ? 1 : scale.size;
+}
+
 
