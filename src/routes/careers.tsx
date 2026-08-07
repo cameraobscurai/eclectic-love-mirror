@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+
 const JOBS = [
   {
     title: "Fabricator & Set Design",
@@ -96,12 +97,13 @@ function CareersPage() {
             Send your portfolio and a note about what you bring to the team.
           </p>
           <p className="mt-4">
-            <a
-              href="mailto:info@eclectichive.com?subject=Careers%20%7C%20Eclectic%20Hive"
-              className="text-[11px] uppercase tracking-[0.28em] border-b border-charcoal/40 pb-1 hover:border-charcoal transition-colors"
+            <Link
+              to="/contact"
+              search={{ subject: "Careers | Eclectic Hive" }}
+              className="text-[11px] uppercase tracking-[0.28em] no-underline border-b border-charcoal/40 pb-1 hover:border-charcoal transition-colors"
             >
               EMAIL US →
-            </a>
+            </Link>
           </p>
           <p className="mt-6">
             <Link
