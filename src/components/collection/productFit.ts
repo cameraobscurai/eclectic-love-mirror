@@ -111,7 +111,16 @@ export function resolveProductFit(
       widthMax: baseWidth(rule),
       // Real height drives the ceiling: a genuinely 36" piece may sit a touch
       // taller than a 34" one, and nothing may exceed the category headroom.
-      heightMax: Math.min(baseHeight(rule), baseHeight(rule) * 0.72 * phys.height),
+      //
+      // The ceiling must not be tighter than the area target itself, or tall
+      // narrow pieces (chairs, bar carts, floor lamps) get height-clipped below
+      // the mass they were assigned while wide pieces beside them reach theirs
+      // in full — which is exactly how a row of chairs ends up looking like
+      // dollhouse furniture next to a sofa.
+      heightMax: Math.min(
+        baseHeight(rule),
+        Math.max(baseHeight(rule) * phys.height, baseArea(rule) * phys.size),
+      ),
       // Caps are the governing constraint once real dimensions are known, so the
       // category floor must not out-vote them (that floor was what let a tall
       // loveseat keep towering over the sofa beside it).
