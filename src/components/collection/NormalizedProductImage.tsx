@@ -240,6 +240,14 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
+  // Normalized covers carry their geometry with them — the subject was trimmed
+  // and centred on a fixed square canvas at bake time, so the silhouette box is
+  // known exactly. Skip the canvas probe entirely: correct scale on first
+  // paint, no CORS read, no fade-in-on-measure.
+  const known = useMemo(
+    () => (subject ? knownMeasurement(subject, frameAspect) : null),
+    [subject, frameAspect],
+  );
   // Measurement is in frame-space, not just image-space: measureImage()
   // letterboxes the natural image into the current frameAspect before it
   // computes the silhouette bounds. Key by both URL and frame shape so the
@@ -247,7 +255,10 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // geometry and make neighboring products jump to different scales.
   const cacheKey = `${src}|frame:${frameAspect.toFixed(4)}`;
   const cached = measurementCache.get(cacheKey);
-  const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
+  const [measured, setMeasured] = useState<Measurement | null | undefined>(cached);
+  const measurement = known ?? measured;
+  const setMeasurement = setMeasured;
+
 
   useEffect(() => {
     if (hasFocal) return;
