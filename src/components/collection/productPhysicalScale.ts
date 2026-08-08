@@ -139,6 +139,8 @@ const compress = (ratio: number, exponent: number, min: number, max: number) =>
 const WITHIN = { exponent: 0.45, min: 0.82, max: 1.18 };
 const TIER = { exponent: 0.4, min: 0.72, max: 1.32 };
 const HEIGHT = { exponent: 0.4, min: 0.8, max: 1.2 };
+const WIDTH = { exponent: 0.45, min: 0.78, max: 1.22 };
+
 
 function subcategoryKey(product: ScalableProduct, category: string): string | null {
   const sub = (product.liveSubcategories?.[0] ?? product.subcategory ?? "")
@@ -148,11 +150,18 @@ function subcategoryKey(product: ScalableProduct, category: string): string | nu
 }
 
 /** Real-world mass (inches) for one product, or null when nothing is parseable. */
-function productMass(product: ScalableProduct): { mass: number; height: number | null } | null {
+function productMass(
+  product: ScalableProduct,
+): { mass: number; height: number | null; width: number | null } | null {
   const dims = parseDimensionsInches(product.dimensions);
-  if (dims) return { mass: Math.sqrt(dims.width * dims.height), height: dims.height };
+  if (dims)
+    return {
+      mass: Math.sqrt(dims.width * dims.height),
+      height: dims.height,
+      width: dims.width,
+    };
   const width = parseWidthInches(product.dimensions);
-  if (width) return { mass: width * WIDTH_ONLY_HEIGHT_RATIO, height: null };
+  if (width) return { mass: width * WIDTH_ONLY_HEIGHT_RATIO, height: null, width };
   return null;
 }
 
@@ -161,6 +170,8 @@ export type PhysicalScale = {
   size: number;
   /** Height-only multiplier — caps genuinely short pieces that photograph tall. */
   height: number;
+  /** Width-only multiplier — a 98" sofa must out-span a 52" loveseat. */
+  width: number;
   /** True when this category should be solved by real-world mass. */
   measured: boolean;
 };
@@ -168,7 +179,7 @@ export type PhysicalScale = {
 export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
   const canonical = canonicalCategorySlug(product.categorySlug);
   const category = canonical ? CATEGORY_BENCHMARKS[canonical] : undefined;
-  if (!canonical || !category) return { size: 1, height: 1, measured: false };
+  if (!canonical || !category) return { size: 1, height: 1, width: 1, measured: false };
 
   const key = subcategoryKey(product, canonical);
   const shelf = (key ? SUBCATEGORY_BENCHMARKS[key] : undefined) ?? category;
@@ -188,12 +199,22 @@ export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
       ? compress(measuredItem.height / refHeight, HEIGHT.exponent, HEIGHT.min, HEIGHT.max)
       : 1;
 
+  // The benchmarks store √(w·h) and h, so the shelf's typical width falls out
+  // of them directly — no extra bake step, no hand-tuned constant.
+  const refWidth = refHeight ? (shelf.mass * shelf.mass) / refHeight : 0;
+  const width =
+    measuredItem?.width && refWidth
+      ? compress(measuredItem.width / refWidth, WIDTH.exponent, WIDTH.min, WIDTH.max)
+      : 1;
+
   return {
     size: clamp(tier * within, 0.68, 1.32),
     height,
+    width: clamp(width * tier, 0.7, 1.3),
     measured: REAL_SIZE_CATEGORIES.has(canonical),
   };
 }
+
 
 /**
  * Neighbour-relative multiplier for categories that are *not* solved by real
