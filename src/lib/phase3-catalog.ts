@@ -13,7 +13,10 @@
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
 
+import { normalizedCoverFor } from "@/lib/normalized-cover";
+
 export interface CollectionImage {
+
   url: string;
   position: number;
   isHero: boolean;
