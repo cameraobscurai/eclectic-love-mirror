@@ -211,7 +211,10 @@ export const Route = createFileRoute("/collection_/$slug")({
     const desc =
       product.description?.trim() ||
       `${product.title} — available for event rental from Eclectic Hive in Denver, Colorado.`;
-    const img = product.primaryImage?.url;
+    // Social crawlers get the original photograph, never the normalized
+    // transparent PNG — transparency renders black in most feed previews.
+    const img = product.coverOriginalUrl ?? product.primaryImage?.url;
+
     const url = productUrl(slug);
 
     const jsonLd: Record<string, unknown> = {
