@@ -319,15 +319,11 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         }
       }
 
-      // AI-upscaled cover overrides slot 0; original moves to slot 1.
-      if (live?.upscaled_cover_url && baseImages.length > 0) {
-        const original = baseImages[0];
-        baseImages = [
-          { url: live.upscaled_cover_url, position: 0, isHero: true, inferredFilename: null, altText: original.altText ?? null },
-          { ...original, position: 1, isHero: false },
-          ...baseImages.slice(1).map((im, i) => ({ ...im, position: i + 2, isHero: false })),
-        ];
-      }
+      // NOTE: AI-upscaled covers are intentionally NOT used as the hero image.
+      // The upscaler baked in opaque backdrops and invented cast shadows, which
+      // read as grey boxes next to the transparent cutouts everywhere else.
+      // The original product photo is the source of truth for slot 0.
+
 
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
