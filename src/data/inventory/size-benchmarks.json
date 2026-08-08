@@ -1,203 +1,281 @@
 {
-  "generatedAt": "2026-08-08T15:33:19.590Z",
+  "generatedAt": "2026-08-08T18:26:23.202Z",
   "source": "src/data/inventory/current_catalog.json",
   "categories": {
     "bars": {
       "mass": 53.7,
       "height": 41,
-      "n": 47
+      "n": 47,
+      "w95": 144,
+      "h95": 43.5
     },
     "candlelight": {
       "mass": 8.6,
       "height": 13,
-      "n": 10
+      "n": 10,
+      "w95": 8.5,
+      "h95": 28
     },
     "chandeliers": {
       "mass": 17,
       "height": 18,
-      "n": 11
+      "n": 11,
+      "w95": 36,
+      "h95": 31
     },
     "large-decor": {
       "mass": 71.3,
       "height": 83,
-      "n": 18
+      "n": 18,
+      "w95": 180,
+      "h95": 120
     },
     "lighting": {
       "mass": 13.9,
       "height": 22.3,
-      "n": 27
+      "n": 27,
+      "w95": 24,
+      "h95": 56
     },
     "pillows-throws": {
       "mass": 12.4,
       "height": 16,
-      "n": 107
+      "n": 107,
+      "w95": 22,
+      "h95": 20
     },
     "rugs": {
       "mass": 59.5,
       "height": 0,
-      "n": 26
+      "n": 26,
+      "w95": 96,
+      "h95": 0
     },
     "seating": {
       "mass": 30.8,
       "height": 31.5,
-      "n": 94
+      "n": 94,
+      "w95": 85,
+      "h95": 38
     },
     "serveware": {
       "mass": 8.7,
       "height": 5,
-      "n": 33
+      "n": 33,
+      "w95": 20,
+      "h95": 15
     },
     "storage": {
       "mass": 55.1,
       "height": 71,
-      "n": 11
+      "n": 11,
+      "w95": 76.5,
+      "h95": 84
     },
     "styling": {
       "mass": 8.8,
       "height": 10.3,
-      "n": 49
+      "n": 49,
+      "w95": 30,
+      "h95": 50
     },
     "tables": {
       "mass": 23.8,
       "height": 20,
-      "n": 66
+      "n": 66,
+      "w95": 72,
+      "h95": 33
     },
     "tableware": {
       "mass": 4.7,
       "height": 6,
-      "n": 9
+      "n": 9,
+      "w95": 4,
+      "h95": 8
     }
   },
   "subcategories": {
     "bars/bars": {
       "mass": 60.9,
       "height": 40.5,
-      "n": 30
+      "n": 30,
+      "w95": 144,
+      "h95": 43.5
     },
     "bars/cocktail tables": {
       "mass": 30.2,
       "height": 41.5,
-      "n": 6
+      "n": 6,
+      "w95": 32,
+      "h95": 42
     },
     "bars/community tables": {
       "mass": 56.5,
       "height": 41.5,
-      "n": 4
+      "n": 4,
+      "w95": 96,
+      "h95": 42
     },
     "bars/stools": {
       "mass": 26.8,
       "height": 42,
-      "n": 5
+      "n": 5,
+      "w95": 22,
+      "h95": 45
     },
     "candlelight/candlelight": {
       "mass": 8.6,
       "height": 13,
-      "n": 10
+      "n": 10,
+      "w95": 8.5,
+      "h95": 28
     },
     "chandeliers/chandeliers": {
       "mass": 16.6,
       "height": 19,
-      "n": 10
+      "n": 10,
+      "w95": 36,
+      "h95": 31
     },
     "large-decor/other": {
       "mass": 35.8,
       "height": 63,
-      "n": 9
+      "n": 9,
+      "w95": 48,
+      "h95": 99
     },
     "large-decor/walls": {
       "mass": 91.2,
       "height": 96,
-      "n": 8
+      "n": 8,
+      "w95": 240,
+      "h95": 108
     },
     "lighting/lamps": {
       "mass": 19.2,
       "height": 23,
-      "n": 19
+      "n": 19,
+      "w95": 21.5,
+      "h95": 56
     },
     "lighting/specialty": {
       "mass": 8.7,
       "height": 11.8,
-      "n": 4
+      "n": 4,
+      "w95": 8,
+      "h95": 17.5
     },
     "pillows-throws/pillows": {
       "mass": 12.4,
       "height": 16,
-      "n": 107
+      "n": 107,
+      "w95": 22,
+      "h95": 20
     },
     "rugs/rugs": {
       "mass": 59.5,
       "height": 0,
-      "n": 26
+      "n": 26,
+      "w95": 96,
+      "h95": 0
     },
     "seating/benches": {
       "mass": 35.7,
       "height": 18.5,
-      "n": 7
+      "n": 7,
+      "w95": 79,
+      "h95": 20
     },
     "seating/chairs": {
       "mass": 29.9,
       "height": 33.9,
-      "n": 37
+      "n": 37,
+      "w95": 32,
+      "h95": 40
     },
     "seating/dining chairs": {
       "mass": 26.1,
       "height": 32.5,
-      "n": 8
+      "n": 8,
+      "w95": 56,
+      "h95": 37.8
     },
     "seating/ottomans": {
       "mass": 18,
       "height": 18,
-      "n": 15
+      "n": 15,
+      "w95": 42,
+      "h95": 19
     },
     "seating/sofas & loveseats": {
       "mass": 50.1,
       "height": 31.5,
-      "n": 23
+      "n": 23,
+      "w95": 94.5,
+      "h95": 36.5
     },
     "serveware/serveware": {
       "mass": 9.3,
       "height": 6,
-      "n": 29
+      "n": 29,
+      "w95": 19.5,
+      "h95": 15
     },
     "storage/storage": {
       "mass": 54.6,
       "height": 70,
-      "n": 10
+      "n": 10,
+      "w95": 76.5,
+      "h95": 84
     },
     "styling/accents": {
       "mass": 8.2,
       "height": 9.3,
-      "n": 39
+      "n": 39,
+      "w95": 38,
+      "h95": 56
     },
     "styling/crates & baskets": {
       "mass": 14.4,
       "height": 13,
-      "n": 9
+      "n": 9,
+      "w95": 22.5,
+      "h95": 17
     },
     "tables/cocktail tables": {
       "mass": 22.1,
       "height": 35,
-      "n": 4
+      "n": 4,
+      "w95": 40,
+      "h95": 43
     },
     "tables/coffee tables": {
       "mass": 27.1,
       "height": 15,
-      "n": 18
+      "n": 18,
+      "w95": 56,
+      "h95": 17.5
     },
     "tables/dining tables": {
       "mass": 48.3,
       "height": 30,
-      "n": 7
+      "n": 7,
+      "w95": 96,
+      "h95": 33
     },
     "tables/side tables": {
       "mass": 17.4,
       "height": 20,
-      "n": 27
+      "n": 27,
+      "w95": 22,
+      "h95": 24
     },
     "tableware/glassware": {
       "mass": 4.7,
       "height": 6,
-      "n": 9
+      "n": 9,
+      "w95": 4,
+      "h95": 8
     }
   }
 }
