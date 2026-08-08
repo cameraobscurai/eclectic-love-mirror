@@ -117,6 +117,20 @@ async function subjectBox(buf) {
   }
   const isCutout = borderTransparent / Math.max(1, borderPx) > 0.5;
 
+  /** Whole image is the subject — used when the shot is full-bleed (flat-lay
+   *  rugs, wall panels) and there is no background to trim. Already tight, so
+   *  passing it through unchanged is correct, not a fallback guess. */
+  const fullFrame = {
+    left: 0,
+    top: 0,
+    width: fullW,
+    height: fullH,
+    isCutout: false,
+    sourceW: fullW,
+    sourceH: fullH,
+    coverage: 1,
+  };
+
   let bg = [255, 255, 255];
   let tol = 0;
   if (!isCutout) {
@@ -129,7 +143,8 @@ async function subjectBox(buf) {
     const med = (k) => corners.map((c) => c[k]).sort((a, b) => a - b)[2];
     bg = [med(0), med(1), med(2)];
     const darkest = Math.min(bg[0], bg[1], bg[2]);
-    if (darkest < 200) return null; // dark/busy backdrop — do not guess
+    // Corners are not background — the subject runs to the edge.
+    if (darkest < 200) return fullFrame;
     tol = Math.max(16, (255 - darkest) * 0.75);
   }
 
@@ -159,6 +174,7 @@ async function subjectBox(buf) {
 
   const area = ((maxX - minX + 1) * (maxY - minY + 1)) / (w * h);
   if (area < 0.005) return null; // detector found dust, not a product
+
 
   const inv = 1 / s;
   const bleed = 1;
