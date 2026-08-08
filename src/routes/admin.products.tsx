@@ -33,12 +33,17 @@ export const Route = createFileRoute("/admin/products")({
     ],
   }),
   component: Inner,
-  // `group` is a BOH deep-link (per-parent category tile). We derive the
-  // rms_id set for that ParentId from the baked catalog and post-filter
-  // the API response client-side (see groupRmsSet below).
+  // `group` is the HIVE COLLECTION heading (parent) filter — the public
+  // grouping (Dining, Lounge Seating…) that is DERIVED from category +
+  // subcategory, not stored on the row. We resolve it to an rms_id set from
+  // the baked catalog and filter server-side.
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     cat: typeof s.cat === "string" ? s.cat : "",
+    sub: typeof s.sub === "string" ? s.sub : "",
+    sort: (["title", "category", "subcategory", "updated"].includes(s.sort as string)
+      ? s.sort
+      : "title") as "title" | "category" | "subcategory" | "updated",
     ready: (s.ready === "yes" || s.ready === "no" ? s.ready : "all") as "yes" | "no" | "all",
     id: typeof s.id === "string" ? s.id : "",
     group: typeof s.group === "string" ? s.group : undefined,
@@ -47,10 +52,18 @@ export const Route = createFileRoute("/admin/products")({
 
 type Row = {
   id: string; rms_id: string | null; title: string; slug: string | null;
-  category: string | null; status: string; quantity: number | null;
+  category: string | null; subcategory_slug: string | null; status: string;
+  quantity: number | null;
   quantity_label: string | null; public_ready: boolean | null;
   images: string[] | null;
   updated_at: string; editorial_order: number | null;
+};
+
+const SORT_LABELS: Record<string, string> = {
+  title: "Title A–Z",
+  category: "Category, then title",
+  subcategory: "Subcategory, then title",
+  updated: "Recently edited",
 };
 
 const PAGE = 50;
