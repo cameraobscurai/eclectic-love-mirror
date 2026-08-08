@@ -260,16 +260,37 @@ function Inner() {
             </span>
           </div>
 
+          {/* THREE-PART SORT: Category → Hive Collection heading → Subcategory */}
           <select
             value={search.cat}
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
+            aria-label="Filter by category"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value, sub: "" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
             {mergeCategoryOptions(cats).map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
           <select
+            value={search.group ?? ""}
+            aria-label="Filter by Hive Collection heading"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, group: e.target.value || undefined }) })}
+            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+          >
+            <option value="">All collections</option>
+            {PARENT_ORDER.map((p) => <option key={p} value={p}>{PARENT_LABELS[p]}</option>)}
+          </select>
+          <select
+            value={search.sub}
+            aria-label="Filter by subcategory"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, sub: e.target.value }) })}
+            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+          >
+            <option value="">All subcategories</option>
+            {subOptions.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          <select
             value={search.ready}
+            aria-label="Filter by visibility"
             onChange={(e) => navigate({ search: (s: any) => ({ ...s, ready: e.target.value as "yes"|"no"|"all" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
@@ -277,6 +298,17 @@ function Inner() {
             <option value="yes">Public-ready</option>
             <option value="no">Hidden</option>
           </select>
+          <label className="flex items-center gap-2 text-charcoal/55">
+            Sort
+            <select
+              value={search.sort}
+              aria-label="Sort list"
+              onChange={(e) => navigate({ search: (s: any) => ({ ...s, sort: e.target.value }) })}
+              className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+            >
+              {Object.entries(SORT_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
+          </label>
           {/* Results narrow as you type; this is just a keyboard-friendly flush. */}
           <button type="submit" className="sr-only">Search</button>
 
@@ -290,6 +322,8 @@ function Inner() {
                 <th className="text-left px-3 py-2 w-14"></th>
                 <th className="text-left px-3 py-2">Title</th>
                 <th className="text-left px-3 py-2">Category</th>
+                <th className="text-left px-3 py-2">Collection</th>
+                <th className="text-left px-3 py-2">Subcategory</th>
                 <th className="text-left px-3 py-2">Qty</th>
                 <th className="text-left px-3 py-2">Status</th>
                 <th className="text-left px-3 py-2">Public</th>
@@ -303,6 +337,8 @@ function Inner() {
                     <td className="px-3 py-2"><div className="w-10 h-10 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
@@ -310,7 +346,7 @@ function Inner() {
                   </tr>
                 ))}
               {!loading && visibleRows.length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
+                <tr><td colSpan={9} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
 
               {visibleRows.map((r) => {
@@ -318,6 +354,7 @@ function Inner() {
                 // hero. Never fall back to upscaled_cover_url — that column is
                 // retired and showing it here makes admin disagree with live.
                 const cover = r.images?.[0] ?? null;
+                const parent = r.rms_id ? parentMap?.[r.rms_id] : undefined;
 
                 return (
                   <tr
@@ -330,6 +367,10 @@ function Inner() {
                     </td>
                     <td className="px-3 py-2 font-display text-[14px]">{r.title}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.category ?? "—"}</td>
+                    <td className="px-3 py-2 text-charcoal/70">{parent ? PARENT_LABELS[parent] : "—"}</td>
+                    <td className="px-3 py-2 text-charcoal/70">
+                      {r.subcategory_slug ? (subLabels[r.subcategory_slug] ?? r.subcategory_slug) : "—"}
+                    </td>
                     <td className="px-3 py-2 tabular-nums">{r.quantity ?? "—"}{r.quantity_label ? ` ${r.quantity_label}` : ""}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.status}</td>
                     <td className="px-3 py-2">
@@ -342,6 +383,7 @@ function Inner() {
             </tbody>
           </table>
         </div>
+
 
         {/* pagination */}
         <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-charcoal/60">
