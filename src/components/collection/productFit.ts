@@ -16,11 +16,13 @@ import type { FitRule } from "./categoryFit";
 import { resolveFit } from "./categoryFit";
 import {
   absoluteFitFor,
+  foreshortenCorrection,
   isHeightUniformShelf,
   physicalScaleFor,
   relativeMassFor,
   type ScalableProduct,
 } from "./productPhysicalScale";
+
 
 
 export type FittableProduct = ScalableProduct;
@@ -138,7 +140,9 @@ export function resolveProductFit(
       );
     }
 
-    const areaTarget = Math.sqrt(abs.width * abs.height);
+    const areaTarget =
+      Math.sqrt(abs.width * abs.height) * foreshortenCorrection(product);
+
     return withGain(
       {
         ...rule,

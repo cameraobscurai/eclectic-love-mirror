@@ -207,6 +207,9 @@ function withNormalizedCover<
   };
 }
 
+
+
+
 /**
  * Baked-only catalog — zero network. The /collection route loader awaits
  * this so first paint never blocks on the Supabase overlay round-trip

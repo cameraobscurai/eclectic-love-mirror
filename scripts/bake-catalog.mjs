@@ -283,6 +283,101 @@ for (const p of rolled) {
   if (ov.liveCategory) p.liveCategory = ov.liveCategory;
 }
 
+// ---------------------------------------------------------------------------
+// Subcategory backfill.
+// Products that never matched the live-site map carry no liveSubcategories,
+// which drops them out of the subcategory shelf used by the tile-fit solver
+// (they fall back to the whole-category unit and render far too small/large).
+// Infer the shelf from title keywords, scoped per category, using the same
+// label vocabulary the live map produces.
+// ---------------------------------------------------------------------------
+const SUBCAT_RULES = {
+  bars: [
+    [/\bSTOOL/i, 'Stools'],
+    [/\bCOMMUNITY TABLE|\bFARM TABLE/i, 'Community Tables'],
+    [/\bCOCKTAIL TABLE|\bHIGH ?TOP/i, 'Cocktail Tables'],
+    [/\bBAR\b|BAR$/i, 'Bars'],
+  ],
+  tables: [
+    [/\bSIDE TABLE|\bACCENT TABLE|\bEND TABLE|\bNIGHTSTAND/i, 'Side Tables'],
+    [/\bCOFFEE TABLE/i, 'Coffee Tables'],
+    [/\bCOCKTAIL TABLE/i, 'Cocktail Tables'],
+    [/\bDINING TABLE|\bDINNER TABLE/i, 'Dining Tables'],
+    [/\bCONSOLE/i, 'Consoles'],
+  ],
+  seating: [
+    [/\bSOFA|\bLOVESEAT|\bSETTEE|\bBANQUETTE|\bDAYBED/i, 'Sofas & Loveseats'],
+    [/\bOTTOMAN|\bPOUF|\bFOOTSTOOL/i, 'Ottomans'],
+    [/\bBENCH/i, 'Benches'],
+    [/\bDINING CHAIR/i, 'Dining Chairs'],
+    [/\bCHAIR|\bSTOOL/i, 'Chairs'],
+  ],
+  lighting: [
+    [/\bCHANDELIER/i, 'Chandeliers'],
+    [/\bLAMP|\bSCONCE/i, 'Lamps'],
+    [/./, 'Specialty'],
+  ],
+  chandeliers: [[/./, 'Chandeliers']],
+  candlelight: [[/./, 'Candlelight']],
+  rugs: [[/./, 'Rugs']],
+  serveware: [[/./, 'Serveware']],
+  storage: [[/./, 'Storage']],
+  'furs-pelts': [[/./, 'Furs & Pelts']],
+  'pillows-throws': [
+    [/\bTHROW|\bBLANKET/i, 'Throws'],
+    [/./, 'Pillows'],
+  ],
+  tableware: [
+    [/\bGLASS|\bGOBLET|\bCOUPE|\bTUMBLER|\bFLUTE|\bSTEMWARE/i, 'Glassware'],
+    [/\bFLATWARE|\bFORK|\bSPOON|\bKNIFE|\bCUTLERY/i, 'Flatware'],
+    [/./, 'Dinnerware'],
+  ],
+  styling: [
+    [/\bCRATE|\bBASKET/i, 'Crates & Baskets'],
+    [/./, 'Accents'],
+  ],
+  'large-decor': [
+    [/\bWALL|\bDOOR|\bBACKDROP|\bPANEL/i, 'Walls'],
+    [/\bSTRUCTURE|\bPLATFORM|\bARCH|\bPOST AND BEAM/i, 'Structures'],
+    [/./, 'Other'],
+  ],
+};
+let subcatInferred = 0;
+for (const p of rolled) {
+  const has = (Array.isArray(p.liveSubcategories) && p.liveSubcategories.length) || p.subcategory;
+  if (has) continue;
+  const rules = SUBCAT_RULES[p.categorySlug];
+  if (!rules) continue;
+  const hit = rules.find(([re]) => re.test(p.title || ''));
+  if (!hit) continue;
+  p.subcategory = hit[1];
+  p.subcategoryInferred = true;
+  subcatInferred++;
+}
+console.log(`[subcat] inferred shelf for ${subcatInferred} unmapped tiles`);
+
+// Shelf corrections — products the live map filed on the wrong shelf, which
+// pollutes that shelf's size benchmark. Banquettes are benches, not chairs:
+// pooled with single dining chairs they dragged the shelf's p95 width to 56"
+// and shrank every real chair.
+const SUBCAT_CORRECTIONS = {
+  'auset-linen-banquette-3190': ['Benches'],
+  'nima-fabric-banquette': ['Benches'],
+};
+let subcatCorrected = 0;
+for (const p of rolled) {
+  const fix = SUBCAT_CORRECTIONS[p.slug];
+  if (!fix) continue;
+  p.liveSubcategories = fix;
+  p.subcategory = fix[0];
+  subcatCorrected++;
+}
+console.log(`[subcat] corrected shelf for ${subcatCorrected} tiles`);
+
+
+
+
+
 // Overlay live-site description + gallery onto rolled family tiles using
 // the family title (e.g. "Anastasia Antique Silver Flatware") which often
 // only matches at the family level, not at the RMS variant level.

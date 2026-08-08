@@ -6,7 +6,10 @@ export type ScalableProduct = {
   dimensions?: string | null;
   liveSubcategories?: string[] | null;
   subcategory?: string | null;
+  /** Normalized cover silhouette box (fractions of the square canvas). */
+  coverSubject?: { w: number; h: number } | null;
 };
+
 
 export type PhysicalDims = { width: number; height: number } | null;
 
@@ -195,6 +198,33 @@ function productMass(
   return null;
 }
 
+/**
+ * Foreshortening correction.
+ *
+ * The catalog describes a piece straight-on; the cover photo is a 3/4 or
+ * near-profile view. When the photographed silhouette is much flatter than the
+ * real W:H, mass matching under-renders the piece (KAI: a 96" dining table shot
+ * near-profile read as 3.31 aspect against a real 2.91, so it rendered thin
+ * next to a 36" round table). Boost the area target by the square root of the
+ * disagreement, clamped hard so a bad photo can never dominate real size.
+ */
+const FORESHORTEN = { min: 0.92, max: 1.18, deadband: 0.08 };
+
+export function foreshortenCorrection(product: ScalableProduct): number {
+  const subject = product.coverSubject;
+  if (!subject?.w || !subject?.h) return 1;
+  const item = productMass(product);
+  if (!item?.width || !item?.height) return 1;
+  const photoAspect = subject.w / subject.h;
+  const realAspect = item.width / item.height;
+  if (!(photoAspect > 0) || !(realAspect > 0)) return 1;
+  const divergence = photoAspect / realAspect;
+  if (Math.abs(divergence - 1) < FORESHORTEN.deadband) return 1;
+  return clamp(Math.sqrt(divergence), FORESHORTEN.min, FORESHORTEN.max);
+}
+
+
+
 export type PhysicalScale = {
   /** Overall mass multiplier relative to the product's neighbours. */
   size: number;
@@ -352,14 +382,17 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
     h /= under;
   }
 
-  // Height solved from real height ALONE — no width clamp bleeding into it.
-  // Height-invariant shelves (bars, dining tables) use this so a 19' bar and a
-  // 6' bar stand at the same height and differ only in width.
-  let hSolo = height * unit;
+  // Height for height-invariant shelves (bars). Driven by the SHELF's median
+  // height, not the item's own — every bar on the shelf must stand at the same
+  // height and differ only in width. Using each item's real height put a 44.5"
+  // bar and a 42" bar on visibly different baselines (~50px floor spread).
+  const shelfHeight = (sub?.n && sub.n >= 3 ? sub.height : undefined) ?? ref.height ?? height;
+  let hSolo = shelfHeight * unit;
   hSolo *= Math.pow(hSolo, PHYSICAL_EXPONENT - 1);
   hSolo = Math.min(hSolo, HEIGHT_CEILING);
 
   return { width: w, height: h, heightUniform: hSolo };
 }
+
 
 
