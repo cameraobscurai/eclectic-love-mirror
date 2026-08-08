@@ -128,7 +128,11 @@ const HEIGHT_UNIFORM_CV = 0.22;
 /** True when this product's shelf should be solved on height, not on mass. */
 export function isHeightUniformShelf(product: ScalableProduct): boolean {
   const canonical = canonicalCategorySlug(product.categorySlug);
-  if (!canonical) return false;
+  // Scoped to the bar shelf: bars, stools and cocktail columns are the only
+  // pieces whose real-world height is effectively fixed AND whose widths span
+  // 2'-19'. Elsewhere (chairs, coffee tables) height matching flattens the
+  // size story, so those shelves stay on mass matching.
+  if (canonical !== "bars") return false;
   const key = subcategoryKey(product, canonical);
   const shelf = (key ? SUBCATEGORY_BENCHMARKS[key] : undefined) ?? CATEGORY_BENCHMARKS[canonical];
   return shelf?.hCv != null && shelf.hCv < HEIGHT_UNIFORM_CV;
