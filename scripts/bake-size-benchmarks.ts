@@ -31,7 +31,14 @@ import { canonicalCategorySlug } from "../src/components/collection/categoryAlia
 const MIN_CATEGORY_ROWS = 5;
 const MIN_SUBCATEGORY_ROWS = 4;
 
-type Bucket = { mass: number[]; height: number[] };
+type Bucket = { mass: number[]; height: number[]; width: number[] };
+
+const pct = (values: number[], q: number): number => {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const i = Math.min(sorted.length - 1, Math.max(0, Math.round((sorted.length - 1) * q)));
+  return sorted[i];
+};
 
 const median = (values: number[]): number => {
   if (!values.length) return 0;
@@ -45,10 +52,17 @@ const round = (n: number) => Math.round(n * 10) / 10;
 const categories = new Map<string, Bucket>();
 const subcategories = new Map<string, Bucket>();
 
-const push = (map: Map<string, Bucket>, key: string, mass: number, height: number) => {
-  const bucket = map.get(key) ?? { mass: [], height: [] };
+const push = (
+  map: Map<string, Bucket>,
+  key: string,
+  mass: number,
+  height: number,
+  width: number,
+) => {
+  const bucket = map.get(key) ?? { mass: [], height: [], width: [] };
   bucket.mass.push(mass);
   bucket.height.push(height);
+  bucket.width.push(width);
   map.set(key, bucket);
 };
 
@@ -69,12 +83,15 @@ for (const product of (catalog as any).products as any[]) {
     .trim()
     .toLowerCase();
 
-  push(categories, category, mass, height ?? 0);
-  if (sub) push(subcategories, `${category}/${sub}`, mass, height ?? 0);
+  push(categories, category, mass, height ?? 0, width);
+  if (sub) push(subcategories, `${category}/${sub}`, mass, height ?? 0, width);
 }
 
 const summarize = (map: Map<string, Bucket>, minRows: number) => {
-  const out: Record<string, { mass: number; height: number; n: number }> = {};
+  const out: Record<
+    string,
+    { mass: number; height: number; n: number; w95: number; h95: number }
+  > = {};
   for (const [key, bucket] of [...map.entries()].sort()) {
     if (bucket.mass.length < minRows) continue;
     const heights = bucket.height.filter((h) => h > 0);
@@ -82,6 +99,9 @@ const summarize = (map: Map<string, Bucket>, minRows: number) => {
       mass: round(median(bucket.mass)),
       height: round(median(heights)),
       n: bucket.mass.length,
+      // Upper reference: the piece that should nearly fill its tile.
+      w95: round(pct(bucket.width, 0.95)),
+      h95: round(pct(heights, 0.95)),
     };
   }
   return out;
