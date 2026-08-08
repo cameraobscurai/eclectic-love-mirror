@@ -100,8 +100,8 @@ const summarize = (map: Map<string, Bucket>, minRows: number) => {
       height: round(median(heights)),
       n: bucket.mass.length,
       // Upper reference: the piece that should nearly fill its tile.
-      w95: round(pct(bucket.width, 0.95)),
-      h95: round(pct(heights, 0.95)),
+      w95: round(pct(bucket.width, 0.9)),
+      h95: round(pct(heights, 0.9)),
     };
   }
   return out;
