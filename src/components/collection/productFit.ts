@@ -99,15 +99,17 @@ export function resolveProductFit(
     );
   }
 
-  // Measured pieces are solved on WIDTH, not mass.
+  // Measured pieces are solved on ABSOLUTE real-world size.
   //
-  // Mass matching plus a flat width cap quietly punished long low pieces: a 98"
-  // sofa hit the cap and lost mass, while a 52" loveseat reached its full area
-  // target and ended up reading larger than the sofa beside it. Real width is
-  // the thing a shopper compares, so it drives the primary target and the
-  // height cap only limits how tall a piece may stand.
-  const widthTarget = Math.min(0.97, baseWidth(rule) * phys.width);
-  const heightCap = Math.min(baseHeight(rule), baseHeight(rule) * phys.height);
+  // Ratio-to-median scaling saturated its own cap: every sofa over ~76" landed
+  // on the same 0.97 width target, so a 98" Henry and a 52" Cosette differed
+  // only by height and read as the same size. Real inches against the
+  // category's 90th-percentile piece is monotonic — bigger is always bigger.
+  const abs = absoluteFitFor(product);
+  const widthTarget = abs ? abs.width : Math.min(0.97, baseWidth(rule) * phys.width);
+  const heightCap = abs
+    ? abs.height
+    : Math.min(baseHeight(rule), baseHeight(rule) * phys.height);
 
   return withGain(
     {
@@ -126,6 +128,7 @@ export function resolveProductFit(
     gain,
   );
 }
+
 
 
 
