@@ -1,0 +1,3822 @@
+{
+  "meta": {
+    "generatedAt": "2026-08-08T17:57:22.668Z",
+    "canvas": 1536,
+    "pad": 0.06,
+    "subjectFraction": 0.88,
+    "count": 635,
+    "skipped": 0
+  },
+  "covers": {
+    "aaron-matte-black-plank-coffee-table-2861": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/aaron-matte-black-plank-coffee-table-2861.png",
+      "aspect": 2.5703,
+      "w": 0.8802,
+      "h": 0.3424
+    },
+    "abigale-dark-side-table-2994": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/abigale-dark-side-table-2994.png",
+      "aspect": 0.3203,
+      "w": 0.2819,
+      "h": 0.8802
+    },
+    "acelin-light-side-table-2996": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/acelin-light-side-table-2996.png",
+      "aspect": 0.3173,
+      "w": 0.2793,
+      "h": 0.8802
+    },
+    "adelaide-antique-arm-chair-2970": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/adelaide-antique-arm-chair-2970.png",
+      "aspect": 0.7027,
+      "w": 0.6185,
+      "h": 0.8802
+    },
+    "melting-disco-ball": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/melting-disco-ball.png",
+      "aspect": 1.3013,
+      "w": 0.8802,
+      "h": 0.6764
+    },
+    "adonis-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/adonis-glassware.png",
+      "aspect": 1.3386,
+      "w": 0.8802,
+      "h": 0.6576
+    },
+    "agatha-rustic-mini-vases": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/agatha-rustic-mini-vases.png",
+      "aspect": 1.7201,
+      "w": 0.8802,
+      "h": 0.5117
+    },
+    "ahsta-31-cream-terracotta-vase-4015": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ahsta-31-cream-terracotta-vase-4015.png",
+      "aspect": 0.5643,
+      "w": 0.4967,
+      "h": 0.8802
+    },
+    "akoya": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/akoya.png",
+      "aspect": 1.3852,
+      "w": 0.8802,
+      "h": 0.6354
+    },
+    "alabaster-votive": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alabaster-votive.png",
+      "aspect": 0.8158,
+      "w": 0.7181,
+      "h": 0.8802
+    },
+    "alexander-decanter-590": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alexander-decanter-590.png",
+      "aspect": 0.4615,
+      "w": 0.4063,
+      "h": 0.8802
+    },
+    "alistair-green-leather-bench-3211": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alistair-green-leather-bench-3211.png",
+      "aspect": 2.9328,
+      "w": 0.8802,
+      "h": 0.3001
+    },
+    "allira-cut-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/allira-cut-glassware.png",
+      "aspect": 1.0344,
+      "w": 0.8802,
+      "h": 0.8509
+    },
+    "alora-botanical-sculptural-chair-3709": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alora-botanical-sculptural-chair-3709.png",
+      "aspect": 1.0456,
+      "w": 0.8802,
+      "h": 0.8418
+    },
+    "alpaca-linear-grey-black-throw-2650": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alpaca-linear-grey-black-throw-2650.png",
+      "aspect": 0.7337,
+      "w": 0.6458,
+      "h": 0.8802
+    },
+    "alpaca-ono-grey-black-throw-2649": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alpaca-ono-grey-black-throw-2649.png",
+      "aspect": 0.7641,
+      "w": 0.6725,
+      "h": 0.8802
+    },
+    "alpaca-oatmeal-black-throw": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alpaca-oatmeal-black-throw.png",
+      "aspect": 0.767,
+      "w": 0.6751,
+      "h": 0.8802
+    },
+    "alpaca-sun-oatmeal-black-throw-2648": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alpaca-sun-oatmeal-black-throw-2648.png",
+      "aspect": 0.7396,
+      "w": 0.651,
+      "h": 0.8802
+    },
+    "alta-matte-silver-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alta-matte-silver-flatware.png",
+      "aspect": 0.5858,
+      "w": 0.5156,
+      "h": 0.8802
+    },
+    "alumina": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alumina.png",
+      "aspect": 1.5157,
+      "w": 0.8802,
+      "h": 0.5807
+    },
+    "alvina-grey-marble-tray-3523": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/alvina-grey-marble-tray-3523.png",
+      "aspect": 2.1736,
+      "w": 0.8802,
+      "h": 0.4049
+    },
+    "amalia-smoke-cut-glass-votive-2613": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/amalia-smoke-cut-glass-votive-2613.png",
+      "aspect": 0.9712,
+      "w": 0.8548,
+      "h": 0.8802
+    },
+    "amina-15-pendant-lantern-3452": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/amina-15-pendant-lantern-3452.png",
+      "aspect": 0.6413,
+      "w": 0.5645,
+      "h": 0.8802
+    },
+    "amisa-midnight-bar-3146": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/amisa-midnight-bar-3146.png",
+      "aspect": 1.7468,
+      "w": 0.8802,
+      "h": 0.5039
+    },
+    "amitola-led-corner-light": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/amitola-led-corner-light.png",
+      "aspect": 0.0991,
+      "w": 0.0872,
+      "h": 0.8802
+    },
+    "amun-brown-leather-butterfly-chair-44": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/amun-brown-leather-butterfly-chair-44.png",
+      "aspect": 0.8513,
+      "w": 0.7493,
+      "h": 0.8802
+    },
+    "anastasia-antique-silver-collection": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/anastasia-antique-silver-collection.png",
+      "aspect": 0.8062,
+      "w": 0.7096,
+      "h": 0.8802
+    },
+    "anathema-82-dark-ash-wood-console-3983": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/anathema-82-dark-ash-wood-console-3983.png",
+      "aspect": 2.1912,
+      "w": 0.8802,
+      "h": 0.4017
+    },
+    "annu-40-walnut-hoop-chandelier-4046": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/annu-40-walnut-hoop-chandelier-4046.png",
+      "aspect": 1.3242,
+      "w": 0.8802,
+      "h": 0.6647
+    },
+    "antonella-cotton-velvet-sofa-3006": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/antonella-cotton-velvet-sofa-3006.png",
+      "aspect": 1.7071,
+      "w": 0.8802,
+      "h": 0.5156
+    },
+    "antonio-black-leather-butterfly-chair-767": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/antonio-black-leather-butterfly-chair-767.png",
+      "aspect": 0.8143,
+      "w": 0.7168,
+      "h": 0.8802
+    },
+    "aramita-cotton-velvet-chair-3007": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/aramita-cotton-velvet-chair-3007.png",
+      "aspect": 1.0274,
+      "w": 0.8802,
+      "h": 0.8568
+    },
+    "arcus-bevin-12-slatted-bar-2816": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arcus-bevin-12-slatted-bar-2816.png",
+      "aspect": 2.5177,
+      "w": 0.8802,
+      "h": 0.3496
+    },
+    "arcus-calvin-12-smooth-bar-2813": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arcus-calvin-12-smooth-bar-2813.png",
+      "aspect": 2.7536,
+      "w": 0.8802,
+      "h": 0.3197
+    },
+    "arcus-levar-12-black-tambour-bar-2814": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arcus-levar-12-black-tambour-bar-2814.png",
+      "aspect": 2.8463,
+      "w": 0.8802,
+      "h": 0.3092
+    },
+    "arcus-ryann-12-white-tambour-bar-3054": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arcus-ryann-12-white-tambour-bar-3054.png",
+      "aspect": 2.7592,
+      "w": 0.8802,
+      "h": 0.319
+    },
+    "arcus-tavion-12-natural-tambour-bar-2540": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arcus-tavion-12-natural-tambour-bar-2540.png",
+      "aspect": 2.8766,
+      "w": 0.8802,
+      "h": 0.306
+    },
+    "ardelia-24-pendant-lantern-3451": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ardelia-24-pendant-lantern-3451.png",
+      "aspect": 0.5148,
+      "w": 0.4531,
+      "h": 0.8802
+    },
+    "arian-antique-silver-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arian-antique-silver-flatware.png",
+      "aspect": 0.6546,
+      "w": 0.5762,
+      "h": 0.8802
+    },
+    "arius-chandelier-stand-4041": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arius-chandelier-stand-4041.png",
+      "aspect": 0.4357,
+      "w": 0.3835,
+      "h": 0.8802
+    },
+    "artax-horse-napkin-ring-3323": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/artax-horse-napkin-ring-3323.png",
+      "aspect": 0.966,
+      "w": 0.8503,
+      "h": 0.8802
+    },
+    "artesia-chair-3822": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/artesia-chair-3822.png",
+      "aspect": 0.9223,
+      "w": 0.8118,
+      "h": 0.8802
+    },
+    "arwyn-sheepskin-fur-833": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/arwyn-sheepskin-fur-833.png",
+      "aspect": 0.6228,
+      "w": 0.5482,
+      "h": 0.8802
+    },
+    "ashura-5-rustic-terracotta-vase-4024": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ashura-5-rustic-terracotta-vase-4024.png",
+      "aspect": 0.9046,
+      "w": 0.7962,
+      "h": 0.8802
+    },
+    "astrid-rose-quartz-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/astrid-rose-quartz-flatware.png",
+      "aspect": 0.7833,
+      "w": 0.6895,
+      "h": 0.8802
+    },
+    "atlas-8x10-turkish-rug-1630": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/atlas-8x10-turkish-rug-1630.png",
+      "aspect": 1.3953,
+      "w": 0.8802,
+      "h": 0.6309
+    },
+    "auset-linen-banquette-3190": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/auset-linen-banquette-3190.png",
+      "aspect": 1.7884,
+      "w": 0.8802,
+      "h": 0.4922
+    },
+    "auskin-leather-basket-set": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/auskin-leather-basket-set.png",
+      "aspect": 1.4506,
+      "w": 0.8802,
+      "h": 0.6068
+    },
+    "avalon-iron-linen-bench-3027": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/avalon-iron-linen-bench-3027.png",
+      "aspect": 2.2609,
+      "w": 0.8802,
+      "h": 0.3893
+    },
+    "aviana-botanical-linen-sofa-3714": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/aviana-botanical-linen-sofa-3714.png",
+      "aspect": 1.74,
+      "w": 0.8802,
+      "h": 0.5059
+    },
+    "avinash-oak-community-table-52895252": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/avinash-oak-community-table-52895252.png",
+      "aspect": 2.0454,
+      "w": 0.8802,
+      "h": 0.4303
+    },
+    "axel-bar-stool-161": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/axel-bar-stool-161.png",
+      "aspect": 0.5481,
+      "w": 0.4824,
+      "h": 0.8802
+    },
+    "aya-16th-century-wooden-doors": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/aya-16th-century-wooden-doors.png",
+      "aspect": 0.659,
+      "w": 0.5801,
+      "h": 0.8802
+    },
+    "azalea-botanical-velvet-chair-3716": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/azalea-botanical-velvet-chair-3716.png",
+      "aspect": 1.348,
+      "w": 0.8802,
+      "h": 0.653
+    },
+    "b-w-yarn-oversize-pillow-2254": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/b-w-yarn-oversize-pillow-2254.png",
+      "aspect": 2.5802,
+      "w": 0.8802,
+      "h": 0.3411
+    },
+    "balsley-vintage-step-ladder-2113": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/balsley-vintage-step-ladder-2113.png",
+      "aspect": 0.5037,
+      "w": 0.4434,
+      "h": 0.8802
+    },
+    "bambi-natural-antler-rack-815": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bambi-natural-antler-rack-815.png",
+      "aspect": 1.3453,
+      "w": 0.8802,
+      "h": 0.6543
+    },
+    "barclay-concrete-split-wood-tasting-bar-786": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/barclay-concrete-split-wood-tasting-bar-786.png",
+      "aspect": 3.1152,
+      "w": 0.8802,
+      "h": 0.2826
+    },
+    "bard-deconstructed-leather-chair-2884": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bard-deconstructed-leather-chair-2884.png",
+      "aspect": 0.8432,
+      "w": 0.7422,
+      "h": 0.8802
+    },
+    "bartolo-black-tambour-columns": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bartolo-black-tambour-columns.png",
+      "aspect": 0.8543,
+      "w": 0.752,
+      "h": 0.8802
+    },
+    "bartolo-42-black-tambour-cocktail-column-3107": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bartolo-42-black-tambour-cocktail-column-3107.png",
+      "aspect": 0.858,
+      "w": 0.7552,
+      "h": 0.8802
+    },
+    "bay-midnight-blue-tray-3222": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bay-midnight-blue-tray-3222.png",
+      "aspect": 2.1224,
+      "w": 0.8802,
+      "h": 0.4147
+    },
+    "baylon-black-beverage-tub-4010": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/baylon-black-beverage-tub-4010.png",
+      "aspect": 1.5469,
+      "w": 0.8802,
+      "h": 0.569
+    },
+    "beatrice-antique-light-wood-cabinet-2919": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beatrice-antique-light-wood-cabinet-2919.png",
+      "aspect": 0.5999,
+      "w": 0.528,
+      "h": 0.8802
+    },
+    "beaufort-vintage-riding-helmet-4136": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beaufort-vintage-riding-helmet-4136.png",
+      "aspect": 1.0604,
+      "w": 0.8802,
+      "h": 0.8301
+    },
+    "beauregard-natural-tambour-bar-3060": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beauregard-natural-tambour-bar-3060.png",
+      "aspect": 1.749,
+      "w": 0.8802,
+      "h": 0.5033
+    },
+    "beige-embroidered-oversize-pillow-3192": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beige-embroidered-oversize-pillow-3192.png",
+      "aspect": 1.1635,
+      "w": 0.8802,
+      "h": 0.7565
+    },
+    "beige-half-leather-pillow-2223": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beige-half-leather-pillow-2223.png",
+      "aspect": 1.1155,
+      "w": 0.8802,
+      "h": 0.7891
+    },
+    "beige-linen-pillow-2224": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beige-linen-pillow-2224.png",
+      "aspect": 1.2028,
+      "w": 0.8802,
+      "h": 0.7318
+    },
+    "beige-sabra-pillow-3101": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beige-sabra-pillow-3101.png",
+      "aspect": 1.0662,
+      "w": 0.8802,
+      "h": 0.8255
+    },
+    "beige-velvet-pillow-2477": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beige-velvet-pillow-2477.png",
+      "aspect": 1.1239,
+      "w": 0.8802,
+      "h": 0.7832
+    },
+    "belissa-dinnerware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/belissa-dinnerware.png",
+      "aspect": 1.3466,
+      "w": 0.8802,
+      "h": 0.6536
+    },
+    "bellow": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bellow.png",
+      "aspect": 1.6488,
+      "w": 0.8802,
+      "h": 0.5339
+    },
+    "benecio-leather-knit-chair-3004": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/benecio-leather-knit-chair-3004.png",
+      "aspect": 1.0513,
+      "w": 0.8802,
+      "h": 0.8372
+    },
+    "beren": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/beren.png",
+      "aspect": 1.2404,
+      "w": 0.8802,
+      "h": 0.7096
+    },
+    "berghard-trunk-side-table-2616": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/berghard-trunk-side-table-2616.png",
+      "aspect": 0.9001,
+      "w": 0.7923,
+      "h": 0.8802
+    },
+    "berkshire-wood-shelf-1928": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/berkshire-wood-shelf-1928.png",
+      "aspect": 0.8713,
+      "w": 0.7669,
+      "h": 0.8802
+    },
+    "bettie-blue-hourglass": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bettie-blue-hourglass.png",
+      "aspect": 0.3898,
+      "w": 0.3431,
+      "h": 0.8802
+    },
+    "bill-vintage-cross-country-ski-pair-1968": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bill-vintage-cross-country-ski-pair-1968.png",
+      "aspect": 0.1834,
+      "w": 0.1615,
+      "h": 0.8802
+    },
+    "black-brown-plaid-pillow-3092": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-brown-plaid-pillow-3092.png",
+      "aspect": 1.1342,
+      "w": 0.8802,
+      "h": 0.776
+    },
+    "black-hide-lumbar-pillow-2393": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-hide-lumbar-pillow-2393.png",
+      "aspect": 1.7333,
+      "w": 0.8802,
+      "h": 0.5078
+    },
+    "black-leather-lattice-pillow-4152": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-leather-lattice-pillow-4152.png",
+      "aspect": 1.1019,
+      "w": 0.8802,
+      "h": 0.7988
+    },
+    "black-leather-lumbar-pillow-2230": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-leather-lumbar-pillow-2230.png",
+      "aspect": 1.1082,
+      "w": 0.8802,
+      "h": 0.7943
+    },
+    "black-leather-silver-line-lumbar-pillow-4151": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-leather-silver-line-lumbar-pillow-4151.png",
+      "aspect": 1.7378,
+      "w": 0.8802,
+      "h": 0.5065
+    },
+    "black-leather-studded-lumbar-pillow-4150": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-leather-studded-lumbar-pillow-4150.png",
+      "aspect": 1.842,
+      "w": 0.8802,
+      "h": 0.4779
+    },
+    "black-leather-woven-pillow-4158": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-leather-woven-pillow-4158.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "black-tourmaline-with-acrylic-stand-3486": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-tourmaline-with-acrylic-stand-3486.png",
+      "aspect": 1.8883,
+      "w": 0.8802,
+      "h": 0.4661
+    },
+    "black-white-abstract-fur-pillow-4156": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/black-white-abstract-fur-pillow-4156.png",
+      "aspect": 1.0408,
+      "w": 0.8802,
+      "h": 0.8457
+    },
+    "blanc-white-grey-cow-hide-ottoman-676": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blanc-white-grey-cow-hide-ottoman-676.png",
+      "aspect": 1.0219,
+      "w": 0.8802,
+      "h": 0.8613
+    },
+    "blaze-48-rectangle-weathered-steel-firepit-3540": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blaze-48-rectangle-weathered-steel-firepit-3540.png",
+      "aspect": 1.3426,
+      "w": 0.8802,
+      "h": 0.6556
+    },
+    "blue-denim-leather-buckle-pillow-2782": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-denim-leather-buckle-pillow-2782.png",
+      "aspect": 1.0662,
+      "w": 0.8802,
+      "h": 0.8255
+    },
+    "blue-light-stripe-pillow-3035": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-light-stripe-pillow-3035.png",
+      "aspect": 0.9305,
+      "w": 0.819,
+      "h": 0.8802
+    },
+    "blue-light-velvet-burnout-pillow-2484": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-light-velvet-burnout-pillow-2484.png",
+      "aspect": 1.101,
+      "w": 0.8802,
+      "h": 0.7995
+    },
+    "blue-light-velvet-lumbar-pillow-3090": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-light-velvet-lumbar-pillow-3090.png",
+      "aspect": 1.7884,
+      "w": 0.8802,
+      "h": 0.4922
+    },
+    "blue-light-velvet-pillow-3091": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-light-velvet-pillow-3091.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "blue-native-pillow-2235": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-native-pillow-2235.png",
+      "aspect": 1.0739,
+      "w": 0.8802,
+      "h": 0.8197
+    },
+    "blue-native-x-pillow-2388": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-native-x-pillow-2388.png",
+      "aspect": 1.0833,
+      "w": 0.8802,
+      "h": 0.8125
+    },
+    "blue-ombre-fringe-oversize-lumbar-pillow-3196": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-ombre-fringe-oversize-lumbar-pillow-3196.png",
+      "aspect": 2,
+      "w": 0.8802,
+      "h": 0.4401
+    },
+    "blue-ombre-fringe-oversize-pillow-3195": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-ombre-fringe-oversize-pillow-3195.png",
+      "aspect": 1.1361,
+      "w": 0.8802,
+      "h": 0.7747
+    },
+    "blue-red-native-pillow-2413": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-red-native-pillow-2413.png",
+      "aspect": 1.1257,
+      "w": 0.8802,
+      "h": 0.7819
+    },
+    "blue-sabra-pillow-3098": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-sabra-pillow-3098.png",
+      "aspect": 1.0894,
+      "w": 0.8802,
+      "h": 0.8079
+    },
+    "blue-turquoise-sabra-pillow-3100": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-turquoise-sabra-pillow-3100.png",
+      "aspect": 0.9697,
+      "w": 0.8535,
+      "h": 0.8802
+    },
+    "blue-velvet-brocade-lumbar-pillow-2427": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-velvet-brocade-lumbar-pillow-2427.png",
+      "aspect": 1.7311,
+      "w": 0.8802,
+      "h": 0.5085
+    },
+    "blue-velvet-fringe-lumbar-pillow-2856": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-velvet-fringe-lumbar-pillow-2856.png",
+      "aspect": 1.627,
+      "w": 0.8802,
+      "h": 0.541
+    },
+    "blue-wild-bird-velvet-pillow-3215": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/blue-wild-bird-velvet-pillow-3215.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "boone-barrel-stave-bar-4086": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/boone-barrel-stave-bar-4086.png",
+      "aspect": 2.0059,
+      "w": 0.8802,
+      "h": 0.4388
+    },
+    "botond-87-walnut-rod-chandelier-4047": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/botond-87-walnut-rod-chandelier-4047.png",
+      "aspect": 3.3465,
+      "w": 0.8802,
+      "h": 0.263
+    },
+    "boulder-36-cast-coffee-table-3032": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/boulder-36-cast-coffee-table-3032.png",
+      "aspect": 2.1877,
+      "w": 0.8802,
+      "h": 0.4023
+    },
+    "boulder-48-cast-coffee-table-3031": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/boulder-48-cast-coffee-table-3031.png",
+      "aspect": 2.41,
+      "w": 0.8802,
+      "h": 0.3652
+    },
+    "boyce-concrete-birch-double-bar-1019": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/boyce-concrete-birch-double-bar-1019.png",
+      "aspect": 4.4328,
+      "w": 0.8802,
+      "h": 0.1986
+    },
+    "brantley-dark-orange-metal-wood-burning-chiminea-2535": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brantley-dark-orange-metal-wood-burning-chiminea-2535.png",
+      "aspect": 0.3343,
+      "w": 0.2943,
+      "h": 0.8802
+    },
+    "brayan-dining-chair-2745": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brayan-dining-chair-2745.png",
+      "aspect": 0.6361,
+      "w": 0.5599,
+      "h": 0.8802
+    },
+    "brecken-lidded-basket-3732": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brecken-lidded-basket-3732.png",
+      "aspect": 1.8856,
+      "w": 0.8802,
+      "h": 0.4668
+    },
+    "breen-olive-velvet-pillow": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/breen-olive-velvet-pillow.png",
+      "aspect": 1.1595,
+      "w": 0.8802,
+      "h": 0.7591
+    },
+    "briar-9x12-natural-braided-jute-rug-2793": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/briar-9x12-natural-braided-jute-rug-2793.png",
+      "aspect": 1.2963,
+      "w": 0.8802,
+      "h": 0.679
+    },
+    "brinley-charred-wood-tray-3733": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brinley-charred-wood-tray-3733.png",
+      "aspect": 1.9397,
+      "w": 0.8802,
+      "h": 0.4538
+    },
+    "briony-coffee-table-3839": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/briony-coffee-table-3839.png",
+      "aspect": 2.1877,
+      "w": 0.8802,
+      "h": 0.4023
+    },
+    "broadway-concrete-counter-community-table-376": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/broadway-concrete-counter-community-table-376.png",
+      "aspect": 2.323,
+      "w": 0.8802,
+      "h": 0.3789
+    },
+    "bronson-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/bronson-glassware.png",
+      "aspect": 1.2115,
+      "w": 0.8802,
+      "h": 0.7266
+    },
+    "brooklyn-plush-charcoal-sofa-1770": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brooklyn-plush-charcoal-sofa-1770.png",
+      "aspect": 2.4273,
+      "w": 0.8802,
+      "h": 0.3626
+    },
+    "brown-cognac-leather-lumbar-pillow-3457": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-cognac-leather-lumbar-pillow-3457.png",
+      "aspect": 1.8123,
+      "w": 0.8802,
+      "h": 0.4857
+    },
+    "brown-cognac-leather-stitched-3458": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-cognac-leather-stitched-3458.png",
+      "aspect": 1.0328,
+      "w": 0.8802,
+      "h": 0.8522
+    },
+    "brown-faux-mink-oversize-pillow-2244": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-faux-mink-oversize-pillow-2244.png",
+      "aspect": 1.14,
+      "w": 0.8802,
+      "h": 0.7721
+    },
+    "brown-fur-oversize": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-fur-oversize.png",
+      "aspect": 1.1565,
+      "w": 0.8802,
+      "h": 0.7611
+    },
+    "brown-fur-mud-cloth-lumbar-oversize": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-fur-mud-cloth-lumbar-oversize.png",
+      "aspect": 1.8726,
+      "w": 0.8802,
+      "h": 0.4701
+    },
+    "brown-grey-fur-pillow-4079": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-grey-fur-pillow-4079.png",
+      "aspect": 1.2018,
+      "w": 0.8802,
+      "h": 0.7324
+    },
+    "brown-hide-lumbar-pillow-2243": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-hide-lumbar-pillow-2243.png",
+      "aspect": 1.8674,
+      "w": 0.8802,
+      "h": 0.4714
+    },
+    "brown-leather-patchwork-lumbar-pillow-2326": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-leather-patchwork-lumbar-pillow-2326.png",
+      "aspect": 1.5666,
+      "w": 0.8802,
+      "h": 0.5618
+    },
+    "brown-light-plaid-pillow-2916": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-light-plaid-pillow-2916.png",
+      "aspect": 1.0646,
+      "w": 0.8802,
+      "h": 0.8268
+    },
+    "brown-maroon-leather-pillow-2291": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-maroon-leather-pillow-2291.png",
+      "aspect": 1.3547,
+      "w": 0.8802,
+      "h": 0.6497
+    },
+    "brown-plaid-pillow-2915": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-plaid-pillow-2915.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "brown-rust-mudcloth-oversize-lumbar-pillow-4008": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-rust-mudcloth-oversize-lumbar-pillow-4008.png",
+      "aspect": 2.8463,
+      "w": 0.8802,
+      "h": 0.3092
+    },
+    "brown-strip-oversize-pillow-2245": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-strip-oversize-pillow-2245.png",
+      "aspect": 2.3972,
+      "w": 0.8802,
+      "h": 0.3672
+    },
+    "brown-tweed-pillow-4007": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-tweed-pillow-4007.png",
+      "aspect": 0.9209,
+      "w": 0.8105,
+      "h": 0.8802
+    },
+    "brown-velvet-quilted-pillow-2240": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-velvet-quilted-pillow-2240.png",
+      "aspect": 1.3953,
+      "w": 0.8802,
+      "h": 0.6309
+    },
+    "brown-yellow-pillow": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/brown-yellow-pillow.png",
+      "aspect": 1.1037,
+      "w": 0.8802,
+      "h": 0.7975
+    },
+    "sila-grey-speckled-glaze": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sila-grey-speckled-glaze.png",
+      "aspect": 1.2325,
+      "w": 0.8802,
+      "h": 0.7142
+    },
+    "byron-7x7-black-hide-rug-394": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/byron-7x7-black-hide-rug-394.png",
+      "aspect": 1.1352,
+      "w": 0.8802,
+      "h": 0.7754
+    },
+    "caleri-side-table-3838": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/caleri-side-table-3838.png",
+      "aspect": 0.8987,
+      "w": 0.791,
+      "h": 0.8802
+    },
+    "calista-fringe-sofa-3713": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/calista-fringe-sofa-3713.png",
+      "aspect": 2.9455,
+      "w": 0.8802,
+      "h": 0.2988
+    },
+    "calloway-wood-marble-coffee-table-3000": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/calloway-wood-marble-coffee-table-3000.png",
+      "aspect": 2.4229,
+      "w": 0.8802,
+      "h": 0.3633
+    },
+    "callum-14-round-brass-tray-3169": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/callum-14-round-brass-tray-3169.png",
+      "aspect": 1.1585,
+      "w": 0.8802,
+      "h": 0.7598
+    },
+    "calvary-wool-charcoal-throw-2329": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/calvary-wool-charcoal-throw-2329.png",
+      "aspect": 0.8454,
+      "w": 0.7441,
+      "h": 0.8802
+    },
+    "calvary-wool-grey-throw-2331": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/calvary-wool-grey-throw-2331.png",
+      "aspect": 0.8713,
+      "w": 0.7669,
+      "h": 0.8802
+    },
+    "calvary-wool-olive-throw-2330": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/calvary-wool-olive-throw-2330.png",
+      "aspect": 0.7352,
+      "w": 0.6471,
+      "h": 0.8802
+    },
+    "camden-creamery-crate-605": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/camden-creamery-crate-605.png",
+      "aspect": 1.9069,
+      "w": 0.8802,
+      "h": 0.4616
+    },
+    "cameron-directors-dining-chair-3827": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cameron-directors-dining-chair-3827.png",
+      "aspect": 0.7478,
+      "w": 0.6582,
+      "h": 0.8802
+    },
+    "canyon-8-natural-pine-bar-2811": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/canyon-8-natural-pine-bar-2811.png",
+      "aspect": 1.7071,
+      "w": 0.8802,
+      "h": 0.5156
+    },
+    "cardea-metal-screen-cabinet-762": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cardea-metal-screen-cabinet-762.png",
+      "aspect": 0.3802,
+      "w": 0.3346,
+      "h": 0.8802
+    },
+    "carlisle-smoke-glassware-1": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/carlisle-smoke-glassware-1.png",
+      "aspect": 1.5684,
+      "w": 0.8802,
+      "h": 0.5612
+    },
+    "carwyn-white-wood-chair-2749": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/carwyn-white-wood-chair-2749.png",
+      "aspect": 1.2039,
+      "w": 0.8802,
+      "h": 0.7311
+    },
+    "casey-leather-brass-chandelier-3026": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/casey-leather-brass-chandelier-3026.png",
+      "aspect": 1.0328,
+      "w": 0.8802,
+      "h": 0.8522
+    },
+    "caspian-nautical-telescope-1901": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/caspian-nautical-telescope-1901.png",
+      "aspect": 0.4963,
+      "w": 0.4368,
+      "h": 0.8802
+    },
+    "catalina-white-clay-perforated-vase": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/catalina-white-clay-perforated-vase.png",
+      "aspect": 0.929,
+      "w": 0.8177,
+      "h": 0.8802
+    },
+    "cera-petrified-wood-bookends-3469": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cera-petrified-wood-bookends-3469.png",
+      "aspect": 1.8123,
+      "w": 0.8802,
+      "h": 0.4857
+    },
+    "cernunnos-elk-european-mount-3221": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cernunnos-elk-european-mount-3221.png",
+      "aspect": 0.9859,
+      "w": 0.8678,
+      "h": 0.8802
+    },
+    "champagne-crushed-velvet-pillow-2586": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/champagne-crushed-velvet-pillow-2586.png",
+      "aspect": 1.1109,
+      "w": 0.8802,
+      "h": 0.7923
+    },
+    "champagne-snake-lumbar-pillow-2389": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/champagne-snake-lumbar-pillow-2389.png",
+      "aspect": 2.1842,
+      "w": 0.8802,
+      "h": 0.403
+    },
+    "champagne-velvet-quilted-pillow-2255": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/champagne-velvet-quilted-pillow-2255.png",
+      "aspect": 1.4728,
+      "w": 0.8802,
+      "h": 0.5977
+    },
+    "chatta-6-diameter-umbrellas": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/chatta-6-diameter-umbrellas.png",
+      "aspect": 1.7028,
+      "w": 0.8802,
+      "h": 0.5169
+    },
+    "chendra-double-scallop-umbrella-4040": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/chendra-double-scallop-umbrella-4040.png",
+      "aspect": 0.9246,
+      "w": 0.8138,
+      "h": 0.8802
+    },
+    "chrishell-globe-lamp-3491": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/chrishell-globe-lamp-3491.png",
+      "aspect": 0.6287,
+      "w": 0.5534,
+      "h": 0.8802
+    },
+    "cicely-wicker-linen-loveseat-2741": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cicely-wicker-linen-loveseat-2741.png",
+      "aspect": 1.6837,
+      "w": 0.8802,
+      "h": 0.5228
+    },
+    "cinsere-oak-dining-table-3831": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cinsere-oak-dining-table-3831.png",
+      "aspect": 1.11,
+      "w": 0.8802,
+      "h": 0.793
+    },
+    "claude-white-upholstered-chair-1789": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/claude-white-upholstered-chair-1789.png",
+      "aspect": 1.0235,
+      "w": 0.8802,
+      "h": 0.86
+    },
+    "clyde-smoke-blue-wood-chain-3302": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/clyde-smoke-blue-wood-chain-3302.png",
+      "aspect": 1.0281,
+      "w": 0.8802,
+      "h": 0.8561
+    },
+    "collin-wood-filled-concrete-coffee-table-288": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/collin-wood-filled-concrete-coffee-table-288.png",
+      "aspect": 1.6837,
+      "w": 0.8802,
+      "h": 0.5228
+    },
+    "commodore-canvas-sofa-1813": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/commodore-canvas-sofa-1813.png",
+      "aspect": 1.8099,
+      "w": 0.8802,
+      "h": 0.4863
+    },
+    "concreta-wall-sconce-4045": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/concreta-wall-sconce-4045.png",
+      "aspect": 0.3521,
+      "w": 0.3099,
+      "h": 0.8802
+    },
+    "corwin-canvas-lounge-chair-1814": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/corwin-canvas-lounge-chair-1814.png",
+      "aspect": 1.0513,
+      "w": 0.8802,
+      "h": 0.8372
+    },
+    "cosette-sage-velvet-loveseat-3462": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cosette-sage-velvet-loveseat-3462.png",
+      "aspect": 1.1645,
+      "w": 0.8802,
+      "h": 0.7559
+    },
+    "cressida-maroon-marble-table-lamp-3998": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cressida-maroon-marble-table-lamp-3998.png",
+      "aspect": 0.3913,
+      "w": 0.3444,
+      "h": 0.8802
+    },
+    "culetta-green-marble-cabaret-lamp-4001": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/culetta-green-marble-cabaret-lamp-4001.png",
+      "aspect": 0.4623,
+      "w": 0.4069,
+      "h": 0.8802
+    },
+    "cupra-copper-beverage-tub-3143": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cupra-copper-beverage-tub-3143.png",
+      "aspect": 1.7071,
+      "w": 0.8802,
+      "h": 0.5156
+    },
+    "cypress-stump-side-table-343": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/cypress-stump-side-table-343.png",
+      "aspect": 0.6583,
+      "w": 0.5794,
+      "h": 0.8802
+    },
+    "darnell-color-mixing-led-uplight-1625": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/darnell-color-mixing-led-uplight-1625.png",
+      "aspect": 0.7885,
+      "w": 0.694,
+      "h": 0.8802
+    },
+    "dashiell-oak-coffee-table-2997": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dashiell-oak-coffee-table-2997.png",
+      "aspect": 3.3885,
+      "w": 0.8802,
+      "h": 0.2598
+    },
+    "daxton-light-wood-wall-3110": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/daxton-light-wood-wall-3110.png",
+      "aspect": 1.4069,
+      "w": 0.8802,
+      "h": 0.6257
+    },
+    "dayna-8x10-grey-pattern-rug-1825": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dayna-8x10-grey-pattern-rug-1825.png",
+      "aspect": 1.3629,
+      "w": 0.8802,
+      "h": 0.6458
+    },
+    "deco": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/deco.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "deja-stainless-gold-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/deja-stainless-gold-flatware.png",
+      "aspect": 0.679,
+      "w": 0.5977,
+      "h": 0.8802
+    },
+    "delilah-gold-metal-screen-2155": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/delilah-gold-metal-screen-2155.png",
+      "aspect": 0.3343,
+      "w": 0.2943,
+      "h": 0.8802
+    },
+    "della-half-frosted-glass-bottle": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/della-half-frosted-glass-bottle.png",
+      "aspect": 0.429,
+      "w": 0.3776,
+      "h": 0.8802
+    },
+    "dezik-48-square-tiered-bar-shelving-3562": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dezik-48-square-tiered-bar-shelving-3562.png",
+      "aspect": 0.682,
+      "w": 0.6003,
+      "h": 0.8802
+    },
+    "dezmelda-24-smoke-crystal-chandelier-2487": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dezmelda-24-smoke-crystal-chandelier-2487.png",
+      "aspect": 0.7337,
+      "w": 0.6458,
+      "h": 0.8802
+    },
+    "dilani-13-iridescent-ivory-leather-charger-2810": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dilani-13-iridescent-ivory-leather-charger-2810.png",
+      "aspect": 1.0052,
+      "w": 0.8802,
+      "h": 0.8757
+    },
+    "dinay-cut-glass-beverage-dispenser-3178": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dinay-cut-glass-beverage-dispenser-3178.png",
+      "aspect": 0.4978,
+      "w": 0.4382,
+      "h": 0.8802
+    },
+    "ditmer-black-patchwork-bowl-3463": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ditmer-black-patchwork-bowl-3463.png",
+      "aspect": 2.6,
+      "w": 0.8802,
+      "h": 0.3385
+    },
+    "divya-11-rustic-paper-mache-vase-4027": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/divya-11-rustic-paper-mache-vase-4027.png",
+      "aspect": 0.9512,
+      "w": 0.8372,
+      "h": 0.8802
+    },
+    "donaver-tortoise-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/donaver-tortoise-flatware.png",
+      "aspect": 0.7885,
+      "w": 0.694,
+      "h": 0.8802
+    },
+    "donnelly-navy-leather-wingback-chair-2982": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/donnelly-navy-leather-wingback-chair-2982.png",
+      "aspect": 0.7574,
+      "w": 0.6667,
+      "h": 0.8802
+    },
+    "dover-matte-oyster-plates-bowl": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dover-matte-oyster-plates-bowl.png",
+      "aspect": 1.7627,
+      "w": 0.8802,
+      "h": 0.4993
+    },
+    "dublin-trunk-coffee-table-3084": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dublin-trunk-coffee-table-3084.png",
+      "aspect": 1.4956,
+      "w": 0.8802,
+      "h": 0.5885
+    },
+    "duke-antique-bronze-cocktail-table-2992": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/duke-antique-bronze-cocktail-table-2992.png",
+      "aspect": 0.8254,
+      "w": 0.7266,
+      "h": 0.8802
+    },
+    "dune-wood-and-tan-boucle-bench-3832": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dune-wood-and-tan-boucle-bench-3832.png",
+      "aspect": 2.0454,
+      "w": 0.8802,
+      "h": 0.4303
+    },
+    "dunstan-black-stone-coffee-table": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dunstan-black-stone-coffee-table.png",
+      "aspect": 2.3032,
+      "w": 0.8802,
+      "h": 0.3822
+    },
+    "durango-cedar-concrete-bar-174": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/durango-cedar-concrete-bar-174.png",
+      "aspect": 1.401,
+      "w": 0.8802,
+      "h": 0.6283
+    },
+    "duru-antique-clear-glass-bottle-set": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/duru-antique-clear-glass-bottle-set.png",
+      "aspect": 0.5288,
+      "w": 0.4655,
+      "h": 0.8802
+    },
+    "dylan-marble-steel-side-table-2848": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/dylan-marble-steel-side-table-2848.png",
+      "aspect": 0.6857,
+      "w": 0.6035,
+      "h": 0.8802
+    },
+    "eagan-decanter-1236": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eagan-decanter-1236.png",
+      "aspect": 0.7345,
+      "w": 0.6465,
+      "h": 0.8802
+    },
+    "eden": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eden.png",
+      "aspect": 1.3657,
+      "w": 0.8802,
+      "h": 0.6445
+    },
+    "edvard-vintage-horn-ashtray-1508": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/edvard-vintage-horn-ashtray-1508.png",
+      "aspect": 0.8513,
+      "w": 0.7493,
+      "h": 0.8802
+    },
+    "elgin-pony-bookends": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elgin-pony-bookends.png",
+      "aspect": 0.9112,
+      "w": 0.8021,
+      "h": 0.8802
+    },
+    "elijah-marble-top-antique-console-table-2973": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elijah-marble-top-antique-console-table-2973.png",
+      "aspect": 1.4232,
+      "w": 0.8802,
+      "h": 0.6185
+    },
+    "elin-ivory-double-sheepskin-4149": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elin-ivory-double-sheepskin-4149.png",
+      "aspect": 2.4991,
+      "w": 0.8802,
+      "h": 0.3522
+    },
+    "elise-mahogany-cocktail-table-810": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elise-mahogany-cocktail-table-810.png",
+      "aspect": 0.878,
+      "w": 0.7728,
+      "h": 0.8802
+    },
+    "elizabeth-champagne-velvet-sofa-755": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elizabeth-champagne-velvet-sofa-755.png",
+      "aspect": 2.2685,
+      "w": 0.8802,
+      "h": 0.388
+    },
+    "ellora-sage-velvet-ottoman-3461": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ellora-sage-velvet-ottoman-3461.png",
+      "aspect": 1.9766,
+      "w": 0.8802,
+      "h": 0.4453
+    },
+    "eloise-antique-white-french-loveseat-2714": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eloise-antique-white-french-loveseat-2714.png",
+      "aspect": 1.837,
+      "w": 0.8802,
+      "h": 0.4792
+    },
+    "elspeth-almond-velour-chair-2462": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elspeth-almond-velour-chair-2462.png",
+      "aspect": 0.9268,
+      "w": 0.8158,
+      "h": 0.8802
+    },
+    "elwood-concrete-split-wood-bar-1415": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elwood-concrete-split-wood-bar-1415.png",
+      "aspect": 2.1092,
+      "w": 0.8802,
+      "h": 0.4173
+    },
+    "elysanda-ceremony-path-platform": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elysanda-ceremony-path-platform.png",
+      "aspect": 2.2273,
+      "w": 0.8802,
+      "h": 0.3952
+    },
+    "elysia-ruffled-marble-bowl": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/elysia-ruffled-marble-bowl.png",
+      "aspect": 1.8856,
+      "w": 0.8802,
+      "h": 0.4668
+    },
+    "ember-38-square-weathered-steel-firepit-3499": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ember-38-square-weathered-steel-firepit-3499.png",
+      "aspect": 1.0188,
+      "w": 0.8802,
+      "h": 0.8639
+    },
+    "emile-vintage-microphone-pendant-light-4165": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/emile-vintage-microphone-pendant-light-4165.png",
+      "aspect": 0.2707,
+      "w": 0.2383,
+      "h": 0.8802
+    },
+    "eniko-6x6-brindle-hide-rug-395": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eniko-6x6-brindle-hide-rug-395.png",
+      "aspect": 1.2731,
+      "w": 0.8802,
+      "h": 0.6914
+    },
+    "ennai-concrete-oil-lamp-4030": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ennai-concrete-oil-lamp-4030.png",
+      "aspect": 0.8883,
+      "w": 0.7819,
+      "h": 0.8802
+    },
+    "eriksen-mesh-edison-side-table-1899": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eriksen-mesh-edison-side-table-1899.png",
+      "aspect": 1.009,
+      "w": 0.8802,
+      "h": 0.8724
+    },
+    "erin-antique-white-french-sofa-2717": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/erin-antique-white-french-sofa-2717.png",
+      "aspect": 2.331,
+      "w": 0.8802,
+      "h": 0.3776
+    },
+    "erizo-leather-chandelier-3877": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/erizo-leather-chandelier-3877.png",
+      "aspect": 0.8336,
+      "w": 0.7337,
+      "h": 0.8802
+    },
+    "erwin": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/erwin.png",
+      "aspect": 1.3139,
+      "w": 0.8802,
+      "h": 0.6699
+    },
+    "estella-mixed-metal-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/estella-mixed-metal-flatware.png",
+      "aspect": 0.7877,
+      "w": 0.6934,
+      "h": 0.8802
+    },
+    "estes-reclaimed-dining-table-351": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/estes-reclaimed-dining-table-351.png",
+      "aspect": 2.0089,
+      "w": 0.8802,
+      "h": 0.4382
+    },
+    "eustace-36-white-cast-antler-chandelier-2485": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/eustace-36-white-cast-antler-chandelier-2485.png",
+      "aspect": 1.4039,
+      "w": 0.8802,
+      "h": 0.627
+    },
+    "evander-grey-hide-tapered-ottoman-3014": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evander-grey-hide-tapered-ottoman-3014.png",
+      "aspect": 1.46,
+      "w": 0.8802,
+      "h": 0.6029
+    },
+    "evangeline-silver-folding-bar-cart-3009": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evangeline-silver-folding-bar-cart-3009.png",
+      "aspect": 0.9312,
+      "w": 0.8197,
+      "h": 0.8802
+    },
+    "evelda-ceramic-chain-vase": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evelda-ceramic-chain-vase.png",
+      "aspect": 1.2313,
+      "w": 0.8802,
+      "h": 0.7148
+    },
+    "evita-13-marble-charger-2730": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evita-13-marble-charger-2730.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "evren-8x10kilim-rug-707": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evren-8x10kilim-rug-707.png",
+      "aspect": 1.3838,
+      "w": 0.8802,
+      "h": 0.6361
+    },
+    "evy-ivory-stucco-table-lamp-2960": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/evy-ivory-stucco-table-lamp-2960.png",
+      "aspect": 0.5444,
+      "w": 0.4792,
+      "h": 0.8802
+    },
+    "excursion-champagne-trunk-bar-2912": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/excursion-champagne-trunk-bar-2912.png",
+      "aspect": 0.8425,
+      "w": 0.7415,
+      "h": 0.8802
+    },
+    "ezra-marble-top-antique-console-table-2974": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ezra-marble-top-antique-console-table-2974.png",
+      "aspect": 1.4585,
+      "w": 0.8802,
+      "h": 0.6035
+    },
+    "fabian-grey-hide-barrel-chair-3002": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fabian-grey-hide-barrel-chair-3002.png",
+      "aspect": 0.949,
+      "w": 0.8353,
+      "h": 0.8802
+    },
+    "farrah-triple-gold-globe-lamp-819": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/farrah-triple-gold-globe-lamp-819.png",
+      "aspect": 0.4571,
+      "w": 0.4023,
+      "h": 0.8802
+    },
+    "farrell-grey-hide-bar-stool-3012": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/farrell-grey-hide-bar-stool-3012.png",
+      "aspect": 0.6679,
+      "w": 0.5879,
+      "h": 0.8802
+    },
+    "farren-european-wood-paddle-603": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/farren-european-wood-paddle-603.png",
+      "aspect": 3.0179,
+      "w": 0.8802,
+      "h": 0.2917
+    },
+    "farrow-cocktail-column-tables": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/farrow-cocktail-column-tables.png",
+      "aspect": 0.6561,
+      "w": 0.5775,
+      "h": 0.8802
+    },
+    "fawn-natural-cane-chair-721": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fawn-natural-cane-chair-721.png",
+      "aspect": 0.8558,
+      "w": 0.7533,
+      "h": 0.8802
+    },
+    "leather-baskets": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leather-baskets.png",
+      "aspect": 1.0408,
+      "w": 0.8802,
+      "h": 0.8457
+    },
+    "felina-5x8-grey-natural-tassel-jute-rug-2770": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/felina-5x8-grey-natural-tassel-jute-rug-2770.png",
+      "aspect": 3.7556,
+      "w": 0.8802,
+      "h": 0.2344
+    },
+    "felix-natural-antler-814": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/felix-natural-antler-814.png",
+      "aspect": 1.7558,
+      "w": 0.8802,
+      "h": 0.5013
+    },
+    "feride-5x8-kilim-rug-403": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/feride-5x8-kilim-rug-403.png",
+      "aspect": 1.6076,
+      "w": 0.8802,
+      "h": 0.5475
+    },
+    "fiona-bone-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fiona-bone-flatware.png",
+      "aspect": 0.7618,
+      "w": 0.6706,
+      "h": 0.8802
+    },
+    "flint-leather-brass-coffee-table-734": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/flint-leather-brass-coffee-table-734.png",
+      "aspect": 1.2988,
+      "w": 0.8802,
+      "h": 0.6777
+    },
+    "florence-weathered-zinc-lantern": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/florence-weathered-zinc-lantern.png",
+      "aspect": 0.9963,
+      "w": 0.877,
+      "h": 0.8802
+    },
+    "florian-ivory-hide-barrel-chair-3003": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/florian-ivory-hide-barrel-chair-3003.png",
+      "aspect": 0.9408,
+      "w": 0.8281,
+      "h": 0.8802
+    },
+    "ford-deconstructed-leather-wingback-chair-2906": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ford-deconstructed-leather-wingback-chair-2906.png",
+      "aspect": 0.77,
+      "w": 0.6777,
+      "h": 0.8802
+    },
+    "francoise-cane-side-table-2408": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/francoise-cane-side-table-2408.png",
+      "aspect": 1.0816,
+      "w": 0.8802,
+      "h": 0.8138
+    },
+    "fringe-black-throw-3097": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-black-throw-3097.png",
+      "aspect": 1.0654,
+      "w": 0.8802,
+      "h": 0.8262
+    },
+    "fringe-blue-smoke-throw-3593": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-blue-smoke-throw-3593.png",
+      "aspect": 1.5346,
+      "w": 0.8802,
+      "h": 0.5736
+    },
+    "fringe-camel-throw-2645": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-camel-throw-2645.png",
+      "aspect": 1.1767,
+      "w": 0.8802,
+      "h": 0.748
+    },
+    "fringe-charcoal-throw-3094": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-charcoal-throw-3094.png",
+      "aspect": 1.2671,
+      "w": 0.8802,
+      "h": 0.6947
+    },
+    "fringe-grey-throw-3095": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-grey-throw-3095.png",
+      "aspect": 1.2647,
+      "w": 0.8802,
+      "h": 0.696
+    },
+    "fringe-ivory-cashmere-throw-3594": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-ivory-cashmere-throw-3594.png",
+      "aspect": 1.5739,
+      "w": 0.8802,
+      "h": 0.5592
+    },
+    "fringe-ivory-throw-2644": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-ivory-throw-2644.png",
+      "aspect": 1.1767,
+      "w": 0.8802,
+      "h": 0.748
+    },
+    "fringe-light-blue-throw-2899": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-light-blue-throw-2899.png",
+      "aspect": 1.2438,
+      "w": 0.8802,
+      "h": 0.7077
+    },
+    "fringe-olive-throw-4005": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-olive-throw-4005.png",
+      "aspect": 1.9538,
+      "w": 0.8802,
+      "h": 0.4505
+    },
+    "fringe-sage-throw-3459": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fringe-sage-throw-3459.png",
+      "aspect": 0.7093,
+      "w": 0.6243,
+      "h": 0.8802
+    },
+    "frost-white-antler-table-lamp-2768": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/frost-white-antler-table-lamp-2768.png",
+      "aspect": 0.5266,
+      "w": 0.4635,
+      "h": 0.8802
+    },
+    "fulton-white-leather-butterfly-chair-3856": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fulton-white-leather-butterfly-chair-3856.png",
+      "aspect": 0.7626,
+      "w": 0.6712,
+      "h": 0.8802
+    },
+    "fur-beige-mongolian-throw-2436": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-beige-mongolian-throw-2436.png",
+      "aspect": 0.8602,
+      "w": 0.7572,
+      "h": 0.8802
+    },
+    "fur-brown-bear-throw-2437": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-brown-bear-throw-2437.png",
+      "aspect": 0.8254,
+      "w": 0.7266,
+      "h": 0.8802
+    },
+    "fur-brown-mongolian-throw-2898": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-brown-mongolian-throw-2898.png",
+      "aspect": 0.679,
+      "w": 0.5977,
+      "h": 0.8802
+    },
+    "fur-brown-mudcloth-mongolian-throw-2341": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-brown-mudcloth-mongolian-throw-2341.png",
+      "aspect": 0.7737,
+      "w": 0.681,
+      "h": 0.8802
+    },
+    "fur-gold-feather-throw-2896": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-gold-feather-throw-2896.png",
+      "aspect": 0.7315,
+      "w": 0.6439,
+      "h": 0.8802
+    },
+    "fur-ivory-mongolian-throw-2441": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-ivory-mongolian-throw-2441.png",
+      "aspect": 0.8713,
+      "w": 0.7669,
+      "h": 0.8802
+    },
+    "fur-red-black-ombre-throw-4164": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/fur-red-black-ombre-throw-4164.png",
+      "aspect": 1.6488,
+      "w": 0.8802,
+      "h": 0.5339
+    },
+    "garry-wagon-wheel-1682": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/garry-wagon-wheel-1682.png",
+      "aspect": 0.8846,
+      "w": 0.7786,
+      "h": 0.8802
+    },
+    "gemma-sage-glass-table-lamp-2964": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gemma-sage-glass-table-lamp-2964.png",
+      "aspect": 0.5769,
+      "w": 0.5078,
+      "h": 0.8802
+    },
+    "georgia-brass-sconce-3979": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/georgia-brass-sconce-3979.png",
+      "aspect": 0.7367,
+      "w": 0.6484,
+      "h": 0.8802
+    },
+    "geraldine-goat-fur-wood-bench-2002": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/geraldine-goat-fur-wood-bench-2002.png",
+      "aspect": 1.6095,
+      "w": 0.8802,
+      "h": 0.5469
+    },
+    "gerwyn-grey-dining-chair-3279": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gerwyn-grey-dining-chair-3279.png",
+      "aspect": 0.5178,
+      "w": 0.4557,
+      "h": 0.8802
+    },
+    "gibbs-15-square-brown-leather-tray-3171": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gibbs-15-square-brown-leather-tray-3171.png",
+      "aspect": 1.0052,
+      "w": 0.8802,
+      "h": 0.8757
+    },
+    "gideon-bamboo-pendant-light": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gideon-bamboo-pendant-light.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "gideon-small-bamboo-mesh-pendant-2864": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gideon-small-bamboo-mesh-pendant-2864.png",
+      "aspect": 0.4216,
+      "w": 0.3711,
+      "h": 0.8802
+    },
+    "giesel-green-fringe-lamp-3535": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/giesel-green-fringe-lamp-3535.png",
+      "aspect": 0.6191,
+      "w": 0.5449,
+      "h": 0.8802
+    },
+    "giles-goat-hide-chair-757": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/giles-goat-hide-chair-757.png",
+      "aspect": 0.7618,
+      "w": 0.6706,
+      "h": 0.8802
+    },
+    "ginny-whitewash-wood-bowl-1807": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ginny-whitewash-wood-bowl-1807.png",
+      "aspect": 1.837,
+      "w": 0.8802,
+      "h": 0.4792
+    },
+    "glaucus-6x8-grey-faux-hide-rug-2149": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/glaucus-6x8-grey-faux-hide-rug-2149.png",
+      "aspect": 1.3165,
+      "w": 0.8802,
+      "h": 0.6686
+    },
+    "gloria-gold-beverage-tub-3530": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gloria-gold-beverage-tub-3530.png",
+      "aspect": 1.2438,
+      "w": 0.8802,
+      "h": 0.7077
+    },
+    "inola-gold-slatted-bar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/inola-gold-slatted-bar.png",
+      "aspect": 2.9649,
+      "w": 0.8802,
+      "h": 0.2969
+    },
+    "gold-fleck-woven-pillow-2257": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-fleck-woven-pillow-2257.png",
+      "aspect": 1.11,
+      "w": 0.8802,
+      "h": 0.793
+    },
+    "gold-mustard-mudcloth-pillow-4009": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-mustard-mudcloth-pillow-4009.png",
+      "aspect": 1.0112,
+      "w": 0.8802,
+      "h": 0.8704
+    },
+    "gold-speckled-leather-pillow-2394": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-speckled-leather-pillow-2394.png",
+      "aspect": 1.1229,
+      "w": 0.8802,
+      "h": 0.7839
+    },
+    "gold-velvet-dotted-pillow-2593": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-velvet-dotted-pillow-2593.png",
+      "aspect": 0.9926,
+      "w": 0.8737,
+      "h": 0.8802
+    },
+    "gold-velvet-fringe-lumbar-pillow-4085": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-velvet-fringe-lumbar-pillow-4085.png",
+      "aspect": 1.6329,
+      "w": 0.8802,
+      "h": 0.5391
+    },
+    "gold-zebra-velvet-pillow-4160": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gold-zebra-velvet-pillow-4160.png",
+      "aspect": 1.0587,
+      "w": 0.8802,
+      "h": 0.8314
+    },
+    "gopala-7x7-natural-tan-hide-rug-396": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gopala-7x7-natural-tan-hide-rug-396.png",
+      "aspect": 1.2612,
+      "w": 0.8802,
+      "h": 0.6979
+    },
+    "green-natural-pillow-4004": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-natural-pillow-4004.png",
+      "aspect": 0.9689,
+      "w": 0.8529,
+      "h": 0.8802
+    },
+    "green-antique-textile-pillow-3102": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-antique-textile-pillow-3102.png",
+      "aspect": 0.9963,
+      "w": 0.877,
+      "h": 0.8802
+    },
+    "green-dark-velvet-pillow-2261": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-dark-velvet-pillow-2261.png",
+      "aspect": 1.1192,
+      "w": 0.8802,
+      "h": 0.7865
+    },
+    "green-forest-tassel-pillow-2895": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-forest-tassel-pillow-2895.png",
+      "aspect": 1.04,
+      "w": 0.8802,
+      "h": 0.8464
+    },
+    "green-olive-faux-silk-pillow-2435": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-olive-faux-silk-pillow-2435.png",
+      "aspect": 1.1201,
+      "w": 0.8802,
+      "h": 0.7858
+    },
+    "green-olive-velvet-lumbar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-olive-velvet-lumbar.png",
+      "aspect": 1.9941,
+      "w": 0.8802,
+      "h": 0.4414
+    },
+    "green-sabra-pillow-3099": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-sabra-pillow-3099.png",
+      "aspect": 1.0807,
+      "w": 0.8802,
+      "h": 0.8145
+    },
+    "green-sage-velvet-3453": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-sage-velvet-3453.png",
+      "aspect": 1.0143,
+      "w": 0.8802,
+      "h": 0.8678
+    },
+    "green-sage-velvet-lumbar-pillow-3858": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-sage-velvet-lumbar-pillow-3858.png",
+      "aspect": 1.7071,
+      "w": 0.8802,
+      "h": 0.5156
+    },
+    "green-wild-bird-velvet-pillow-3214": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-wild-bird-velvet-pillow-3214.png",
+      "aspect": 1.0416,
+      "w": 0.8802,
+      "h": 0.8451
+    },
+    "green-wild-leopard-velvet-pillow-3219": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/green-wild-leopard-velvet-pillow-3219.png",
+      "aspect": 1.0235,
+      "w": 0.8802,
+      "h": 0.86
+    },
+    "greer-low-gold-bowl-3534": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/greer-low-gold-bowl-3534.png",
+      "aspect": 2.0896,
+      "w": 0.8802,
+      "h": 0.4212
+    },
+    "greige-textured-lumbar-pillow-2267": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/greige-textured-lumbar-pillow-2267.png",
+      "aspect": 1.74,
+      "w": 0.8802,
+      "h": 0.5059
+    },
+    "grey-dark-velvet-pillow-2269": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-dark-velvet-pillow-2269.png",
+      "aspect": 1.1211,
+      "w": 0.8802,
+      "h": 0.7852
+    },
+    "grey-faux-mink-lumbar-pillow-2274": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-faux-mink-lumbar-pillow-2274.png",
+      "aspect": 1.8804,
+      "w": 0.8802,
+      "h": 0.4681
+    },
+    "grey-feather-fur-lumbar-pillow-2272": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-feather-fur-lumbar-pillow-2272.png",
+      "aspect": 1.563,
+      "w": 0.8802,
+      "h": 0.5632
+    },
+    "grey-hide-lumbar-pillow-2273": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-hide-lumbar-pillow-2273.png",
+      "aspect": 1.7979,
+      "w": 0.8802,
+      "h": 0.4896
+    },
+    "grey-hills-linen-ottoman-129": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-hills-linen-ottoman-129.png",
+      "aspect": 0.8269,
+      "w": 0.7279,
+      "h": 0.8802
+    },
+    "grey-light-velvet-pillow-2604": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-light-velvet-pillow-2604.png",
+      "aspect": 1.2007,
+      "w": 0.8802,
+      "h": 0.7331
+    },
+    "grey-mongolian-fur-pillow-2275": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/grey-mongolian-fur-pillow-2275.png",
+      "aspect": 1.3399,
+      "w": 0.8802,
+      "h": 0.6569
+    },
+    "gunnison-black-wood-side-table-2860": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gunnison-black-wood-side-table-2860.png",
+      "aspect": 0.6635,
+      "w": 0.584,
+      "h": 0.8802
+    },
+    "gura-black-marble-chain-3533": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/gura-black-marble-chain-3533.png",
+      "aspect": 3.7143,
+      "w": 0.8802,
+      "h": 0.237
+    },
+    "hacier-mahogany-60-dining-table-3896": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hacier-mahogany-60-dining-table-3896.png",
+      "aspect": 1.5451,
+      "w": 0.8802,
+      "h": 0.5697
+    },
+    "hampton-oak-wood-bar-1926": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hampton-oak-wood-bar-1926.png",
+      "aspect": 1.6985,
+      "w": 0.8802,
+      "h": 0.5182
+    },
+    "hanoi-cane-wall-2876": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hanoi-cane-wall-2876.png",
+      "aspect": 1.1615,
+      "w": 0.8802,
+      "h": 0.7578
+    },
+    "hans-vintage-brass-telescope": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hans-vintage-brass-telescope.png",
+      "aspect": 9.9412,
+      "w": 0.8802,
+      "h": 0.0885
+    },
+    "harlow-8x10-grey-area-rug-1933": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/harlow-8x10-grey-area-rug-1933.png",
+      "aspect": 1.237,
+      "w": 0.8802,
+      "h": 0.7116
+    },
+    "hathor-light-colored-hide-rug-1932": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hathor-light-colored-hide-rug-1932.png",
+      "aspect": 1.1933,
+      "w": 0.8802,
+      "h": 0.7376
+    },
+    "hayden-wood-nickel-side-table-341": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hayden-wood-nickel-side-table-341.png",
+      "aspect": 1.0227,
+      "w": 0.8802,
+      "h": 0.8607
+    },
+    "hazel-charred-terracotta-bowl": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hazel-charred-terracotta-bowl.png",
+      "aspect": 2.5509,
+      "w": 0.8802,
+      "h": 0.3451
+    },
+    "helena-antique-carved-chair-2969": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/helena-antique-carved-chair-2969.png",
+      "aspect": 0.5695,
+      "w": 0.5013,
+      "h": 0.8802
+    },
+    "hemingway-brown-leather-chair-60": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hemingway-brown-leather-chair-60.png",
+      "aspect": 0.8624,
+      "w": 0.7591,
+      "h": 0.8802
+    },
+    "henry-upholstered-grey-sofa-1818": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/henry-upholstered-grey-sofa-1818.png",
+      "aspect": 2.6304,
+      "w": 0.8802,
+      "h": 0.3346
+    },
+    "heston-black-horn-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/heston-black-horn-flatware.png",
+      "aspect": 0.8343,
+      "w": 0.7344,
+      "h": 0.8802
+    },
+    "hilary-charcoal-wood-oversize-chain-4163": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hilary-charcoal-wood-oversize-chain-4163.png",
+      "aspect": 3.7245,
+      "w": 0.8802,
+      "h": 0.2363
+    },
+    "hirshfield-leather-chair-1711": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hirshfield-leather-chair-1711.png",
+      "aspect": 1.2381,
+      "w": 0.8802,
+      "h": 0.7109
+    },
+    "honey-colored-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/honey-colored-glassware.png",
+      "aspect": 1.4277,
+      "w": 0.8802,
+      "h": 0.6165
+    },
+    "honey-decanter-3036": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/honey-decanter-3036.png",
+      "aspect": 0.324,
+      "w": 0.2852,
+      "h": 0.8802
+    },
+    "hudson-rock-wall-shelving-display": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/hudson-rock-wall-shelving-display.png",
+      "aspect": 1.4098,
+      "w": 0.8802,
+      "h": 0.6243
+    },
+    "ignacio-silver-balancing-scale-3011": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ignacio-silver-balancing-scale-3011.png",
+      "aspect": 0.8476,
+      "w": 0.7461,
+      "h": 0.8802
+    },
+    "ignatius-brass-balancing-scale-3010": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ignatius-brass-balancing-scale-3010.png",
+      "aspect": 0.8328,
+      "w": 0.7331,
+      "h": 0.8802
+    },
+    "ina-black-wood-side-table-2998": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ina-black-wood-side-table-2998.png",
+      "aspect": 0.8373,
+      "w": 0.737,
+      "h": 0.8802
+    },
+    "indiwin-black-leather-sofa-735": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/indiwin-black-leather-sofa-735.png",
+      "aspect": 2.59,
+      "w": 0.8802,
+      "h": 0.3398
+    },
+    "ingram-black-leather-wood-sofa-4180": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ingram-black-leather-wood-sofa-4180.png",
+      "aspect": 1.9069,
+      "w": 0.8802,
+      "h": 0.4616
+    },
+    "inola-12-black-wood-square-bar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/inola-12-black-wood-square-bar.png",
+      "aspect": 2.9391,
+      "w": 0.8802,
+      "h": 0.2995
+    },
+    "iraja-12-square-whitewash-bar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/iraja-12-square-whitewash-bar.png",
+      "aspect": 2.024,
+      "w": 0.8802,
+      "h": 0.4349
+    },
+    "irene-brass-cabaret-lamp-3321": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/irene-brass-cabaret-lamp-3321.png",
+      "aspect": 0.3772,
+      "w": 0.332,
+      "h": 0.8802
+    },
+    "isaac-beige-sheepskin-fur-3821": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/isaac-beige-sheepskin-fur-3821.png",
+      "aspect": 0.6575,
+      "w": 0.5788,
+      "h": 0.8802
+    },
+    "ivan-burl-wood-coffee-table": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivan-burl-wood-coffee-table.png",
+      "aspect": 2.0736,
+      "w": 0.8802,
+      "h": 0.4245
+    },
+    "ives-burl-wood-side-table": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ives-burl-wood-side-table.png",
+      "aspect": 0.966,
+      "w": 0.8503,
+      "h": 0.8802
+    },
+    "ivory-black-geo-print-pillow-4081": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-black-geo-print-pillow-4081.png",
+      "aspect": 1.0505,
+      "w": 0.8802,
+      "h": 0.8379
+    },
+    "ivory-black-native-wool-pillow-2287": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-black-native-wool-pillow-2287.png",
+      "aspect": 1.0947,
+      "w": 0.8802,
+      "h": 0.804
+    },
+    "ivory-black-plaid-pillow-2857": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-black-plaid-pillow-2857.png",
+      "aspect": 1.1001,
+      "w": 0.8802,
+      "h": 0.8001
+    },
+    "ivory-boho-knit-pillow-2592": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-boho-knit-pillow-2592.png",
+      "aspect": 1.1155,
+      "w": 0.8802,
+      "h": 0.7891
+    },
+    "ivory-boucle-pillow-4082": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-boucle-pillow-4082.png",
+      "aspect": 1.0921,
+      "w": 0.8802,
+      "h": 0.806
+    },
+    "ivory-brown-chain-link-lumbar-pillow-2288": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-brown-chain-link-lumbar-pillow-2288.png",
+      "aspect": 1.7789,
+      "w": 0.8802,
+      "h": 0.4948
+    },
+    "ivory-brown-line-pillow-2862": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-brown-line-pillow-2862.png",
+      "aspect": 1.7884,
+      "w": 0.8802,
+      "h": 0.4922
+    },
+    "ivory-diamond-shag-pillow-2585": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-diamond-shag-pillow-2585.png",
+      "aspect": 1.4475,
+      "w": 0.8802,
+      "h": 0.6081
+    },
+    "ivory-gold-textured-pillow-2284": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-gold-textured-pillow-2284.png",
+      "aspect": 1.2018,
+      "w": 0.8802,
+      "h": 0.7324
+    },
+    "ivory-leather-stripe-3456": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-leather-stripe-3456.png",
+      "aspect": 1.0554,
+      "w": 0.8802,
+      "h": 0.834
+    },
+    "ivory-linen-pillow-3088": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-linen-pillow-3088.png",
+      "aspect": 1.0825,
+      "w": 0.8802,
+      "h": 0.8132
+    },
+    "ivory-mudcloth-2735": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-mudcloth-2735.png",
+      "aspect": 1.0344,
+      "w": 0.8802,
+      "h": 0.8509
+    },
+    "ivory-mudcloth-lumbar-2783": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-mudcloth-lumbar-2783.png",
+      "aspect": 2.41,
+      "w": 0.8802,
+      "h": 0.3652
+    },
+    "ivory-sage-mini-tassel-3455": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-sage-mini-tassel-3455.png",
+      "aspect": 1.0612,
+      "w": 0.8802,
+      "h": 0.8294
+    },
+    "ivory-seamed-boucle-pillow-2847": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-seamed-boucle-pillow-2847.png",
+      "aspect": 0.9919,
+      "w": 0.873,
+      "h": 0.8802
+    },
+    "ivory-wild-bird-silk-pillow-3216": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ivory-wild-bird-silk-pillow-3216.png",
+      "aspect": 1.0067,
+      "w": 0.8802,
+      "h": 0.8743
+    },
+    "jacen-indoor-firepit-3542": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jacen-indoor-firepit-3542.png",
+      "aspect": 0.5496,
+      "w": 0.4837,
+      "h": 0.8802
+    },
+    "jacinda-armless-textile-loveseat-3719": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jacinda-armless-textile-loveseat-3719.png",
+      "aspect": 2.0864,
+      "w": 0.8802,
+      "h": 0.4219
+    },
+    "jael-goat-hide-pelts-1234": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jael-goat-hide-pelts-1234.png",
+      "aspect": 0.662,
+      "w": 0.5827,
+      "h": 0.8802
+    },
+    "jaime-coffee-table-3837": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jaime-coffee-table-3837.png",
+      "aspect": 2.7368,
+      "w": 0.8802,
+      "h": 0.3216
+    },
+    "jain-cream-lotus": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jain-cream-lotus.png",
+      "aspect": 1.837,
+      "w": 0.8802,
+      "h": 0.4792
+    },
+    "jana-matte-bronze-cabaret-lamp-3574": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jana-matte-bronze-cabaret-lamp-3574.png",
+      "aspect": 0.2744,
+      "w": 0.2415,
+      "h": 0.8802
+    },
+    "jannick-leather-saddle-1683": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jannick-leather-saddle-1683.png",
+      "aspect": 0.9275,
+      "w": 0.8164,
+      "h": 0.8802
+    },
+    "jennie-antique-linen-chair-2972": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jennie-antique-linen-chair-2972.png",
+      "aspect": 0.733,
+      "w": 0.6452,
+      "h": 0.8802
+    },
+    "jepperd-black-tambour-bar-2661": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jepperd-black-tambour-bar-2661.png",
+      "aspect": 1.665,
+      "w": 0.8802,
+      "h": 0.5286
+    },
+    "jesamay-chair-3835": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jesamay-chair-3835.png",
+      "aspect": 0.7515,
+      "w": 0.6615,
+      "h": 0.8802
+    },
+    "jessie-cow-hide-ottoman-675": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jessie-cow-hide-ottoman-675.png",
+      "aspect": 1.0912,
+      "w": 0.8802,
+      "h": 0.8066
+    },
+    "jett-brass-wood-community-table-1857": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jett-brass-wood-community-table-1857.png",
+      "aspect": 1.5869,
+      "w": 0.8802,
+      "h": 0.5547
+    },
+    "jett-mini-brass-wood-community-table-3508": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jett-mini-brass-wood-community-table-3508.png",
+      "aspect": 1.6589,
+      "w": 0.8802,
+      "h": 0.5306
+    },
+    "jina-black-metal-vases": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jina-black-metal-vases.png",
+      "aspect": 0.9808,
+      "w": 0.8633,
+      "h": 0.8802
+    },
+    "johan-tripod-binoculars-2918": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/johan-tripod-binoculars-2918.png",
+      "aspect": 0.4024,
+      "w": 0.3542,
+      "h": 0.8802
+    },
+    "joseph-goat-hide-ottoman-127": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/joseph-goat-hide-ottoman-127.png",
+      "aspect": 0.9815,
+      "w": 0.8639,
+      "h": 0.8802
+    },
+    "auskin-leather-basket-set-275pl": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/auskin-leather-basket-set-275pl.png",
+      "aspect": 1.4383,
+      "w": 0.8802,
+      "h": 0.612
+    },
+    "jourdain-natural-bench-2999": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jourdain-natural-bench-2999.png",
+      "aspect": 2.8766,
+      "w": 0.8802,
+      "h": 0.306
+    },
+    "jozi-side-table-3836": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/jozi-side-table-3836.png",
+      "aspect": 0.9534,
+      "w": 0.8392,
+      "h": 0.8802
+    },
+    "judah-espresso-martini-side-table-3996": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/judah-espresso-martini-side-table-3996.png",
+      "aspect": 0.7456,
+      "w": 0.6563,
+      "h": 0.8802
+    },
+    "julien-adjustable-counter-stool-1973": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/julien-adjustable-counter-stool-1973.png",
+      "aspect": 0.6642,
+      "w": 0.5846,
+      "h": 0.8802
+    },
+    "juno-clear-glass-lamp-2754": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/juno-clear-glass-lamp-2754.png",
+      "aspect": 0.6243,
+      "w": 0.5495,
+      "h": 0.8802
+    },
+    "kai-black-wood-dining-table-2736": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kai-black-wood-dining-table-2736.png",
+      "aspect": 3.3137,
+      "w": 0.8802,
+      "h": 0.2656
+    },
+    "kalil-black-arcing-metal-cabinet-2731": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kalil-black-arcing-metal-cabinet-2731.png",
+      "aspect": 0.4083,
+      "w": 0.3594,
+      "h": 0.8802
+    },
+    "kalina-beverage-dispenser-4012": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kalina-beverage-dispenser-4012.png",
+      "aspect": 0.4467,
+      "w": 0.3932,
+      "h": 0.8802
+    },
+    "katrin-icelandic-sheepskin-fur-4146": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/katrin-icelandic-sheepskin-fur-4146.png",
+      "aspect": 1.0297,
+      "w": 0.8802,
+      "h": 0.8548
+    },
+    "keaton-antique-floor-mirror-712": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/keaton-antique-floor-mirror-712.png",
+      "aspect": 0.3928,
+      "w": 0.3457,
+      "h": 0.8802
+    },
+    "keitha-9x12-chunky-jute-tassels-rug-2809": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/keitha-9x12-chunky-jute-tassels-rug-2809.png",
+      "aspect": 1.5522,
+      "w": 0.8802,
+      "h": 0.5671
+    },
+    "kette-marble-chain-3470": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kette-marble-chain-3470.png",
+      "aspect": 3.4055,
+      "w": 0.8802,
+      "h": 0.2585
+    },
+    "kimora": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kimora.png",
+      "aspect": 1.7627,
+      "w": 0.8802,
+      "h": 0.4993
+    },
+    "kinlee-cocoon-luminary": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kinlee-cocoon-luminary.png",
+      "aspect": 0.5747,
+      "w": 0.5059,
+      "h": 0.8802
+    },
+    "kohl-5-round-black-top-dining-table-3103": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/kohl-5-round-black-top-dining-table-3103.png",
+      "aspect": 2.146,
+      "w": 0.8802,
+      "h": 0.4102
+    },
+    "lachlan-36-black-iron-lantern-4003": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lachlan-36-black-iron-lantern-4003.png",
+      "aspect": 0.3018,
+      "w": 0.2656,
+      "h": 0.8802
+    },
+    "lagos-swivel-chair-4161": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lagos-swivel-chair-4161.png",
+      "aspect": 0.8395,
+      "w": 0.7389,
+      "h": 0.8802
+    },
+    "lapis-deep-blue-plates": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lapis-deep-blue-plates.png",
+      "aspect": 1.7445,
+      "w": 0.8802,
+      "h": 0.5046
+    },
+    "larique-smoke-cut-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/larique-smoke-cut-glassware.png",
+      "aspect": 1.5039,
+      "w": 0.8802,
+      "h": 0.5853
+    },
+    "larkin-8x10-rust-grey-rug-4053": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/larkin-8x10-rust-grey-rug-4053.png",
+      "aspect": 1.348,
+      "w": 0.8802,
+      "h": 0.653
+    },
+    "lars-8-bleached-oak-dining-table-2738": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lars-8-bleached-oak-dining-table-2738.png",
+      "aspect": 3.33,
+      "w": 0.8802,
+      "h": 0.2643
+    },
+    "launce-riverstone-serving-platter-2883": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/launce-riverstone-serving-platter-2883.png",
+      "aspect": 5.1407,
+      "w": 0.8802,
+      "h": 0.1712
+    },
+    "lavanya-stoneware-collection": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lavanya-stoneware-collection.png",
+      "aspect": 1.4368,
+      "w": 0.8802,
+      "h": 0.6126
+    },
+    "lavanya-riverstone-medium-bowl": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lavanya-riverstone-medium-bowl.png",
+      "aspect": 2.3972,
+      "w": 0.8802,
+      "h": 0.3672
+    },
+    "layla-28in": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/layla-28in.png",
+      "aspect": 0.4712,
+      "w": 0.4147,
+      "h": 0.8802
+    },
+    "lazar-gold-bronze-side-table-3025": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lazar-gold-bronze-side-table-3025.png",
+      "aspect": 0.625,
+      "w": 0.5501,
+      "h": 0.8802
+    },
+    "leanna-ivory-hide-tapered-ottoman-3142": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leanna-ivory-hide-tapered-ottoman-3142.png",
+      "aspect": 1.46,
+      "w": 0.8802,
+      "h": 0.6029
+    },
+    "lemiere-vintage-binoculars-w-leather-case-1512": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lemiere-vintage-binoculars-w-leather-case-1512.png",
+      "aspect": 1.2507,
+      "w": 0.8802,
+      "h": 0.7038
+    },
+    "leopard-fur-pillow-4153": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leopard-fur-pillow-4153.png",
+      "aspect": 1.1787,
+      "w": 0.8802,
+      "h": 0.7467
+    },
+    "leopard-print-reversible-velvet-pillow-4159": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leopard-print-reversible-velvet-pillow-4159.png",
+      "aspect": 1.0173,
+      "w": 0.8802,
+      "h": 0.8652
+    },
+    "leopard-velvet-pillow-4154": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leopard-velvet-pillow-4154.png",
+      "aspect": 0.966,
+      "w": 0.8503,
+      "h": 0.8802
+    },
+    "leyan-8x10-camel-sage-rug-3364": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/leyan-8x10-camel-sage-rug-3364.png",
+      "aspect": 1.2404,
+      "w": 0.8802,
+      "h": 0.7096
+    },
+    "libby-glass-hinged-top-box": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/libby-glass-hinged-top-box.png",
+      "aspect": 2.704,
+      "w": 0.8802,
+      "h": 0.3255
+    },
+    "lilith-14-textured-earth-vase-4023": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lilith-14-textured-earth-vase-4023.png",
+      "aspect": 0.412,
+      "w": 0.3626,
+      "h": 0.8802
+    },
+    "limulus-5-75-white-porcelain-vase-3466": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/limulus-5-75-white-porcelain-vase-3466.png",
+      "aspect": 0.8254,
+      "w": 0.7266,
+      "h": 0.8802
+    },
+    "lindt-toffee-velvet-channel-tufted-sofa-1820": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lindt-toffee-velvet-channel-tufted-sofa-1820.png",
+      "aspect": 2.1948,
+      "w": 0.8802,
+      "h": 0.401
+    },
+    "linus-12-25-white-porcelain-vase-3474": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/linus-12-25-white-porcelain-vase-3474.png",
+      "aspect": 0.4549,
+      "w": 0.4004,
+      "h": 0.8802
+    },
+    "lockwood-concrete-birch-double-bar-1022": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lockwood-concrete-birch-double-bar-1022.png",
+      "aspect": 3.6541,
+      "w": 0.8802,
+      "h": 0.2409
+    },
+    "lorenzo-ivory-round-hide-ottoman-3015": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lorenzo-ivory-round-hide-ottoman-3015.png",
+      "aspect": 1.4538,
+      "w": 0.8802,
+      "h": 0.6055
+    },
+    "lucille-gold-bar-cart-2141": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lucille-gold-bar-cart-2141.png",
+      "aspect": 0.9615,
+      "w": 0.8464,
+      "h": 0.8802
+    },
+    "luna-arcing-dining-chairs": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/luna-arcing-dining-chairs.png",
+      "aspect": 1.4368,
+      "w": 0.8802,
+      "h": 0.6126
+    },
+    "lynden-horseshoe-hat-stand": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/lynden-horseshoe-hat-stand.png",
+      "aspect": 0.5229,
+      "w": 0.4603,
+      "h": 0.8802
+    },
+    "madden-longhorn-skull-626": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/madden-longhorn-skull-626.png",
+      "aspect": 1.4776,
+      "w": 0.8802,
+      "h": 0.5957
+    },
+    "malcolm-bar-cart-2150": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/malcolm-bar-cart-2150.png",
+      "aspect": 1.0297,
+      "w": 0.8802,
+      "h": 0.8548
+    },
+    "mallow-pendant-light-4077": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/mallow-pendant-light-4077.png",
+      "aspect": 0.5096,
+      "w": 0.4486,
+      "h": 0.8802
+    },
+    "malvina-oval-bar-2328": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/malvina-oval-bar-2328.png",
+      "aspect": 1.5758,
+      "w": 0.8802,
+      "h": 0.5586
+    },
+    "maor": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/maor.png",
+      "aspect": 1.3333,
+      "w": 0.8802,
+      "h": 0.6602
+    },
+    "mara-hunter-leather-chair-1799": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/mara-hunter-leather-chair-1799.png",
+      "aspect": 0.676,
+      "w": 0.5951,
+      "h": 0.8802
+    },
+    "marceline-brass-folding-bar-cart-3008": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marceline-brass-folding-bar-cart-3008.png",
+      "aspect": 1.0833,
+      "w": 0.8802,
+      "h": 0.8125
+    },
+    "marina-plate": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marina-plate.png",
+      "aspect": 1.4202,
+      "w": 0.8802,
+      "h": 0.6198
+    },
+    "marlow-rope-wall-802": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marlow-rope-wall-802.png",
+      "aspect": 0.8217,
+      "w": 0.7233,
+      "h": 0.8802
+    },
+    "marmuri-green-marble-tray-3731": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marmuri-green-marble-tray-3731.png",
+      "aspect": 1.6733,
+      "w": 0.8802,
+      "h": 0.526
+    },
+    "marshall-mango-wood-chair-672": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marshall-mango-wood-chair-672.png",
+      "aspect": 0.6775,
+      "w": 0.5964,
+      "h": 0.8802
+    },
+    "marvin-white-stucco-table-lamp-2958": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/marvin-white-stucco-table-lamp-2958.png",
+      "aspect": 0.6442,
+      "w": 0.5671,
+      "h": 0.8802
+    },
+    "masozi-teardrop-funnel-3538": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/masozi-teardrop-funnel-3538.png",
+      "aspect": 0.3321,
+      "w": 0.2923,
+      "h": 0.8802
+    },
+    "live-maximus-roman-stone-coffee-table": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/live-maximus-roman-stone-coffee-table.png",
+      "aspect": 1.8962,
+      "w": 0.8802,
+      "h": 0.4642
+    },
+    "maxine-hourglass-side-table-3834": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/maxine-hourglass-side-table-3834.png",
+      "aspect": 0.7404,
+      "w": 0.6517,
+      "h": 0.8802
+    },
+    "mela-green-black-marble-tray-4002": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/mela-green-black-marble-tray-4002.png",
+      "aspect": 1.627,
+      "w": 0.8802,
+      "h": 0.541
+    },
+    "melas-leopard-printed-hide-rug-4162": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/melas-leopard-printed-hide-rug-4162.png",
+      "aspect": 1.0816,
+      "w": 0.8802,
+      "h": 0.8138
+    },
+    "merritt-post-and-beam-structure": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/merritt-post-and-beam-structure.png",
+      "aspect": 1.3152,
+      "w": 0.8802,
+      "h": 0.6693
+    },
+    "midas-antique-gold-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/midas-antique-gold-flatware.png",
+      "aspect": 0.6797,
+      "w": 0.5983,
+      "h": 0.8802
+    },
+    "midori-light-green": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/midori-light-green.png",
+      "aspect": 1.6172,
+      "w": 0.8802,
+      "h": 0.5443
+    },
+    "millicent-antique-arm-chair-2971": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/millicent-antique-arm-chair-2971.png",
+      "aspect": 0.6087,
+      "w": 0.5358,
+      "h": 0.8802
+    },
+    "millie-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/millie-flatware.png",
+      "aspect": 0.6679,
+      "w": 0.5879,
+      "h": 0.8802
+    },
+    "milos-column-side-table-3833": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/milos-column-side-table-3833.png",
+      "aspect": 0.6428,
+      "w": 0.5658,
+      "h": 0.8802
+    },
+    "minnith-olive-basket-1476": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/minnith-olive-basket-1476.png",
+      "aspect": 0.9423,
+      "w": 0.8294,
+      "h": 0.8802
+    },
+    "monroe-black-flat-slat-tambour-bar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/monroe-black-flat-slat-tambour-bar.png",
+      "aspect": 1.5776,
+      "w": 0.8802,
+      "h": 0.5579
+    },
+    "morrison-charcoal-ottoman-2025": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/morrison-charcoal-ottoman-2025.png",
+      "aspect": 1.319,
+      "w": 0.8802,
+      "h": 0.6673
+    },
+    "moxxi-black-dining-chair-2746": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/moxxi-black-dining-chair-2746.png",
+      "aspect": 0.7759,
+      "w": 0.6829,
+      "h": 0.8802
+    },
+    "myra-hide-coffee-table-287": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/myra-hide-coffee-table-287.png",
+      "aspect": 1.6528,
+      "w": 0.8802,
+      "h": 0.5326
+    },
+    "na-eem-wood-dining-table-358": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/na-eem-wood-dining-table-358.png",
+      "aspect": 1.348,
+      "w": 0.8802,
+      "h": 0.653
+    },
+    "namiah-24-smoke-crystal-black-chandelier-3227": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/namiah-24-smoke-crystal-black-chandelier-3227.png",
+      "aspect": 0.7337,
+      "w": 0.6458,
+      "h": 0.8802
+    },
+    "nanette-marble-bistro-side-table-733": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nanette-marble-bistro-side-table-733.png",
+      "aspect": 0.6612,
+      "w": 0.582,
+      "h": 0.8802
+    },
+    "nantucket-41-oak-wood-column-1940": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nantucket-41-oak-wood-column-1940.png",
+      "aspect": 0.7463,
+      "w": 0.6569,
+      "h": 0.8802
+    },
+    "narin-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/narin-glassware.png",
+      "aspect": 0.9408,
+      "w": 0.8281,
+      "h": 0.8802
+    },
+    "nathalie-black-spindle-dining-table-2788": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nathalie-black-spindle-dining-table-2788.png",
+      "aspect": 2.0423,
+      "w": 0.8802,
+      "h": 0.431
+    },
+    "natori-oak-fur-chair-2995": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/natori-oak-fur-chair-2995.png",
+      "aspect": 0.9186,
+      "w": 0.8086,
+      "h": 0.8802
+    },
+    "navajo-cotton-brick-throw-2351": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/navajo-cotton-brick-throw-2351.png",
+      "aspect": 0.571,
+      "w": 0.5026,
+      "h": 0.8802
+    },
+    "navajo-cotton-pink-throw-2357": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/navajo-cotton-pink-throw-2357.png",
+      "aspect": 0.6161,
+      "w": 0.5423,
+      "h": 0.8802
+    },
+    "navajo-cotton-red-throw-2359": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/navajo-cotton-red-throw-2359.png",
+      "aspect": 0.6494,
+      "w": 0.5716,
+      "h": 0.8802
+    },
+    "navajo-cotton-yellow-throw-2358": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/navajo-cotton-yellow-throw-2358.png",
+      "aspect": 0.699,
+      "w": 0.6152,
+      "h": 0.8802
+    },
+    "nazara-grey-hide-ottoman-3017": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nazara-grey-hide-ottoman-3017.png",
+      "aspect": 0.7123,
+      "w": 0.627,
+      "h": 0.8802
+    },
+    "nera-4-alabaster-votive-3776": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nera-4-alabaster-votive-3776.png",
+      "aspect": 0.9253,
+      "w": 0.8145,
+      "h": 0.8802
+    },
+    "neriya-ivory-hide-ottoman-3016": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/neriya-ivory-hide-ottoman-3016.png",
+      "aspect": 0.713,
+      "w": 0.6276,
+      "h": 0.8802
+    },
+    "nero-5-round-grey-top-dining-table-2740": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nero-5-round-grey-top-dining-table-2740.png",
+      "aspect": 2.1392,
+      "w": 0.8802,
+      "h": 0.4115
+    },
+    "niketas-assorted-vintage-trophy-2049": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/niketas-assorted-vintage-trophy-2049.png",
+      "aspect": 0.6598,
+      "w": 0.5807,
+      "h": 0.8802
+    },
+    "nima-fabric-banquette": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nima-fabric-banquette.png",
+      "aspect": 1.5776,
+      "w": 0.8802,
+      "h": 0.5579
+    },
+    "ninsun-7x7-silver-hide-rug-397": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ninsun-7x7-silver-hide-rug-397.png",
+      "aspect": 1.2082,
+      "w": 0.8802,
+      "h": 0.7285
+    },
+    "nisha-matte-black-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nisha-matte-black-flatware.png",
+      "aspect": 0.6553,
+      "w": 0.5768,
+      "h": 0.8802
+    },
+    "niva-burl-wood-chair": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/niva-burl-wood-chair.png",
+      "aspect": 0.9963,
+      "w": 0.877,
+      "h": 0.8802
+    },
+    "nixon-globe-lamp-880": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nixon-globe-lamp-880.png",
+      "aspect": 0.6553,
+      "w": 0.5768,
+      "h": 0.8802
+    },
+    "noelle-black-cane-chair-2786": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/noelle-black-cane-chair-2786.png",
+      "aspect": 0.7988,
+      "w": 0.7031,
+      "h": 0.8802
+    },
+    "nomad-wood-chair-435": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nomad-wood-chair-435.png",
+      "aspect": 0.7855,
+      "w": 0.6914,
+      "h": 0.8802
+    },
+    "norwood-concrete-split-wood-top-bar-188": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/norwood-concrete-split-wood-top-bar-188.png",
+      "aspect": 2.7536,
+      "w": 0.8802,
+      "h": 0.3197
+    },
+    "noya-sand-pendants": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/noya-sand-pendants.png",
+      "aspect": 0.6997,
+      "w": 0.6159,
+      "h": 0.8802
+    },
+    "nyomi-green-marble-cake-stand-4011": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/nyomi-green-marble-cake-stand-4011.png",
+      "aspect": 2.5509,
+      "w": 0.8802,
+      "h": 0.3451
+    },
+    "obsidian-8x10-black-rug-1637": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/obsidian-8x10-black-rug-1637.png",
+      "aspect": 1.253,
+      "w": 0.8802,
+      "h": 0.7025
+    },
+    "olive-13-leather-charger-3982": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/olive-13-leather-charger-3982.png",
+      "aspect": 1.0075,
+      "w": 0.8802,
+      "h": 0.8737
+    },
+    "omar-brown-leather-ottoman-749": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/omar-brown-leather-ottoman-749.png",
+      "aspect": 1.4664,
+      "w": 0.8802,
+      "h": 0.6003
+    },
+    "oni-grey-ceramic-table-lamp-2962": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/oni-grey-ceramic-table-lamp-2962.png",
+      "aspect": 0.6265,
+      "w": 0.5514,
+      "h": 0.8802
+    },
+    "ophidia-10-serpent-plate-2859": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ophidia-10-serpent-plate-2859.png",
+      "aspect": 1.4491,
+      "w": 0.8802,
+      "h": 0.6074
+    },
+    "orange-copper-velvet-fringe-lumbar-pillow-2855": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/orange-copper-velvet-fringe-lumbar-pillow-2855.png",
+      "aspect": 1.6508,
+      "w": 0.8802,
+      "h": 0.5332
+    },
+    "orange-ivory-native-pillow-2910": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/orange-ivory-native-pillow-2910.png",
+      "aspect": 1.0258,
+      "w": 0.8802,
+      "h": 0.8581
+    },
+    "orange-brown-textile-pillow": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/orange-brown-textile-pillow.png",
+      "aspect": 1.1516,
+      "w": 0.8802,
+      "h": 0.7643
+    },
+    "orange-velvet-quilted-pillow-2304": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/orange-velvet-quilted-pillow-2304.png",
+      "aspect": 1.3996,
+      "w": 0.8802,
+      "h": 0.6289
+    },
+    "orla-13-chestnut-leather-charger-2600": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/orla-13-chestnut-leather-charger-2600.png",
+      "aspect": 1.0067,
+      "w": 0.8802,
+      "h": 0.8743
+    },
+    "osprey-black-metal-chair-3817": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/osprey-black-metal-chair-3817.png",
+      "aspect": 1.1304,
+      "w": 0.8802,
+      "h": 0.7786
+    },
+    "ovalia-wood-brass-shelf-4139": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ovalia-wood-brass-shelf-4139.png",
+      "aspect": 0.568,
+      "w": 0.5,
+      "h": 0.8802
+    },
+    "ovis-black-sheepskin-fur-834": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ovis-black-sheepskin-fur-834.png",
+      "aspect": 1.0921,
+      "w": 0.8802,
+      "h": 0.806
+    },
+    "oxford-fossil-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/oxford-fossil-plinth.png",
+      "aspect": 1.2347,
+      "w": 0.8802,
+      "h": 0.7129
+    },
+    "ozias-granite-side-table-3013": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ozias-granite-side-table-3013.png",
+      "aspect": 0.7308,
+      "w": 0.6432,
+      "h": 0.8802
+    },
+    "vintage-silver-goblets": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/vintage-silver-goblets.png",
+      "aspect": 1.5399,
+      "w": 0.8802,
+      "h": 0.5716
+    },
+    "pebble-side-table-330": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pebble-side-table-330.png",
+      "aspect": 1.332,
+      "w": 0.8802,
+      "h": 0.6608
+    },
+    "pejra-antique-silver-cocktail-set-2990": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pejra-antique-silver-cocktail-set-2990.png",
+      "aspect": 1.1736,
+      "w": 0.8802,
+      "h": 0.75
+    },
+    "pema-ancient-carved-wood-wall-1703": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pema-ancient-carved-wood-wall-1703.png",
+      "aspect": 1.0554,
+      "w": 0.8802,
+      "h": 0.834
+    },
+    "pendleton-grey-cross-throw-2362": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pendleton-grey-cross-throw-2362.png",
+      "aspect": 0.699,
+      "w": 0.6152,
+      "h": 0.8802
+    },
+    "pendleton-grey-plaid-throw-2991": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pendleton-grey-plaid-throw-2991.png",
+      "aspect": 0.8232,
+      "w": 0.7246,
+      "h": 0.8802
+    },
+    "pendleton-neutral-zigzag-throw-1614": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pendleton-neutral-zigzag-throw-1614.png",
+      "aspect": 0.8077,
+      "w": 0.7109,
+      "h": 0.8802
+    },
+    "pendleton-red-yellow-throw-2364": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pendleton-red-yellow-throw-2364.png",
+      "aspect": 0.8084,
+      "w": 0.7116,
+      "h": 0.8802
+    },
+    "pendleton-sand-mayan-throw-2363": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pendleton-sand-mayan-throw-2363.png",
+      "aspect": 0.807,
+      "w": 0.7103,
+      "h": 0.8802
+    },
+    "phillipe-grey-silk-loveseat-34": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/phillipe-grey-silk-loveseat-34.png",
+      "aspect": 1.2588,
+      "w": 0.8802,
+      "h": 0.6992
+    },
+    "pickford-concrete-split-wood-bar-788": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pickford-concrete-split-wood-bar-788.png",
+      "aspect": 2.8108,
+      "w": 0.8802,
+      "h": 0.3132
+    },
+    "pierce-french-antique-console-3063": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pierce-french-antique-console-3063.png",
+      "aspect": 2.7368,
+      "w": 0.8802,
+      "h": 0.3216
+    },
+    "pink-black-abstract-lumbar-pillow-2419": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pink-black-abstract-lumbar-pillow-2419.png",
+      "aspect": 1.7179,
+      "w": 0.8802,
+      "h": 0.5124
+    },
+    "pink-wild-lynx-velvet-pillow-3217": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pink-wild-lynx-velvet-pillow-3217.png",
+      "aspect": 1.0165,
+      "w": 0.8802,
+      "h": 0.8659
+    },
+    "plaid-black-white-throw-2905": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/plaid-black-white-throw-2905.png",
+      "aspect": 0.8129,
+      "w": 0.7155,
+      "h": 0.8802
+    },
+    "plaid-red-throw": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/plaid-red-throw.png",
+      "aspect": 1.138,
+      "w": 0.8802,
+      "h": 0.7734
+    },
+    "pliny-h-frame-easel-2881": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/pliny-h-frame-easel-2881.png",
+      "aspect": 0.3299,
+      "w": 0.2904,
+      "h": 0.8802
+    },
+    "poe-deconstructed-leather-chair-76": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/poe-deconstructed-leather-chair-76.png",
+      "aspect": 0.7678,
+      "w": 0.6758,
+      "h": 0.8802
+    },
+    "posh-marble-s-p-cellar-2885": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/posh-marble-s-p-cellar-2885.png",
+      "aspect": 1.1128,
+      "w": 0.8802,
+      "h": 0.791
+    },
+    "powel-dark-brass-tray": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/powel-dark-brass-tray.png",
+      "aspect": 1.5925,
+      "w": 0.8802,
+      "h": 0.5527
+    },
+    "purple-pale-velvet-pillow-2418": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/purple-pale-velvet-pillow-2418.png",
+      "aspect": 1.0489,
+      "w": 0.8802,
+      "h": 0.8392
+    },
+    "purple-plum-velvet-pillow-2305": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/purple-plum-velvet-pillow-2305.png",
+      "aspect": 1.0473,
+      "w": 0.8802,
+      "h": 0.8405
+    },
+    "quinn-antique-bone-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/quinn-antique-bone-flatware.png",
+      "aspect": 0.7663,
+      "w": 0.6745,
+      "h": 0.8802
+    },
+    "raden-distressed-metal-coffee-table-3784": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/raden-distressed-metal-coffee-table-3784.png",
+      "aspect": 2.9013,
+      "w": 0.8802,
+      "h": 0.3034
+    },
+    "ravindra-set": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ravindra-set.png",
+      "aspect": 2.5414,
+      "w": 0.8802,
+      "h": 0.3464
+    },
+    "red-velvet-lumbar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-velvet-lumbar.png",
+      "aspect": 1.7356,
+      "w": 0.8802,
+      "h": 0.5072
+    },
+    "red-tan-plaid-oversize-lumbar-2917": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-tan-plaid-oversize-lumbar-2917.png",
+      "aspect": 1.9737,
+      "w": 0.8802,
+      "h": 0.446
+    },
+    "red-velvet-pillow-2412": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-velvet-pillow-2412.png",
+      "aspect": 1.0877,
+      "w": 0.8802,
+      "h": 0.8092
+    },
+    "red-white-edge-ticking-stripe-pillow-2785": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-white-edge-ticking-stripe-pillow-2785.png",
+      "aspect": 1.0196,
+      "w": 0.8802,
+      "h": 0.8633
+    },
+    "red-white-ticking-stripe-2781": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-white-ticking-stripe-2781.png",
+      "aspect": 1.1438,
+      "w": 0.8802,
+      "h": 0.7695
+    },
+    "red-white-wide-ticking-stripe-pillow-2784": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-white-wide-ticking-stripe-pillow-2784.png",
+      "aspect": 1.044,
+      "w": 0.8802,
+      "h": 0.8431
+    },
+    "red-zebra-velvet-lumbar-pillow-4155": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/red-zebra-velvet-lumbar-pillow-4155.png",
+      "aspect": 2.3472,
+      "w": 0.8802,
+      "h": 0.375
+    },
+    "regina-brass-table-lamp-2766": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/regina-brass-table-lamp-2766.png",
+      "aspect": 0.966,
+      "w": 0.8503,
+      "h": 0.8802
+    },
+    "relic-limestone-coffee-table-4099": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/relic-limestone-coffee-table-4099.png",
+      "aspect": 1.3466,
+      "w": 0.8802,
+      "h": 0.6536
+    },
+    "relic-limestone-column-4097": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/relic-limestone-column-4097.png",
+      "aspect": 0.5355,
+      "w": 0.4714,
+      "h": 0.8802
+    },
+    "relic-limestone-side-table-4098": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/relic-limestone-side-table-4098.png",
+      "aspect": 0.8395,
+      "w": 0.7389,
+      "h": 0.8802
+    },
+    "remy-stainless-steel-vintage-coupe": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/remy-stainless-steel-vintage-coupe.png",
+      "aspect": 0.9172,
+      "w": 0.8073,
+      "h": 0.8802
+    },
+    "reshma-botanical-sculptural-sofa-3711": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/reshma-botanical-sculptural-sofa-3711.png",
+      "aspect": 2.2055,
+      "w": 0.8802,
+      "h": 0.3991
+    },
+    "ripley-wood-metal-side-table-342": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ripley-wood-metal-side-table-342.png",
+      "aspect": 0.6627,
+      "w": 0.5833,
+      "h": 0.8802
+    },
+    "ritika-33-brass-tray-3121": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ritika-33-brass-tray-3121.png",
+      "aspect": 1.2093,
+      "w": 0.8802,
+      "h": 0.7279
+    },
+    "river-42-stone-coffee-table-3029": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/river-42-stone-coffee-table-3029.png",
+      "aspect": 2.3351,
+      "w": 0.8802,
+      "h": 0.377
+    },
+    "river-54-stone-coffee-table-3030": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/river-54-stone-coffee-table-3030.png",
+      "aspect": 2.0547,
+      "w": 0.8802,
+      "h": 0.4284
+    },
+    "rodgers-lariat-rope-1542": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rodgers-lariat-rope-1542.png",
+      "aspect": 1.3426,
+      "w": 0.8802,
+      "h": 0.6556
+    },
+    "rodrick-brass-cabaret-lamp-4037": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rodrick-brass-cabaret-lamp-4037.png",
+      "aspect": 0.4786,
+      "w": 0.4212,
+      "h": 0.8802
+    },
+    "rollins-stone-side-table-3028": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rollins-stone-side-table-3028.png",
+      "aspect": 0.9112,
+      "w": 0.8021,
+      "h": 0.8802
+    },
+    "rolston-vintage-wood-crate-634": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rolston-vintage-wood-crate-634.png",
+      "aspect": 2.3595,
+      "w": 0.8802,
+      "h": 0.373
+    },
+    "romana-tapered-concrete-side-table-2459": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/romana-tapered-concrete-side-table-2459.png",
+      "aspect": 0.8661,
+      "w": 0.7624,
+      "h": 0.8802
+    },
+    "romina-brass-floor-lamp-3147": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/romina-brass-floor-lamp-3147.png",
+      "aspect": 0.4223,
+      "w": 0.3717,
+      "h": 0.8802
+    },
+    "rosa-acacia-wood-shelf-709": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rosa-acacia-wood-shelf-709.png",
+      "aspect": 0.5015,
+      "w": 0.4414,
+      "h": 0.8802
+    },
+    "rosalind-cream-velvet-round-banquette-4014": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rosalind-cream-velvet-round-banquette-4014.png",
+      "aspect": 1.8172,
+      "w": 0.8802,
+      "h": 0.4844
+    },
+    "rosie-antique-linen-chair-2968": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rosie-antique-linen-chair-2968.png",
+      "aspect": 0.7611,
+      "w": 0.6699,
+      "h": 0.8802
+    },
+    "rowntree-chocolate-leather-loveseat-1710": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rowntree-chocolate-leather-loveseat-1710.png",
+      "aspect": 1.5962,
+      "w": 0.8802,
+      "h": 0.5514
+    },
+    "ruby-red-ski-lift-bench": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ruby-red-ski-lift-bench.png",
+      "aspect": 0.6679,
+      "w": 0.5879,
+      "h": 0.8802
+    },
+    "rumen-11-red-led-camping-lantern-3177": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/rumen-11-red-led-camping-lantern-3177.png",
+      "aspect": 0.5311,
+      "w": 0.4674,
+      "h": 0.8802
+    },
+    "runa-faux-book-collection": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/runa-faux-book-collection.png",
+      "aspect": 1.1696,
+      "w": 0.8802,
+      "h": 0.7526
+    },
+    "ryland": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ryland.png",
+      "aspect": 0.5118,
+      "w": 0.4505,
+      "h": 0.8802
+    },
+    "sage-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sage-glassware.png",
+      "aspect": 1.7884,
+      "w": 0.8802,
+      "h": 0.4922
+    },
+    "salida-acacia-shelf-148": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/salida-acacia-shelf-148.png",
+      "aspect": 0.5089,
+      "w": 0.4479,
+      "h": 0.8802
+    },
+    "salva": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/salva.png",
+      "aspect": 1.6172,
+      "w": 0.8802,
+      "h": 0.5443
+    },
+    "salvatore-marble-coffee-table-2922": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/salvatore-marble-coffee-table-2922.png",
+      "aspect": 2.2458,
+      "w": 0.8802,
+      "h": 0.3919
+    },
+    "sanara-dining-chairs": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sanara-dining-chairs.png",
+      "aspect": 1.1295,
+      "w": 0.8802,
+      "h": 0.7793
+    },
+    "sarsen-stone-tray-3735": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sarsen-stone-tray-3735.png",
+      "aspect": 1.4664,
+      "w": 0.8802,
+      "h": 0.6003
+    },
+    "scout-wood-community-table-360": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/scout-wood-community-table-360.png",
+      "aspect": 1.883,
+      "w": 0.8802,
+      "h": 0.4674
+    },
+    "sergio-marble-cube-side-table-2924": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sergio-marble-cube-side-table-2924.png",
+      "aspect": 1.1128,
+      "w": 0.8802,
+      "h": 0.791
+    },
+    "shay-tan-leather-basket-3156": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shay-tan-leather-basket-3156.png",
+      "aspect": 0.9194,
+      "w": 0.8092,
+      "h": 0.8802
+    },
+    "shea-steer-skull-640": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shea-steer-skull-640.png",
+      "aspect": 0.8388,
+      "w": 0.7383,
+      "h": 0.8802
+    },
+    "sheridan-8x10-olive-chenille-rug-1817": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sheridan-8x10-olive-chenille-rug-1817.png",
+      "aspect": 1.6211,
+      "w": 0.8802,
+      "h": 0.543
+    },
+    "sherlock-desktop-magnifying-glass-596": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sherlock-desktop-magnifying-glass-596.png",
+      "aspect": 0.4749,
+      "w": 0.418,
+      "h": 0.8802
+    },
+    "shetani-dark-brass-tray": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shetani-dark-brass-tray.png",
+      "aspect": 1.74,
+      "w": 0.8802,
+      "h": 0.5059
+    },
+    "shiloh-8x10-grey-ivory-rug-1691": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shiloh-8x10-grey-ivory-rug-1691.png",
+      "aspect": 1.3113,
+      "w": 0.8802,
+      "h": 0.6712
+    },
+    "shima-8x10-faded-black-rug-907": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shima-8x10-faded-black-rug-907.png",
+      "aspect": 1.3588,
+      "w": 0.8802,
+      "h": 0.6478
+    },
+    "shiraz-8x10-ivory-grey-woven-wool-rug-415": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/shiraz-8x10-ivory-grey-woven-wool-rug-415.png",
+      "aspect": 1.3712,
+      "w": 0.8802,
+      "h": 0.6419
+    },
+    "sidecar-dark-wood-bar-1927": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sidecar-dark-wood-bar-1927.png",
+      "aspect": 1.9912,
+      "w": 0.8802,
+      "h": 0.4421
+    },
+    "sidony-white-wood-sofa-2748": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sidony-white-wood-sofa-2748.png",
+      "aspect": 3.449,
+      "w": 0.8802,
+      "h": 0.2552
+    },
+    "siete-rattan-ottoman-2752": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/siete-rattan-ottoman-2752.png",
+      "aspect": 0.9105,
+      "w": 0.8014,
+      "h": 0.8802
+    },
+    "silas-sage-oak-cane-sofa-2715": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/silas-sage-oak-cane-sofa-2715.png",
+      "aspect": 2.1191,
+      "w": 0.8802,
+      "h": 0.4154
+    },
+    "silver-disco-pillow-3149": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/silver-disco-pillow-3149.png",
+      "aspect": 1.0497,
+      "w": 0.8802,
+      "h": 0.8385
+    },
+    "silver-leather-woven-pillow-4157": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/silver-leather-woven-pillow-4157.png",
+      "aspect": 1.0037,
+      "w": 0.8802,
+      "h": 0.877
+    },
+    "sinatra-walnut-fluted-bar": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sinatra-walnut-fluted-bar.png",
+      "aspect": 1.7136,
+      "w": 0.8802,
+      "h": 0.5137
+    },
+    "sinia-telescoping-floor-lamp-578": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sinia-telescoping-floor-lamp-578.png",
+      "aspect": 0.3462,
+      "w": 0.3047,
+      "h": 0.8802
+    },
+    "slade-concrete-wood-coffee-table-894": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/slade-concrete-wood-coffee-table-894.png",
+      "aspect": 2.9075,
+      "w": 0.8802,
+      "h": 0.3027
+    },
+    "solomea-garden-fountain-2597": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/solomea-garden-fountain-2597.png",
+      "aspect": 0.5385,
+      "w": 0.474,
+      "h": 0.8802
+    },
+    "spencer-beige-cot-bench-1006": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/spencer-beige-cot-bench-1006.png",
+      "aspect": 2.8463,
+      "w": 0.8802,
+      "h": 0.3092
+    },
+    "stanhope-chocolate-leather-sofa-2983": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/stanhope-chocolate-leather-sofa-2983.png",
+      "aspect": 2.6562,
+      "w": 0.8802,
+      "h": 0.3314
+    },
+    "steepe-horn-side-table-315": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/steepe-horn-side-table-315.png",
+      "aspect": 0.7877,
+      "w": 0.6934,
+      "h": 0.8802
+    },
+    "stefano-marble-tall-side-table-2923": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/stefano-marble-tall-side-table-2923.png",
+      "aspect": 0.7448,
+      "w": 0.6556,
+      "h": 0.8802
+    },
+    "suhana-cognac-leather-chair-2618": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/suhana-cognac-leather-chair-2618.png",
+      "aspect": 1.0921,
+      "w": 0.8802,
+      "h": 0.806
+    },
+    "sutton-36-black-firepit-tank-cover-3878": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sutton-36-black-firepit-tank-cover-3878.png",
+      "aspect": 1.5242,
+      "w": 0.8802,
+      "h": 0.5775
+    },
+    "sylvanus-green-ash-sofa-2619": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/sylvanus-green-ash-sofa-2619.png",
+      "aspect": 2.1701,
+      "w": 0.8802,
+      "h": 0.4056
+    },
+    "tabitha-set": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tabitha-set.png",
+      "aspect": 3.6739,
+      "w": 0.8802,
+      "h": 0.2396
+    },
+    "tafari": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tafari.png",
+      "aspect": 1.0143,
+      "w": 0.8802,
+      "h": 0.8678
+    },
+    "tailor-brown-leather-chair-84": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tailor-brown-leather-chair-84.png",
+      "aspect": 0.878,
+      "w": 0.7728,
+      "h": 0.8802
+    },
+    "talon-black-metal-sofa-945": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/talon-black-metal-sofa-945.png",
+      "aspect": 2.2838,
+      "w": 0.8802,
+      "h": 0.3854
+    },
+    "taos-6x8-pattern-rug-404": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/taos-6x8-pattern-rug-404.png",
+      "aspect": 1.4491,
+      "w": 0.8802,
+      "h": 0.6074
+    },
+    "tassel-houndstooth-throw-2346": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tassel-houndstooth-throw-2346.png",
+      "aspect": 0.872,
+      "w": 0.7676,
+      "h": 0.8802
+    },
+    "tassel-windmill-throw-2378": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tassel-windmill-throw-2378.png",
+      "aspect": 0.6768,
+      "w": 0.5957,
+      "h": 0.8802
+    },
+    "tawny-leather-tray-3116": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tawny-leather-tray-3116.png",
+      "aspect": 2.2458,
+      "w": 0.8802,
+      "h": 0.3919
+    },
+    "teigan": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/teigan.png",
+      "aspect": 1.2743,
+      "w": 0.8802,
+      "h": 0.6908
+    },
+    "thatcher-green-natural-woven-bar-stool-4052": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/thatcher-green-natural-woven-bar-stool-4052.png",
+      "aspect": 0.4874,
+      "w": 0.429,
+      "h": 0.8802
+    },
+    "therion-mango-wood-shelf-3497": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/therion-mango-wood-shelf-3497.png",
+      "aspect": 0.6405,
+      "w": 0.5638,
+      "h": 0.8802
+    },
+    "thistle-smoke-glassware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/thistle-smoke-glassware.png",
+      "aspect": 1.4172,
+      "w": 0.8802,
+      "h": 0.6211
+    },
+    "tibur-travertine-tray-3734": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tibur-travertine-tray-3734.png",
+      "aspect": 1,
+      "w": 0.8802,
+      "h": 0.8802
+    },
+    "tierre-smoked-wood-round-coffee-table-3001": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tierre-smoked-wood-round-coffee-table-3001.png",
+      "aspect": 2.3111,
+      "w": 0.8802,
+      "h": 0.3809
+    },
+    "tigran-linear-floor-lamp-3487": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tigran-linear-floor-lamp-3487.png",
+      "aspect": 0.2892,
+      "w": 0.2546,
+      "h": 0.8802
+    },
+    "tillery-white-porcelain-black-rim": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tillery-white-porcelain-black-rim.png",
+      "aspect": 1.4292,
+      "w": 0.8802,
+      "h": 0.6159
+    },
+    "timber-stump-side-table-3034": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/timber-stump-side-table-3034.png",
+      "aspect": 1.0756,
+      "w": 0.8802,
+      "h": 0.8184
+    },
+    "timon-wood-cocktail-table-362": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/timon-wood-cocktail-table-362.png",
+      "aspect": 0.7041,
+      "w": 0.6198,
+      "h": 0.8802
+    },
+    "tirzah-asymmetrical-vase": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tirzah-asymmetrical-vase.png",
+      "aspect": 1.237,
+      "w": 0.8802,
+      "h": 0.7116
+    },
+    "tivoli-travertine-22-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tivoli-travertine-22-plinth.png",
+      "aspect": 1.3981,
+      "w": 0.8802,
+      "h": 0.6296
+    },
+    "tivoli-travertine-24-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tivoli-travertine-24-plinth.png",
+      "aspect": 1.3981,
+      "w": 0.8802,
+      "h": 0.6296
+    },
+    "tivoli-travertine-32-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tivoli-travertine-32-plinth.png",
+      "aspect": 1.3981,
+      "w": 0.8802,
+      "h": 0.6296
+    },
+    "tivoli-travertine-mini-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tivoli-travertine-mini-plinth.png",
+      "aspect": 1.3981,
+      "w": 0.8802,
+      "h": 0.6296
+    },
+    "tivoli-travertine-small-plinth": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tivoli-travertine-small-plinth.png",
+      "aspect": 1.3981,
+      "w": 0.8802,
+      "h": 0.6296
+    },
+    "tomina-marble-base-table-lamp-3923": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tomina-marble-base-table-lamp-3923.png",
+      "aspect": 0.5814,
+      "w": 0.5117,
+      "h": 0.8802
+    },
+    "torro-leather-knit-ottoman-3005": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/torro-leather-knit-ottoman-3005.png",
+      "aspect": 1.0799,
+      "w": 0.8802,
+      "h": 0.8151
+    },
+    "toshia-mirror-column": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/toshia-mirror-column.png",
+      "aspect": 0.693,
+      "w": 0.61,
+      "h": 0.8802
+    },
+    "toshia-40-mirror-cocktail-column-3188": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/toshia-40-mirror-cocktail-column-3188.png",
+      "aspect": 0.6834,
+      "w": 0.6016,
+      "h": 0.8802
+    },
+    "tove-8-grey-dining-table-2739": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/tove-8-grey-dining-table-2739.png",
+      "aspect": 3.9648,
+      "w": 0.8802,
+      "h": 0.222
+    },
+    "trapper-canvas-ottoman-1815": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/trapper-canvas-ottoman-1815.png",
+      "aspect": 1.1685,
+      "w": 0.8802,
+      "h": 0.7533
+    },
+    "trinidad-8x10-cream-jute-criss-cross-rug-3853": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/trinidad-8x10-cream-jute-criss-cross-rug-3853.png",
+      "aspect": 1.4232,
+      "w": 0.8802,
+      "h": 0.6185
+    },
+    "ussa-snake-double-bowl-2984": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ussa-snake-double-bowl-2984.png",
+      "aspect": 1.7333,
+      "w": 0.8802,
+      "h": 0.5078
+    },
+    "valdiva-8x10-olive-rug-4006": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/valdiva-8x10-olive-rug-4006.png",
+      "aspect": 1.4217,
+      "w": 0.8802,
+      "h": 0.6191
+    },
+    "valla-patina-side-table-3708": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/valla-patina-side-table-3708.png",
+      "aspect": 0.8254,
+      "w": 0.7266,
+      "h": 0.8802
+    },
+    "verna-classic-wood-picnic-box-2967": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/verna-classic-wood-picnic-box-2967.png",
+      "aspect": 1.3615,
+      "w": 0.8802,
+      "h": 0.6465
+    },
+    "versailles-cane-coffee-table-2407": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/versailles-cane-coffee-table-2407.png",
+      "aspect": 2.3032,
+      "w": 0.8802,
+      "h": 0.3822
+    },
+    "vespa-dark-wood-shelf-1929": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/vespa-dark-wood-shelf-1929.png",
+      "aspect": 0.5133,
+      "w": 0.4518,
+      "h": 0.8802
+    },
+    "vixxen-black-bar-stool-2747": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/vixxen-black-bar-stool-2747.png",
+      "aspect": 0.6072,
+      "w": 0.5345,
+      "h": 0.8802
+    },
+    "voyage-black-trunk-bar-2911": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/voyage-black-trunk-bar-2911.png",
+      "aspect": 0.8018,
+      "w": 0.7057,
+      "h": 0.8802
+    },
+    "wadsworth-concrete-birch-bar-1570": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/wadsworth-concrete-birch-bar-1570.png",
+      "aspect": 2.7203,
+      "w": 0.8802,
+      "h": 0.3236
+    },
+    "walden-concrete-birch-bar-1354": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/walden-concrete-birch-bar-1354.png",
+      "aspect": 2.1529,
+      "w": 0.8802,
+      "h": 0.4089
+    },
+    "warren-metal-canopy-2154": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/warren-metal-canopy-2154.png",
+      "aspect": 1.053,
+      "w": 0.8802,
+      "h": 0.8359
+    },
+    "washington-wall-24-w-x-8-h-3033": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/washington-wall-24-w-x-8-h-3033.png",
+      "aspect": 1.6671,
+      "w": 0.8802,
+      "h": 0.528
+    },
+    "waverly-alabaster-wall-sconce-3532": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/waverly-alabaster-wall-sconce-3532.png",
+      "aspect": 0.2359,
+      "w": 0.2077,
+      "h": 0.8802
+    },
+    "waves-grey-throw-2377": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/waves-grey-throw-2377.png",
+      "aspect": 0.7093,
+      "w": 0.6243,
+      "h": 0.8802
+    },
+    "webb-5x8-abstract-rug-1615": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/webb-5x8-abstract-rug-1615.png",
+      "aspect": 1.2803,
+      "w": 0.8802,
+      "h": 0.6875
+    },
+    "wells-decanter-645": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/wells-decanter-645.png",
+      "aspect": 0.5673,
+      "w": 0.4993,
+      "h": 0.8802
+    },
+    "white-hide-lumbar-pillow-2323": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/white-hide-lumbar-pillow-2323.png",
+      "aspect": 1.8075,
+      "w": 0.8802,
+      "h": 0.487
+    },
+    "white-hide-stitched-lumbar-pillow-2603": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/white-hide-stitched-lumbar-pillow-2603.png",
+      "aspect": 1.4792,
+      "w": 0.8802,
+      "h": 0.5951
+    },
+    "white-raffia-pillow-3194": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/white-raffia-pillow-3194.png",
+      "aspect": 1.0321,
+      "w": 0.8802,
+      "h": 0.8529
+    },
+    "white-silver-hide-pillow-2325": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/white-silver-hide-pillow-2325.png",
+      "aspect": 1.1314,
+      "w": 0.8802,
+      "h": 0.778
+    },
+    "wilhelm-11-rustic-led-camping-lantern-1015": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/wilhelm-11-rustic-led-camping-lantern-1015.png",
+      "aspect": 0.3987,
+      "w": 0.3509,
+      "h": 0.8802
+    },
+    "winona-silver-trophy-table-lamp-2769": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/winona-silver-trophy-table-lamp-2769.png",
+      "aspect": 0.5141,
+      "w": 0.4525,
+      "h": 0.8802
+    },
+    "winslow-tortoise-bistro-flatware": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/winslow-tortoise-bistro-flatware.png",
+      "aspect": 0.7818,
+      "w": 0.6882,
+      "h": 0.8802
+    },
+    "woodsley-concrete-split-wood-bar-787": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/woodsley-concrete-split-wood-bar-787.png",
+      "aspect": 2.5703,
+      "w": 0.8802,
+      "h": 0.3424
+    },
+    "woven-autumn-stripe-throw-2404": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/woven-autumn-stripe-throw-2404.png",
+      "aspect": 0.6391,
+      "w": 0.5625,
+      "h": 0.8802
+    },
+    "woven-sand-aztec-2902": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/woven-sand-aztec-2902.png",
+      "aspect": 0.7648,
+      "w": 0.6732,
+      "h": 0.8802
+    },
+    "ygritte-ebony-tufted-bench-1994": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ygritte-ebony-tufted-bench-1994.png",
+      "aspect": 2.952,
+      "w": 0.8802,
+      "h": 0.2982
+    },
+    "zahavi-gold-top-decanters": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/zahavi-gold-top-decanters.png",
+      "aspect": 0.6842,
+      "w": 0.6022,
+      "h": 0.8802
+    },
+    "zalena-silver-top-decanters": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/zalena-silver-top-decanters.png",
+      "aspect": 0.6797,
+      "w": 0.5983,
+      "h": 0.8802
+    },
+    "zeki-kilim-armchair-706": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/zeki-kilim-armchair-706.png",
+      "aspect": 0.9845,
+      "w": 0.8665,
+      "h": 0.8802
+    },
+    "ziyan-marble-bowl-stand-4134": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/ziyan-marble-bowl-stand-4134.png",
+      "aspect": 1.9287,
+      "w": 0.8802,
+      "h": 0.4564
+    },
+    "zoe-oak-dining-chair-2742": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/zoe-oak-dining-chair-2742.png",
+      "aspect": 0.7737,
+      "w": 0.681,
+      "h": 0.8802
+    },
+    "zuri-marble-bowl-lid-4135": {
+      "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/normalized/zuri-marble-bowl-lid-4135.png",
+      "aspect": 1.2202,
+      "w": 0.8802,
+      "h": 0.7214
+    }
+  }
+}
