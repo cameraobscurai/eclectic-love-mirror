@@ -173,7 +173,7 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, offset, count]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
+  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.sub, search.ready, search.group, search.sort]);
 
   // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
@@ -186,6 +186,19 @@ function Inner() {
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
+  // Subcategory options follow the chosen category; with no category picked we
+  // offer the union so the filter is still usable.
+  const subOptions = search.cat
+    ? subcategoryOptions(search.cat, search.sub || null)
+    : Array.from(
+        new Map(
+          Object.values(CATEGORY_SUBCATEGORIES).flat().map((s) => [s.id, s]),
+        ).values(),
+      ).sort((a, b) => a.label.localeCompare(b.label));
+  const subLabels: Record<string, string> = Object.fromEntries(
+    Object.values(CATEGORY_SUBCATEGORIES).flat().map((s) => [s.id, s.label]),
+  );
+
 
 
   return (
