@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-const GROUPS = ['seating','tables','bars','lighting','large-decor','storage','chandeliers'];
+const GROUPS = ['seating','tables','bars','lighting'];
 const b = await chromium.launch({ executablePath:'/bin/chromium', args:['--no-sandbox'] });
 const ctx = await b.newContext({viewport:{width:1440,height:1200}, deviceScaleFactor:1});
 const p = await ctx.newPage();
