@@ -16,6 +16,7 @@ import type { FitRule } from "./categoryFit";
 import { resolveFit } from "./categoryFit";
 import {
   absoluteFitFor,
+  isHeightUniformShelf,
   physicalScaleFor,
   relativeMassFor,
   type ScalableProduct,
@@ -117,6 +118,26 @@ export function resolveProductFit(
     : Math.min(baseHeight(rule), baseHeight(rule) * phys.height);
 
   if (abs) {
+    // Height-invariant shelves (bars, stools, dining tables, sofas) render at
+    // MATCHED height and differ only in width — the way they actually sit in a
+    // room. Everything else matches mass and keeps its own aspect.
+    if (isHeightUniformShelf(product)) {
+      return withGain(
+        {
+          ...rule,
+          primary: "height",
+          aspectBlend: undefined,
+          refAspect: undefined,
+          primaryTarget: abs.height,
+          secondaryMax: 0.97,
+          widthMax: 0.97,
+          heightMax: abs.height,
+          clampMin: Math.min(rule.clampMin, 0.3),
+        },
+        gain,
+      );
+    }
+
     const areaTarget = Math.sqrt(abs.width * abs.height);
     return withGain(
       {
@@ -135,6 +156,7 @@ export function resolveProductFit(
       gain,
     );
   }
+
 
   return withGain(
     {
