@@ -340,6 +340,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // The original product photo is the source of truth for slot 0.
 
 
+      baseImages = coverFirst(baseImages);
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
       return {
