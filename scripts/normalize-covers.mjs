@@ -342,10 +342,15 @@ async function main() {
     for (const e of ok) {
       covers[e.slug] = {
         url: e.url,
+        // The hero this was derived from. The render layer only substitutes the
+        // normalized file when the product's current hero still matches — so an
+        // admin swapping the cover falls back to the original automatically.
+        src: e.sourceUrl,
         aspect: e.subjectAspect,
         w: e.subjectW,
         h: e.subjectH,
       };
+
     }
     fs.writeFileSync(
       MANIFEST,
