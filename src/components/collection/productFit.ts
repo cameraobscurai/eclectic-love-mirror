@@ -101,17 +101,40 @@ export function resolveProductFit(
     );
   }
 
-  // Measured pieces are solved on ABSOLUTE real-world size.
+  // Measured pieces are solved on ABSOLUTE real-world size — but on MASS, not
+  // on a literal W x H box.
   //
-  // Ratio-to-median scaling saturated its own cap: every sofa over ~76" landed
-  // on the same 0.97 width target, so a 98" Henry and a 52" Cosette differed
-  // only by height and read as the same size. Real inches against the
-  // category's 90th-percentile piece is monotonic — bigger is always bigger.
+  // Catalog inches describe the piece straight-on; the photo is a 3/4 view, so
+  // the silhouette aspect never equals W/H. Forcing both axes made whichever
+  // axis disagreed the binding one: INDIWIN (91"W x 25"H, aspect 3.6) got a
+  // 0.27-tall box, its 2.5-aspect photo hit that height first, and it rendered
+  // 25% narrower than a smaller sofa. Matching the scale model's AREA keeps
+  // "bigger is always bigger" while letting each photo keep its own aspect.
   const abs = absoluteFitFor(product);
   const widthTarget = abs ? abs.width : Math.min(0.97, baseWidth(rule) * phys.width);
   const heightCap = abs
     ? abs.height
     : Math.min(baseHeight(rule), baseHeight(rule) * phys.height);
+
+  if (abs) {
+    const areaTarget = Math.sqrt(abs.width * abs.height);
+    return withGain(
+      {
+        ...rule,
+        primary: "area",
+        aspectBlend: undefined,
+        refAspect: undefined,
+        primaryTarget: areaTarget,
+        secondaryMax: 0.97,
+        // Ceilings only — they stop an extreme silhouette from overflowing the
+        // tile, they no longer dictate the size.
+        widthMax: 0.97,
+        heightMax: 0.74,
+        clampMin: Math.min(rule.clampMin, 0.3),
+      },
+      gain,
+    );
+  }
 
   return withGain(
     {
@@ -130,6 +153,7 @@ export function resolveProductFit(
     gain,
   );
 }
+
 
 
 
