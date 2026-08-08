@@ -228,6 +228,21 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       }
     };
 
+    // A macro/close-up shot is never a cover. These are shot against a wall
+    // (opaque backdrop, cropped hardware) and read as a broken tile next to
+    // the transparent full-product cutouts. Demote, never drop.
+    const isDetailShot = (url: string) =>
+      /(detail|close[\s._-]?up|closeup|macro|swatch|hardware|texture)/i.test(imgKey(url));
+    const coverFirst = (imgs: CollectionImage[]): CollectionImage[] => {
+      if (imgs.length < 2 || !isDetailShot(imgs[0].url)) return imgs;
+      const idx = imgs.findIndex((i) => !isDetailShot(i.url));
+      if (idx <= 0) return imgs;
+      const next = [...imgs.slice(idx, idx + 1), ...imgs.filter((_, i) => i !== idx)];
+      return next.map((img, i) => ({ ...img, position: i, isHero: i === 0 }));
+    };
+
+
+
 
     const products = base.products.map((p) => {
       const live = overlay.get(p.id);
