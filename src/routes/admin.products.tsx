@@ -188,15 +188,14 @@ function Inner() {
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
   // Subcategory options follow the chosen category; with no category picked we
   // offer the union so the filter is still usable.
-  const subOptions = search.cat
+  const allSubs: AdminSubcategory[] = Object.values(CATEGORY_SUBCATEGORIES).flat();
+  const subOptions: AdminSubcategory[] = search.cat
     ? subcategoryOptions(search.cat, search.sub || null)
-    : Array.from(
-        new Map(
-          Object.values(CATEGORY_SUBCATEGORIES).flat().map((s) => [s.id, s]),
-        ).values(),
-      ).sort((a, b) => a.label.localeCompare(b.label));
+    : Array.from(new Map(allSubs.map((s) => [s.id, s])).values()).sort((a, b) =>
+        a.label.localeCompare(b.label),
+      );
   const subLabels: Record<string, string> = Object.fromEntries(
-    Object.values(CATEGORY_SUBCATEGORIES).flat().map((s) => [s.id, s.label]),
+    allSubs.map((s) => [s.id, s.label]),
   );
 
 
