@@ -75,7 +75,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
             onOpenLightbox && active ? "cursor-zoom-in" : "cursor-default",
           )}
         >
-          <div className="absolute inset-0 bg-[#f9f9f9]" aria-hidden="true" />
+          <div className="absolute inset-0 bg-white" aria-hidden="true" />
           {active ? (
             /* The solver owns the img transform, so the hover zoom lives on
                this wrapper — putting both on one element would fight. */
@@ -129,7 +129,7 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
                   aria-label={`View image ${i + 1} of ${images.length}`}
                   aria-pressed={isActive}
                   className={cn(
-                    "group/alt relative bg-[#f9f9f9] aspect-square cursor-pointer",
+                    "group/alt relative bg-white aspect-square cursor-pointer",
                     "focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
                     "transition-opacity duration-200",
                     "after:absolute after:inset-0 after:pointer-events-none after:transition-colors",
