@@ -334,6 +334,27 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         }
       }
 
+      // Owner-approved family cover: the Luna joint two-chair cutout lives on
+      // the lead RMS row as `LUNA 0.png`. It is also the Taupe row's first
+      // image, so the generic family merge classifies it as variant-owned.
+      // Promote that exact original after merging so neither a detail shot nor
+      // a single-chair variant can replace the joint family cover.
+      if (p.slug === "luna-arcing-dining-chairs") {
+        const isJointCover = (url: string) =>
+          /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(url);
+        const jointCover = baseImages.find((img) => isJointCover(img.url))
+          ?? (overlay.get(p.id)?.images ?? []).find(isJointCover);
+        if (jointCover) {
+          const promoted = typeof jointCover === "string"
+            ? { url: jointCover, position: 0, isHero: true, inferredFilename: null, altText: p.title }
+            : jointCover;
+          baseImages = [
+            promoted,
+            ...baseImages.filter((img) => !isJointCover(img.url)),
+          ].map((img, index) => ({ ...img, position: index, isHero: index === 0 }));
+        }
+      }
+
       // NOTE: AI-upscaled covers are intentionally NOT used as the hero image.
       // The upscaler baked in opaque backdrops and invented cast shadows, which
       // read as grey boxes next to the transparent cutouts everywhere else.
