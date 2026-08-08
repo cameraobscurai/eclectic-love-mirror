@@ -151,7 +151,7 @@ export const listCategoryItems = createServerFn({ method: "POST" })
 
 // ---------------------------------------------------------------------------
 // Publish — materialize the live overlay (editorial_order, images,
-// card_background_url, cover_focal_x/y, upscaled_cover_url) into a single
+// card_background_url, cover_focal_x/y) into a single
 // JSON blob at squarespace-mirror/catalog/overlay.json. The public catalog
 // reads that blob in one request instead of paginating inventory_items on
 // every visit. Admins click Publish when a batch of photo/order edits is
@@ -174,7 +174,6 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         card_background_url: string | null;
         cover_focal_x: number | null;
         cover_focal_y: number | null;
-        upscaled_cover_url: string | null;
         title: string | null;
         slug: string | null;
         category: string | null;
@@ -191,7 +190,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -204,7 +203,6 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           card_background_url: row.card_background_url,
           cover_focal_x: row.cover_focal_x,
           cover_focal_y: row.cover_focal_y,
-          upscaled_cover_url: row.upscaled_cover_url,
           title: row.title,
           slug: row.slug,
           category: row.category,
