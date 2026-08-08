@@ -280,7 +280,12 @@ const HEIGHT_CEILING = 0.74;
 const PHYSICAL_EXPONENT = 0.85;
 const MIN_FOOTPRINT = 0.26;
 
-export type AbsoluteFit = { width: number; height: number };
+export type AbsoluteFit = {
+  width: number;
+  height: number;
+  /** Height solved from real height alone (used by height-invariant shelves). */
+  heightUniform: number;
+};
 
 /**
  * How far the inches-per-tile-unit leans on the SUBCATEGORY's own p90 piece
