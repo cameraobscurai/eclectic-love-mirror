@@ -169,6 +169,41 @@ function bustImages(
   return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
 }
 
+
+/**
+ * Swap slot 0 for its normalized twin: same photograph, trimmed to the subject
+ * and centred on a fixed square canvas (scripts/normalize-covers.mjs). This is
+ * the source-level fix for inconsistent tile sizing — every cover now presents
+ * the same geometry, so the fit layer stops compensating for how tightly each
+ * photo happened to be cropped.
+ *
+ * Only applies when the current hero is still the exact file the normalized
+ * version was derived from; an admin cover swap reverts to the original until
+ * the pipeline is re-run. The original is preserved on `coverOriginalUrl` for
+ * og:image, which must not be a transparent PNG.
+ */
+function withNormalizedCover<
+  T extends {
+    slug: string;
+    images: CollectionImage[];
+    primaryImage: CollectionImage | null;
+  },
+>(p: T): T {
+  const hero = p.images[0];
+  if (!hero) return p;
+  const norm = normalizedCoverFor(p.slug, hero.url);
+  if (!norm) return p;
+  const cover: CollectionImage = { ...hero, url: norm.url };
+  const images = [cover, ...p.images.slice(1)];
+  return {
+    ...p,
+    images,
+    primaryImage: cover,
+    coverOriginalUrl: hero.url,
+    coverSubject: { w: norm.w, h: norm.h },
+  };
+}
+
 /**
  * Baked-only catalog — zero network. The /collection route loader awaits
  * this so first paint never blocks on the Supabase overlay round-trip
@@ -187,13 +222,14 @@ export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
       .map((p) => {
         const v = p.imagesVersion ?? 0;
         const images = v ? bustImages(p.images, v) : p.images;
-        return { ...p, images, primaryImage: images[0] ?? null };
+        return withNormalizedCover({ ...p, images, primaryImage: images[0] ?? null });
       });
     baseCached = { products, facets: raw.facets, total: products.length };
     return baseCached;
   });
   return baseLoadPromise;
 }
+
 
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached && Date.now() - cachedAt < CATALOG_TTL_MS) return cached;
