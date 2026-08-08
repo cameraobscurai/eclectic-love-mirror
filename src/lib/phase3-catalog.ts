@@ -340,13 +340,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // Promote that exact original after merging so neither a detail shot nor
       // a single-chair variant can replace the joint family cover.
       if (p.slug === "luna-arcing-dining-chairs") {
-        const jointCoverIndex = baseImages.findIndex((img) =>
-          /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(img.url),
-        );
-        if (jointCoverIndex > 0) {
+        const isJointCover = (url: string) =>
+          /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(url);
+        const jointCover = baseImages.find((img) => isJointCover(img.url))
+          ?? (overlay.get(p.id)?.images ?? []).find(isJointCover);
+        if (jointCover) {
+          const promoted = typeof jointCover === "string"
+            ? { url: jointCover, position: 0, isHero: true, inferredFilename: null, altText: p.title }
+            : jointCover;
           baseImages = [
-            baseImages[jointCoverIndex],
-            ...baseImages.filter((_, index) => index !== jointCoverIndex),
+            promoted,
+            ...baseImages.filter((img) => !isJointCover(img.url)),
           ].map((img, index) => ({ ...img, position: index, isHero: index === 0 }));
         }
       }
