@@ -13,7 +13,10 @@ const STAFF_EDITABLE_FIELDS = [
   "quantity", "quantity_label", "dimensions_raw",
   "public_ready", "hidden_note",
   "editorial_order", "manual_order",
-  "card_background_url", "upscaled_cover_url",
+  // upscaled_cover_url is RETIRED — the AI upscaler baked opaque backdrops and
+  // invented shadows into cutout photos. Nothing reads it; nothing may write it.
+  "card_background_url",
+
   "cover_focal_x", "cover_focal_y",
 ] as const;
 
