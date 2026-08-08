@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-08-08T23:23:11.194Z",
+  "generatedAt": "2026-08-08T23:30:20.417Z",
   "source": "src/data/inventory/current_catalog.json",
   "categories": {
     "bars": {
-      "mass": 54.1,
+      "mass": 54.6,
       "height": 41,
-      "n": 46,
+      "n": 47,
       "w95": 144,
-      "h95": 44.5,
-      "hCv": 0.153
+      "h95": 43.5,
+      "hCv": 0.151
     },
     "candlelight": {
       "mass": 8.6,
@@ -109,12 +109,12 @@
   },
   "subcategories": {
     "bars/bars": {
-      "mass": 60.9,
-      "height": 40.5,
-      "n": 30,
+      "mass": 61.4,
+      "height": 41,
+      "n": 31,
       "w95": 144,
       "h95": 43.5,
-      "hCv": 0.163
+      "hCv": 0.16
     },
     "bars/cocktail tables": {
       "mass": 31.4,
