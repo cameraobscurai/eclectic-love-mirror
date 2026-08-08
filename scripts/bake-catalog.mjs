@@ -359,10 +359,10 @@ for (const p of rolled) {
 }
 console.log(`[live-overlay] descriptions added: ${descAdded}, galleries seeded: ${galleryMerged}, hero overrides: ${heroOverridden}`);
 
-// Locked family covers from the reference site. These are only for rolled
-// tableware/serveware families whose correct cover is a plural group shot
-// that is not named "Set" in the owner-uploaded inventory files.
+// Locked family covers approved by the owner. Most are rolled tableware or
+// serveware group shots; Luna is the exact joint two-chair cutout.
 const LOCKED_REFERENCE_COVERS = {
+  'luna-arcing-dining-chairs': /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i,
   'tabitha-set': /tabitha[_+\s-]*(tray[_+\s-]*)?set|tabathia[_+\s-]*tray[_+\s-]*set/i,
   'powel-dark-brass-tray': /powell?[_+\s-]*set/i,
   'shetani-dark-brass-tray': /shetani[_+\s-]*set/i,
@@ -389,7 +389,7 @@ for (const p of rolled) {
   p.imageCount = p.images.length;
   lockedReferenceCovers++;
 }
-console.log(`[locked-reference-covers] applied ${lockedReferenceCovers} tableware/serveware cover overrides`);
+console.log(`[locked-reference-covers] applied ${lockedReferenceCovers} owner-approved cover overrides`);
 
 
 
