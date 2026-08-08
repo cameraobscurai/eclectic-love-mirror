@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-07T10:32:45.723Z",
+  "generatedAt": "2026-08-08T15:33:19.590Z",
   "source": "src/data/inventory/current_catalog.json",
   "categories": {
     "bars": {
-      "mass": 61.4,
+      "mass": 53.7,
       "height": 41,
-      "n": 31
+      "n": 47
     },
     "candlelight": {
       "mass": 8.6,
@@ -38,9 +38,9 @@
       "n": 26
     },
     "seating": {
-      "mass": 30.4,
-      "height": 32,
-      "n": 100
+      "mass": 30.8,
+      "height": 31.5,
+      "n": 94
     },
     "serveware": {
       "mass": 8.7,
@@ -58,9 +58,9 @@
       "n": 49
     },
     "tables": {
-      "mass": 24.2,
-      "height": 20.8,
-      "n": 74
+      "mass": 23.8,
+      "height": 20,
+      "n": 66
     },
     "tableware": {
       "mass": 4.7,
@@ -73,6 +73,21 @@
       "mass": 60.9,
       "height": 40.5,
       "n": 30
+    },
+    "bars/cocktail tables": {
+      "mass": 30.2,
+      "height": 41.5,
+      "n": 6
+    },
+    "bars/community tables": {
+      "mass": 56.5,
+      "height": 41.5,
+      "n": 4
+    },
+    "bars/stools": {
+      "mass": 26.8,
+      "height": 42,
+      "n": 5
     },
     "candlelight/candlelight": {
       "mass": 8.6,
@@ -120,9 +135,9 @@
       "n": 7
     },
     "seating/chairs": {
-      "mass": 30,
-      "height": 34,
-      "n": 38
+      "mass": 29.9,
+      "height": 33.9,
+      "n": 37
     },
     "seating/dining chairs": {
       "mass": 26.1,
@@ -138,11 +153,6 @@
       "mass": 50.1,
       "height": 31.5,
       "n": 23
-    },
-    "seating/stools": {
-      "mass": 26.8,
-      "height": 42,
-      "n": 5
     },
     "serveware/serveware": {
       "mass": 9.3,
@@ -165,19 +175,14 @@
       "n": 9
     },
     "tables/cocktail tables": {
-      "mass": 30.2,
-      "height": 42,
-      "n": 8
+      "mass": 22.1,
+      "height": 35,
+      "n": 4
     },
     "tables/coffee tables": {
       "mass": 27.1,
       "height": 15,
       "n": 18
-    },
-    "tables/community tables": {
-      "mass": 56.5,
-      "height": 41.5,
-      "n": 4
     },
     "tables/dining tables": {
       "mass": 48.3,
