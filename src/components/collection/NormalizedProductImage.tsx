@@ -30,7 +30,13 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  eager=true so the tile paints immediately with the fallback fit and
    *  refines to the measured fit when the silhouette resolves. */
   eager?: boolean;
+
+  /** Known subject geometry for a normalized cover: the subject's width and
+   *  height as fractions of a square canvas, centred. When supplied, the
+   *  in-browser silhouette probe is skipped — the geometry is already exact. */
+  subject?: { w: number; h: number } | null;
 };
+
 
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
@@ -221,6 +227,37 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
   return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
 }
 
+/**
+ * Silhouette geometry for a normalized cover, computed rather than measured.
+ *
+ * The file is a square canvas with the subject centred, so the only unknown is
+ * how that square letterboxes into the current frame aspect — which is pure
+ * arithmetic. Same maths measureImage() performs, minus the pixel read.
+ */
+function knownMeasurement(
+  subject: { w: number; h: number },
+  frameAspect: number,
+): Measurement {
+  const naturalAspect = 1; // normalized canvas is square by definition
+  const renderedW = naturalAspect >= frameAspect ? 1 : naturalAspect / frameAspect;
+  const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
+  const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
+  const bw = subject.w * renderedW;
+  const bh = subject.h * renderedH;
+  return {
+    renderedW,
+    renderedH,
+    bw,
+    bh,
+    cx: 0.5,
+    cy: 0.5,
+    top: contentTop + ((1 - subject.h) / 2) * renderedH,
+    bottom: contentTop + ((1 + subject.h) / 2) * renderedH,
+    naturalAspect,
+  };
+}
+
+
 // ────────────────────────────────────────────────────────────────────────
 // Component
 // ────────────────────────────────────────────────────────────────────────
@@ -234,12 +271,22 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   focalX,
   focalY,
   eager = false,
+  subject = null,
+
   className,
   style,
   onLoad,
   ...props
 }: Props, ref) {
   const hasFocal = typeof focalX === "number" && typeof focalY === "number";
+  // Normalized covers carry their geometry with them — the subject was trimmed
+  // and centred on a fixed square canvas at bake time, so the silhouette box is
+  // known exactly. Skip the canvas probe entirely: correct scale on first
+  // paint, no CORS read, no fade-in-on-measure.
+  const known = useMemo(
+    () => (subject ? knownMeasurement(subject, frameAspect) : null),
+    [subject, frameAspect],
+  );
   // Measurement is in frame-space, not just image-space: measureImage()
   // letterboxes the natural image into the current frameAspect before it
   // computes the silhouette bounds. Key by both URL and frame shape so the
@@ -247,11 +294,16 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // geometry and make neighboring products jump to different scales.
   const cacheKey = `${src}|frame:${frameAspect.toFixed(4)}`;
   const cached = measurementCache.get(cacheKey);
-  const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
+  const [measured, setMeasured] = useState<Measurement | null | undefined>(cached);
+  const measurement = known ?? measured;
+  const setMeasurement = setMeasured;
+
 
   useEffect(() => {
+    if (known) return;
     if (hasFocal) return;
     if (!src) return;
+
     const existing = measurementCache.get(cacheKey);
     if (existing !== undefined) {
       if (existing !== measurement) setMeasurement(existing);
@@ -281,7 +333,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     return () => {
       cancelled = true;
     };
-  }, [src, cacheKey, hasFocal, frameAspect, measurement]);
+  }, [src, cacheKey, hasFocal, frameAspect, measurement, known]);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);

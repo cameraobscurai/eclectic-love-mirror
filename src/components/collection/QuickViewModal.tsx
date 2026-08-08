@@ -448,6 +448,12 @@ export function QuickViewModal({
                       alt={img.altText ?? product.title}
                       frameAspect={4 / 3}
                       fit={detailFit}
+                      subject={
+                        img.url === product.images[0]?.url
+                          ? (product.coverSubject ?? null)
+                          : null
+                      }
+
                       eager
                       focalX={product.coverFocalX ?? null}
                       focalY={product.coverFocalY ?? null}

@@ -13,7 +13,10 @@
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
 
+import { normalizedCoverFor } from "@/lib/normalized-cover";
+
 export interface CollectionImage {
+
   url: string;
   position: number;
   isHero: boolean;
@@ -62,6 +65,13 @@ export interface CollectionProduct {
   liveCategory?: string | null;
   /** Live-site subcategory labels (e.g. ["Cocktail Tables"]). */
   liveSubcategories?: string[];
+  /** The hero URL before normalization. Kept for og:image and social cards,
+   *  which must not receive a transparent PNG. Null when no substitution. */
+  coverOriginalUrl?: string | null;
+  /** Subject box of the normalized cover as fractions of its square canvas.
+   *  Lets the renderer skip in-browser silhouette measurement entirely. */
+  coverSubject?: { w: number; h: number } | null;
+
   /** Variant rows collapsed under this family tile (e.g. Thistle Red Wine,
    *  Thistle Coupe…). Empty for standalone products. Populated by
    *  scripts/family-rollup.mjs at bake time. */
@@ -162,6 +172,41 @@ function bustImages(
   return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
 }
 
+
+/**
+ * Swap slot 0 for its normalized twin: same photograph, trimmed to the subject
+ * and centred on a fixed square canvas (scripts/normalize-covers.mjs). This is
+ * the source-level fix for inconsistent tile sizing — every cover now presents
+ * the same geometry, so the fit layer stops compensating for how tightly each
+ * photo happened to be cropped.
+ *
+ * Only applies when the current hero is still the exact file the normalized
+ * version was derived from; an admin cover swap reverts to the original until
+ * the pipeline is re-run. The original is preserved on `coverOriginalUrl` for
+ * og:image, which must not be a transparent PNG.
+ */
+function withNormalizedCover<
+  T extends {
+    slug: string;
+    images: CollectionImage[];
+    primaryImage: CollectionImage | null;
+  },
+>(p: T): T {
+  const hero = p.images[0];
+  if (!hero) return p;
+  const norm = normalizedCoverFor(p.slug, hero.url);
+  if (!norm) return p;
+  const cover: CollectionImage = { ...hero, url: norm.url };
+  const images = [cover, ...p.images.slice(1)];
+  return {
+    ...p,
+    images,
+    primaryImage: cover,
+    coverOriginalUrl: hero.url,
+    coverSubject: { w: norm.w, h: norm.h },
+  };
+}
+
 /**
  * Baked-only catalog — zero network. The /collection route loader awaits
  * this so first paint never blocks on the Supabase overlay round-trip
@@ -180,13 +225,14 @@ export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
       .map((p) => {
         const v = p.imagesVersion ?? 0;
         const images = v ? bustImages(p.images, v) : p.images;
-        return { ...p, images, primaryImage: images[0] ?? null };
+        return withNormalizedCover({ ...p, images, primaryImage: images[0] ?? null });
       });
     baseCached = { products, facets: raw.facets, total: products.length };
     return baseCached;
   });
   return baseLoadPromise;
 }
+
 
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached && Date.now() - cachedAt < CATALOG_TTL_MS) return cached;
@@ -364,7 +410,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       baseImages = coverFirst(baseImages);
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
-      return {
+      return withNormalizedCover({
         ...p,
         editorialOrder: eo,
         cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
@@ -375,7 +421,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         imageCount: images.length,
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
-      };
+      });
+
     });
 
     // Products added since the last bake exist only in the overlay. Append
