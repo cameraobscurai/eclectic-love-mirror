@@ -104,10 +104,40 @@ export function parseWidthInches(
  */
 import BENCHMARKS from "@/data/inventory/size-benchmarks.json";
 
-type Benchmark = { mass: number; height: number; n: number };
+type Benchmark = {
+  mass: number;
+  height: number;
+  n: number;
+  w95?: number;
+  h95?: number;
+  /** Coefficient of variation of the shelf's real heights (baked). */
+  hCv?: number;
+};
 
 const CATEGORY_BENCHMARKS = BENCHMARKS.categories as Record<string, Benchmark>;
 const SUBCATEGORY_BENCHMARKS = BENCHMARKS.subcategories as Record<string, Benchmark>;
+
+/**
+ * Below this height spread, a shelf is height-invariant in the real world —
+ * every bar is ~42" tall, every dining table ~30". Those shelves must render
+ * at MATCHED HEIGHT and differ only in width, otherwise a 6' bar and a 12' bar
+ * read as two unrelated products. Derived from the catalog, not hand-listed.
+ */
+const HEIGHT_UNIFORM_CV = 0.22;
+
+/** True when this product's shelf should be solved on height, not on mass. */
+export function isHeightUniformShelf(product: ScalableProduct): boolean {
+  const canonical = canonicalCategorySlug(product.categorySlug);
+  // Scoped to the bar shelf: bars, stools and cocktail columns are the only
+  // pieces whose real-world height is effectively fixed AND whose widths span
+  // 2'-19'. Elsewhere (chairs, coffee tables) height matching flattens the
+  // size story, so those shelves stay on mass matching.
+  if (canonical !== "bars") return false;
+  const key = subcategoryKey(product, canonical);
+  const shelf = (key ? SUBCATEGORY_BENCHMARKS[key] : undefined) ?? CATEGORY_BENCHMARKS[canonical];
+  return shelf?.hCv != null && shelf.hCv < HEIGHT_UNIFORM_CV;
+}
+
 
 /**
  * Categories whose tiles stand on a floor (or hang from a ceiling) and whose
@@ -254,15 +284,28 @@ const HEIGHT_CEILING = 0.74;
 const PHYSICAL_EXPONENT = 0.85;
 const MIN_FOOTPRINT = 0.26;
 
-export type AbsoluteFit = { width: number; height: number };
+export type AbsoluteFit = {
+  width: number;
+  height: number;
+  /** Height solved from real height alone (used by height-invariant shelves). */
+  heightUniform: number;
+};
+
+/**
+ * How far the inches-per-tile-unit leans on the SUBCATEGORY's own p90 piece
+ * instead of the whole category's. 0 = pure category (a 22" stool measured
+ * against a 12' bar renders as a speck), 1 = pure subcategory (a stool fills
+ * its tile exactly like a bar, losing the size story). The blend keeps stools
+ * legible on a shelf of bars while a bar still clearly out-masses a stool.
+ */
+const SUBCATEGORY_UNIT_BLEND = 0.6;
 
 export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
   const canonical = canonicalCategorySlug(product.categorySlug);
   if (!canonical || !REAL_SIZE_CATEGORIES.has(canonical)) return null;
 
-  const ref = CATEGORY_BENCHMARKS[canonical] as
-    | (Benchmark & { w95?: number; h95?: number })
-    | undefined;
+  type Ref = Benchmark & { w95?: number; h95?: number };
+  const ref = CATEGORY_BENCHMARKS[canonical] as Ref | undefined;
   if (!ref?.w95 || !ref?.h95) return null;
 
   const item = productMass(product);
@@ -270,11 +313,24 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
 
   const height = item.height ?? item.width * WIDTH_ONLY_HEIGHT_RATIO;
 
-  // Tile units per inch: whichever axis of the category's p90 piece binds first.
-  const unit = Math.min(WIDTH_CEILING / ref.w95, HEIGHT_CEILING / ref.h95);
+  // Tile units per inch: whichever axis of the p90 piece binds first.
+  const unitFor = (r: Ref) =>
+    Math.min(WIDTH_CEILING / r.w95!, HEIGHT_CEILING / r.h95!);
+
+  const catUnit = unitFor(ref);
+  const subKey = subcategoryKey(product, canonical);
+  const sub = (subKey ? SUBCATEGORY_BENCHMARKS[subKey] : undefined) as
+    | Ref
+    | undefined;
+  const unit =
+    sub?.w95 && sub?.h95 && sub.n >= 3
+      ? Math.pow(catUnit, 1 - SUBCATEGORY_UNIT_BLEND) *
+        Math.pow(unitFor(sub), SUBCATEGORY_UNIT_BLEND)
+      : catUnit;
 
   let w = item.width * unit;
   let h = height * unit;
+
 
   // Uniform compression driven by the dominant axis — aspect is preserved.
   const dominant = Math.max(w, h);
@@ -296,6 +352,14 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
     h /= under;
   }
 
-  return { width: w, height: h };
+  // Height solved from real height ALONE — no width clamp bleeding into it.
+  // Height-invariant shelves (bars, dining tables) use this so a 19' bar and a
+  // 6' bar stand at the same height and differ only in width.
+  let hSolo = height * unit;
+  hSolo *= Math.pow(hSolo, PHYSICAL_EXPONENT - 1);
+  hSolo = Math.min(hSolo, HEIGHT_CEILING);
+
+  return { width: w, height: h, heightUniform: hSolo };
 }
+
 

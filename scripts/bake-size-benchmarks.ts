@@ -87,10 +87,28 @@ for (const product of (catalog as any).products as any[]) {
   if (sub) push(subcategories, `${category}/${sub}`, mass, height ?? 0, width);
 }
 
+/**
+ * Coefficient of variation of the real heights in a bucket.
+ *
+ * Some shelves are height-invariant in the real world — every bar is ~42" tall,
+ * every stool ~30", every dining table ~30". Those must render at MATCHED
+ * height and vary only in width, or a 6' bar and a 12' bar look like different
+ * products. Shelves with genuinely varied heights (side tables, accents) stay
+ * on area matching. Derived, not hand-listed.
+ */
+const heightCv = (heights: number[]): number => {
+  if (heights.length < 3) return 1;
+  const mean = heights.reduce((a, b) => a + b, 0) / heights.length;
+  if (!mean) return 1;
+  const variance =
+    heights.reduce((a, b) => a + (b - mean) ** 2, 0) / heights.length;
+  return Math.sqrt(variance) / mean;
+};
+
 const summarize = (map: Map<string, Bucket>, minRows: number) => {
   const out: Record<
     string,
-    { mass: number; height: number; n: number; w95: number; h95: number }
+    { mass: number; height: number; n: number; w95: number; h95: number; hCv: number }
   > = {};
   for (const [key, bucket] of [...map.entries()].sort()) {
     if (bucket.mass.length < minRows) continue;
@@ -102,10 +120,12 @@ const summarize = (map: Map<string, Bucket>, minRows: number) => {
       // Upper reference: the piece that should nearly fill its tile.
       w95: round(pct(bucket.width, 0.9)),
       h95: round(pct(heights, 0.9)),
+      hCv: Math.round(heightCv(heights) * 1000) / 1000,
     };
   }
   return out;
 };
+
 
 const payload = {
   generatedAt: new Date().toISOString(),
