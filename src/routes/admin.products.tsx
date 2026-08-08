@@ -278,7 +278,11 @@ function Inner() {
               )}
 
               {visibleRows.map((r) => {
-                const cover = r.upscaled_cover_url ?? (r.images?.[0] ?? null);
+                // Must match the public site exactly: the original photo is the
+                // hero. Never fall back to upscaled_cover_url — that column is
+                // retired and showing it here makes admin disagree with live.
+                const cover = r.images?.[0] ?? null;
+
                 return (
                   <tr
                     key={r.id}
