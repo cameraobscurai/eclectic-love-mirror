@@ -343,6 +343,14 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
     h /= under;
   }
 
-  return { width: w, height: h };
+  // Height solved from real height ALONE — no width clamp bleeding into it.
+  // Height-invariant shelves (bars, dining tables) use this so a 19' bar and a
+  // 6' bar stand at the same height and differ only in width.
+  let hSolo = height * unit;
+  hSolo *= Math.pow(hSolo, PHYSICAL_EXPONENT - 1);
+  hSolo = Math.min(hSolo, HEIGHT_CEILING);
+
+  return { width: w, height: h, heightUniform: hSolo };
 }
+
 
