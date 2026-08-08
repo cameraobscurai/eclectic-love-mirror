@@ -1,7 +1,7 @@
-import cat from './src/data/inventory/current_catalog.json';
+import * as catNS from './src/data/inventory/current_catalog.json';
 import { resolveProductFit } from './src/components/collection/productFit';
 import { physicalScaleFor, parseDimensionsInches } from './src/components/collection/productPhysicalScale';
-const items:any[] = cat as any;
+const items:any[] = ((catNS as any).default ?? catNS) as any;
 const rows = items.filter(p=>p.categorySlug==='seating').map(p=>{
   const f:any = resolveProductFit(p as any);
   const ph = physicalScaleFor(p as any);
