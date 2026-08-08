@@ -234,17 +234,25 @@ export function relativeMassFor(product: ScalableProduct): number {
 /* ------------------------------------------------------------------ */
 
 /**
- * For measured categories the tile fraction is derived directly from real
- * inches against the category's 90th-percentile piece — not from a ratio to a
- * median that saturates a cap. A 98" sofa therefore always out-spans a 52"
- * loveseat, and a 30"-tall sofa never out-towers a 36"-tall loveseat.
+ * Absolute physical fit — ONE inches-to-tile scale per category, applied to
+ * BOTH axes.
+ *
+ * The old version solved width and height independently against separate
+ * ceilings, which distorted aspect: a 52"W x 36.5"H loveseat picked up a large
+ * height fraction while a 98"W x 30"H sofa saturated the width cap, so the
+ * loveseat rendered with MORE visual mass than the sofa it is half the size of.
+ *
+ * Now: a single inches-per-tile-unit constant maps real dimensions onto the
+ * tile. Width and height come out of the same multiplication, so the rendered
+ * rectangle is a true scale model of the real piece. Compression is applied
+ * uniformly to the pair (never per axis) so small pieces stay legible without
+ * ever out-massing a larger neighbour.
  */
 const WIDTH_CEILING = 0.97;
 const HEIGHT_CEILING = 0.74;
-/** Mild compression so the smallest piece is not microscopic. */
-const PHYSICAL_EXPONENT = 0.72;
-const WIDTH_FLOOR = 0.3;
-const HEIGHT_FLOOR = 0.24;
+/** Near-linear: 1.0 = literal scale model. Below 1 lifts the small end only. */
+const PHYSICAL_EXPONENT = 0.85;
+const MIN_FOOTPRINT = 0.26;
 
 export type AbsoluteFit = { width: number; height: number };
 
@@ -262,16 +270,32 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
 
   const height = item.height ?? item.width * WIDTH_ONLY_HEIGHT_RATIO;
 
-  return {
-    width: clamp(
-      WIDTH_CEILING * Math.pow(item.width / ref.w95, PHYSICAL_EXPONENT),
-      WIDTH_FLOOR,
-      WIDTH_CEILING,
-    ),
-    height: clamp(
-      HEIGHT_CEILING * Math.pow(height / ref.h95, PHYSICAL_EXPONENT),
-      HEIGHT_FLOOR,
-      HEIGHT_CEILING,
-    ),
-  };
+  // Tile units per inch: whichever axis of the category's p90 piece binds first.
+  const unit = Math.min(WIDTH_CEILING / ref.w95, HEIGHT_CEILING / ref.h95);
+
+  let w = item.width * unit;
+  let h = height * unit;
+
+  // Uniform compression driven by the dominant axis — aspect is preserved.
+  const dominant = Math.max(w, h);
+  if (dominant > 0) {
+    const s = Math.pow(dominant, PHYSICAL_EXPONENT - 1);
+    w *= s;
+    h *= s;
+  }
+
+  // Uniform down-scale if either ceiling is exceeded (still aspect-preserving).
+  const over = Math.max(w / WIDTH_CEILING, h / HEIGHT_CEILING, 1);
+  w /= over;
+  h /= over;
+
+  // Uniform lift so the very smallest measured piece stays visible.
+  const under = Math.min(Math.max(w, h) / MIN_FOOTPRINT, 1);
+  if (under > 0 && under < 1) {
+    w /= under;
+    h /= under;
+  }
+
+  return { width: w, height: h };
 }
+
