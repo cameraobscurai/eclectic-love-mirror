@@ -410,7 +410,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       baseImages = coverFirst(baseImages);
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
-      return {
+      return withNormalizedCover({
         ...p,
         editorialOrder: eo,
         cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
@@ -421,7 +421,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         imageCount: images.length,
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
-      };
+      });
+
     });
 
     // Products added since the last bake exist only in the overlay. Append
