@@ -133,6 +133,8 @@ export function ProductTile({
                   fit={fitRule}
                   eager={index < HIGH_FETCH_COUNT}
                   visualOffsetY={overrides?.visualOffsetY ?? 0}
+                  subject={product.coverSubject ?? null}
+
 
                   focalX={product.coverFocalX ?? null}
                   focalY={product.coverFocalY ?? null}
