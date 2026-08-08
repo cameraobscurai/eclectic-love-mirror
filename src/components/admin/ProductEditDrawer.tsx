@@ -90,6 +90,7 @@
  */
 
 import { mergeCategoryOptions, subcategoryOptions } from "@/lib/admin-categories";
+import { PARENT_SUBS, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
 import { markPublishPending } from "@/lib/publish-pending";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
