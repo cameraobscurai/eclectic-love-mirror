@@ -271,6 +271,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   focalX,
   focalY,
   eager = false,
+  subject = null,
+
   className,
   style,
   onLoad,
