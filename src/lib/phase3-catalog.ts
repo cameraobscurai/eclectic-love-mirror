@@ -62,6 +62,13 @@ export interface CollectionProduct {
   liveCategory?: string | null;
   /** Live-site subcategory labels (e.g. ["Cocktail Tables"]). */
   liveSubcategories?: string[];
+  /** The hero URL before normalization. Kept for og:image and social cards,
+   *  which must not receive a transparent PNG. Null when no substitution. */
+  coverOriginalUrl?: string | null;
+  /** Subject box of the normalized cover as fractions of its square canvas.
+   *  Lets the renderer skip in-browser silhouette measurement entirely. */
+  coverSubject?: { w: number; h: number } | null;
+
   /** Variant rows collapsed under this family tile (e.g. Thistle Red Wine,
    *  Thistle Coupe…). Empty for standalone products. Populated by
    *  scripts/family-rollup.mjs at bake time. */
