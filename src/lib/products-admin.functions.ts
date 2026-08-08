@@ -90,6 +90,7 @@ export const listProducts = createServerFn({ method: "POST" })
       q = q.or(`title.ilike.${s},rms_id.ilike.${s},slug.ilike.${s}`);
     }
     if (data.category) q = q.eq("category", data.category);
+    if (data.subcategory) q = q.eq("subcategory_slug", data.subcategory);
     if (data.publicReady === "yes") q = q.eq("public_ready", true);
     if (data.publicReady === "no") q = q.eq("public_ready", false);
     if (data.rmsIds && data.rmsIds.length > 0) q = q.in("rms_id", data.rmsIds);
