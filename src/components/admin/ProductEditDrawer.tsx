@@ -168,7 +168,7 @@ const FIELD_META = {
   },
   quantity: {
     group: "details", label: "Quantity on hand", type: "number", staffEditable: true,
-    help: "How many can go out to a single event.",
+    help: "How many we own, total — not how many go to one event.",
     validate: (v) =>
       v !== "" && v != null && (!Number.isFinite(+v) || +v < 0 || !Number.isInteger(+v))
         ? "Whole numbers only — like 4 or 12." : null,
