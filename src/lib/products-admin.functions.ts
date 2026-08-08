@@ -43,8 +43,10 @@ export const listProducts = createServerFn({ method: "POST" })
   .inputValidator((d: {
     search?: string;
     category?: string;
+    subcategory?: string;
     publicReady?: "yes" | "no" | "all";
     rmsIds?: string[];
+    sort?: "title" | "category" | "subcategory" | "updated";
     limit?: number;
     offset?: number;
   }) => d)
@@ -60,15 +62,35 @@ export const listProducts = createServerFn({ method: "POST" })
 
     let q = supabase
       .from("inventory_items")
-      .select("id, rms_id, title, slug, category, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order", { count: "exact" })
-      .order("updated_at", { ascending: false })
-      .range(offset, offset + limit - 1);
+      .select("id, rms_id, title, slug, category, subcategory_slug, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order", { count: "exact" });
+
+    // Sort is explicit and STABLE. Default is alphabetical by title so the
+    // list never reshuffles just because a row was touched — editing a piece
+    // used to float it to the top under the old updated_at ordering.
+    switch (data.sort ?? "title") {
+      case "category":
+        q = q.order("category", { ascending: true, nullsFirst: false })
+             .order("subcategory_slug", { ascending: true, nullsFirst: false })
+             .order("title", { ascending: true });
+        break;
+      case "subcategory":
+        q = q.order("subcategory_slug", { ascending: true, nullsFirst: false })
+             .order("title", { ascending: true });
+        break;
+      case "updated":
+        q = q.order("updated_at", { ascending: false }).order("rms_id", { ascending: true });
+        break;
+      default:
+        q = q.order("title", { ascending: true }).order("rms_id", { ascending: true });
+    }
+    q = q.range(offset, offset + limit - 1);
 
     if (data.search?.trim()) {
       const s = quotePostgrestFilterValue(`%${data.search.trim()}%`);
       q = q.or(`title.ilike.${s},rms_id.ilike.${s},slug.ilike.${s}`);
     }
     if (data.category) q = q.eq("category", data.category);
+    if (data.subcategory) q = q.eq("subcategory_slug", data.subcategory);
     if (data.publicReady === "yes") q = q.eq("public_ready", true);
     if (data.publicReady === "no") q = q.eq("public_ready", false);
     if (data.rmsIds && data.rmsIds.length > 0) q = q.in("rms_id", data.rmsIds);

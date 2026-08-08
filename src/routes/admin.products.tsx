@@ -1,4 +1,4 @@
-import { mergeCategoryOptions } from "@/lib/admin-categories";
+import { mergeCategoryOptions, subcategoryOptions, CATEGORY_SUBCATEGORIES, type AdminSubcategory } from "@/lib/admin-categories";
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -18,7 +18,7 @@ import {
 
 } from "@/lib/products-admin.functions";
 import { getCollectionCatalog } from "@/lib/phase3-catalog";
-import { productParent, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
+import { productParent, PARENT_LABELS, PARENT_ORDER, type ParentId } from "@/lib/collection-parents";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 
@@ -33,12 +33,17 @@ export const Route = createFileRoute("/admin/products")({
     ],
   }),
   component: Inner,
-  // `group` is a BOH deep-link (per-parent category tile). We derive the
-  // rms_id set for that ParentId from the baked catalog and post-filter
-  // the API response client-side (see groupRmsSet below).
+  // `group` is the HIVE COLLECTION heading (parent) filter — the public
+  // grouping (Dining, Lounge Seating…) that is DERIVED from category +
+  // subcategory, not stored on the row. We resolve it to an rms_id set from
+  // the baked catalog and filter server-side.
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
     cat: typeof s.cat === "string" ? s.cat : "",
+    sub: typeof s.sub === "string" ? s.sub : "",
+    sort: (["title", "category", "subcategory", "updated"].includes(s.sort as string)
+      ? s.sort
+      : "title") as "title" | "category" | "subcategory" | "updated",
     ready: (s.ready === "yes" || s.ready === "no" ? s.ready : "all") as "yes" | "no" | "all",
     id: typeof s.id === "string" ? s.id : "",
     group: typeof s.group === "string" ? s.group : undefined,
@@ -47,10 +52,18 @@ export const Route = createFileRoute("/admin/products")({
 
 type Row = {
   id: string; rms_id: string | null; title: string; slug: string | null;
-  category: string | null; status: string; quantity: number | null;
+  category: string | null; subcategory_slug: string | null; status: string;
+  quantity: number | null;
   quantity_label: string | null; public_ready: boolean | null;
   images: string[] | null;
   updated_at: string; editorial_order: number | null;
+};
+
+const SORT_LABELS: Record<string, string> = {
+  title: "Title A–Z",
+  category: "Category, then title",
+  subcategory: "Subcategory, then title",
+  updated: "Recently edited",
 };
 
 const PAGE = 50;
@@ -93,28 +106,39 @@ function Inner() {
     gcTime: 30 * 60_000,
   });
 
-  // BOH deep-link support: when `?group=<ParentId>` is set, derive the
-  // rms_id list for that parent from the baked catalog and pass it to the
-  // server as a proper filter (client-side page-only filtering was broken
-  // when the first page contained no matching rows).
-  const { data: groupRmsIds = null } = useQuery({
-    queryKey: ["admin", "group-rms", search.group ?? null],
-    enabled: Boolean(search.group),
+  // HIVE COLLECTION headings are derived, not stored. Build one rms_id →
+  // ParentId map from the baked catalog and reuse it for both the heading
+  // filter and the per-row "Collection" column, so Adrienne can see exactly
+  // which heading a piece lands under (Dining included).
+  const { data: parentMap = null } = useQuery({
+    queryKey: ["admin", "parent-map"],
     staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000,
     queryFn: async () => {
       const c = await getCollectionCatalog();
-      const ids: string[] = [];
+      const map: Record<string, ParentId> = {};
       for (const p of c.products) {
-        if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
+        const parent = productParent(p);
+        if (!parent) continue;
+        map[p.id] = parent;
+        for (const v of p.variants ?? []) map[v.id] = parent;
       }
-      return ids;
+      return map;
     },
   });
+
+  const groupRmsIds = search.group
+    ? parentMap
+      ? Object.keys(parentMap).filter((id) => parentMap[id] === (search.group as ParentId))
+      : null
+    : null;
 
   const listArgs = {
     search: search.q,
     category: search.cat || undefined,
+    subcategory: search.sub || undefined,
     publicReady: search.ready,
+    sort: search.sort,
     rmsIds: groupRmsIds ?? undefined,
     limit: PAGE,
     offset,
@@ -149,7 +173,7 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, offset, count]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.ready, search.group]);
+  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.sub, search.ready, search.group, search.sort]);
 
   // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
@@ -162,6 +186,18 @@ function Inner() {
 
   const visibleRows = rows;
   const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
+  // Subcategory options follow the chosen category; with no category picked we
+  // offer the union so the filter is still usable.
+  const allSubs: AdminSubcategory[] = Object.values(CATEGORY_SUBCATEGORIES).flat();
+  const subOptions: AdminSubcategory[] = search.cat
+    ? subcategoryOptions(search.cat, search.sub || null)
+    : Array.from(new Map(allSubs.map((s) => [s.id, s])).values()).sort((a, b) =>
+        a.label.localeCompare(b.label),
+      );
+  const subLabels: Record<string, string> = Object.fromEntries(
+    allSubs.map((s) => [s.id, s.label]),
+  );
+
 
 
   return (
@@ -224,16 +260,37 @@ function Inner() {
             </span>
           </div>
 
+          {/* THREE-PART SORT: Category → Hive Collection heading → Subcategory */}
           <select
             value={search.cat}
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
+            aria-label="Filter by category"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value, sub: "" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All categories</option>
             {mergeCategoryOptions(cats).map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
           <select
+            value={search.group ?? ""}
+            aria-label="Filter by Hive Collection heading"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, group: e.target.value || undefined }) })}
+            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+          >
+            <option value="">All collections</option>
+            {PARENT_ORDER.map((p) => <option key={p} value={p}>{PARENT_LABELS[p]}</option>)}
+          </select>
+          <select
+            value={search.sub}
+            aria-label="Filter by subcategory"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, sub: e.target.value }) })}
+            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+          >
+            <option value="">All subcategories</option>
+            {subOptions.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+          </select>
+          <select
             value={search.ready}
+            aria-label="Filter by visibility"
             onChange={(e) => navigate({ search: (s: any) => ({ ...s, ready: e.target.value as "yes"|"no"|"all" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
@@ -241,6 +298,17 @@ function Inner() {
             <option value="yes">Public-ready</option>
             <option value="no">Hidden</option>
           </select>
+          <label className="flex items-center gap-2 text-charcoal/55">
+            Sort
+            <select
+              value={search.sort}
+              aria-label="Sort list"
+              onChange={(e) => navigate({ search: (s: any) => ({ ...s, sort: e.target.value }) })}
+              className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
+            >
+              {Object.entries(SORT_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
+          </label>
           {/* Results narrow as you type; this is just a keyboard-friendly flush. */}
           <button type="submit" className="sr-only">Search</button>
 
@@ -254,6 +322,8 @@ function Inner() {
                 <th className="text-left px-3 py-2 w-14"></th>
                 <th className="text-left px-3 py-2">Title</th>
                 <th className="text-left px-3 py-2">Category</th>
+                <th className="text-left px-3 py-2">Collection</th>
+                <th className="text-left px-3 py-2">Subcategory</th>
                 <th className="text-left px-3 py-2">Qty</th>
                 <th className="text-left px-3 py-2">Status</th>
                 <th className="text-left px-3 py-2">Public</th>
@@ -267,6 +337,8 @@ function Inner() {
                     <td className="px-3 py-2"><div className="w-10 h-10 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
+                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
@@ -274,7 +346,7 @@ function Inner() {
                   </tr>
                 ))}
               {!loading && visibleRows.length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
+                <tr><td colSpan={9} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
 
               {visibleRows.map((r) => {
@@ -282,6 +354,7 @@ function Inner() {
                 // hero. Never fall back to upscaled_cover_url — that column is
                 // retired and showing it here makes admin disagree with live.
                 const cover = r.images?.[0] ?? null;
+                const parent = r.rms_id ? parentMap?.[r.rms_id] : undefined;
 
                 return (
                   <tr
@@ -294,6 +367,10 @@ function Inner() {
                     </td>
                     <td className="px-3 py-2 font-display text-[14px]">{r.title}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.category ?? "—"}</td>
+                    <td className="px-3 py-2 text-charcoal/70">{parent ? PARENT_LABELS[parent] : "—"}</td>
+                    <td className="px-3 py-2 text-charcoal/70">
+                      {r.subcategory_slug ? (subLabels[r.subcategory_slug] ?? r.subcategory_slug) : "—"}
+                    </td>
                     <td className="px-3 py-2 tabular-nums">{r.quantity ?? "—"}{r.quantity_label ? ` ${r.quantity_label}` : ""}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.status}</td>
                     <td className="px-3 py-2">
@@ -306,6 +383,7 @@ function Inner() {
             </tbody>
           </table>
         </div>
+
 
         {/* pagination */}
         <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-charcoal/60">
