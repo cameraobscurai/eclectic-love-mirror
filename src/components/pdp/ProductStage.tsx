@@ -87,6 +87,12 @@ export function ProductStage({ product, className, onOpenLightbox }: Props) {
                 alt={active.altText ?? product.title}
                 frameAspect={4 / 3}
                 fit={heroFit}
+                subject={
+                  active.url === product.images[0]?.url
+                    ? (product.coverSubject ?? null)
+                    : null
+                }
+
                 eager
                 focalX={product.coverFocalX ?? null}
                 focalY={product.coverFocalY ?? null}
