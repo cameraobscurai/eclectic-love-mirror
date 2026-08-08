@@ -418,7 +418,6 @@ type LiveOverlayRow = {
   card_background_url: string | null;
   cover_focal_x: number | null;
   cover_focal_y: number | null;
-  upscaled_cover_url: string | null;
   /** Owner-selected subcategory (inventory_items.subcategory_slug). */
   subcategory_slug?: string | null;
   /** Identity fields — present only in overlays published after 2026-08-06.
@@ -493,7 +492,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, upscaled_cover_url, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -505,7 +504,6 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             card_background_url: row.card_background_url,
             cover_focal_x: row.cover_focal_x,
             cover_focal_y: row.cover_focal_y,
-            upscaled_cover_url: row.upscaled_cover_url,
             title: row.title,
             slug: row.slug,
             category: row.category,

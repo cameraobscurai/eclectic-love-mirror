@@ -13,7 +13,10 @@ const STAFF_EDITABLE_FIELDS = [
   "quantity", "quantity_label", "dimensions_raw",
   "public_ready", "hidden_note",
   "editorial_order", "manual_order",
-  "card_background_url", "upscaled_cover_url",
+  // upscaled_cover_url is RETIRED — the AI upscaler baked opaque backdrops and
+  // invented shadows into cutout photos. Nothing reads it; nothing may write it.
+  "card_background_url",
+
   "cover_focal_x", "cover_focal_y",
 ] as const;
 
@@ -57,7 +60,7 @@ export const listProducts = createServerFn({ method: "POST" })
 
     let q = supabase
       .from("inventory_items")
-      .select("id, rms_id, title, slug, category, status, quantity, quantity_label, public_ready, images, upscaled_cover_url, updated_at, editorial_order", { count: "exact" })
+      .select("id, rms_id, title, slug, category, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order", { count: "exact" })
       .order("updated_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
