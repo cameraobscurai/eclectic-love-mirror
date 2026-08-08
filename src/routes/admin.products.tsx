@@ -106,28 +106,39 @@ function Inner() {
     gcTime: 30 * 60_000,
   });
 
-  // BOH deep-link support: when `?group=<ParentId>` is set, derive the
-  // rms_id list for that parent from the baked catalog and pass it to the
-  // server as a proper filter (client-side page-only filtering was broken
-  // when the first page contained no matching rows).
-  const { data: groupRmsIds = null } = useQuery({
-    queryKey: ["admin", "group-rms", search.group ?? null],
-    enabled: Boolean(search.group),
+  // HIVE COLLECTION headings are derived, not stored. Build one rms_id →
+  // ParentId map from the baked catalog and reuse it for both the heading
+  // filter and the per-row "Collection" column, so Adrienne can see exactly
+  // which heading a piece lands under (Dining included).
+  const { data: parentMap = null } = useQuery({
+    queryKey: ["admin", "parent-map"],
     staleTime: 5 * 60_000,
+    gcTime: 30 * 60_000,
     queryFn: async () => {
       const c = await getCollectionCatalog();
-      const ids: string[] = [];
+      const map: Record<string, ParentId> = {};
       for (const p of c.products) {
-        if (productParent(p) === (search.group as ParentId)) ids.push(p.id);
+        const parent = productParent(p);
+        if (!parent) continue;
+        map[p.id] = parent;
+        for (const v of p.variants ?? []) map[v.id] = parent;
       }
-      return ids;
+      return map;
     },
   });
+
+  const groupRmsIds = search.group
+    ? parentMap
+      ? Object.keys(parentMap).filter((id) => parentMap[id] === (search.group as ParentId))
+      : null
+    : null;
 
   const listArgs = {
     search: search.q,
     category: search.cat || undefined,
+    subcategory: search.sub || undefined,
     publicReady: search.ready,
+    sort: search.sort,
     rmsIds: groupRmsIds ?? undefined,
     limit: PAGE,
     offset,
