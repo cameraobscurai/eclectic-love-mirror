@@ -15,10 +15,12 @@
 import type { FitRule } from "./categoryFit";
 import { resolveFit } from "./categoryFit";
 import {
+  absoluteFitFor,
   physicalScaleFor,
   relativeMassFor,
   type ScalableProduct,
 } from "./productPhysicalScale";
+
 
 export type FittableProduct = ScalableProduct;
 
