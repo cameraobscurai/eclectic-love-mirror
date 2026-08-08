@@ -295,7 +295,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       });
       if (setIdx > 0) mergedImages.unshift(...mergedImages.splice(setIdx, 1));
     }
+    // A macro/close-up shot never holds the cover slot — it's shot against a
+    // wall and reads as a broken tile beside the transparent cutouts.
+    const isDetailShot = (img) =>
+      /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(keyFor(urlFor(img)));
+    if (mergedImages.length > 1 && isDetailShot(mergedImages[0])) {
+      const idx = mergedImages.findIndex((img) => !isDetailShot(img));
+      if (idx > 0) mergedImages.unshift(...mergedImages.splice(idx, 1));
+    }
     mergedImages.forEach((img, i) => {
+
       if (typeof img !== 'string') {
         img.position = i;
         img.isHero = i === 0;
