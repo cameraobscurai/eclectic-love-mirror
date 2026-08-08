@@ -227,6 +227,37 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
   return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
 }
 
+/**
+ * Silhouette geometry for a normalized cover, computed rather than measured.
+ *
+ * The file is a square canvas with the subject centred, so the only unknown is
+ * how that square letterboxes into the current frame aspect — which is pure
+ * arithmetic. Same maths measureImage() performs, minus the pixel read.
+ */
+function knownMeasurement(
+  subject: { w: number; h: number },
+  frameAspect: number,
+): Measurement {
+  const naturalAspect = 1; // normalized canvas is square by definition
+  const renderedW = naturalAspect >= frameAspect ? 1 : naturalAspect / frameAspect;
+  const renderedH = naturalAspect >= frameAspect ? frameAspect / naturalAspect : 1;
+  const contentTop = naturalAspect >= frameAspect ? (1 - renderedH) / 2 : 0;
+  const bw = subject.w * renderedW;
+  const bh = subject.h * renderedH;
+  return {
+    renderedW,
+    renderedH,
+    bw,
+    bh,
+    cx: 0.5,
+    cy: 0.5,
+    top: contentTop + ((1 - subject.h) / 2) * renderedH,
+    bottom: contentTop + ((1 + subject.h) / 2) * renderedH,
+    naturalAspect,
+  };
+}
+
+
 // ────────────────────────────────────────────────────────────────────────
 // Component
 // ────────────────────────────────────────────────────────────────────────
