@@ -232,7 +232,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // (opaque backdrop, cropped hardware) and read as a broken tile next to
     // the transparent full-product cutouts. Demote, never drop.
     const isDetailShot = (url: string) =>
-      /(detail|close[\s._-]?up|closeup|macro|swatch|hardware|texture)/i.test(imgKey(url));
+      /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(imgKey(url));
     const coverFirst = (imgs: CollectionImage[]): CollectionImage[] => {
       if (imgs.length < 2 || !isDetailShot(imgs[0].url)) return imgs;
       const idx = imgs.findIndex((i) => !isDetailShot(i.url));

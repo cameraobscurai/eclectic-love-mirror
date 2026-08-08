@@ -298,7 +298,7 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
     // A macro/close-up shot never holds the cover slot — it's shot against a
     // wall and reads as a broken tile beside the transparent cutouts.
     const isDetailShot = (img) =>
-      /(detail|close[\s._-]?up|closeup|macro|swatch|hardware|texture)/i.test(keyFor(urlFor(img)));
+      /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(keyFor(urlFor(img)));
     if (mergedImages.length > 1 && isDetailShot(mergedImages[0])) {
       const idx = mergedImages.findIndex((img) => !isDetailShot(img));
       if (idx > 0) mergedImages.unshift(...mergedImages.splice(idx, 1));
