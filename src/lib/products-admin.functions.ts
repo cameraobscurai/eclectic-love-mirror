@@ -57,7 +57,7 @@ export const listProducts = createServerFn({ method: "POST" })
 
     let q = supabase
       .from("inventory_items")
-      .select("id, rms_id, title, slug, category, status, quantity, quantity_label, public_ready, images, upscaled_cover_url, updated_at, editorial_order", { count: "exact" })
+      .select("id, rms_id, title, slug, category, status, quantity, quantity_label, public_ready, images, updated_at, editorial_order", { count: "exact" })
       .order("updated_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
