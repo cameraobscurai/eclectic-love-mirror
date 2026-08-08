@@ -30,7 +30,13 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
    *  eager=true so the tile paints immediately with the fallback fit and
    *  refines to the measured fit when the silhouette resolves. */
   eager?: boolean;
+
+  /** Known subject geometry for a normalized cover: the subject's width and
+   *  height as fractions of a square canvas, centred. When supplied, the
+   *  in-browser silhouette probe is skipped — the geometry is already exact. */
+  subject?: { w: number; h: number } | null;
 };
+
 
 
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
