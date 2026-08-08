@@ -182,7 +182,16 @@ function NewProductPage() {
       // on /admin/photos made new items feel like they vanished.
       router.navigate({
         to: "/admin/products",
-        search: { q: "", cat: "", ready: "all", id: row.id, group: undefined },
+        search: {
+          q: "",
+          cat: "",
+          sub: "",
+          sort: "title" as const,
+          ready: "all" as const,
+          id: row.id,
+          group: undefined,
+        },
+
       });
     } catch (e) {
       setErr((e as Error).message || "Save failed");
