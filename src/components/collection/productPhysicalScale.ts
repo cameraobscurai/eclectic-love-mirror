@@ -228,3 +228,50 @@ export function relativeMassFor(product: ScalableProduct): number {
 }
 
 
+
+/* ------------------------------------------------------------------ */
+/* Absolute physical fit                                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * For measured categories the tile fraction is derived directly from real
+ * inches against the category's 90th-percentile piece — not from a ratio to a
+ * median that saturates a cap. A 98" sofa therefore always out-spans a 52"
+ * loveseat, and a 30"-tall sofa never out-towers a 36"-tall loveseat.
+ */
+const WIDTH_CEILING = 0.97;
+const HEIGHT_CEILING = 0.74;
+/** Mild compression so the smallest piece is not microscopic. */
+const PHYSICAL_EXPONENT = 0.72;
+const WIDTH_FLOOR = 0.3;
+const HEIGHT_FLOOR = 0.24;
+
+export type AbsoluteFit = { width: number; height: number };
+
+export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
+  const canonical = canonicalCategorySlug(product.categorySlug);
+  if (!canonical || !REAL_SIZE_CATEGORIES.has(canonical)) return null;
+
+  const ref = CATEGORY_BENCHMARKS[canonical] as
+    | (Benchmark & { w95?: number; h95?: number })
+    | undefined;
+  if (!ref?.w95 || !ref?.h95) return null;
+
+  const item = productMass(product);
+  if (!item?.width) return null;
+
+  const height = item.height ?? item.width * WIDTH_ONLY_HEIGHT_RATIO;
+
+  return {
+    width: clamp(
+      WIDTH_CEILING * Math.pow(item.width / ref.w95, PHYSICAL_EXPONENT),
+      WIDTH_FLOOR,
+      WIDTH_CEILING,
+    ),
+    height: clamp(
+      HEIGHT_CEILING * Math.pow(height / ref.h95, PHYSICAL_EXPONENT),
+      HEIGHT_FLOOR,
+      HEIGHT_CEILING,
+    ),
+  };
+}
