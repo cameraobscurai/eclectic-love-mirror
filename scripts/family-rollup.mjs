@@ -15,6 +15,8 @@
 //   { products: CollectionProduct[]  rolled-up, with .variants[] attached,
 //     stats: { ... } }
 
+import FAMILY_COVER_LOCKS from '../src/data/inventory/family-cover-locks.json' with { type: 'json' };
+
 const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9"'.]+/g, ' ').replace(/\s+/g, ' ').trim();
 // Canonicalize material/variant-noun synonyms so live "Glassware" and RMS
 // "Glass" collapse to one token. Only safe pairs — keep this list tight.
@@ -303,6 +305,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
       const idx = mergedImages.findIndex((img) => !isDetailShot(img));
       if (idx > 0) mergedImages.unshift(...mergedImages.splice(idx, 1));
     }
+    // Owner-approved family covers. Some legitimate collection heroes also
+    // belong to a configuration row, so the generic "variant-owned" heuristic
+    // cannot identify them. Keep these locks in one shared manifest used by the
+    // bake and the live overlay.
+    const familySlug = g.fam.liveSlug || `${withMostImages.slug}-family`;
+    const coverNeedle = FAMILY_COVER_LOCKS[familySlug];
+    if (coverNeedle) {
+      const idx = mergedImages.findIndex((img) => urlFor(img).includes(coverNeedle));
+      if (idx > 0) mergedImages.unshift(...mergedImages.splice(idx, 1));
+    }
     mergedImages.forEach((img, i) => {
 
       if (typeof img !== 'string') {
@@ -315,7 +327,7 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
     const family = {
       ...withMostImages,
       title: g.fam.familyTitle,
-      slug: g.fam.liveSlug || `${withMostImages.slug}-family`,
+      slug: familySlug,
       images: mergedImages,
       primaryImage: mergedImages[0] || withMostImages.primaryImage,
       variants: sorted.map(m => {

@@ -14,6 +14,7 @@
 // fetch + parse cost once; subsequent calls hit a module-level cache.
 
 import { normalizedCoverFor } from "@/lib/normalized-cover";
+import FAMILY_COVER_LOCKS from "@/data/inventory/family-cover-locks.json";
 
 export interface CollectionImage {
 
@@ -383,23 +384,22 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         }
       }
 
-      // Owner-approved family cover: the Luna joint two-chair cutout lives on
-      // the lead RMS row as `LUNA 0.png`. It is also the Taupe row's first
-      // image, so the generic family merge classifies it as variant-owned.
-      // Promote that exact original after merging so neither a detail shot nor
-      // a single-chair variant can replace the joint family cover.
-      if (p.slug === "luna-arcing-dining-chairs") {
-        const isJointCover = (url: string) =>
-          /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(url);
-        const jointCover = baseImages.find((img) => isJointCover(img.url))
-          ?? (overlay.get(p.id)?.images ?? []).find(isJointCover);
-        if (jointCover) {
-          const promoted = typeof jointCover === "string"
-            ? { url: jointCover, position: 0, isHero: true, inferredFilename: null, altText: p.title }
-            : jointCover;
+      // Owner-approved family covers. A family hero can legitimately be the
+      // first image of one configuration row (INOLA full bar, LUNA chair pair),
+      // so the generic variant-owned test above cannot safely choose it.
+      const coverNeedle = FAMILY_COVER_LOCKS[p.slug as keyof typeof FAMILY_COVER_LOCKS];
+      if (coverNeedle) {
+        const candidates = [
+          ...baseImages,
+          ...Array.from(new Set([p.id, ...members.map((v) => v.id)]))
+            .flatMap((id) => overlay.get(id)?.images ?? [])
+            .map((url) => ({ url, position: 0, isHero: false, inferredFilename: null, altText: null })),
+        ];
+        const lockedCover = candidates.find((img) => img.url.includes(coverNeedle));
+        if (lockedCover) {
           baseImages = [
-            promoted,
-            ...baseImages.filter((img) => !isJointCover(img.url)),
+            lockedCover,
+            ...baseImages.filter((img) => !img.url.includes(coverNeedle)),
           ].map((img, index) => ({ ...img, position: index, isHero: index === 0 }));
         }
       }
