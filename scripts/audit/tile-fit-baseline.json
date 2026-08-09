@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T23:40:46.550Z",
+  "generatedAt": "2026-08-09T05:28:23.792Z",
   "thresholds": {
     "massRatio": 0.65,
     "floorSpread": 15
@@ -12,31 +12,31 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.965,
+          "massRatio": 0.966,
           "widthRatio": 1,
-          "floorSpread": 2,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "BROOKLYN PLUSH CHARCOAL SOFA",
-              "w": 281,
-              "h": 115
-            },
-            {
-              "title": "STANHOPE CHOCOLATE LEATHER SOFA",
-              "w": 281,
-              "h": 107
+              "w": 260,
+              "h": 106
             },
             {
               "title": "INDIWIN BLACK LEATHER SOFA",
-              "w": 281,
-              "h": 111
+              "w": 260,
+              "h": 103
+            },
+            {
+              "title": "STANHOPE CHOCOLATE LEATHER SOFA",
+              "w": 260,
+              "h": 99
             }
           ]
         },
         {
-          "massRatio": 0.937,
-          "widthRatio": 0.669,
+          "massRatio": 0.914,
+          "widthRatio": 0.723,
           "floorSpread": 3,
           "pass": true,
           "tiles": [
@@ -47,19 +47,19 @@
             },
             {
               "title": "SYLVANUS GREEN & ASH SOFA",
-              "w": 272,
-              "h": 126
+              "w": 260,
+              "h": 121
             },
             {
               "title": "HENRY UPHOLSTERED GREY SOFA",
-              "w": 281,
-              "h": 109
+              "w": 260,
+              "h": 101
             }
           ]
         },
         {
-          "massRatio": 0.863,
-          "widthRatio": 0.698,
+          "massRatio": 0.923,
+          "widthRatio": 0.754,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
@@ -70,8 +70,8 @@
             },
             {
               "title": "INGRAM BLACK LEATHER + WOOD SOFA",
-              "w": 281,
-              "h": 146
+              "w": 260,
+              "h": 136
             },
             {
               "title": "PHILLIPE GREY SILK LOVESEAT",
@@ -81,15 +81,15 @@
           ]
         },
         {
-          "massRatio": 0.936,
-          "widthRatio": 0.851,
-          "floorSpread": 1,
+          "massRatio": 0.984,
+          "widthRatio": 0.919,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "SILAS SAGE + OAK CANE SOFA",
-              "w": 270,
-              "h": 128
+              "w": 260,
+              "h": 123
             },
             {
               "title": "COMMODORE CANVAS LOVESEAT",
@@ -98,38 +98,38 @@
             },
             {
               "title": "LINDT TOFFEE VELVET CHANNEL TUFTED SOFA",
-              "w": 281,
-              "h": 129
+              "w": 260,
+              "h": 119
             }
           ]
         },
         {
-          "massRatio": 0.765,
-          "widthRatio": 0.84,
-          "floorSpread": 1,
+          "massRatio": 0.827,
+          "widthRatio": 0.908,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "RESHMA BOTANICAL SCULPTURAL SOFA",
-              "w": 269,
-              "h": 121
+              "w": 260,
+              "h": 117
+            },
+            {
+              "title": "AVIANA BOTANICAL LINEN SOFA",
+              "w": 260,
+              "h": 150
             },
             {
               "title": "JACINDA ARMLESS TEXTILE LOVESEAT",
               "w": 236,
               "h": 113
-            },
-            {
-              "title": "AVIANA BOTANICAL LINEN SOFA",
-              "w": 281,
-              "h": 162
             }
           ]
         },
         {
-          "massRatio": 0.778,
-          "widthRatio": 0.648,
-          "floorSpread": 0,
+          "massRatio": 0.84,
+          "widthRatio": 0.7,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
@@ -139,19 +139,19 @@
             },
             {
               "title": "ELIZABETH CHAMPAGNE VELVET SOFA",
-              "w": 281,
-              "h": 123
+              "w": 260,
+              "h": 114
             },
             {
               "title": "CALISTA FRINGE SOFA",
-              "w": 281,
-              "h": 95
+              "w": 260,
+              "h": 88
             }
           ]
         },
         {
-          "massRatio": 0.957,
-          "widthRatio": 0.925,
+          "massRatio": 0.893,
+          "widthRatio": 1,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
@@ -162,31 +162,31 @@
             },
             {
               "title": "ERIN ANTIQUE WHITE FRENCH SOFA",
-              "w": 281,
-              "h": 123
+              "w": 260,
+              "h": 114
             },
             {
               "title": "ELOISE ANTIQUE WHITE FRENCH LOVESEAT",
-              "w": 262,
-              "h": 144
+              "w": 260,
+              "h": 143
             }
           ]
         },
         {
-          "massRatio": 0.808,
-          "widthRatio": 0.836,
-          "floorSpread": 2,
+          "massRatio": 0.764,
+          "widthRatio": 0.904,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
-              "title": "TALON BLACK METAL SOFA",
-              "w": 279,
-              "h": 125
+              "title": "SIDONY WHITE + WOOD SOFA",
+              "w": 260,
+              "h": 75
             },
             {
-              "title": "SIDONY WHITE + WOOD SOFA",
-              "w": 281,
-              "h": 81
+              "title": "TALON BLACK METAL SOFA",
+              "w": 258,
+              "h": 115
             },
             {
               "title": "CICELY WICKER + LINEN LOVESEAT",
@@ -196,7 +196,7 @@
           ]
         }
       ],
-      "worstMassRatio": 0.765,
+      "worstMassRatio": 0.764,
       "worstFloorSpread": 3,
       "failing": 0
     },
@@ -207,107 +207,107 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.808,
-          "widthRatio": 0.884,
+          "massRatio": 0.81,
+          "widthRatio": 0.886,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "NOELLE BLACK CANE CHAIR",
-              "w": 145,
-              "h": 184
+              "w": 147,
+              "h": 186
             },
             {
               "title": "BENECIO LEATHER KNIT CHAIR",
-              "w": 151,
-              "h": 144
+              "w": 153,
+              "h": 146
             },
             {
               "title": "ANTONIO BLACK LEATHER BUTTERFLY CHAIR",
-              "w": 164,
-              "h": 203
+              "w": 166,
+              "h": 205
             }
           ]
         },
         {
-          "massRatio": 0.901,
-          "widthRatio": 0.762,
-          "floorSpread": 0,
+          "massRatio": 0.899,
+          "widthRatio": 0.755,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "FABIAN GREY HIDE BARREL CHAIR",
-              "w": 160,
-              "h": 169
+              "w": 163,
+              "h": 171
             },
             {
               "title": "MARSHALL MANGO WOOD CHAIR",
-              "w": 122,
-              "h": 180
+              "w": 123,
+              "h": 183
             },
             {
               "title": "JESAMAY ARMCHAIR",
-              "w": 141,
-              "h": 189
+              "w": 143,
+              "h": 191
             }
           ]
         },
         {
-          "massRatio": 0.661,
+          "massRatio": 0.659,
           "widthRatio": 0.527,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "GILES GOAT HIDE CHAIR",
-              "w": 121,
-              "h": 159
+              "w": 122,
+              "h": 161
             },
             {
               "title": "HIRSHFIELD LEATHER CHAIR",
-              "w": 167,
-              "h": 135
+              "w": 169,
+              "h": 137
             },
             {
               "title": "NOMAD WOOD CHAIR",
-              "w": 88,
-              "h": 112
+              "w": 89,
+              "h": 113
             }
           ]
         },
         {
-          "massRatio": 0.747,
-          "widthRatio": 0.725,
-          "floorSpread": 1,
+          "massRatio": 0.954,
+          "widthRatio": 0.923,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "ARTESIA CHAIR",
-              "w": 167,
-              "h": 183
+              "w": 169,
+              "h": 185
             },
             {
               "title": "LAGOS SWIVEL CHAIR",
-              "w": 121,
-              "h": 143
+              "w": 156,
+              "h": 185
             },
             {
               "title": "HEMINGWAY BROWN LEATHER CHAIR",
-              "w": 163,
-              "h": 190
+              "w": 165,
+              "h": 192
             }
           ]
         },
         {
-          "massRatio": 0.927,
-          "widthRatio": 0.961,
+          "massRatio": 0.942,
+          "widthRatio": 0.967,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "TAILOR BROWN LEATHER CHAIR",
-              "w": 178,
-              "h": 203
+              "w": 180,
+              "h": 206
             },
             {
               "title": "FORD DECONSTRUCTED LEATHER WINGBACK CHAIR",
@@ -316,95 +316,95 @@
             },
             {
               "title": "BARD DECONSTRUCTED LEATHER CHAIR",
-              "w": 171,
-              "h": 203
+              "w": 174,
+              "h": 206
             }
           ]
         },
         {
-          "massRatio": 0.881,
-          "widthRatio": 0.88,
+          "massRatio": 0.883,
+          "widthRatio": 0.876,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "SUHANA COGNAC LEATHER CHAIR",
-              "w": 167,
-              "h": 153
+              "w": 170,
+              "h": 155
             },
             {
               "title": "AMUN BROWN LEATHER BUTTERFLY CHAIR",
-              "w": 167,
-              "h": 197
+              "w": 170,
+              "h": 199
             },
             {
               "title": "POE DECONSTRUCTED LEATHER CHAIR",
-              "w": 147,
-              "h": 189
+              "w": 149,
+              "h": 192
             }
           ]
         },
         {
-          "massRatio": 0.675,
-          "widthRatio": 0.578,
+          "massRatio": 0.792,
+          "widthRatio": 0.652,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "AZALEA BOTANICAL VELVET CHAIR",
-              "w": 244,
-              "h": 179
+              "w": 247,
+              "h": 181
             },
             {
               "title": "NIVA BURL WOOD CHAIR",
-              "w": 141,
-              "h": 141
+              "w": 183,
+              "h": 183
             },
             {
               "title": "ELSPETH ALMOND VELOUR CHAIR",
-              "w": 159,
-              "h": 171
+              "w": 161,
+              "h": 174
             }
           ]
         },
         {
-          "massRatio": 0.807,
-          "widthRatio": 0.762,
+          "massRatio": 0.805,
+          "widthRatio": 0.761,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "NATORI OAK + FUR CHAIR",
-              "w": 157,
-              "h": 171
+              "w": 159,
+              "h": 173
             },
             {
               "title": "FLORIAN IVORY HIDE BARREL CHAIR",
-              "w": 160,
-              "h": 170
+              "w": 162,
+              "h": 172
             },
             {
               "title": "ARAMITA COTTON VELVET CHAIR",
-              "w": 206,
-              "h": 200
+              "w": 209,
+              "h": 203
             }
           ]
         },
         {
-          "massRatio": 0.978,
-          "widthRatio": 0.751,
+          "massRatio": 0.981,
+          "widthRatio": 0.743,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "CORWIN CANVAS LOUNGE CHAIR",
-              "w": 173,
-              "h": 165
+              "w": 175,
+              "h": 168
             },
             {
               "title": "ADELAIDE ANTIQUE ARM CHAIR",
-              "w": 145,
-              "h": 206
+              "w": 147,
+              "h": 208
             },
             {
               "title": "HELENA ANTIQUE CARVED CHAIR",
@@ -414,15 +414,15 @@
           ]
         },
         {
-          "massRatio": 0.986,
-          "widthRatio": 0.886,
+          "massRatio": 0.975,
+          "widthRatio": 0.875,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "JENNIE ANTIQUE LINEN CHAIR",
-              "w": 154,
-              "h": 210
+              "w": 156,
+              "h": 212
             },
             {
               "title": "MILLICENT ANTIQUE ARM CHAIR",
@@ -431,77 +431,77 @@
             },
             {
               "title": "ROSIE ANTIQUE LINEN CHAIR",
-              "w": 158,
-              "h": 208
+              "w": 160,
+              "h": 210
             }
           ]
         },
         {
-          "massRatio": 0.829,
+          "massRatio": 0.828,
           "widthRatio": 0.679,
-          "floorSpread": 0,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
-              "title": "OSPREY BLACK METAL CHAIR",
-              "w": 212,
-              "h": 188
+              "title": "CLAUDE WHITE UPHOLSTERED CHAIR",
+              "w": 183,
+              "h": 177
             },
             {
-              "title": "CLAUDE WHITE UPHOLSTERED CHAIR",
-              "w": 180,
-              "h": 175
+              "title": "OSPREY BLACK METAL CHAIR",
+              "w": 215,
+              "h": 190
             },
             {
               "title": "FULTON WHITE LEATHER BUTTERFLY CHAIR",
-              "w": 144,
-              "h": 190
+              "w": 146,
+              "h": 192
             }
           ]
         },
         {
-          "massRatio": 0.781,
-          "widthRatio": 0.611,
+          "massRatio": 0.778,
+          "widthRatio": 0.61,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "CARWYN WHITE + WOOD CHAIR",
-              "w": 193,
-              "h": 160
+              "w": 195,
+              "h": 162
             },
             {
               "title": "ALORA BOTANICAL SCULPTURAL CHAIR",
-              "w": 188,
-              "h": 178
+              "w": 190,
+              "h": 181
             },
             {
               "title": "MARA HUNTER LEATHER CHAIR",
-              "w": 118,
-              "h": 173
+              "w": 119,
+              "h": 175
             }
           ]
         },
         {
-          "massRatio": 0.885,
+          "massRatio": 0.886,
           "widthRatio": 0.994,
-          "floorSpread": 0,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
-              "title": "DONNELLY NAVY LEATHER WINGBACK CHAIR",
-              "w": 172,
-              "h": 226
+              "title": "ZEKI KILIM ARM CHAIR",
+              "w": 175,
+              "h": 178
             },
             {
-              "title": "ZEKI KILIM ARM CHAIR",
-              "w": 173,
-              "h": 176
+              "title": "DONNELLY NAVY LEATHER WINGBACK CHAIR",
+              "w": 174,
+              "h": 228
             }
           ]
         }
       ],
-      "worstMassRatio": 0.661,
+      "worstMassRatio": 0.659,
       "worstFloorSpread": 1,
       "failing": 0
     },
@@ -512,53 +512,53 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.794,
-          "widthRatio": 0.811,
+          "massRatio": 0.979,
+          "widthRatio": 1,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
-              "title": "YGRITTE EBONY TUFTED BENCH",
-              "w": 227,
-              "h": 77
+              "title": "ALISTAIR GREEN LEATHER BENCH",
+              "w": 207,
+              "h": 70
             },
             {
-              "title": "ALISTAIR GREEN LEATHER BENCH",
-              "w": 246,
-              "h": 83
+              "title": "YGRITTE EBONY TUFTED BENCH",
+              "w": 207,
+              "h": 70
             },
             {
               "title": "JOURDAIN NATURAL BENCH",
-              "w": 280,
-              "h": 99
+              "w": 207,
+              "h": 73
             }
           ]
         },
         {
-          "massRatio": 0.747,
-          "widthRatio": 0.637,
+          "massRatio": 0.786,
+          "widthRatio": 0.7,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "DUNE WOOD AND TAN BOUCLE BENCH",
-              "w": 219,
-              "h": 108
+              "w": 207,
+              "h": 102
             },
             {
               "title": "GERALDINE GOAT FUR WOOD BENCH",
-              "w": 149,
-              "h": 92
+              "w": 145,
+              "h": 90
             },
             {
               "title": "AVALON IRON + LINEN BENCH",
-              "w": 234,
-              "h": 105
+              "w": 207,
+              "h": 93
             }
           ]
         }
       ],
-      "worstMassRatio": 0.747,
+      "worstMassRatio": 0.786,
       "worstFloorSpread": 1,
       "failing": 0
     },
@@ -569,100 +569,100 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.977,
-          "widthRatio": 0.876,
+          "massRatio": 0.888,
+          "widthRatio": 1,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "RADEN RECTANGLE COFFEE TABLE",
-              "w": 267,
-              "h": 92
+              "w": 195,
+              "h": 67
             },
             {
               "title": "TIERRE COFFEE TABLE",
-              "w": 234,
-              "h": 102
+              "w": 195,
+              "h": 85
             },
             {
               "title": "AARON MATTE BLACK PLANK COFFEE TABLE",
-              "w": 244,
-              "h": 96
+              "w": 195,
+              "h": 77
             }
           ]
         },
         {
-          "massRatio": 0.98,
-          "widthRatio": 0.733,
-          "floorSpread": 1,
+          "massRatio": 0.733,
+          "widthRatio": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
-              "title": "JAIME COFFEE TABLE",
-              "w": 281,
-              "h": 103
-            },
-            {
               "title": "BRIONY COFFEE TABLE",
-              "w": 255,
-              "h": 117
+              "w": 195,
+              "h": 89
             },
             {
               "title": "DUBLIN TRUNK COFFEE TABLE",
-              "w": 206,
-              "h": 139
+              "w": 195,
+              "h": 132
+            },
+            {
+              "title": "JAIME COFFEE TABLE",
+              "w": 195,
+              "h": 71
             }
           ]
         },
         {
-          "massRatio": 0.682,
-          "widthRatio": 0.758,
+          "massRatio": 0.828,
+          "widthRatio": 0.995,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "DASHIELL OAK COFFEE TABLE",
-              "w": 281,
-              "h": 83
+              "w": 195,
+              "h": 58
             },
             {
               "title": "VERSAILLES CANE COFFEE TABLE",
-              "w": 279,
-              "h": 123
+              "w": 194,
+              "h": 85
             },
             {
               "title": "SLADE CONCRETE & WOOD COFFEE TABLE",
-              "w": 213,
-              "h": 75
+              "w": 195,
+              "h": 69
             }
           ]
         },
         {
-          "massRatio": 0.717,
-          "widthRatio": 0.638,
+          "massRatio": 0.784,
+          "widthRatio": 0.697,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "MYRA HIDE COFFEE TABLE",
-              "w": 213,
-              "h": 129
-            },
-            {
-              "title": "COLLIN WOOD-FILLED CONCRETE COFFEE TABLE",
-              "w": 154,
-              "h": 92
+              "w": 195,
+              "h": 118
             },
             {
               "title": "FLINT LEATHER & BRASS COFFEE TABLE",
               "w": 136,
               "h": 104
+            },
+            {
+              "title": "COLLIN WOOD-FILLED CONCRETE COFFEE TABLE",
+              "w": 154,
+              "h": 92
             }
           ]
         },
         {
-          "massRatio": 0.678,
-          "widthRatio": 0.509,
+          "massRatio": 0.787,
+          "widthRatio": 0.59,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
@@ -673,8 +673,8 @@
             },
             {
               "title": "CALLOWAY WOOD + MARBLE COFFEE TABLE",
-              "w": 226,
-              "h": 94
+              "w": 195,
+              "h": 81
             },
             {
               "title": "SALVATORE MARBLE COFFEE TABLE",
@@ -684,8 +684,8 @@
           ]
         },
         {
-          "massRatio": 0.846,
-          "widthRatio": 0.804,
+          "massRatio": 0.981,
+          "widthRatio": 0.969,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
@@ -696,41 +696,41 @@
             },
             {
               "title": "BOULDER 36\" COFFEE TABLE",
-              "w": 235,
-              "h": 99
+              "w": 195,
+              "h": 82
             },
             {
               "title": "RIVER 42\" COFFEE TABLE",
-              "w": 213,
-              "h": 93
+              "w": 195,
+              "h": 85
             }
           ]
         },
         {
-          "massRatio": 0.687,
-          "widthRatio": 0.726,
+          "massRatio": 0.931,
+          "widthRatio": 0.99,
           "floorSpread": 2,
           "pass": true,
           "tiles": [
             {
               "title": "RIVER 54\" COFFEE TABLE",
-              "w": 234,
-              "h": 114
+              "w": 195,
+              "h": 95
             },
             {
               "title": "DUNSTAN BLACK STONE COFFEE TABLE",
-              "w": 170,
-              "h": 74
+              "w": 193,
+              "h": 84
             },
             {
               "title": "IVAN BURL WOOD COFFEE TABLE",
-              "w": 179,
-              "h": 88
+              "w": 195,
+              "h": 96
             }
           ]
         }
       ],
-      "worstMassRatio": 0.678,
+      "worstMassRatio": 0.733,
       "worstFloorSpread": 2,
       "failing": 0
     },
@@ -766,7 +766,7 @@
         {
           "massRatio": 0.89,
           "widthRatio": 0.755,
-          "floorSpread": 0,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
@@ -812,7 +812,7 @@
         {
           "massRatio": 0.936,
           "widthRatio": 0.867,
-          "floorSpread": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
@@ -835,18 +835,18 @@
         {
           "massRatio": 0.77,
           "widthRatio": 0.703,
-          "floorSpread": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
-            {
-              "title": "ERIKSEN MESH EDISON SIDE TABLE",
-              "w": 165,
-              "h": 162
-            },
             {
               "title": "VALLA PATINA SIDE TABLE",
               "w": 158,
               "h": 192
+            },
+            {
+              "title": "ERIKSEN MESH EDISON SIDE TABLE",
+              "w": 165,
+              "h": 162
             },
             {
               "title": "STEFANO MARBLE TALL SIDE TABLE",
@@ -858,14 +858,9 @@
         {
           "massRatio": 0.943,
           "widthRatio": 0.788,
-          "floorSpread": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
-            {
-              "title": "HAYDEN WOOD & NICKEL SIDE TABLE",
-              "w": 140,
-              "h": 136
-            },
             {
               "title": "SERGIO MARBLE CUBE SIDE TABLE",
               "w": 151,
@@ -875,6 +870,11 @@
               "title": "CYPRESS STUMP SIDE TABLE",
               "w": 119,
               "h": 180
+            },
+            {
+              "title": "HAYDEN WOOD & NICKEL SIDE TABLE",
+              "w": 140,
+              "h": 136
             }
           ]
         },
@@ -904,14 +904,9 @@
         {
           "massRatio": 0.688,
           "widthRatio": 0.653,
-          "floorSpread": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
-            {
-              "title": "RELIC LIMESTONE SIDE TABLE",
-              "w": 128,
-              "h": 152
-            },
             {
               "title": "CALERI SIDE TABLE",
               "w": 192,
@@ -921,6 +916,11 @@
               "title": "JOZI SIDE TABLE",
               "w": 196,
               "h": 207
+            },
+            {
+              "title": "RELIC LIMESTONE SIDE TABLE",
+              "w": 128,
+              "h": 152
             }
           ]
         },
@@ -948,10 +948,10 @@
           ]
         },
         {
-          "massRatio": 0.548,
-          "widthRatio": 0.578,
+          "massRatio": 0.836,
+          "widthRatio": 0.879,
           "floorSpread": 0,
-          "pass": false,
+          "pass": true,
           "tiles": [
             {
               "title": "ROMANA TAPERED CONCRETE SIDE TABLE",
@@ -960,15 +960,15 @@
             },
             {
               "title": "IVES BURL WOOD SIDE TABLE",
-              "w": 100,
-              "h": 104
+              "w": 152,
+              "h": 159
             }
           ]
         }
       ],
-      "worstMassRatio": 0.548,
+      "worstMassRatio": 0.652,
       "worstFloorSpread": 1,
-      "failing": 1
+      "failing": 0
     },
     {
       "slice": "lounge-tables/consoles",
@@ -977,15 +977,15 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.798,
-          "widthRatio": 0.815,
-          "floorSpread": 0,
+          "massRatio": 0.738,
+          "widthRatio": 0.881,
+          "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "PIERCE FRENCH ANTIQUE CONSOLE",
-              "w": 281,
-              "h": 105
+              "w": 260,
+              "h": 97
             },
             {
               "title": "ELIJAH MARBLE TOP ANTIQUE CONSOLE TABLE",
@@ -1000,8 +1000,8 @@
           ]
         }
       ],
-      "worstMassRatio": 0.798,
-      "worstFloorSpread": 0,
+      "worstMassRatio": 0.738,
+      "worstFloorSpread": 1,
       "failing": 0
     },
     {
@@ -1011,31 +1011,31 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.937,
-          "widthRatio": 0.663,
-          "floorSpread": 1,
+          "massRatio": 0.709,
+          "widthRatio": 0.503,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
-              "title": "MALVINA OVAL BAR",
-              "w": 166,
-              "h": 105
-            },
-            {
               "title": "EXCURSION CHAMPAGNE TRUNK BAR",
-              "w": 118,
-              "h": 141
+              "w": 87,
+              "h": 103
             },
             {
               "title": "VOYAGE BLACK TRUNK BAR",
-              "w": 110,
-              "h": 139
+              "w": 82,
+              "h": 103
+            },
+            {
+              "title": "MALVINA OVAL BAR",
+              "w": 163,
+              "h": 103
             }
           ]
         },
         {
-          "massRatio": 0.763,
-          "widthRatio": 0.616,
+          "massRatio": 0.851,
+          "widthRatio": 0.938,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
@@ -1046,95 +1046,95 @@
             },
             {
               "title": "SIDECAR DARK WOOD BAR",
-              "w": 206,
-              "h": 104
+              "w": 193,
+              "h": 98
             },
             {
               "title": "ARCUS CALVIN 12' SMOOTH BAR",
-              "w": 294,
-              "h": 108
+              "w": 193,
+              "h": 71
             }
           ]
         },
         {
-          "massRatio": 0.965,
-          "widthRatio": 0.932,
+          "massRatio": 0.946,
+          "widthRatio": 1,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "ARCUS BEVIN 12' SLATTED BAR",
-              "w": 274,
-              "h": 108
+              "w": 193,
+              "h": 76
             },
             {
               "title": "ARCUS RYANN 12' WHITE TAMBOUR BAR",
-              "w": 294,
-              "h": 108
+              "w": 193,
+              "h": 71
             },
             {
               "title": "ARCUS TAVION 12' NATURAL TAMBOUR BAR",
-              "w": 294,
-              "h": 103
+              "w": 193,
+              "h": 68
             }
           ]
         },
         {
-          "massRatio": 0.827,
-          "widthRatio": 0.71,
-          "floorSpread": 33,
+          "massRatio": 0.396,
+          "widthRatio": 0.466,
+          "floorSpread": 54,
           "pass": false,
           "tiles": [
+            {
+              "title": "ARCUS LEVAR 12' BLACK TAMBOUR BAR",
+              "w": 193,
+              "h": 68
+            },
             {
               "title": "INOLA 12' BLACK CONVERTIBLE BAR",
               "w": 414,
               "h": 77
             },
             {
-              "title": "ARCUS LEVAR 12' BLACK TAMBOUR BAR",
-              "w": 294,
-              "h": 103
-            },
-            {
               "title": "IRAJA 12' WOOD CONVERTIBLE BAR",
-              "w": 301,
-              "h": 147
+              "w": 414,
+              "h": 202
             }
           ]
         },
         {
-          "massRatio": 0.552,
-          "widthRatio": 0.526,
-          "floorSpread": 3,
-          "pass": false,
+          "massRatio": 0.673,
+          "widthRatio": 0.764,
+          "floorSpread": 2,
+          "pass": true,
           "tiles": [
             {
-              "title": "MONROE BLACK FLAT SLAT TAMBOUR BAR",
-              "w": 321,
-              "h": 176
-            },
-            {
               "title": "JEPPERD BLACK TAMBOUR BAR",
-              "w": 169,
-              "h": 102
+              "w": 172,
+              "h": 104
             },
             {
               "title": "GOLD ACRYLIC SLATTED BAR",
-              "w": 294,
-              "h": 99
+              "w": 193,
+              "h": 65
+            },
+            {
+              "title": "MONROE BLACK FLAT SLAT TAMBOUR BAR",
+              "w": 225,
+              "h": 123
             }
           ]
         },
         {
-          "massRatio": 0.569,
-          "widthRatio": 0.66,
-          "floorSpread": 50,
+          "massRatio": 0.603,
+          "widthRatio": 0.7,
+          "floorSpread": 48,
           "pass": false,
           "tiles": [
             {
               "title": "BEAUREGARD NATURAL TAMBOUR BAR",
-              "w": 185,
-              "h": 105
+              "w": 181,
+              "h": 103
             },
             {
               "title": "CANYON 8' NATURAL PINE BAR",
@@ -1143,14 +1143,14 @@
             },
             {
               "title": "SINATRA - WALNUT FLUTED BAR",
-              "w": 268,
-              "h": 212
+              "w": 253,
+              "h": 200
             }
           ]
         },
         {
-          "massRatio": 0.72,
-          "widthRatio": 0.483,
+          "massRatio": 0.815,
+          "widthRatio": 0.751,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
@@ -1161,112 +1161,112 @@
             },
             {
               "title": "DURANGO CEDAR & CONCRETE BAR",
-              "w": 142,
-              "h": 102
+              "w": 145,
+              "h": 104
             },
             {
               "title": "BARCLAY CONCRETE & SPLIT WOOD TASTING BAR",
-              "w": 294,
-              "h": 95
+              "w": 193,
+              "h": 63
             }
           ]
         },
         {
-          "massRatio": 0.932,
-          "widthRatio": 0.857,
+          "massRatio": 0.866,
+          "widthRatio": 1,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
-              "title": "LOCKWOOD CONCRETE & BIRCH DOUBLE BAR",
-              "w": 294,
-              "h": 83
+              "title": "NORWOOD CONCRETE & SPLIT WOOD TOP BAR",
+              "w": 193,
+              "h": 71
             },
             {
-              "title": "NORWOOD CONCRETE & SPLIT WOOD TOP BAR",
-              "w": 273,
-              "h": 100
+              "title": "LOCKWOOD CONCRETE & BIRCH DOUBLE BAR",
+              "w": 193,
+              "h": 54
             },
             {
               "title": "WADSWORTH CONCRETE & BIRCH BAR",
-              "w": 252,
-              "h": 94
+              "w": 193,
+              "h": 72
             }
           ]
         },
         {
-          "massRatio": 0.927,
-          "widthRatio": 0.841,
-          "floorSpread": 1,
+          "massRatio": 0.904,
+          "widthRatio": 1,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
-              "title": "WALDEN CONCRETE & BIRCH BAR",
-              "w": 199,
-              "h": 93
+              "title": "WOODSLEY CONCRETE & SPLIT WOOD BAR",
+              "w": 193,
+              "h": 76
             },
             {
-              "title": "WOODSLEY CONCRETE & SPLIT WOOD BAR",
-              "w": 232,
-              "h": 92
+              "title": "WALDEN CONCRETE & BIRCH BAR",
+              "w": 193,
+              "h": 90
             },
             {
               "title": "ELWOOD CONCRETE & SPLIT WOOD BAR",
-              "w": 195,
-              "h": 94
+              "w": 193,
+              "h": 93
             }
           ]
         },
         {
-          "massRatio": 0.916,
-          "widthRatio": 0.728,
+          "massRatio": 0.67,
+          "widthRatio": 1,
           "floorSpread": 2,
           "pass": true,
           "tiles": [
             {
               "title": "PICKFORD CONCRETE & SPLIT WOOD BAR",
-              "w": 254,
-              "h": 89
+              "w": 193,
+              "h": 68
             },
             {
               "title": "BOYCE CONCRETE & BIRCH DOUBLE BAR",
-              "w": 294,
-              "h": 66
+              "w": 193,
+              "h": 44
             },
             {
               "title": "BOONE BARREL STAVE BAR",
-              "w": 214,
-              "h": 108
+              "w": 193,
+              "h": 98
             }
           ]
         },
         {
-          "massRatio": 0.891,
-          "widthRatio": 0.854,
+          "massRatio": 0.94,
+          "widthRatio": 0.884,
           "floorSpread": 1,
           "pass": true,
           "tiles": [
             {
               "title": "MARCELINE GOLD BAR CART",
-              "w": 88,
-              "h": 81
+              "w": 112,
+              "h": 103
             },
             {
               "title": "LUCILLE GOLD BAR CART",
-              "w": 76,
-              "h": 79
+              "w": 99,
+              "h": 103
             },
             {
               "title": "MALCOLM BAR CART",
-              "w": 89,
-              "h": 85
+              "w": 107,
+              "h": 103
             }
           ]
         }
       ],
-      "worstMassRatio": 0.552,
-      "worstFloorSpread": 50,
-      "failing": 3
+      "worstMassRatio": 0.396,
+      "worstFloorSpread": 54,
+      "failing": 2
     },
     {
       "slice": "cocktail-bar/stools",
@@ -1275,20 +1275,20 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.947,
-          "widthRatio": 0.861,
+          "massRatio": 0.901,
+          "widthRatio": 0.812,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "THATCHER GREEN NATURAL WOVEN BAR STOOL",
-              "w": 87,
-              "h": 176
+              "w": 82,
+              "h": 166
             },
             {
               "title": "AXEL BAR STOOL",
-              "w": 97,
-              "h": 176
+              "w": 91,
+              "h": 166
             },
             {
               "title": "VIXXEN BLACK BAR STOOL",
@@ -1298,25 +1298,25 @@
           ]
         },
         {
-          "massRatio": 0.928,
-          "widthRatio": 0.928,
+          "massRatio": 1,
+          "widthRatio": 1,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "FARRELL GREY HIDE BAR STOOL",
-              "w": 83,
-              "h": 125
+              "w": 110,
+              "h": 166
             },
             {
               "title": "JULIEN ADJUSTABLE COUNTER STOOL",
-              "w": 77,
-              "h": 116
+              "w": 110,
+              "h": 166
             }
           ]
         }
       ],
-      "worstMassRatio": 0.928,
+      "worstMassRatio": 0.901,
       "worstFloorSpread": 0,
       "failing": 0
     },
@@ -1328,7 +1328,7 @@
       "rows": [
         {
           "massRatio": 0.646,
-          "widthRatio": 0.9,
+          "widthRatio": 0.779,
           "floorSpread": 5,
           "pass": false,
           "tiles": [
@@ -1339,8 +1339,8 @@
             },
             {
               "title": "HACIER MAHOGANY 60\" DINING TABLE",
-              "w": 253,
-              "h": 164
+              "w": 219,
+              "h": 142
             },
             {
               "title": "KAI BLACK WOOD DINING TABLE",
@@ -1373,8 +1373,8 @@
           ]
         },
         {
-          "massRatio": 0.968,
-          "widthRatio": 0.781,
+          "massRatio": 0.955,
+          "widthRatio": 0.796,
           "floorSpread": 2,
           "pass": true,
           "tiles": [
@@ -1385,8 +1385,8 @@
             },
             {
               "title": "KOHL 5' ROUND BLACK TOP DINING TABLE",
-              "w": 279,
-              "h": 131
+              "w": 268,
+              "h": 126
             },
             {
               "title": "NATHALIE BLACK SPINDLE DINING TABLE",
@@ -1407,77 +1407,77 @@
       "unmeasurable": [],
       "rows": [
         {
-          "massRatio": 0.609,
-          "widthRatio": 0.395,
-          "floorSpread": 18,
+          "massRatio": 0.891,
+          "widthRatio": 0.577,
+          "floorSpread": 20,
           "pass": false,
           "tiles": [
             {
               "title": "AUSET LINEN BANQUETTE",
-              "w": 281,
-              "h": 158
+              "w": 220,
+              "h": 124
             },
             {
               "title": "NIMA FABRIC BANQUETTE",
-              "w": 281,
-              "h": 178
+              "w": 220,
+              "h": 139
             },
             {
               "title": "SANARA DINING CHAIRS",
-              "w": 111,
-              "h": 167
+              "w": 127,
+              "h": 191
             }
           ]
         },
         {
-          "massRatio": 0.909,
-          "widthRatio": 0.606,
-          "floorSpread": 1,
+          "massRatio": 0.914,
+          "widthRatio": 0.607,
+          "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "LUNA ARCING DINING CHAIRS",
-              "w": 180,
-              "h": 126
+              "w": 206,
+              "h": 143
             },
             {
               "title": "MOXXI BLACK DINING CHAIR",
-              "w": 128,
-              "h": 167
+              "w": 146,
+              "h": 190
             },
             {
               "title": "BRAYAN DINING CHAIR",
-              "w": 109,
-              "h": 172
+              "w": 125,
+              "h": 197
             }
           ]
         },
         {
-          "massRatio": 0.757,
-          "widthRatio": 0.69,
+          "massRatio": 0.83,
+          "widthRatio": 0.695,
           "floorSpread": 0,
           "pass": true,
           "tiles": [
             {
               "title": "ZOE OAK DINING CHAIR",
-              "w": 112,
-              "h": 144
+              "w": 157,
+              "h": 203
             },
             {
               "title": "CAMERON DIRECTORS DINING CHAIR",
-              "w": 145,
-              "h": 194
+              "w": 164,
+              "h": 220
             },
             {
               "title": "GERWYN GREY DINING CHAIR",
-              "w": 100,
-              "h": 191
+              "w": 114,
+              "h": 218
             }
           ]
         }
       ],
-      "worstMassRatio": 0.609,
-      "worstFloorSpread": 18,
+      "worstMassRatio": 0.83,
+      "worstFloorSpread": 20,
       "failing": 1
     }
   ]
