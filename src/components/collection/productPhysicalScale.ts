@@ -305,7 +305,7 @@ export type AbsoluteFit = {
  * its tile exactly like a bar, losing the size story). The blend keeps stools
  * legible on a shelf of bars while a bar still clearly out-masses a stool.
  */
-const SUBCATEGORY_UNIT_BLEND = 0.3;
+const SUBCATEGORY_UNIT_BLEND = 0.2;
 
 export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
   const canonical = shelfCategorySlug(product);
