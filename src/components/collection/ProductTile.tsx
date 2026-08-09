@@ -20,6 +20,7 @@ interface ProductTileProps {
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
   alignToSharedBaseline?: boolean;
+  frameAspect?: number;
 }
 
 const EAGER_RENDER_COUNT = 18;
@@ -42,10 +43,11 @@ export function ProductTile({
   onOpen,
   onImageFailed,
   alignToSharedBaseline = true,
+  frameAspect: frameAspectProp,
 }: ProductTileProps) {
   const spyGroup = getProductBrowseGroup(product);
-  const tileAspect = PRODUCT_TILE_ASPECT;
-  const frameAspect = PRODUCT_TILE_FRAME_ASPECT;
+  const frameAspect = frameAspectProp ?? PRODUCT_TILE_FRAME_ASPECT;
+  const tileAspect = frameAspectProp ? String(frameAspectProp) : PRODUCT_TILE_ASPECT;
   const renderImmediately = index < EAGER_RENDER_COUNT;
 
   const { ref, near } = useNearViewport<HTMLLIElement>({
@@ -67,7 +69,7 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
-  const fitRule = resolveProductFit(product);
+  const fitRule = resolveProductFit(product, "tile", frameAspect);
 
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.

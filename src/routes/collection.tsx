@@ -29,6 +29,7 @@ import {
 } from "@/lib/collection-parents";
 import { sortProductsForCollection } from "@/lib/collection-sort-intelligence";
 import { ProductTile } from "@/components/collection/ProductTile";
+import { frameAspectForGroups } from "@/lib/collection-tile-presets";
 // InquiryTray globalized in __root.tsx
 import { SubcategoryRail } from "@/components/collection/SubcategoryRail";
 import { CollectionWall } from "@/components/collection/CollectionWall";
@@ -1199,6 +1200,11 @@ function CollectionPage() {
                             exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.18, ease: [0.4, 0, 0.6, 1] } }}
                           >
                             {(() => {
+                              // One frame shape for the whole rendered grid so
+                              // every row shares a floor line.
+                              const gridFrameAspect = frameAspectForGroups(
+                                visibleBatch.map((p) => getProductBrowseGroup(p)),
+                              );
                               return visibleBatch.map((p, i) => (
                                 <ProductTile
                                   key={p.id}
@@ -1206,6 +1212,7 @@ function CollectionPage() {
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
                                   alignToSharedBaseline={true}
+                                  frameAspect={gridFrameAspect}
                                 />
                               ));
                             })()}
