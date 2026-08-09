@@ -27,7 +27,8 @@ const FLOOR_ANCHORED_CATEGORIES = new Set([
   "seating",
   "tables",
   "bars",
-  "lighting",
+  // lighting hangs — it must never be floor-anchored, that is what produced the
+  // giant dead space above short pendants.
   "large-decor",
   "storage",
 ]);
