@@ -40,3 +40,21 @@ export function isFloorAnchoredCategory(categorySlug: string | null | undefined)
 export function isSeatingCategory(categorySlug: string | null | undefined): boolean {
   return canonicalCategorySlug(categorySlug) === "seating";
 }
+/**
+ * The shelf a product is *displayed* on.
+ *
+ * Sizing must be solved against the neighbours a shopper actually sees. Some
+ * rows are filed under one category (`categorySlug: "tables"`) but surfaced on
+ * another page (`liveCategory: "cocktail-bar"`). Solving those against their
+ * filing category put them on a different inches-per-tile-unit than every tile
+ * beside them — e.g. ELISE (40"Dia x 43"H) rendered ~2.5x a 33" bar cart.
+ */
+export function shelfCategorySlug(product: {
+  liveCategory?: string | null;
+  categorySlug?: string | null;
+}): string | null {
+  return (
+    canonicalCategorySlug(product.liveCategory) ??
+    canonicalCategorySlug(product.categorySlug)
+  );
+}
