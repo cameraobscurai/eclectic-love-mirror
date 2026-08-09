@@ -15,6 +15,7 @@
 import type { FitRule } from "./categoryFit";
 import { PRODUCT_TILE_FRAME_ASPECT as BASE_FRAME_ASPECT } from "@/lib/collection-tile-presets";
 import { resolveFit } from "./categoryFit";
+import { shelfCategorySlug } from "./categoryAliases";
 import {
   absoluteFitFor,
   isHeightUniformShelf,
