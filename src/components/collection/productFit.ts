@@ -13,6 +13,7 @@
  */
 
 import type { FitRule } from "./categoryFit";
+import { PRODUCT_TILE_FRAME_ASPECT as BASE_FRAME_ASPECT } from "@/lib/collection-tile-presets";
 import { resolveFit } from "./categoryFit";
 import {
   absoluteFitFor,
@@ -79,19 +80,44 @@ function withGain(rule: FitRule, gain: number): FitRule {
   };
 }
 
+/**
+ * Height fractions are fractions of FRAME HEIGHT, so a wider (shorter) frame
+ * would silently shrink every height-driven silhouette. Re-express them against
+ * the base frame so frame shape changes whitespace only, never size.
+ */
+function withFrame(rule: FitRule, frameAspect: number): FitRule {
+  const k = frameAspect / BASE_FRAME_ASPECT;
+  if (k === 1) return rule;
+  const cap = (v: number) => Math.min(0.97, v * k);
+  return {
+    ...rule,
+    primaryTarget:
+      rule.primary === "height"
+        ? cap(rule.primaryTarget)
+        : rule.primary === "area"
+          ? rule.primaryTarget * Math.sqrt(k)
+          : rule.primaryTarget,
+    secondaryMax: rule.primary === "width" ? cap(rule.secondaryMax) : rule.secondaryMax,
+    heightMax: rule.heightMax != null ? cap(rule.heightMax) : undefined,
+    fallback: { ...rule.fallback, scale: rule.fallback.scale * Math.sqrt(k) },
+  };
+}
+
 export function resolveProductFit(
   product: FittableProduct,
   context: FitContext = "tile",
+  frameAspect: number = BASE_FRAME_ASPECT,
 ): FitRule {
   const rule = resolveFit(product.categorySlug ?? null);
   const phys = physicalScaleFor(product);
   const gain = context === "detail" ? DETAIL_GAIN : 1;
+  const frame = (r: FitRule) => withFrame(r, frameAspect);
 
   if (!phys.measured) {
     // Small centred objects keep their layout mode; real size only nudges how
     // much of the tile they claim, so a crate still out-masses a votive.
     const rel = relativeMassFor(product);
-    return withGain(
+    return frame(withGain(
       rel === 1
         ? rule
         : {
@@ -100,7 +126,7 @@ export function resolveProductFit(
             fallback: { ...rule.fallback, scale: rule.fallback.scale * rel },
           },
       gain,
-    );
+    ));
   }
 
   // Measured pieces are solved on ABSOLUTE real-world size — but on MASS, not
@@ -123,7 +149,7 @@ export function resolveProductFit(
     // MATCHED height and differ only in width — the way they actually sit in a
     // room. Everything else matches mass and keeps its own aspect.
     if (isHeightUniformShelf(product)) {
-      return withGain(
+      return frame(withGain(
         {
           ...rule,
           primary: "height",
@@ -136,12 +162,12 @@ export function resolveProductFit(
           clampMin: Math.min(rule.clampMin, 0.3),
         },
         gain,
-      );
+      ));
     }
 
     const areaTarget = Math.sqrt(abs.width * abs.height);
 
-    return withGain(
+    return frame(withGain(
       {
         ...rule,
         primary: "area",
@@ -156,11 +182,11 @@ export function resolveProductFit(
         clampMin: Math.min(rule.clampMin, 0.3),
       },
       gain,
-    );
+    ));
   }
 
 
-  return withGain(
+  return frame(withGain(
     {
       ...rule,
       primary: "width",
@@ -175,10 +201,5 @@ export function resolveProductFit(
       clampMin: Math.min(rule.clampMin, 0.3),
     },
     gain,
-  );
+  ));
 }
-
-
-
-
-
