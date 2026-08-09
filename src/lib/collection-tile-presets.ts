@@ -7,6 +7,32 @@
 
 export const PRODUCT_TILE_ASPECT = "5 / 4";
 export const PRODUCT_TILE_FRAME_ASPECT = 5 / 4;
+
+/**
+ * Frame shape per browse group.
+ *
+ * This is NOT scale tuning. Silhouette size is normalised against the base
+ * frame in `resolveProductFit`, so a wider frame renders the same product at
+ * the same pixel size — it only removes the dead vertical space above a
+ * low-profile piece. A row of 12' bars in a 5:4 frame was ~60% empty.
+ */
+export const GROUP_FRAME_ASPECT: Record<string, number> = {
+  "cocktail-bar": 1.9,
+  "lounge-tables": 1.7,
+  dining: 1.55,
+  "lounge-seating": 1.45,
+};
+
+/** Tallest requirement wins, so a mixed grid never clips. */
+export function frameAspectForGroups(groups: Iterable<string | null | undefined>): number {
+  let aspect = Infinity;
+  let seen = false;
+  for (const g of groups) {
+    seen = true;
+    aspect = Math.min(aspect, (g && GROUP_FRAME_ASPECT[g]) || PRODUCT_TILE_FRAME_ASPECT);
+  }
+  return seen && Number.isFinite(aspect) ? aspect : PRODUCT_TILE_FRAME_ASPECT;
+}
 // Retired wide constants kept for import compatibility only. Public/admin grids
 // now use the square constants above.
 export const PRODUCT_TILE_WIDE_ASPECT = "8 / 5";
