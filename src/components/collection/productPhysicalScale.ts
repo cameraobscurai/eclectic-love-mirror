@@ -198,31 +198,6 @@ function productMass(
   return null;
 }
 
-/**
- * Foreshortening correction.
- *
- * The catalog describes a piece straight-on; the cover photo is a 3/4 or
- * near-profile view. When the photographed silhouette is much flatter than the
- * real W:H, mass matching under-renders the piece (KAI: a 96" dining table shot
- * near-profile read as 3.31 aspect against a real 2.91, so it rendered thin
- * next to a 36" round table). Boost the area target by the square root of the
- * disagreement, clamped hard so a bad photo can never dominate real size.
- */
-const FORESHORTEN = { min: 0.92, max: 1.18, deadband: 0.08 };
-
-export function foreshortenCorrection(product: ScalableProduct): number {
-  const subject = product.coverSubject;
-  if (!subject?.w || !subject?.h) return 1;
-  const item = productMass(product);
-  if (!item?.width || !item?.height) return 1;
-  const photoAspect = subject.w / subject.h;
-  const realAspect = item.width / item.height;
-  if (!(photoAspect > 0) || !(realAspect > 0)) return 1;
-  const divergence = photoAspect / realAspect;
-  if (Math.abs(divergence - 1) < FORESHORTEN.deadband) return 1;
-  return clamp(Math.sqrt(divergence), FORESHORTEN.min, FORESHORTEN.max);
-}
-
 
 
 export type PhysicalScale = {
