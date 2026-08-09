@@ -1,8 +1,10 @@
-import { canonicalCategorySlug } from "./categoryAliases";
+import { canonicalCategorySlug, shelfCategorySlug } from "./categoryAliases";
 
 /** Minimal shape needed to scale a product — any catalog/admin row satisfies it. */
 export type ScalableProduct = {
   categorySlug?: string | null;
+  /** Page the product is surfaced on — wins over categorySlug for sizing. */
+  liveCategory?: string | null;
   dimensions?: string | null;
   liveSubcategories?: string[] | null;
   subcategory?: string | null;
@@ -130,7 +132,7 @@ const HEIGHT_UNIFORM_CV = 0.22;
 
 /** True when this product's shelf should be solved on height, not on mass. */
 export function isHeightUniformShelf(product: ScalableProduct): boolean {
-  const canonical = canonicalCategorySlug(product.categorySlug);
+  const canonical = shelfCategorySlug(product);
   // Scoped to the bar shelf: bars, stools and cocktail columns are the only
   // pieces whose real-world height is effectively fixed AND whose widths span
   // 2'-19'. Elsewhere (chairs, coffee tables) height matching flattens the
@@ -212,7 +214,7 @@ export type PhysicalScale = {
 };
 
 export function physicalScaleFor(product: ScalableProduct): PhysicalScale {
-  const canonical = canonicalCategorySlug(product.categorySlug);
+  const canonical = shelfCategorySlug(product);
   const category = canonical ? CATEGORY_BENCHMARKS[canonical] : undefined;
   if (!canonical || !category) return { size: 1, height: 1, width: 1, measured: false };
 
@@ -306,7 +308,7 @@ export type AbsoluteFit = {
 const SUBCATEGORY_UNIT_BLEND = 0.6;
 
 export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
-  const canonical = canonicalCategorySlug(product.categorySlug);
+  const canonical = shelfCategorySlug(product);
   if (!canonical || !REAL_SIZE_CATEGORIES.has(canonical)) return null;
 
   type Ref = Benchmark & { w95?: number; h95?: number };

@@ -25,7 +25,7 @@ import {
   parseDimensionsInches,
   parseWidthInches,
 } from "../src/components/collection/productPhysicalScale";
-import { canonicalCategorySlug } from "../src/components/collection/categoryAliases";
+import { canonicalCategorySlug, shelfCategorySlug } from "../src/components/collection/categoryAliases";
 
 /** Below this many measured rows a bucket's median is noise, not signal. */
 const MIN_CATEGORY_ROWS = 5;
@@ -67,7 +67,7 @@ const push = (
 };
 
 for (const product of (catalog as any).products as any[]) {
-  const category = canonicalCategorySlug(product.categorySlug);
+  const category = shelfCategorySlug(product);
   if (!category) continue;
 
   const dims = parseDimensionsInches(product.dimensions);
