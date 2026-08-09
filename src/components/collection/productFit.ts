@@ -79,13 +79,38 @@ function withGain(rule: FitRule, gain: number): FitRule {
   };
 }
 
+/**
+ * Height fractions are fractions of FRAME HEIGHT, so a wider (shorter) frame
+ * would silently shrink every height-driven silhouette. Re-express them against
+ * the base frame so frame shape changes whitespace only, never size.
+ */
+function withFrame(rule: FitRule, frameAspect: number): FitRule {
+  const k = frameAspect / BASE_FRAME_ASPECT;
+  if (k === 1) return rule;
+  const cap = (v: number) => Math.min(0.97, v * k);
+  return {
+    ...rule,
+    primaryTarget:
+      rule.primary === "height"
+        ? cap(rule.primaryTarget)
+        : rule.primary === "area"
+          ? rule.primaryTarget * Math.sqrt(k)
+          : rule.primaryTarget,
+    secondaryMax: rule.primary === "width" ? cap(rule.secondaryMax) : rule.secondaryMax,
+    heightMax: rule.heightMax != null ? cap(rule.heightMax) : undefined,
+    fallback: { ...rule.fallback, scale: rule.fallback.scale * Math.sqrt(k) },
+  };
+}
+
 export function resolveProductFit(
   product: FittableProduct,
   context: FitContext = "tile",
+  frameAspect: number = BASE_FRAME_ASPECT,
 ): FitRule {
   const rule = resolveFit(product.categorySlug ?? null);
   const phys = physicalScaleFor(product);
   const gain = context === "detail" ? DETAIL_GAIN : 1;
+  const frame = (r: FitRule) => withFrame(r, frameAspect);
 
   if (!phys.measured) {
     // Small centred objects keep their layout mode; real size only nudges how
