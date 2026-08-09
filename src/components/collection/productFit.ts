@@ -108,7 +108,7 @@ export function resolveProductFit(
   context: FitContext = "tile",
   frameAspect: number = BASE_FRAME_ASPECT,
 ): FitRule {
-  const rule = resolveFit(product.categorySlug ?? null);
+  const rule = resolveFit(shelfCategorySlug(product) ?? product.categorySlug ?? null);
   const phys = physicalScaleFor(product);
   const gain = context === "detail" ? DETAIL_GAIN : 1;
   const frame = (r: FitRule) => withFrame(r, frameAspect);
