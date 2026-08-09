@@ -23,6 +23,7 @@ import {
 } from "./productPhysicalScale";
 
 
+
 export type FittableProduct = ScalableProduct;
 
 /** Base silhouette √area implied by a category rule. */
@@ -139,6 +140,7 @@ export function resolveProductFit(
     }
 
     const areaTarget = Math.sqrt(abs.width * abs.height);
+
     return withGain(
       {
         ...rule,

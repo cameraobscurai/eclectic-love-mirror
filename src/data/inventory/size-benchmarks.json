@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T23:30:20.417Z",
+  "generatedAt": "2026-08-08T23:51:45.179Z",
   "source": "src/data/inventory/current_catalog.json",
   "categories": {
     "bars": {
@@ -111,10 +111,10 @@
     "bars/bars": {
       "mass": 61.4,
       "height": 41,
-      "n": 31,
+      "n": 32,
       "w95": 144,
       "h95": 43.5,
-      "hCv": 0.16
+      "hCv": 0.158
     },
     "bars/cocktail tables": {
       "mass": 31.4,
@@ -125,12 +125,12 @@
       "hCv": 0.104
     },
     "bars/community tables": {
-      "mass": 56.5,
-      "height": 41.5,
-      "n": 4,
+      "mass": 62.7,
+      "height": 42,
+      "n": 5,
       "w95": 96,
       "h95": 42,
-      "hCv": 0.073
+      "hCv": 0.068
     },
     "bars/stools": {
       "mass": 26.8,
@@ -149,12 +149,20 @@
       "hCv": 0.761
     },
     "chandeliers/chandeliers": {
-      "mass": 16.6,
-      "height": 19,
-      "n": 10,
+      "mass": 17,
+      "height": 18,
+      "n": 11,
       "w95": 36,
       "h95": 31,
-      "hCv": 0.651
+      "hCv": 0.642
+    },
+    "furs-pelts/furs & pelts": {
+      "mass": 13,
+      "height": 0,
+      "n": 4,
+      "w95": 24,
+      "h95": 0,
+      "hCv": 1
     },
     "large-decor/other": {
       "mass": 35.8,
@@ -173,12 +181,12 @@
       "hCv": 0.273
     },
     "lighting/lamps": {
-      "mass": 19.2,
+      "mass": 16.9,
       "height": 23,
-      "n": 19,
+      "n": 21,
       "w95": 21.5,
       "h95": 56,
-      "hCv": 0.584
+      "hCv": 0.573
     },
     "lighting/specialty": {
       "mass": 8.7,
@@ -205,28 +213,28 @@
       "hCv": 1
     },
     "seating/benches": {
-      "mass": 35.7,
-      "height": 18.5,
-      "n": 7,
-      "w95": 79,
-      "h95": 20,
-      "hCv": 0.109
+      "mass": 35.8,
+      "height": 20,
+      "n": 9,
+      "w95": 83,
+      "h95": 32,
+      "hCv": 0.377
     },
     "seating/chairs": {
       "mass": 29.9,
-      "height": 33.9,
-      "n": 37,
+      "height": 33.6,
+      "n": 39,
       "w95": 32,
-      "h95": 40,
-      "hCv": 0.171
+      "h95": 39,
+      "hCv": 0.168
     },
     "seating/dining chairs": {
-      "mass": 26.1,
-      "height": 32.5,
-      "n": 8,
-      "w95": 56,
-      "h95": 37.8,
-      "hCv": 0.124
+      "mass": 25.7,
+      "height": 32,
+      "n": 7,
+      "w95": 24.5,
+      "h95": 33,
+      "hCv": 0.074
     },
     "seating/ottomans": {
       "mass": 18,
@@ -238,35 +246,35 @@
     },
     "seating/sofas & loveseats": {
       "mass": 50.1,
-      "height": 31.5,
-      "n": 23,
+      "height": 31.8,
+      "n": 24,
       "w95": 94.5,
       "h95": 36.5,
-      "hCv": 0.112
+      "hCv": 0.109
     },
     "serveware/serveware": {
-      "mass": 9.3,
-      "height": 6,
-      "n": 29,
-      "w95": 19.5,
+      "mass": 8.7,
+      "height": 5,
+      "n": 33,
+      "w95": 20,
       "h95": 15,
-      "hCv": 1.413
+      "hCv": 1.503
     },
     "storage/storage": {
-      "mass": 54.6,
-      "height": 70,
-      "n": 10,
+      "mass": 55.1,
+      "height": 71,
+      "n": 11,
       "w95": 76.5,
       "h95": 84,
-      "hCv": 0.247
+      "hCv": 0.234
     },
     "styling/accents": {
-      "mass": 8.2,
-      "height": 9.3,
-      "n": 39,
+      "mass": 8.3,
+      "height": 9.5,
+      "n": 40,
       "w95": 38,
-      "h95": 56,
-      "hCv": 1.101
+      "h95": 50,
+      "hCv": 1.069
     },
     "styling/crates & baskets": {
       "mass": 14.4,
@@ -285,28 +293,28 @@
       "hCv": 0.116
     },
     "tables/coffee tables": {
-      "mass": 27.1,
+      "mass": 26.8,
       "height": 15,
-      "n": 18,
+      "n": 21,
       "w95": 56,
       "h95": 17.5,
-      "hCv": 0.173
+      "hCv": 0.165
     },
     "tables/dining tables": {
-      "mass": 48.3,
-      "height": 30,
-      "n": 7,
+      "mass": 47.4,
+      "height": 31.5,
+      "n": 10,
       "w95": 96,
       "h95": 33,
-      "hCv": 0.05
+      "hCv": 0.049
     },
     "tables/side tables": {
-      "mass": 17.4,
+      "mass": 17.7,
       "height": 20,
-      "n": 27,
+      "n": 28,
       "w95": 22,
       "h95": 24,
-      "hCv": 0.16
+      "hCv": 0.158
     },
     "tableware/glassware": {
       "mass": 4.7,

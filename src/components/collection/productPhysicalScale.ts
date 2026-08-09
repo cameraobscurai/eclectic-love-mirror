@@ -6,7 +6,10 @@ export type ScalableProduct = {
   dimensions?: string | null;
   liveSubcategories?: string[] | null;
   subcategory?: string | null;
+  /** Normalized cover silhouette box (fractions of the square canvas). */
+  coverSubject?: { w: number; h: number } | null;
 };
+
 
 export type PhysicalDims = { width: number; height: number } | null;
 
@@ -195,6 +198,8 @@ function productMass(
   return null;
 }
 
+
+
 export type PhysicalScale = {
   /** Overall mass multiplier relative to the product's neighbours. */
   size: number;
@@ -352,14 +357,17 @@ export function absoluteFitFor(product: ScalableProduct): AbsoluteFit | null {
     h /= under;
   }
 
-  // Height solved from real height ALONE — no width clamp bleeding into it.
-  // Height-invariant shelves (bars, dining tables) use this so a 19' bar and a
-  // 6' bar stand at the same height and differ only in width.
-  let hSolo = height * unit;
+  // Height for height-invariant shelves (bars). Driven by the SHELF's median
+  // height, not the item's own — every bar on the shelf must stand at the same
+  // height and differ only in width. Using each item's real height put a 44.5"
+  // bar and a 42" bar on visibly different baselines (~50px floor spread).
+  const shelfHeight = (sub?.n && sub.n >= 3 ? sub.height : undefined) ?? ref.height ?? height;
+  let hSolo = shelfHeight * unit;
   hSolo *= Math.pow(hSolo, PHYSICAL_EXPONENT - 1);
   hSolo = Math.min(hSolo, HEIGHT_CEILING);
 
   return { width: w, height: h, heightUniform: hSolo };
 }
+
 
 
