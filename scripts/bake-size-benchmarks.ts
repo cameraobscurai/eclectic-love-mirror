@@ -25,7 +25,7 @@ import {
   parseDimensionsInches,
   parseWidthInches,
 } from "../src/components/collection/productPhysicalScale";
-import { canonicalCategorySlug, shelfCategorySlug } from "../src/components/collection/categoryAliases";
+import { shelfCategorySlug } from "../src/components/collection/categoryAliases";
 
 /** Below this many measured rows a bucket's median is noise, not signal. */
 const MIN_CATEGORY_ROWS = 5;
