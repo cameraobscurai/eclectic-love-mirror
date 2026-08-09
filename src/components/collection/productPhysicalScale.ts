@@ -156,9 +156,10 @@ const REAL_SIZE_CATEGORIES = new Set([
   "bars",
   "storage",
   "large-decor",
-  "lighting",
-  "chandeliers",
-  "candlelight",
+  // Hung lighting is deliberately NOT true-scaled. A chandelier's bounding box
+  // is meaningless next to its neighbours: an 87"W x 3"Dia rod solves to a
+  // hairline while a 63x71" leather drum eats the tile. Lighting falls back to
+  // its layout rule plus the relative-mass nudge, which is how it read before.
 ]);
 
 /** Width-only rows: assume the catalog's typical width:height ratio. */
