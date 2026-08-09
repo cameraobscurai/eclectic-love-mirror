@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-09T07:14:54.420Z",
+  "generatedAt": "2026-08-09T07:17:04.995Z",
   "thresholds": {
     "massRatio": 0.65,
     "floorSpread": 15
@@ -1006,19 +1006,479 @@
     },
     {
       "slice": "cocktail-bar/bars",
-      "error": "Error: mouse.wheel: Target page, context or browser has been closed"
+      "tiles": 34,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.709,
+          "widthRatio": 0.503,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "EXCURSION CHAMPAGNE TRUNK BAR",
+              "w": 87,
+              "h": 103
+            },
+            {
+              "title": "VOYAGE BLACK TRUNK BAR",
+              "w": 82,
+              "h": 103
+            },
+            {
+              "title": "MALVINA OVAL BAR",
+              "w": 163,
+              "h": 103
+            }
+          ]
+        },
+        {
+          "massRatio": 0.851,
+          "widthRatio": 0.938,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "AMISA MIDNIGHT BAR",
+              "w": 181,
+              "h": 102
+            },
+            {
+              "title": "SIDECAR DARK WOOD BAR",
+              "w": 193,
+              "h": 98
+            },
+            {
+              "title": "ARCUS CALVIN 12' SMOOTH BAR",
+              "w": 193,
+              "h": 71
+            }
+          ]
+        },
+        {
+          "massRatio": 0.946,
+          "widthRatio": 1,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "ARCUS BEVIN 12' SLATTED BAR",
+              "w": 193,
+              "h": 76
+            },
+            {
+              "title": "ARCUS RYANN 12' WHITE TAMBOUR BAR",
+              "w": 193,
+              "h": 71
+            },
+            {
+              "title": "ARCUS TAVION 12' NATURAL TAMBOUR BAR",
+              "w": 193,
+              "h": 68
+            }
+          ]
+        },
+        {
+          "massRatio": 0.396,
+          "widthRatio": 0.466,
+          "floorSpread": 54,
+          "pass": false,
+          "tiles": [
+            {
+              "title": "ARCUS LEVAR 12' BLACK TAMBOUR BAR",
+              "w": 193,
+              "h": 68
+            },
+            {
+              "title": "INOLA 12' BLACK CONVERTIBLE BAR",
+              "w": 274,
+              "h": 94
+            },
+            {
+              "title": "IRAJA 12' WOOD CONVERTIBLE BAR",
+              "w": 414,
+              "h": 202
+            }
+          ]
+        },
+        {
+          "massRatio": 0.673,
+          "widthRatio": 0.764,
+          "floorSpread": 2,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "JEPPERD BLACK TAMBOUR BAR",
+              "w": 172,
+              "h": 104
+            },
+            {
+              "title": "GOLD ACRYLIC SLATTED BAR",
+              "w": 193,
+              "h": 65
+            },
+            {
+              "title": "MONROE BLACK FLAT SLAT TAMBOUR BAR",
+              "w": 225,
+              "h": 123
+            }
+          ]
+        },
+        {
+          "massRatio": 0.603,
+          "widthRatio": 0.7,
+          "floorSpread": 48,
+          "pass": false,
+          "tiles": [
+            {
+              "title": "BEAUREGARD NATURAL TAMBOUR BAR",
+              "w": 181,
+              "h": 103
+            },
+            {
+              "title": "CANYON 8' NATURAL PINE BAR",
+              "w": 177,
+              "h": 104
+            },
+            {
+              "title": "SINATRA - WALNUT FLUTED BAR",
+              "w": 253,
+              "h": 200
+            }
+          ]
+        },
+        {
+          "massRatio": 0.815,
+          "widthRatio": 0.751,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "HAMPTON OAK WOOD BAR",
+              "w": 176,
+              "h": 104
+            },
+            {
+              "title": "DURANGO CEDAR & CONCRETE BAR",
+              "w": 145,
+              "h": 104
+            },
+            {
+              "title": "BARCLAY CONCRETE & SPLIT WOOD TASTING BAR",
+              "w": 193,
+              "h": 63
+            }
+          ]
+        },
+        {
+          "massRatio": 0.866,
+          "widthRatio": 1,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "NORWOOD CONCRETE & SPLIT WOOD TOP BAR",
+              "w": 193,
+              "h": 71
+            },
+            {
+              "title": "LOCKWOOD CONCRETE & BIRCH DOUBLE BAR",
+              "w": 193,
+              "h": 54
+            },
+            {
+              "title": "WADSWORTH CONCRETE & BIRCH BAR",
+              "w": 193,
+              "h": 72
+            }
+          ]
+        },
+        {
+          "massRatio": 0.904,
+          "widthRatio": 1,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "WOODSLEY CONCRETE & SPLIT WOOD BAR",
+              "w": 193,
+              "h": 76
+            },
+            {
+              "title": "WALDEN CONCRETE & BIRCH BAR",
+              "w": 193,
+              "h": 90
+            },
+            {
+              "title": "ELWOOD CONCRETE & SPLIT WOOD BAR",
+              "w": 193,
+              "h": 93
+            }
+          ]
+        },
+        {
+          "massRatio": 0.67,
+          "widthRatio": 1,
+          "floorSpread": 2,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "PICKFORD CONCRETE & SPLIT WOOD BAR",
+              "w": 193,
+              "h": 68
+            },
+            {
+              "title": "BOYCE CONCRETE & BIRCH DOUBLE BAR",
+              "w": 193,
+              "h": 44
+            },
+            {
+              "title": "BOONE BARREL STAVE BAR",
+              "w": 193,
+              "h": 98
+            }
+          ]
+        },
+        {
+          "massRatio": 0.94,
+          "widthRatio": 0.884,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "MARCELINE GOLD BAR CART",
+              "w": 112,
+              "h": 103
+            },
+            {
+              "title": "LUCILLE GOLD BAR CART",
+              "w": 99,
+              "h": 103
+            },
+            {
+              "title": "MALCOLM BAR CART",
+              "w": 107,
+              "h": 103
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.396,
+      "worstFloorSpread": 54,
+      "failing": 2
     },
     {
       "slice": "cocktail-bar/stools",
-      "error": "Error: page.goto: Target page, context or browser has been closed"
+      "tiles": 5,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.908,
+          "widthRatio": 0.824,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "THATCHER GREEN NATURAL WOVEN BAR STOOL",
+              "w": 61,
+              "h": 123
+            },
+            {
+              "title": "AXEL BAR STOOL",
+              "w": 67,
+              "h": 123
+            },
+            {
+              "title": "VIXXEN BLACK BAR STOOL",
+              "w": 74,
+              "h": 123
+            }
+          ]
+        },
+        {
+          "massRatio": 1,
+          "widthRatio": 1,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "FARRELL GREY HIDE BAR STOOL",
+              "w": 81,
+              "h": 123
+            },
+            {
+              "title": "JULIEN ADJUSTABLE COUNTER STOOL",
+              "w": 81,
+              "h": 123
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.908,
+      "worstFloorSpread": 0,
+      "failing": 0
     },
     {
       "slice": "dining/dining-tables",
-      "error": "Error: page.goto: Target page, context or browser has been closed"
+      "tiles": 10,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.646,
+          "widthRatio": 0.858,
+          "floorSpread": 5,
+          "pass": false,
+          "tiles": [
+            {
+              "title": "CINSERE OAK DINING TABLE",
+              "w": 255,
+              "h": 230
+            },
+            {
+              "title": "HACIER MAHOGANY 60\" DINING TABLE",
+              "w": 241,
+              "h": 156
+            },
+            {
+              "title": "KAI BLACK WOOD DINING TABLE",
+              "w": 281,
+              "h": 87
+            }
+          ]
+        },
+        {
+          "massRatio": 0.738,
+          "widthRatio": 0.993,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "LARS 8' BLEACHED OAK DINING TABLE",
+              "w": 281,
+              "h": 87
+            },
+            {
+              "title": "NERO 5' ROUND GREY TOP DINING TABLE",
+              "w": 279,
+              "h": 135
+            },
+            {
+              "title": "TOVE 8' GREY DINING TABLE",
+              "w": 281,
+              "h": 73
+            }
+          ]
+        },
+        {
+          "massRatio": 0.93,
+          "widthRatio": 0.854,
+          "floorSpread": 2,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "NA'EEM WOOD DINING  TABLE",
+              "w": 240,
+              "h": 176
+            },
+            {
+              "title": "KOHL 5' ROUND BLACK TOP DINING TABLE",
+              "w": 279,
+              "h": 131
+            },
+            {
+              "title": "NATHALIE BLACK SPINDLE DINING TABLE",
+              "w": 281,
+              "h": 139
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.646,
+      "worstFloorSpread": 5,
+      "failing": 1
     },
     {
       "slice": "dining/dining-chairs",
-      "error": "Error: page.goto: Target page, context or browser has been closed"
+      "tiles": 9,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.773,
+          "widthRatio": 0.5,
+          "floorSpread": 18,
+          "pass": false,
+          "tiles": [
+            {
+              "title": "AUSET LINEN BANQUETTE",
+              "w": 220,
+              "h": 124
+            },
+            {
+              "title": "NIMA FABRIC BANQUETTE",
+              "w": 220,
+              "h": 139
+            },
+            {
+              "title": "SANARA DINING CHAIRS",
+              "w": 110,
+              "h": 166
+            }
+          ]
+        },
+        {
+          "massRatio": 0.909,
+          "widthRatio": 0.603,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "LUNA ARCING DINING CHAIRS",
+              "w": 179,
+              "h": 125
+            },
+            {
+              "title": "MOXXI BLACK DINING CHAIR",
+              "w": 127,
+              "h": 166
+            },
+            {
+              "title": "BRAYAN DINING CHAIR",
+              "w": 108,
+              "h": 171
+            }
+          ]
+        },
+        {
+          "massRatio": 0.723,
+          "widthRatio": 0.688,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "ZOE OAK DINING CHAIR",
+              "w": 106,
+              "h": 137
+            },
+            {
+              "title": "CAMERON DIRECTORS DINING CHAIR",
+              "w": 144,
+              "h": 193
+            },
+            {
+              "title": "GERWYN GREY DINING CHAIR",
+              "w": 99,
+              "h": 190
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.723,
+      "worstFloorSpread": 18,
+      "failing": 1
     }
   ]
 }
