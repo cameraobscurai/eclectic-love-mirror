@@ -17,10 +17,15 @@ export const PRODUCT_TILE_FRAME_ASPECT = 5 / 4;
  * low-profile piece. A row of 12' bars in a 5:4 frame was ~60% empty.
  */
 export const GROUP_FRAME_ASPECT: Record<string, number> = {
-  "cocktail-bar": 1.9,
-  "lounge-tables": 1.7,
-  dining: 1.55,
-  "lounge-seating": 1.45,
+  bar: 1.9,
+  "cocktail-tables": 1.7,
+  "coffee-tables": 1.8,
+  "side-tables": 1.35,
+  dining: 1.6,
+  sofas: 1.7,
+  "benches-ottomans": 1.7,
+  chairs: 1.35,
+  storage: 1.35,
 };
 
 /** Tallest requirement wins, so a mixed grid never clips. */
