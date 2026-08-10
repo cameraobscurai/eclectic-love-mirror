@@ -19,7 +19,7 @@ interface ProductTileProps {
   index: number;
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
-  alignToSharedBaseline?: boolean;
+  
   frameAspect?: number;
 }
 
@@ -42,7 +42,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
-  alignToSharedBaseline = true,
+  
   frameAspect: frameAspectProp,
 }: ProductTileProps) {
   const spyGroup = getProductBrowseGroup(product);
