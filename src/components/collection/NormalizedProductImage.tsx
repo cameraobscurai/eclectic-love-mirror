@@ -278,7 +278,6 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   onLoad,
   ...props
 }: Props, ref) {
-  const hasFocal = typeof focalX === "number" && typeof focalY === "number";
   // Normalized covers carry their geometry with them — the subject was trimmed
   // and centred on a fixed square canvas at bake time, so the silhouette box is
   // known exactly. Skip the canvas probe entirely: correct scale on first
@@ -287,6 +286,13 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     () => (subject ? knownMeasurement(subject, frameAspect) : null),
     [subject, frameAspect],
   );
+  // A stale admin focal point must not out-vote known geometry: the focal path
+  // renders at scale 1, which is how CINSERE ended up towering over every other
+  // dining table. Normalized covers are already centred, so the focal offset has
+  // nothing left to correct.
+  const hasFocal =
+    !known && typeof focalX === "number" && typeof focalY === "number";
+
   // Measurement is in frame-space, not just image-space: measureImage()
   // letterboxes the natural image into the current frameAspect before it
   // computes the silhouette bounds. Key by both URL and frame shape so the
