@@ -42,7 +42,7 @@ export function ProductTile({
   index,
   onOpen,
   onImageFailed,
-  alignToSharedBaseline = true,
+  alignToSharedBaseline: _unusedBaselineProp,
   frameAspect: frameAspectProp,
 }: ProductTileProps) {
   const spyGroup = getProductBrowseGroup(product);
