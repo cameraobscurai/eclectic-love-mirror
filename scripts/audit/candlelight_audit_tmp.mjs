@@ -24,7 +24,7 @@ const tiles = await page.evaluate(async () => {
     ctx.drawImage(bitmap, 0, 0);
     return ctx.getImageData(0,0,bitmap.width,bitmap.height);
   }
-  const cards = Array.from(document.querySelectorAll('a')).filter(a => a.querySelector('img'));
+  const cards = Array.from(document.querySelectorAll('li')).filter(a => a.querySelector('img'));
   const results = [];
   const seen = new Set();
   for (const card of cards) {
