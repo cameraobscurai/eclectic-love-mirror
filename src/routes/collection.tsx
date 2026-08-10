@@ -1211,7 +1211,7 @@ function CollectionPage() {
                                   product={p}
                                   index={i}
                                   onOpen={() => setQuickViewId(p.id)}
-                                  alignToSharedBaseline={true}
+                                  
                                   frameAspect={gridFrameAspect}
                                 />
                               ));
