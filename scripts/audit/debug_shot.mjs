@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+const browser = await chromium.launch({ executablePath: '/bin/chromium', headless: true });
+const page = await browser.newPage({ viewport: { width: 1280, height: 1800 } });
+await page.goto('http://localhost:8080/collection?group=lighting&subcategory=candlelight', { waitUntil: 'networkidle', timeout: 30000 });
+await page.waitForTimeout(2000);
+const imgs = await page.evaluate(() => Array.from(document.querySelectorAll('img')).map(i => ({src: i.src.slice(0,80), w: i.getBoundingClientRect().width, h: i.getBoundingClientRect().height, nw: i.naturalWidth, nh: i.naturalHeight})));
+console.log(JSON.stringify(imgs.slice(0,30), null, 2));
+console.log('title', await page.title());
+await page.screenshot({ path: '/tmp/browser/candlelight_debug.png', fullPage: true });
+await browser.close();
