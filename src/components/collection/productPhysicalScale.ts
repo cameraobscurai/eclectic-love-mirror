@@ -143,6 +143,24 @@ export function isHeightUniformShelf(product: ScalableProduct): boolean {
   return shelf?.hCv != null && shelf.hCv < HEIGHT_UNIFORM_CV;
 }
 
+/**
+ * Dining tables are all ~30" tall but 5'-8' wide, so a square frame cannot
+ * render them at matched height without overflowing. Instead they solve on real
+ * width and take the shelf's uniform height as a CEILING. That is what stops a
+ * low-angle photo (CINSERE) from towering over every other table on the row,
+ * without growing anything.
+ */
+export function isHeightCappedShelf(product: ScalableProduct): boolean {
+  const canonical = shelfCategorySlug(product);
+  if (canonical !== "tables") return false;
+  const key = subcategoryKey(product, canonical);
+  if (key !== "tables/dining tables") return false;
+  const shelf = SUBCATEGORY_BENCHMARKS[key];
+  return shelf?.hCv != null && shelf.hCv < HEIGHT_UNIFORM_CV;
+}
+
+
+
 
 /**
  * Categories whose tiles stand on a floor (or hang from a ceiling) and whose

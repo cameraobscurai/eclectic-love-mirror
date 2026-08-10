@@ -18,6 +18,7 @@ import { resolveFit } from "./categoryFit";
 import { shelfCategorySlug } from "./categoryAliases";
 import {
   absoluteFitFor,
+  isHeightCappedShelf,
   isHeightUniformShelf,
   physicalScaleFor,
   relativeMassFor,
@@ -159,6 +160,25 @@ export function resolveProductFit(
           primaryTarget: abs.heightUniform,
           secondaryMax: 0.97,
           widthMax: 0.97,
+          heightMax: abs.heightUniform,
+          clampMin: Math.min(rule.clampMin, 0.3),
+        },
+        gain,
+      ));
+    }
+
+    // Dining tables: solve on real width, take the shelf's uniform real-world
+    // height as a ceiling. Pure cap — nothing grows, the outlier comes down.
+    if (isHeightCappedShelf(product)) {
+      return frame(withGain(
+        {
+          ...rule,
+          primary: "width",
+          aspectBlend: undefined,
+          refAspect: undefined,
+          primaryTarget: abs.width,
+          secondaryMax: abs.heightUniform,
+          widthMax: abs.width,
           heightMax: abs.heightUniform,
           clampMin: Math.min(rule.clampMin, 0.3),
         },
