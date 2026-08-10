@@ -19,7 +19,7 @@ interface ProductTileProps {
   index: number;
   onOpen: () => void;
   onImageFailed?: (productId: string) => void;
-  alignToSharedBaseline?: boolean;
+  
   frameAspect?: number;
 }
 
