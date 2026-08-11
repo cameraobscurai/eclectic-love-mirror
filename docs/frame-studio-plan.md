@@ -135,7 +135,7 @@ Order (audit-derived, see `docs/cover-audit-baseline.md`):
 ```text
 pillows-throws (136) → styling (63) → tableware (41) → serveware (36) →
 rugs (25) → large-decor → furs-pelts → bars/candlelight/lighting →
-chandiliers/seating/storage/tables (0 broken; migrate last, they only carry
+chandeliers/seating/storage/tables (0 broken; migrate last, they only carry
 resolution advisories)
 ```
 
