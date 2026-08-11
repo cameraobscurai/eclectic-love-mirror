@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-08-11T23:25:59.899Z",
+  "deviation": 0.28,
+  "findings": [
+    {
+      "shelf": "sofas-loveseats",
+      "title": "COSETTE SAGE VELVET LOVESEAT",
+      "slug": "cosette-sage-velvet-loveseat-3462",
+      "shelfMedianAspect": 2.09,
+      "coverAspect": 1.17,
+      "deviation": 0.44,
+      "swapTo": {
+        "position": 1,
+        "aspect": 1.35,
+        "deviation": 0.35,
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3462/55b089f9021f8898.png"
+      }
+    },
+    {
+      "shelf": "sofas-loveseats",
+      "title": "CALISTA FRINGE SOFA",
+      "slug": "calista-fringe-sofa-3713",
+      "shelfMedianAspect": 2.09,
+      "coverAspect": 2.97,
+      "deviation": 0.42,
+      "swapTo": null
+    },
+    {
+      "shelf": "sofas-loveseats",
+      "title": "PHILLIPE GREY SILK LOVESEAT",
+      "slug": "phillipe-grey-silk-loveseat-34",
+      "shelfMedianAspect": 2.09,
+      "coverAspect": 1.26,
+      "deviation": 0.4,
+      "swapTo": null
+    }
+  ]
+}
