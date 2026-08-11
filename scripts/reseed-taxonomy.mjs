@@ -46,9 +46,11 @@ function resolve(collectionRaw, categoryRaw) {
   const cRaw = String(categoryRaw ?? '').trim();
   if (!cRaw) return { blank: true };
   const hit = bySlug.get(slugify(cRaw)) || byLabel.get(cRaw.toLowerCase()) || bySlug.get(cRaw);
-  if (!hit) return null;
+  if (!hit) return { unknown: true };
   const collection = slugify(collectionRaw) || hit.collection_slug;
-  if (!validPairs.has(`${collection}::${hit.slug}`)) return null;
+  if (!validPairs.has(`${collection}::${hit.slug}`)) {
+    return { mismatch: true, category_slug: hit.slug, proposedCollection: collection, refCollection: hit.collection_slug };
+  }
   return { collection_slug: collection, category_slug: hit.slug };
 }
 
@@ -63,15 +65,23 @@ const families = fs.existsSync(familyPath)
   ? JSON.parse(fs.readFileSync(familyPath, 'utf8')).families : {};
 
 const assignments = new Map(); // rms_id -> {collection_slug, category_slug, via, confidence, source, title}
-const rejects = [];
+const rejects = [];   // true off-vocabulary — nothing in the reference tables
+const mismatches = []; // category exists, but under a different collection
 const blanks = [];
 
 for (const r of rows) {
   const rmsId = String(r.rms_id ?? '').trim();
   if (!rmsId) continue;
   const res = resolve(r.proposed_collection, r.proposed_category);
-  if (res === null) {
+  if (res.unknown) {
     rejects.push({ rmsId, title: r.title, c: r.proposed_collection, k: r.proposed_category });
+    continue;
+  }
+  if (res.mismatch) {
+    mismatches.push({
+      rmsId, title: String(r.title ?? ''), category: res.category_slug,
+      workbookCollection: res.proposedCollection, referenceCollection: res.refCollection,
+    });
     continue;
   }
   if (res.blank) { blanks.push({ rmsId, title: r.title }); continue; }
@@ -88,10 +98,19 @@ for (const r of rows) {
   }
 }
 
+const BLOCKED = rejects.length > 0 || mismatches.length > 0;
 if (rejects.length) {
-  console.error(`\nABORT — ${rejects.length} off-vocabulary value(s); nothing written:`);
-  for (const r of rejects.slice(0, 40)) console.error(`  ${r.rmsId} ${r.title} → "${r.c}" / "${r.k}"`);
-  console.error('\nvalid categories:', [...bySlug.keys()].join(', '));
+  console.error(`\n${rejects.length} off-vocabulary value(s):`);
+  for (const r of rejects.slice(0, 40)) console.error(`  ${r.rmsId} ${r.title} -> "${r.c}" / "${r.k}"`);
+}
+if (mismatches.length) {
+  console.error(`\n${mismatches.length} collection/category pair mismatch(es) — needs a ruling:`);
+  for (const m of mismatches.slice(0, 40)) {
+    console.error(`  ${m.rmsId} ${m.title} -> workbook "${m.workbookCollection}/${m.category}", reference says "${m.referenceCollection}/${m.category}"`);
+  }
+}
+if (BLOCKED && APPLY) {
+  console.error('\nABORT — resolve the blockers above before --apply. Nothing written.');
   process.exit(1);
 }
 
@@ -197,15 +216,35 @@ const table = (rowsArr, cols) =>
     ...rowsArr.map(r => '| ' + cols.map(c => String(r[c] ?? '')).join(' | ') + ' |')].join('\n');
 
 fs.mkdirSync('docs', { recursive: true });
+fs.writeFileSync('docs/taxonomy-reseed-blockers.md', `# Reseed blockers — must be ruled before \`--apply\`
+
+Generated ${ts}.
+
+## Pair mismatches (${mismatches.length})
+
+The category slug exists, but the workbook files it under a different collection
+than \`taxonomy_categories\` declares. One of the two is wrong; ruling either fixes it
+(move the category in the reference tables, or correct the workbook column).
+
+${mismatches.length ? table(mismatches, ['rmsId', 'title', 'category', 'workbookCollection', 'referenceCollection']) : '_None._'}
+
+## Off-vocabulary values (${rejects.length})
+
+Nothing in the reference tables matches these. They abort the apply outright.
+
+${rejects.length ? table(rejects.map(r => ({ rmsId: r.rmsId, title: r.title, collection: r.c, category: r.k })), ['rmsId', 'title', 'collection', 'category']) : '_None._'}
+`);
 fs.writeFileSync('docs/taxonomy-reseed-diff.md', `# Taxonomy reseed v4 — dry run diff
 
+${BLOCKED ? `> **BLOCKED** — ${mismatches.length} pair mismatch(es) and ${rejects.length} off-vocabulary value(s) must be ruled first. See \`docs/taxonomy-reseed-blockers.md\`. Those rows are excluded from every count below.\n` : ''}
 Generated ${ts} from \`${path.basename(file)}\`${EXPORT_CSV ? ` cross-checked against \`${path.basename(EXPORT_CSV)}\`` : ''}. **Nothing written.**
 
 ## Totals
 
 - workbook rows: ${rows.length}
 - blank category (skipped): ${blanks.length}
-- off-vocabulary rejects: ${rejects.length} (any > 0 aborts the run)
+- off-vocabulary rejects: ${rejects.length} (any > 0 aborts the apply)
+- pair mismatches (category under a different collection): ${mismatches.length} (blocks the apply)
 - rows to write: ${assignments.size} (${[...assignments.values()].filter(a => a.via !== 'reviewed').length} inherited by family)
 - workbook rms_ids absent from db: ${notInDb.length}${notInDb.length ? ` — ${notInDb.join(', ')}` : ''}
 - db rows with an rms_id: ${db.size}
@@ -264,7 +303,7 @@ ${lint.length ? table(lint, ['rmsId', 'title', 'assigned', 'suggests']) : '_No m
 
 console.log(`\nbuckets: new ${b1.length} · changed ${b2.length} · unchanged ${b3.length} · bucket4 ${b4.length}`);
 console.log(`blanks ${blanks.length} · demotions ${demotions.length} · title lint ${lint.length}`);
-console.log('wrote docs/taxonomy-reseed-diff.md, docs/taxonomy-bucket4.md, docs/taxonomy-title-lint.md');
+console.log('wrote docs/taxonomy-reseed-blockers.md, docs/taxonomy-reseed-diff.md, docs/taxonomy-bucket4.md, docs/taxonomy-title-lint.md');
 
 if (!APPLY) {
   console.log('\n[dry run] nothing written to the database. Rule bucket 4, then re-run with --apply.');
