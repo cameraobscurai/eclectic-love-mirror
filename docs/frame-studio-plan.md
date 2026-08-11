@@ -130,14 +130,29 @@ see all of it on /collection after Publish.
 
 ## Phase 4 — Migration (you + Jill's team, ~1–2 weeks calendar, low effort)
 
-Order: rugs (cleanest, validates the loop) → seating → tables → bars →
-lighting/chandeliers → large-decor/storage → pillows-throws → styling →
-serveware → tableware → furs-pelts/candlelight.
+Order (audit-derived, see `docs/cover-audit-baseline.md`):
 
-Per category: Auto-frame → Approve greens → work the queue (expect 10–20%;
-each is a 30-second drag or a "replace photo" ticket) → Publish → screenshot
-for the record. The review queue doubles as the punch list you show the
-team: not "the site is broken," but "these 9 photos need a decision."
+```text
+pillows-throws (136) → styling (63) → tableware (41) → serveware (36) →
+rugs (25) → large-decor → furs-pelts → bars/candlelight/lighting →
+chandeliers/seating/storage/tables (0 broken; migrate last, they only carry
+resolution advisories)
+```
+
+STRUCK, kept visible as the receipt: the original order read *"rugs (cleanest,
+validates the loop) → seating → tables → bars → lighting/chandeliers →
+large-decor/storage → pillows-throws → styling → serveware → tableware →
+furs-pelts/candlelight"*, on the day-one prediction that rugs were cleanest and
+seating worst. The audit overturned both halves — seating has 0 broken covers,
+pillows-throws has 136 — because seating was photographed with margin while the
+flat, tight-cropped categories saturate the clamp. This ordering is derived from
+measured defect counts, not from that prediction.
+
+Per category: Auto-frame → Approve greens → work the queue (each is a 30-second
+drag or a "replace photo" ticket) → Publish → screenshot for the record. The
+review queue doubles as the punch list you show the team: not "the site is
+broken," but "these 9 photos need a decision."
+
 
 ## Phase 5 — The deletion (Lovable, half a day)
 

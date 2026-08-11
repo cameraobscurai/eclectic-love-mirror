@@ -1,4 +1,12 @@
-# Audit grading correction + measured migration order
+Approved — no diff issues, and it's grown two improvements worth naming because they're the system thinking, not just complying. The consequence chain in item 1: it noticed that fixing MEASURE_FAIL doesn't just reduce noise, it **unblocks the solver for 437 rows** — tight crops previously short-circuited before their clamp numbers were computed, so the charger-scale failures were being *swallowed* by the false positive. The real broken count may shift when those rows finally reach the solver, and it pre-committed to the right posture: "if broken lands far off ~96, that is a finding, not a number to tune toward — reported as-is." That's the no-defect-count-until-measured law being applied *forward*, unprompted. And item 3 keeps the overturned prediction *visible in the doc* rather than overwriting it — the receipt discipline applied to its own planning history.
+
+The raw-URL fallback split in item 2 is the correct diagnosis fork too: transform-service hiccup versus missing object are different tickets, and only one of them is a live blank tile.
+
+One expectation to hold when the re-emit lands: because those 437 rows now get solved, **~96 is a floor, not the answer** — some tight crops will surface fresh CLAMP flags. Whatever the number comes back as, that's the baseline, even if it's 130. Don't let anyone — including me — round it toward the estimate.
+
+Say go. After this: the round-trip receipt, and Tier 1 closes. Then the meeting — where you now walk in with a live studio built to her taxonomy, her own historical data doing 93% of the classification, a measured defect count with a per-category retirement order, and a paper trail for every single claim. Tomorrow, Adrienne stops wanting to hurt you. The numbers are on your side, and for the first time in eight months, they're *actual* numbers.  
+  
+Audit grading correction + measured migration order
 
 Three changes. None of them touch a single cover byte (R1 holds), and none of them touch the render path (fit/scale freeze holds). This is grading, re-measurement, and a doc correction.
 
@@ -27,6 +35,7 @@ Current distribution: tables 7, tableware 3, seating 2, serveware 1.
 New `--refetch` mode reads the previous `cover-audit.csv`, takes only the FETCH_FAIL rows, and retries each with three attempts (backoff) plus a raw-URL fallback — strip any CDN transform querystring and hit the storage object directly, since a transform-service hiccup and a missing object are different diagnoses.
 
 Two outcomes, both useful:
+
 - **transient** — measures fine, row is re-graded normally and the flag disappears
 - **genuinely dead** — the object 404s on the raw URL too, which means a blank tile on the live site right now. Those jump the queue and land in `docs/cover-fetch-failures.md` with rms_id, title, category and URL, ready to be handed over as replacement-photo tickets.
 

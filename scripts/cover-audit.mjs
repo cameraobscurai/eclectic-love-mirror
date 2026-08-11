@@ -5,14 +5,20 @@
 // category fit solver OFFLINE against full-res bytes, and grades each cover:
 //
 //   PASS            solver lands inside target band, nothing clips
-//   MEASURE_FAIL    background detection failed → bbox ≈ whole frame.
-//                   The live grid is size-normalizing the PHOTO, not the product.
+//   MEASURE_FAIL    background detection genuinely failed → bbox ≈ whole frame
+//                   AND there was no alpha channel to trust. The live grid is
+//                   size-normalizing the PHOTO, not the product.
+//   TIGHT_CROP      advisory: alpha detection SUCCEEDED and the subject really
+//                   does fill >93% of the frame. A correct measurement of a
+//                   badly cropped source — not a measurement failure. These
+//                   rows still run the solver, so their clamp numbers count.
 //   CLAMP_TINY      required upscale exceeds clampMax → renders undersized
 //   CLAMP_MASSIVE   required downscale exceeds clampMin → renders oversized
 //   WOULD_CLIP      solved placement pushes silhouette past the frame edge
 //   OPAQUE_BG       no alpha channel (upscaler/JPEG era) — measurement is
 //                   running on the fragile color-threshold path
 //   LOW_RES         longest edge < 900px — soft at 600w tile after transform
+
 //
 // Outputs:
 //   cover-audit.csv           one row per product, all metrics + flags
@@ -35,7 +41,8 @@ const CATALOG = JSON.parse(
   fs.readFileSync('src/data/inventory/current_catalog.json', 'utf8'),
 );
 const SUPABASE = 'https://wdyfavzfquegrxklcpmq.supabase.co';
-const CATEGORY_FILTER = process.argv[2] || null;
+const REFETCH = process.argv.includes('--refetch');
+const CATEGORY_FILTER = process.argv.slice(2).find((a) => !a.startsWith('--')) || null;
 const CONCURRENCY = 8;
 const FRAME_ASPECT = 5 / 4; // PRODUCT_TILE_FRAME_ASPECT
 const INSET = 0.94;         // TILE_IMAGE_INSET
@@ -179,13 +186,24 @@ function solve(m, rule) {
   return { s, unclamped, hitMax: unclamped > rule.clampMax, hitMin: unclamped < rule.clampMin };
 }
 
+// Soft flags never make a cover BROKEN on their own.
+const SOFT_FLAGS = new Set(['OPAQUE_BG', 'LOW_RES', 'TIGHT_CROP']);
+
 function grade(m, rule) {
   const flags = [];
-  if (m.fail || m.frameCoverage > 0.93) flags.push('MEASURE_FAIL');
+  // A >0.93 frame coverage read off a real alpha channel is a CORRECT
+  // measurement of a tight crop, not a failed measurement. Only call it
+  // MEASURE_FAIL when detection actually failed or there was no alpha to
+  // trust (color-threshold path defaulting the bbox to the whole frame).
+  const fullFrame = m.frameCoverage > 0.93;
+  if (m.fail || (fullFrame && !m.hasAlphaBg)) flags.push('MEASURE_FAIL');
+  else if (fullFrame) flags.push('TIGHT_CROP');
   if (!m.hasAlphaBg) flags.push('OPAQUE_BG');
   if (Math.max(m.W, m.H) < 900) flags.push('LOW_RES');
   let solved = null;
   if (!flags.includes('MEASURE_FAIL')) {
+    // TIGHT_CROP rows reach the solver — that's the point of the downgrade.
+    // Their clamp numbers were previously swallowed by the false positive.
     solved = solve(m, rule);
     // >15% residual error after clamp = visibly off next to a passing neighbor.
     if (solved.hitMax && solved.unclamped / solved.s > 1.15) flags.push('CLAMP_TINY');
@@ -197,14 +215,44 @@ function grade(m, rule) {
       : rule.anchor === 'top' ? rule.anchorY + sh / 2 : rule.anchorY;
     if (cyS - sh / 2 < -0.01 || cyS + sh / 2 > 1.01 || sw > 1.02) flags.push('WOULD_CLIP');
   }
-  const hard = flags.filter((f) => f !== 'OPAQUE_BG' && f !== 'LOW_RES');
+  const hard = flags.filter((f) => !SOFT_FLAGS.has(f));
   const verdict = hard.length ? 'BROKEN' : flags.length ? 'AT_RISK' : 'PASS';
   return { flags, verdict, solved };
 }
 
-async function run() {
-  const rows = await liveCovers();
-  console.log(`auditing ${rows.length} live covers${CATEGORY_FILTER ? ` in ${CATEGORY_FILTER}` : ''}…`);
+
+// ── Fetching. A transform-service hiccup and a missing object are different
+// diagnoses, so retry the given URL, then fall back to the RAW storage object
+// (no transform querystring, /render/image/ → /object/).
+function rawVariant(url) {
+  const noQuery = url.split('?')[0];
+  const raw = noQuery.replace('/storage/v1/render/image/public/', '/storage/v1/object/public/');
+  return raw === url ? null : raw;
+}
+
+async function fetchCover(url, { attempts = 1 } = {}) {
+  const targets = [url];
+  const raw = rawVariant(url);
+  if (raw) targets.push(raw);
+  let lastErr = null;
+  for (const target of targets) {
+    for (let a = 0; a < attempts; a++) {
+      try {
+        const res = await fetch(target, { signal: AbortSignal.timeout(30000) });
+        if (!res.ok) throw new Error(`http ${res.status}`);
+        return { buf: Buffer.from(await res.arrayBuffer()), via: target };
+      } catch (e) {
+        lastErr = e;
+        // 404 on this target won't heal with another try — move to the fallback.
+        if (String(e).includes('http 404')) break;
+        if (a < attempts - 1) await new Promise((r) => setTimeout(r, 400 * (a + 1)));
+      }
+    }
+  }
+  throw lastErr ?? new Error('fetch failed');
+}
+
+async function auditRows(rows, { attempts = 1 } = {}) {
   const out = [];
   let i = 0;
   await Promise.all(
@@ -212,9 +260,7 @@ async function run() {
       while (i < rows.length) {
         const r = rows[i++];
         try {
-          const res = await fetch(r.url, { signal: AbortSignal.timeout(30000) });
-          if (!res.ok) throw new Error(`http ${res.status}`);
-          const buf = Buffer.from(await res.arrayBuffer());
+          const { buf } = await fetchCover(r.url, { attempts });
           const m = await measure(buf);
           const g = grade(m, RULES[r.category] ?? DEFAULT_RULE);
           out.push({ ...r, ...g, m });
@@ -225,6 +271,78 @@ async function run() {
       }
     }),
   );
+  return out;
+}
+
+// ── --refetch: re-run ONLY the FETCH_FAIL rows from the previous CSV, with
+// retries + raw-URL fallback. Transient failures get re-graded in place;
+// genuinely dead objects are blank tiles on the live site and get their own
+// ticket list.
+async function refetch() {
+  const csvPath = 'cover-audit.csv';
+  if (!fs.existsSync(csvPath)) {
+    console.error('no cover-audit.csv — run a full audit first');
+    process.exit(1);
+  }
+  const lines = fs.readFileSync(csvPath, 'utf8').split('\n');
+  const targets = [];
+  lines.forEach((line, idx) => {
+    if (!line.includes('FETCH_FAIL')) return;
+    const parts = line.split(',');
+    targets.push({
+      lineIdx: idx,
+      id: parts[0],
+      category: parts[1],
+      title: (line.match(/"(.*)"/)?.[1] ?? '').slice(0, 80),
+      url: parts[parts.length - 1],
+    });
+  });
+  console.log(`refetching ${targets.length} FETCH_FAIL rows (3 attempts + raw-URL fallback)…`);
+
+  const results = await auditRows(targets, { attempts: 3 });
+  const dead = results.filter((r) => r.flags.includes('FETCH_FAIL'));
+  const healed = results.filter((r) => !r.flags.includes('FETCH_FAIL'));
+
+  for (const r of healed) {
+    lines[r.lineIdx] = [
+      r.id, r.category, JSON.stringify(r.title ?? ''), r.verdict, r.flags.join('|'),
+      r.m?.W ?? '', r.m?.H ?? '', r.m?.frameCoverage?.toFixed(3) ?? '',
+      r.solved?.s?.toFixed(3) ?? '', r.solved?.unclamped?.toFixed(3) ?? '', r.url,
+    ].join(',');
+  }
+  fs.writeFileSync(csvPath, lines.join('\n'));
+
+  const doc = [
+    '# Cover fetch failures',
+    '',
+    `Re-run ${new Date().toISOString()} — ${targets.length} FETCH_FAIL rows retried`,
+    `(3 attempts each, plus a raw storage-object fallback).`,
+    '',
+    `- Transient (healed, re-graded in the CSV): **${healed.length}**`,
+    `- Genuinely dead (blank tile on the live site right now): **${dead.length}**`,
+    '',
+    dead.length ? '## Dead objects — replacement photo tickets' : '## No dead objects.',
+    '',
+    ...(dead.length
+      ? ['| rms_id | category | title | url | error |', '| --- | --- | --- | --- | --- |',
+         ...dead.map((r) => `| ${r.id} | ${r.category} | ${r.title} | ${r.url} | ${r.err} |`)]
+      : []),
+    '',
+  ].join('\n');
+  fs.mkdirSync('docs', { recursive: true });
+  fs.writeFileSync('docs/cover-fetch-failures.md', doc);
+
+  console.log(`\nhealed ${healed.length} · dead ${dead.length}`);
+  for (const r of dead) console.log(`  DEAD ${r.category.padEnd(15)} ${r.title} — ${r.err}`);
+  console.log('wrote docs/cover-fetch-failures.md; patched cover-audit.csv');
+}
+
+async function run() {
+  if (REFETCH) return refetch();
+  const rows = await liveCovers();
+  console.log(`auditing ${rows.length} live covers${CATEGORY_FILTER ? ` in ${CATEGORY_FILTER}` : ''}…`);
+  const out = await auditRows(rows);
+
 
   // ── Report
   const byCat = {};
