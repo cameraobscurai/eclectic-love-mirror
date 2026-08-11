@@ -29,7 +29,7 @@ Added to the RMS-sync exclusion list in `scripts/import.mjs` alongside the two s
 `scripts/apply-taxonomy.mjs` reads the `Remap v4 (complete)` sheet. Rules unchanged from the approved plan:
 
 - Blank category → skip (unassigned). Off-vocabulary value → hard abort, nothing written. The reds-stay-NULL path stays in the code for future imports even though v4 hits it zero times.
-- Export cross-check still runs as the verifier against `products_Aug-11_02-07-41PM.csv`, with `ut-` page rows excluded from the match index (Colorado only). Disagreements demote the row to `confidence:'med', source:'export-disagreement'`.
+- Export cross-check still runs as the verifier against `products_Aug-11_02-07-41PM.csv`, with `ut-` page rows excluded from the match index (Colorado only). Disagreements demote the row to `confidence:'med', source:'export-disagreement'` — **except rows with `source:'human'`, which are exempt from demotion.** A human ruling made this week with the photo in view outranks an archival CSV; disagreements on those rows are reported in the diff as informational only.
 - Family inheritance: variant rows inherit the lead row's pair.
 - Diff manifest to `docs/taxonomy-v4-diff.md`: unchanged / changed / newly assigned / **bucket 4 — outside the workbook but currently assigned**. Bucket 4 gets an explicit keep-or-null ruling before `--apply`.
 
@@ -38,6 +38,18 @@ Added to the RMS-sync exclusion list in `scripts/import.mjs` alongside the two s
 **New — title lint (advisory, never blocks):** the dry run emits restored rows whose title keyword contradicts the assigned category (known: AUSET LINEN BANQUETTE at `dining/dining-chairs` while `dining/banquettes` exists). Appended to `docs/taxonomy-open-questions.md` as a meeting item.
 
 **Done when:** diff reviewed, bucket 4 ruled, applied, rebaked, `/collection` counts confirmed, and `select taxonomy_review->>'confidence', count(*)` returns 635 high / 0 med / 0 low plus any cross-check demotions.
+
+## Task C2 — Read-path switchover (restored; dropped in an earlier rewrite)
+
+Without this, the reseed writes columns nothing public reads and Task C's `/collection` count check is verifying the old classifier. Runs after C applies, before E.
+
+- Nav, collection filters, PDP breadcrumbs, admin Inventory sort, and the catalog bake read `collection_slug` / `category_slug` directly. No scoring, no keywords.
+- Publish overlay (`publishCatalogOverlay`) and `scripts/bake-catalog.mjs` carry both slug columns. `taxonomy_review` stays DB-only — the studio reads it directly; the public site never receives it.
+- Split delete, exactly as originally scoped: the browse-group scorer, subcategory inference, and owner-subcategory overrides are deleted here. The alias map survives until Frame Studio Phase 5, as does `categoryFit.ts` and the legacy `category` / `subcategory_slug` columns.
+
+**Done when:** no public read surface calls a keyword/scoring path; every category and subcategory count on `/collection` equals `select count(*) group by collection_slug, category_slug`; the deleted modules have no remaining references (ripgrep across `src/`, `scripts/`, route loaders and dynamic imports before deletion, per the dead-code rule).
+
+**Process receipt:** content has evaporated across plan regenerations three times today. From here, every plan revision is diffed against the last approved version before approval — additions get reviewed, deletions are the ones that hide.
 
 ## Task D — Archive
 
@@ -54,6 +66,7 @@ Production changes from the prototype:
 - **✓ CONFIRM button** on every unreviewed tile that already has both values — agreement is a first-class gesture, not a dropdown reselect. Sets `reviewed:true` and stamps who/when, leaves slugs untouched.
 - **CONFIRM ALL** scopes to the currently visible filter set and always skips rows flagged `needs_owner`.
 - **Default filter is unassigned** — the queue opens empty, so the studio launches in intake mode. New RMS imports land there; classification-at-intake is the standing workflow. This route is never deleted later.
+- Filter chip counts render for every filter regardless of the active one, so if the cross-check produced any demotions, CONFIRM's non-zero count makes them findable on open.
 
 **Done when:** all 635 tiles render with photos and seeded state; a dropdown change and a ✓ CONFIRM each persist, audit, stamp `reviewed_by/at`, and survive reload; CONFIRM ALL respects the active filter and skips flagged rows; bulk assign works; the ASK ADRIENNE filter returns exactly the flagged set; an off-vocabulary write attempted directly at the server function is rejected; ledger counts equal database counts.
 
@@ -65,6 +78,6 @@ Production changes from the prototype:
 
 ## Order
 
-B → C (dry run, diff, bucket-4 ruling, lint, apply, rebake) → D → E → F. E does not start before C applies.
+B → C (dry run, diff, bucket-4 ruling, lint, apply, rebake) → C2 → D (anytime after C) → E → F. E does not start before C2 lands.
 
 **First output on approval: Task B's migration and nothing else.**
