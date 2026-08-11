@@ -12,6 +12,7 @@ import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
 import { resolveProductFit } from "./productFit";
+import { framedCoverSrc600, framedCoverSrcSet } from "@/lib/cover-framed";
 
 
 interface ProductTileProps {
@@ -64,6 +65,10 @@ export function ProductTile({
   // Tile container is always visible; only the image area shows a skeleton
   // until it loads. Previously the whole tile (caption + image) faded in on
   // image load, so any slow image made the tile look "disappeared."
+
+  // Frame Studio: a saved derivative is already composed on the 5:4 tile
+  // canvas, so it renders plainly — no fit rule, no transform, no measurement.
+  const framedUrl = product.coverFramedUrl ?? null;
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
@@ -125,7 +130,24 @@ export function ProductTile({
               {/* Debug: secondary-cap band (visible only under ?debug=media). */}
               <div aria-hidden className="product-tile-media__cap" />
 
-              {product.primaryImage ? (
+              {framedUrl ? (
+                <img
+                  ref={captureLoadedImage}
+                  src={framedCoverSrc600(framedUrl)}
+                  srcSet={framedCoverSrcSet(framedUrl)}
+                  sizes="(min-width: 1024px) calc((min(100vw, 1600px) - 8rem) / 3), (min-width: 640px) 33vw, 50vw"
+                  alt={product.primaryImage?.altText ?? product.title}
+                  width={1500}
+                  height={1200}
+                  loading={index < EAGER_LOAD_COUNT ? "eager" : "lazy"}
+                  decoding="async"
+                  {...({
+                    fetchPriority: index < HIGH_FETCH_COUNT ? "high" : "auto",
+                  } as Record<string, string>)}
+                  onLoad={markLoaded}
+                  className="absolute inset-0 h-full w-full object-contain"
+                />
+              ) : product.primaryImage ? (
                 <NormalizedProductImage
                   ref={captureLoadedImage}
                   src={imageSrc}
