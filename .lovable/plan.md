@@ -40,13 +40,15 @@ Every one of the nine surfaces above is converted to call it. Admin lists call t
 
 Adds to `inventory_items`: `cover_framed_url text`, `cover_framed_meta jsonb`. Drops `upscaled_cover_url`.
 
-Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1200,1500], approved, ruleVersion, generatedAt }`
+Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1500,1200], approved, ruleVersion, generatedAt }`
 
 **Done when:** columns exist and appear in generated types.
 
 ## Task 1.2 — Render path with fallback
 
-Inside the resolver, `cover_framed_url` wins. In `ProductTile`, that branch renders a plain `<img>` with `object-fit: contain`, 600w src + 1200w srcSet — no `NormalizedProductImage`, no fit rule, no transform, no measurement. Everything without a derivative renders exactly as today.
+Inside the resolver, `cover_framed_url` wins. In `ProductTile` only, that branch renders a plain `<img>` with `object-fit: contain`, 600w src + 1200w srcSet — no `NormalizedProductImage`, no fit rule, no transform, no measurement. Everything without a derivative renders exactly as today.
+
+Scope note for the record: `CollectionRail`, `CategoryTonalGrid`, `CategoryOverview`, `RelatedPieces`, and QuickView thumbnails keep the legacy path until a later adoption task. During migration a framed product looking different in a rail than in the grid is expected, not a bug.
 
 Field carried end to end: publish select and overlay (`src/lib/photos-admin.functions.ts`), `LiveOverlayRow` and merge (`src/lib/phase3-catalog.ts`), and `scripts/bake-catalog.mjs`.
 
@@ -54,11 +56,13 @@ Field carried end to end: publish select and overlay (`src/lib/photos-admin.func
 
 ## Task 1.3 — Storage
 
-- Path `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `upsert: false`, `cacheControl: 31536000`.
-- Server function `saveFramedCover(id, blob1200, blob600, meta)` — uploads both sizes, writes url + meta, audits.
-- R1 enforced in code: a path that exists with different bytes is rejected. New composition means a new hashed path. The Ingram cache split becomes impossible rather than unlikely.
+- Path `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `cacheControl: 31536000`.
+- Hash covers everything that determines output pixels: `hash16(srcHash + ruleVersion + canonicalized {scale, offsetX, offsetY, bboxPx})`. A path collision therefore means an identical composition — a storage 409 is dedup success, handled the same way `uploadItemImage` already handles it. No byte comparison, no rejection.
+- `cover_framed_url` stores the **1200w** URL. The 600w variant is derived by suffix swap (`-1200.webp` → `-600.webp`); both sizes share the hash. Only one URL is stored.
+- Transport: base64 through the server function, reusing `uploadItemImage`'s ~10MB guard. No new transport pattern.
+- `saveFramedCover(id, base64_1200, base64_600, meta)` uploads both sizes, writes url + meta, audits.
 
-**Done when:** callable from admin, both files land, row updates, and a repeat save with different bytes at the same path fails loudly.
+**Done when:** callable from admin, both files land, the row updates, and re-saving an unchanged composition is a no-op rather than an error.
 
 ## Not in this scope
 
@@ -66,13 +70,20 @@ The auto-framer engine, the studio UI, migration, and the Phase 5 deletions. `ca
 
 ## Non-negotiables
 
-- R1: a published storage URL never receives new bytes.
+- R1: a published storage URL never receives new bytes. Content-hashed paths make this structural — a new composition is a new path.
 - R2: the public site never measures pixels. Any future task that reintroduces live measurement gets declined here.
 - R3: auto-framed derivatives are verifier-gated; FAIL goes to a review queue, never a silent publish.
 - R4: the studio composes, never retouches. Photo problems route to "replace source photo."
+- R5: canvas aspect equals the tile frame aspect. `PRODUCT_TILE_FRAME_ASPECT` is `5 / 4`, so the canvas is 1500×1200 landscape. If the tile aspect ever changes, bump `ruleVersion` and regenerate every derivative.
+
+## Noted now, built in Phase 2
+
+- Verifier gains a non-blocking `SRC_UPSCALED` advisory when composition upscales the source more than 1.25×. Recorded in meta; never queued, never blocking.
+- Input contract for new photography: exports ≥1600px on the long edge. The back catalog is not re-exported — today's 800×600 files are adequate at 600w and only slightly soft on the 1200w retina variant. Any individual cover that reads soft gets a one-off higher-res export through "replace source photo."
+- Source aspect is irrelevant to canvas choice: the framer crops to the silhouette bbox and discards the source's margins.
 
 ## Technical notes
 
 - `docs/frame-studio-plan.md` gets committed as the reference text for Phases 2–5. `cover-audit.mjs` and `cover-system-spec.md` aren't in the repo — send them if you want them alongside.
-- Canvas 1200×1500 (4:5); the tile aspect is unchanged and `contain` absorbs the difference.
+- Canvas is 1500×1200 (5:4 landscape), matching the tile frame exactly. A portrait canvas would letterbox inside the landscape tile and render every framed cover roughly 36% undersized.
 - No image bytes are generated in Phase 1. Nothing visible changes until a derivative exists.
