@@ -43,4 +43,5 @@ Her tree crosses current DB boundaries in seven places, each needing per-product
 
 - Reference table + FK-style validation is what stops the taxonomy rotting back into free text.
 - Publish overlay and `bake-catalog.mjs` must carry both new columns, same carry-point discipline as `cover_framed_url`.
-- Step 5 is a hard delete, not a deprecation — the layers only cause harm once truth is declared.
+- Step 6 is a hard delete for the inference layers only. The alias map is not deprecated and not touched — it stays live until the Frame Studio Phase 5 commit removes both it and the solver together.
+- Step 4 is the load-bearing one: a re-import that overwrites the taxonomy columns fails silently and pulls products off the live site. Verify with a dry-run re-import against a seeded row before any real sync.
