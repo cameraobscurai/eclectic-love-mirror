@@ -1,0 +1,1765 @@
+{
+  "generatedAt": "2026-08-11T18:43:43.283Z",
+  "summary": {
+    "benches-ottomans": {
+      "total": 22,
+      "noDimensions": 0,
+      "detailCover": 0,
+      "noCover": 0
+    },
+    "chairs": {
+      "total": 42,
+      "noDimensions": 0,
+      "detailCover": 0,
+      "noCover": 0
+    },
+    "sofas": {
+      "total": 23,
+      "noDimensions": 0,
+      "detailCover": 0,
+      "noCover": 0
+    }
+  },
+  "rows": [
+    {
+      "group": "benches-ottomans",
+      "slug": "alistair-green-leather-bench-3211",
+      "title": "ALISTAIR GREEN LEATHER BENCH",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/ALISTAIR%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ALISTAIR GREEN LEATHER BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "62\"W x 32\"D x 18\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "avalon-iron-linen-bench-3027",
+      "title": "AVALON IRON + LINEN BENCH",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/AVALON%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AVALON IRON + LINEN BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "58\"w x 18\"D x 22\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "blanc-white-grey-cow-hide-ottoman-676",
+      "title": "BLANC WHITE & GREY COW HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/BLANC%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "BLANC WHITE & GREY COW HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "17\"W X 17\"D X 17\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "dune-wood-and-tan-boucle-bench-3832",
+      "title": "DUNE WOOD AND TAN BOUCLE BENCH",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/DUNE%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "DUNE WOOD AND TAN BOUCLE BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "64\"W x 18\"D x 20\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "ellora-sage-velvet-ottoman-3461",
+      "title": "ELLORA SAGE VELVET OTTOMAN",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/ELLORA%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ELLORA SAGE VELVET OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "47.5\"W x 47.5\"D x 16.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "evander-grey-hide-tapered-ottoman-3014",
+      "title": "EVANDER GREY HIDE TAPERED OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/EVANDER%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "EVANDER GREY HIDE TAPERED OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "36\"Dia x 18.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "geraldine-goat-fur-wood-bench-2002",
+      "title": "GERALDINE GOAT FUR WOOD BENCH",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/GERALDINE%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GERALDINE GOAT FUR WOOD BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "35.5\"W x 11.75\"D x 17.75\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "grey-hills-linen-ottoman-129",
+      "title": "GREY HILLS LINEN OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/GREY%20HILLS%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GREY HILLS LINEN OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "18\"Dia x 18\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "jessie-cow-hide-ottoman-675",
+      "title": "JESSIE COW HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/seating/jessie-cow-hide-ottoman/01-JESSE_Ottoman_0.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JESSIE COW HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "16\"W x 16\"D x 17\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "joseph-goat-hide-ottoman-127",
+      "title": "JOSEPH GOAT HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/127/7b0cadbed4dc0e50.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JOSEPH GOAT HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "17\"W x 17\"D x 17\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "jourdain-natural-bench-2999",
+      "title": "JOURDAIN NATURAL BENCH",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/JOURDAIN%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JOURDAIN NATURAL BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "79\"W x 28\"D x 20\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "leanna-ivory-hide-tapered-ottoman-3142",
+      "title": "LEANNA IVORY HIDE TAPERED OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/LEANNA%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "LEANNA IVORY HIDE TAPERED OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "36\"Dia x 18.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "lorenzo-ivory-round-hide-ottoman-3015",
+      "title": "LORENZO IVORY ROUND HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/LORENZO%20Ottoman.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "LORENZO IVORY ROUND HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "42\"Dia x x19\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "morrison-charcoal-ottoman-2025",
+      "title": "MORRISON CHARCOAL OTTOMAN",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/MORRISON%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "MORRISON CHARCOAL OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 26\"D x 16\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "nazara-grey-hide-ottoman-3017",
+      "title": "NAZARA GREY HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/NAZARA%20Stool%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NAZARA GREY HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "15\"Dia x 19\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "neriya-ivory-hide-ottoman-3016",
+      "title": "NERIYA IVORY HIDE OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/NERIYA%20Ivory%20Stool.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NERIYA IVORY HIDE OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "15\"Dia x 19\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "omar-brown-leather-ottoman-749",
+      "title": "OMAR BROWN LEATHER OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/749/3644c050d94e5caf.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "OMAR BROWN LEATHER OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "21\"Dia x 12\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "siete-rattan-ottoman-2752",
+      "title": "SIETE RATTAN OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/SIETE%20Ottoman.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SIETE RATTAN OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "20\"Dia x 19\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "spencer-beige-cot-bench-1006",
+      "title": "SPENCER BEIGE COT BENCH",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/SPENCER%20Cot%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SPENCER BEIGE COT BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "84\"W x 38\"D x 18.5\" H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "torro-leather-knit-ottoman-3005",
+      "title": "TORRO LEATHER KNIT OTTOMAN",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/TORRO%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "TORRO LEATHER KNIT OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "22.5\"W x 15.25\"D x 18.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "trapper-canvas-ottoman-1815",
+      "title": "TRAPPER CANVAS OTTOMAN",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/ottoman/TRAPPER%20Ottoman%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "TRAPPER CANVAS OTTOMAN"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "18\"W x 18\"D x 18\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "benches-ottomans",
+      "slug": "ygritte-ebony-tufted-bench-1994",
+      "title": "YGRITTE EBONY TUFTED BENCH",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/bench/YGRITTE%20Bench%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "YGRITTE EBONY TUFTED BENCH"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "63\"W x 36\"D x 15\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "adelaide-antique-arm-chair-2970",
+      "title": "ADELAIDE ANTIQUE ARM CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ADELAIDE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ADELAIDE ANTIQUE ARM CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24\"W x 19\"D x 38\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "alora-botanical-sculptural-chair-3709",
+      "title": "ALORA BOTANICAL SCULPTURAL CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ALORA%20Botanical%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ALORA BOTANICAL SCULPTURAL CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "33\"W x 30.5\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "amun-brown-leather-butterfly-chair-44",
+      "title": "AMUN BROWN LEATHER BUTTERFLY CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/AMUN%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AMUN BROWN LEATHER BUTTERFLY CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 27\"D x 36\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "antonio-black-leather-butterfly-chair-767",
+      "title": "ANTONIO BLACK LEATHER BUTTERFLY CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ANTONIO%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ANTONIO BLACK LEATHER BUTTERFLY CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 27\"D x 36\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "aramita-cotton-velvet-chair-3007",
+      "title": "ARAMITA COTTON VELVET CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ARAMITA%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ARAMITA COTTON VELVET CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "37\"W x 38\"D x 34\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "artesia-chair-3822",
+      "title": "ARTESIA CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ARTESIA%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ARTESIA CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 28\"D x 32\"H - 20\" Seat Height",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "axel-bar-stool-161",
+      "title": "AXEL BAR STOOL",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/161/e7a934ea7a9f8e1b.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AXEL BAR STOOL"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "16\"W x 17\"D x 45\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "azalea-botanical-velvet-chair-3716",
+      "title": "AZALEA BOTANICAL VELVET CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/AZALEA%20Velvet%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AZALEA BOTANICAL VELVET CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "40.5\"W x 47\"D x 34\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "bard-deconstructed-leather-chair-2884",
+      "title": "BARD DECONSTRUCTED LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/BARD%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "BARD DECONSTRUCTED LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 27\"D x 38\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "benecio-leather-knit-chair-3004",
+      "title": "BENECIO LEATHER KNIT CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/BENECIO%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "BENECIO LEATHER KNIT CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24\"W x 26\"D x 24\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "carwyn-white-wood-chair-2749",
+      "title": "CARWYN WHITE + WOOD CHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/CARWYN%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CARWYN WHITE + WOOD CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "32\"W x 32\"D x 28\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "claude-white-upholstered-chair-1789",
+      "title": "CLAUDE WHITE UPHOLSTERED CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/CLAUDE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CLAUDE WHITE UPHOLSTERED CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28.25\"W x 29.5\"D x 33\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "corwin-canvas-lounge-chair-1814",
+      "title": "CORWIN CANVAS LOUNGE CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/CORWIN%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CORWIN CANVAS LOUNGE CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "30\"W x 30\"D x 27\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "donnelly-navy-leather-wingback-chair-2982",
+      "title": "DONNELLY NAVY LEATHER WINGBACK CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/DONNELLY%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "DONNELLY NAVY LEATHER WINGBACK CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "30\"W x 32\"D x 40\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "elspeth-almond-velour-chair-2462",
+      "title": "ELSPETH ALMOND VELOUR CHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ELSPETH%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ELSPETH ALMOND VELOUR CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "27.5\"W x 28\"D x 27.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "fabian-grey-hide-barrel-chair-3002",
+      "title": "FABIAN GREY HIDE BARREL CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/FABIAN%20%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FABIAN GREY HIDE BARREL CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 25\"D x 27\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "farrell-grey-hide-bar-stool-3012",
+      "title": "FARRELL GREY HIDE BAR STOOL",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/stool/FARRELL%20Stool%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FARRELL GREY HIDE BAR STOOL"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "18\"W x 16.5\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "fawn-natural-cane-chair-721",
+      "title": "FAWN NATURAL CANE CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/FAWN%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FAWN NATURAL CANE CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "27\"W x 22\"D x 36\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "florian-ivory-hide-barrel-chair-3003",
+      "title": "FLORIAN IVORY HIDE BARREL CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/FLORIAN%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FLORIAN IVORY HIDE BARREL CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "28\"W x 25\"D x 27\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "ford-deconstructed-leather-wingback-chair-2906",
+      "title": "FORD DECONSTRUCTED LEATHER WINGBACK CHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/FORD%20Wingback%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FORD DECONSTRUCTED LEATHER WINGBACK CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "32\"W x 32\"D x 45\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "fulton-white-leather-butterfly-chair-3856",
+      "title": "FULTON WHITE LEATHER BUTTERFLY CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/FULTON%20Butterfly%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "FULTON WHITE LEATHER BUTTERFLY CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "23\"W x 29\"D x 36\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "giles-goat-hide-chair-757",
+      "title": "GILES GOAT HIDE CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/GILES%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "GILES GOAT HIDE CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "22\"W x 31\"D x 23\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "helena-antique-carved-chair-2969",
+      "title": "HELENA ANTIQUE CARVED CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/HELENA%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "HELENA ANTIQUE CARVED CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "25\"W x 23\"D x 52\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "hemingway-brown-leather-chair-60",
+      "title": "HEMINGWAY BROWN LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/HEMINGWAY%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "HEMINGWAY BROWN LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "27\"W x 32\"D x 34\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "hirshfield-leather-chair-1711",
+      "title": "HIRSHFIELD LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/HIRSHFIELD%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "HIRSHFIELD LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24\"W x 30\"D x 26\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "jennie-antique-linen-chair-2972",
+      "title": "JENNIE ANTIQUE LINEN CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/JENNIE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JENNIE ANTIQUE LINEN CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "26\"W x 22\"D x 38\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "jesamay-chair-3835",
+      "title": "JESAMAY ARMCHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/JESAMAY%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JESAMAY CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "23.5\"W x 24\"D x 33.75\"H - 19\" Seat Height",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "julien-adjustable-counter-stool-1973",
+      "title": "JULIEN ADJUSTABLE COUNTER STOOL",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/stool/JULIEN%20Stool%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JULIEN ADJUSTABLE COUNTER STOOL"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "16\"W x 16\"D x 27.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "mara-hunter-leather-chair-1799",
+      "title": "MARA HUNTER LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/1799/b48ec8f49a4ca910.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "MARA HUNTER LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "18\"W x 20\"D x 33.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "marshall-mango-wood-chair-672",
+      "title": "MARSHALL MANGO WOOD CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/MARSHALL%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "MARSHALL MANGO WOOD CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "20\"W x 20\"D x 32\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "millicent-antique-arm-chair-2971",
+      "title": "MILLICENT ANTIQUE ARM CHAIR",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/MILLICENT%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "MILLICENT ANTIQUE ARM CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "25\"W x 19\"D x 41\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "natori-oak-fur-chair-2995",
+      "title": "NATORI OAK + FUR CHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/NATORI%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NATORI OAK + FUR CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24.5\"W x 29.\"D x 32\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "noelle-black-cane-chair-2786",
+      "title": "NOELLE BLACK CANE CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/NOELLE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NOELLE BLACK CANE CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24\"W x 24\"D x 33\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "nomad-wood-chair-435",
+      "title": "NOMAD WOOD CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/NOMAD%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "NOMAD WOOD CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "20\"W x 30\"D x ?\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "osprey-black-metal-chair-3817",
+      "title": "OSPREY BLACK METAL CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/OSPREY%200%20Original%20Cushion.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "OSPREY BLACK METAL CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "33.75\"W x 30\"D x 35.25\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "poe-deconstructed-leather-chair-76",
+      "title": "POE DECONSTRUCTED LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/POE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "POE DECONSTRUCTED LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "24\"W x 28\"D x 34\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "rosie-antique-linen-chair-2968",
+      "title": "ROSIE ANTIQUE LINEN CHAIR",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ROSIE%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ROSIE ANTIQUE LINEN CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "26\"W x 23\"D x 39\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "suhana-cognac-leather-chair-2618",
+      "title": "SUHANA COGNAC LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/SUHANA%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SUHANA COGNAC LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "26\"W x 32\"D x 28\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "tailor-brown-leather-chair-84",
+      "title": "TAILOR BROWN LEATHER CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/TAILOR%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "TAILOR BROWN LEATHER CHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "31\"W x 36\"D x 35\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "thatcher-green-natural-woven-bar-stool-4052",
+      "title": "THATCHER GREEN NATURAL WOVEN BAR STOOL",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/stool/THATCHER%20Stool.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "THATCHER GREEN NATURAL WOVEN BAR STOOL"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "16.5\"W x 20\"D x 45\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "vixxen-black-bar-stool-2747",
+      "title": "VIXXEN BLACK BAR STOOL",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/stool/VIXXEN%20Black%20Stool.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "VIXXEN BLACK BAR STOOL"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "22\"W x 20.\"D x 42\"H Back",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "chairs",
+      "slug": "zeki-kilim-armchair-706",
+      "title": "ZEKI KILIM ARM CHAIR",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/chair-lounge/ZEKI%20Chair%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ZEKI KILIM ARMCHAIR"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "27\"W X 28\"D X 33\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "antonella-cotton-velvet-sofa-3006",
+      "title": "ANTONELLA COTTON VELVET SOFA",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/ANTONELLA%20Loveseat%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ANTONELLA COTTON VELVET SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "76\"W x 38\"D x 33\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "aviana-botanical-linen-sofa-3714",
+      "title": "AVIANA BOTANICAL LINEN SOFA",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/AVIANA%20Linen%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "AVIANA BOTANICAL LINEN SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "83\"W x 39\"D x 39\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "brooklyn-plush-charcoal-sofa-1770",
+      "title": "BROOKLYN PLUSH CHARCOAL SOFA",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/BROOKLYN%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "BROOKLYN PLUSH CHARCOAL SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "90\"W x 30\"D x 35\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "calista-fringe-sofa-3713",
+      "title": "CALISTA FRINGE SOFA",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/CALISTA%20Fringe%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CALISTA FRINGE SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "80\"W x 37.75\"D x 29.25\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "cicely-wicker-linen-loveseat-2741",
+      "title": "CICELY WICKER + LINEN LOVESEAT",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/loveseat/CICELY%20Loveseat.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "CICELY WICKER + LINEN LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "60\"W x 23\"D x 35\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "commodore-canvas-sofa-1813",
+      "title": "COMMODORE CANVAS LOVESEAT",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/COMMODORE%20Loveseat%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "COMMODORE CANVAS SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "71\"W x 30\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "cosette-sage-velvet-loveseat-3462",
+      "title": "COSETTE SAGE VELVET LOVESEAT",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/inventory/3462/7e8a37c0eb7b9ba4.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "COSETTE SAGE VELVET LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "52\"W x 30\"D x 36.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "elizabeth-champagne-velvet-sofa-755",
+      "title": "ELIZABETH CHAMPAGNE VELVET SOFA",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/ELIZABETH%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ELIZABETH CHAMPAGNE VELVET SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "90\"W x 28\"D x 33\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "eloise-antique-white-french-loveseat-2714",
+      "title": "ELOISE ANTIQUE WHITE FRENCH LOVESEAT",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/loveseat/ELOISE%20French%20Loveseat%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ELOISE ANTIQUE WHITE FRENCH LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "72\"W x 34\"D x 35\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "erin-antique-white-french-sofa-2717",
+      "title": "ERIN ANTIQUE WHITE FRENCH SOFA",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/ERIN%20French%20Sofa.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ERIN ANTIQUE WHITE FRENCH SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "96\"W x 38\"D x 35\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "henry-upholstered-grey-sofa-1818",
+      "title": "HENRY UPHOLSTERED GREY SOFA",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/HENRY%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "HENRY UPHOLSTERED GREY SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "98\"W x 40.5\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "indiwin-black-leather-sofa-735",
+      "title": "INDIWIN BLACK LEATHER SOFA",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/INDIWIN%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "INDIWIN BLACK LEATHER SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "91\"W x 35\"D x 25\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "jacinda-armless-textile-loveseat-3719",
+      "title": "JACINDA ARMLESS TEXTILE LOVESEAT",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/loveseat/JACINDA%20Loveseat%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "JACINDA ARMLESS TEXTILE LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "64.5\"W x 41\"D x 27\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "lindt-toffee-velvet-channel-tufted-sofa-1820",
+      "title": "LINDT TOFFEE VELVET CHANNEL TUFTED SOFA",
+      "publicReady": true,
+      "imageCount": 4,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/LINDT%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "LINDT TOFFEE VELVET CHANNEL TUFTED SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "91\"W x 38\"D x 31\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "phillipe-grey-silk-loveseat-34",
+      "title": "PHILLIPE GREY SILK LOVESEAT",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/squarespace-mirror/lounge/phillipe/01-PHILLIPE_Loveseat_0.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "PHILLIPE GREY SILK LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "51\"W x 26\"D x 37\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "reshma-botanical-sculptural-sofa-3711",
+      "title": "RESHMA BOTANICAL SCULPTURAL SOFA",
+      "publicReady": true,
+      "imageCount": 2,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/RESHMA%20Botanical%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "RESHMA BOTANICAL SCULPTURAL SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "82.5\"W x 34\"D x 28\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "rosalind-cream-velvet-round-banquette-4014",
+      "title": "ROSALIND CREAM VELVET ROUND BANQUETTE",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/specialty/ROSALIND%20Sectional.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ROSALIND CREAM VELVET ROUND BANQUETTE"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "90\"Dia x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "rowntree-chocolate-leather-loveseat-1710",
+      "title": "ROWNTREE CHOCOLATE LEATHER LOVESEAT",
+      "publicReady": true,
+      "imageCount": 5,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/loveseat/ROWNTREE%20Loveseat%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "ROWNTREE CHOCOLATE LEATHER LOVESEAT"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "49\"W x 30\"D x 26\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "sidony-white-wood-sofa-2748",
+      "title": "SIDONY WHITE + WOOD SOFA",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/SIDONY%20Sofa.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SIDONY WHITE + WOOD SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "94\"W x 30\"D x 32\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "silas-sage-oak-cane-sofa-2715",
+      "title": "SILAS SAGE + OAK CANE SOFA",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/SILAS%20Cane%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SILAS SAGE + OAK CANE SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "80.5\"W x 27.5\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "stanhope-chocolate-leather-sofa-2983",
+      "title": "STANHOPE CHOCOLATE LEATHER SOFA",
+      "publicReady": true,
+      "imageCount": 1,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/STANHOPE%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "STANHOPE CHOCOLATE LEATHER SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "94.5\"W x 41\"D x 31.5\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "sylvanus-green-ash-sofa-2619",
+      "title": "SYLVANUS GREEN & ASH SOFA",
+      "publicReady": true,
+      "imageCount": 3,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/SYLVANUS%20Sofa%200.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "SYLVANUS GREEN & ASH SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "79\"W x 34\"D x 30\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    },
+    {
+      "group": "sofas",
+      "slug": "talon-black-metal-sofa-945",
+      "title": "TALON BLACK METAL SOFA",
+      "publicReady": true,
+      "imageCount": 6,
+      "cover": {
+        "url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/incoming-photos/seating/sofa/TALON%20Sofa%201%20Original%20Cushion.png",
+        "position": 0,
+        "isHero": true,
+        "inferredFilename": null,
+        "altText": "TALON BLACK METAL SOFA"
+      },
+      "coverFile": "[object Object]",
+      "coverLooksLikeDetail": false,
+      "dimensions": "83\"W x 28.5\"W x 34\"H",
+      "hasDimensions": true,
+      "isFamily": false,
+      "variantCount": 0
+    }
+  ]
+}
