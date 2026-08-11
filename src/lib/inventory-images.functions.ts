@@ -230,7 +230,7 @@ export const setImageGeometry = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin
       .from("inventory_items")
-      .update({ images_meta: meta })
+      .update({ images_meta: meta as never })
       .eq("id", data.id);
     if (error) throw error;
 
