@@ -173,6 +173,79 @@ export const setCoverFocal = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------------------------------------------------------------------------
+// setImageGeometry — records the normalized derivative for ONE source image.
+//
+// This is what ends the "cover photo is some baked file I can't touch" class
+// of bug. Geometry lives on the product row, keyed by the source URL the
+// admin actually put in slot 0, so the render layer never has to consult a
+// static manifest or guess from a filename.
+//
+// Shape written to inventory_items.images_meta:
+//   { normalized: { "<source url>": { url, w, h, aspect, isCutout, at } } }
+// ---------------------------------------------------------------------------
+
+const geometryInput = z.object({
+  id: z.string().uuid(),
+  /** The original image URL as stored in inventory_items.images. */
+  source: urlSchema,
+  /** The uploaded normalized derivative (1536x1536 PNG). */
+  url: urlSchema,
+  w: z.number().min(0.01).max(1),
+  h: z.number().min(0.01).max(1),
+  isCutout: z.boolean().optional(),
+});
+
+export const setImageGeometry = createServerFn({ method: "POST" })
+  .middleware([requireStaffOrAdmin])
+  .inputValidator((d: unknown) => geometryInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: current, error: readErr } = await supabaseAdmin
+      .from("inventory_items")
+      .select("images_meta")
+      .eq("id", data.id)
+      .single();
+    if (readErr || !current) throw new Error("NOT_FOUND: item missing");
+
+    const meta =
+      current.images_meta && typeof current.images_meta === "object" &&
+      !Array.isArray(current.images_meta)
+        ? { ...(current.images_meta as Record<string, unknown>) }
+        : {};
+    const normalized =
+      meta.normalized && typeof meta.normalized === "object" &&
+      !Array.isArray(meta.normalized)
+        ? { ...(meta.normalized as Record<string, unknown>) }
+        : {};
+
+    normalized[data.source] = {
+      url: data.url,
+      w: data.w,
+      h: data.h,
+      aspect: data.w / data.h,
+      isCutout: data.isCutout ?? false,
+      at: new Date().toISOString(),
+    };
+    meta.normalized = normalized;
+
+    const { error } = await supabaseAdmin
+      .from("inventory_items")
+      .update({ images_meta: meta as never })
+      .eq("id", data.id);
+    if (error) throw error;
+
+    void audit({
+      actorId: context.userId,
+      entity: "inventory_items",
+      entityId: data.id,
+      action: "set_image_geometry",
+      after: { source: data.source, url: data.url, w: data.w, h: data.h },
+    });
+
+    return { ok: true };
+  });
+
+
 const uploadInput = z.object({
   id: z.string().uuid(),
   rmsId: z.string().min(1).max(100).regex(/^[a-zA-Z0-9._-]+$/).nullable(),

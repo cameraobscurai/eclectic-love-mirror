@@ -186,16 +186,51 @@ function bustImages(
  * the pipeline is re-run. The original is preserved on `coverOriginalUrl` for
  * og:image, which must not be a transparent PNG.
  */
+export type RowNormalizedEntry = {
+  url: string;
+  w: number;
+  h: number;
+};
+export type RowNormalizedMap = Record<string, RowNormalizedEntry>;
+
+function stripQuery(url: string): string {
+  const q = url.indexOf("?");
+  return q === -1 ? url : url.slice(0, q);
+}
+
+/**
+ * Row geometry beats the static manifest. `images_meta.normalized` is written
+ * at upload time and is keyed by the exact source URL sitting in slot 0, so
+ * whatever the admin chose as the cover is what ships. The manifest is only a
+ * fallback for products that predate the upload pipeline.
+ */
+function rowNormalizedFor(
+  rowMap: RowNormalizedMap | null | undefined,
+  heroUrl: string,
+): RowNormalizedEntry | null {
+  if (!rowMap) return null;
+  const key = stripQuery(heroUrl);
+  const direct = rowMap[heroUrl] ?? rowMap[key];
+  if (direct?.url && direct.w > 0 && direct.h > 0) return direct;
+  for (const [src, entry] of Object.entries(rowMap)) {
+    if (stripQuery(src) === key && entry?.url && entry.w > 0 && entry.h > 0) {
+      return entry;
+    }
+  }
+  return null;
+}
+
 function withNormalizedCover<
   T extends {
     slug: string;
     images: CollectionImage[];
     primaryImage: CollectionImage | null;
   },
->(p: T): T {
+>(p: T, rowMap?: RowNormalizedMap | null): T {
   const hero = p.images[0];
   if (!hero) return p;
-  const norm = normalizedCoverFor(p.slug, hero.url);
+  const row = rowNormalizedFor(rowMap, hero.url);
+  const norm = row ?? normalizedCoverFor(p.slug, hero.url);
   if (!norm) return p;
   const cover: CollectionImage = { ...hero, url: norm.url };
   const images = [cover, ...p.images.slice(1)];
@@ -207,6 +242,7 @@ function withNormalizedCover<
     coverSubject: { w: norm.w, h: norm.h },
   };
 }
+
 
 
 
@@ -387,7 +423,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // Owner-approved family covers. A family hero can legitimately be the
       // first image of one configuration row (INOLA full bar, LUNA chair pair),
       // so the generic variant-owned test above cannot safely choose it.
-      const coverNeedle = FAMILY_COVER_LOCKS[p.slug as keyof typeof FAMILY_COVER_LOCKS];
+      // An admin cover ALWAYS wins. When slot 0 carries upload-time geometry,
+      // a human picked that photo in the editor — no lock and no filename
+      // heuristic is allowed to move it. This is the escape hatch for
+      // "the cover is some file I can't change".
+      const rowMap = liveNormalized(live);
+      const adminChoseCover =
+        !!baseImages[0] && !!rowNormalizedFor(rowMap, baseImages[0].url);
+
+      const coverNeedle = adminChoseCover
+        ? undefined
+        : FAMILY_COVER_LOCKS[p.slug as keyof typeof FAMILY_COVER_LOCKS];
       if (coverNeedle) {
         const candidates = [
           ...baseImages,
@@ -410,7 +456,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // The original product photo is the source of truth for slot 0.
 
 
-      baseImages = coverFirst(baseImages);
+      if (!adminChoseCover) baseImages = coverFirst(baseImages);
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
       return withNormalizedCover({
@@ -424,7 +470,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         imageCount: images.length,
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
-      });
+      }, rowMap);
 
     });
 
@@ -454,7 +500,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         altText: null,
       }));
       if (imgs.length === 0) continue;
-      additions.push({
+      additions.push(withNormalizedCover({
         id: rmsId,
         sourceUrl: "",
         slug: live.slug ?? rmsId,
@@ -480,7 +526,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         cardBackgroundUrl: live.card_background_url ?? null,
         coverFocalX: live.cover_focal_x ?? null,
         coverFocalY: live.cover_focal_y ?? null,
-      });
+      }, liveNormalized(live)));
     }
 
     const all = additions.length > 0 ? [...products, ...additions] : products;
@@ -499,12 +545,25 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
   return loadPromise;
 }
 
+/** Pull `images_meta.normalized` off an overlay row, defensively. */
+function liveNormalized(
+  live: LiveOverlayRow | undefined,
+): RowNormalizedMap | null {
+  const meta = live?.images_meta;
+  if (!meta || typeof meta !== "object" || Array.isArray(meta)) return null;
+  const norm = (meta as { normalized?: unknown }).normalized;
+  if (!norm || typeof norm !== "object" || Array.isArray(norm)) return null;
+  return norm as RowNormalizedMap;
+}
+
 type LiveOverlayRow = {
   editorial_order: number | null;
   images: string[] | null;
   card_background_url: string | null;
   cover_focal_x: number | null;
   cover_focal_y: number | null;
+  /** Upload-time normalized derivatives, keyed by source image URL. */
+  images_meta?: unknown;
   /** Owner-selected subcategory (inventory_items.subcategory_slug). */
   subcategory_slug?: string | null;
   /** Identity fields — present only in overlays published after 2026-08-06.
@@ -579,7 +638,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, images_meta")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -599,6 +658,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             quantity_label: row.quantity_label,
             public_ready: row.public_ready,
             subcategory_slug: row.subcategory_slug ?? null,
+            images_meta: row.images_meta ?? null,
           });
         }
       }
