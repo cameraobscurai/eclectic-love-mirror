@@ -186,16 +186,51 @@ function bustImages(
  * the pipeline is re-run. The original is preserved on `coverOriginalUrl` for
  * og:image, which must not be a transparent PNG.
  */
+export type RowNormalizedEntry = {
+  url: string;
+  w: number;
+  h: number;
+};
+export type RowNormalizedMap = Record<string, RowNormalizedEntry>;
+
+function stripQuery(url: string): string {
+  const q = url.indexOf("?");
+  return q === -1 ? url : url.slice(0, q);
+}
+
+/**
+ * Row geometry beats the static manifest. `images_meta.normalized` is written
+ * at upload time and is keyed by the exact source URL sitting in slot 0, so
+ * whatever the admin chose as the cover is what ships. The manifest is only a
+ * fallback for products that predate the upload pipeline.
+ */
+function rowNormalizedFor(
+  rowMap: RowNormalizedMap | null | undefined,
+  heroUrl: string,
+): RowNormalizedEntry | null {
+  if (!rowMap) return null;
+  const key = stripQuery(heroUrl);
+  const direct = rowMap[heroUrl] ?? rowMap[key];
+  if (direct?.url && direct.w > 0 && direct.h > 0) return direct;
+  for (const [src, entry] of Object.entries(rowMap)) {
+    if (stripQuery(src) === key && entry?.url && entry.w > 0 && entry.h > 0) {
+      return entry;
+    }
+  }
+  return null;
+}
+
 function withNormalizedCover<
   T extends {
     slug: string;
     images: CollectionImage[];
     primaryImage: CollectionImage | null;
   },
->(p: T): T {
+>(p: T, rowMap?: RowNormalizedMap | null): T {
   const hero = p.images[0];
   if (!hero) return p;
-  const norm = normalizedCoverFor(p.slug, hero.url);
+  const row = rowNormalizedFor(rowMap, hero.url);
+  const norm = row ?? normalizedCoverFor(p.slug, hero.url);
   if (!norm) return p;
   const cover: CollectionImage = { ...hero, url: norm.url };
   const images = [cover, ...p.images.slice(1)];
@@ -207,6 +242,7 @@ function withNormalizedCover<
     coverSubject: { w: norm.w, h: norm.h },
   };
 }
+
 
 
 
