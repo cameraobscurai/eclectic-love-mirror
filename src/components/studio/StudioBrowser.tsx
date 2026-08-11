@@ -12,6 +12,7 @@ import {
 import { rankByColorMatch } from "@/lib/visual-match";
 import { analyzeMoodboard, type ColorInfo } from "@/lib/color-engine";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { PARENT_LABELS, PARENT_ORDER, productParent } from "@/lib/collection-parents";
 import { withCdnWidth } from "@/lib/image-url";
 
 type Mode = "browse" | "text" | "visual";
@@ -28,7 +29,7 @@ export function StudioBrowser({ seedPalette }: Props) {
   const { has, toggle } = useInquiry();
   const [mode, setMode] = useState<Mode>("browse");
   const [products, setProducts] = useState<CollectionProduct[]>([]);
-  const [facets, setFacets] = useState<CategoryFacet[]>([]);
+  const [facets, setFacets] = useState<Array<{ slug: string; display: string; count: number }>>([]);
   const [activeCat, setActiveCat] = useState<string | null>(null);
 
   // Text search
@@ -58,7 +59,20 @@ export function StudioBrowser({ seedPalette }: Props) {
     getCollectionCatalog().then((c) => {
       if (!alive) return;
       setProducts(c.products);
-      setFacets(c.facets);
+      // Pills come from the DECLARED collections, counted off the catalog —
+      // not the legacy `facets` bucket list.
+      const counts = new Map<string, number>();
+      for (const p of c.products) {
+        const parent = productParent(p);
+        if (parent) counts.set(parent, (counts.get(parent) ?? 0) + 1);
+      }
+      setFacets(
+        PARENT_ORDER.filter((id) => (counts.get(id) ?? 0) > 0).map((id) => ({
+          slug: id,
+          display: PARENT_LABELS[id],
+          count: counts.get(id) ?? 0,
+        })),
+      );
     });
     return () => { alive = false; };
   }, []);
@@ -66,7 +80,7 @@ export function StudioBrowser({ seedPalette }: Props) {
   // Browse + Text filtering
   const filtered = useMemo(() => {
     let list = products;
-    if (activeCat) list = list.filter((p) => p.categorySlug === activeCat);
+    if (activeCat) list = list.filter((p) => productParent(p) === activeCat);
     if (mode === "text" && qCommitted) {
       list = list
         .filter((p) => p.title.toLowerCase().includes(qCommitted))
