@@ -1,0 +1,70 @@
+# Taxonomy — v4 reseed + Taxonomy Studio (Tasks B–F)
+
+Task A is done (`category_slug_v2` → `category_slug`, all call sites, typecheck clean).
+`taxonomy-remap-v4.xlsx` supersedes v3 as the reseed source.
+
+Verified against the workbook and the database before writing this plan:
+- 635 rows, all `confidence: high`, zero blank categories.
+- Provenance: 557 squarespace, 47 human, 19 squarespace+title, 12 squarespace-export.
+- All 33 collection/category pairs in the workbook exist verbatim in `taxonomy_categories` — zero off-vocabulary values.
+
+---
+
+## Task B — `taxonomy_review` column
+
+```sql
+alter table inventory_items add column if not exists taxonomy_review jsonb;
+-- { confidence:'high'|'med'|'low',
+--   source:'squarespace'|'squarespace-export'|'squarespace+title'|'liveCat+title'|
+--           'title'|'export-disagreement'|'none'|'human',
+--   reviewed:boolean, needs_owner:boolean, reviewed_by?:uuid, reviewed_at?:timestamptz }
+```
+
+Added to the RMS-sync exclusion list in `scripts/import.mjs` alongside the two slug columns, so imports never clobber it. Types regenerated.
+
+**Done when:** column exists, in types, in the import exclusion list.
+
+## Task C — Reseed from v4
+
+`scripts/apply-taxonomy.mjs` reads the `Remap v4 (complete)` sheet. Rules unchanged from the approved plan:
+
+- Blank category → skip (unassigned). Off-vocabulary value → hard abort, nothing written. The reds-stay-NULL path stays in the code for future imports even though v4 hits it zero times.
+- Export cross-check still runs as the verifier against `products_Aug-11_02-07-41PM.csv`, with `ut-` page rows excluded from the match index (Colorado only). Disagreements demote the row to `confidence:'med', source:'export-disagreement'`.
+- Family inheritance: variant rows inherit the lead row's pair.
+- Diff manifest to `docs/taxonomy-v4-diff.md`: unchanged / changed / newly assigned / **bucket 4 — outside the workbook but currently assigned**. Bucket 4 gets an explicit keep-or-null ruling before `--apply`.
+
+`--apply` also writes `taxonomy_review` per row: confidence and source straight from the workbook, `needs_owner:false`. Rows with `source:'human'` get `reviewed:true`, `reviewed_at:'2026-08-11'`, `reviewed_by` = Darian's admin user id (resolved from `user_roles` at apply time). All other rows get `reviewed:false`.
+
+**New — title lint (advisory, never blocks):** the dry run emits restored rows whose title keyword contradicts the assigned category (known: AUSET LINEN BANQUETTE at `dining/dining-chairs` while `dining/banquettes` exists). Appended to `docs/taxonomy-open-questions.md` as a meeting item.
+
+**Done when:** diff reviewed, bucket 4 ruled, applied, rebaked, `/collection` counts confirmed, and `select taxonomy_review->>'confidence', count(*)` returns 635 high / 0 med / 0 low plus any cross-check demotions.
+
+## Task D — Archive
+
+`docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37 counts, and the scope line verbatim — *"Colorado only — UT rows retained for record, never classified."*
+
+## Task E — Taxonomy Studio at `/admin/taxonomy`
+
+Load-bearing, per the prototype: ledger strip (one tick per product, colored by state, click scrolls to tile), fixed 5:4 contain photo boxes, collection-constrained category dropdowns (invalid pairs unrepresentable in UI and rejected server-side), photo-tap bulk selection with a bottom bar, ASK ADRIENNE toggle → `needs_owner:true` with its own filter, filter chips with live counts, Hive back-of-house palette and type.
+
+Production changes from the prototype:
+
+- Seeds all 635 lead rows from the reseeded columns + `taxonomy_review`. Thumbnails via `withCdnWidth(url, 400)`.
+- Every change writes immediately through a staff/admin-gated, audited server function (same middleware pattern as `updateItemImages`). No EXPORT RULINGS button.
+- **✓ CONFIRM button** on every unreviewed tile that already has both values — agreement is a first-class gesture, not a dropdown reselect. Sets `reviewed:true` and stamps who/when, leaves slugs untouched.
+- **CONFIRM ALL** scopes to the currently visible filter set and always skips rows flagged `needs_owner`.
+- **Default filter is unassigned** — the queue opens empty, so the studio launches in intake mode. New RMS imports land there; classification-at-intake is the standing workflow. This route is never deleted later.
+
+**Done when:** all 635 tiles render with photos and seeded state; a dropdown change and a ✓ CONFIRM each persist, audit, stamp `reviewed_by/at`, and survive reload; CONFIRM ALL respects the active filter and skips flagged rows; bulk assign works; the ASK ADRIENNE filter returns exactly the flagged set; an off-vocabulary write attempted directly at the server function is rejected; ledger counts equal database counts.
+
+## Task F — Meeting doc
+
+`docs/taxonomy-open-questions.md` carries policy only: the title-lint list, the eight absent-from-migration products, "Candlighting" spelling, Dining's scope, and one confirm of the Specialty definition (ceiling → chandeliers, table → table lamps, floor → floor lamps, everything else → specialty). Plus the `category` / `subcategory_slug` deletion tracker tied to Frame Studio Phase 5. Links the studio route.
+
+---
+
+## Order
+
+B → C (dry run, diff, bucket-4 ruling, lint, apply, rebake) → D → E → F. E does not start before C applies.
+
+**First output on approval: Task B's migration and nothing else.**
