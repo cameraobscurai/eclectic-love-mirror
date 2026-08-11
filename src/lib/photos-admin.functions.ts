@@ -184,7 +184,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         subcategory_slug: string | null;
         cover_framed_url: string | null;
         collection_slug: string | null;
-        category_slug_v2: string | null;
+        category_slug: string | null;
       }
     > = {};
 
@@ -193,7 +193,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug_v2",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -216,7 +216,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           subcategory_slug: row.subcategory_slug ?? null,
           cover_framed_url: row.cover_framed_url ?? null,
           collection_slug: row.collection_slug ?? null,
-          category_slug_v2: row.category_slug_v2 ?? null,
+          category_slug: row.category_slug ?? null,
         };
       }
       if (data.length < PAGE) break;

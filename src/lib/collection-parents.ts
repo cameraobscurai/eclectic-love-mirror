@@ -4,7 +4,7 @@
  *   Collection (ParentId)  →  Category (SubOption.id)
  *
  * Source of truth is the database: inventory_items.collection_slug and
- * inventory_items.category_slug_v2, validated against taxonomy_collections /
+ * inventory_items.category_slug, validated against taxonomy_collections /
  * taxonomy_categories. Nothing here infers, scores, or keyword-matches.
  * A product with no assignment is UNASSIGNED and stays out of navigation —
  * it never silently falls back into a browse group.
