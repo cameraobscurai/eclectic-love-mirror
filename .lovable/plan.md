@@ -1,66 +1,100 @@
-# Road to "Adrienne stops wanting to hurt us"
+# Pre-meeting plan — revised under R1
 
-Meeting is inside 24 hours. This plan is ordered by what she will actually touch or look at in that
-meeting, not by engineering elegance. Everything below Tier 1 is post-meeting.
+Meeting is inside 24 hours. Tier 1 is only what she touches or looks at. All cover-byte work is
+struck.
 
-## Tier 1 — must exist before the meeting
+## Standing rules this plan carries (restated, because unnamed rules are the ones that break)
 
-### 1. Taxonomy Studio at `/admin/taxonomy` (Task E)
-Her taxonomy is now the law of the site, but she has no way to see or change it. Right now the only
-category editor is the legacy read-only field in the product drawer. Without this she has to email
-spreadsheets again, which is the exact loop she is angry about.
+- **R1** — a published storage URL never receives new bytes. New composition = new hashed path +
+  pointer update + publish. Writing back in place is the Ingram failure, and with one-year
+  cacheControl it manufactures "images reverting" at scale.
+- **R2** — the public browser never measures pixels.
+- **Freeze** — no edits to `categoryFit.ts`, `productFit.ts`, `productPhysicalScale.ts`,
+  `NormalizedProductImage`.
+- **Dry-run discipline** — bulk/destructive writes get a manifest and a review pass first.
+- No defect count exists for covers. The audit has not been run. Nothing claims one until it has.
+
+## Tier 1 — before the meeting
+
+### 1. Recover the orphaned rulings (do this first)
+Twelve ruled products are unassigned in the DB, and post-C2 unassigned means hidden from public
+browse. They were visible yesterday. This outranks every cover question.
+
+`scripts/rekey-ghost-rulings.mjs`, one-off:
+- For each of the 15 ghost workbook ids, normalized-title match its v4 ruling against DB rows.
+- Exactly one match that is unassigned or `v1-seed` → apply the ruling with
+  `taxonomy_review = { source:'human', reviewed:true, reviewed_by:<Darian>, reviewed_at:<today> }`.
+- Zero or multiple matches → report, never write.
+- Dry run → review the manifest → `--apply`.
+- Rebake, then confirm the recovered products reappear on `/collection`.
+
+Root cause for the record: the workbook was keyed on bake-time ids, and bake-time ids are not
+stable. Future workbooks key on DB `rms_id`, with normalized-title match as the documented fallback.
+
+Also correcting the record: OBED WOOD + BRASS TRAY exists in the DB, assigned and alive — the
+completeness check ran against the baked catalog, not the DB. Absentee list is seven, not eight.
+
+### 2. Taxonomy Studio at `/admin/taxonomy` (Task E)
+Her taxonomy is the law of the site and she has no way to see or change it.
 
 - Photo-first grid, fixed 5:4 contain boxes, one tile per family (~636).
-- Collection dropdown loads its categories from `taxonomy_collections` / `taxonomy_categories`, so
-  an invalid pair is unrepresentable in the UI and rejected again server-side.
+- Collection dropdown loads categories from `taxonomy_collections` / `taxonomy_categories`, so an
+  invalid pair is unrepresentable in the UI and rejected again server-side.
 - Every change writes immediately through an admin-gated, audited server function; sets
   `taxonomy_review = { source:'human', reviewed:true, reviewed_by, reviewed_at }`.
 - Filter chips with live counts: NEEDS RULING / CONFIRM / ASK ADRIENNE / RULED / UNASSIGNED.
 - Ledger strip: one tick per product, colored by state, drains as rulings land.
 - Bulk assign via photo-tap selection + bottom bar.
-- Default view: CONFIRM queue (16 rows are already waiting).
+- Default view: CONFIRM (16 waiting). Switches to UNASSIGNED after migration, per the approved plan.
 
-### 2. Meeting doc (Task F)
+### 3. Meeting doc (Task F)
 `docs/taxonomy-open-questions.md` becomes the agenda, not a dev log. Policy questions only:
-"Candlighting" spelling, Dining's narrowness (19 items), the 15 retired products to confirm, and
-the ASK ADRIENNE queue link. Item-level questions live in the studio, with photos.
+"Candlighting" spelling, Dining's narrowness (19 items), the retired products to confirm, and the
+ASK ADRIENNE queue link. Item-level questions live in the studio, with photos.
 
-### 3. Her three standing complaints, verified live not assumed
-- **Sizing consistency** — run the tile-fit harness across every collection slice and screenshot
-  the outliers. Anything failing gets a normalized cover, not a code tweak.
-- **Padded covers** — 44 known padded covers get run through `normalize-covers.py` (trim, center,
-  write back in place). This is the real defect count; the audit script's 539 is noise.
-- **Images "reverting"** — confirm one edit → publish → live round trip end to end and be able to
-  show her the receipt in the meeting.
+### 4. "Images reverting" — verify the round trip, change nothing
+One edit → publish → live, end to end, receipt kept and shown in the meeting. This is verification,
+not remediation.
+
+### 5. Baseline cover audit (measurement only, ~15 minutes)
+Run `scripts/cover-audit.mjs`. Keep the CSV and HTML. This produces the first real defect count and
+becomes the Phase 0 before-picture. It writes nothing to storage and changes no bytes.
+
+## Struck — not before the meeting
+
+- No running `normalize-covers.py`. No in-place cover writes. No cover bytes change at all.
+- No tile-fit harness used as an acceptance gate — that exercises the frozen solver as verifier,
+  which is the machinery this whole track exists to retire.
+- No "normalized cover instead of a code tweak" remediation. That is Phase 2 output without Phase 2's
+  verifier, review queue, or hash discipline.
+
+When covers are normalized it happens under Frame Studio Phase 2 rules only: new hashed paths per R1,
+verifier-gated, through the review queue.
 
 ## Tier 2 — right after the meeting
 
-- **Task D archive** — park the Squarespace export in `docs/archive/` with its provenance README.
-- **Product drawer** gets the same constrained collection/category dropdowns as the studio, so
-  taxonomy can be fixed from wherever she happens to be.
-- **Inquiry inbox inline reply** — she currently has to leave the admin to answer a lead.
-- **Collection overview og:image** — the one real SEO gap left in the fix queue.
-- **New-product intake** — anything new from RMS lands unassigned and shows up in the studio queue.
-  Confirm that loop with a real dry-run re-import before trusting it.
+- Task D archive — Squarespace export into `docs/archive/` with a provenance README.
+- Product drawer gets the studio's constrained collection/category dropdowns.
+- Inquiry inbox inline reply.
+- Collection overview og:image.
+- New-product intake: confirm the unassigned → studio-queue loop with a real dry-run re-import.
 
-## Tier 3 — the structural fix, not a meeting item
+## Tier 3 — structural, not a meeting item
 
-Frame Studio Phase 2: bake framed cover derivatives so tiles stop being measured in the browser.
-This is what permanently ends the sizing complaints. It is a multi-session build and should not be
-started in the next 24 hours.
-
-## What I will not do before the meeting
-
-No batched perf work, no dead-code deletion, no touching `categoryFit.ts` / `productFit.ts` /
-`productPhysicalScale.ts`. The Frame Studio freeze holds. Breaking the site the night before is a
-worse outcome than an unfinished studio.
+Frame Studio Phase 2. Multi-session build. Not started in the next 24 hours.
 
 ## Technical notes
 
-- The studio seeds lead rows from `inventory_items` (`collection_slug`, `category_slug`,
-  `taxonomy_review`), thumbnails via `withCdnWidth(url, 400)`.
+- Studio seeds from `inventory_items` (`collection_slug`, `category_slug`, `taxonomy_review`);
+  thumbnails via `withCdnWidth(url, 400)`.
 - Writes reuse the `updateItemImages` middleware pattern and revalidate the pair against the
   reference tables server-side; the UI constraint is convenience, not security.
-- No export-as-save and no session-only state — the writes are the save.
-- Cover normalization writes back to the same storage path, originals to `originals-backup/`.
-  Never a second cover URL.
+- No export-as-save, no session-only state — the writes are the save.
+- Rekey script is read-heavy and write-narrow: only the two slug columns plus `taxonomy_review`, only
+  on rows that are unassigned or `v1-seed`.
+
+## The day's closing lesson
+
+The freeze held all day because it was named. R1 nearly didn't, because tonight it wasn't. Under
+deadline, every standing rule gets restated in the approval — the plans that survive are the ones
+that carry their own laws.
