@@ -70,13 +70,20 @@ The auto-framer engine, the studio UI, migration, and the Phase 5 deletions. `ca
 
 ## Non-negotiables
 
-- R1: a published storage URL never receives new bytes.
+- R1: a published storage URL never receives new bytes. Content-hashed paths make this structural — a new composition is a new path.
 - R2: the public site never measures pixels. Any future task that reintroduces live measurement gets declined here.
 - R3: auto-framed derivatives are verifier-gated; FAIL goes to a review queue, never a silent publish.
 - R4: the studio composes, never retouches. Photo problems route to "replace source photo."
+- R5: canvas aspect equals the tile frame aspect. `PRODUCT_TILE_FRAME_ASPECT` is `5 / 4`, so the canvas is 1500×1200 landscape. If the tile aspect ever changes, bump `ruleVersion` and regenerate every derivative.
+
+## Noted now, built in Phase 2
+
+- Verifier gains a non-blocking `SRC_UPSCALED` advisory when composition upscales the source more than 1.25×. Recorded in meta; never queued, never blocking.
+- Input contract for new photography: exports ≥1600px on the long edge. The back catalog is not re-exported — today's 800×600 files are adequate at 600w and only slightly soft on the 1200w retina variant. Any individual cover that reads soft gets a one-off higher-res export through "replace source photo."
+- Source aspect is irrelevant to canvas choice: the framer crops to the silhouette bbox and discards the source's margins.
 
 ## Technical notes
 
 - `docs/frame-studio-plan.md` gets committed as the reference text for Phases 2–5. `cover-audit.mjs` and `cover-system-spec.md` aren't in the repo — send them if you want them alongside.
-- Canvas 1200×1500 (4:5); the tile aspect is unchanged and `contain` absorbs the difference.
+- Canvas is 1500×1200 (5:4 landscape), matching the tile frame exactly. A portrait canvas would letterbox inside the landscape tile and render every framed cover roughly 36% undersized.
 - No image bytes are generated in Phase 1. Nothing visible changes until a derivative exists.
