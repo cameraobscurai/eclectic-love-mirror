@@ -28,10 +28,27 @@ import {
   updateItemImages,
   setCardBackground,
   uploadItemImage,
+  setImageGeometry,
 } from "@/lib/inventory-images.functions";
+import {
+  NormalizeError,
+  geometryIsTrustworthy,
+  normalizeImageFile,
+} from "@/lib/normalize-image.browser";
 import { publishCatalogOverlay } from "@/lib/photos-admin.functions";
 import { invalidateCollectionCatalog } from "@/lib/phase3-catalog";
 import { clearPublishPending, markPublishPending } from "@/lib/publish-pending";
+
+/** Chunked btoa — avoids a call-stack overflow on large buffers. */
+async function toBase64(blob: Blob): Promise<string> {
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  let bin = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < buf.length; i += chunk) {
+    bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+  }
+  return btoa(bin);
+}
 
 type Item = {
   id: string;
@@ -75,6 +92,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   const publish = useServerFn(publishCatalogOverlay);
   const setBgFn = useServerFn(setCardBackground);
   const uploadFn = useServerFn(uploadItemImage);
+  const setGeometry = useServerFn(setImageGeometry);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
