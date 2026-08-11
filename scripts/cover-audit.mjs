@@ -185,13 +185,24 @@ function solve(m, rule) {
   return { s, unclamped, hitMax: unclamped > rule.clampMax, hitMin: unclamped < rule.clampMin };
 }
 
+// Soft flags never make a cover BROKEN on their own.
+const SOFT_FLAGS = new Set(['OPAQUE_BG', 'LOW_RES', 'TIGHT_CROP']);
+
 function grade(m, rule) {
   const flags = [];
-  if (m.fail || m.frameCoverage > 0.93) flags.push('MEASURE_FAIL');
+  // A >0.93 frame coverage read off a real alpha channel is a CORRECT
+  // measurement of a tight crop, not a failed measurement. Only call it
+  // MEASURE_FAIL when detection actually failed or there was no alpha to
+  // trust (color-threshold path defaulting the bbox to the whole frame).
+  const fullFrame = m.frameCoverage > 0.93;
+  if (m.fail || (fullFrame && !m.hasAlphaBg)) flags.push('MEASURE_FAIL');
+  else if (fullFrame) flags.push('TIGHT_CROP');
   if (!m.hasAlphaBg) flags.push('OPAQUE_BG');
   if (Math.max(m.W, m.H) < 900) flags.push('LOW_RES');
   let solved = null;
   if (!flags.includes('MEASURE_FAIL')) {
+    // TIGHT_CROP rows reach the solver — that's the point of the downgrade.
+    // Their clamp numbers were previously swallowed by the false positive.
     solved = solve(m, rule);
     // >15% residual error after clamp = visibly off next to a passing neighbor.
     if (solved.hitMax && solved.unclamped / solved.s > 1.15) flags.push('CLAMP_TINY');
@@ -203,10 +214,11 @@ function grade(m, rule) {
       : rule.anchor === 'top' ? rule.anchorY + sh / 2 : rule.anchorY;
     if (cyS - sh / 2 < -0.01 || cyS + sh / 2 > 1.01 || sw > 1.02) flags.push('WOULD_CLIP');
   }
-  const hard = flags.filter((f) => f !== 'OPAQUE_BG' && f !== 'LOW_RES');
+  const hard = flags.filter((f) => !SOFT_FLAGS.has(f));
   const verdict = hard.length ? 'BROKEN' : flags.length ? 'AT_RISK' : 'PASS';
   return { flags, verdict, solved };
 }
+
 
 async function run() {
   const rows = await liveCovers();
