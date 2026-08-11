@@ -42,7 +42,12 @@ Her taxonomy is the law of the site and she has no way to see or change it.
   invalid pair is unrepresentable in the UI and rejected again server-side.
 - Every change writes immediately through an admin-gated, audited server function; sets
   `taxonomy_review = { source:'human', reviewed:true, reviewed_by, reviewed_at }`.
-- Filter chips with live counts: NEEDS RULING / CONFIRM / ASK ADRIENNE / RULED / UNASSIGNED.
+- **✓ CONFIRM button on every unreviewed tile that already has both values set** — sets
+  `reviewed:true` and stamps who/when, leaves the slugs untouched. Agreement is a first-class
+  gesture, not a dropdown reselect. Without it the default CONFIRM queue is unworkable on open.
+- **CONFIRM ALL** scopes to the currently visible filter and always skips `needs_owner` rows.
+- Filter chips: NEEDS RULING / CONFIRM / ASK ADRIENNE / RULED / UNASSIGNED. **Counts render for
+  every chip regardless of which filter is active.**
 - Ledger strip: one tick per product, colored by state, drains as rulings land.
 - Bulk assign via photo-tap selection + bottom bar.
 - Default view: CONFIRM (16 waiting). Switches to UNASSIGNED after migration, per the approved plan.
