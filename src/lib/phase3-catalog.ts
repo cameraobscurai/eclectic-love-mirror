@@ -100,6 +100,10 @@ export interface CollectionProduct {
    *  these as the center of attention. Null = auto-measure. */
   coverFocalX?: number | null;
   coverFocalY?: number | null;
+  /** Frame Studio derivative (1200w) composed on the 1500x1200 tile canvas.
+   *  When present the tile renders it plainly, with no fit rule or
+   *  measurement. Null = legacy render path. */
+  coverFramedUrl?: string | null;
 }
 
 export interface CategoryFacet {
@@ -370,6 +374,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
         coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
         coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
+        coverFramedUrl: live?.cover_framed_url ?? p.coverFramedUrl ?? null,
         images,
         primaryImage: images[0] ?? null,
         imageCount: images.length,
@@ -430,6 +435,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         cardBackgroundUrl: live.card_background_url ?? null,
         coverFocalX: live.cover_focal_x ?? null,
         coverFocalY: live.cover_focal_y ?? null,
+        coverFramedUrl: live.cover_framed_url ?? null,
       });
     }
 
@@ -466,6 +472,8 @@ type LiveOverlayRow = {
   dimensions_raw?: string | null;
   quantity_label?: string | null;
   public_ready?: boolean | null;
+  /** Frame Studio derivative (1200w). */
+  cover_framed_url?: string | null;
 };
 
 
@@ -529,7 +537,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -549,6 +557,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             quantity_label: row.quantity_label,
             public_ready: row.public_ready,
             subcategory_slug: row.subcategory_slug ?? null,
+            cover_framed_url: row.cover_framed_url ?? null,
           });
         }
       }
