@@ -46,7 +46,9 @@ Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-colo
 
 ## Task 1.2 — Render path with fallback
 
-Inside the resolver, `cover_framed_url` wins. In `ProductTile`, that branch renders a plain `<img>` with `object-fit: contain`, 600w src + 1200w srcSet — no `NormalizedProductImage`, no fit rule, no transform, no measurement. Everything without a derivative renders exactly as today.
+Inside the resolver, `cover_framed_url` wins. In `ProductTile` only, that branch renders a plain `<img>` with `object-fit: contain`, 600w src + 1200w srcSet — no `NormalizedProductImage`, no fit rule, no transform, no measurement. Everything without a derivative renders exactly as today.
+
+Scope note for the record: `CollectionRail`, `CategoryTonalGrid`, `CategoryOverview`, `RelatedPieces`, and QuickView thumbnails keep the legacy path until a later adoption task. During migration a framed product looking different in a rail than in the grid is expected, not a bug.
 
 Field carried end to end: publish select and overlay (`src/lib/photos-admin.functions.ts`), `LiveOverlayRow` and merge (`src/lib/phase3-catalog.ts`), and `scripts/bake-catalog.mjs`.
 
@@ -54,11 +56,13 @@ Field carried end to end: publish select and overlay (`src/lib/photos-admin.func
 
 ## Task 1.3 — Storage
 
-- Path `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `upsert: false`, `cacheControl: 31536000`.
-- Server function `saveFramedCover(id, blob1200, blob600, meta)` — uploads both sizes, writes url + meta, audits.
-- R1 enforced in code: a path that exists with different bytes is rejected. New composition means a new hashed path. The Ingram cache split becomes impossible rather than unlikely.
+- Path `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `cacheControl: 31536000`.
+- Hash covers everything that determines output pixels: `hash16(srcHash + ruleVersion + canonicalized {scale, offsetX, offsetY, bboxPx})`. A path collision therefore means an identical composition — a storage 409 is dedup success, handled the same way `uploadItemImage` already handles it. No byte comparison, no rejection.
+- `cover_framed_url` stores the **1200w** URL. The 600w variant is derived by suffix swap (`-1200.webp` → `-600.webp`); both sizes share the hash. Only one URL is stored.
+- Transport: base64 through the server function, reusing `uploadItemImage`'s ~10MB guard. No new transport pattern.
+- `saveFramedCover(id, base64_1200, base64_600, meta)` uploads both sizes, writes url + meta, audits.
 
-**Done when:** callable from admin, both files land, row updates, and a repeat save with different bytes at the same path fails loudly.
+**Done when:** callable from admin, both files land, the row updates, and re-saving an unchanged composition is a no-op rather than an error.
 
 ## Not in this scope
 
