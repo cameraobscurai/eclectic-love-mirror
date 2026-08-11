@@ -1,0 +1,1 @@
+ALTER TABLE public.inventory_items RENAME COLUMN category_slug_v2 TO category_slug;
