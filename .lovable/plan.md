@@ -24,11 +24,15 @@ until C's `--apply` confirms.
 - Update `scripts/reseed-taxonomy.mjs`: collection-crossing rule (category's declared collection
   wins over the workbook column when they disagree for a known category), bucket-4 stamping with
   `v1-seed`, ghost-id list written to open questions.
-- Re-run the dry run — expect 0 blockers, 831 writes, 51 changed, 33 bucket-4 stamped, 1 demotion.
+- Re-run the dry run — 0 blockers, and it emits the predicted counts table used as the apply's
+  acceptance criteria.
 - Run `--apply`, then `bun run bake:catalog`.
 
-**Done when:** 0 blockers; 831 rows written; `select confidence, count(*)` returns high 831-minus-34,
-med 34 (33 v1-seed + KEATON); per-collection counts on `/collection` match the diff doc.
+**Done when:** the re-run dry run reports 0 blockers and emits a predicted counts table (rows
+written, bucket-2 changes, bucket-4 review-stamps, demotions, per-collection totals, confidence
+distribution), and the apply's actual counts equal that predicted table exactly. No count in this
+document is authoritative — predictions come from the script that does the writing, never from
+arithmetic in a plan.
 
 ## Task C2 — read-path switchover (drafted, held)
 
@@ -52,8 +56,13 @@ only. Work proceeds surface by surface, each verified before the next:
 - Studio/admin: `admin.products.tsx` grouping and sort, `admin.photos.tsx`, `ProductEditDrawer`,
   `StudioBrowser`, `board-deck`.
 - Deletions after the surfaces are clean: the keyword browse-group scorer
-  (`src/lib/collection-browse-groups.ts`) and its alias/inference helpers, once ripgrep confirms
-  zero importers. Anything still referenced gets a manifest, not a delete.
+  (`src/lib/collection-browse-groups.ts` and the scoring/classification body in
+  `src/lib/collection-taxonomy.ts`), once ripgrep confirms zero importers. Anything still
+  referenced gets a manifest, not a delete.
+- **The alias map survives until Frame Studio Phase 5, as does `categoryFit.ts`.**
+  `src/components/collection/categoryAliases.ts` is excluded from C2's deletions by name —
+  `categoryFit.ts` imports `canonicalCategorySlug` from it. It dies in the same commit as the
+  solver, not before.
 - `categoryFit.ts`, `productFit.ts`, `productPhysicalScale.ts`, `NormalizedProductImage.tsx` are
   untouched — the Frame Studio freeze holds. Sizing keeps reading its shelf slug, which now comes
   from the declared columns.
