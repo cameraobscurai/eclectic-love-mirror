@@ -1,6 +1,6 @@
 # Title-vs-category lint (advisory)
 
-Generated 2026-08-11T20:55:57.013Z. 12 advisory row(s). These do **not** block the reseed —
+Generated 2026-08-11T21:11:56.089Z. 13 advisory row(s). These do **not** block the reseed —
 the title contains a word that names a different category than the one assigned
 (e.g. AUSET LINEN BANQUETTE filed outside Banquettes). Rule them in the studio.
 
@@ -12,6 +12,7 @@ the title contains a word that names a different category than the one assigned
 | 3732 | BRECKEN LIDDED BASKET | serveware | crates-baskets |
 | 4045 | CONCRETA WALL SCONCE | specialty | walls |
 | 3562 | DEZIK 48\ SQUARE TIERED BAR SHELVING | storage | bars |
+| 4030 | ENNAI CONCRETE OIL LAMP | candlelighting | table-lamps, floor-lamps |
 | 2441 | FUR IVORY MONGOLIAN THROW | furs-pelts | throws |
 | 712 | KEATON ANTIQUE FLOOR MIRROR | walls | floor-lamps |
 | 3966 | NIMA FABRIC BANQUETTE | dining-chairs | banquettes |

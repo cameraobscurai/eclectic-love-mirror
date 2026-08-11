@@ -49,7 +49,14 @@ function resolve(collectionRaw, categoryRaw) {
   if (!hit) return { unknown: true };
   const collection = slugify(collectionRaw) || hit.collection_slug;
   if (!validPairs.has(`${collection}::${hit.slug}`)) {
-    return { mismatch: true, category_slug: hit.slug, proposedCollection: collection, refCollection: hit.collection_slug };
+    // Collection-crossing rule: when a category's home differs between the old
+    // tree (workbook column, inherited from the old site) and the declared tree,
+    // the declared tree wins. The category's home dictates the collection —
+    // never inherit the old parent for a category that crossed collections.
+    return {
+      collection_slug: hit.collection_slug, category_slug: hit.slug,
+      crossed: { workbookCollection: collection, referenceCollection: hit.collection_slug },
+    };
   }
   return { collection_slug: collection, category_slug: hit.slug };
 }
@@ -66,7 +73,7 @@ const families = fs.existsSync(familyPath)
 
 const assignments = new Map(); // rms_id -> {collection_slug, category_slug, via, confidence, source, title}
 const rejects = [];   // true off-vocabulary — nothing in the reference tables
-const mismatches = []; // category exists, but under a different collection
+const crossings = []; // category crossed collections between trees — declared tree wins
 const blanks = [];
 
 for (const r of rows) {
@@ -77,12 +84,12 @@ for (const r of rows) {
     rejects.push({ rmsId, title: r.title, c: r.proposed_collection, k: r.proposed_category });
     continue;
   }
-  if (res.mismatch) {
-    mismatches.push({
+  if (res.crossed) {
+    crossings.push({
       rmsId, title: String(r.title ?? ''), category: res.category_slug,
-      workbookCollection: res.proposedCollection, referenceCollection: res.refCollection,
+      workbookCollection: res.crossed.workbookCollection,
+      appliedCollection: res.crossed.referenceCollection,
     });
-    continue;
   }
   if (res.blank) { blanks.push({ rmsId, title: r.title }); continue; }
   const base = {
@@ -98,15 +105,15 @@ for (const r of rows) {
   }
 }
 
-const BLOCKED = rejects.length > 0 || mismatches.length > 0;
+const BLOCKED = rejects.length > 0;
 if (rejects.length) {
   console.error(`\n${rejects.length} off-vocabulary value(s):`);
   for (const r of rejects.slice(0, 40)) console.error(`  ${r.rmsId} ${r.title} -> "${r.c}" / "${r.k}"`);
 }
-if (mismatches.length) {
-  console.error(`\n${mismatches.length} collection/category pair mismatch(es) — needs a ruling:`);
-  for (const m of mismatches.slice(0, 40)) {
-    console.error(`  ${m.rmsId} ${m.title} -> workbook "${m.workbookCollection}/${m.category}", reference says "${m.referenceCollection}/${m.category}"`);
+if (crossings.length) {
+  console.log(`\n${crossings.length} collection-crossing correction(s) — declared tree wins:`);
+  for (const m of crossings.slice(0, 40)) {
+    console.log(`  ${m.rmsId} ${m.title}: workbook "${m.workbookCollection}" -> applied "${m.appliedCollection}/${m.category}"`);
   }
 }
 if (BLOCKED && APPLY) {
@@ -220,13 +227,13 @@ fs.writeFileSync('docs/taxonomy-reseed-blockers.md', `# Reseed blockers — must
 
 Generated ${ts}.
 
-## Pair mismatches (${mismatches.length})
+## Collection-crossing corrections (${crossings.length}) — not blockers
 
-The category slug exists, but the workbook files it under a different collection
-than \`taxonomy_categories\` declares. One of the two is wrong; ruling either fixes it
-(move the category in the reference tables, or correct the workbook column).
+Ruled: the declared tree wins. The workbook inherited the old-site collection for a
+category that moved collections; the category's home in \`taxonomy_categories\`
+dictates the collection.
 
-${mismatches.length ? table(mismatches, ['rmsId', 'title', 'category', 'workbookCollection', 'referenceCollection']) : '_None._'}
+${crossings.length ? table(crossings, ['rmsId', 'title', 'category', 'workbookCollection', 'appliedCollection']) : '_None._'}
 
 ## Off-vocabulary values (${rejects.length})
 
@@ -236,7 +243,7 @@ ${rejects.length ? table(rejects.map(r => ({ rmsId: r.rmsId, title: r.title, col
 `);
 fs.writeFileSync('docs/taxonomy-reseed-diff.md', `# Taxonomy reseed v4 — dry run diff
 
-${BLOCKED ? `> **BLOCKED** — ${mismatches.length} pair mismatch(es) and ${rejects.length} off-vocabulary value(s) must be ruled first. See \`docs/taxonomy-reseed-blockers.md\`. Those rows are excluded from every count below.\n` : ''}
+${BLOCKED ? `> **BLOCKED** — ${rejects.length} off-vocabulary value(s) must be ruled first. See \`docs/taxonomy-reseed-blockers.md\`.\n` : ''}
 Generated ${ts} from \`${path.basename(file)}\`${EXPORT_CSV ? ` cross-checked against \`${path.basename(EXPORT_CSV)}\`` : ''}. **Nothing written.**
 
 ## Totals
@@ -244,7 +251,7 @@ Generated ${ts} from \`${path.basename(file)}\`${EXPORT_CSV ? ` cross-checked ag
 - workbook rows: ${rows.length}
 - blank category (skipped): ${blanks.length}
 - off-vocabulary rejects: ${rejects.length} (any > 0 aborts the apply)
-- pair mismatches (category under a different collection): ${mismatches.length} (blocks the apply)
+- collection-crossing corrections applied (declared tree wins): ${crossings.length}
 - rows to write: ${assignments.size} (${[...assignments.values()].filter(a => a.via !== 'reviewed').length} inherited by family)
 - workbook rms_ids absent from db: ${notInDb.length}${notInDb.length ? ` — ${notInDb.join(', ')}` : ''}
 - db rows with an rms_id: ${db.size}
@@ -256,7 +263,7 @@ Generated ${ts} from \`${path.basename(file)}\`${EXPORT_CSV ? ` cross-checked ag
 | 1 | new assignment (db was unassigned) | ${b1.length} |
 | 2 | changed assignment | ${b2.length} |
 | 3 | unchanged | ${b3.length} |
-| 4 | assigned in db, absent from workbook — needs a ruling before \`--apply\` | ${b4.length} |
+| 4 | assigned in db, absent from workbook — kept, review-stamped \`med\`/\`v1-seed\` | ${b4.length} |
 
 ## Confidence (from workbook)
 
@@ -286,8 +293,9 @@ ${b1.length ? table(b1.slice(0, 200), ['rmsId', 'title', 'collection_slug', 'cat
 
 fs.writeFileSync('docs/taxonomy-bucket4.md', `# Bucket 4 — assigned in db, absent from the v4 workbook
 
-Generated ${ts}. ${b4.length} row(s). Each needs a ruling before \`--apply\`:
-keep the current assignment, or clear it to the unassigned queue.
+Generated ${ts}. ${b4.length} row(s). **Ruled:** keep their current values and stamp
+\`{ confidence:'med', source:'v1-seed', reviewed:false }\` — post-bake intake that routes to the
+studio's CONFIRM queue with photos and filled proposals.
 
 ${b4.length ? table(b4, ['rmsId', 'title', 'c', 'k']) : '_Empty — no ruling required._'}
 `);
@@ -301,12 +309,58 @@ the title contains a word that names a different category than the one assigned
 ${lint.length ? table(lint, ['rmsId', 'title', 'assigned', 'suggests']) : '_No mismatches._'}
 `);
 
+// ── prediction table (the apply's acceptance criteria) ──────────────────────
+const predictedByCollection = {};
+for (const [rmsId, a] of assignments) {
+  if (!db.has(rmsId)) continue;
+  predictedByCollection[a.collection_slug] = (predictedByCollection[a.collection_slug] ?? 0) + 1;
+}
+for (const r of b4) {
+  predictedByCollection[r.c] = (predictedByCollection[r.c] ?? 0) + 1;
+}
+const prediction = {
+  generatedAt: ts,
+  workbook: path.basename(file),
+  rowsWritten: [...assignments.keys()].filter(id => db.has(id)).length,
+  bucket1New: b1.length,
+  bucket2Changed: b2.length,
+  bucket3Unchanged: b3.length,
+  bucket4ReviewStamped: b4.length,
+  crossingCorrections: crossings.length,
+  demotions: demotions.length,
+  ghostIds: notInDb,
+  confidence: {
+    med: demotions.length + b4.length,
+    high: [...assignments.keys()].filter(id => db.has(id)).length - demotions.length,
+  },
+  perCollection: predictedByCollection,
+};
+fs.writeFileSync('docs/taxonomy-reseed-prediction.json', JSON.stringify(prediction, null, 2));
+
+// ── ghost ids → open questions ──────────────────────────────────────────────
+const openQ = 'docs/taxonomy-open-questions.md';
+const ghostBlock = `## Workbook ids with no database row (${notInDb.length})
+
+Generated ${ts} by \`scripts/reseed-taxonomy.mjs\`. Ruled: **skip, never create** — the workbook
+came from the Aug 8 bake and these products have been retired since. A workbook must never
+resurrect a product. One glance at the meeting to confirm each was intentionally retired.
+
+${notInDb.length ? notInDb.map(id => `- ${id}`).join('\n') : '_None._'}
+`;
+let openQText = fs.existsSync(openQ) ? fs.readFileSync(openQ, 'utf8') : '# Taxonomy — open questions\n';
+openQText = openQText.includes('## Workbook ids with no database row')
+  ? openQText.replace(/## Workbook ids with no database row[\s\S]*?(?=\n## |$)/, ghostBlock)
+  : `${openQText.trimEnd()}\n\n${ghostBlock}`;
+fs.writeFileSync(openQ, openQText);
+
 console.log(`\nbuckets: new ${b1.length} · changed ${b2.length} · unchanged ${b3.length} · bucket4 ${b4.length}`);
-console.log(`blanks ${blanks.length} · demotions ${demotions.length} · title lint ${lint.length}`);
-console.log('wrote docs/taxonomy-reseed-blockers.md, docs/taxonomy-reseed-diff.md, docs/taxonomy-bucket4.md, docs/taxonomy-title-lint.md');
+console.log(`crossings ${crossings.length} · blanks ${blanks.length} · demotions ${demotions.length} · title lint ${lint.length}`);
+console.log('\n── predicted counts (acceptance criteria for --apply) ──');
+console.log(JSON.stringify({ ...prediction, ghostIds: prediction.ghostIds.length }, null, 2));
+console.log('\nwrote docs/taxonomy-reseed-blockers.md, docs/taxonomy-reseed-diff.md, docs/taxonomy-bucket4.md, docs/taxonomy-title-lint.md, docs/taxonomy-reseed-prediction.json, docs/taxonomy-open-questions.md');
 
 if (!APPLY) {
-  console.log('\n[dry run] nothing written to the database. Rule bucket 4, then re-run with --apply.');
+  console.log('\n[dry run] nothing written to the database. Re-run with --apply.');
   process.exit(0);
 }
 
@@ -326,6 +380,50 @@ for (const [rmsId, a] of assignments) {
   if (written % 100 === 0) console.log('written', written, '/', assignments.size);
 }
 console.log('written', written);
+
+// bucket 4 — keep values, stamp review only
+let stamped = 0;
+for (const r of b4) {
+  const { error } = await sb.from('inventory_items')
+    .update({ taxonomy_review: { confidence: 'med', source: 'v1-seed', reviewed: false, needs_owner: false } })
+    .eq('rms_id', r.rmsId);
+  if (error) { console.error('stamp error', r.rmsId, error); process.exit(1); }
+  stamped += 1;
+}
+console.log('bucket-4 review-stamped', stamped);
+
+// ── verify actuals against the prediction ───────────────────────────────────
+const actualByCollection = {};
+const actualConfidence = {};
+for (let from = 0; ; from += 1000) {
+  const { data, error } = await sb.from('inventory_items')
+    .select('collection_slug, taxonomy_review').not('rms_id', 'is', null).range(from, from + 999);
+  if (error) { console.error(error); process.exit(1); }
+  for (const row of data) {
+    if (row.collection_slug) actualByCollection[row.collection_slug] = (actualByCollection[row.collection_slug] ?? 0) + 1;
+    const c = row.taxonomy_review?.confidence;
+    if (c) actualConfidence[c] = (actualConfidence[c] ?? 0) + 1;
+  }
+  if (data.length < 1000) break;
+}
+const mismatchLines = [];
+if (written !== prediction.rowsWritten) mismatchLines.push(`rowsWritten ${written} != predicted ${prediction.rowsWritten}`);
+if (stamped !== prediction.bucket4ReviewStamped) mismatchLines.push(`bucket4 ${stamped} != predicted ${prediction.bucket4ReviewStamped}`);
+for (const [k, v] of Object.entries(prediction.perCollection)) {
+  if ((actualByCollection[k] ?? 0) !== v) mismatchLines.push(`collection ${k}: actual ${actualByCollection[k] ?? 0} != predicted ${v}`);
+}
+for (const [k, v] of Object.entries(prediction.confidence)) {
+  if ((actualConfidence[k] ?? 0) !== v) mismatchLines.push(`confidence ${k}: actual ${actualConfidence[k] ?? 0} != predicted ${v}`);
+}
+console.log('\n── actual vs predicted ──');
+console.log('per-collection:', JSON.stringify(actualByCollection));
+console.log('confidence    :', JSON.stringify(actualConfidence));
+if (mismatchLines.length) {
+  console.error('\nFAIL — actuals do not match the prediction:');
+  for (const l of mismatchLines) console.error('  ' + l);
+  process.exit(1);
+}
+console.log('\nPASS — apply counts equal the predicted table.');
 
 // ── minimal CSV parser (quoted fields, embedded commas/newlines) ────────────
 function parseCsv(text) {

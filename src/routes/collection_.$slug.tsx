@@ -29,7 +29,10 @@ import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import {
   PARENT_LABELS,
+  PARENT_SUBS,
   isParentId,
+  productParent,
+  productCategory,
   type ParentId,
 } from "@/lib/collection-parents";
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
@@ -123,7 +126,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       if (!PARENT_HERO_GROUP[parent]) {
         const catalog = await getCollectionCatalog();
         const firstImaged = catalog.products.find(
-          (p) => p.categorySlug === parent && p.primaryImage?.url,
+          (p) => p.collectionSlug === parent && p.primaryImage?.url,
         );
         fallbackImage = firstImaged?.primaryImage?.url ?? null;
       }
@@ -363,6 +366,15 @@ function ProductDetailPage({
   product: CollectionProduct;
   allProducts: CollectionProduct[];
 }) {
+  // Breadcrumb reads the DECLARED taxonomy. Unassigned products keep a
+  // reachable PDP — they simply lose the category crumb instead of 404ing.
+  const parent = productParent(product);
+  const category = productCategory(product);
+  const categoryLabel = parent
+    ? PARENT_SUBS[parent].find((s) => s.id === category)?.label ?? PARENT_LABELS[parent]
+    : null;
+  const crumbLabel = categoryLabel ?? product.displayCategory;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
@@ -381,7 +393,9 @@ function ProductDetailPage({
               if (cameFromSite && window.history.length > 1) {
                 window.history.back();
               } else {
-                window.location.href = `/collection?group=${encodeURIComponent(product.categorySlug)}`;
+                window.location.href = parent
+                  ? `/collection?group=${encodeURIComponent(parent)}${category ? `&subcategory=${encodeURIComponent(category)}` : ""}`
+                  : "/collection";
               }
             }}
             className="inline-flex items-center gap-2 hover:text-foreground transition-colors"
@@ -396,10 +410,10 @@ function ProductDetailPage({
           <span className="mx-0 opacity-50">/</span>
           <Link
             to="/collection"
-            search={{ group: product.categorySlug }}
+            search={parent ? { group: parent, subcategory: category ?? "all" } : { group: "" }}
             className="hover:text-foreground transition-colors"
           >
-            {product.displayCategory}
+            {crumbLabel}
           </Link>
         </nav>
 
@@ -412,7 +426,7 @@ function ProductDetailPage({
           {/* Meta column — sticky spec sheet. */}
           <div className="lg:col-span-5 lg:sticky lg:top-28">
             <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
-              {product.displayCategory}
+              {crumbLabel}
             </p>
             <h1 className="font-display text-4xl md:text-5xl tracking-wide uppercase leading-[1.1] mb-10">
               {product.title}

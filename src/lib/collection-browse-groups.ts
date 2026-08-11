@@ -5,6 +5,8 @@
  *
  * NEW CODE should import from `@/lib/collection-taxonomy` directly.
  *
+ * Tile membership is declared-slug driven (Task C2); no keyword inference.
+ *
  * The taxonomy itself — types, rules, scoring, classification — lives in
  * `collection-taxonomy.ts`. This file is intentionally trivial.
  */

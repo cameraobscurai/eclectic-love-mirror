@@ -1,33 +1,13 @@
 /**
- * Collection Taxonomy — single source of truth.
+ * Collection tiles — DECLARED taxonomy only.
  *
- * This module owns ALL classification logic for the Collection page:
- *   - browse group assignment (the left rail / overview categories)
- *   - subgroup assignment (chips within a group, future Phase C)
- *   - search synonyms (future Phase B)
+ * Tile membership comes from inventory_items.collection_slug +
+ * category_slug (surfaced as CollectionProduct.collectionSlug /
+ * declaredCategory). Nothing here infers, scores, or keyword-matches: the
+ * keyword rule engine was deleted in the read-path switchover (Task C2).
  *
- * Design contract:
- *   - Pure, deterministic, side-effect free. Same input → same output.
- *   - Display-only. NEVER mutates phase3_catalog.json or product records.
- *   - `classify(product)` is the ONLY entry point for routing decisions.
- *     Every UI consumer goes through it (directly or via the legacy
- *     re-export shims in collection-browse-groups.ts).
- *
- * Rule engine:
- *   - Rules are an ORDERED, DECLARATIVE array of predicates.
- *   - Each rule produces a `score` (higher = more confident).
- *   - We evaluate ALL rules and pick the highest scorer.
- *   - Ties break by array order (first declared wins). This is documented
- *     and enforced by the test fixture, so reordering rules is a meaningful,
- *     reviewable change — not an accidental side-effect.
- *
- * Why scoring instead of "first match wins":
- *   The original (legacy) engine bailed at the first match, which made
- *   inherently ambiguous pieces (a "console table" — Side Tables vs Storage?)
- *   subtly wrong depending on rule ordering. Scoring lets specific rules
- *   (long phrase + correct slug) outrank vague ones (single word in the
- *   wrong slug) without forcing the rest of the table into a brittle
- *   priority gauntlet.
+ * Unassigned products resolve to null — out of tiles and navigation, PDP
+ * still reachable.
  */
 
 import type { CollectionProduct } from "./phase3-catalog";
@@ -61,23 +41,21 @@ export type BrowseGroupId =
 
 export type BrowseTier = "owner" | "safety-net";
 
-/** Phase A delivers groups only. Subgroups land in Phase C. */
+/** Retained for the admin audit view; membership is declared, not scored. */
 export interface ClassificationTrace {
-  /** Each rule that produced a non-zero score, in evaluation order. */
   candidates: Array<{
     id: BrowseGroupId;
     score: number;
-    /** Short human label for why this rule fired. Useful in admin audit. */
     reason: string;
   }>;
-  /** The winning rule (highest score, ties broken by declaration order). */
-  winnerId: BrowseGroupId;
-  /** Confidence of the winner: winner.score - secondBest.score (0 if alone). */
+  /** The tile the declared pair resolved to, or null when unassigned. */
+  winnerId: BrowseGroupId | null;
   margin: number;
 }
 
 export interface Classification {
-  group: BrowseGroupId;
+  /** null = unassigned: no tile, no nav, PDP still reachable. */
+  group: BrowseGroupId | null;
   trace: ClassificationTrace;
 }
 
@@ -228,469 +206,82 @@ export const BROWSE_GROUP_DESCRIPTIONS: Record<BrowseGroupId, string> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Rule engine
+// Declared-taxonomy membership
 // ─────────────────────────────────────────────────────────────────────────────
-
 /**
- * A predicate that, given a product's normalized fields, returns a score:
- *   - 0   → did not fire
- *   - >0  → fired with this much confidence
+ * Tile membership is DECLARED, not inferred. Each browse tile is a fixed set
+ * of (collection_slug, category_slug) pairs from the owner's tree; a product
+ * lands in a tile only because its declared columns say so. There is no
+ * keyword scoring, no title matching, and no legacy `category` free text in
+ * this path — the previous rule engine was deleted with the C2 switchover.
  *
- * Higher scores beat lower scores. Recommended scoring band:
- *   - 100  exact category fallback (mono slug, no keyword needed)
- *   - 200  category match + single keyword hit
- *   - 300  category match + multi-word phrase hit (more specific)
- *   - 400  category match + exact-noun hit (e.g. title === "Sofa")
- *   - 50   safety-net category fallback (lowest priority among real matches)
+ * A product with no declared assignment returns null: it stays out of every
+ * tile and out of navigation, while its PDP stays reachable.
  */
-interface NormalizedFields {
-  /** Lower-cased title with surrounding whitespace stripped. */
-  title: string;
-  categorySlug: string;
-}
-
-interface Rule {
-  id: BrowseGroupId;
-  /** Short label used in trace output (admin audit). */
-  reason: string;
-  /** Returns score (>0 to fire, 0 to skip). */
-  score: (f: NormalizedFields) => number;
-}
-
-// Helpers (kept local — these aren't part of the public API).
-
-const includesAny = (haystack: string, needles: string[]): string | null => {
-  for (const n of needles) {
-    if (haystack.includes(n)) return n;
-  }
-  return null;
-};
-
-const oneOf = (slug: string, slugs: string[]) => slugs.includes(slug);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Rules
-//
-// Order matters ONLY as a tie-breaker. Score is the primary signal.
-// Each rule documents its slug gate + keyword logic inline so a non-author
-// can audit a misclassification without reading the engine.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const RULES: Rule[] = [
-  // ===== OWNER TIER =====
-  //
-  // SLUG-AGNOSTIC TITLE OVERRIDES (high score, declared first).
-  // Live Eclectic Hive site organizes inventory semantically — RMS slugs are
-  // not authoritative for several known cross-slug families. These rules let
-  // a high-confidence title phrase outrank the slug fallback. Keep the phrase
-  // list narrow and unambiguous; vague single words must NOT live here or
-  // they will whack-a-mole the rest of the table.
-
-  {
-    id: "bar",
-    reason: "title: barstool/counter stool (slug-agnostic)",
-    score: ({ title }) => {
-      if (includesAny(title, ["barstool", "bar stool", "counter stool"])) return 360;
-      return 0;
-    },
-  },
-  {
-    id: "bar",
-    reason: "title: community table (slug-agnostic)",
-    score: ({ title }) => (title.includes("community table") ? 360 : 0),
-  },
-  {
-    id: "dining",
-    reason: "title: dining chair / directors dining (slug-agnostic)",
-    score: ({ title }) => {
-      if (includesAny(title, ["dining chair", "directors dining"])) return 360;
-      return 0;
-    },
-  },
-  {
-    id: "dining",
-    reason: "title: banquette (slug-agnostic)",
-    score: ({ title }) => (title.includes("banquette") ? 350 : 0),
-  },
-  {
-    id: "dining",
-    reason: "title: dining table / farm table (slug-agnostic)",
-    score: ({ title }) => {
-      if (includesAny(title, ["dining table", "farm table", "feasting"])) return 360;
-      return 0;
-    },
-  },
-
-  // NOTE: rules accept BOTH the new RMS catalog slugs (seating, tables, bars,
-  // pillows-throws, storage, lighting, chandeliers, candlelight, furs-pelts)
-  // AND the legacy phase3 slugs (lounge, tables1, lounge-tables, bars1,
-  // cocktail-bar, pillows-throws1, textiles, storage1, light, accents1,
-  // sofas-loveseats1, chairs-stools1, benches-ottomans1) so historical data
-  // continues to classify cleanly.
-
-  {
-    id: "sofas",
-    reason: "seating slug + sofa keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["seating", "lounge", "sofas-loveseats1"])) return 0;
-      const hit = includesAny(title, [
-        "sofa",
-        "loveseat",
-        "settee",
-        "couch",
-        "sectional",
-      ]);
-      if (!hit) return 0;
-      return hit.length >= 6 ? 300 : 220;
-    },
-  },
-
-  {
-    id: "chairs",
-    reason: "seating slug + chair keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["seating", "lounge", "chairs-stools1"])) return 0;
-      // Exclude bench/ottoman/daybed — those route to benches-ottomans.
-      if (includesAny(title, ["bench", "ottoman", "daybed", "pouf", "footstool", "banquette"])) {
-        return 0;
-      }
-      const hit = includesAny(title, [
-        "armchair",
-        "lounge chair",
-        "barstool",
-        "stool",
-        "chair",
-      ]);
-      if (!hit) return 0;
-      return hit.length >= 6 ? 280 : 210;
-    },
-  },
-
-  {
-    id: "coffee-tables",
-    reason: "tables slug + 'coffee table' phrase",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["tables", "lounge-tables", "tables1"])) return 0;
-      if (title.includes("coffee table")) return 320;
-      return 0;
-    },
-  },
-
-  {
-    id: "side-tables",
-    reason: "tables slug + side/end/console keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["tables", "lounge-tables", "tables1"])) return 0;
-      const phrases = [
-        "side table",
-        "end table",
-        "accent table",
-        "drink table",
-        "entry table",
-        "sofa table",
-        "tea table",
-      ];
-      if (includesAny(title, phrases)) return 310;
-      if (includesAny(title, ["console", "column"])) return 240;
-      return 0;
-    },
-  },
-
-  {
-    id: "cocktail-tables",
-    reason: "tables/bars slug + cocktail/community keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["tables", "bars", "cocktail-bar", "lounge-tables", "tables1"])) return 0;
-      if (
-        includesAny(title, [
-          "cocktail table",
-          "community table",
-          "cocktail column",
-        ])
-      ) {
-        return 320;
-      }
-      return 0;
-    },
-  },
-
-  {
-    id: "rugs",
-    reason: "rugs slug (mono)",
-    score: ({ categorySlug }) => (categorySlug === "rugs" ? 100 : 0),
-  },
-
-  {
-    id: "pillows",
-    reason: "pillows-throws slug + pillow keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["pillows-throws", "pillows-throws1", "textiles"])) return 0;
-      if (includesAny(title, ["pillow", "lumbar"])) return 240;
-      return 0;
-    },
-  },
-
-  {
-    id: "bar",
-    reason: "bars slug + bar keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["bars", "bars1", "cocktail-bar"])) return 0;
-      const phrases = [
-        "back bar",
-        "backbar",
-        "bar shelving",
-        "counter stool",
-      ];
-      if (includesAny(title, phrases)) return 290;
-      // Mono fallback: any product in the bars slug is a Bar piece.
-      if (categorySlug === "bars") return 150;
-      if (includesAny(title, ["bar", "shelving", "shelf", "counter"])) {
-        return 210;
-      }
-      return 0;
-    },
-  },
-
-  {
-    id: "storage",
-    reason: "storage slug (mono) or cabinet keyword",
-    score: ({ title, categorySlug }) => {
-      if (oneOf(categorySlug, ["storage", "storage1"])) return 200;
-      if (
-        categorySlug === "cocktail-bar" &&
-        includesAny(title, ["cabinet", "credenza", "trunk", "chest", "armoire"])
-      ) {
-        return 230;
-      }
-      return 0;
-    },
-  },
-
-  {
-    id: "tableware",
-    reason: "tableware slug + dining piece keyword",
-    score: ({ title, categorySlug }) => {
-      if (categorySlug !== "tableware") return 0;
-      const kws = [
-        "dinnerware",
-        "flatware",
-        "plate",
-        "bowl",
-        "goblet",
-        "glassware",
-        "glass",
-        "charger",
-        "napkin",
-        "linen",
-        "cup",
-        "mug",
-        "stoneware",
-        "cellar",
-        "s&p",
-        "salt",
-        "pepper",
-        "cocktail set",
-        "paddle",
-        "fork",
-        "knife",
-        "spoon",
-        "flute",
-      ];
-      if (includesAny(title, kws)) return 230;
-      return 0;
-    },
-  },
-
-  {
-    id: "serveware",
-    reason: "tableware/serveware slug + serving keyword",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["tableware", "serveware"])) return 0;
-      // Mono fallback for serveware slug — every item in the dedicated
-      // serveware category should land here unless tableware claimed it.
-      if (categorySlug === "serveware") return 150;
-      const kws = [
-        "tray",
-        "platter",
-        "server",
-        "serving",
-        "decanter",
-        "pitcher",
-        "stand",
-        "carafe",
-        "beverage tub",
-        "beverage dispenser",
-        "dispenser",
-        "tub",
-        "basket",
-      ];
-      if (includesAny(title, kws)) return 240;
-      return 0;
-    },
-  },
-
-  {
-    id: "styling",
-    reason: "styling/candlelight slug (mono)",
-    score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["styling", "candlelight"]) ? 100 : 0,
-  },
-
-  // ===== SAFETY-NET TIER =====
-
-  {
-    id: "benches-ottomans",
-    reason: "seating slug + bench/ottoman keyword",
-    score: ({ title, categorySlug }) => {
-      if (categorySlug === "benches-ottomans1") return 150;
-      if (oneOf(categorySlug, ["seating", "lounge"])) {
-        if (
-          includesAny(title, [
-            "bench",
-            "ottoman",
-            "daybed",
-            "pouf",
-            "footstool",
-            "banquette",
-          ])
-        ) {
-          return 230;
-        }
-      }
-      return 0;
-    },
-  },
-
-  {
-    id: "dining",
-    reason: "tables slug + dining-table keyword",
-    score: ({ title, categorySlug }) => {
-      if (categorySlug === "dining") return 150;
-      if (oneOf(categorySlug, ["tables", "tables1"])) {
-        const phrases = [
-          "dining table",
-          "farm table",
-          "highboy",
-          "pub table",
-          "feasting",
-          "biergarten",
-          "bistro",
-          "dining chair",
-          "bar table",
-          "counter table",
-        ];
-        if (includesAny(title, phrases)) return 230;
-      }
-      return 0;
-    },
-  },
-
-  {
-    id: "lighting",
-    reason: "lighting/chandelier slug",
-    score: ({ categorySlug }) =>
-      oneOf(categorySlug, ["lighting", "chandeliers", "light"]) ? 100 : 0,
-  },
-
-  {
-    id: "throws",
-    reason: "pillows-throws slug fallback (no pillow keyword)",
-    score: ({ title, categorySlug }) => {
-      if (!oneOf(categorySlug, ["pillows-throws", "pillows-throws1", "textiles"])) return 0;
-      // Don't hijack pillow rows — those land in `pillows`.
-      if (includesAny(title, ["pillow", "lumbar"])) return 0;
-      return 80;
-    },
-  },
-
-  {
-    id: "furs-pelts",
-    reason: "furs-pelts slug",
-    score: ({ categorySlug }) => (categorySlug === "furs-pelts" ? 100 : 0),
-  },
-
-  {
-    id: "large-decor",
-    reason: "large-decor slug",
-    score: ({ categorySlug }) =>
-      categorySlug === "large-decor" ? 100 : 0,
-  },
-
-  {
-    id: "accents",
-    reason: "accents slug or unmatched fallback",
-    score: ({ categorySlug }) => {
-      if (categorySlug === "accents1") return 100;
-      if (
-        oneOf(categorySlug, [
-          "cocktail-bar",
-          "tableware",
-          "sofas-loveseats1",
-          "tables1",
-        ])
-      ) {
-        return 30;
-      }
-      return 0;
-    },
-  },
+const TILE_MEMBERS: Array<{ id: BrowseGroupId; collection: string; categories: string[] }> = [
+  { id: "sofas", collection: "lounge-seating", categories: ["sofas-loveseats"] },
+  { id: "chairs", collection: "lounge-seating", categories: ["lounge-chairs"] },
+  { id: "benches-ottomans", collection: "lounge-seating", categories: ["benches", "ottomans"] },
+  { id: "coffee-tables", collection: "lounge-tables", categories: ["coffee-tables"] },
+  { id: "side-tables", collection: "lounge-tables", categories: ["side-tables", "consoles"] },
+  { id: "cocktail-tables", collection: "cocktail-bar", categories: ["cocktail-tables", "community-tables"] },
+  { id: "bar", collection: "cocktail-bar", categories: ["bars", "bar-stools"] },
+  { id: "storage", collection: "cocktail-bar", categories: ["storage"] },
+  { id: "dining", collection: "dining", categories: ["dining-tables", "dining-chairs", "banquettes"] },
+  { id: "tableware", collection: "tableware", categories: ["dinnerware", "flatware", "glassware"] },
+  { id: "serveware", collection: "tableware", categories: ["serveware"] },
+  { id: "lighting", collection: "lighting", categories: ["chandeliers", "table-lamps", "floor-lamps", "specialty"] },
+  { id: "pillows", collection: "textiles", categories: ["pillows"] },
+  { id: "throws", collection: "textiles", categories: ["throws"] },
+  { id: "furs-pelts", collection: "textiles", categories: ["furs-pelts"] },
+  { id: "rugs", collection: "rugs", categories: ["rugs"] },
+  { id: "styling", collection: "styling", categories: ["candlelighting", "crates-baskets"] },
+  { id: "accents", collection: "styling", categories: ["accents"] },
+  { id: "large-decor", collection: "large-decor", categories: ["structures", "walls", "other"] },
 ];
 
-// Sanity guarantee: rule order must be honored as a tie-break. The exported
-// constant lets tests assert ordering hasn't drifted.
-export const RULE_ORDER: BrowseGroupId[] = RULES.map((r) => r.id);
+/** (collection_slug::category_slug) -> tile id. */
+const PAIR_TO_TILE = new Map<string, BrowseGroupId>();
+/** collection_slug -> tile used when the category is missing or unknown. */
+const COLLECTION_FALLBACK_TILE = new Map<string, BrowseGroupId>();
+for (const m of TILE_MEMBERS) {
+  for (const c of m.categories) PAIR_TO_TILE.set(`${m.collection}::${c}`, m.id);
+  if (!COLLECTION_FALLBACK_TILE.has(m.collection)) COLLECTION_FALLBACK_TILE.set(m.collection, m.id);
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public API
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Classify a product into a single browse group + return the trace of which
- * rules fired. Result is deterministic and side-effect free.
- *
- * Fallback contract: if NO rule fires (truly unrecognized slug), returns
- * "accents" with margin 0 and an empty candidate list. UI should treat
- * margin 0 + empty candidates as the explicit fallback signal.
+ * Resolve a product to its browse tile from the declared columns.
+ * Returns null when the product is unassigned (or declared into a collection
+ * with no tile) — callers must not invent a fallback bucket.
  */
-export function classify(product: CollectionProduct): Classification {
-  const fields: NormalizedFields = {
-    title: product.title.toLowerCase(),
-    categorySlug: product.categorySlug,
-  };
-
-  const candidates: ClassificationTrace["candidates"] = [];
-  for (const rule of RULES) {
-    const score = rule.score(fields);
-    if (score > 0) {
-      candidates.push({ id: rule.id, score, reason: rule.reason });
-    }
-  }
-
-  if (candidates.length === 0) {
-    return {
-      group: "accents",
-      trace: { candidates: [], winnerId: "accents", margin: 0 },
-    };
-  }
-
-  // Sort by score desc, ties broken by declaration order (stable sort + we
-  // pushed in declaration order, so a stable sort preserves it for equal scores).
-  const sorted = [...candidates].sort((a, b) => b.score - a.score);
-  const winner = sorted[0];
-  const second = sorted[1];
-  const margin = second ? winner.score - second.score : winner.score;
-
-  return {
-    group: winner.id,
-    trace: { candidates: sorted, winnerId: winner.id, margin },
-  };
-}
-
-/** Convenience: just the group id (legacy API shape). */
 export function getProductBrowseGroup(
   product: CollectionProduct,
-): BrowseGroupId {
-  return classify(product).group;
+): BrowseGroupId | null {
+  const collection = (product.collectionSlug || "").trim();
+  if (!collection) return null;
+  const category = (product.declaredCategory || "").trim();
+  return (
+    PAIR_TO_TILE.get(`${collection}::${category}`) ??
+    COLLECTION_FALLBACK_TILE.get(collection) ??
+    null
+  );
+}
+
+/** Trace shape retained for the admin audit view; the "rule" is the declared pair. */
+export function classify(product: CollectionProduct): Classification {
+  const group = getProductBrowseGroup(product);
+  const reason = `declared ${product.collectionSlug || "—"}/${product.declaredCategory || "—"}`;
+  if (!group) {
+    return { group: null, trace: { candidates: [], winnerId: null, margin: 0 } };
+  }
+  return {
+    group,
+    trace: { candidates: [{ id: group, score: 1, reason }], winnerId: group, margin: 1 },
+  };
 }
 
 export interface BrowseGroupOption {
@@ -705,7 +296,8 @@ export function getBrowseGroupOptions(
 ): BrowseGroupOption[] {
   const counts = new Map<BrowseGroupId, number>();
   for (const p of products) {
-    const id = classify(p).group;
+    const id = getProductBrowseGroup(p);
+    if (!id) continue;
     counts.set(id, (counts.get(id) ?? 0) + 1);
   }
   const options: BrowseGroupOption[] = [];
@@ -729,7 +321,8 @@ export function groupProductsByBrowseGroup(
   const buckets = new Map<BrowseGroupId, CollectionProduct[]>();
   for (const id of BROWSE_GROUP_ORDER) buckets.set(id, []);
   for (const p of products) {
-    const id = classify(p).group;
+    const id = getProductBrowseGroup(p);
+    if (!id) continue;
     buckets.get(id)!.push(p);
   }
   const ordered = new Map<BrowseGroupId, CollectionProduct[]>();
