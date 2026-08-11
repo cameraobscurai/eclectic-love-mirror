@@ -29,7 +29,7 @@ Added to the RMS-sync exclusion list in `scripts/import.mjs` alongside the two s
 `scripts/apply-taxonomy.mjs` reads the `Remap v4 (complete)` sheet. Rules unchanged from the approved plan:
 
 - Blank category → skip (unassigned). Off-vocabulary value → hard abort, nothing written. The reds-stay-NULL path stays in the code for future imports even though v4 hits it zero times.
-- Export cross-check still runs as the verifier against `products_Aug-11_02-07-41PM.csv`, with `ut-` page rows excluded from the match index (Colorado only). Disagreements demote the row to `confidence:'med', source:'export-disagreement'`.
+- Export cross-check still runs as the verifier against `products_Aug-11_02-07-41PM.csv`, with `ut-` page rows excluded from the match index (Colorado only). Disagreements demote the row to `confidence:'med', source:'export-disagreement'` — **except rows with `source:'human'`, which are exempt from demotion.** A human ruling made this week with the photo in view outranks an archival CSV; disagreements on those rows are reported in the diff as informational only.
 - Family inheritance: variant rows inherit the lead row's pair.
 - Diff manifest to `docs/taxonomy-v4-diff.md`: unchanged / changed / newly assigned / **bucket 4 — outside the workbook but currently assigned**. Bucket 4 gets an explicit keep-or-null ruling before `--apply`.
 
