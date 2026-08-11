@@ -5,14 +5,20 @@
 // category fit solver OFFLINE against full-res bytes, and grades each cover:
 //
 //   PASS            solver lands inside target band, nothing clips
-//   MEASURE_FAIL    background detection failed → bbox ≈ whole frame.
-//                   The live grid is size-normalizing the PHOTO, not the product.
+//   MEASURE_FAIL    background detection genuinely failed → bbox ≈ whole frame
+//                   AND there was no alpha channel to trust. The live grid is
+//                   size-normalizing the PHOTO, not the product.
+//   TIGHT_CROP      advisory: alpha detection SUCCEEDED and the subject really
+//                   does fill >93% of the frame. A correct measurement of a
+//                   badly cropped source — not a measurement failure. These
+//                   rows still run the solver, so their clamp numbers count.
 //   CLAMP_TINY      required upscale exceeds clampMax → renders undersized
 //   CLAMP_MASSIVE   required downscale exceeds clampMin → renders oversized
 //   WOULD_CLIP      solved placement pushes silhouette past the frame edge
 //   OPAQUE_BG       no alpha channel (upscaler/JPEG era) — measurement is
 //                   running on the fragile color-threshold path
 //   LOW_RES         longest edge < 900px — soft at 600w tile after transform
+
 //
 // Outputs:
 //   cover-audit.csv           one row per product, all metrics + flags
