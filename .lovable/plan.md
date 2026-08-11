@@ -79,4 +79,4 @@ New product photo exports: ≥1600px on the long edge. Current 800×600 exports 
 
 - No image bytes are generated in this phase. Nothing on the live site changes until a derivative exists for a product.
 - The canvas constant lives in one module (Phase 2's `frame-engine.ts` will own it); this phase only records it in meta.
-- `docs/frame-studio-plan.md`, `docs/cover-system-spec.md`, and `scripts/cover-audit.mjs` are not currently in the repo. Send them and they get committed with this phase; otherwise only `docs/frame-studio-phase1.md` lands.
+- All four companion files are supplied and corrected (canvas 1500×1200 with R5 cited; the spec's hash line now matches Task 1.3, including 409-as-dedup). They commit as `docs/frame-studio-phase1.md`, `docs/frame-studio-plan.md`, `docs/cover-system-spec.md`, and `scripts/cover-audit.mjs`.
