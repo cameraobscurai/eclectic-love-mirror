@@ -40,7 +40,7 @@ Every one of the nine surfaces above is converted to call it. Admin lists call t
 
 Adds to `inventory_items`: `cover_framed_url text`, `cover_framed_meta jsonb`. Drops `upscaled_cover_url`.
 
-Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1200,1500], approved, ruleVersion, generatedAt }`
+Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1500,1200], approved, ruleVersion, generatedAt }`
 
 **Done when:** columns exist and appear in generated types.
 
