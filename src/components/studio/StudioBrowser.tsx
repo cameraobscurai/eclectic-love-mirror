@@ -7,7 +7,6 @@ import { Search, Image as ImageIcon, Grid as GridIcon, X, Check, Loader2, Upload
 import {
   getCollectionCatalog,
   type CollectionProduct,
-  type CategoryFacet,
 } from "@/lib/phase3-catalog";
 import { rankByColorMatch } from "@/lib/visual-match";
 import { analyzeMoodboard, type ColorInfo } from "@/lib/color-engine";
