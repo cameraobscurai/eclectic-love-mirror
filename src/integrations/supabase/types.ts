@@ -453,7 +453,7 @@ export type Database = {
         Row: {
           card_background_url: string | null
           category: string | null
-          category_slug_v2: string | null
+          category_slug: string | null
           collection_slug: string | null
           color_chroma: number | null
           color_confidence: number | null
@@ -509,7 +509,7 @@ export type Database = {
         Insert: {
           card_background_url?: string | null
           category?: string | null
-          category_slug_v2?: string | null
+          category_slug?: string | null
           collection_slug?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
@@ -565,7 +565,7 @@ export type Database = {
         Update: {
           card_background_url?: string | null
           category?: string | null
-          category_slug_v2?: string | null
+          category_slug?: string | null
           collection_slug?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
@@ -621,7 +621,7 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "inventory_items_taxonomy_pair_fkey"
-            columns: ["collection_slug", "category_slug_v2"]
+            columns: ["collection_slug", "category_slug"]
             isOneToOne: false
             referencedRelation: "taxonomy_categories"
             referencedColumns: ["collection_slug", "slug"]

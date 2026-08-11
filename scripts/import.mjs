@@ -57,7 +57,7 @@ console.log('records:', records.length);
 /**
  * TAXONOMY PROTECTION — do not remove.
  *
- * `collection_slug` / `category_slug_v2` are DECLARED by the owner (Adrienne's
+ * `collection_slug` / `category_slug` are DECLARED by the owner (Adrienne's
  * review), not derived from RMS. This importer must never write them on an
  * existing row: doing so would null her assignments, and since unassigned
  * products stay out of nav, a routine re-import would silently pull live
@@ -69,7 +69,7 @@ console.log('records:', records.length);
  * Same reasoning applies to `images`: RMS has no image data, so an upsert that
  * included it would wipe curated photos on every sync.
  */
-const OWNER_DECLARED_COLUMNS = ['collection_slug', 'category_slug_v2', 'images'];
+const OWNER_DECLARED_COLUMNS = ['collection_slug', 'category_slug', 'images'];
 
 // First soft-delete legacy rows
 const { error: delErr } = await sb.from('inventory_items').update({ status: 'draft' }).is('rms_id', null).neq('status', 'draft');

@@ -59,16 +59,16 @@ CREATE TRIGGER update_taxonomy_categories_updated_at
 -- Declared assignment columns on inventory_items
 ALTER TABLE public.inventory_items
   ADD COLUMN collection_slug text,
-  ADD COLUMN category_slug_v2 text;
+  ADD COLUMN category_slug text;
 
 ALTER TABLE public.inventory_items
   ADD CONSTRAINT inventory_items_taxonomy_pair_fkey
-  FOREIGN KEY (collection_slug, category_slug_v2)
+  FOREIGN KEY (collection_slug, category_slug)
   REFERENCES public.taxonomy_categories (collection_slug, slug)
   ON UPDATE CASCADE;
 
 CREATE INDEX inventory_items_collection_slug_idx ON public.inventory_items (collection_slug);
-CREATE INDEX inventory_items_category_slug_v2_idx ON public.inventory_items (category_slug_v2);
+CREATE INDEX inventory_items_category_slug_idx ON public.inventory_items (category_slug);
 
 -- Seed: 10 collections, slugs derived from existing live nav group params
 INSERT INTO public.taxonomy_collections (slug, label, sort_order) VALUES

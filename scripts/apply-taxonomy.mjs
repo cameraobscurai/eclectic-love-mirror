@@ -61,7 +61,7 @@ function resolveCategory(collectionRaw, categoryRaw) {
   if (!hit) return null;
   const collection = slugify(collectionRaw ?? '') || hit.collection_slug;
   if (!validPairs.has(`${collection}::${hit.slug}`)) return null;
-  return { collection_slug: collection, category_slug_v2: hit.slug };
+  return { collection_slug: collection, category_slug: hit.slug };
 }
 
 // ── Family map: variant rows inherit the lead row's assignment ──────────────
@@ -71,7 +71,7 @@ const families = fs.existsSync(familyPath)
   : {};
 
 // ── Build the assignment set ────────────────────────────────────────────────
-const assignments = new Map(); // rms_id -> { collection_slug, category_slug_v2, via }
+const assignments = new Map(); // rms_id -> { collection_slug, category_slug, via }
 const rejects = [];
 
 for (const r of rows) {
@@ -139,7 +139,7 @@ let written = 0;
 for (const [rmsId, a] of assignments) {
   const { error } = await sb
     .from('inventory_items')
-    .update({ collection_slug: a.collection_slug, category_slug_v2: a.category_slug_v2 })
+    .update({ collection_slug: a.collection_slug, category_slug: a.category_slug })
     .eq('rms_id', rmsId);
   if (error) { console.error('update error', rmsId, error); process.exit(1); }
   written += 1;
