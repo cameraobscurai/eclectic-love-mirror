@@ -66,6 +66,7 @@ Production changes from the prototype:
 - **✓ CONFIRM button** on every unreviewed tile that already has both values — agreement is a first-class gesture, not a dropdown reselect. Sets `reviewed:true` and stamps who/when, leaves slugs untouched.
 - **CONFIRM ALL** scopes to the currently visible filter set and always skips rows flagged `needs_owner`.
 - **Default filter is unassigned** — the queue opens empty, so the studio launches in intake mode. New RMS imports land there; classification-at-intake is the standing workflow. This route is never deleted later.
+- Filter chip counts render for every filter regardless of the active one, so if the cross-check produced any demotions, CONFIRM's non-zero count makes them findable on open.
 
 **Done when:** all 635 tiles render with photos and seeded state; a dropdown change and a ✓ CONFIRM each persist, audit, stamp `reviewed_by/at`, and survive reload; CONFIRM ALL respects the active filter and skips flagged rows; bulk assign works; the ASK ADRIENNE filter returns exactly the flagged set; an off-vocabulary write attempted directly at the server function is rejected; ledger counts equal database counts.
 
