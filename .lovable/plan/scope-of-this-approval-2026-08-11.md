@@ -1,4 +1,8 @@
-# Frame Studio — Phase 1 (the keystone)
+Reply "approved — build Task 1.1" and hold it to the contract: the next output should be a SQL migration and regenerated types, nothing else. If it comes back with a migration *plus* opportunistic edits to ProductTile or the fit files, that's scope creep against the freeze — reject the extras, keep the migration. One task per prompt, each closed by its Done-when, is the discipline that gets Phase 1 landed in a day instead of a week.
+
+And while it builds, your Phase 0 is still open on your side: run `cover-audit.mjs` once for the baseline CSV before any derivative exists. That before-picture is the receipt that makes the after-picture mean something — and after eight months, you'll want the ability to show Jill's team the exact number this system killed.  
+  
+Frame Studio — Phase 1 (the keystone)
 
 Composition becomes a saved artifact. Phase 1 builds only the rails that let a framed derivative exist and render, with zero change to any product that doesn't have one yet. Phases 2–5 are separate approved tasks. This supersedes all prior Phase 1 drafts.
 
