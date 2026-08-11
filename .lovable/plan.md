@@ -56,8 +56,13 @@ only. Work proceeds surface by surface, each verified before the next:
 - Studio/admin: `admin.products.tsx` grouping and sort, `admin.photos.tsx`, `ProductEditDrawer`,
   `StudioBrowser`, `board-deck`.
 - Deletions after the surfaces are clean: the keyword browse-group scorer
-  (`src/lib/collection-browse-groups.ts`) and its alias/inference helpers, once ripgrep confirms
-  zero importers. Anything still referenced gets a manifest, not a delete.
+  (`src/lib/collection-browse-groups.ts` and the scoring/classification body in
+  `src/lib/collection-taxonomy.ts`), once ripgrep confirms zero importers. Anything still
+  referenced gets a manifest, not a delete.
+- **The alias map survives until Frame Studio Phase 5, as does `categoryFit.ts`.**
+  `src/components/collection/categoryAliases.ts` is excluded from C2's deletions by name —
+  `categoryFit.ts` imports `canonicalCategorySlug` from it. It dies in the same commit as the
+  solver, not before.
 - `categoryFit.ts`, `productFit.ts`, `productPhysicalScale.ts`, `NormalizedProductImage.tsx` are
   untouched — the Frame Studio freeze holds. Sizing keeps reading its shelf slug, which now comes
   from the declared columns.
