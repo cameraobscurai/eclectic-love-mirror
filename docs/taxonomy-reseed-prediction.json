@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-08-11T21:11:56.089Z",
+  "workbook": "taxonomy-remap-v4.xlsx",
+  "rowsWritten": 834,
+  "bucket1New": 0,
+  "bucket2Changed": 51,
+  "bucket3Unchanged": 783,
+  "bucket4ReviewStamped": 15,
+  "crossingCorrections": 11,
+  "demotions": 1,
+  "ghostIds": [
+    "MANUAL-176e0cc8",
+    "aya-16th-century-wooden-doors",
+    "della-half-frosted-glass-bottle",
+    "duru-antique-clear-glass-bottle-set",
+    "elysanda-ceremony-path-platform",
+    "libby-glass-hinged-top-box",
+    "lynden-horseshoe-hat-stand",
+    "merritt-post-and-beam-structure",
+    "remy-stainless-steel-vintage-coupe",
+    "runa-faux-book-collection",
+    "tivoli-travertine-22-plinth",
+    "tivoli-travertine-24-plinth",
+    "tivoli-travertine-32-plinth",
+    "tivoli-travertine-mini-plinth",
+    "tivoli-travertine-small-plinth"
+  ],
+  "confidence": {
+    "med": 16,
+    "high": 833
+  },
+  "perCollection": {
+    "lounge-tables": 56,
+    "lounge-seating": 88,
+    "styling": 97,
+    "tableware": 224,
+    "textiles": 167,
+    "lighting": 45,
+    "cocktail-bar": 89,
+    "large-decor": 28,
+    "rugs": 26,
+    "dining": 29
+  }
+}

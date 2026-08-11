@@ -1,16 +1,15 @@
 # Taxonomy reseed v4 — dry run diff
 
-> **BLOCKED** — 11 pair mismatch(es) and 0 off-vocabulary value(s) must be ruled first. See `docs/taxonomy-reseed-blockers.md`. Those rows are excluded from every count below.
 
-Generated 2026-08-11T20:55:57.013Z from `taxonomy-remap-v4.xlsx` cross-checked against `products_Aug-11_02-07-41PM.csv`. **Nothing written.**
+Generated 2026-08-11T21:11:56.089Z from `taxonomy-remap-v4.xlsx` cross-checked against `products_Aug-11_02-07-41PM.csv`. **Nothing written.**
 
 ## Totals
 
 - workbook rows: 635
 - blank category (skipped): 0
 - off-vocabulary rejects: 0 (any > 0 aborts the apply)
-- pair mismatches (category under a different collection): 11 (blocks the apply)
-- rows to write: 831 (207 inherited by family)
+- collection-crossing corrections applied (declared tree wins): 11
+- rows to write: 849 (214 inherited by family)
 - workbook rms_ids absent from db: 15 — MANUAL-176e0cc8, aya-16th-century-wooden-doors, della-half-frosted-glass-bottle, duru-antique-clear-glass-bottle-set, elysanda-ceremony-path-platform, libby-glass-hinged-top-box, lynden-horseshoe-hat-stand, merritt-post-and-beam-structure, remy-stainless-steel-vintage-coupe, runa-faux-book-collection, tivoli-travertine-22-plinth, tivoli-travertine-24-plinth, tivoli-travertine-32-plinth, tivoli-travertine-mini-plinth, tivoli-travertine-small-plinth
 - db rows with an rms_id: 879
 
@@ -20,14 +19,14 @@ Generated 2026-08-11T20:55:57.013Z from `taxonomy-remap-v4.xlsx` cross-checked a
 | --- | --- | --- |
 | 1 | new assignment (db was unassigned) | 0 |
 | 2 | changed assignment | 51 |
-| 3 | unchanged | 765 |
-| 4 | assigned in db, absent from workbook — needs a ruling before `--apply` | 33 |
+| 3 | unchanged | 783 |
+| 4 | assigned in db, absent from workbook — kept, review-stamped `med`/`v1-seed` | 15 |
 
 ## Confidence (from workbook)
 
 | confidence | count |
 | --- | --- |
-| high | 831 |
+| high | 849 |
 
 ## Per-collection counts after reseed
 
@@ -35,10 +34,10 @@ Generated 2026-08-11T20:55:57.013Z from `taxonomy-remap-v4.xlsx` cross-checked a
 | --- | --- |
 | tableware | 224 |
 | textiles | 167 |
+| styling | 102 |
 | lounge-seating | 86 |
 | cocktail-bar | 86 |
-| styling | 85 |
-| lounge-tables | 58 |
+| lounge-tables | 59 |
 | lighting | 45 |
 | large-decor | 30 |
 | rugs | 26 |
