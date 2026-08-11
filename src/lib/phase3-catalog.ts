@@ -385,13 +385,28 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         coverFramedUrl: live?.cover_framed_url ?? p.coverFramedUrl ?? null,
         collectionSlug: live?.collection_slug ?? p.collectionSlug ?? null,
         declaredCategory: live?.category_slug ?? p.declaredCategory ?? null,
+        // TEXT FIELDS — these used to be applied only to products that were
+        // created after the last bake, so an admin edit to an EXISTING
+        // product's name, notes, dimensions or stock never reached the live
+        // site until someone re-ran scripts/bake-catalog.mjs. That is the
+        // "I saved it and the site didn't change" report. Overlay wins when
+        // the row has a value; baked stays the fallback.
+        title: live?.title ?? p.title,
+        description: live?.description ?? p.description ?? null,
+        dimensions: live?.dimensions_raw ?? p.dimensions ?? null,
+        stockedQuantity: live?.quantity_label ?? p.stockedQuantity ?? null,
+        // Hiding a piece has to reach the public site too; the baked filter
+        // runs before this merge, so without an override an unpublish only
+        // took effect at the next bake. Filtered immediately below.
+        publicReady: live?.public_ready ?? p.publicReady,
         images,
         primaryImage: images[0] ?? null,
         imageCount: images.length,
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
-    });
+    }).filter((p) => p.publicReady !== false);
+
 
     // Products added since the last bake exist only in the overlay. Append
     // them so /admin → New product → Publish is enough to go live.
