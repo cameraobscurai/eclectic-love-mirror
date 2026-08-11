@@ -158,6 +158,27 @@ export const listCategoryItems = createServerFn({ method: "POST" })
 // ready to go live.
 // ---------------------------------------------------------------------------
 
+/** Keep only the `normalized` sub-object of images_meta, and only entries that
+ *  carry a usable box. Everything else in that column is bookkeeping the
+ *  public site has no business downloading. */
+function pickNormalized(meta: unknown): Record<string, unknown> | null {
+  if (!meta || typeof meta !== "object" || Array.isArray(meta)) return null;
+  const norm = (meta as { normalized?: unknown }).normalized;
+  if (!norm || typeof norm !== "object" || Array.isArray(norm)) return null;
+  const out: Record<string, unknown> = {};
+  for (const [src, v] of Object.entries(norm as Record<string, unknown>)) {
+    if (!v || typeof v !== "object") continue;
+    const e = v as { url?: unknown; w?: unknown; h?: unknown };
+    if (typeof e.url !== "string") continue;
+    if (typeof e.w !== "number" || typeof e.h !== "number") continue;
+    if (!(e.w > 0) || !(e.h > 0)) continue;
+    out[src] = { url: e.url, w: e.w, h: e.h };
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+
+
 export const publishCatalogOverlay = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .handler(async ({ context }) => {
