@@ -47,7 +47,7 @@ unbounded (resampled from source) and output is verifiable.*
 alter table inventory_items add column if not exists cover_framed_url text;
 alter table inventory_items add column if not exists cover_framed_meta jsonb;
 -- meta: { srcUrl, srcHash, bboxPx: [x,y,w,h], method: 'alpha'|'color'|'manual',
---         scale, canvas: [1200,1500], flags: [], generatedAt, ruleVersion }
+--         scale, canvas: [1500,1200], flags: [], generatedAt, ruleVersion }
 ```
 
 `cover_framed_url` is the ONLY thing the public grid reads. `images[0]`

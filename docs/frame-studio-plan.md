@@ -56,7 +56,7 @@ alter table inventory_items
   add column if not exists cover_framed_meta jsonb;
 ```
 meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual',
-scale, offsetX, offsetY, canvas:[1200,1500], approved:boolean, ruleVersion, generatedAt }`
+scale, offsetX, offsetY, canvas:[1500,1200], approved:boolean, ruleVersion, generatedAt }`
 Done when: columns exist, types regenerated.
 
 **Task 1.2 — Render path with fallback.**
