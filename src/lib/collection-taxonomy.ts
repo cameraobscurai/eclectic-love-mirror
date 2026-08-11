@@ -61,23 +61,21 @@ export type BrowseGroupId =
 
 export type BrowseTier = "owner" | "safety-net";
 
-/** Phase A delivers groups only. Subgroups land in Phase C. */
+/** Retained for the admin audit view; membership is declared, not scored. */
 export interface ClassificationTrace {
-  /** Each rule that produced a non-zero score, in evaluation order. */
   candidates: Array<{
     id: BrowseGroupId;
     score: number;
-    /** Short human label for why this rule fired. Useful in admin audit. */
     reason: string;
   }>;
-  /** The winning rule (highest score, ties broken by declaration order). */
-  winnerId: BrowseGroupId;
-  /** Confidence of the winner: winner.score - secondBest.score (0 if alone). */
+  /** The tile the declared pair resolved to, or null when unassigned. */
+  winnerId: BrowseGroupId | null;
   margin: number;
 }
 
 export interface Classification {
-  group: BrowseGroupId;
+  /** null = unassigned: no tile, no nav, PDP still reachable. */
+  group: BrowseGroupId | null;
   trace: ClassificationTrace;
 }
 
