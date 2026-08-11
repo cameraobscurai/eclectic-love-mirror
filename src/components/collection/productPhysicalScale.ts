@@ -144,20 +144,27 @@ export function isHeightUniformShelf(product: ScalableProduct): boolean {
 }
 
 /**
- * Dining tables are all ~30" tall but 5'-8' wide, so a square frame cannot
- * render them at matched height without overflowing. Instead they solve on real
- * width and take the shelf's uniform height as a CEILING. That is what stops a
- * low-angle photo (CINSERE) from towering over every other table on the row,
- * without growing anything.
+ * Shelves that are height-invariant in the real world but far too WIDE to
+ * render at matched height inside a near-square frame: dining tables (~30"H,
+ * 5'-8'W) and sofas/loveseats (~32"H, 52"-96"W). They solve on real width and
+ * take the shelf's uniform real height as a CEILING, so every piece stands on
+ * one floor line and differs only in width. Pure cap — nothing grows, the
+ * outlier comes down.
  */
+const HEIGHT_CAPPED_SHELVES = new Set([
+  "tables/dining tables",
+  "seating/sofas & loveseats",
+]);
+
 export function isHeightCappedShelf(product: ScalableProduct): boolean {
   const canonical = shelfCategorySlug(product);
-  if (canonical !== "tables") return false;
+  if (canonical !== "tables" && canonical !== "seating") return false;
   const key = subcategoryKey(product, canonical);
-  if (key !== "tables/dining tables") return false;
+  if (!key || !HEIGHT_CAPPED_SHELVES.has(key)) return false;
   const shelf = SUBCATEGORY_BENCHMARKS[key];
   return shelf?.hCv != null && shelf.hCv < HEIGHT_UNIFORM_CV;
 }
+
 
 
 
