@@ -1,33 +1,13 @@
 /**
- * Collection Taxonomy — single source of truth.
+ * Collection tiles — DECLARED taxonomy only.
  *
- * This module owns ALL classification logic for the Collection page:
- *   - browse group assignment (the left rail / overview categories)
- *   - subgroup assignment (chips within a group, future Phase C)
- *   - search synonyms (future Phase B)
+ * Tile membership comes from inventory_items.collection_slug +
+ * category_slug (surfaced as CollectionProduct.collectionSlug /
+ * declaredCategory). Nothing here infers, scores, or keyword-matches: the
+ * keyword rule engine was deleted in the read-path switchover (Task C2).
  *
- * Design contract:
- *   - Pure, deterministic, side-effect free. Same input → same output.
- *   - Display-only. NEVER mutates phase3_catalog.json or product records.
- *   - `classify(product)` is the ONLY entry point for routing decisions.
- *     Every UI consumer goes through it (directly or via the legacy
- *     re-export shims in collection-browse-groups.ts).
- *
- * Rule engine:
- *   - Rules are an ORDERED, DECLARATIVE array of predicates.
- *   - Each rule produces a `score` (higher = more confident).
- *   - We evaluate ALL rules and pick the highest scorer.
- *   - Ties break by array order (first declared wins). This is documented
- *     and enforced by the test fixture, so reordering rules is a meaningful,
- *     reviewable change — not an accidental side-effect.
- *
- * Why scoring instead of "first match wins":
- *   The original (legacy) engine bailed at the first match, which made
- *   inherently ambiguous pieces (a "console table" — Side Tables vs Storage?)
- *   subtly wrong depending on rule ordering. Scoring lets specific rules
- *   (long phrase + correct slug) outrank vague ones (single word in the
- *   wrong slug) without forcing the rest of the table into a brittle
- *   priority gauntlet.
+ * Unassigned products resolve to null — out of tiles and navigation, PDP
+ * still reachable.
  */
 
 import type { CollectionProduct } from "./phase3-catalog";
