@@ -25,26 +25,36 @@ database. Ten collections, 31 of the 33 declared categories used.
    `/collection` for each of the ten collections and spot-check the categories whose membership
    moves most in the diff.
 
-5. **Red list for the meeting.** Emit the 16 unresolved rows to `docs/taxonomy-open-questions.md`
-   alongside the three real open items: the 16 reds, the "Candlighting" spelling, and whether
-   Dining's small size is intentional. Storage-under-Cocktail+Bar and the bare-"chair" boundary
-   are marked resolved by her historical data — no longer questions.
+5. **Red list for the meeting.** Emit the still-unresolved rows to `docs/taxonomy-open-questions.md`
+   alongside the two remaining items: the "Candlighting" spelling and whether Dining's small size
+   is intentional. Storage-under-Cocktail+Bar and the bare-"chair" boundary are marked resolved by
+   her historical data — no longer questions.
 
-## Not in this pass
+## The export does help — here is exactly how much
 
-- No re-scraping of anything. Display order (`ownerSiteRank`), taxonomy, and mirrored images are
-  already captured.
-- No asset-library pulls. Those happen one at a time when Frame Studio's SRC_UPSCALED advisory
-  names a specific soft cover.
-- Frame Studio Phase 2 stays after this; the legacy browse-group scorer and `categoryFit.ts`
-  freeze are untouched until Phase 5.
+1,453 rows / 1,116 distinct titles / 37 categories. Checked against the v2 workbook:
 
-## The products CSV export (your task, today)
+- 462 of 635 workbook titles match a row in the export; 452 of those carry a category. This is
+  independent confirmation of the restored white rows, from the source rather than the scrape.
+- 173 workbook titles are absent — those are genuinely post-Squarespace products, which is the
+  "here are the 59 added since" framing, sharpened.
+- The export resolves 4 of the 16 reds outright: AMITOLA, DARNELL, MAOR and GEORGIA BRASS SCONCE
+  were all filed under **Specialty** — a lighting bucket. Three more (GIBBS, POWEL, SHETANI trays,
+  plus OXFORD FOSSIL PLINTH) exist in the export with a null category, so the title match confirms
+  vintage but not filing. The six TIVOLI plinths, LYNDEN, OVALIA and RUNA are absent entirely —
+  those are the real reds, and they are all recent adds.
+- Second signal for the yellows: 701 rows have a null `Categories` but every row has a
+  `Product Page` (`textiles`, `tableware`, `lounge`, `cocktail-bar`, `bars1`, `rugs1`, …). That
+  column is a usable fallback classifier where `Categories` is empty.
 
-Commerce → Inventory → Export All, before the subscription lapses. Drop the file in and it gets
-cross-checked against the 16 reds — some likely existed under earlier titles — and archived in
-`docs/` as the only structured record of eight years of merchandising. This plan does not block
-on it; the reseed runs either way.
+So one extra step goes in front of the reseed: **enrich the workbook from the export** —
+`Categories` first, `Product Page` as fallback — re-scoring confidence for the rows it touches.
+Expected outcome is roughly 4 reds cleared, a meaningful share of the 43 yellows promoted, and a
+verification pass on the 452 whites. Then the reseed runs against the enriched sheet.
+
+The CSV itself gets archived at `docs/archive/squarespace-products-2026-08-11.csv` — the only
+structured record of eight years of merchandising once the subscription lapses.
+
 
 ## Technical notes
 
