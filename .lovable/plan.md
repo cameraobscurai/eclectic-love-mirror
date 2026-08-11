@@ -1,61 +1,78 @@
-# Frame Studio — Phase 1 (the keystone)
+# Frame Studio — Phase 1 (the keystone) + one cover resolver
 
-Composition becomes a saved artifact. This plan covers Phase 1 only: the rails that let a framed derivative exist and render, with zero change to any product that doesn't have one yet. Phases 2–5 follow as separate approved tasks.
+Composition becomes a saved artifact. Phase 1 builds the rails and, before anything else, collapses cover resolution to a single function so there is exactly one answer to "which pixels are this product's cover."
 
-## Scope of this approval
+## The actual problem: eight sources, no single answer
 
-- Task 1.1 — Schema
-- Task 1.2 — Render path with fallback
-- Task 1.3 — Storage + save function
-- Commit `frame-studio-plan.md` into `docs/` so later tasks reference it verbatim
+Verified in the repo today. Covers can come from any of these:
 
-Not in this scope: the auto-framer engine, the studio UI, migration, deletions. Nothing in `categoryFit.ts`, `productFit.ts`, `productPhysicalScale.ts`, or `NormalizedProductImage.tsx` gets touched — the freeze holds.
+1. Baked catalog `src/data/inventory/current_catalog.json` → `products[].images[0]`
+2. Live DB overlay — `inventory_items.images` read at runtime (`fetchLiveOverlay`)
+3. Published overlay snapshot from `publishCatalogOverlay`
+4. Family rollup — a variant member's photo promoted as the family hero, plus `LOCKED_REFERENCE_COVERS`
+5. `card_background_url` — a separate editorial backdrop column
+6. Three storage prefixes with different eras and conventions: `incoming-photos/*` (~1.4k files), `squarespace-mirror/*` (~230), `inventory/*` (~100)
+7. Per-surface URL rewriting: `withCdnWidth` / `buildCdnSrcSet` with a raw-URL `onError` fallback, plus `?v=imagesVersion` busting
+8. `upscaled_cover_url` — dead data still in the table, and `originals-backup/*` still in storage
+
+Nine surfaces each pick a cover independently (`ProductTile`, `CollectionWallTile`, `CategoryTonalGrid`, `CategoryOverview`, `RelatedPieces`, `CollectionRail`, `QuickViewModal`, `ProductStage`, plus every admin list). That is why admin and public can disagree, and why a storage overwrite produced two different Ingrams.
+
+Frame Studio only ends this if the resolver is single. So it goes first.
+
+## Task 1.0 — One cover resolver
+
+New pure module `src/lib/cover-source.ts`, one exported function `resolveCover(product)` returning `{ url, srcSet, sizes, origin }` where `origin` names which rule won. Fixed precedence, no exceptions:
+
+1. `cover_framed_url` (once it exists)
+2. published-overlay `images[0]`
+3. live-overlay `images[0]`
+4. baked catalog `images[0]`
+5. family/locked hero
+6. none → explicit placeholder, never a broken tile
+
+`card_background_url` stays what it is — a backdrop, never a cover. `upscaled_cover_url` is not a source and the column gets dropped in this task. CDN width and `?v=` busting happen inside the resolver only, so no surface hand-rolls a URL again.
+
+Every one of the nine surfaces above is converted to call it. Admin lists call the same function, which is what makes what Adrienne sees equal what a visitor sees, by construction.
+
+**Done when:** `rg` finds zero direct `images[0]` cover picks outside `cover-source.ts`, the `origin` value is visible in `?debug=media`, and a screenshot diff of every category before/after shows no change.
 
 ## Task 1.1 — Schema
 
-Migration adds to `inventory_items`:
+Adds to `inventory_items`: `cover_framed_url text`, `cover_framed_meta jsonb`. Drops `upscaled_cover_url`.
 
-- `cover_framed_url text`
-- `cover_framed_meta jsonb`
-
-Meta shape (documented, not enforced): `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1200,1500], approved, ruleVersion, generatedAt }`
-
-Existing grants and RLS on the table cover the new columns; types regenerated.
+Meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual', scale, offsetX, offsetY, canvas:[1200,1500], approved, ruleVersion, generatedAt }`
 
 **Done when:** columns exist and appear in generated types.
 
 ## Task 1.2 — Render path with fallback
 
-`ProductTile` gains one branch at the top of the media frame:
+Inside the resolver, `cover_framed_url` wins. In `ProductTile`, that branch renders a plain `<img>` with `object-fit: contain`, 600w src + 1200w srcSet — no `NormalizedProductImage`, no fit rule, no transform, no measurement. Everything without a derivative renders exactly as today.
 
-- `cover_framed_url` present → plain `<img>`, `object-fit: contain`, 600w src + 1200w srcSet, no `NormalizedProductImage`, no fit rule, no transform, no measurement.
-- absent → today's path, byte-for-byte unchanged.
+Field carried end to end: publish select and overlay (`src/lib/photos-admin.functions.ts`), `LiveOverlayRow` and merge (`src/lib/phase3-catalog.ts`), and `scripts/bake-catalog.mjs`.
 
-The field is carried end to end so it can actually arrive at the tile:
-
-- `publishCatalogOverlay` select + overlay row (`src/lib/photos-admin.functions.ts`)
-- `LiveOverlayRow`, the merge, and the baked-product type (`src/lib/phase3-catalog.ts`)
-- `scripts/bake-catalog.mjs` output
-
-**Done when:** hand-setting `cover_framed_url` on one test row makes it render on /collection as a plain contained image, and every other tile is visually identical to before.
+**Done when:** hand-setting `cover_framed_url` on one test row renders it as a plain contained image on /collection, and every other tile is byte-identical to before.
 
 ## Task 1.3 — Storage
 
-- Path: `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `upsert: false`, `cacheControl: 31536000`.
-- Server function `saveFramedCover(id, blob1200, blob600, meta)`: uploads both sizes, writes `cover_framed_url` + `cover_framed_meta`, audits the write.
-- Rule R1 enforced: if a path already exists with different bytes, reject. New composition always means a new hashed path, never new bytes at an old URL. This is the exact failure that caused the Ingram cache split.
+- Path `framed-covers/{rms_id}/{hash16}-{w}.webp` in `squarespace-mirror`, `upsert: false`, `cacheControl: 31536000`.
+- Server function `saveFramedCover(id, blob1200, blob600, meta)` — uploads both sizes, writes url + meta, audits.
+- R1 enforced in code: a path that exists with different bytes is rejected. New composition means a new hashed path. The Ingram cache split becomes impossible rather than unlikely.
 
-**Done when:** the function is callable from admin, both files land in storage, and the row updates.
+**Done when:** callable from admin, both files land, row updates, and a repeat save with different bytes at the same path fails loudly.
 
-## Non-negotiables carried into every later phase
+## Not in this scope
+
+The auto-framer engine, the studio UI, migration, and the Phase 5 deletions. `categoryFit.ts`, `productFit.ts`, `productPhysicalScale.ts`, and `NormalizedProductImage.tsx` are frozen — Task 1.0 changes who calls them, never what they compute.
+
+## Non-negotiables
 
 - R1: a published storage URL never receives new bytes.
-- R2: the public site never measures pixels. If a future task proposes putting measurement back into the grid, decline and point here.
+- R2: the public site never measures pixels. Any future task that reintroduces live measurement gets declined here.
 - R3: auto-framed derivatives are verifier-gated; FAIL goes to a review queue, never a silent publish.
-- R4: the studio composes, it never retouches. Photo problems route to "replace source photo."
+- R4: the studio composes, never retouches. Photo problems route to "replace source photo."
 
 ## Technical notes
 
-- `docs/frame-studio-plan.md` is the reference text for Phases 2–5; `cover-audit.mjs` and `cover-system-spec.md` are not in the repo yet — send them when you want them committed.
-- Canvas is 1200×1500 (4:5). The public tile aspect stays as-is; `contain` absorbs the difference.
-- No image bytes are generated in this phase. Nothing on the live site changes until a derivative exists for a product.
+- `docs/frame-studio-plan.md` gets committed as the reference text for Phases 2–5. `cover-audit.mjs` and `cover-system-spec.md` aren't in the repo — send them if you want them alongside.
+- Canvas 1200×1500 (4:5); the tile aspect is unchanged and `contain` absorbs the difference.
+- No image bytes are generated in Phase 1. Nothing visible changes until a derivative exists.
