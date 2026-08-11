@@ -68,8 +68,17 @@ console.log('records:', records.length);
  *
  * Same reasoning applies to `images`: RMS has no image data, so an upsert that
  * included it would wipe curated photos on every sync.
+ *
+ * `taxonomy_review` carries the provenance and reviewed-state of those
+ * assignments (who ruled, when, from which record). It is human/tooling state,
+ * never RMS state, so it gets the same clobber protection.
  */
-const OWNER_DECLARED_COLUMNS = ['collection_slug', 'category_slug', 'images'];
+const OWNER_DECLARED_COLUMNS = [
+  'collection_slug',
+  'category_slug',
+  'taxonomy_review',
+  'images',
+];
 
 // First soft-delete legacy rows
 const { error: delErr } = await sb.from('inventory_items').update({ status: 'draft' }).is('rms_id', null).neq('status', 'draft');
