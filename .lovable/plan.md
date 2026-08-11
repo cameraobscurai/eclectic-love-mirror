@@ -39,6 +39,18 @@ Added to the RMS-sync exclusion list in `scripts/import.mjs` alongside the two s
 
 **Done when:** diff reviewed, bucket 4 ruled, applied, rebaked, `/collection` counts confirmed, and `select taxonomy_review->>'confidence', count(*)` returns 635 high / 0 med / 0 low plus any cross-check demotions.
 
+## Task C2 — Read-path switchover (restored; dropped in an earlier rewrite)
+
+Without this, the reseed writes columns nothing public reads and Task C's `/collection` count check is verifying the old classifier. Runs after C applies, before E.
+
+- Nav, collection filters, PDP breadcrumbs, admin Inventory sort, and the catalog bake read `collection_slug` / `category_slug` directly. No scoring, no keywords.
+- Publish overlay (`publishCatalogOverlay`) and `scripts/bake-catalog.mjs` carry both slug columns. `taxonomy_review` stays DB-only — the studio reads it directly; the public site never receives it.
+- Split delete, exactly as originally scoped: the browse-group scorer, subcategory inference, and owner-subcategory overrides are deleted here. The alias map survives until Frame Studio Phase 5, as does `categoryFit.ts` and the legacy `category` / `subcategory_slug` columns.
+
+**Done when:** no public read surface calls a keyword/scoring path; every category and subcategory count on `/collection` equals `select count(*) group by collection_slug, category_slug`; the deleted modules have no remaining references (ripgrep across `src/`, `scripts/`, route loaders and dynamic imports before deletion, per the dead-code rule).
+
+**Process receipt:** content has evaporated across plan regenerations three times today. From here, every plan revision is diffed against the last approved version before approval — additions get reviewed, deletions are the ones that hide.
+
 ## Task D — Archive
 
 `docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37 counts, and the scope line verbatim — *"Colorado only — UT rows retained for record, never classified."*
