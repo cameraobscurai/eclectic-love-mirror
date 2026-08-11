@@ -54,7 +54,19 @@ function scoreCandidate(
 ): number {
   let score = 0;
 
-  if (cand.categorySlug === current.categorySlug) score += 50;
+  // Declared taxonomy drives affinity: same category is the strongest signal,
+  // same collection a weaker one. Legacy `categorySlug` is no longer consulted.
+  if (
+    current.declaredCategory &&
+    cand.declaredCategory === current.declaredCategory
+  ) {
+    score += 50;
+  } else if (
+    current.collectionSlug &&
+    cand.collectionSlug === current.collectionSlug
+  ) {
+    score += 25;
+  }
 
   const aSubs = new Set(current.liveSubcategories ?? []);
   const shared = (cand.liveSubcategories ?? []).some((s) => aSubs.has(s));
@@ -153,7 +165,11 @@ export function RelatedPieces({
           Related Pieces
         </h2>
         <a
-          href={`/collection?group=${encodeURIComponent(product.categorySlug)}`}
+          href={
+            product.collectionSlug
+              ? `/collection?group=${encodeURIComponent(product.collectionSlug)}${product.declaredCategory ? `&subcategory=${encodeURIComponent(product.declaredCategory)}` : ""}`
+              : "/collection"
+          }
           className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground hover:text-foreground transition-colors"
         >
           See all {product.displayCategory}
