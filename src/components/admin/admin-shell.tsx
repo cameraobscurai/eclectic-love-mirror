@@ -107,6 +107,8 @@ const SITE: NavItem[] = [
 const CRUMB_LABELS: Record<string, string> = {
   "/admin": "Dashboard",
   "/admin/products": "Inventory",
+  "/admin/taxonomy": "Taxonomy studio",
+
   "/admin/team": "Team",
   "/admin/photos": "Collection photos",
   "/admin/render": "Photo studio",
