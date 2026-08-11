@@ -91,7 +91,8 @@ const LEGACY_GROUP_ALIASES: Record<string, { parent: ParentId | ""; sub: string 
   tables: { parent: "lounge-tables", sub: "all" },
   bars: { parent: "cocktail-bar", sub: "bars" },
   "pillows-throws": { parent: "textiles", sub: "all" },
-  candlelight: { parent: "lighting", sub: "candlelight" },
+  // Candlelight moved under Styling in the declared taxonomy.
+  candlelight: { parent: "styling", sub: "candlelighting" },
   chandeliers: { parent: "lighting", sub: "chandeliers" },
 };
 
