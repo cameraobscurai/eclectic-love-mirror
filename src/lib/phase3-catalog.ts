@@ -490,7 +490,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         altText: null,
       }));
       if (imgs.length === 0) continue;
-      additions.push({
+      additions.push(withNormalizedCover({
         id: rmsId,
         sourceUrl: "",
         slug: live.slug ?? rmsId,
@@ -516,7 +516,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         cardBackgroundUrl: live.card_background_url ?? null,
         coverFocalX: live.cover_focal_x ?? null,
         coverFocalY: live.cover_focal_y ?? null,
-      });
+      }, liveNormalized(live)));
     }
 
     const all = additions.length > 0 ? [...products, ...additions] : products;
