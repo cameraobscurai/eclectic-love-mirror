@@ -26,6 +26,7 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EventGalleryRouteImport } from './routes/event-gallery'
 import { Route as EventCrewRouteImport } from './routes/event-crew'
 import { Route as EmailPreviewRouteImport } from './routes/email-preview'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComposeRouteImport } from './routes/compose'
 import { Route as Colorado1RouteImport } from './routes/colorado-1'
@@ -189,6 +190,11 @@ const EventCrewRoute = EventCrewRouteImport.update({
 const EmailPreviewRoute = EmailPreviewRouteImport.update({
   id: '/email-preview',
   path: '/email-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -601,6 +607,7 @@ export interface FileRoutesByFullPath {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
   '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
@@ -698,6 +705,7 @@ export interface FileRoutesByTo {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
   '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
@@ -797,6 +805,7 @@ export interface FileRoutesById {
   '/colorado-1': typeof Colorado1Route
   '/compose': typeof ComposeRoute
   '/contact': typeof ContactRoute
+  '/demo': typeof DemoRoute
   '/email-preview': typeof EmailPreviewRoute
   '/event-crew': typeof EventCrewRoute
   '/event-gallery': typeof EventGalleryRoute
@@ -897,6 +906,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/demo'
     | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
@@ -994,6 +1004,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/demo'
     | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
@@ -1092,6 +1103,7 @@ export interface FileRouteTypes {
     | '/colorado-1'
     | '/compose'
     | '/contact'
+    | '/demo'
     | '/email-preview'
     | '/event-crew'
     | '/event-gallery'
@@ -1191,6 +1203,7 @@ export interface RootRouteChildren {
   Colorado1Route: typeof Colorado1Route
   ComposeRoute: typeof ComposeRoute
   ContactRoute: typeof ContactRoute
+  DemoRoute: typeof DemoRoute
   EmailPreviewRoute: typeof EmailPreviewRoute
   EventCrewRoute: typeof EventCrewRoute
   EventGalleryRoute: typeof EventGalleryRoute
@@ -1378,6 +1391,13 @@ declare module '@tanstack/react-router' {
       path: '/email-preview'
       fullPath: '/email-preview'
       preLoaderRoute: typeof EmailPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -2005,6 +2025,7 @@ const rootRouteChildren: RootRouteChildren = {
   Colorado1Route: Colorado1Route,
   ComposeRoute: ComposeRoute,
   ContactRoute: ContactRoute,
+  DemoRoute: DemoRoute,
   EmailPreviewRoute: EmailPreviewRoute,
   EventCrewRoute: EventCrewRoute,
   EventGalleryRoute: EventGalleryRoute,
@@ -2075,13 +2096,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
