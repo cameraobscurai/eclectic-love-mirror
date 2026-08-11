@@ -500,6 +500,7 @@ export type Database = {
           slug: string
           status: Database["public"]["Enums"]["item_status"]
           subcategory_slug: string | null
+          taxonomy_review: Json | null
           title: string
           updated_at: string
           upscaled_cover_url: string | null
@@ -556,6 +557,7 @@ export type Database = {
           slug: string
           status?: Database["public"]["Enums"]["item_status"]
           subcategory_slug?: string | null
+          taxonomy_review?: Json | null
           title: string
           updated_at?: string
           upscaled_cover_url?: string | null
@@ -612,6 +614,7 @@ export type Database = {
           slug?: string
           status?: Database["public"]["Enums"]["item_status"]
           subcategory_slug?: string | null
+          taxonomy_review?: Json | null
           title?: string
           updated_at?: string
           upscaled_cover_url?: string | null
