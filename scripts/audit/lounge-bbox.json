@@ -1,350 +1,1220 @@
 [
   {
     "slug": "alistair-green-leather-bench-3211",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ALISTAIR GREEN LEATHER BENCH",
+    "group": "benches-ottomans",
+    "dims": "62\"W x 32\"D x 18\"H",
+    "canvas": [
+      364,
+      124
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.935,
+    "subjAspect": 2.935
   },
   {
     "slug": "avalon-iron-linen-bench-3027",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "AVALON IRON + LINEN BENCH",
+    "group": "benches-ottomans",
+    "dims": "58\"w x 18\"D x 22\"H",
+    "canvas": [
+      303,
+      134
+    ],
+    "bboxW": 0.997,
+    "bboxH": 1.0,
+    "aspect": 2.261,
+    "subjAspect": 2.254
   },
   {
     "slug": "blanc-white-grey-cow-hide-ottoman-676",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "BLANC WHITE & GREY COW HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "17\"W X 17\"D X 17\"H",
+    "canvas": [
+      231,
+      226
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.022,
+    "subjAspect": 1.022
   },
   {
     "slug": "dune-wood-and-tan-boucle-bench-3832",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "DUNE WOOD AND TAN BOUCLE BENCH",
+    "group": "benches-ottomans",
+    "dims": "64\"W x 18\"D x 20\"H",
+    "canvas": [
+      362,
+      177
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.045,
+    "subjAspect": 2.045
   },
   {
     "slug": "ellora-sage-velvet-ottoman-3461",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ELLORA SAGE VELVET OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "47.5\"W x 47.5\"D x 16.5\"H",
+    "canvas": [
+      334,
+      169
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.976,
+    "subjAspect": 1.976
   },
   {
     "slug": "evander-grey-hide-tapered-ottoman-3014",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "EVANDER GREY HIDE TAPERED OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "36\"Dia x 18.5\"H",
+    "canvas": [
+      260,
+      178
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.461,
+    "subjAspect": 1.461
   },
   {
     "slug": "geraldine-goat-fur-wood-bench-2002",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "GERALDINE GOAT FUR WOOD BENCH",
+    "group": "benches-ottomans",
+    "dims": "35.5\"W x 11.75\"D x 17.75\"H",
+    "canvas": [
+      367,
+      228
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.61,
+    "subjAspect": 1.61
   },
   {
     "slug": "grey-hills-linen-ottoman-129",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "GREY HILLS LINEN OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "18\"Dia x 18\"H",
+    "canvas": [
+      191,
+      231
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.827,
+    "subjAspect": 0.827
   },
   {
     "slug": "jessie-cow-hide-ottoman-675",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JESSIE COW HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "16\"W x 16\"D x 17\"H",
+    "canvas": [
+      400,
+      300
+    ],
+    "bboxW": 0.595,
+    "bboxH": 0.727,
+    "aspect": 1.333,
+    "subjAspect": 1.092
   },
   {
     "slug": "joseph-goat-hide-ottoman-127",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JOSEPH GOAT HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "17\"W x 17\"D x 17\"H",
+    "canvas": [
+      800,
+      600
+    ],
+    "bboxW": 0.67,
+    "bboxH": 0.912,
+    "aspect": 1.333,
+    "subjAspect": 0.98
   },
   {
     "slug": "jourdain-natural-bench-2999",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JOURDAIN NATURAL BENCH",
+    "group": "benches-ottomans",
+    "dims": "79\"W x 28\"D x 20\"H",
+    "canvas": [
+      348,
+      121
+    ],
+    "bboxW": 0.997,
+    "bboxH": 1.0,
+    "aspect": 2.876,
+    "subjAspect": 2.868
   },
   {
     "slug": "leanna-ivory-hide-tapered-ottoman-3142",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "LEANNA IVORY HIDE TAPERED OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "36\"Dia x 18.5\"H",
+    "canvas": [
+      292,
+      200
+    ],
+    "bboxW": 1.0,
+    "bboxH": 0.995,
+    "aspect": 1.46,
+    "subjAspect": 1.467
   },
   {
     "slug": "lorenzo-ivory-round-hide-ottoman-3015",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "LORENZO IVORY ROUND HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "42\"Dia x x19\"H",
+    "canvas": [
+      400,
+      300
+    ],
+    "bboxW": 0.655,
+    "bboxH": 0.6,
+    "aspect": 1.333,
+    "subjAspect": 1.456
   },
   {
     "slug": "morrison-charcoal-ottoman-2025",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "MORRISON CHARCOAL OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "28\"W x 26\"D x 16\"H",
+    "canvas": [
+      293,
+      221
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.326,
+    "subjAspect": 1.326
   },
   {
     "slug": "nazara-grey-hide-ottoman-3017",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "NAZARA GREY HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "15\"Dia x 19\"H",
+    "canvas": [
+      131,
+      184
+    ],
+    "bboxW": 1.0,
+    "bboxH": 0.995,
+    "aspect": 0.712,
+    "subjAspect": 0.716
   },
   {
     "slug": "neriya-ivory-hide-ottoman-3016",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "NERIYA IVORY HIDE OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "15\"Dia x 19\"H",
+    "canvas": [
+      139,
+      195
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.713,
+    "subjAspect": 0.713
   },
   {
     "slug": "omar-brown-leather-ottoman-749",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "OMAR BROWN LEATHER OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "21\"Dia x 12\"H",
+    "canvas": [
+      800,
+      600
+    ],
+    "bboxW": 0.833,
+    "bboxH": 0.755,
+    "aspect": 1.333,
+    "subjAspect": 1.47
   },
   {
     "slug": "siete-rattan-ottoman-2752",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SIETE RATTAN OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "20\"Dia x 19\"H",
+    "canvas": [
+      245,
+      269
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.911,
+    "subjAspect": 0.911
   },
   {
     "slug": "spencer-beige-cot-bench-1006",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SPENCER BEIGE COT BENCH",
+    "group": "benches-ottomans",
+    "dims": "84\"W x 38\"D x 18.5\" H",
+    "canvas": [
+      347,
+      122
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.844,
+    "subjAspect": 2.844
   },
   {
     "slug": "torro-leather-knit-ottoman-3005",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "TORRO LEATHER KNIT OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "22.5\"W x 15.25\"D x 18.5\"H",
+    "canvas": [
+      202,
+      187
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.08,
+    "subjAspect": 1.08
   },
   {
     "slug": "trapper-canvas-ottoman-1815",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "TRAPPER CANVAS OTTOMAN",
+    "group": "benches-ottomans",
+    "dims": "18\"W x 18\"D x 18\"H",
+    "canvas": [
+      264,
+      226
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.168,
+    "subjAspect": 1.168
   },
   {
     "slug": "ygritte-ebony-tufted-bench-1994",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "YGRITTE EBONY TUFTED BENCH",
+    "group": "benches-ottomans",
+    "dims": "63\"W x 36\"D x 15\"H",
+    "canvas": [
+      354,
+      120
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.95,
+    "subjAspect": 2.95
   },
   {
     "slug": "adelaide-antique-arm-chair-2970",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ADELAIDE ANTIQUE ARM CHAIR",
+    "group": "chairs",
+    "dims": "24\"W x 19\"D x 38\"H",
+    "canvas": [
+      201,
+      286
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.703,
+    "subjAspect": 0.703
   },
   {
     "slug": "alora-botanical-sculptural-chair-3709",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ALORA BOTANICAL SCULPTURAL CHAIR",
+    "group": "chairs",
+    "dims": "33\"W x 30.5\"D x 30\"H",
+    "canvas": [
+      275,
+      263
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.046,
+    "subjAspect": 1.046
   },
   {
     "slug": "amun-brown-leather-butterfly-chair-44",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "AMUN BROWN LEATHER BUTTERFLY CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 27\"D x 36\"H",
+    "canvas": [
+      218,
+      256
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.852,
+    "subjAspect": 0.852
   },
   {
     "slug": "antonio-black-leather-butterfly-chair-767",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ANTONIO BLACK LEATHER BUTTERFLY CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 27\"D x 36\"H",
+    "canvas": [
+      220,
+      270
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.815,
+    "subjAspect": 0.815
   },
   {
     "slug": "aramita-cotton-velvet-chair-3007",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ARAMITA COTTON VELVET CHAIR",
+    "group": "chairs",
+    "dims": "37\"W x 38\"D x 34\"H",
+    "canvas": [
+      227,
+      221
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.027,
+    "subjAspect": 1.027
   },
   {
     "slug": "artesia-chair-3822",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ARTESIA CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 28\"D x 32\"H - 20\" Seat Height",
+    "canvas": [
+      261,
+      283
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.922,
+    "subjAspect": 0.922
   },
   {
     "slug": "axel-bar-stool-161",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "AXEL BAR STOOL",
+    "group": "chairs",
+    "dims": "16\"W x 17\"D x 45\"H",
+    "canvas": [
+      1448,
+      1086
+    ],
+    "bboxW": 0.351,
+    "bboxH": 0.855,
+    "aspect": 1.333,
+    "subjAspect": 0.547
   },
   {
     "slug": "azalea-botanical-velvet-chair-3716",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "AZALEA BOTANICAL VELVET CHAIR",
+    "group": "chairs",
+    "dims": "40.5\"W x 47\"D x 34\"H",
+    "canvas": [
+      364,
+      270
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.348,
+    "subjAspect": 1.348
   },
   {
     "slug": "bard-deconstructed-leather-chair-2884",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "BARD DECONSTRUCTED LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 27\"D x 38\"H",
+    "canvas": [
+      242,
+      287
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.843,
+    "subjAspect": 0.843
   },
   {
     "slug": "benecio-leather-knit-chair-3004",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "BENECIO LEATHER KNIT CHAIR",
+    "group": "chairs",
+    "dims": "24\"W x 26\"D x 24\"H",
+    "canvas": [
+      247,
+      235
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.051,
+    "subjAspect": 1.051
   },
   {
     "slug": "carwyn-white-wood-chair-2749",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "CARWYN WHITE + WOOD CHAIR",
+    "group": "chairs",
+    "dims": "32\"W x 32\"D x 28\"H",
+    "canvas": [
+      278,
+      231
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.203,
+    "subjAspect": 1.203
   },
   {
     "slug": "claude-white-upholstered-chair-1789",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "CLAUDE WHITE UPHOLSTERED CHAIR",
+    "group": "chairs",
+    "dims": "28.25\"W x 29.5\"D x 33\"H",
+    "canvas": [
+      258,
+      252
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.024,
+    "subjAspect": 1.024
   },
   {
     "slug": "corwin-canvas-lounge-chair-1814",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "CORWIN CANVAS LOUNGE CHAIR",
+    "group": "chairs",
+    "dims": "30\"W x 30\"D x 27\"H",
+    "canvas": [
+      266,
+      253
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.051,
+    "subjAspect": 1.051
   },
   {
     "slug": "donnelly-navy-leather-wingback-chair-2982",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "DONNELLY NAVY LEATHER WINGBACK CHAIR",
+    "group": "chairs",
+    "dims": "30\"W x 32\"D x 40\"H",
+    "canvas": [
+      206,
+      272
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.757,
+    "subjAspect": 0.757
   },
   {
     "slug": "elspeth-almond-velour-chair-2462",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ELSPETH ALMOND VELOUR CHAIR",
+    "group": "chairs",
+    "dims": "27.5\"W x 28\"D x 27.5\"H",
+    "canvas": [
+      254,
+      274
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.927,
+    "subjAspect": 0.927
   },
   {
     "slug": "fabian-grey-hide-barrel-chair-3002",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FABIAN GREY HIDE BARREL CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 25\"D x 27\"H",
+    "canvas": [
+      224,
+      236
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.949,
+    "subjAspect": 0.949
   },
   {
     "slug": "farrell-grey-hide-bar-stool-3012",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FARRELL GREY HIDE BAR STOOL",
+    "group": "chairs",
+    "dims": "18\"W x 16.5\"D x 30\"H",
+    "canvas": [
+      149,
+      223
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.668,
+    "subjAspect": 0.668
   },
   {
     "slug": "fawn-natural-cane-chair-721",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FAWN NATURAL CANE CHAIR",
+    "group": "chairs",
+    "dims": "27\"W x 22\"D x 36\"H",
+    "canvas": [
+      238,
+      278
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.856,
+    "subjAspect": 0.856
   },
   {
     "slug": "florian-ivory-hide-barrel-chair-3003",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FLORIAN IVORY HIDE BARREL CHAIR",
+    "group": "chairs",
+    "dims": "28\"W x 25\"D x 27\"H",
+    "canvas": [
+      224,
+      238
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.941,
+    "subjAspect": 0.941
   },
   {
     "slug": "ford-deconstructed-leather-wingback-chair-2906",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FORD DECONSTRUCTED LEATHER WINGBACK CHAIR",
+    "group": "chairs",
+    "dims": "32\"W x 32\"D x 45\"H",
+    "canvas": [
+      228,
+      296
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.77,
+    "subjAspect": 0.77
   },
   {
     "slug": "fulton-white-leather-butterfly-chair-3856",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "FULTON WHITE LEATHER BUTTERFLY CHAIR",
+    "group": "chairs",
+    "dims": "23\"W x 29\"D x 36\"H",
+    "canvas": [
+      209,
+      274
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.763,
+    "subjAspect": 0.763
   },
   {
     "slug": "giles-goat-hide-chair-757",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "GILES GOAT HIDE CHAIR",
+    "group": "chairs",
+    "dims": "22\"W x 31\"D x 23\"H",
+    "canvas": [
+      198,
+      260
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.762,
+    "subjAspect": 0.762
   },
   {
     "slug": "helena-antique-carved-chair-2969",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "HELENA ANTIQUE CARVED CHAIR",
+    "group": "chairs",
+    "dims": "25\"W x 23\"D x 52\"H",
+    "canvas": [
+      168,
+      295
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.569,
+    "subjAspect": 0.569
   },
   {
     "slug": "hemingway-brown-leather-chair-60",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "HEMINGWAY BROWN LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "27\"W x 32\"D x 34\"H",
+    "canvas": [
+      226,
+      262
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.863,
+    "subjAspect": 0.863
   },
   {
     "slug": "hirshfield-leather-chair-1711",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "HIRSHFIELD LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "24\"W x 30\"D x 26\"H",
+    "canvas": [
+      302,
+      244
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.238,
+    "subjAspect": 1.238
   },
   {
     "slug": "jennie-antique-linen-chair-2972",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JENNIE ANTIQUE LINEN CHAIR",
+    "group": "chairs",
+    "dims": "26\"W x 22\"D x 38\"H",
+    "canvas": [
+      209,
+      285
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.733,
+    "subjAspect": 0.733
   },
   {
     "slug": "jesamay-chair-3835",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JESAMAY ARMCHAIR",
+    "group": "chairs",
+    "dims": "23.5\"W x 24\"D x 33.75\"H - 19\" Seat Height",
+    "canvas": [
+      206,
+      274
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.752,
+    "subjAspect": 0.752
   },
   {
     "slug": "julien-adjustable-counter-stool-1973",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JULIEN ADJUSTABLE COUNTER STOOL",
+    "group": "chairs",
+    "dims": "16\"W x 16\"D x 27.5\"H",
+    "canvas": [
+      164,
+      247
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.664,
+    "subjAspect": 0.664
   },
   {
     "slug": "mara-hunter-leather-chair-1799",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "MARA HUNTER LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "18\"W x 20\"D x 33.5\"H",
+    "canvas": [
+      800,
+      600
+    ],
+    "bboxW": 0.431,
+    "bboxH": 0.852,
+    "aspect": 1.333,
+    "subjAspect": 0.675
   },
   {
     "slug": "marshall-mango-wood-chair-672",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "MARSHALL MANGO WOOD CHAIR",
+    "group": "chairs",
+    "dims": "20\"W x 20\"D x 32\"H",
+    "canvas": [
+      162,
+      239
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.678,
+    "subjAspect": 0.678
   },
   {
     "slug": "millicent-antique-arm-chair-2971",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "MILLICENT ANTIQUE ARM CHAIR",
+    "group": "chairs",
+    "dims": "25\"W x 19\"D x 41\"H",
+    "canvas": [
+      174,
+      286
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.608,
+    "subjAspect": 0.608
   },
   {
     "slug": "natori-oak-fur-chair-2995",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "NATORI OAK + FUR CHAIR",
+    "group": "chairs",
+    "dims": "24.5\"W x 29.\"D x 32\"H",
+    "canvas": [
+      236,
+      257
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.918,
+    "subjAspect": 0.918
   },
   {
     "slug": "noelle-black-cane-chair-2786",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "NOELLE BLACK CANE CHAIR",
+    "group": "chairs",
+    "dims": "24\"W x 24\"D x 33\"H",
+    "canvas": [
+      222,
+      278
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.799,
+    "subjAspect": 0.799
   },
   {
     "slug": "nomad-wood-chair-435",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "NOMAD WOOD CHAIR",
+    "group": "chairs",
+    "dims": "20\"W x 30\"D x ?\"H",
+    "canvas": [
+      220,
+      280
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.786,
+    "subjAspect": 0.786
   },
   {
     "slug": "osprey-black-metal-chair-3817",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "OSPREY BLACK METAL CHAIR",
+    "group": "chairs",
+    "dims": "33.75\"W x 30\"D x 35.25\"H",
+    "canvas": [
+      294,
+      260
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.131,
+    "subjAspect": 1.131
   },
   {
     "slug": "poe-deconstructed-leather-chair-76",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "POE DECONSTRUCTED LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "24\"W x 28\"D x 34\"H",
+    "canvas": [
+      212,
+      276
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.768,
+    "subjAspect": 0.768
   },
   {
     "slug": "rosie-antique-linen-chair-2968",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ROSIE ANTIQUE LINEN CHAIR",
+    "group": "chairs",
+    "dims": "26\"W x 23\"D x 39\"H",
+    "canvas": [
+      210,
+      276
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.761,
+    "subjAspect": 0.761
   },
   {
     "slug": "suhana-cognac-leather-chair-2618",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SUHANA COGNAC LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "26\"W x 32\"D x 28\"H",
+    "canvas": [
+      298,
+      266
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.12,
+    "subjAspect": 1.12
   },
   {
     "slug": "tailor-brown-leather-chair-84",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "TAILOR BROWN LEATHER CHAIR",
+    "group": "chairs",
+    "dims": "31\"W x 36\"D x 35\"H",
+    "canvas": [
+      230,
+      262
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.878,
+    "subjAspect": 0.878
   },
   {
     "slug": "thatcher-green-natural-woven-bar-stool-4052",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "THATCHER GREEN NATURAL WOVEN BAR STOOL",
+    "group": "chairs",
+    "dims": "16.5\"W x 20\"D x 45\"H",
+    "canvas": [
+      137,
+      281
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.488,
+    "subjAspect": 0.488
   },
   {
     "slug": "vixxen-black-bar-stool-2747",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "VIXXEN BLACK BAR STOOL",
+    "group": "chairs",
+    "dims": "22\"W x 20.\"D x 42\"H Back",
+    "canvas": [
+      173,
+      285
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.607,
+    "subjAspect": 0.607
   },
   {
     "slug": "zeki-kilim-armchair-706",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ZEKI KILIM ARM CHAIR",
+    "group": "chairs",
+    "dims": "27\"W X 28\"D X 33\"H",
+    "canvas": [
+      248,
+      252
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 0.984,
+    "subjAspect": 0.984
   },
   {
     "slug": "antonella-cotton-velvet-sofa-3006",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ANTONELLA COTTON VELVET SOFA",
+    "group": "sofas",
+    "dims": "76\"W x 38\"D x 33\"H",
+    "canvas": [
+      343,
+      201
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.706,
+    "subjAspect": 1.706
   },
   {
     "slug": "aviana-botanical-linen-sofa-3714",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "AVIANA BOTANICAL LINEN SOFA",
+    "group": "sofas",
+    "dims": "83\"W x 39\"D x 39\"H",
+    "canvas": [
+      393,
+      226
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.739,
+    "subjAspect": 1.739
   },
   {
     "slug": "brooklyn-plush-charcoal-sofa-1770",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "BROOKLYN PLUSH CHARCOAL SOFA",
+    "group": "sofas",
+    "dims": "90\"W x 30\"D x 35\"H",
+    "canvas": [
+      376,
+      155
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.426,
+    "subjAspect": 2.426
   },
   {
     "slug": "calista-fringe-sofa-3713",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "CALISTA FRINGE SOFA",
+    "group": "sofas",
+    "dims": "80\"W x 37.75\"D x 29.25\"H",
+    "canvas": [
+      389,
+      132
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.947,
+    "subjAspect": 2.947
   },
   {
     "slug": "cicely-wicker-linen-loveseat-2741",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "CICELY WICKER + LINEN LOVESEAT",
+    "group": "sofas",
+    "dims": "60\"W x 23\"D x 35\"H",
+    "canvas": [
+      372,
+      221
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.683,
+    "subjAspect": 1.683
   },
   {
     "slug": "commodore-canvas-sofa-1813",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "COMMODORE CANVAS LOVESEAT",
+    "group": "sofas",
+    "dims": "71\"W x 30\"D x 30\"H",
+    "canvas": [
+      360,
+      199
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.809,
+    "subjAspect": 1.809
   },
   {
     "slug": "cosette-sage-velvet-loveseat-3462",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "COSETTE SAGE VELVET LOVESEAT",
+    "group": "sofas",
+    "dims": "52\"W x 30\"D x 36.5\"H",
+    "canvas": [
+      800,
+      600
+    ],
+    "bboxW": 0.67,
+    "bboxH": 0.767,
+    "aspect": 1.333,
+    "subjAspect": 1.165
   },
   {
     "slug": "elizabeth-champagne-velvet-sofa-755",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ELIZABETH CHAMPAGNE VELVET SOFA",
+    "group": "sofas",
+    "dims": "90\"W x 28\"D x 33\"H",
+    "canvas": [
+      370,
+      163
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.27,
+    "subjAspect": 2.27
   },
   {
     "slug": "eloise-antique-white-french-loveseat-2714",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ELOISE ANTIQUE WHITE FRENCH LOVESEAT",
+    "group": "sofas",
+    "dims": "72\"W x 34\"D x 35\"H",
+    "canvas": [
+      360,
+      196
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.837,
+    "subjAspect": 1.837
   },
   {
     "slug": "erin-antique-white-french-sofa-2717",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ERIN ANTIQUE WHITE FRENCH SOFA",
+    "group": "sofas",
+    "dims": "96\"W x 38\"D x 35\"H",
+    "canvas": [
+      382,
+      164
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.329,
+    "subjAspect": 2.329
   },
   {
     "slug": "henry-upholstered-grey-sofa-1818",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "HENRY UPHOLSTERED GREY SOFA",
+    "group": "sofas",
+    "dims": "98\"W x 40.5\"D x 30\"H",
+    "canvas": [
+      379,
+      144
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.632,
+    "subjAspect": 2.632
   },
   {
     "slug": "indiwin-black-leather-sofa-735",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "INDIWIN BLACK LEATHER SOFA",
+    "group": "sofas",
+    "dims": "91\"W x 35\"D x 25\"H",
+    "canvas": [
+      378,
+      146
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.589,
+    "subjAspect": 2.589
   },
   {
     "slug": "jacinda-armless-textile-loveseat-3719",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "JACINDA ARMLESS TEXTILE LOVESEAT",
+    "group": "sofas",
+    "dims": "64.5\"W x 41\"D x 27\"H",
+    "canvas": [
+      390,
+      187
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.086,
+    "subjAspect": 2.086
   },
   {
     "slug": "lindt-toffee-velvet-channel-tufted-sofa-1820",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "LINDT TOFFEE VELVET CHANNEL TUFTED SOFA",
+    "group": "sofas",
+    "dims": "91\"W x 38\"D x 31\"H",
+    "canvas": [
+      386,
+      179
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.156,
+    "subjAspect": 2.156
   },
   {
     "slug": "phillipe-grey-silk-loveseat-34",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "PHILLIPE GREY SILK LOVESEAT",
+    "group": "sofas",
+    "dims": "51\"W x 26\"D x 37\"H",
+    "canvas": [
+      800,
+      600
+    ],
+    "bboxW": 0.688,
+    "bboxH": 0.727,
+    "aspect": 1.333,
+    "subjAspect": 1.261
   },
   {
     "slug": "reshma-botanical-sculptural-sofa-3711",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "RESHMA BOTANICAL SCULPTURAL SOFA",
+    "group": "sofas",
+    "dims": "82.5\"W x 34\"D x 28\"H",
+    "canvas": [
+      384,
+      174
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.207,
+    "subjAspect": 2.207
   },
   {
     "slug": "rosalind-cream-velvet-round-banquette-4014",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ROSALIND CREAM VELVET ROUND BANQUETTE",
+    "group": "sofas",
+    "dims": "90\"Dia x 30\"H",
+    "canvas": [
+      396,
+      218
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.817,
+    "subjAspect": 1.817
   },
   {
     "slug": "rowntree-chocolate-leather-loveseat-1710",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "ROWNTREE CHOCOLATE LEATHER LOVESEAT",
+    "group": "sofas",
+    "dims": "49\"W x 30\"D x 26\"H",
+    "canvas": [
+      330,
+      207
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 1.594,
+    "subjAspect": 1.594
   },
   {
     "slug": "sidony-white-wood-sofa-2748",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SIDONY WHITE + WOOD SOFA",
+    "group": "sofas",
+    "dims": "94\"W x 30\"D x 32\"H",
+    "canvas": [
+      386,
+      112
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 3.446,
+    "subjAspect": 3.446
   },
   {
     "slug": "silas-sage-oak-cane-sofa-2715",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SILAS SAGE + OAK CANE SOFA",
+    "group": "sofas",
+    "dims": "80.5\"W x 27.5\"D x 30\"H",
+    "canvas": [
+      392,
+      185
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.119,
+    "subjAspect": 2.119
   },
   {
     "slug": "stanhope-chocolate-leather-sofa-2983",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "STANHOPE CHOCOLATE LEATHER SOFA",
+    "group": "sofas",
+    "dims": "94.5\"W x 41\"D x 31.5\"H",
+    "canvas": [
+      396,
+      149
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.658,
+    "subjAspect": 2.658
   },
   {
     "slug": "sylvanus-green-ash-sofa-2619",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "SYLVANUS GREEN & ASH SOFA",
+    "group": "sofas",
+    "dims": "79\"W x 34\"D x 30\"H",
+    "canvas": [
+      369,
+      170
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.171,
+    "subjAspect": 2.171
   },
   {
     "slug": "talon-black-metal-sofa-945",
-    "error": "No connection adapters were found for \"{'url': 'https://wdyfavzfquegrxklcpmq.sup"
+    "title": "TALON BLACK METAL SOFA",
+    "group": "sofas",
+    "dims": "83\"W x 28.5\"W x 34\"H",
+    "canvas": [
+      400,
+      175
+    ],
+    "bboxW": 1.0,
+    "bboxH": 1.0,
+    "aspect": 2.286,
+    "subjAspect": 2.286
   }
 ]
