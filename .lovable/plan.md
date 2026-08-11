@@ -1,51 +1,90 @@
-# Stop the untouchable cover photo
+# Stop the untouchable cover photo — verified, with risk analysis
 
-## What the glitch actually is
+Every claim below was checked against current code. Line numbers are current.
 
-The public tile does not show the image you picked in the editor. Four separate layers can override slot 0, and none of them are visible or editable in admin:
+## The four override layers (exact code)
 
-1. **Normalized derivative swap** — `src/lib/normalized-cover.ts` + `src/data/inventory/normalized-covers.json`. If a product's hero matches a baked entry, the site silently renders a different file (a trimmed, re-centered 1536x1536 build artifact) instead of the photo. Admin shows the original; the site shows the derivative.
-2. **Family cover locks** — `src/data/inventory/family-cover-locks.json`. A hardcoded filename substring is force-promoted to slot 0 for certain products, overriding whatever order the editor saved.
-3. **"Detail shot" demotion heuristic** — `coverFirst()` in `src/lib/phase3-catalog.ts` reorders images when the filename matches detail/closeup/macro/hardware. Staff drag order gets silently rearranged by filename text.
-4. **Legacy upscaled covers** — `upscaled_cover_url` still exists on the table and in scripts, though the catalog no longer reads it. It is dead weight that keeps re-entering the conversation.
+### 1. Normalized derivative swap — the main culprit
+`src/lib/normalized-cover.ts` loads a static build artifact, `src/data/inventory/normalized-covers.json` (635 covers, generated 2026-08-08), keyed by **slug**:
 
-Net effect: the editor is not the source of truth. That is the whole bug.
+```ts
+export function normalizedCoverFor(slug, currentHeroUrl) {
+  const entry = manifest.covers[slug];
+  if (!entry) return null;
+  if (currentHeroUrl && baseUrl(currentHeroUrl) !== baseUrl(entry.src)) return null;
+  return { ...entry, url: `${entry.url}?v=${VERSION}` };
+}
+```
 
-## The rule going forward
+`src/lib/phase3-catalog.ts:189-208`:
 
-Slot 0 in the editor is the cover. Full stop. Anything the render layer does to that image must be a *derivative of the chosen image*, generated on demand, never a substitute chosen from a static file.
+```ts
+function withNormalizedCover(p) {
+  const hero = p.images[0];
+  const norm = normalizedCoverFor(p.slug, hero.url);
+  if (!norm) return p;
+  const cover = { ...hero, url: norm.url };
+  return { ...p, images: [cover, ...p.images.slice(1)],
+           primaryImage: cover, coverOriginalUrl: hero.url,
+           coverSubject: { w: norm.w, h: norm.h } };
+}
+```
 
-## Changes
+So the site renders a file from the `normalized/` prefix that the editor never shows. It **is** guarded — the swap only fires when the hero URL still matches `entry.src` — but that guard is exactly why it feels haunted: swap the cover in admin and the tile silently changes sizing behaviour (loses `coverSubject`, falls back to browser measurement), with no indication anywhere in the UI.
 
-**1. Retire the static normalized manifest as an override**
-- Normalization stops being a lookup keyed by slug. It becomes a property of the image the admin selected.
-- If a normalized derivative exists for the exact chosen hero, it is used purely as a rendering optimization (known geometry, no canvas probe). If the admin swaps the cover, the site uses the new photo immediately, and normalization is computed at upload time for it.
+### 2. Family cover locks
+`src/data/inventory/family-cover-locks.json` — two hardcoded entries:
 
-**2. Normalize at upload, not in a batch script**
-- When an image is uploaded in the product editor, generate the normalized square derivative right then and store it alongside the original, with its silhouette box.
-- Irregular uploads (odd whitespace, off-center, dark background, close crop) get normalized into the same canvas geometry as everything else, so one bad photo cannot change how neighbours are sized.
+```json
+{ "inola-12-black-wood-square-bar": "inventory/3674/30ff4e6b5d706b2b.png",
+  "luna-arcing-dining-chairs": "seating/chair-dining/LUNA%200.png" }
+```
 
-**3. Remove the hidden reorder rules**
-- Delete `family-cover-locks.json` and the `coverFirst()` detail-shot heuristic.
-- Any product that currently depends on a lock gets its correct cover written into the actual image order once, in the database, so the editor shows the truth.
+`phase3-catalog.ts:390-405` force-promotes that filename to slot 0 regardless of saved order. For these two products, drag-reordering the cover in admin does nothing.
 
-**4. Surface it in the editor**
-- The product edit drawer shows the cover exactly as the public grid will render it (normalized frame + measured silhouette), so what staff see is what ships.
-- If a derivative is missing or failed validation, the drawer says so instead of silently falling back.
+### 3. Detail-shot demotion heuristic
+`phase3-catalog.ts:284-292` reorders images by filename text:
 
-**5. Drop the dead upscale path**
-- Remove `upscaled_cover_url` reads/writes from scripts and admin code so nobody can reintroduce a baked AI cover.
+```ts
+const isDetailShot = (url) => /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(imgKey(url));
+const coverFirst = (imgs) => { if (imgs.length < 2 || !isDetailShot(imgs[0].url)) return imgs; ... }
+```
 
-## Rollout
+Name a file `..._detail.png`, drag it to slot 0, save — the site puts a different photo first.
 
-1. Build upload-time normalization and store geometry.
-2. Backfill every current product through the same code path once; produce a report of failures rather than guessing.
-3. Fold locks into real image order in the database.
-4. Switch the render layer to derivative-of-chosen-hero and remove the manifest lookup, locks, and heuristic in the same release.
-5. Verify with grid screenshots per category against current baselines before and after.
+### 4. Legacy upscale column
+`upscaled_cover_url` is already **not** read by the catalog. It still exists in the table, in `types.ts`, and in `scripts/nano-upscale-covers.mjs` / `scripts/reframe-covers.mjs` which still write it. Nothing renders it today.
 
-## Technical notes
+## Correction to my earlier plan
 
-- Touched: `src/lib/normalized-cover.ts`, `src/lib/phase3-catalog.ts`, `src/components/collection/NormalizedProductImage.tsx`, `src/components/admin/ProductEditDrawer.tsx`, `src/lib/products-admin.functions.ts`, `scripts/normalize-covers.mjs` (becomes the backfill runner for the shared function).
-- No change to the physical-scale/fit math in this pass. This pass only fixes *which file* renders and *who controls it*.
-- Data written: normalized derivative URL + silhouette box per image, stored with the product row so no static JSON is in the path.
+I proposed generating normalized derivatives on the server at upload time. **That cannot work here** — normalization uses `sharp`, which needs a native binary; server functions run in a Worker runtime with no `sharp`. The normalization must happen **in the browser** at upload time (canvas: alpha/background-key bounding box, crop, re-center on a 1536 square), which is a straight port of the script's math and has the side benefit of showing staff the exact result before saving.
+
+## Proposed fix
+
+1. **Normalize on upload, client side.** Port `scripts/normalize-covers.mjs` trim/center math to a browser module. The admin uploader writes both the original and the normalized derivative, plus the silhouette box `{w,h}` — stored per image on the product row, not in a static JSON.
+2. **Render layer reads geometry from the product, not the manifest.** `withNormalizedCover` becomes a per-image lookup on data the admin owns. Static manifest is used only as a fallback for products not yet re-uploaded, and only during migration.
+3. **Delete the two hidden reorder rules** (`family-cover-locks.json`, `coverFirst`). Before deleting, write INOLA's and LUNA's correct cover into their actual saved image order in the database so the editor shows the truth.
+4. **Editor shows the shipped cover.** The drawer renders the tile exactly as the grid will, with a "normalized" badge, and warns when a derivative is missing.
+5. **Retire the upscale writers.** Remove the two scripts' write paths so nothing can repopulate `upscaled_cover_url`.
+
+## Risk analysis
+
+| # | Change | Risk | Blast radius | Mitigation |
+|---|---|---|---|---|
+| 1 | Client-side normalization | **Medium.** Browser canvas bg-keying will not match `sharp` exactly on edge cases (soft shadows, off-white studio backdrops). A wrong bbox = wrong tile scale for that one product. | One product per bad upload — never neighbours, since scale is derived per-item from its own box plus catalog medians. | Validate the computed box before save (reject <5% or >99% coverage), show the result in the drawer, allow manual re-crop. |
+| 2 | Geometry moves to product row | **Medium-high.** This is the path that feeds `productFit` / `productPhysicalScale`. A mismatch between manifest and row data during migration could shift many tiles. | Whole Collection grid. | Ship behind a per-product flag: rows with stored geometry use it, everything else keeps the manifest. Run the fit harness before/after; require byte-identical output on untouched products. |
+| 3 | Delete locks + heuristic | **Low.** Two known products plus any file literally named `*detail*`. | INOLA, LUNA, plus whatever the regex currently catches. | Enumerate every product the regex currently reorders, fix their saved order first, then remove. Verify with grid screenshots. |
+| 4 | Editor preview | **Low.** Read-only UI. | Admin only. | None needed. |
+| 5 | Retire upscale writers | **Very low.** Nothing reads the column. | None. | Leave the column in place; only remove the writers. |
+
+**The one thing that must not happen:** a mid-migration state where some products get geometry from the row and others from a stale manifest keyed on a hero URL that changed. That is the current bug class, repeated. So step 2 ships only after step 1 backfills every product through the same code path, with a failure report — not a guess.
+
+**Not in scope:** the physical-scale / fit math. This pass changes *which file renders* and *who controls it*, nothing about how size is solved.
+
+## Sequencing
+
+1. Browser normalization module + drawer preview (no render change).
+2. Backfill all 630 products through it; produce a pass/fail report.
+3. Fix INOLA/LUNA saved order; enumerate and fix detail-shot products.
+4. Flip the render layer to row geometry; remove manifest lookup, locks, heuristic in one release.
+5. Fit harness + per-category screenshots against current baselines as the gate.
