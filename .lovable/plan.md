@@ -27,8 +27,11 @@ until C's `--apply` confirms.
 - Re-run the dry run — expect 0 blockers, 831 writes, 51 changed, 33 bucket-4 stamped, 1 demotion.
 - Run `--apply`, then `bun run bake:catalog`.
 
-**Done when:** 0 blockers; 831 rows written; `select confidence, count(*)` returns high 831-minus-34,
-med 34 (33 v1-seed + KEATON); per-collection counts on `/collection` match the diff doc.
+**Done when:** the re-run dry run reports 0 blockers and emits a predicted counts table (rows
+written, bucket-2 changes, bucket-4 review-stamps, demotions, per-collection totals, confidence
+distribution), and the apply's actual counts equal that predicted table exactly. No count in this
+document is authoritative — predictions come from the script that does the writing, never from
+arithmetic in a plan.
 
 ## Task C2 — read-path switchover (drafted, held)
 
