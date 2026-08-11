@@ -423,7 +423,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // Owner-approved family covers. A family hero can legitimately be the
       // first image of one configuration row (INOLA full bar, LUNA chair pair),
       // so the generic variant-owned test above cannot safely choose it.
-      const coverNeedle = FAMILY_COVER_LOCKS[p.slug as keyof typeof FAMILY_COVER_LOCKS];
+      // An admin cover ALWAYS wins. When slot 0 carries upload-time geometry,
+      // a human picked that photo in the editor — no lock and no filename
+      // heuristic is allowed to move it. This is the escape hatch for
+      // "the cover is some file I can't change".
+      const rowMap = liveNormalized(live);
+      const adminChoseCover =
+        !!baseImages[0] && !!rowNormalizedFor(rowMap, baseImages[0].url);
+
+      const coverNeedle = adminChoseCover
+        ? undefined
+        : FAMILY_COVER_LOCKS[p.slug as keyof typeof FAMILY_COVER_LOCKS];
       if (coverNeedle) {
         const candidates = [
           ...baseImages,
@@ -446,7 +456,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
       // The original product photo is the source of truth for slot 0.
 
 
-      baseImages = coverFirst(baseImages);
+      if (!adminChoseCover) baseImages = coverFirst(baseImages);
       const v = p.imagesVersion ?? 0;
       const images = v ? bustImages(baseImages, v) : baseImages;
       return withNormalizedCover({
@@ -460,7 +470,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         imageCount: images.length,
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
-      }, liveNormalized(live));
+      }, rowMap);
 
     });
 
