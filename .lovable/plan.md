@@ -78,6 +78,6 @@ Production changes from the prototype:
 
 ## Order
 
-B → C (dry run, diff, bucket-4 ruling, lint, apply, rebake) → D → E → F. E does not start before C applies.
+B → C (dry run, diff, bucket-4 ruling, lint, apply, rebake) → C2 → D (anytime after C) → E → F. E does not start before C2 lands.
 
 **First output on approval: Task B's migration and nothing else.**
