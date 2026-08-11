@@ -1,6 +1,6 @@
 # Taxonomy — ghost-ruling rekey manifest
 
-Generated 2026-08-11T21:44:52.273Z by `scripts/rekey-ghost-rulings.mjs` (DRY RUN).
+Generated 2026-08-11T21:45:01.061Z by `scripts/rekey-ghost-rulings.mjs` (APPLY).
 
 Root cause: the v4 workbook was keyed on bake-time ids, which are not stable.
 Future workbooks key on DB `rms_id`; normalized-title match is the documented fallback.
