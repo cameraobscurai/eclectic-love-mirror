@@ -74,7 +74,7 @@ def subject_bbox(im):
     return mask.getbbox(), False
 
 
-def normalize(im):
+def normalize(im, pad=PAD, force=False):
     """Trim to subject, re-center on a square canvas with uniform padding."""
     bbox, transparent = subject_bbox(im)
     if not bbox:
@@ -82,12 +82,12 @@ def normalize(im):
     W, H = im.size
     fill_w = (bbox[2] - bbox[0]) / W
     fill_h = (bbox[3] - bbox[1]) / H
-    if fill_w >= FILL_TARGET or fill_h >= FILL_TARGET:
+    if not force and (fill_w >= FILL_TARGET or fill_h >= FILL_TARGET):
         return None, (fill_w, fill_h)
 
     subject = im.crop(bbox)
     sw, sh = subject.size
-    side = int(round(max(sw, sh) / (1 - 2 * PAD)))
+    side = int(round(max(sw, sh) / (1 - 2 * pad)))
     bg = (0, 0, 0, 0) if transparent else (255, 255, 255, 255)
     canvas = Image.new("RGBA", (side, side), bg)
     canvas.paste(subject, ((side - sw) // 2, (side - sh) // 2), subject if transparent else None)
@@ -138,6 +138,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slugs", required=True, help="comma separated product slugs")
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--pad", type=float, default=PAD,
+                    help="canvas padding fraction; raise it to dial a perspective-heavy "
+                         "cover down so its silhouette mass matches its neighbours")
+    ap.add_argument("--force", action="store_true",
+                    help="re-canvas even when the subject is already tight")
     args = ap.parse_args()
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -157,12 +162,12 @@ def main():
             continue
 
         original = Image.open(io.BytesIO(requests.get(url, timeout=60).content)).convert("RGBA")
-        out, fill = normalize(original)
+        out, fill = normalize(original, pad=args.pad, force=args.force)
         if out is None:
             print(f"  skip {slug}: already tight ({fill[0]:.2f} x {fill[1]:.2f})" if fill else f"  skip {slug}: empty")
             continue
 
-        print(f"  {slug}: fill {fill[0]:.2f} x {fill[1]:.2f} -> {1 - 2 * PAD:.2f} square")
+        print(f"  {slug}: fill {fill[0]:.2f} x {fill[1]:.2f} -> {1 - 2 * args.pad:.2f} square")
         pairs.append((slug, original, out))
         report.append({"slug": slug, "bucket": bucket, "path": path, "fillBefore": fill})
 
