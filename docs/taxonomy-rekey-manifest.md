@@ -1,6 +1,6 @@
 # Taxonomy — ghost-ruling rekey manifest
 
-Generated 2026-08-11T21:44:19.361Z by `scripts/rekey-ghost-rulings.mjs` (DRY RUN).
+Generated 2026-08-11T21:44:52.273Z by `scripts/rekey-ghost-rulings.mjs` (DRY RUN).
 
 Root cause: the v4 workbook was keyed on bake-time ids, which are not stable.
 Future workbooks key on DB `rms_id`; normalized-title match is the documented fallback.
@@ -19,11 +19,11 @@ Future workbooks key on DB `rms_id`; normalized-title match is the documented fa
 ## Reported, not written (9)
 
 - **MANUAL-176e0cc8** (AVINASH OAK COMMUNITY TABLE) — zero title matches in db
-- **aya-16th-century-wooden-doors** (AYA 16TH CENTURY WOODEN DOORS) — db row null is already ruled (source: unknown) — not overwriting
-- **della-half-frosted-glass-bottle** (DELLA HALF-FROSTED GLASS BOTTLE) — db row null is already ruled (source: unknown) — not overwriting
-- **duru-antique-clear-glass-bottle-set** (DURU ANTIQUE CLEAR GLASS BOTTLE SET) — db row null is already ruled (source: unknown) — not overwriting
+- **aya-16th-century-wooden-doors** (AYA 16TH CENTURY WOODEN DOORS) — db row (rms_id —) is already assigned large-decor/walls — matches the ruling, nothing to recover (review source: none)
+- **della-half-frosted-glass-bottle** (DELLA HALF-FROSTED GLASS BOTTLE) — db row (rms_id —) is already assigned styling/accents — matches the ruling, nothing to recover (review source: none)
+- **duru-antique-clear-glass-bottle-set** (DURU ANTIQUE CLEAR GLASS BOTTLE SET) — db row (rms_id —) is already assigned styling/accents — matches the ruling, nothing to recover (review source: none)
 - **elysanda-ceremony-path-platform** (ELYSANDA CEREMONY PATH + PLATFORM) — 2 title matches — ambiguous [3913, ]
-- **libby-glass-hinged-top-box** (LIBBY GLASS HINGED TOP BOX) — db row null is already ruled (source: unknown) — not overwriting
-- **lynden-horseshoe-hat-stand** (LYNDEN HORSESHOE HAT STAND) — db row null is already ruled (source: unknown) — not overwriting
-- **merritt-post-and-beam-structure** (MERRITT POST AND BEAM STRUCTURE) — db row null is already ruled (source: unknown) — not overwriting
-- **runa-faux-book-collection** (RUNA FAUX BOOK COLLECTION) — db row null is already ruled (source: unknown) — not overwriting
+- **libby-glass-hinged-top-box** (LIBBY GLASS HINGED TOP BOX) — db row (rms_id —) is already assigned styling/accents — matches the ruling, nothing to recover (review source: none)
+- **lynden-horseshoe-hat-stand** (LYNDEN HORSESHOE HAT STAND) — db row (rms_id —) is already assigned styling/accents — matches the ruling, nothing to recover (review source: none)
+- **merritt-post-and-beam-structure** (MERRITT POST AND BEAM STRUCTURE) — db row (rms_id —) is already assigned large-decor/structures — matches the ruling, nothing to recover (review source: none)
+- **runa-faux-book-collection** (RUNA FAUX BOOK COLLECTION) — db row (rms_id —) is already assigned styling/accents — matches the ruling, nothing to recover (review source: none)
