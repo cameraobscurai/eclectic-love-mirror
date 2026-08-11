@@ -83,6 +83,7 @@ import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
 import { Route as AdminTeamRouteImport } from './routes/admin.team'
+import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
 import { Route as AdminStudioRouteImport } from './routes/admin.studio'
 import { Route as AdminRenderRouteImport } from './routes/admin.render'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
@@ -475,6 +476,11 @@ const AdminTeamRoute = AdminTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTaxonomyRoute = AdminTaxonomyRouteImport.update({
+  id: '/taxonomy',
+  path: '/taxonomy',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminStudioRoute = AdminStudioRouteImport.update({
   id: '/studio',
   path: '/studio',
@@ -627,6 +633,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
@@ -723,6 +730,7 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
@@ -821,6 +829,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRoute
   '/admin/render': typeof AdminRenderRoute
   '/admin/studio': typeof AdminStudioRoute
+  '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
@@ -920,6 +929,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
@@ -1016,6 +1026,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
@@ -1113,6 +1124,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/render'
     | '/admin/studio'
+    | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
     | '/api/admin-chat'
@@ -1767,6 +1779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTeamRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/taxonomy': {
+      id: '/admin/taxonomy'
+      path: '/taxonomy'
+      fullPath: '/admin/taxonomy'
+      preLoaderRoute: typeof AdminTaxonomyRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/studio': {
       id: '/admin/studio'
       path: '/studio'
@@ -1945,6 +1964,7 @@ interface AdminRouteChildren {
   AdminProductsRoute: typeof AdminProductsRoute
   AdminRenderRoute: typeof AdminRenderRoute
   AdminStudioRoute: typeof AdminStudioRoute
+  AdminTaxonomyRoute: typeof AdminTaxonomyRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminUploadHeroRoute: typeof AdminUploadHeroRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1966,6 +1986,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProductsRoute: AdminProductsRoute,
   AdminRenderRoute: AdminRenderRoute,
   AdminStudioRoute: AdminStudioRoute,
+  AdminTaxonomyRoute: AdminTaxonomyRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminUploadHeroRoute: AdminUploadHeroRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -2054,13 +2075,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
