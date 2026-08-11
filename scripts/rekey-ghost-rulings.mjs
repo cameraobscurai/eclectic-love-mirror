@@ -135,7 +135,12 @@ for (const ghostId of ghostIds) {
   if (!eligible) {
     reports.push({
       ghostId, title: ruling.title,
-      why: `db row ${row.rms_id} is already ruled (source: ${source ?? 'unknown'}) — not overwriting`,
+      why: `db row (rms_id ${row.rms_id ?? '—'}) is already assigned `
+        + `${row.collection_slug}/${row.category_slug}`
+        + (row.collection_slug === ruling.collection_slug && row.category_slug === ruling.category_slug
+          ? ' — matches the ruling, nothing to recover'
+          : ` — DIFFERS from the ruling ${ruling.collection_slug}/${ruling.category_slug}, needs a human call`)
+        + ` (review source: ${source ?? 'none'})`,
     });
     continue;
   }
