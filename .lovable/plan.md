@@ -17,11 +17,15 @@ Does not touch Frame Studio Phase 1 — build that on its own rails. This lands 
 
 ## Steps
 
-1. **Migration** — add `collection_slug` and `category_slug` to `inventory_items` (nullable at first), plus a `taxonomy` reference table holding her 10 collections and their allowed categories so values can't drift.
+1. **Migration** — add `collection_slug` and `category_slug` to `inventory_items` (nullable at first), plus a `taxonomy` reference table holding her 10 collections and their allowed categories so values can't drift. Collection slugs are derived from the existing live nav `group` param values (`lounge-seating`, `cocktail-bar`, `dining`, …), not freshly invented — her names already match almost exactly, so public URLs barely move and no collection-level redirects are needed. Do not "clean up" those slugs.
 2. **Review round-trip** — Adrienne edits the draft workbook already generated (635 rows: 462 white / 121 yellow / 52 red). We import her returned file, validate every value against the reference table, and reject/report anything off-vocabulary before writing.
-3. **Assign** — dry-run manifest first, then apply. Anything unassigned stays out of nav rather than silently falling back.
-4. **Read path** — nav, collection filters, PDP breadcrumbs, admin Inventory sort, and the catalog bake read the two columns directly. No scoring, no keywords.
-5. **Delete** — remove the alias map, keyword classifier, browse-group scorer, subcategory inference, and owner-subcategory overrides once the read path is on the columns and verified.
+3. **Assign** — dry-run manifest first, then apply. Assignment is per family tile: variant rows inherit the lead row's collection/category, so review stays at 635 rows, not 835. Anything unassigned stays out of nav rather than silently falling back.
+4. **Import protection (required, not optional)** — `scripts/import.mjs` must never write `collection_slug` or `category_slug` on existing rows; the RMS upsert explicitly excludes both columns. Without this, the next sync after her review nulls her assignments and — because unassigned products stay out of nav — silently removes live products with no error anywhere. New RMS products land unassigned and surface in an "Unassigned" queue in admin Inventory. That queue is the answer to who classifies product #636: her review is ongoing intake, not a one-time cleanup.
+5. **Read path** — nav, collection filters, PDP breadcrumbs, admin Inventory sort, and the catalog bake read the two columns directly. No scoring, no keywords.
+6. **Split delete — do NOT delete everything at once.**
+   - Deleted now, once the read path is on the columns and verified: browse-group scorer, subcategory keyword inference, owner-subcategory overrides.
+   - Survives untouched: the alias map (`canonicalCategorySlug`) and the old category column. `categoryFit.ts` imports the alias map and that solver stays live in production until Frame Studio Phase 4/5. Deleting it now either breaks the grid or forces edits inside frozen files. Alias map + old column go out in the same commit as the Phase 5 solver delete.
+
 
 ## Re-classification, not a rename
 
