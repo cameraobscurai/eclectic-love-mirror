@@ -41,7 +41,8 @@ const CATALOG = JSON.parse(
   fs.readFileSync('src/data/inventory/current_catalog.json', 'utf8'),
 );
 const SUPABASE = 'https://wdyfavzfquegrxklcpmq.supabase.co';
-const CATEGORY_FILTER = process.argv[2] || null;
+const REFETCH = process.argv.includes('--refetch');
+const CATEGORY_FILTER = process.argv.slice(2).find((a) => !a.startsWith('--')) || null;
 const CONCURRENCY = 8;
 const FRAME_ASPECT = 5 / 4; // PRODUCT_TILE_FRAME_ASPECT
 const INSET = 0.94;         // TILE_IMAGE_INSET
