@@ -1,97 +1,109 @@
-# Reseed taxonomy from the v3 (Squarespace-restored + export-enriched) workbook
+# Taxonomy Execution Plan — reseed v3 + Taxonomy Studio
 
-v3 is 588 white / 33 yellow / 14 red across 635 lead rows, with per-row provenance
-(`squarespace`, `squarespace-export`, `squarespace+title`, `title`, `liveCat*`, `none`). It
-supersedes v2 and the v1 seed currently in the database. Ten collections.
+Merges the approved reseed plan with the Taxonomy Studio surface. One sequence, six tasks, each
+gated by its Done-when. The React prototype (`taxonomy-studio.jsx`) is the reference implementation
+for Task E — build what it shows, wired to the database. The workbook round-trip demotes to a
+fallback path; review happens in the studio, with photos.
 
-## 1. Blank category = unassigned, not an abort
+Sequencing constraint: this whole plan lands before Frame Studio Phase 2. The `categoryFit.ts`
+freeze and legacy browse-group scorer stay untouched until Frame Studio Phase 5.
 
-`scripts/apply-taxonomy.mjs` currently treats any unresolvable row as off-vocabulary and exits
-without writing.
+**One gap to flag before Task E:** `taxonomy-studio.jsx` did not arrive with this upload — only
+`taxonomy-execution-plan.md` came through. Task E's contract below is taken from the plan text.
+Send the .jsx before E starts (E is gated behind C regardless, so nothing blocks now).
 
-- blank collection *and* blank category → skipped, reported in the "unassigned (red)" list
-- a value present but off-vocabulary → still a hard abort (the typo guard for her returned file)
+---
 
-## 2. Export cross-check (demoted from enrichment)
+## Task A — Rename `category_slug_v2` → `category_slug`
 
-The enrichment work is already in v3, so the matcher becomes a verifier, not a writer. Run the
-title match from the Squarespace products export against v3 and report **disagreements** between
-the scrape-derived assignment and the export's `Categories` column.
+Migration rename, the 11 named call sites, regenerated types. Lands first so every diff, doc, and
+log this plan produces already uses the clean name. `category` (legacy free-text) and
+`subcategory_slug` (142 rows) stay as tracked deletion candidates in
+`docs/taxonomy-open-questions.md`, tied to Frame Studio Phase 5.
 
-- agree → white is bulletproof, provenance noted as two independent records
-- disagree → the row is demoted to yellow regardless of its current color, and lands in the review
-  list. No automatic overwrite in either direction.
+**Done when:** typecheck clean, no `category_slug_v2` string remains anywhere in the repo.
 
-**Colorado rule — enforced in the matcher, not in anyone's head.** Rows whose `Product Page` starts
-with `ut-` are excluded from the match index entirely. A title shared between a CO page and a UT
-page must never silently pull the UT row's category. The archive README states the scope decision
-verbatim: *"Colorado only — UT rows retained for record, never classified."*
+## Task B — Review-state column (the seam between reseed and studio)
 
-## 3. Four diff buckets, including the stale-v1 bucket
+```sql
+alter table inventory_items add column if not exists taxonomy_review jsonb;
+-- { confidence:'high'|'med'|'low', source:'squarespace'|'squarespace-export'|
+--   'squarespace+title'|'liveCat+title'|'title'|'export-disagreement'|'none'|'human',
+--   reviewed:boolean, needs_owner:boolean, reviewed_by?:uuid, reviewed_at?:timestamptz }
+```
 
-The dry run writes `docs/taxonomy-v3-diff.md` with:
+Any human write from the studio sets `source:'human'`, `reviewed:true`, and stamps who/when.
+`import.mjs` excludes this column from RMS sync exactly like the two slug columns.
 
-1. **unchanged** — v1 value equals v3 proposal
-2. **changed** — v1 value differs; both shown
-3. **newly assigned** — was NULL, now assigned
-4. **outside workbook — currently assigned** — rows the workbook does not cover (directly or by
-   family inheritance) that nevertheless carry a v1 value
+**Done when:** column exists, in types, in the import exclusion list.
 
-Bucket 4 is the one that matters. 894 rows in `inventory_items`, 857 currently carry a collection;
-the workbook covers 635 leads plus variants. Uncovered-but-assigned rows are stale v1 guesses.
-They get listed explicitly and a deliberate decision — null them or keep them — is made from that
-list before `--apply`. Nothing is decided by omission.
+## Task C — Reseed
 
-## 4. Rename `category_slug_v2` → `category_slug`
+As approved: blank-vs-off-vocabulary rule (blanks skip, off-vocabulary aborts), export cross-check
+as verifier with the Colorado `ut-` exclusion, four diff buckets with bucket 4 (outside workbook,
+currently assigned) ruled by decision before `--apply`, family inheritance, rebake, per-collection
+count verification.
 
-Checked: **there is no `category_slug` column.** The name is free. What exists is `category`
-(legacy free-text) and `subcategory_slug` (142 rows, legacy). The `_v2` suffix was defensive
-naming against those, not a real collision — so it is synonym rot with no justification and it
-gets removed now, while the column is one day old and carries no external consumers.
+`--apply` also writes `taxonomy_review` per row — confidence/source from v3, `reviewed:false`,
+`needs_owner:false`. Cross-check demotions get `confidence:'med', source:'export-disagreement'`.
+The 14 reds stay NULL on both slug columns with `confidence:'low'` — they are the studio's opening
+queue.
 
-- Migration: `ALTER TABLE inventory_items RENAME COLUMN category_slug_v2 TO category_slug`
-- Update the 11 call sites: `scripts/apply-taxonomy.mjs`, `scripts/import.mjs`,
-  `scripts/bake-catalog.mjs`, `src/lib/phase3-catalog.ts`, `src/lib/photos-admin.functions.ts`,
-  `src/lib/collection-parents.ts`, `src/lib/products-admin.functions.ts`,
-  `src/lib/inventory-images.functions.ts`, `src/routes/admin.products.tsx`,
-  `src/components/admin/ProductEditDrawer.tsx`, regenerated `types.ts`
-- Rename lands **before** the reseed, so every diff, doc and log written by this pass already says
-  `category_slug`
-- Deferred, named, not silent: `category` and `subcategory_slug` are deletion candidates once the
-  legacy browse-group scorer and `categoryFit.ts` freeze lift at Frame Studio Phase 5. They go in
-  `docs/taxonomy-open-questions.md` as a tracked removal, not a someday.
+**Done when:** diff reviewed, bucket 4 ruled, applied, rebaked, counts confirmed on `/collection`,
+and `select confidence, count(*)` matches 588/33/14 plus any cross-check demotions.
 
-## 5. Apply, rebake, verify
+## Task D — Archive
 
-Dry run → read the diff → resolve bucket 4 → `--apply`. Family variants inherit the lead row's
-assignment. Then `scripts/bake-catalog.mjs`, confirm counts per collection on `/collection`, and
-spot-check the categories whose membership moves most in the diff.
+`docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37
+counts, and the scope line verbatim — *"Colorado only — UT rows retained for record, never
+classified."*
 
-## 6. Meeting doc
+## Task E — Taxonomy Studio at `/admin/taxonomy`
 
-`docs/taxonomy-open-questions.md` gets the 14 reds (TIVOLI ×6, LYNDEN, OVALIA, RUNA and the
-remaining tray/plinth rows — all recent adds), any rows demoted to yellow by the export
-cross-check, the "Candlighting" spelling, and whether Dining's small size is intentional.
-Storage-under-Cocktail+Bar and the bare-"chair" boundary are marked **closed by her own historical
-data**.
+Load-bearing, keep as shown in the prototype:
 
-## Archive
+- **The ledger strip.** One tick per product, colored by state (oxide = needs ruling, ochre =
+  confirm, slate = with Adrienne, moss = ruled, line = restored-white). Ticks drain as rulings
+  land; clicking a tick scrolls to its tile. One row, no wrapping, ~2px ticks at 635 rows.
+- **Fixed 5:4 contain photo boxes** on every tile.
+- **Constrained dropdowns.** Collection loads its categories from the `taxonomy` reference tables;
+  invalid pairs are unrepresentable in the UI and rejected again server-side on write.
+- **Bulk assign** via photo-tap selection and a bottom bar.
+- **ASK ADRIENNE** toggle per tile → `needs_owner:true`, dashed slate treatment, own filter. That
+  filter is her meeting agenda.
+- **Filter chips with live counts** and the collection dropdown.
+- The Hive back-of-house palette and type treatment as shown.
 
-`docs/archive/squarespace-products-2026-08-11.csv` plus a README recording: source (Commerce →
-Export All), date, row/title/category counts (1,453 / 1,116 / 37), and the Colorado scope line.
-This is the only structured record of eight years of merchandising once the subscription lapses.
+Prototype → production changes:
 
-## Not in this pass
+- Seeds all 635 lead rows (family tiles once; variants inherit on write) from the reseeded columns
+  + `taxonomy_review`, not an embedded array.
+- Every dropdown change writes immediately through a staff/admin-gated, audited server function
+  (same middleware pattern as `updateItemImages`), setting slugs + `taxonomy_review` per Task B.
+  No export-as-save, no session-only state — EXPORT RULINGS is replaced by the writes themselves.
+- Default view: OPEN filter. After migration completes, default becomes the unassigned filter —
+  new RMS imports land there; classification-at-intake is the standing workflow. This route is
+  never deleted in a later cleanup.
+- Thumbnails via the existing `withCdnWidth(url, 400)` helper.
 
-- No re-scraping. Display order (`ownerSiteRank`), taxonomy and mirrored images are captured.
-- No bulk asset-library pulls — one at a time, when Frame Studio's SRC_UPSCALED advisory names a
-  specific soft cover.
-- Frame Studio Phase 2 stays after this. The legacy browse-group scorer and the `categoryFit.ts`
-  freeze are untouched until Phase 5.
+**Done when:** all 635 tiles render with photos and seeded state; a dropdown change persists,
+audits, stamps `reviewed_by/at`, and survives reload; bulk assign works; the ASK ADRIENNE filter
+returns exactly the flagged set; an off-vocabulary write attempted directly at the server function
+is rejected; ledger counts equal database counts.
 
-## Technical notes
+## Task F — Meeting doc
 
-- Only `collection_slug` and `category_slug` are written. `import.mjs` already excludes both from
-  RMS sync updates, so an inventory import cannot clobber them.
-- Non-numeric `rms_id` values in the workbook (`live-maor`, `tivoli-travertine-*`) match real rows
-  and use the existing string-keyed update path.
+`docs/taxonomy-open-questions.md` carries only policy questions: "Candlighting" spelling; Dining's
+size; the eight absent-from-migration products (retired or lost); the `category` /
+`subcategory_slug` deletion tracker. Item-level questions — the 14 reds and cross-check demotions
+— live in the studio behind ASK ADRIENNE and NEEDS RULING. The doc links the route.
+Storage-under-Cocktail+Bar and the bare-"chair" boundary stay closed by her own historical data.
+
+---
+
+## Order and gating
+
+A → B → C (dry, diff, bucket-4 ruling, apply) → D anytime after C → E → F.
+E must not start before C applies.
+
+**First output on approval: Task A's rename migration and nothing else.**
