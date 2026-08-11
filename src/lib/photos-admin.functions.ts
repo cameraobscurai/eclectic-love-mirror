@@ -182,6 +182,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         quantity_label: string | null;
         public_ready: boolean | null;
         subcategory_slug: string | null;
+        images_meta: unknown;
       }
     > = {};
 
@@ -190,7 +191,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, images_meta",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -211,6 +212,10 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           quantity_label: row.quantity_label,
           public_ready: row.public_ready,
           subcategory_slug: row.subcategory_slug ?? null,
+          // Upload-time silhouette geometry. Ships in the snapshot so the
+          // public grid sizes tiles from the admin's own cover, not a
+          // static manifest.
+          images_meta: pickNormalized(row.images_meta),
         };
       }
       if (data.length < PAGE) break;
