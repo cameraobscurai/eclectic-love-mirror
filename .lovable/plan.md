@@ -24,7 +24,8 @@ until C's `--apply` confirms.
 - Update `scripts/reseed-taxonomy.mjs`: collection-crossing rule (category's declared collection
   wins over the workbook column when they disagree for a known category), bucket-4 stamping with
   `v1-seed`, ghost-id list written to open questions.
-- Re-run the dry run — expect 0 blockers, 831 writes, 51 changed, 33 bucket-4 stamped, 1 demotion.
+- Re-run the dry run — 0 blockers, and it emits the predicted counts table used as the apply's
+  acceptance criteria.
 - Run `--apply`, then `bun run bake:catalog`.
 
 **Done when:** the re-run dry run reports 0 blockers and emits a predicted counts table (rows
