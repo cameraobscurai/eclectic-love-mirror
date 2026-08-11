@@ -247,20 +247,13 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     try {
       const arr = Array.from(files);
       const appended: string[] = [];
+      const warnings: string[] = [];
       for (const file of arr) {
         if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) continue;
         if (file.size > 10 * 1024 * 1024) {
           setErrMsg(`${file.name} exceeds 10MB`);
           continue;
         }
-        const buf = new Uint8Array(await file.arrayBuffer());
-        // chunked btoa to avoid call-stack overflow on large arrays
-        let bin = "";
-        const chunk = 0x8000;
-        for (let i = 0; i < buf.length; i += chunk) {
-          bin += String.fromCharCode(...buf.subarray(i, i + chunk));
-        }
-        const base64 = btoa(bin);
         const res = await uploadFn({
           data: {
             id: item.id,
@@ -271,12 +264,50 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
               | "image/png"
               | "image/webp"
               | "image/avif",
-            base64,
+            base64: await toBase64(file),
           },
         });
         appended.push(res.url);
+
+        // Every upload also produces a normalized derivative + its measured
+        // silhouette. That geometry is what sizes the tile — the raw photo's
+        // framing never reaches the grid, so an off-centre or oddly cropped
+        // upload can't distort its neighbours.
+        try {
+          const norm = await normalizeImageFile(file);
+          if (!geometryIsTrustworthy(norm)) {
+            throw new NormalizeError(
+              "Product outline was too faint to measure — the original will be used as-is.",
+            );
+          }
+          const normRes = await uploadFn({
+            data: {
+              id: item.id,
+              rmsId: item.rms_id,
+              filename: `${file.name.replace(/\.[^.]+$/, "")}-norm.png`,
+              contentType: "image/png",
+              base64: await toBase64(norm.blob),
+            },
+          });
+          await setGeometry({
+            data: {
+              id: item.id,
+              source: res.url,
+              url: normRes.url,
+              w: norm.w,
+              h: norm.h,
+              isCutout: norm.isCutout,
+            },
+          });
+        } catch (ne) {
+          warnings.push(
+            `${file.name}: ${(ne as Error).message || "could not be normalized"}`,
+          );
+        }
       }
       if (appended.length) apply([...urls, ...appended]);
+      if (warnings.length) setErrMsg(warnings.join(" · "));
+
     } catch (e) {
       setErrMsg((e as Error).message);
     } finally {
