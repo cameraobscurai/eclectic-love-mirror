@@ -70,7 +70,6 @@ const PARENT_HERO_GROUP: Record<ParentId, BrowseGroupId | null> = {
   rugs: "rugs",
   styling: "styling",
   "large-decor": null,
-  "furs-pelts": null,
 };
 
 const PARENT_DESCRIPTIONS: Record<ParentId, string> = {
@@ -87,15 +86,13 @@ const PARENT_DESCRIPTIONS: Record<ParentId, string> = {
   lighting:
     "Candlelight, chandeliers, lamps, and specialty lighting from Eclectic Hive's rental archive. Built for ambient, editorial events.",
   textiles:
-    "Pillows and throws — texture for lounges, ceremony seating, and styled corners. From Eclectic Hive's curated event rental archive.",
+    "Pillows, throws, and hides — texture for lounges, ceremony seating, and styled corners. From Eclectic Hive's curated event rental archive.",
   rugs:
     "Vintage and contemporary rugs for ceremony aisles, lounge floors, and outdoor installations. Eclectic Hive's rug program for event rental.",
   styling:
     "Accents, crates, baskets, and styling props. The detail layer for editorial event design — by Eclectic Hive.",
   "large-decor":
     "Structures, walls, and oversized installations. Eclectic Hive's large-format pieces for event design across Colorado and the Mountain West.",
-  "furs-pelts":
-    "Hides, furs, and pelts — textural layers for lounges and ceremony seating. From Eclectic Hive's curated archive.",
 };
 
 function absoluteCover(parent: ParentId): string | null {

@@ -81,7 +81,6 @@ const PARENT_COVER_GROUP: Record<ParentId, BrowseGroupId> = {
   rugs: "rugs",
   styling: "styling",
   "large-decor": "storage",
-  "furs-pelts": "throws",
 };
 
 export const NAV_GROUPS: NavGroup[] = PARENT_ORDER.map((slug) => ({

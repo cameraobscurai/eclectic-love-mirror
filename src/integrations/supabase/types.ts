@@ -453,6 +453,8 @@ export type Database = {
         Row: {
           card_background_url: string | null
           category: string | null
+          category_slug_v2: string | null
+          collection_slug: string | null
           color_chroma: number | null
           color_confidence: number | null
           color_family: string | null
@@ -507,6 +509,8 @@ export type Database = {
         Insert: {
           card_background_url?: string | null
           category?: string | null
+          category_slug_v2?: string | null
+          collection_slug?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
           color_family?: string | null
@@ -561,6 +565,8 @@ export type Database = {
         Update: {
           card_background_url?: string | null
           category?: string | null
+          category_slug_v2?: string | null
+          collection_slug?: string | null
           color_chroma?: number | null
           color_confidence?: number | null
           color_family?: string | null
@@ -612,7 +618,15 @@ export type Database = {
           weight_kg?: number | null
           width_cm?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "inventory_items_taxonomy_pair_fkey"
+            columns: ["collection_slug", "category_slug_v2"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_categories"
+            referencedColumns: ["collection_slug", "slug"]
+          },
+        ]
       }
       llm_reextract_candidates: {
         Row: {
@@ -1597,6 +1611,65 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      taxonomy_categories: {
+        Row: {
+          collection_slug: string
+          created_at: string
+          label: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          collection_slug: string
+          created_at?: string
+          label: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          collection_slug?: string
+          created_at?: string
+          label?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taxonomy_categories_collection_slug_fkey"
+            columns: ["collection_slug"]
+            isOneToOne: false
+            referencedRelation: "taxonomy_collections"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      taxonomy_collections: {
+        Row: {
+          created_at: string
+          label: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          label: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          label?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }

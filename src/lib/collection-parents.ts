@@ -1,21 +1,28 @@
 /**
- * Parent → Subcategory taxonomy for the Collection browse interface.
+ * DECLARED taxonomy — owner truth, two levels.
  *
- * This module sits ABOVE collection-taxonomy.ts (which classifies each product
- * into one of 18 BrowseGroupIds). Parents are a strict superset: every
- * BrowseGroupId maps to exactly one ParentId.
+ *   Collection (ParentId)  →  Category (SubOption.id)
  *
- * Pure data + helpers. No UI. No catalog mutation. No image logic.
+ * Source of truth is the database: inventory_items.collection_slug and
+ * inventory_items.category_slug_v2, validated against taxonomy_collections /
+ * taxonomy_categories. Nothing here infers, scores, or keyword-matches.
+ * A product with no assignment is UNASSIGNED and stays out of navigation —
+ * it never silently falls back into a browse group.
+ *
+ * Vocabulary note: the owner's "Collection" is this file's ParentId, and her
+ * "Category" is SubOption.id. Collection slugs are derived from the existing
+ * ?group= URL param values, so public URLs did not move.
+ *
+ * Legacy: GROUP_TO_PARENT / TILE_TO_PARENT_SUB remain only to translate old
+ * BrowseGroupId links and landing tiles into the declared tree. The browse-group
+ * scorer itself dies with the Frame Studio Phase 5 solver delete.
  */
 
 import type { CollectionProduct } from "./phase3-catalog";
-import {
-  getProductBrowseGroup,
-  type BrowseGroupId,
-} from "./collection-browse-groups";
+import type { BrowseGroupId } from "./collection-browse-groups";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Parents
+// Collections (10)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ParentId =
@@ -28,8 +35,7 @@ export type ParentId =
   | "textiles"
   | "rugs"
   | "styling"
-  | "large-decor"
-  | "furs-pelts";
+  | "large-decor";
 
 export const PARENT_ORDER: ParentId[] = [
   "lounge-seating",
@@ -42,13 +48,12 @@ export const PARENT_ORDER: ParentId[] = [
   "rugs",
   "styling",
   "large-decor",
-  "furs-pelts",
 ];
 
 export const PARENT_LABELS: Record<ParentId, string> = {
   "lounge-seating": "Lounge Seating",
   "lounge-tables": "Lounge Tables",
-  "cocktail-bar": "Cocktail & Bar",
+  "cocktail-bar": "Cocktail + Bar",
   "dining": "Dining",
   "tableware": "Tableware",
   "lighting": "Lighting",
@@ -56,7 +61,6 @@ export const PARENT_LABELS: Record<ParentId, string> = {
   "rugs": "Rugs",
   "styling": "Styling",
   "large-decor": "Large Decor",
-  "furs-pelts": "Furs & Pelts",
 };
 
 export interface SubOption {
@@ -65,32 +69,33 @@ export interface SubOption {
 }
 
 /**
- * The contextual rail per parent. "all" is implicit and rendered first by the
- * UI; do NOT include it here. Rugs explicitly keeps a single "rugs" entry so
- * the rail reads "All / Rugs", matching the live site.
+ * Categories per collection, in the owner's declared order. Mirrors
+ * public.taxonomy_categories (slug + label + sort_order). "All" is implicit
+ * and rendered first by the UI; do NOT include it here.
  */
 export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
   "lounge-seating": [
+    { id: "sofas-loveseats", label: "Sofas + Loveseats" },
+    { id: "lounge-chairs", label: "Lounge Chairs" },
     { id: "benches", label: "Benches" },
-    { id: "chairs", label: "Chairs" },
     { id: "ottomans", label: "Ottomans" },
-    { id: "sofas-loveseats", label: "Sofas & Loveseats" },
   ],
   "lounge-tables": [
     { id: "coffee-tables", label: "Coffee Tables" },
-    { id: "consoles", label: "Consoles" },
     { id: "side-tables", label: "Side Tables" },
+    { id: "consoles", label: "Consoles" },
   ],
   "cocktail-bar": [
     { id: "bars", label: "Bars" },
     { id: "cocktail-tables", label: "Cocktail Tables" },
     { id: "community-tables", label: "Community Tables" },
-    { id: "stools", label: "Stools" },
     { id: "storage", label: "Storage" },
+    { id: "bar-stools", label: "Bar Stools" },
   ],
   "dining": [
-    { id: "dining-chairs", label: "Dining Chairs" },
     { id: "dining-tables", label: "Dining Tables" },
+    { id: "dining-chairs", label: "Dining Chairs" },
+    { id: "banquettes", label: "Banquettes" },
   ],
   "tableware": [
     { id: "dinnerware", label: "Dinnerware" },
@@ -99,30 +104,31 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
     { id: "serveware", label: "Serveware" },
   ],
   "lighting": [
-    { id: "candlelight", label: "Candlelight" },
     { id: "chandeliers", label: "Chandeliers" },
-    { id: "lamps", label: "Lamps" },
+    { id: "table-lamps", label: "Table Lamps" },
+    { id: "floor-lamps", label: "Floor Lamps" },
     { id: "specialty", label: "Specialty" },
   ],
   "textiles": [
     { id: "pillows", label: "Pillows" },
     { id: "throws", label: "Throws" },
+    { id: "furs-pelts", label: "Furs + Pelts" },
   ],
   "rugs": [{ id: "rugs", label: "Rugs" }],
   "styling": [
     { id: "accents", label: "Accents" },
-    { id: "crates-baskets", label: "Crates & Baskets" },
+    { id: "candlelighting", label: "Candlighting" },
+    { id: "crates-baskets", label: "Crates + Baskets" },
   ],
   "large-decor": [
     { id: "structures", label: "Structures" },
     { id: "walls", label: "Walls" },
     { id: "other", label: "Other" },
   ],
-  "furs-pelts": [],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BrowseGroupId → ParentId (exhaustive, all 18 groups)
+// Legacy link translation (old BrowseGroupId URLs + landing tiles)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
@@ -144,55 +150,15 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   styling: "styling",
   accents: "styling",
   "large-decor": "large-decor",
-  "furs-pelts": "furs-pelts",
+  "furs-pelts": "textiles",
 };
-
-// Live-site → our ParentId. When a product has a liveCategory match, this
-// trumps RMS-categorySlug-based routing (handles cases like Bartolo where
-// RMS says "tables" but the live site puts it under cocktail-bar).
-const LIVE_CAT_TO_PARENT: Record<string, ParentId> = {
-  "lounge": "lounge-seating",
-  "lounge-tables": "lounge-tables",
-  "cocktail-bar": "cocktail-bar",
-  "dining": "dining",
-  "tableware": "tableware",
-  "textiles": "textiles",
-  "rugs": "rugs",
-  "styling": "styling",
-  "large-decor": "large-decor",
-  "light": "lighting",
-  // Some products use the full word "lighting" as their liveCategory; map
-  // both spellings so neither slug silently falls through to the taxonomy
-  // fallback path.
-  "lighting": "lighting",
-
-};
-
-export function productParent(p: CollectionProduct): ParentId | null {
-  // Owner-assigned category wins over any title-keyword shortcut.
-  // (e.g. an "Anathema Console" filed under category=storage stays in Storage,
-  // not pulled into Lounge Tables by the "console" keyword rule below.)
-  if (p.categorySlug === "storage") return "cocktail-bar";
-  // Consoles otherwise belong to Lounge Tables — never Dining.
-  if ((p.title || "").toLowerCase().includes("console")) return "lounge-tables";
-  if (p.liveCategory && LIVE_CAT_TO_PARENT[p.liveCategory])
-    return LIVE_CAT_TO_PARENT[p.liveCategory];
-  const g = getProductBrowseGroup(p);
-  return g ? GROUP_TO_PARENT[g] : null;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Landing tile → { parent, sub } mapping
-// CategoryTonalGrid stays purely visual; the route uses this to translate a
-// tile click (BrowseGroupId) into the new parent/subcategory URL state.
-// ─────────────────────────────────────────────────────────────────────────────
 
 export const TILE_TO_PARENT_SUB: Record<
   BrowseGroupId,
   { parent: ParentId; sub: string }
 > = {
   sofas: { parent: "lounge-seating", sub: "sofas-loveseats" },
-  chairs: { parent: "lounge-seating", sub: "chairs" },
+  chairs: { parent: "lounge-seating", sub: "lounge-chairs" },
   "benches-ottomans": { parent: "lounge-seating", sub: "all" },
   "coffee-tables": { parent: "lounge-tables", sub: "coffee-tables" },
   "side-tables": { parent: "lounge-tables", sub: "side-tables" },
@@ -209,184 +175,25 @@ export const TILE_TO_PARENT_SUB: Record<
   styling: { parent: "styling", sub: "all" },
   accents: { parent: "styling", sub: "accents" },
   "large-decor": { parent: "large-decor", sub: "all" },
-  "furs-pelts": { parent: "furs-pelts", sub: "all" },
+  "furs-pelts": { parent: "textiles", sub: "furs-pelts" },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Subcategory classification
-//
-// Pure title-keyword + BrowseGroupId/categorySlug fallback. NEVER mutates the
-// product. Returning null is fine — those items still appear in the parent's
-// "All" view (the filter pipeline guarantees this).
+// Read path — declared columns only
 // ─────────────────────────────────────────────────────────────────────────────
 
-const has = (t: string, kws: string[]) => kws.some((k) => t.includes(k));
+const PARENT_SET = new Set<string>(PARENT_ORDER);
 
-function classifySub(parent: ParentId, p: CollectionProduct): string | null {
-  const titleLower = (p.title || "").toLowerCase();
-  const liveSubs = p.liveSubcategories || [];
-  const liveLower = liveSubs.map((s) => s.toLowerCase());
+/** The product's declared collection, or null when unassigned. */
+export function productParent(p: CollectionProduct): ParentId | null {
+  const c = (p.collectionSlug || "").trim();
+  return PARENT_SET.has(c) ? (c as ParentId) : null;
+}
 
-  // Owner-selected subcategory (admin editor) wins over everything else.
-  const owner = (p.ownerSubcategory || "").trim();
-  if (owner) {
-    const hit = (PARENT_SUBS[parent] || []).find((s) => s.id === owner);
-    if (hit) return hit.id;
-  }
-
-  // Hard overrides — structural form trumps live-site labels.
-  // A banquette is normally a bench, BUT respect the live site when it
-  // explicitly tags one under Sofas & Loveseats (e.g. Rosalind round banquette).
-  if (
-    parent === "lounge-seating" &&
-    titleLower.includes("banquette") &&
-    !liveLower.includes("sofas & loveseats")
-  ) {
-    return "benches";
-  }
-
-  // Dining chairs are NOT lounge chairs — exclude from lounge-seating entirely
-  // so they don't pollute the chairs subcategory.
-  if (parent === "lounge-seating" && liveLower.includes("dining chairs")) {
-    return null;
-  }
-
-  // Prefer live-site subcategory when available.
-  if (liveSubs.length) {
-    const subList = PARENT_SUBS[parent] || [];
-    for (const ls of liveSubs) {
-      const norm = ls.toLowerCase();
-      const hit = subList.find(s => s.label.toLowerCase() === norm);
-      if (hit) return hit.id;
-    }
-  }
-  const g = getProductBrowseGroup(p);
-  const t = p.title.toLowerCase();
-  const cat = (p.categorySlug ?? "").toLowerCase();
-
-  switch (parent) {
-    case "lounge-seating": {
-      if (g === "sofas" || has(t, ["sofa", "loveseat", "settee", "couch"]))
-        return "sofas-loveseats";
-      if (has(t, ["ottoman", "pouf", "footstool"])) return "ottomans";
-      if (has(t, ["bench", "daybed"])) return "benches";
-      if (g === "chairs" || has(t, ["armchair", "lounge chair", "chair"]))
-        return "chairs";
-      return null;
-    }
-    case "lounge-tables": {
-      if (g === "coffee-tables" || has(t, ["coffee table"]))
-        return "coffee-tables";
-      if (
-        g === "side-tables" ||
-        has(t, ["side table", "end table", "accent table", "drink table"])
-      )
-        return "side-tables";
-      if (has(t, ["console", "entry table", "sofa table"])) return "consoles";
-      return null;
-    }
-    case "cocktail-bar": {
-      if (g === "cocktail-tables" || has(t, ["cocktail table"]))
-        return "cocktail-tables";
-      if (has(t, ["barstool", "stool"])) return "stools";
-      if (has(t, ["community table", "long table"])) return "community-tables";
-      if (g === "storage" || has(t, ["cabinet", "credenza", "sideboard"]))
-        return "storage";
-      if (g === "bar" || has(t, ["back bar", "backbar", "bar cart", "bar"]))
-        return "bars";
-      return null;
-    }
-    case "dining": {
-      if (has(t, ["dining chair", "directors dining", "banquette"])) return "dining-chairs";
-      if (has(t, ["dining table", "farm table", "feasting"])) return "dining-tables";
-      if (has(t, ["console", "sideboard", "buffet"])) return "consoles";
-      if (has(t, ["chair"])) return "dining-chairs";
-      if (has(t, ["table"])) return "dining-tables";
-      return null;
-    }
-    case "tableware": {
-      if (g === "serveware" || has(t, ["platter", "pitcher", "tureen", "server", "tray"]))
-        return "serveware";
-      if (
-        cat === "glassware" ||
-        has(t, ["glass", "goblet", "tumbler", "stemware", "coupe", "carafe", "decanter", "flute"])
-      )
-        return "glassware";
-      if (has(t, ["flatware", "fork", "spoon", "knife", "cutlery", "utensil"]))
-        return "flatware";
-      if (has(t, ["plate", "charger", "dish", "dinnerware", "bowl"]))
-        return "dinnerware";
-      return null;
-    }
-    case "lighting": {
-      // Live-site truth: sconces and pendants both belong to Chandeliers,
-      // not Specialty. "Pendant lantern" must beat the lantern→candlelight
-      // rule, so pendants/chandeliers/sconces are checked FIRST.
-      if (
-        cat === "chandeliers" ||
-        has(t, ["chandelier", "pendant", "sconce"])
-      )
-        return "chandeliers";
-      if (
-        has(t, [
-          "uplight",
-          "string light",
-          "festoon",
-          "wash light",
-          "par can",
-          " par ",
-          "market light",
-          "corner light",
-          "battery",
-        ])
-      )
-        return "specialty";
-      if (
-        cat === "candlelight" ||
-        has(t, ["candle", "votive", "hurricane", "taper", "candelabr", "lantern", "luminary", "oil lamp"])
-      )
-        return "candlelight";
-      if (has(t, ["lamp"])) return "lamps";
-      return "specialty";
-    }
-    case "textiles": {
-      if (g === "pillows" || has(t, ["pillow", "cushion", "bolster"]))
-        return "pillows";
-      if (g === "throws" || has(t, ["throw", "blanket", "coverlet"]))
-        return "throws";
-      return null;
-    }
-    case "rugs":
-      return "rugs";
-    case "styling": {
-      if (has(t, ["crate", "basket"])) return "crates-baskets";
-      // Games heading removed per inventory specialist (2026-05-13).
-      // Live site lumps everything else in Styling under Accents — make it
-      // the explicit fallback rather than relying on a narrow keyword list.
-      return "accents";
-    }
-    case "large-decor": {
-      if (has(t, ["wall", "panel", "mural", "tapestry", "art", "painting"]))
-        return "walls";
-      if (
-        has(t, [
-          "arch",
-          "arbor",
-          "structure",
-          "column",
-          "pedestal",
-          "fireplace",
-          "firepit",
-          "screen",
-          "divider",
-        ])
-      )
-        return "structures";
-      return "other";
-    }
-    case "furs-pelts":
-      return null;
-  }
+/** The product's declared category, or null when unassigned. */
+export function productCategory(p: CollectionProduct): string | null {
+  const c = (p.declaredCategory || "").trim();
+  return c || null;
 }
 
 export function productMatchesSub(
@@ -394,15 +201,15 @@ export function productMatchesSub(
   parent: ParentId,
   sub: string,
 ): boolean {
+  if (productParent(p) !== parent) return false;
   if (sub === "all") return true;
-  return classifySub(parent, p) === sub;
+  return productCategory(p) === sub;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Type guards
 // ─────────────────────────────────────────────────────────────────────────────
 
-const PARENT_SET = new Set<string>(PARENT_ORDER);
 export function isParentId(value: string): value is ParentId {
   return PARENT_SET.has(value);
 }

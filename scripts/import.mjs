@@ -54,19 +54,84 @@ const records = rows.map(r => {
 
 console.log('records:', records.length);
 
+/**
+ * TAXONOMY PROTECTION — do not remove.
+ *
+ * `collection_slug` / `category_slug_v2` are DECLARED by the owner (Adrienne's
+ * review), not derived from RMS. This importer must never write them on an
+ * existing row: doing so would null her assignments, and since unassigned
+ * products stay out of nav, a routine re-import would silently pull live
+ * products off the site with no error anywhere.
+ *
+ * New RMS products are inserted with both columns NULL on purpose — they land
+ * in the "Unassigned" queue in admin Inventory for a human to classify.
+ *
+ * Same reasoning applies to `images`: RMS has no image data, so an upsert that
+ * included it would wipe curated photos on every sync.
+ */
+const OWNER_DECLARED_COLUMNS = ['collection_slug', 'category_slug_v2', 'images'];
+
 // First soft-delete legacy rows
 const { error: delErr } = await sb.from('inventory_items').update({ status: 'draft' }).is('rms_id', null).neq('status', 'draft');
 if (delErr) { console.error('soft-delete error', delErr); process.exit(1); }
 
-// Upsert in chunks of 200
-const CHUNK = 200;
-let total = 0;
-for (let i = 0; i < records.length; i += CHUNK) {
-  const part = records.slice(i, i + CHUNK);
-  const { error, count } = await sb.from('inventory_items').upsert(part, { onConflict: 'rms_id', count: 'exact' });
-  if (error) { console.error('upsert error chunk', i, error); process.exit(1); }
-  total += part.length;
-  console.log('upserted', total);
+// Which rms_ids already exist? Existing rows get a narrow UPDATE, new rows an INSERT.
+const existing = new Set();
+{
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await sb
+      .from('inventory_items')
+      .select('rms_id')
+      .not('rms_id', 'is', null)
+      .range(from, from + PAGE - 1);
+    if (error) { console.error('existing-id fetch error', error); process.exit(1); }
+    for (const r of data) existing.add(String(r.rms_id));
+    if (data.length < PAGE) break;
+  }
 }
+
+const toInsert = records.filter(r => !existing.has(r.rms_id));
+const toUpdate = records.filter(r => existing.has(r.rms_id));
+console.log('new:', toInsert.length, 'existing:', toUpdate.length);
+
+const DRY_RUN = process.argv.includes('--dry-run');
+if (DRY_RUN) {
+  console.log('[dry-run] would insert', toInsert.length, 'and update', toUpdate.length, 'rows');
+  console.log('[dry-run] columns never written on existing rows:', OWNER_DECLARED_COLUMNS.join(', '));
+  process.exit(0);
+}
+
+const CHUNK = 200;
+
+// New rows: taxonomy columns intentionally left NULL → Unassigned queue.
+for (let i = 0; i < toInsert.length; i += CHUNK) {
+  const part = toInsert.slice(i, i + CHUNK);
+  const { error } = await sb.from('inventory_items').insert(part);
+  if (error) { console.error('insert error chunk', i, error); process.exit(1); }
+  console.log('inserted', Math.min(i + CHUNK, toInsert.length), '/', toInsert.length);
+}
+
+// Existing rows: RMS-owned fields only. Never the owner-declared columns.
+let updated = 0;
+for (const rec of toUpdate) {
+  const patch = { ...rec };
+  for (const col of OWNER_DECLARED_COLUMNS) delete patch[col];
+  delete patch.rms_id;
+  const { error } = await sb.from('inventory_items').update(patch).eq('rms_id', rec.rms_id);
+  if (error) { console.error('update error', rec.rms_id, error); process.exit(1); }
+  updated += 1;
+  if (updated % 100 === 0) console.log('updated', updated, '/', toUpdate.length);
+}
+console.log('updated', updated, '/', toUpdate.length);
+
 const { count: finalCount } = await sb.from('inventory_items').select('*', { count: 'exact', head: true }).not('rms_id','is',null);
 console.log('total rows with rms_id in db:', finalCount);
+
+const { count: unassigned } = await sb
+  .from('inventory_items')
+  .select('*', { count: 'exact', head: true })
+  .not('rms_id', 'is', null)
+  .is('collection_slug', null);
+console.log('unassigned (needs classification):', unassigned);
+

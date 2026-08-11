@@ -104,7 +104,15 @@ export interface CollectionProduct {
    *  When present the tile renders it plainly, with no fit rule or
    *  measurement. Null = legacy render path. */
   coverFramedUrl?: string | null;
+  /** DECLARED taxonomy (owner's spreadsheet), stored in
+   *  inventory_items.collection_slug / category_slug_v2. This is truth — no
+   *  scoring, no keywords. Null = unassigned, product stays out of nav.
+   *  `declaredCategory` is renamed to `categorySlug` once the legacy alias
+   *  map dies with the Frame Studio Phase 5 solver delete. */
+  collectionSlug?: string | null;
+  declaredCategory?: string | null;
 }
+
 
 export interface CategoryFacet {
   slug: string;
@@ -375,6 +383,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
         coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
         coverFramedUrl: live?.cover_framed_url ?? p.coverFramedUrl ?? null,
+        collectionSlug: live?.collection_slug ?? p.collectionSlug ?? null,
+        declaredCategory: live?.category_slug_v2 ?? p.declaredCategory ?? null,
         images,
         primaryImage: images[0] ?? null,
         imageCount: images.length,
@@ -436,6 +446,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         coverFocalX: live.cover_focal_x ?? null,
         coverFocalY: live.cover_focal_y ?? null,
         coverFramedUrl: live.cover_framed_url ?? null,
+        collectionSlug: live.collection_slug ?? null,
+        declaredCategory: live.category_slug_v2 ?? null,
       });
     }
 
@@ -474,6 +486,9 @@ type LiveOverlayRow = {
   public_ready?: boolean | null;
   /** Frame Studio derivative (1200w). */
   cover_framed_url?: string | null;
+  /** Declared taxonomy — owner truth, carried through publish. */
+  collection_slug?: string | null;
+  category_slug_v2?: string | null;
 };
 
 
@@ -537,7 +552,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug_v2")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -558,6 +573,8 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             public_ready: row.public_ready,
             subcategory_slug: row.subcategory_slug ?? null,
             cover_framed_url: row.cover_framed_url ?? null,
+            collection_slug: row.collection_slug ?? null,
+            category_slug_v2: row.category_slug_v2 ?? null,
           });
         }
       }
