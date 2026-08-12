@@ -285,6 +285,9 @@ const createItemInput = z
     collectionSlug: declaredSlug.nullable().optional(),
     categorySlug: declaredSlug.nullable().optional(),
     deferTaxonomy: z.boolean().default(false),
+    // Set true to create anyway after the duplicate-title warning.
+    allowDuplicateTitle: z.boolean().default(false),
+
   })
   .refine(
     (d) => d.deferTaxonomy || (!!d.collectionSlug && !!d.categorySlug),
