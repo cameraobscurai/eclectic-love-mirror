@@ -33,7 +33,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
+import { Loader2, AlertCircle, ImageOff, LayoutGrid, LayoutList, Grid2x2, Layers, EyeOff } from "lucide-react";
 
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
@@ -342,30 +342,38 @@ function CategoryGrid({
   } | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  const openEditor = useCallback(async (item: Item) => {
-    setErr(null);
-    try {
-      const { data, error } = await supabase
-        .from("inventory_items")
-        .select(
-          "id, cover_focal_x, cover_focal_y, cover_framed_url, category_slug, dimensions_raw",
-        )
-        .eq("rms_id", item.rms_id)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
-      setEditingRow({
-        cover_focal_x: data.cover_focal_x ?? null,
-        cover_focal_y: data.cover_focal_y ?? null,
-        cover_framed_url: data.cover_framed_url ?? null,
-        category_slug: data.category_slug ?? null,
-        dimensions_raw: data.dimensions_raw ?? null,
-      });
-      setEditing({ ...item, id: data.id });
-    } catch (e) {
-      setErr((e as Error).message);
-    }
-  }, []);
+  // Clicking a photo opens the FULL product editor (which embeds the same
+  // photo/order panel), not a photos-only drawer. Splitting the two is what
+  // made auditing feel like hopping between pages.
+  const gridNavigate = useNavigate();
+  const openEditor = useCallback(
+    async (item: Item) => {
+      setErr(null);
+      try {
+        const { data, error } = await supabase
+          .from("inventory_items")
+          .select("id")
+          .eq("rms_id", item.rms_id)
+          .maybeSingle();
+        if (error) throw error;
+        if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+        await gridNavigate({
+          to: "/admin/products",
+          search: {
+            q: "",
+            col: "",
+            cat: "",
+            sort: "title" as const,
+            ready: "all" as const,
+            id: data.id,
+          },
+        });
+      } catch (e) {
+        setErr((e as Error).message);
+      }
+    },
+    [gridNavigate],
+  );
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
@@ -559,6 +567,19 @@ function CategoryGrid({
               title="Grid — rows of 3"
             >
               <Grid2x2 className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => onView("icons")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
+                view === "icons"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Small icons"
+              aria-pressed={view === "icons"}
+              title="Small icons — audit a whole category at once"
+            >
+              <LayoutList className="h-4 w-4" />
             </button>
             <button
               onClick={() => onView("wall")}
