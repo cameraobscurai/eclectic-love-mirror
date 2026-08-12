@@ -79,6 +79,11 @@ function readStoredView(): ViewMode {
 }
 
 type SortMode = "editorial" | "type" | "az" | "tonal";
+
+/** Category selection. "all" = every piece in one grid, grouped by category,
+ *  read-only (drag order is per-category, so it can't be persisted here). */
+type ParentSel = ParentId | "all";
+
 const SORT_MODES: { id: SortMode; label: string }[] = [
   { id: "editorial", label: "Editorial" },
   { id: "type", label: "By Type" },
