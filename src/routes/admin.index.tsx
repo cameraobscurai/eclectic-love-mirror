@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/")({
   beforeLoad: () => {
     throw redirect({
       to: "/admin/photos",
-      search: { filter: undefined, product: undefined, page: undefined },
+      search: { filter: undefined, product: undefined, page: undefined, cat: undefined, sub: undefined, sort: undefined, id: undefined },
     });
 
   },

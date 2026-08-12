@@ -492,7 +492,7 @@ function NewProductPage() {
           <button
             type="button"
             disabled={!!busy}
-            onClick={() => router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined } })}
+            onClick={() => router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined, cat: undefined, sub: undefined, sort: undefined, id: undefined } })}
             className="ml-auto text-[11px] uppercase tracking-[0.18em] text-charcoal/55 hover:text-charcoal disabled:opacity-40"
           >
             Cancel

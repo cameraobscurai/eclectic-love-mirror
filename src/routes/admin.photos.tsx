@@ -185,10 +185,8 @@ function PhotosManager() {
   const navigate = useNavigate({ from: Route.fullPath });
   const setSearch = useCallback(
     (patch: Record<string, string | undefined>) => {
-      void navigate({
-        search: (prev: Record<string, unknown>) => ({ ...prev, ...patch }),
-        replace: true,
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      void navigate({ search: ((prev: any) => ({ ...prev, ...patch })) as any, replace: true });
     },
     [navigate],
   );
@@ -475,9 +473,8 @@ function CategoryGrid({
   const editNavigate = useNavigate({ from: Route.fullPath });
   const setEditId = useCallback(
     (id: string | null) => {
-      void editNavigate({
-        search: (prev: Record<string, unknown>) => ({ ...prev, id: id ?? undefined }),
-      });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      void editNavigate({ search: ((prev: any) => ({ ...prev, id: id ?? undefined })) as any });
     },
     [editNavigate],
   );
