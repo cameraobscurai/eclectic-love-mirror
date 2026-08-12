@@ -926,35 +926,61 @@ function frameAspectFor(_item: Item): number {
   return PRODUCT_TILE_FRAME_ASPECT;
 }
 
-function Tile({
-  item,
-  index,
-  dense,
-  draggable = true,
-  onOpen,
-}: {
+type TileProps = {
   item: Item;
   index: number;
   dense: boolean;
   draggable?: boolean;
   onOpen: () => void;
-}) {
+};
+
+/** Draggable tiles pay for a dnd-kit sortable node; static ones must not.
+ *  In a read-only view (ALL, a sub filter, a non-editorial sort) there is no
+ *  DndContext at all, and 600+ idle useSortable() instances is pure cost. */
+function Tile(props: TileProps) {
+  return props.draggable ? <SortableTile {...props} /> : <TileFrame {...props} />;
+}
+
+function SortableTile(props: TileProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: item.id, disabled: !draggable });
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  };
+    useSortable({ id: props.item.id });
+  return (
+    <TileFrame
+      {...props}
+      dndRef={setNodeRef}
+      dndProps={{ ...attributes, ...listeners }}
+      dndStyle={{
+        transform: CSS.Translate.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+      }}
+    />
+  );
+}
+
+function TileFrame({
+  item,
+  index,
+  dense,
+  draggable = false,
+  onOpen,
+  dndRef,
+  dndProps,
+  dndStyle,
+}: TileProps & {
+  dndRef?: (node: HTMLElement | null) => void;
+  dndProps?: Record<string, unknown>;
+  dndStyle?: React.CSSProperties;
+}) {
+  const style = dndStyle ?? {};
 
   const imageCount = item.images.length;
   const needsAttention = imageCount === 0;
 
   return (
     <div
-      ref={setNodeRef}
-      {...(draggable ? attributes : {})}
-      {...(draggable ? listeners : {})}
+      ref={dndRef}
+      {...(dndProps ?? {})}
       onClick={(e) => {
         e.stopPropagation();
         onOpen();
