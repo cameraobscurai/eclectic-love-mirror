@@ -325,7 +325,6 @@ function Inner() {
                 // hero. Never fall back to upscaled_cover_url — that column is
                 // retired and showing it here makes admin disagree with live.
                 const cover = r.images?.[0] ?? null;
-                const parent = r.rms_id ? parentMap?.[r.rms_id] : undefined;
 
                 return (
                   <tr
@@ -337,11 +336,13 @@ function Inner() {
                       {cover ? <img src={cover} alt="" className="w-10 h-10 object-cover" loading="lazy" /> : <div className="w-10 h-10 bg-charcoal/5" />}
                     </td>
                     <td className="px-3 py-2 font-display text-[14px]">{r.title}</td>
-                    <td className="px-3 py-2 text-charcoal/70">{r.category ?? "—"}</td>
-                    <td className="px-3 py-2 text-charcoal/70">{parent ? PARENT_LABELS[parent] : "—"}</td>
                     <td className="px-3 py-2 text-charcoal/70">
-                      {r.subcategory_slug ? (subLabels[r.subcategory_slug] ?? r.subcategory_slug) : "—"}
+                      {r.collection_slug ? (collectionLabels[r.collection_slug] ?? r.collection_slug) : "— Unassigned"}
                     </td>
+                    <td className="px-3 py-2 text-charcoal/70">
+                      {r.category_slug ? (categoryLabels[r.category_slug] ?? r.category_slug) : "—"}
+                    </td>
+
                     <td className="px-3 py-2 tabular-nums">{r.quantity ?? "—"}{r.quantity_label ? ` ${r.quantity_label}` : ""}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.status}</td>
                     <td className="px-3 py-2">
