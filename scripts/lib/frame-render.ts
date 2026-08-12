@@ -154,7 +154,46 @@ export async function renderCover(input: RenderInput): Promise<RenderOutput> {
   const top = Math.round((CANVAS_H - drawH) / 2 + offsetY * CANVAS_H);
   const resampleFactor = drawW / raw.w;
 
-  const layer = await resample(prepared, drawW, drawH);
+  let layer = await resample(prepared, drawW, drawH);
+  let layerLeft = left;
+  let layerTop = top;
+
+  // The engine has no clamp band, so a placement may legitimately ask for a
+  // layer larger than the canvas or hanging off its edge. sharp refuses to
+  // composite that ("must have same dimensions or smaller"), so crop the layer
+  // to the visible window and shift the origin to match. The geometry is
+  // unchanged — the render is exactly what the placement asked for, clipped by
+  // the frame — which is precisely what V3 exists to catch downstream. Do NOT
+  // "fix" this by shrinking the placement: that would reintroduce a clamp.
+  const cropLeft = Math.max(0, -layerLeft);
+  const cropTop = Math.max(0, -layerTop);
+  const cropW = Math.min(drawW - cropLeft, CANVAS_W - Math.max(0, layerLeft));
+  const cropH = Math.min(drawH - cropTop, CANVAS_H - Math.max(0, layerTop));
+  if (cropW <= 0 || cropH <= 0) {
+    return {
+      ok: false,
+      recipe: input.recipe ?? { placement: { scale, offsetX, offsetY } },
+      measurement,
+      verify: {
+        pass: false,
+        failures: [{ code: "V3", message: "placement puts the subject entirely off-canvas" }],
+        advisories: [],
+      },
+      srcHash,
+      ruleVersion: RULE_VERSION,
+      resampleFactor,
+      bboxPx: [measurement.bbox.x, measurement.bbox.y, measurement.bbox.w, measurement.bbox.h],
+      background,
+    };
+  }
+  if (cropLeft || cropTop || cropW !== drawW || cropH !== drawH) {
+    layer = await sharp(layer)
+      .extract({ left: cropLeft, top: cropTop, width: cropW, height: cropH })
+      .toBuffer();
+    layerLeft = Math.max(0, layerLeft);
+    layerTop = Math.max(0, layerTop);
+  }
+
   const canvas = sharp({
     create: {
       width: CANVAS_W,
@@ -165,7 +204,8 @@ export async function renderCover(input: RenderInput): Promise<RenderOutput> {
           ? { r: 255, g: 255, b: 255, alpha: 1 }
           : { r: 255, g: 255, b: 255, alpha: 0 },
     },
-  }).composite([{ input: layer, left, top }]);
+  }).composite([{ input: layer, left: layerLeft, top: layerTop }]);
+
   const rendered = await canvas.png().toBuffer();
 
   // 5. verify the 1500 render, before any encoding leaves this function.
