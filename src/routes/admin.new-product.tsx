@@ -141,33 +141,40 @@ function NewProductPage() {
       const row = await ensureRow(false);
       const arr = Array.from(files);
       const appended: string[] = [];
+      const failed: string[] = [];
       for (const file of arr) {
         if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) continue;
         if (file.size > 10 * 1024 * 1024) {
-          setErr(`${file.name} exceeds 10MB`);
+          failed.push(`${file.name} exceeds 10MB`);
           continue;
         }
-        const buf = new Uint8Array(await file.arrayBuffer());
-        let bin = "";
-        const chunk = 0x8000;
-        for (let i = 0; i < buf.length; i += chunk) {
-          bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+        // Per-file try: a single failure must not discard files that already
+        // uploaded — otherwise they orphan in storage, unattached and unseen.
+        try {
+          const buf = new Uint8Array(await file.arrayBuffer());
+          let bin = "";
+          const chunk = 0x8000;
+          for (let i = 0; i < buf.length; i += chunk) {
+            bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+          }
+          const base64 = btoa(bin);
+          const res = await uploadFn({
+            data: {
+              id: row.id,
+              rmsId: row.rmsId,
+              filename: file.name,
+              contentType: file.type as
+                | "image/jpeg"
+                | "image/png"
+                | "image/webp"
+                | "image/avif",
+              base64,
+            },
+          });
+          appended.push(res.url);
+        } catch (e) {
+          failed.push(`${file.name}: ${(e as Error).message}`);
         }
-        const base64 = btoa(bin);
-        const res = await uploadFn({
-          data: {
-            id: row.id,
-            rmsId: row.rmsId,
-            filename: file.name,
-            contentType: file.type as
-              | "image/jpeg"
-              | "image/png"
-              | "image/webp"
-              | "image/avif",
-            base64,
-          },
-        });
-        appended.push(res.url);
       }
       if (appended.length) {
         const nextImages = [...images, ...appended];
@@ -176,6 +183,10 @@ function NewProductPage() {
           data: { id: row.id, images: nextImages, expectedLength: images.length },
         });
       }
+      if (failed.length) {
+        setErr(`${appended.length} of ${arr.length} added. Failed — ${failed.join("; ")}`);
+      }
+
     } catch (e) {
       setErr((e as Error).message || "Upload failed");
     } finally {
