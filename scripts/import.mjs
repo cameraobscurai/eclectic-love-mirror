@@ -4,7 +4,11 @@ import xlsx from 'xlsx';
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-const wb = xlsx.readFile('/tmp/current_inventory.xlsx');
+// Workbook path is overridable so the intake-loop test can drive this exact
+// script against a synthetic two-row workbook instead of the real RMS export.
+// See scripts/audit/intake-loop-test.mjs and DECISIONS.md#r6.
+const WORKBOOK = process.env.RMS_WORKBOOK || '/tmp/current_inventory.xlsx';
+const wb = xlsx.readFile(WORKBOOK);
 const rows = xlsx.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
 
 const CAT = {
