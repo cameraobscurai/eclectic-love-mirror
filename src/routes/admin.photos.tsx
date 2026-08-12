@@ -470,6 +470,8 @@ function CategoryGrid({
   // The open editor is a URL state, not component state — Back closes the
   // drawer, and a specific piece can be linked to directly.
   const editId = Route.useSearch().id ?? null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [seed, setSeed] = useState<any>(null);
   const editNavigate = useNavigate({ from: Route.fullPath });
   const setEditId = useCallback(
     (id: string | null) => {
@@ -488,6 +490,16 @@ function CategoryGrid({
         .maybeSingle();
       if (error) throw error;
       if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      // Hand the drawer what the grid already knows so it paints instantly
+      // instead of showing "Loading…" through a round trip.
+      setSeed({
+        id: data.id,
+        rms_id: item.rms_id,
+        title: item.title,
+        images: item.images,
+        card_background_url: item.card_background_url ?? null,
+        category_slug: item.categorySlug ?? null,
+      });
       setEditId(data.id);
     } catch (e) {
       setErr((e as Error).message);
@@ -932,6 +944,8 @@ function CategoryGrid({
       {editId && (
         <InventoryEditDrawer
           id={editId}
+          seed={seed?.id === editId ? seed : null}
+          focus="photos"
           onClose={() => setEditId(null)}
           onSaved={onCatalogChanged}
         />
