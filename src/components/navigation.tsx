@@ -220,7 +220,8 @@ export function Navigation() {
                   ? "text-charcoal"
                   : "text-white"
               )}
-              style={{ fontWeight: 300 }}
+              /* Saol Display has no 300 upright cut — 400 is the light face. */
+              style={{ fontWeight: 400 }}
             >
               ECLECTIC HIVE
             </span>
@@ -401,7 +402,7 @@ export function Navigation() {
               aria-current={pathname === "/" ? "page" : undefined}
               className="py-4 min-h-[44px] flex items-center"
             >
-              <span className="text-cream font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-light hover:text-sand transition-colors">
+              <span className="text-cream font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-normal hover:text-sand transition-colors">
                 Home
               </span>
             </Link>
@@ -418,7 +419,7 @@ export function Navigation() {
               >
                 <span
                   className={cn(
-                    "font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-light transition-colors",
+                    "font-display text-[5.5vw] sm:text-3xl md:text-4xl tracking-[0.03em] uppercase font-normal transition-colors",
                     pathname === link.href
                       ? "text-cream"
                       : "text-cream/70 hover:text-cream"
