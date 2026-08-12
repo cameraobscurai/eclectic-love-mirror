@@ -851,16 +851,18 @@ function CategoryGrid({
                       }
                 }
               >
-                {sec.items.map((item, idx) => (
-                  <Tile
-                    key={item.id}
-                    item={item}
-                    index={idx}
-                    dense={view !== "grid"}
-                    draggable={false}
-                    onOpen={() => void openEditor(item)}
-                  />
-                ))}
+                <LazySection count={sec.items.length} dense={view !== "grid"}>
+                  {sec.items.map((item, idx) => (
+                    <Tile
+                      key={item.id}
+                      item={item}
+                      index={idx}
+                      dense={view !== "grid"}
+                      draggable={false}
+                      onOpen={() => void openEditor(item)}
+                    />
+                  ))}
+                </LazySection>
               </div>
             </section>
           ))}
@@ -952,6 +954,55 @@ function MissingFilterChip() {
         aria-label="Clear missing filter"
       >×</button>
     </div>
+  );
+}
+
+/** ALL is 670 pieces. Mounting every tile at once means 670 image fetches and
+ *  670 silhouette measurements competing for one main thread — on a slower
+ *  laptop that reads as a frozen page. A section only mounts its tiles once
+ *  it comes near the viewport; until then it holds its own height so the
+ *  scrollbar never jumps. */
+function LazySection({
+  count,
+  dense,
+  children,
+}: {
+  count: number;
+  dense: boolean;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(
+    () => typeof IntersectionObserver === "undefined",
+  );
+  useEffect(() => {
+    if (shown) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shown]);
+
+  if (shown) return <>{children}</>;
+  // Placeholder keeps the section roughly its final height.
+  const perRow = dense ? 12 : 3;
+  const rows = Math.max(1, Math.ceil(count / perRow));
+  return (
+    <div
+      ref={ref}
+      className="col-span-full"
+      style={{ minHeight: rows * (dense ? 90 : 300) }}
+      aria-hidden
+    />
   );
 }
 
