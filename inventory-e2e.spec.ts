@@ -164,6 +164,21 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await page.getByPlaceholder('—').fill('3');
     await page.getByPlaceholder('e.g. 24"W x 18"D x 22"H').fill('30"W x 30"D x 18"H');
 
+    // Declared taxonomy is required — saving must stay blocked until it's set.
+    await expect(saveDraft).toBeDisabled();
+    const collectionSelect = page.locator('select').nth(2);
+    const declaredCategory = page.locator('select').nth(3);
+    const collValues = await collectionSelect.locator('option').evaluateAll((os) =>
+      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+    );
+    expect(collValues.length, 'no collections offered on the new-product form').toBeGreaterThan(0);
+    await collectionSelect.selectOption(collValues[0]!);
+    const catValues = await declaredCategory.locator('option').evaluateAll((os) =>
+      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+    );
+    expect(catValues.length, 'no categories offered for the chosen collection').toBeGreaterThan(0);
+    await declaredCategory.selectOption(catValues[0]!);
+
     await expect(saveDraft).toBeEnabled();
 
     // --- 4. Save as draft → should land in the editor on the new piece -----
@@ -172,6 +187,8 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     const idMatch = /[?&]id=([0-9a-f-]{36})/.exec(page.url());
     expect(idMatch, 'save did not route to the new product (no id in URL)').not.toBeNull();
     const productId = idMatch![1];
+    createdIds.push(productId);
+
 
     const drawer = page.getByRole('dialog');
     await expect(drawer).toBeVisible({ timeout: 20_000 });
