@@ -887,7 +887,9 @@ export function ProductEditDrawer({
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p style={micro(9, T.trackUltra, "rgba(26,26,26,0.4)")}>
-                {draft.values.category || "Uncategorized"}
+                {(taxonomy?.collections ?? []).find((c) => c.slug === draft.values.collection_slug)?.label
+                  || (draft.values.collection_slug ? String(draft.values.collection_slug) : "Unassigned")}
+
                 {product?.rms_id ? <span style={{ marginLeft: 10, letterSpacing: T.trackLabel }}>№ {product.rms_id}</span> : null}
               </p>
               <h2 style={{ fontFamily: T.serif, fontWeight: 400, fontSize: 25, lineHeight: 1.15, letterSpacing: "-0.01em", color: T.charcoal, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
