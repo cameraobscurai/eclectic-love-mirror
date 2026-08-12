@@ -452,6 +452,31 @@ function CategoryGrid({
   );
 
   const subs = allMode ? [] : PARENT_SUBS[parent as ParentId];
+
+  // ALL mode: split the flat list into category sections, PARENT_ORDER first,
+  // anything unassigned last so it can't hide.
+  const allSections = useMemo(() => {
+    if (!allMode) return [] as { id: string; label: string; items: Item[] }[];
+    const byId = new Map((allProducts ?? []).map((p) => [p.id, p]));
+    const buckets = new Map<string, Item[]>();
+    for (const item of visibleItems) {
+      const p = byId.get(item.id);
+      const pid = p ? productParent(p) : null;
+      const key = pid ?? "__unassigned";
+      const arr = buckets.get(key);
+      if (arr) arr.push(item);
+      else buckets.set(key, [item]);
+    }
+    const out: { id: string; label: string; items: Item[] }[] = [];
+    for (const pid of PARENT_ORDER) {
+      const arr = buckets.get(pid);
+      if (arr?.length) out.push({ id: pid, label: PARENT_LABELS[pid], items: arr });
+    }
+    const rest = buckets.get("__unassigned");
+    if (rest?.length) out.push({ id: "__unassigned", label: "Unassigned", items: rest });
+    return out;
+  }, [allMode, allProducts, visibleItems]);
+
   const subList = useMemo(() => [{ id: "all", label: "All" }, ...subs], [subs]);
 
   // Seed the confirmed baseline whenever the source data refreshes.
