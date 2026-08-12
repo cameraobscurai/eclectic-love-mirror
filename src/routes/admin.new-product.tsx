@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ADMIN_CATEGORIES, subcategoryOptions } from "@/lib/admin-categories";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { listTaxonomyTree } from "@/lib/taxonomy-admin.functions";
 import {
   createInventoryItem,
   updateInventoryItemMeta,
