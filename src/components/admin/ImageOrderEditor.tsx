@@ -422,7 +422,10 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
                 coverUrl={urls[0]}
                 initialX={null}
                 initialY={null}
+                categorySlug={item.category_slug ?? null}
+                dimensions={item.dimensions ?? null}
               />
+
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
