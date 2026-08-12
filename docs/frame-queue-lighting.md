@@ -1,6 +1,6 @@
 # Frame queue — lighting
 
-Generated 2026-08-12T08:08:55.353Z · rule fs2-2026-08-12 · 2 of 40 tiles queued.
+Generated 2026-08-12T08:40:56.365Z · rule fs2-2026-08-12 · 2 of 40 tiles queued.
 
 Verifier FAIL means no bytes were produced and no row was written. These are
 photographs the machine declined to publish, not bake failures.
