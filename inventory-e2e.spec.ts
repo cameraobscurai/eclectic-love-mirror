@@ -197,16 +197,14 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await page.getByText(renamed).first().click();
     await expect(page.locator('#f-title')).toHaveValue(renamed, { timeout: 20_000 });
 
-    // --- 8. Cleanup: park it as a non-public draft --------------------------
-    const status = page.locator('#f-status');
-    if (await status.count()) {
-      await status.selectOption('draft').catch(() => {});
-      const cleanupSave = page.getByRole('button', { name: /^save \d+ change/i });
-      if (await cleanupSave.isEnabled().catch(() => false)) {
-        await cleanupSave.click();
-        await page.waitForTimeout(2000);
-      }
-    }
+    // --- 8. Teardown: the harness deletes what it made ----------------------
+    // Parking the row as a draft was not cleanup — it left rows in the DB that
+    // later surfaced as "unassigned" in Taxonomy Studio. The run now removes
+    // its own artifact through the same delete path a staffer uses.
+    createdIds.push(productId);
+    await deleteArtifact(page, productId);
+    createdIds.pop();
+
 
     // --- 9. Nothing ugly leaked to the user, console, or network -----------
     h.uiErrors.push(...(await visibleErrorText(page)));
