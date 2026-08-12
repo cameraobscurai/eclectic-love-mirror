@@ -55,12 +55,27 @@ const STATE_COLOR: Record<State, string> = {
   ruled: "bg-emerald-600",
 };
 
+// Unassigned is the BYPASS class, not just the unfilled class.
+//
+// The reseed never saw the Portia/Zala/legacy rows because taxonomy_review is
+// NULL — a reliable marker for "row that never went through the declared
+// pipeline". A null-review row with slugs used to sort into needs_ruling and
+// vanish among 600 others; now it surfaces here. Permanent detector, not a
+// one-time cleanup.
 function rowState(r: TaxonomyRow): State {
-  if (!r.collection_slug || !r.category_slug) return "unassigned";
-  if (r.review?.needs_owner) return "needs_owner";
-  if (r.review?.reviewed) return "ruled";
-  if (r.review?.source) return "confirm";
+  if (!r.collection_slug || !r.category_slug || !r.review) return "unassigned";
+  if (r.review.needs_owner) return "needs_owner";
+  if (r.review.reviewed) return "ruled";
+  if (r.review.source) return "confirm";
   return "needs_ruling";
+}
+
+/** Why this row is in the Unassigned queue. */
+function originTag(r: TaxonomyRow): string | null {
+  if (rowState(r) !== "unassigned") return null;
+  if (r.review?.source === "human-deferred") return "human-deferred";
+  if (!r.review) return "no-review";
+  return "unfilled";
 }
 
 function TaxonomyStudio() {
