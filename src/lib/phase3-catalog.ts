@@ -376,7 +376,9 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
 
 
       baseImages = coverFirst(baseImages);
-      const v = p.imagesVersion ?? 0;
+      // Live edit time beats bake time. Frozen busters were how a re-uploaded
+      // photo at the same URL kept serving the old bytes.
+      const v = Math.max(live?.images_version ?? 0, p.imagesVersion ?? 0);
       const images = v ? bustImages(baseImages, v) : baseImages;
       return {
         ...p,
@@ -507,6 +509,10 @@ type LiveOverlayRow = {
   /** Declared taxonomy — owner truth, carried through publish. */
   collection_slug?: string | null;
   category_slug?: string | null;
+  /** Epoch seconds of the row's last edit, carried by overlays published
+   *  after 2026-08-12. Wins over the bake-time `imagesVersion` so a photo
+   *  re-uploaded at the SAME storage URL busts CDN cache immediately. */
+  images_version?: number | null;
 };
 
 
@@ -570,11 +576,13 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
-      for (const row of data as Array<{ rms_id: string } & LiveOverlayRow>) {
+      for (const row of data as Array<
+        { rms_id: string; updated_at?: string | null } & LiveOverlayRow
+      >) {
         if (row.rms_id) {
           map.set(row.rms_id, {
             editorial_order: row.editorial_order,
@@ -593,6 +601,9 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             cover_framed_url: row.cover_framed_url ?? null,
             collection_slug: row.collection_slug ?? null,
             category_slug: row.category_slug ?? null,
+            images_version: row.updated_at
+              ? Math.floor(new Date(row.updated_at).getTime() / 1000)
+              : null,
           });
         }
       }

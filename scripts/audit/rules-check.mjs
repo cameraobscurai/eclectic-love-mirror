@@ -142,6 +142,37 @@ if (fs.existsSync(baselinePath)) {
 }
 
 // ---------------------------------------------------------------------------
+// R9 — the retired upscaler column stays dead
+//
+// inventory_items.upscaled_cover_url produced the opaque backdrops and invented
+// shadows on cutout photos. Nulled 2026-08-12, dropped 2026-08-21. Until then
+// nothing may write it. Reads are already gone; the guard is on writes so a
+// revived script can't repopulate the column between now and the drop.
+// scripts/retired/ is the archive and is exempt; generated Supabase types and
+// prose comments naming the column are not writes.
+// ---------------------------------------------------------------------------
+const R9_COLUMN = "upscaled_cover_url";
+const R9_WRITE = new RegExp(
+  `${R9_COLUMN}\\s*:(?!\\s*(?:string|null|number)\\b)|set\\s*\\(\\s*\\{[^}]*${R9_COLUMN}|"${R9_COLUMN}"\\s*,`,
+);
+for (const { file, text } of files) {
+  if (file.startsWith("scripts/retired/")) continue;
+  if (file === "src/integrations/supabase/types.ts") continue;
+  if (file === "scripts/audit/rules-check.mjs") continue;
+  const lines = text.split("\n");
+  lines.forEach((line, i) => {
+    if (/^\s*(\/\/|\*)/.test(line)) return; // a comment naming the column is fine
+    if (!R9_WRITE.test(line)) return;
+    violations.push({
+      rule: "R9",
+      file,
+      line: i + 1,
+      msg: `writes ${R9_COLUMN} — the upscaler column is retired (nulled 2026-08-12, dropped 2026-08-21); its producers live in scripts/retired/ and stay there`,
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 // R7 — destructive scripts default to dry-run
 // Advisory: a script that writes must mention --apply or --dry-run somewhere.
 // ---------------------------------------------------------------------------
@@ -166,6 +197,7 @@ if (r1Retired.size) {
   for (const f of [...r1Retired].sort()) console.log(`  \u00b7 ${f}`);
 }
 console.log(`R2 public pixel measurement: ${r2Current.length} importer(s), baseline ${fs.existsSync(baselinePath) ? "locked" : "not set"}`);
+console.log(`R9 retired upscaler column writes: ${violations.filter((v) => v.rule === "R9").length} violation(s)`);
 if (r7.length) {
   console.log(`\nR7 advisory — writing scripts with no dry-run flag (${r7.length}):`);
   for (const f of r7) console.log(`  · ${f}`);

@@ -257,3 +257,16 @@ the visible delay, and that delay is a written number with a test, not folklore.
 **Receipt.** `docs/round-trip-receipt.md`. Overlay text fields were silently
 dropped in the merge for existing products; the edit appeared to save and never
 appeared live.
+
+## R9 — A retired column is nulled, guarded, and dated
+
+**Rule.** When a column stops being read, it gets all four in the same change:
+its values nulled, its producers moved to `scripts/retired/`, a CI guard that
+fails on any write to it, and a drop date in the deletion tracker
+(`docs/taxonomy-open-questions.md`). Three of the four is how a dead column
+stays alive for a year.
+
+**Receipt.** `inventory_items.upscaled_cover_url`. Nothing had read it since
+2026-08-11, yet 34 rows still carried it and two scripts could still write it —
+the same machinery that put invented shadows on cutout photos. Nulled, retired,
+guarded (R9 in `scripts/audit/rules-check.mjs`), drop dated 2026-08-21.
