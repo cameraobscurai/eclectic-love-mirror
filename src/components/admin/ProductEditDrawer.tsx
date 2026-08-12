@@ -657,9 +657,10 @@ function DeleteZone({ title, disabled, onDelete }) {
 /* ═════════════ THE DRAWER (portable) ═════════════ */
 
 export function ProductEditDrawer({
-  product, categories, role = "staff", recentChanges = [], categoryPriceStats = {},
+  product, taxonomy, role = "staff", recentChanges = [], categoryPriceStats = {},
   onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved, onDelete,
 }) {
+
 
 
   const draft = useDraft(product);
