@@ -34,7 +34,21 @@ inventory_items
 
 ## Order of work
 
-**0 — Delete tombstone. First, alone, today.** Delete writes a tombstone the publish overlay carries, so the piece leaves the live site at the next publish rather than the next bake, and the admin grid reconciles against the database instead of the snapshot. This is the one item where the system is lying to her.
+**0 — Delete tombstone. First, alone, today.** The overlay is assembled by walking live rows, so a deletion is invisible to it — the tombstone cannot live on `inventory_items`. It gets its own table:
+
+```text
+deleted_items (id, rms_id, deleted_at, deleted_by)
+```
+
+The publish snapshot serializes it as a suppress-list; the phase-3 merge filters against it. Four rules:
+
+- **Suppress at both levels.** The check runs on the tile *and* on every entry in `variants[]`. A deleted variant row is folded inside a baked family, so filtering only top-level products moves the ghost down a level — a live tile with a dead chip, which phase 4 turns into a clickable error.
+- **Deleted lead falls through.** If the tombstoned row is a family's lead, the baked tile still carries its cover, title, and copy. Suppressing the ID must not remove the tile — the siblings are still rentable. Rule: lead tombstoned → the next sibling by family position becomes display-lead until the bake catches up.
+- **Self-expiring.** The next full bake reads the database, where the row is simply absent, so the tombstone has nothing left to suppress. Purge `deleted_items` at bake time — one line in `bake-catalog.mjs`, not a cron.
+- **Delete lights the Publish badge.** `deleteProduct` increments the same pending state every other edit does. Otherwise she deletes, sees it gone from the admin grid, assumes done, and the live ghost persists — the same trust failure one layer down.
+
+The admin grid also reconciles against the database rather than the snapshot, since it is an audit surface.
+
 
 **1 — Schema.** `product_families` (with `option_name`), `inventory_items.family_id`, `variant_label`, `variant_cover_url`. Pointer validated against normalized URLs in that row's `images[]`. Empty pointer = AUTO, which is today's behaviour, so day one is a no-op.
 
