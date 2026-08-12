@@ -120,6 +120,8 @@ function NewProductPage() {
         collectionSlug: deferTaxonomy ? null : collectionSlug,
         categorySlug: deferTaxonomy ? null : categorySlug,
         deferTaxonomy,
+        allowDuplicateTitle: dupAck,
+
       },
     });
     const next = { id: res.id, rmsId: res.rmsId ?? "" };
