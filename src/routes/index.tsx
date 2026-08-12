@@ -144,7 +144,8 @@ function HomePage() {
             <p
               className="font-brand text-cream"
               style={{
-                fontWeight: 300,
+                // Saol Display has no 300 upright cut — 400 is the light face.
+                fontWeight: 400,
                 letterSpacing: "0.16em",
                 textIndent: "0.16em",
                 fontSize: "clamp(1.6rem, 7.2vw, 2.5rem)",
@@ -154,15 +155,14 @@ function HomePage() {
             >
               ECLECTIC HIVE
             </p>
+            {/* Tagline matches the desktop lockup: Saol italic, mixed case. */}
             <p
-              className="mt-3 text-cream/80"
+              className="mt-3 font-display italic text-cream/80"
               style={{
-                fontFamily: "var(--font-sans)",
                 fontWeight: 400,
-                textTransform: "uppercase",
-                fontSize: "clamp(0.6rem, 2.6vw, 0.72rem)",
-                lineHeight: 1.6,
-                letterSpacing: "0.2em",
+                fontSize: "clamp(0.85rem, 3.6vw, 1.05rem)",
+                lineHeight: 1.4,
+                letterSpacing: "0.01em",
               }}
             >
               Designing for Weddings, Corporate, &amp; Social Events

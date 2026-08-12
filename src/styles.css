@@ -710,7 +710,7 @@ header nav button:focus-visible,
    ---------------------------------------------------------------------------- */
 .footer-wordmark {
   font-family: "Saol Display", "Cormorant", serif;
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(1.25rem, 1.6vw, 1.4rem);
   letter-spacing: 0.18em;
   text-transform: uppercase;
