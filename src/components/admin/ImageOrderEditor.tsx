@@ -254,45 +254,63 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   const handleFiles = async (files: FileList | File[]) => {
     setUploading(true);
     setErrMsg(null);
+    const arr = Array.from(files);
+    const appended: string[] = [];
+    const failed: string[] = [];
+    const skipped: string[] = [];
     try {
-      const arr = Array.from(files);
-      const appended: string[] = [];
       for (const file of arr) {
-        if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) continue;
-        if (file.size > 10 * 1024 * 1024) {
-          setErrMsg(`${file.name} exceeds 10MB`);
+        if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) {
+          skipped.push(file.name);
           continue;
         }
-        const buf = new Uint8Array(await file.arrayBuffer());
-        // chunked btoa to avoid call-stack overflow on large arrays
-        let bin = "";
-        const chunk = 0x8000;
-        for (let i = 0; i < buf.length; i += chunk) {
-          bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+        if (file.size > 10 * 1024 * 1024) {
+          skipped.push(`${file.name} (over 10MB)`);
+          continue;
         }
-        const base64 = btoa(bin);
-        const res = await uploadFn({
-          data: {
-            id: item.id,
-            rmsId: item.rms_id,
-            filename: file.name,
-            contentType: file.type as
-              | "image/jpeg"
-              | "image/png"
-              | "image/webp"
-              | "image/avif",
-            base64,
-          },
-        });
-        appended.push(res.url);
+        // Per-file try: one bad upload must not discard the files that already
+        // landed in storage. Anything that succeeded still gets attached below.
+        try {
+          const buf = new Uint8Array(await file.arrayBuffer());
+          // chunked btoa to avoid call-stack overflow on large arrays
+          let bin = "";
+          const chunk = 0x8000;
+          for (let i = 0; i < buf.length; i += chunk) {
+            bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+          }
+          const base64 = btoa(bin);
+          const res = await uploadFn({
+            data: {
+              id: item.id,
+              rmsId: item.rms_id,
+              filename: file.name,
+              contentType: file.type as
+                | "image/jpeg"
+                | "image/png"
+                | "image/webp"
+                | "image/avif",
+              base64,
+            },
+          });
+          appended.push(res.url);
+        } catch (e) {
+          failed.push(`${file.name}: ${(e as Error).message}`);
+        }
       }
       if (appended.length) apply([...urls, ...appended]);
-    } catch (e) {
-      setErrMsg((e as Error).message);
+      const notes: string[] = [];
+      if (failed.length) notes.push(`${failed.length} failed — ${failed.join("; ")}`);
+      if (skipped.length) notes.push(`${skipped.length} skipped — ${skipped.join("; ")}`);
+      if (notes.length) {
+        setErrMsg(
+          `${appended.length} of ${arr.length} added. ${notes.join(" · ")}`,
+        );
+      }
     } finally {
       setUploading(false);
     }
   };
+
 
   // Re-fetch row on mount in case data is stale (single read, no refetch loop).
   useEffect(() => {
