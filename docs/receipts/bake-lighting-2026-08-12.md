@@ -1,19 +1,19 @@
 # Bake receipt — lighting
 
-2026-08-12T08:08:01.884Z · rule fs2-2026-08-12 · DRY RUN
+2026-08-12T08:08:16.391Z · rule fs2-2026-08-12 · DRY RUN
 
 | Outcome | Count |
 | --- | --- |
-| tiles | 6 |
-| framed (verify PASS) | 6 |
+| tiles | 40 |
+| framed (verify PASS) | 38 |
 | unchanged (hash match) | 0 |
-| queued (verify FAIL) | 0 |
-| skipped | 0 |
+| queued (verify FAIL) | 1 |
+| skipped | 1 |
 | uploads deduped (R1 409) | 0 |
 
 ## Advisories
 
-- SRC_UPSCALED: 6
+- SRC_UPSCALED: 37
 
 Queue: [docs/frame-queue-lighting.md](../frame-queue-lighting.md)
 Contact sheet: `docs/receipts/contact-sheet-lighting-2026-08-12.html`
