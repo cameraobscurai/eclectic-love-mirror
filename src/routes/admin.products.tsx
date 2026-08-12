@@ -463,7 +463,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <ProductEditDrawer
         product={row as any}
-        categories={cats}
+        taxonomy={tree ?? { collections: [], categories: [] }}
         role={role}
         recentChanges={audit as never}
         categoryPriceStats={{}}
@@ -485,11 +485,22 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         }}
 
         onSave={async (patch: Record<string, unknown>) => {
-          const updated = await upd({ data: { id, patch } });
-          setRow(updated as ProductRow);
+          // Taxonomy is NOT a plain column write. The pair is revalidated
+          // against the reference tables and stamps taxonomy_review — that's
+          // assignTaxonomy's job, so split it out of the ordinary patch.
+          const { collection_slug, category_slug, ...rest } = patch as Record<string, string | undefined>;
+          if (collection_slug && category_slug) {
+            await assign({ data: { ids: [id], collection_slug, category_slug } });
+          }
+          if (Object.keys(rest).length > 0) {
+            await upd({ data: { id, patch: rest } });
+          }
+          const fresh = await get({ data: { id } });
+          setRow(fresh as ProductRow);
           onSaved();
           auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
         }}
+
       />
       {photoEditor && (
         <ImageOrderEditor
