@@ -97,9 +97,12 @@ type SortMode = "editorial" | "type" | "az" | "tonal";
 
 /** Category selection. "all" = every piece in one grid, grouped by category,
  *  read-only (drag order is per-category, so it can't be persisted here). */
-type ParentSel = ParentId | "all";
+// "hidden" is a shelf, not a taxonomy node: most hidden pieces have no
+// collection_slug yet, so filing them by category would leave them invisible
+// on every screen except Unassigned. This gives them one guaranteed home.
+type ParentSel = ParentId | "all" | "hidden";
 function selLabel(p: ParentSel): string {
-  return p === "all" ? "All" : PARENT_LABELS[p];
+  return p === "all" ? "All" : p === "hidden" ? "Hidden" : PARENT_LABELS[p];
 }
 
 
@@ -194,7 +197,9 @@ function PhotosManager() {
   const parent: ParentSel =
     search.cat === "all"
       ? "all"
-      : search.cat && (PARENT_ORDER as string[]).includes(search.cat)
+      : search.cat === "hidden"
+        ? "hidden"
+        : search.cat && (PARENT_ORDER as string[]).includes(search.cat)
         ? (search.cat as ParentId)
         : readStoredParent();
   const setParent = useCallback((p: ParentSel) => setSearch({ cat: p, sub: undefined }), [setSearch]);
@@ -285,11 +290,13 @@ function PhotosManager() {
           Categories
         </p>
         <nav className="flex flex-col">
-          {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => {
+          {(["all", ...PARENT_ORDER, "hidden"] as ParentSel[]).map((pid) => {
             const count = allProducts
               ? pid === "all"
                 ? allProducts.length
-                : allProducts.filter((p) => productParent(p) === pid).length
+                : pid === "hidden"
+                  ? allProducts.filter((p) => p.publicReady === false).length
+                  : allProducts.filter((p) => productParent(p) === pid).length
               : null;
             return (
               <button
@@ -326,7 +333,7 @@ function PhotosManager() {
             onChange={(e) => setParent(e.target.value as ParentSel)}
             className="w-full border border-charcoal/20 bg-white px-3 py-2 text-[12px] uppercase tracking-[0.14em]"
           >
-            {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => (
+            {(["all", ...PARENT_ORDER, "hidden"] as ParentSel[]).map((pid) => (
               <option key={pid} value={pid}>
                 {selLabel(pid)}
               </option>
@@ -392,7 +399,9 @@ function CategoryGrid({
     if (!allProducts) return [];
     const inParent = allMode
       ? [...allProducts]
-      : allProducts.filter((p) => productParent(p) === parent);
+      : parent === "hidden"
+        ? allProducts.filter((p) => p.publicReady === false)
+        : allProducts.filter((p) => productParent(p) === parent);
     const editorialCmp = (a: CollectionProduct, b: CollectionProduct) => {
       const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
       const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
@@ -413,7 +422,7 @@ function CategoryGrid({
       });
       return inParent.map(adapt);
     }
-    if (sortMode === "editorial") {
+    if (sortMode === "editorial" || parent === "hidden") {
       inParent.sort(editorialCmp);
       return inParent.map(adapt);
     }
@@ -436,12 +445,12 @@ function CategoryGrid({
   // persist a partial parent list) or while viewing a non-editorial sort
   // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
   // mirrors of the public sort, not editable orderings).
-  const subActive = !allMode && sub !== "all";
+  const subActive = !allMode && parent !== "hidden" && sub !== "all";
   const { filter: filterParam } = Route.useSearch();
   const missingOnly = filterParam === "missing";
   // ALL is read-only: drag order is persisted per category, so a cross-category
   // list has nowhere to write to.
-  const reorderDisabled = allMode || subActive || sortMode !== "editorial" || missingOnly;
+  const reorderDisabled = allMode || parent === "hidden" || subActive || sortMode !== "editorial" || missingOnly;
   const visibleItems = useMemo(
     () => {
       let base = subActive
@@ -525,7 +534,7 @@ function CategoryGrid({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const subs = allMode ? [] : PARENT_SUBS[parent as ParentId];
+  const subs = allMode || parent === "hidden" ? [] : PARENT_SUBS[parent as ParentId];
 
   // ALL mode: split the flat list into category sections, PARENT_ORDER first,
   // anything unassigned last so it can't hide.
@@ -1102,14 +1111,41 @@ function TileFrame({
       style={{ ...style, aspectRatio: tileAspectFor(item) }}
       title={`${item.title}${item.hidden ? " · HIDDEN from the live site" : ""} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-      <div className={item.hidden ? "h-full w-full opacity-35 grayscale" : "h-full w-full"}>
+      {/* Hidden pieces stay legible — she still has to recognise the photo.
+          A wash + diagonal hatch reads as "off the site" without hiding it. */}
+      <div className={item.hidden ? "h-full w-full opacity-60 saturate-50" : "h-full w-full"}>
         <TileMedia item={item} dense={dense} />
       </div>
 
       {item.hidden && (
-        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center gap-1 bg-charcoal/85 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
-          <EyeOff className="h-2.5 w-2.5" /> Hidden
-        </span>
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.30) 45%, rgba(26,26,26,0.30) 100%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(135deg, #1a1a1a 0 1px, transparent 1px 9px)",
+            }}
+          />
+          {dense ? (
+            /* Icon/wall density: a full-width label would cover the photo. */
+            <span className="absolute bottom-1 right-1 inline-flex items-center justify-center bg-charcoal/80 text-cream p-0.5">
+              <EyeOff className="h-2.5 w-2.5" />
+            </span>
+          ) : (
+            <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-charcoal/80 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
+              <EyeOff className="h-2.5 w-2.5" /> Hidden
+            </span>
+          )}
+        </>
       )}
 
       {/* Position index — small, editorial */}
