@@ -47,6 +47,12 @@ function NewProductPage() {
   const [quantity, setQuantity] = useState("");
   const [dimensions, setDimensions] = useState("");
 
+  // Declared taxonomy — required to create, unless deliberately deferred.
+  const [tree, setTree] = useState<Awaited<ReturnType<typeof listTaxonomyTree>> | null>(null);
+  const [collectionSlug, setCollectionSlug] = useState("");
+  const [categorySlug, setCategorySlug] = useState("");
+  const [deferTaxonomy, setDeferTaxonomy] = useState(false);
+
   // Local image staging: URLs (already uploaded once row exists) in order.
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -55,11 +61,19 @@ function NewProductPage() {
   const [busy, setBusy] = useState<null | "draft" | "publish">(null);
   const [err, setErr] = useState<string | null>(null);
 
+  useEffect(() => {
+    listTaxonomyTree()
+      .then(setTree)
+      .catch(() => setTree({ collections: [], categories: [] }));
+  }, []);
+
   const titleTrim = title.trim();
   const qNum = quantity.trim() ? Number(quantity) : null;
   const quantityValue =
     qNum !== null && Number.isFinite(qNum) ? qNum : null;
   const dimensionsValue = dimensions.trim() || null;
+  const taxonomyResolved = deferTaxonomy || (!!collectionSlug && !!categorySlug);
+  const canSave = !!titleTrim && taxonomyResolved;
 
   // Ensure a draft row exists. First call creates; subsequent calls patch
   // metadata onto the existing row.
@@ -67,6 +81,9 @@ function NewProductPage() {
     publicReady: boolean,
   ): Promise<DraftRow> => {
     if (!titleTrim) throw new Error("Title is required");
+    if (!taxonomyResolved) {
+      throw new Error("Choose a collection and category, or tick “Decide later”.");
+    }
     if (draft) {
       await updateMeta({
         data: {
@@ -90,6 +107,9 @@ function NewProductPage() {
         quantityLabel: null,
         dimensionsRaw: dimensionsValue,
         publicReady,
+        collectionSlug: deferTaxonomy ? null : collectionSlug,
+        categorySlug: deferTaxonomy ? null : categorySlug,
+        deferTaxonomy,
       },
     });
     const next = { id: res.id, rmsId: res.rmsId ?? "" };
