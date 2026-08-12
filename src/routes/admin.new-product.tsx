@@ -270,6 +270,56 @@ function NewProductPage() {
           </select>
         </Field>
 
+        {/* Declared taxonomy — required, with an explicit deferral. */}
+        <div className="border border-charcoal/15 p-4 space-y-4">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">
+            Where it lives {deferTaxonomy ? "(deferred)" : "(required)"}
+          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Collection">
+              <select
+                value={collectionSlug}
+                disabled={deferTaxonomy}
+                onChange={(e) => {
+                  setCollectionSlug(e.target.value);
+                  setCategorySlug("");
+                }}
+                className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal disabled:opacity-40"
+              >
+                <option value="">— choose —</option>
+                {(tree?.collections ?? []).map((c) => (
+                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Category">
+              <select
+                value={categorySlug}
+                disabled={deferTaxonomy || !collectionSlug}
+                onChange={(e) => setCategorySlug(e.target.value)}
+                className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal disabled:opacity-40"
+              >
+                <option value="">— choose —</option>
+                {(tree?.categories ?? [])
+                  .filter((c) => c.collection_slug === collectionSlug)
+                  .map((c) => (
+                    <option key={c.slug} value={c.slug}>{c.label}</option>
+                  ))}
+              </select>
+            </Field>
+          </div>
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-charcoal/70">
+            <input
+              type="checkbox"
+              checked={deferTaxonomy}
+              onChange={(e) => setDeferTaxonomy(e.target.checked)}
+            />
+            Decide later — send it to the Unassigned queue
+          </label>
+        </div>
+
+
+
         <div className="grid grid-cols-2 gap-4">
           <Field label="Quantity (optional)">
             <input
