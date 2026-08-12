@@ -16,6 +16,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
+import { isTestArtifact } from "@/lib/test-artifact";
 
 const slug = z.string().min(1).max(64).regex(/^[a-z0-9-]+$/);
 
