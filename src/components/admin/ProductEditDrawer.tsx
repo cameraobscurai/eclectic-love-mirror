@@ -932,7 +932,10 @@ export function ProductEditDrawer({
                           title: (product.title as string) ?? draft.values.title ?? "",
                           images: Array.isArray(product.images) ? (product.images as string[]) : [],
                           card_background_url: (product.card_background_url as string | null) ?? null,
+                          category_slug: (product.category_slug as string | null) ?? null,
+                          dimensions: (product.dimensions as string | null) ?? null,
                         }}
+
                         onClose={() => { /* embedded: no-op, drawer owns close */ }}
                         onSaved={(next) => onPhotosSaved?.(next)}
 
