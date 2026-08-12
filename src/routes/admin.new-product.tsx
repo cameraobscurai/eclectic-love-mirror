@@ -351,7 +351,7 @@ function NewProductPage() {
 
           {images.length === 0 ? (
             <UploadDrop
-              disabled={!titleTrim || uploading}
+              disabled={!canSave || uploading}
               uploading={uploading}
               onFiles={handleFiles}
               hint={
@@ -413,7 +413,7 @@ function NewProductPage() {
         <div className="pt-4 border-t border-charcoal/10 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            disabled={!titleTrim || !!busy}
+            disabled={!canSave || !!busy}
             onClick={() => void handleSave(true)}
             className="inline-flex items-center gap-2 bg-charcoal text-cream px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40"
           >
@@ -423,7 +423,7 @@ function NewProductPage() {
           </button>
           <button
             type="button"
-            disabled={!titleTrim || !!busy}
+            disabled={!canSave || !!busy}
             onClick={() => void handleSave(false)}
             className="inline-flex items-center gap-2 border border-charcoal/30 px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] hover:bg-charcoal/5 disabled:opacity-40"
           >
