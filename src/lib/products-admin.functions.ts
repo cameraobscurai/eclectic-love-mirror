@@ -211,11 +211,17 @@ export const listProductAudit = createServerFn({ method: "POST" })
 
 // Hard-delete a single inventory row. Staff + admin (RLS: "Staff can delete
 // items"). Single-row only, always confirmed in the UI — never bulk.
+//
+// A bare row delete is invisible to the public catalog: the published overlay
+// is assembled by walking live rows, so a deleted row just stops being
+// mentioned and its BAKED tile survives until the next full bake. So the
+// delete also writes a tombstone into `deleted_items`, which publish
+// serializes as a suppress-list (see src/lib/tombstones.ts).
 export const deleteProduct = createServerFn({ method: "POST" })
   .middleware([requireStaffOrAdmin])
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const { data: row, error: readErr } = await supabase
       .from("inventory_items")
       .select("id, title, rms_id")
@@ -226,5 +232,41 @@ export const deleteProduct = createServerFn({ method: "POST" })
 
     const { error } = await supabase.from("inventory_items").delete().eq("id", data.id);
     if (error) throw new Response(error.message, { status: 500 });
+
+    // Tombstone AFTER the row is gone — if this insert fails we still report
+    // the delete, but the ghost would survive, so surface it loudly.
+    const { error: tombErr } = await supabase.from("deleted_items").insert({
+      item_id: row.id as string,
+      rms_id: (row.rms_id as string | null) ?? null,
+      title: (row.title as string | null) ?? null,
+      deleted_by: userId,
+    });
+    if (tombErr) {
+      console.error("[deleteProduct] tombstone insert failed", tombErr);
+      throw new Response(
+        "The piece was removed, but the live site could not be told. Publish and check the tile.",
+        { status: 500 },
+      );
+    }
+
     return { ok: true, id: data.id, title: row.title as string };
   });
+
+/** rms_ids of pieces deleted since the last bake. The admin grid renders from
+ *  the baked catalog, so without this an audit surface keeps showing tiles
+ *  whose row is gone. */
+export const listDeletedRmsIds = createServerFn({ method: "POST" })
+  .middleware([requireStaffOrAdmin])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("deleted_items")
+      .select("rms_id, item_id");
+    if (error) throw new Response(error.message, { status: 500 });
+    const ids: string[] = [];
+    for (const r of (data ?? []) as Array<{ rms_id: string | null; item_id: string }>) {
+      if (r.rms_id) ids.push(r.rms_id);
+      ids.push(r.item_id);
+    }
+    return { ids };
+  });
+

@@ -11,6 +11,8 @@
 
 import { isTestArtifact } from "@/lib/test-artifact";
 import { coverFirst, imageKey, mergeFamilyImages } from "@/lib/family-cover";
+import { applyTombstones } from "@/lib/tombstones";
+
 
 // NOTE: catalog JSON is dynamically imported below so it doesn't land in any
 // route's eager chunk. The first call to getCollectionCatalog() pays the
@@ -217,7 +219,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // swaps, card backgrounds) write to DB and show up on the next site load
     // without re-baking the JSON snapshot. Keyed by rms_id since baked
     // products may use the RMS id as their primary id.
-    const overlay = await fetchLiveOverlay();
+    const { map: overlay, deleted } = await fetchLiveOverlay();
 
     // Filename-level identity so the same photo under a different signed /
     // versioned URL is not duplicated inside a family tile.
@@ -432,7 +434,11 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           }))
         : base.facets;
 
-    cached = { products: all, facets, total: all.length };
+    // Tombstones last: suppression must see the merged tile AND its merged
+    // variants[], and a tombstoned lead promotes its next surviving sibling.
+    const live = applyTombstones(all, deleted);
+
+    cached = { products: live, facets, total: live.length };
     cachedAt = Date.now();
     return cached;
   })();
@@ -489,8 +495,14 @@ type LiveOverlayRow = {
 };
 
 
-async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
+async function fetchLiveOverlay(): Promise<{
+  map: Map<string, LiveOverlayRow>;
+  /** rms_ids / row ids deleted since the last bake, carried by the published
+   *  snapshot. See src/lib/tombstones.ts. */
+  deleted: Set<string>;
+}> {
   const map = new Map<string, LiveOverlayRow>();
+  const deleted = new Set<string>();
 
   // Fast path: single request for the published overlay snapshot written
   // by /admin/photos → Publish. One JSON fetch, CDN-cacheable, no pagination.
@@ -521,12 +533,14 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             if (res.ok) {
               const payload = (await res.json()) as {
                 overlay: Record<string, LiveOverlayRow>;
+                deleted?: string[];
               };
               if (payload && payload.overlay) {
                 for (const [rmsId, row] of Object.entries(payload.overlay)) {
                   map.set(rmsId, row);
                 }
-                return map;
+                for (const id of payload.deleted ?? []) deleted.add(id);
+                return { map, deleted };
               }
             }
           }
@@ -589,7 +603,11 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     // Non-fatal: fall back to baked values.
     console.warn("[catalog] live overlay failed:", e);
   }
-  return map;
+  // Fallback path (pre-first-publish): `deleted_items` is staff-only, so the
+  // public client cannot read it. Harmless — this path already queries live
+  // rows, so a deleted row is absent from the overlay, and the next bake
+  // removes it from the snapshot.
+  return { map, deleted };
 }
 
 /** Drop the in-memory cache so the next getCollectionCatalog() call re-fetches

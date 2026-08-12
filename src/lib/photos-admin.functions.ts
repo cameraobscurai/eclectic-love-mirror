@@ -236,10 +236,32 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
     }
 
 
+    // Suppress-list. Deletion is invisible to the walk above (a deleted row
+    // just stops being mentioned), so its baked tile would survive on the
+    // live site until the next bake. `deleted_items` carries it across.
+    // Purged at bake time — see scripts/bake-catalog.mjs.
+    const deleted: string[] = [];
+    {
+      const { data: tombs, error: tErr } = await supabaseAdmin
+        .from("deleted_items")
+        .select("rms_id, item_id");
+      if (tErr) throw new Error(`PUBLISH_TOMBSTONE_READ_FAILED: ${tErr.message}`);
+      for (const t of (tombs ?? []) as Array<{ rms_id: string | null; item_id: string }>) {
+        if (t.rms_id) deleted.push(t.rms_id);
+        deleted.push(t.item_id);
+      }
+    }
+
     const publishedAt = new Date().toISOString();
     const stamp = publishedAt.replace(/[:.]/g, "-");
-    const payload = JSON.stringify({ publishedAt, count: Object.keys(overlay).length, overlay });
+    const payload = JSON.stringify({
+      publishedAt,
+      count: Object.keys(overlay).length,
+      overlay,
+      deleted,
+    });
     const blob = new Blob([payload], { type: "application/json" });
+
 
     // Immutable, timestamped key — never overwritten, so concurrent readers
     // never see a torn write. Manifest below is the sole mutable pointer.
@@ -347,5 +369,13 @@ export const getPublishStatus = createServerFn({ method: "GET" })
       .gt("updated_at", publishedAt);
     if (error) return { publishedAt, pending: 0 };
 
-    return { publishedAt, pending: count ?? 0 };
+    // Deletions are pending work too. Without this a delete looks done in the
+    // admin while the live ghost waits for a publish nobody knows to click.
+    const { count: tombCount } = await supabaseAdmin
+      .from("deleted_items")
+      .select("id", { count: "exact", head: true })
+      .gt("deleted_at", publishedAt);
+
+    return { publishedAt, pending: (count ?? 0) + (tombCount ?? 0) };
+
   });
