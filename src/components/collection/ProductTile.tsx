@@ -11,7 +11,7 @@ import {
 import { getProductBrowseGroup } from "@/lib/collection-browse-groups";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { withCdnWidth, buildCdnSrcSet } from "@/lib/image-url";
-import { resolveProductFit } from "./productFit";
+import { resolveProductFit, withScaleNudge } from "./productFit";
 import { framedCoverSrc600, framedCoverSrcSet } from "@/lib/cover-framed";
 
 
@@ -72,7 +72,11 @@ export function ProductTile({
 
   const overrides = PRODUCT_TILE_OVERRIDES[product.id];
   const rawUrl = product.primaryImage?.url ?? null;
-  const fitRule = resolveProductFit(product);
+  const nudge = overrides?.scaleNudge ?? 1;
+  const fitRule =
+    nudge === 1
+      ? resolveProductFit(product)
+      : withScaleNudge(resolveProductFit(product), nudge);
 
   // Fallback chain: on CDN-transform error, retry with the raw URL so
   // transient render-transform failures never leave a question-mark tile.
