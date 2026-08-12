@@ -12,8 +12,8 @@ import { test, expect, type Page, type ConsoleMessage, type Response } from '@pl
 // Along the way it fails on: console errors, 4xx/5xx requests, raw/unfriendly
 // error text surfacing in the UI, and silent saves that don't persist.
 //
-// Artifacts are left as DRAFT + not public with a "ZZ E2E" name prefix, so
-// they never reach the live collection.
+// Artifacts carry a "ZZ E2E" name prefix (isTestArtifact) so they can never
+// reach public queries, and the run deletes every row it creates.
 // ---------------------------------------------------------------------------
 
 const CONSOLE_NOISE = [
@@ -269,7 +269,7 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     // Photo uploads must be gated until the piece has a name, with a hint
     // that says why — not a silent dead zone.
     await page.getByPlaceholder('e.g. Travertine Side Table').fill('');
-    await expect(page.getByText(/add a title above to enable photo uploads/i)).toBeVisible();
+    await expect(page.getByText(/add a title and choose where it lives to enable photo uploads/i)).toBeVisible();
 
     const shown = await visibleErrorText(page);
     const unfriendly = shown.filter((t) => UNFRIENDLY_ERROR.test(t));
