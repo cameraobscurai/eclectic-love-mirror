@@ -33,24 +33,59 @@ possible and it is the acceptance gate.
   `min(bg) > 198`, tolerance `max(16, (255 − min) · 0.7)`.
 - Otherwise `method: 'fail'` with a null bbox. Never guesses.
 
-### `placeSilhouette(bbox, collectionSlug): recipe.placement`
+### `placeSilhouette(bbox, categorySlug, collectionSlug): recipe.placement`
 
 - Port of `solveFit`, **no clamps**. Resampling from source is sharp at any
   scale, so the clamp band that produced the 281 CLAMP_MASSIVE defects has no
   reason to exist. Dropping it is the single property that clears them.
-- Rule table keyed to the **declared collections** (the 10 that shipped
-  yesterday), not the legacy category slugs. Rules are carried over by mapping
-  each declared collection to the closest existing rule and recording the
-  mapping inline; primary axis, anchor, and fallback semantics are preserved.
+- Rule table is keyed by **category**, with a collection-level default as
+  fallback for any future category lacking a row. Collections are too coarse
+  for the physics: folding chandeliers (top-anchored, they hang) into lighting
+  (bottom-anchored, sits on a surface) breaks one or the other, and the same
+  collision hides in cocktail-bar, styling, and textiles.
 - Returns `{ scale, offsetX, offsetY }` — the `recipe.placement` sub-object,
   so 2.2 can hash it in its final shape.
 
-### `verify(rendered, collectionSlug): { pass, failures[] }`
+#### Category → rule mapping (resolved)
 
-V1 primary-axis coverage ±6% · V2 baseline ±2% bottom-anchored · V3 no-clip
-≥1% margin · V4 clean perimeter · V5 exact dims (1500×1200 / 600×480) ·
-V6 <400KB. Advisories, non-failing: `SRC_UPSCALED` (>1.25× resample),
-`TIGHT_CROP`.
+Mechanical carries:
+
+| Categories | Rule |
+|---|---|
+| sofas-loveseats, lounge-chairs, benches, ottomans, dining-chairs, banquettes | seating |
+| coffee-tables, side-tables, consoles, cocktail-tables, community-tables, dining-tables | tables |
+| bars | bars |
+| storage | storage |
+| dinnerware, flatware, glassware | tableware |
+| serveware | serveware |
+| chandeliers | chandeliers (top anchor, anchorY 0.08 — load-bearing carve-out) |
+| table-lamps, floor-lamps | lighting |
+| pillows, throws | pillows-throws |
+| furs-pelts | furs-pelts |
+| rugs | rugs |
+| accents, crates-baskets | styling |
+| candlelighting | candlelight |
+| structures, walls, other | large-decor |
+
+Two judgment calls, ruled and flagged as such in the table comments:
+
+- `bar-stools` → height-primary, target ~0.72, bottom-anchored. A stool is tall
+  and narrow; the seating rule's width-primary math was built for sofas and
+  renders stools squat.
+- `specialty` → center-anchored area rule, ~0.34. Wall-mounted / strung / LED
+  grab-bag; nothing in it rests on a floor, so center is the least-wrong anchor.
+
+### `verify(rendered, categorySlug, collectionSlug): { pass, failures[] }`
+
+V1 primary-axis coverage ±6% · V2 baseline ±2% · V3 no-clip ≥1% margin ·
+V4 clean perimeter · V5 exact dims (1500×1200 / 600×480) · V6 <400KB.
+Advisories, non-failing: `SRC_UPSCALED` (>1.25× resample), `TIGHT_CROP`.
+
+**V2 keys the same way as the rule table.** Baseline-at-anchorY applies only to
+bottom-anchored rules; chandeliers invert it to a top-edge check, and
+center-anchored rules (specialty) skip it. Keyed by collection instead, every
+chandelier fails V2 forever.
+
 
 ### Recipe type, declared now
 
