@@ -355,9 +355,9 @@ function NewProductPage() {
               uploading={uploading}
               onFiles={handleFiles}
               hint={
-                titleTrim
+                canSave
                   ? "Drop images here or click to browse · JPG/PNG/WEBP/AVIF · max 10MB each"
-                  : "Add a title above to enable photo uploads"
+                  : "Add a title and choose where it lives to enable photo uploads"
               }
             />
           ) : (
