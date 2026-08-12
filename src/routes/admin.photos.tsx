@@ -160,8 +160,44 @@ function PhotosManager() {
   const [catalogErr, setCatalogErr] = useState<string | null>(null);
   useEffect(() => {
     let alive = true;
-    getCollectionCatalog()
-      .then((c) => alive && setAllProducts(c.products))
+    // The public catalog drops hidden pieces before it returns. On an audit
+    // screen that is the wrong default — a hidden piece looked deleted. Pull
+    // them separately and paint them faded so "why isn't this on the site?"
+    // answers itself.
+    Promise.all([
+      getCollectionCatalog(),
+      supabase
+        .from("inventory_items")
+        .select("rms_id, title, images, collection_slug, category_slug, editorial_order")
+        .eq("public_ready", false),
+    ])
+      .then(([c, hiddenRes]) => {
+        if (!alive) return;
+        const hidden = (hiddenRes.data ?? [])
+          .filter((r) => r.rms_id)
+          .map(
+            (r) =>
+              ({
+                id: r.rms_id as string,
+                title: r.title ?? "Untitled",
+                images: (Array.isArray(r.images) ? r.images : []).map((url, i) => ({
+                  url: url as string,
+                  position: i,
+                  isHero: i === 0,
+                  inferredFilename: null,
+                  altText: null,
+                })),
+                collectionSlug: r.collection_slug ?? null,
+                declaredCategory: r.category_slug ?? null,
+                editorialOrder: r.editorial_order ?? null,
+                publicReady: false,
+                variants: [],
+                categorySlug: null,
+                dimensions: null,
+              }) as unknown as CollectionProduct,
+          );
+        setAllProducts([...c.products, ...hidden]);
+      })
       .catch((e) => alive && setCatalogErr((e as Error).message));
     return () => {
       alive = false;
@@ -796,9 +832,17 @@ function Tile({
           : "ring-0 hover:shadow-[0_8px_30px_-12px_rgba(26,26,26,0.18)]"
       }`}
       style={{ ...style, aspectRatio: tileAspectFor(item) }}
-      title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
+      title={`${item.title}${item.hidden ? " · HIDDEN from the live site" : ""} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-      <TileMedia item={item} dense={dense} />
+      <div className={item.hidden ? "h-full w-full opacity-35 grayscale" : "h-full w-full"}>
+        <TileMedia item={item} dense={dense} />
+      </div>
+
+      {item.hidden && (
+        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center gap-1 bg-charcoal/85 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
+          <EyeOff className="h-2.5 w-2.5" /> Hidden
+        </span>
+      )}
 
       {/* Position index — small, editorial */}
       <span className="absolute top-2 left-2 text-[10px] uppercase tracking-[0.18em] tabular-nums text-charcoal/70 bg-white/85 backdrop-blur px-1.5 py-0.5">
