@@ -286,7 +286,12 @@ function computeReadiness(values, product) {
   const checks = [
     { id: "photo", label: "At least one photo", pass: (product?.images?.length ?? 0) > 0 },
     { id: "title", label: "Named", pass: !!String(values.title ?? "").trim() },
-    { id: "category", label: "On a shelf (category)", pass: !!values.category },
+    {
+      id: "taxonomy",
+      label: "Filed under a collection + category",
+      pass: !!values.collection_slug && !!values.category_slug,
+    },
+
     { id: "dims", label: "Dimensions on record", pass: !!String(values.dimensions_raw ?? "").trim() },
     { id: "desc", label: "Described in the Hive voice", pass: String(values.description ?? "").trim().length >= 20 },
   ];
