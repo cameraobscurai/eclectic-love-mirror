@@ -39,7 +39,11 @@ type Item = {
   title: string;
   images: string[];
   card_background_url?: string | null;
+  /** Fit inputs — let the focal preview render the real production rule. */
+  category_slug?: string | null;
+  dimensions?: string | null;
 };
+
 
 type Props = {
   item: Item;
@@ -418,7 +422,10 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
                 coverUrl={urls[0]}
                 initialX={null}
                 initialY={null}
+                categorySlug={item.category_slug ?? null}
+                dimensions={item.dimensions ?? null}
               />
+
               <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}

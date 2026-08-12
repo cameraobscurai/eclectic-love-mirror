@@ -161,8 +161,37 @@ function measureImage(
 }
 
 // ────────────────────────────────────────────────────────────────────────
+// Focal mapping — photo-space → frame-space.
+// ────────────────────────────────────────────────────────────────────────
+
+/**
+ * A focal point is authored in PHOTO space (0–1 across the visible picture).
+ * The tile transforms in FRAME space (0–1 across the tile box). With
+ * object-contain those two boxes are only the same when the photo's aspect
+ * matches the frame exactly. For a 391x151 cover in a 5:4 frame the photo
+ * fills 48% of the frame's height, so one unit of photo nudge must become
+ * 0.48 units of frame nudge — otherwise every correction overshoots ~2x and
+ * the piece slides out of the tile.
+ *
+ * renderedW/renderedH come from measureImage() and already encode the
+ * letterbox; the content is always centered, hence (1 - rendered) / 2.
+ */
+export function focalToFrame(
+  focalX: number,
+  focalY: number,
+  renderedW: number,
+  renderedH: number,
+): { fx: number; fy: number } {
+  return {
+    fx: (1 - renderedW) / 2 + focalX * renderedW,
+    fy: (1 - renderedH) / 2 + focalY * renderedH,
+  };
+}
+
+// ────────────────────────────────────────────────────────────────────────
 // The rigorous solver — takes a FitRule + measurement, returns Fit.
 // ────────────────────────────────────────────────────────────────────────
+
 
 function solveFit(m: Measurement, rule: FitRule): Fit {
   const inset = TILE_IMAGE_INSET;
@@ -250,8 +279,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
   useEffect(() => {
-    if (hasFocal) return;
     if (!src) return;
+
     const existing = measurementCache.get(cacheKey);
     if (existing !== undefined) {
       if (existing !== measurement) setMeasurement(existing);
@@ -288,14 +317,11 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   };
 
   const transform = useMemo(() => {
-    // Admin focal override — bypass everything.
-    if (hasFocal) {
-      const tx = (0.5 - (focalX as number)) * 100;
-      const ty = (0.5 + visualOffsetY - (focalY as number)) * 100;
-      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
-    }
-
     // ── The one solver path ──
+    // A focal point is an ANCHOR override, never a scale override. The solved
+    // scale is what keeps a sofa the same visual mass as its neighbours, so it
+    // always survives. Focal only moves which point of the photo lands where
+    // the solver would have put the silhouette's center.
     let f: Fit;
     if (measurement) {
       f = solveFit(measurement, fitRule);
@@ -303,7 +329,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       const fb = fitRule.fallback;
       f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
     }
-    const tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
+    let tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
     let ty: number;
     if (fitRule.anchor === "bottom") {
       const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
@@ -315,8 +341,24 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
       ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
     }
+
+    // Focal delta, applied on top of the auto solution. Focal == silhouette
+    // center is a no-op by construction, so a focal point can only ever nudge
+    // — it can never blow the tile up the way the old scale(1) bypass did.
+    // Needs the letterbox from the measurement; without it we stay on auto.
+    if (hasFocal && measurement) {
+      const { fx, fy } = focalToFrame(
+        focalX as number,
+        focalY as number,
+        measurement.renderedW,
+        measurement.renderedH,
+      );
+      tx += (measurement.cx - fx) * f.scale * 100;
+      ty += (measurement.cy - fy) * f.scale * 100;
+    }
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [
+
     measurement,
     fitRule,
     hasFocal,
@@ -332,7 +374,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // until measurement resolves, then fade in. Above-fold (eager) tiles skip
   // this gate so LCP stays fast — they render with the fallback fit and
   // refine when the measurement arrives.
-  const ready = hasFocal || measurement !== undefined || eager;
+  const ready = measurement !== undefined || eager;
 
   return (
     <img
