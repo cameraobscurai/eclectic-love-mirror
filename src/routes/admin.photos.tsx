@@ -736,7 +736,44 @@ function CategoryGrid({
         <div className="py-16 text-center text-xs uppercase tracking-widest text-charcoal/50">
           No items in this category.
         </div>
+      ) : allMode ? (
+        /* ALL — every piece once, grouped by category under sticky headings.
+           Read-only: reorder lives inside a single category. */
+        <div>
+          {allSections.map((sec) => (
+            <section key={sec.id} className="mb-10">
+              <h2 className="sticky top-12 z-10 -mx-6 lg:-mx-10 px-6 lg:px-10 py-2 bg-cream/95 backdrop-blur border-b border-charcoal/10 text-[11px] uppercase tracking-[0.24em] text-charcoal/70">
+                {sec.label}
+                <span className="ml-2 text-charcoal/35 tabular-nums">{sec.items.length}</span>
+              </h2>
+              <div
+                className={`mt-4 ${view === "grid" ? "collection-product-grid w-full" : "grid gap-1"}`}
+                style={
+                  view === "grid"
+                    ? undefined
+                    : {
+                        gridTemplateColumns: `repeat(${
+                          view === "icons" ? 12 : wallCols(sec.items.length)
+                        }, minmax(0, 1fr))`,
+                      }
+                }
+              >
+                {sec.items.map((item, idx) => (
+                  <Tile
+                    key={item.id}
+                    item={item}
+                    index={idx}
+                    dense={view !== "grid"}
+                    draggable={false}
+                    onOpen={() => void openEditor(item)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       ) : (
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
