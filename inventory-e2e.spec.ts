@@ -92,11 +92,36 @@ async function visibleErrorText(page: Page): Promise<string[]> {
   });
 }
 
+// Ids created by a run, drained by afterAll if a test dies mid-flight.
+const createdIds: string[] = [];
+
+/** Delete a row through the drawer's real delete path (no direct DB writes). */
+async function deleteArtifact(page: Page, id: string) {
+  await page.goto(`http://localhost:8080/admin/products?id=${id}`, { waitUntil: 'domcontentloaded' });
+  const arm = page.getByRole('button', { name: /delete this piece/i });
+  await arm.waitFor({ state: 'visible', timeout: 20_000 });
+  await arm.click();
+  await page.getByRole('button', { name: /yes, delete it/i }).click();
+  await page.waitForTimeout(2500);
+}
+
 test.describe('Inventory add/edit — staff walkthrough', () => {
   test.skip(
     process.env['LOVABLE_BROWSER_AUTH_STATUS'] !== 'injected',
     'Needs an injected admin session; sign in via the preview first.',
   );
+
+  test.afterAll(async ({ browser }) => {
+    if (createdIds.length === 0) return;
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 } });
+    const page = await context.newPage();
+    await restoreSession(page, context);
+    for (const id of createdIds.splice(0)) {
+      await deleteArtifact(page, id).catch(() => {});
+    }
+    await context.close();
+  });
+
 
   test('create → land in editor → edit → persists → findable in search', async ({ page, context }) => {
     const h = watch(page);
