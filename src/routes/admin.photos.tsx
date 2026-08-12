@@ -307,6 +307,16 @@ function CategoryGrid({
   // NOT the catalog id (which is the rms_id like "2408"). The server fn and
   // editor's DB queries both key off the UUID.
   const [editing, setEditing] = useState<Item | null>(null);
+  // Focal/framing state for the row being edited. Read once at open time and
+  // passed down as props — the editor must never re-fetch it, or the badge
+  // paints AUTO first and corrects later.
+  const [editingRow, setEditingRow] = useState<{
+    cover_focal_x: number | null;
+    cover_focal_y: number | null;
+    cover_framed_url: string | null;
+    category_slug: string | null;
+    dimensions_raw: string | null;
+  } | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   const openEditor = useCallback(async (item: Item) => {
@@ -314,11 +324,20 @@ function CategoryGrid({
     try {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("id")
+        .select(
+          "id, cover_focal_x, cover_focal_y, cover_framed_url, category_slug, dimensions_raw",
+        )
         .eq("rms_id", item.rms_id)
         .maybeSingle();
       if (error) throw error;
       if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditingRow({
+        cover_focal_x: data.cover_focal_x ?? null,
+        cover_focal_y: data.cover_focal_y ?? null,
+        cover_framed_url: data.cover_framed_url ?? null,
+        category_slug: data.category_slug ?? null,
+        dimensions_raw: data.dimensions_raw ?? null,
+      });
       setEditing({ ...item, id: data.id });
     } catch (e) {
       setErr((e as Error).message);
