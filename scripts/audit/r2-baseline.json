@@ -1,0 +1,9 @@
+{
+  "frozen": [
+    "src/components/collection/CategoryTonalGrid.tsx",
+    "src/components/collection/CollectionWallTile.tsx",
+    "src/components/collection/ProductTile.tsx",
+    "src/components/collection/QuickViewModal.tsx",
+    "src/components/collection/productFit.ts"
+  ]
+}
