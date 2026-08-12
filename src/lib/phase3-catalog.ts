@@ -425,6 +425,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     const additions: CollectionProduct[] = [];
     for (const [rmsId, live] of overlay) {
       if (known.has(rmsId)) continue;
+      if (isTestArtifact({ title: live.title, rms_id: rmsId })) continue;
       if (live.public_ready !== true) continue;
       if (!live.title || !live.category) continue;
       const urls = Array.isArray(live.images) ? live.images : [];
