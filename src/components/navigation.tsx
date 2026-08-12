@@ -220,7 +220,8 @@ export function Navigation() {
                   ? "text-charcoal"
                   : "text-white"
               )}
-              style={{ fontWeight: 300 }}
+              /* Saol Display has no 300 upright cut — 400 is the light face. */
+              style={{ fontWeight: 400 }}
             >
               ECLECTIC HIVE
             </span>
