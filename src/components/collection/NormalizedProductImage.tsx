@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState, type ImgHTMLAttributes } from "react";
 import type React from "react";
 import type { FitRule } from "./categoryFit";
 
