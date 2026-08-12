@@ -324,7 +324,24 @@ export const createInventoryItem = createServerFn({ method: "POST" })
       }
     }
 
+    // Duplicate guard — two staff typing the same piece is the classic way an
+    // inventory tool grows twins. Warn once; the caller can force through.
+    if (!data.allowDuplicateTitle) {
+      const { data: twin } = await supabaseAdmin
+        .from("inventory_items")
+        .select("rms_id, title")
+        .ilike("title", data.title)
+        .limit(1)
+        .maybeSingle();
+      if (twin) {
+        throw new Error(
+          `DUPLICATE_TITLE: “${twin.title}” already exists (RMS ${twin.rms_id}). Create anyway to add a second record.`,
+        );
+      }
+    }
+
     const review = deferred
+
       ? { confidence: "low", source: "human-deferred", reviewed: false, needs_owner: false }
       : {
           confidence: "high",
