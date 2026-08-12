@@ -718,7 +718,10 @@ function CategoryGrid({
         })}
         <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
           {sortMode === "editorial"
-            ? "Editable · drag to reorder"
+            ? allMode
+              ? "Read-only in All — open a category to reorder"
+              : "Editable · drag to reorder"
+
             : "Read-only mirror of public sort"}
         </span>
       </div>
