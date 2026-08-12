@@ -139,14 +139,15 @@ const FIELD_META = {
     help: "Shown on the collection page, in inquiries, and in proposals.",
     validate: (v) => (!v || !String(v).trim() ? "Every piece needs a name." : null),
   },
-  category: {
-    group: "basics", label: "Category", type: "category", staffEditable: true,
-    help: "Which shelf of the archive this lives on.",
+  collection_slug: {
+    group: "basics", label: "Collection", type: "collection", staffEditable: true,
+    help: "One of the ten collections. This is the vocabulary from your spreadsheet — same words the site uses.",
   },
-  subcategory_slug: {
-    group: "basics", label: "Subcategory", type: "subcategory", staffEditable: true,
-    help: "Optional. The chip it files under inside its category (e.g. Cocktail Tables). Leave blank to let the site decide.",
+  category_slug: {
+    group: "basics", label: "Category", type: "taxonomy-category", staffEditable: true,
+    help: "The category inside that collection. Collection + Category decide where the piece appears.",
   },
+
   status: {
     group: "basics", label: "Status", type: "status", staffEditable: true,
     help: "Drafts and sold pieces stay in the system; only what's in rotation belongs on the site.",
