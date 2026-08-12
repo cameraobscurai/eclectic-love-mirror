@@ -25,6 +25,8 @@ Adrienne's photo complaint does not need a fresh suspicion. Its three producers 
 
 **4. Image round-trip receipt.** Same discipline as the text round trip: change a lighting cover in the admin, save, publish, load the live tile, confirm new bytes at a new `?v=`, timestamps recorded, before/after screenshots, written to `docs/round-trip-receipt-image.md`. Expected outcome is a pass — which makes her complaint historical, caused by three now-fixed mechanisms, with a timestamp to show for it. If it fails, diagnose fresh from that failure.
 
+Run it on an **unframed** lighting row (any of the 38, pre-apply — which the afternoon order already guarantees; row 3006 and the two queued rows are the ones to be careful with). On a row that already has `cover_framed_url`, the derivative is composed from the old source and does not regenerate on Publish, so the tile keeps showing the old framed image while `images[0]` shows the new photo. That is the derivative doing its job on stale input — the re-frame-on-source-change loop that Phase 3's studio owns — not the reverting bug returning. The receipt doc gets one line saying so, so nobody rediscovers it as a "bug" in a month.
+
 ## Afternoon order
 
 1. Null the 34
