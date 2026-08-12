@@ -205,14 +205,14 @@ function NewProductPage() {
         to: "/admin/products",
         search: {
           q: "",
+          col: "",
           cat: "",
-          sub: "",
           sort: "title" as const,
           ready: "all" as const,
           id: row.id,
-          group: undefined,
         },
       });
+
     } catch (e) {
       setErr((e as Error).message || "Save failed");
       setBusy(null);
