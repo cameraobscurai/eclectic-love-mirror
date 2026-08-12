@@ -70,10 +70,12 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
+  // COLLECTION is the daily home: every piece, one grid, cross-checkable.
+  { to: "/admin/photos", label: "Collection", icon: ImageIcon },
   { to: "/admin/products", label: "Inventory", icon: Package },
   { to: "/admin/taxonomy", label: "Taxonomy studio", icon: ScanEye },
-  { to: "/admin/photos", label: "Collection photos", icon: ImageIcon },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
+
 
   // Hidden (routes still live, reachable by direct URL): /admin/render
   // (Photo studio) and /admin/gallery — not part of Adrienne's daily loop.
