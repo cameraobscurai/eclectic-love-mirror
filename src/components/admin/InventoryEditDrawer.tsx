@@ -38,7 +38,17 @@ type ProductRow = Record<string, unknown> & {
   images?: string[] | null; card_background_url?: string | null;
 };
 
-export function InventoryEditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void; onSaved: () => void }) {
+export function InventoryEditDrawer({
+  id, onClose, onSaved, seed, focus,
+}: {
+  id: string;
+  onClose: () => void;
+  onSaved: () => void;
+  /** What the grid already knows about this row. Renders instantly; the
+   *  fetch below replaces it the moment full detail lands. */
+  seed?: ProductRow | null;
+  focus?: "photos";
+}) {
   const get = useServerFn(getProduct);
   const upd = useServerFn(updateProduct);
   const auditFn = useServerFn(listProductAudit);
@@ -47,7 +57,7 @@ export function InventoryEditDrawer({ id, onClose, onSaved }: { id: string; onCl
   const assign = useServerFn(assignTaxonomy);
   const { data: tree } = useTaxonomyTree();
 
-  const [row, setRow] = useState<ProductRow | null>(null);
+  const [row, setRow] = useState<ProductRow | null>(seed ?? null);
   const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [audit, setAudit] = useState<any[]>([]);
@@ -63,7 +73,7 @@ export function InventoryEditDrawer({ id, onClose, onSaved }: { id: string; onCl
   };
 
   useEffect(() => {
-    setRow(null); setAudit([]);
+    setRow(seed ?? null); setAudit([]);
     refetch();
     roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,6 +111,7 @@ export function InventoryEditDrawer({ id, onClose, onSaved }: { id: string; onCl
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <ProductEditDrawer
         product={row as any}
+        focus={focus}
         taxonomy={tree ?? { collections: [], categories: [] }}
         role={role}
         recentChanges={audit as never}
