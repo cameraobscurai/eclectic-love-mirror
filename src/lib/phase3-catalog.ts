@@ -10,6 +10,7 @@
 // reference but is no longer imported anywhere.)
 
 import { isTestArtifact } from "@/lib/test-artifact";
+import { coverFirst, imageKey, mergeFamilyImages } from "@/lib/family-cover";
 
 // NOTE: catalog JSON is dynamically imported below so it doesn't land in any
 // route's eager chunk. The first call to getCollectionCatalog() pays the
