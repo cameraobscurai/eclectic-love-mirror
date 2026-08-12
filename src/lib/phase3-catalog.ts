@@ -10,6 +10,7 @@
 // reference but is no longer imported anywhere.)
 
 import { isTestArtifact } from "@/lib/test-artifact";
+import { coverFirst, imageKey, mergeFamilyImages } from "@/lib/family-cover";
 
 // NOTE: catalog JSON is dynamically imported below so it doesn't land in any
 // route's eager chunk. The first call to getCollectionCatalog() pays the
@@ -226,34 +227,9 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // while the baked copy keeps the original name ("FLORENCE Lantern 2.png").
     // Without normalising both, a family tile shows the same photo twice —
     // which is exactly what /collection/florence-weathered-zinc-lantern did.
-    const imgKey = (url: string) => {
-      try {
-        const base = decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
-        const ext = (base.match(/\.[a-z0-9]+$/i)?.[0] ?? "").toLowerCase();
-        const stem = base
-          .slice(0, base.length - ext.length)
-          .replace(/^[0-9a-f]{8,}-/i, "")
-          .replace(/[_+\-\s]+/g, " ")
-          .trim()
-          .toLowerCase();
-        return (stem ? stem + ext : base.toLowerCase()) || url;
-      } catch {
-        return url;
-      }
-    };
+    // Filename identity, detail-shot demotion and family cover precedence all
+    // live in @/lib/family-cover so they are fixture-testable.
 
-    // A macro/close-up shot is never a cover. These are shot against a wall
-    // (opaque backdrop, cropped hardware) and read as a broken tile next to
-    // the transparent full-product cutouts. Demote, never drop.
-    const isDetailShot = (url: string) =>
-      /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(imgKey(url));
-    const coverFirst = (imgs: CollectionImage[]): CollectionImage[] => {
-      if (imgs.length < 2 || !isDetailShot(imgs[0].url)) return imgs;
-      const idx = imgs.findIndex((i) => !isDetailShot(i.url));
-      if (idx <= 0) return imgs;
-      const next = [...imgs.slice(idx, idx + 1), ...imgs.filter((_, i) => i !== idx)];
-      return next.map((img, i) => ({ ...img, position: i, isHero: i === 0 }));
-    };
 
 
 
@@ -299,41 +275,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           for (const u of row.images) liveMemberUrls.push(u);
         }
         if (anyLive) {
-          const variantKeys = new Set(
-            members
-              .map((v) => (v.imageUrl ? imgKey(v.imageUrl) : ""))
-              .filter(Boolean),
-          );
-          const seen = new Set<string>();
-          const merged: CollectionImage[] = [];
-          const push = (url: string, altText: string | null) => {
-            const k = imgKey(url);
-            if (seen.has(k)) return;
-            seen.add(k);
-            merged.push({
-              url,
-              position: merged.length,
-              isHero: merged.length === 0,
-              inferredFilename: null,
-              altText,
-            });
-          };
-          // Owner control: any photo on the LEAD row that isn't one of the
-          // variant shots is a collection/group photo she uploaded — it wins
-          // the cover slot, in her drag order.
           const leadRow = overlay.get(p.id);
-          for (const u of (Array.isArray(leadRow?.images) ? leadRow.images : [])) {
-            if (variantKeys.has(imgKey(u))) continue;
-            push(u, null);
-          }
-          // Then baked group shots (the "Set" photo) — no variant row owns these.
-          for (const img of p.images) {
-            if (variantKeys.has(imgKey(img.url))) continue;
-            push(img.url, img.altText);
-          }
-          for (const u of liveMemberUrls) push(u, null);
+          baseImages = mergeFamilyImages(
+            {
+              leadImages: Array.isArray(leadRow?.images) ? leadRow.images : [],
+              bakedImages: p.images,
+              memberImages: liveMemberUrls,
+              variantCoverUrls: members.map((v) => v.imageUrl ?? ""),
+            },
+            { leadCoverWins: true },
+          );
 
-          baseImages = merged;
           variantsOut = members.map((v) => {
             const row = overlay.get(v.id);
             const firstLive = Array.isArray(row?.images) ? row?.images[0] : undefined;
