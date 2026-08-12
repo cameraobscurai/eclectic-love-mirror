@@ -933,7 +933,11 @@ export function ProductEditDrawer({
                           images: Array.isArray(product.images) ? (product.images as string[]) : [],
                           card_background_url: (product.card_background_url as string | null) ?? null,
                           category_slug: (product.category_slug as string | null) ?? null,
-                          dimensions: (product.dimensions as string | null) ?? null,
+                          dimensions: (product.dimensions as string | null)
+                            ?? (product.dimensions_raw as string | null) ?? null,
+                          cover_focal_x: (product.cover_focal_x as number | null) ?? null,
+                          cover_focal_y: (product.cover_focal_y as number | null) ?? null,
+                          cover_framed_url: (product.cover_framed_url as string | null) ?? null,
                         }}
 
                         onClose={() => { /* embedded: no-op, drawer owns close */ }}
