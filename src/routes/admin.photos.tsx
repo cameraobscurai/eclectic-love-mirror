@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { InventoryEditDrawer } from "@/components/admin/InventoryEditDrawer";
 import { useServerFn } from "@tanstack/react-start";
 import {
   DndContext,
@@ -167,6 +168,9 @@ function PhotosManager() {
   // Load baked catalog once.
   const [allProducts, setAllProducts] = useState<CollectionProduct[] | null>(null);
   const [catalogErr, setCatalogErr] = useState<string | null>(null);
+  // Bumped after a drawer save so the grid repaints the new title/photos
+  // without a manual refresh.
+  const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     let alive = true;
     // The public catalog drops hidden pieces before it returns. On an audit
@@ -211,7 +215,7 @@ function PhotosManager() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   // Reset sub when parent changes.
   useEffect(() => {
@@ -290,6 +294,7 @@ function PhotosManager() {
             view={view}
             onView={setView}
             allProducts={allProducts}
+            onCatalogChanged={() => setReloadKey((k) => k + 1)}
           />
         )}
       </main>
@@ -306,6 +311,7 @@ function CategoryGrid({
   view,
   onView,
   allProducts,
+  onCatalogChanged,
 }: {
   parent: ParentSel;
   sub: string;
@@ -314,6 +320,8 @@ function CategoryGrid({
   onSortMode: (m: SortMode) => void;
   view: ViewMode;
   onView: (v: ViewMode) => void;
+  /** Called after a drawer save so the grid re-pulls titles/photos. */
+  onCatalogChanged: () => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
@@ -400,38 +408,27 @@ function CategoryGrid({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  // Clicking a photo opens the FULL product editor (which embeds the same
-  // photo/order panel), not a photos-only drawer. Splitting the two is what
-  // made auditing feel like hopping between pages.
-  const gridNavigate = useNavigate();
-  const openEditor = useCallback(
-    async (item: Item) => {
-      setErr(null);
-      try {
-        const { data, error } = await supabase
-          .from("inventory_items")
-          .select("id")
-          .eq("rms_id", item.rms_id)
-          .maybeSingle();
-        if (error) throw error;
-        if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
-        await gridNavigate({
-          to: "/admin/products",
-          search: {
-            q: "",
-            col: "",
-            cat: "",
-            sort: "title" as const,
-            ready: "all" as const,
-            id: data.id,
-          },
-        });
-      } catch (e) {
-        setErr((e as Error).message);
-      }
-    },
-    [gridNavigate],
-  );
+  // Clicking a photo opens the FULL inventory editor IN PLACE — name,
+  // quantity, dimensions, description, taxonomy, variants and photos, the
+  // same drawer /admin/products uses. COLLECTION is a first-class editing
+  // surface, not a viewer that bounces you to another route.
+  const [editId, setEditId] = useState<string | null>(null);
+  const openEditor = useCallback(async (item: Item) => {
+    setErr(null);
+    try {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id")
+        .eq("rms_id", item.rms_id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditId(data.id);
+    } catch (e) {
+      setErr((e as Error).message);
+    }
+  }, []);
+
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
@@ -862,6 +859,16 @@ function CategoryGrid({
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
         Order saves live. /collection reflects it on next page load — no bake needed.
       </p>
+
+      {/* Same editor as /admin/products — opened over the grid, so a photo
+          audit and a details fix are one motion. */}
+      {editId && (
+        <InventoryEditDrawer
+          id={editId}
+          onClose={() => setEditId(null)}
+          onSaved={onCatalogChanged}
+        />
+      )}
     </div>
   );
 }
