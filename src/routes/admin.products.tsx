@@ -1,5 +1,4 @@
-import { mergeCategoryOptions, subcategoryOptions, CATEGORY_SUBCATEGORIES, type AdminSubcategory } from "@/lib/admin-categories";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,14 +10,12 @@ import {
   listProducts,
   getProduct,
   updateProduct,
-  listDistinctCategories,
   listProductAudit,
   getMyRole,
   deleteProduct,
 
 } from "@/lib/products-admin.functions";
-import { getCollectionCatalog } from "@/lib/phase3-catalog";
-import { productParent, PARENT_LABELS, PARENT_ORDER, type ParentId } from "@/lib/collection-parents";
+import { listTaxonomyTree, assignTaxonomy } from "@/lib/taxonomy-admin.functions";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 
@@ -28,31 +25,32 @@ export const Route = createFileRoute("/admin/products")({
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   head: () => ({
     meta: [
-      { title: "Products · Admin" },
+      { title: "Inventory · Admin" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Inner,
-  // `group` is the HIVE COLLECTION heading (parent) filter — the public
-  // grouping (Dining, Lounge Seating…) that is DERIVED from category +
-  // subcategory, not stored on the row. We resolve it to an rms_id set from
-  // the baked catalog and filter server-side.
+  // ONE VOCABULARY: Collection → Category, straight off the declared columns
+  // (inventory_items.collection_slug / category_slug) which are the same 10/33
+  // Adrienne wrote in her spreadsheet. The old General Category / Subcategory /
+  // derived-heading trio is gone — it was a third language nobody spoke.
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
+    col: typeof s.col === "string" ? s.col : "",
     cat: typeof s.cat === "string" ? s.cat : "",
-    sub: typeof s.sub === "string" ? s.sub : "",
-    sort: (["title", "category", "subcategory", "updated"].includes(s.sort as string)
+    sort: (["title", "collection", "category", "updated"].includes(s.sort as string)
       ? s.sort
-      : "title") as "title" | "category" | "subcategory" | "updated",
+      : "title") as "title" | "collection" | "category" | "updated",
     ready: (s.ready === "yes" || s.ready === "no" ? s.ready : "all") as "yes" | "no" | "all",
     id: typeof s.id === "string" ? s.id : "",
-    group: typeof s.group === "string" ? s.group : undefined,
   }),
 });
 
 type Row = {
   id: string; rms_id: string | null; title: string; slug: string | null;
-  category: string | null; subcategory_slug: string | null; status: string;
+  category: string | null; subcategory_slug: string | null;
+  collection_slug: string | null; category_slug: string | null;
+  status: string;
   quantity: number | null;
   quantity_label: string | null; public_ready: boolean | null;
   images: string[] | null;
@@ -61,18 +59,28 @@ type Row = {
 
 const SORT_LABELS: Record<string, string> = {
   title: "Title A–Z",
+  collection: "Collection, then title",
   category: "Category, then title",
-  subcategory: "Subcategory, then title",
   updated: "Recently edited",
 };
 
 const PAGE = 50;
 
+/** Reference tree — the 10 collections / 33 categories, cached hard. */
+export function useTaxonomyTree() {
+  const treeFn = useServerFn(listTaxonomyTree);
+  return useQuery({
+    queryKey: ["admin", "taxonomy-tree"],
+    queryFn: () => treeFn(),
+    staleTime: 30 * 60_000,
+    gcTime: 60 * 60_000,
+  });
+}
+
 function Inner() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const list = useServerFn(listProducts);
-  const catsFn = useServerFn(listDistinctCategories);
   const queryClient = useQueryClient();
 
   const [offset, setOffset] = useState(0);
@@ -96,50 +104,30 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput, search.q]);
 
+  const { data: tree } = useTaxonomyTree();
+  const collections = tree?.collections ?? [];
+  const categories = tree?.categories ?? [];
 
-
-  // Categories rarely change — cache hard so switching pages never refetches.
-  const { data: cats = [] } = useQuery({
-    queryKey: ["admin", "product-categories"],
-    queryFn: () => catsFn(),
-    staleTime: 5 * 60_000,
-    gcTime: 30 * 60_000,
-  });
-
-  // HIVE COLLECTION headings are derived, not stored. Build one rms_id →
-  // ParentId map from the baked catalog and reuse it for both the heading
-  // filter and the per-row "Collection" column, so Adrienne can see exactly
-  // which heading a piece lands under (Dining included).
-  const { data: parentMap = null } = useQuery({
-    queryKey: ["admin", "parent-map"],
-    staleTime: 5 * 60_000,
-    gcTime: 30 * 60_000,
-    queryFn: async () => {
-      const c = await getCollectionCatalog();
-      const map: Record<string, ParentId> = {};
-      for (const p of c.products) {
-        const parent = productParent(p);
-        if (!parent) continue;
-        map[p.id] = parent;
-        for (const v of p.variants ?? []) map[v.id] = parent;
-      }
-      return map;
-    },
-  });
-
-  const groupRmsIds = search.group
-    ? parentMap
-      ? Object.keys(parentMap).filter((id) => parentMap[id] === (search.group as ParentId))
-      : null
-    : null;
+  const collectionLabels = useMemo(
+    () => Object.fromEntries(collections.map((c) => [c.slug, c.label])) as Record<string, string>,
+    [collections],
+  );
+  const categoryLabels = useMemo(
+    () => Object.fromEntries(categories.map((c) => [c.slug, c.label])) as Record<string, string>,
+    [categories],
+  );
+  // Categories narrow to the chosen collection; with none picked we offer all.
+  const categoryOptions = useMemo(
+    () => (search.col ? categories.filter((c) => c.collection_slug === search.col) : categories),
+    [categories, search.col],
+  );
 
   const listArgs = {
     search: search.q,
-    category: search.cat || undefined,
-    subcategory: search.sub || undefined,
+    collection: search.col || undefined,
+    categorySlug: search.cat || undefined,
     publicReady: search.ready,
     sort: search.sort,
-    rmsIds: groupRmsIds ?? undefined,
     limit: PAGE,
     offset,
   };
@@ -150,8 +138,6 @@ function Inner() {
     isPending,
   } = useQuery({
     queryKey: ["admin", "products", listArgs],
-    // Don't fire until the group filter (if any) has resolved.
-    enabled: !search.group || groupRmsIds !== null,
     queryFn: () => list({ data: listArgs }),
     placeholderData: keepPreviousData,
     staleTime: 30_000,
@@ -173,7 +159,7 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, offset, count]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.sub, search.ready, search.group, search.sort]);
+  useEffect(() => { setOffset(0); }, [search.q, search.col, search.cat, search.ready, search.sort]);
 
   // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
@@ -185,18 +171,7 @@ function Inner() {
 
 
   const visibleRows = rows;
-  const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
-  // Subcategory options follow the chosen category; with no category picked we
-  // offer the union so the filter is still usable.
-  const allSubs: AdminSubcategory[] = Object.values(CATEGORY_SUBCATEGORIES).flat();
-  const subOptions: AdminSubcategory[] = search.cat
-    ? subcategoryOptions(search.cat, search.sub || null)
-    : Array.from(new Map(allSubs.map((s) => [s.id, s])).values()).sort((a, b) =>
-        a.label.localeCompare(b.label),
-      );
-  const subLabels: Record<string, string> = Object.fromEntries(
-    allSubs.map((s) => [s.id, s.label]),
-  );
+
 
 
 
