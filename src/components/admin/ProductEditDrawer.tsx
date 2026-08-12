@@ -824,35 +824,36 @@ export function ProductEditDrawer({
     const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
     if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
     if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
-    if (meta.type === "subcategory") {
-      const subs = subcategoryOptions(draft.values.category, draft.values.subcategory_slug);
-      // The HIVE COLLECTION heading is derived from the subcategory, never
-      // stored. Show it live so it's obvious where the piece will land.
-      const sub = draft.values.subcategory_slug as string | null | undefined;
-      const parent = sub
-        ? (Object.keys(PARENT_SUBS) as ParentId[]).find((p) =>
-            PARENT_SUBS[p].some((o) => o.id === sub))
-        : undefined;
+    if (meta.type === "collection") {
+      const cols = taxonomy?.collections ?? [];
       return (
-        <div key={k}>
-          <SelectField k={k} meta={meta} value={common.value} dirty={common.dirty} error={common.error} onChange={common.onChange}
-            options={[{ value: "", label: subs.length ? "— Let the site decide —" : "— None for this category —" },
-                      ...subs.map((s) => ({ value: s.id, label: s.label }))]} />
-          <p className="mt-1 text-[10px] uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,26,0.5)" }}>
-            Hive Collection heading:{" "}
-            <span style={{ color: "#1a1a1a" }}>
-              {parent ? PARENT_LABELS[parent] : "not set — pick a subcategory"}
-            </span>
-          </p>
-        </div>
+        <SelectField key={k} {...common}
+          onChange={(v) => {
+            // Changing collection invalidates a category from the old one.
+            const stillValid = (taxonomy?.categories ?? [])
+              .some((c) => c.slug === draft.values.category_slug && c.collection_slug === v);
+            draft.setField(k, v);
+            if (!stillValid) draft.setField("category_slug", "");
+          }}
+          options={[{ value: "", label: "— Unassigned —" },
+                    ...cols.map((c) => ({ value: c.slug, label: c.label }))]} />
       );
     }
-    if (meta.type === "category") return <SelectField key={k} {...common} options={mergeCategoryOptions(categories || []).map((c) => ({ value: c.slug, label: c.label }))} />;
+    if (meta.type === "taxonomy-category") {
+      const col = draft.values.collection_slug as string | undefined;
+      const cats = (taxonomy?.categories ?? []).filter((c) => !col || c.collection_slug === col);
+      return (
+        <SelectField key={k} {...common}
+          options={[{ value: "", label: col ? "— Unassigned —" : "— Pick a collection first —" },
+                    ...cats.map((c) => ({ value: c.slug, label: c.label }))]} />
+      );
+    }
     if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (
       <TextField key={k} {...common}
-        trailing={!common.error ? <RateContext category={draft.values.category} price={draft.values.price} stats={categoryPriceStats} /> : null} />
+        trailing={!common.error ? <RateContext category={draft.values.category_slug} price={draft.values.price} stats={categoryPriceStats} /> : null} />
     );
+
     return <TextField key={k} {...common} />;
 
   };
