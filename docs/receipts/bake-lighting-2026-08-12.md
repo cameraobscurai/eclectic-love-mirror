@@ -1,14 +1,14 @@
 # Bake receipt — lighting
 
-2026-08-12T08:08:16.391Z · rule fs2-2026-08-12 · DRY RUN
+2026-08-12T08:08:55.354Z · rule fs2-2026-08-12 · DRY RUN
 
 | Outcome | Count |
 | --- | --- |
 | tiles | 40 |
 | framed (verify PASS) | 38 |
 | unchanged (hash match) | 0 |
-| queued (verify FAIL) | 1 |
-| skipped | 1 |
+| queued (verify FAIL) | 2 |
+| skipped | 0 |
 | uploads deduped (R1 409) | 0 |
 
 ## Advisories
