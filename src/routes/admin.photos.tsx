@@ -222,7 +222,7 @@ function PhotosManager() {
           Categories
         </p>
         <nav className="flex flex-col">
-          {PARENT_ORDER.map((pid) => {
+          {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => {
             const count = allProducts
               ? allProducts.filter((p) => productParent(p) === pid).length
               : null;
