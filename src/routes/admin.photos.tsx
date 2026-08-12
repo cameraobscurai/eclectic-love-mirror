@@ -422,7 +422,7 @@ function CategoryGrid({
       });
       return inParent.map(adapt);
     }
-    if (sortMode === "editorial") {
+    if (sortMode === "editorial" || parent === "hidden") {
       inParent.sort(editorialCmp);
       return inParent.map(adapt);
     }
@@ -1111,14 +1111,34 @@ function TileFrame({
       style={{ ...style, aspectRatio: tileAspectFor(item) }}
       title={`${item.title}${item.hidden ? " · HIDDEN from the live site" : ""} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-      <div className={item.hidden ? "h-full w-full opacity-35 grayscale" : "h-full w-full"}>
+      {/* Hidden pieces stay legible — she still has to recognise the photo.
+          A wash + diagonal hatch reads as "off the site" without hiding it. */}
+      <div className={item.hidden ? "h-full w-full opacity-60 saturate-50" : "h-full w-full"}>
         <TileMedia item={item} dense={dense} />
       </div>
 
       {item.hidden && (
-        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center gap-1 bg-charcoal/85 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
-          <EyeOff className="h-2.5 w-2.5" /> Hidden
-        </span>
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0.30) 45%, rgba(26,26,26,0.30) 100%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.14]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(135deg, #1a1a1a 0 1px, transparent 1px 9px)",
+            }}
+          />
+          <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-charcoal/80 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
+            <EyeOff className="h-2.5 w-2.5" /> Hidden
+          </span>
+        </>
       )}
 
       {/* Position index — small, editorial */}
