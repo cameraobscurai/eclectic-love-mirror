@@ -11,6 +11,7 @@
 // Tile sizing mirrors /collection: one fixed frame and one image-fit rule.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { InventoryEditDrawer } from "@/components/admin/InventoryEditDrawer";
 import { useServerFn } from "@tanstack/react-start";
@@ -69,6 +70,19 @@ import {
  *  a whole category at a glance. The choice is remembered per browser. */
 type ViewMode = "grid" | "wall" | "icons";
 const VIEW_KEY = "eh.admin.photos.view";
+const PARENT_KEY = "eh.admin.photos.parent";
+
+/** Reopen on the last category worked in. Falls back to the first category —
+ *  never ALL, which is a deliberate, heavier cross-check mode. */
+function readStoredParent(): ParentSel {
+  try {
+    const v = window.localStorage.getItem(PARENT_KEY);
+    if (v && (PARENT_ORDER as string[]).includes(v)) return v as ParentSel;
+  } catch {
+    /* SSR or private mode */
+  }
+  return PARENT_ORDER[0];
+}
 function readStoredView(): ViewMode {
   try {
     const v = window.localStorage.getItem(VIEW_KEY);
@@ -103,10 +117,18 @@ export const Route = createFileRoute("/admin/photos")({
   //   ?filter=missing → hide fully-imaged rows (see visibleItems filter)
   //   ?product=<rms>  → reserved for future auto-open of the editor
   //   ?page=<pg>      → reserved for page-scoped subsets
+  //   ?cat / ?sub / ?sort → the working view, so a reload or a shared link
+  //                         lands on the same shelf in the same order
+  //   ?id=<uuid>      → the open editor. In the URL on purpose: Back closes
+  //                     the drawer instead of leaving the page.
   validateSearch: (s: Record<string, unknown>) => ({
     filter: s.filter === "missing" ? ("missing" as const) : undefined,
     product: typeof s.product === "string" ? s.product : undefined,
     page: typeof s.page === "string" ? s.page : undefined,
+    cat: typeof s.cat === "string" ? s.cat : undefined,
+    sub: typeof s.sub === "string" ? s.sub : undefined,
+    sort: SORT_MODES.some((m) => m.id === s.sort) ? (s.sort as SortMode) : undefined,
+    id: typeof s.id === "string" ? s.id : undefined,
   }),
   head: () => ({
     meta: [
@@ -153,9 +175,47 @@ function AdminPhotosPage() {
 }
 
 function PhotosManager() {
-  const [parent, setParent] = useState<ParentSel>("all");
-  const [sub, setSub] = useState<string>("all");
-  const [sortMode, setSortMode] = useState<SortMode>("editorial");
+  // Default is ONE category, never ALL. Painting 670 tiles on open is the
+  // fastest way to make a slower laptop feel broken; ALL is opt-in and
+  // renders section-by-section as you scroll (see LazySection).
+  // Category / sub / sort live in the URL so a reload, a Back press, or a
+  // link pasted to someone else lands on the same shelf. localStorage is only
+  // the fallback for a bare /admin/photos.
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const setSearch = useCallback(
+    (patch: Record<string, string | undefined>) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      void navigate({ search: ((prev: any) => ({ ...prev, ...patch })) as any, replace: true });
+    },
+    [navigate],
+  );
+
+  const parent: ParentSel =
+    search.cat === "all"
+      ? "all"
+      : search.cat && (PARENT_ORDER as string[]).includes(search.cat)
+        ? (search.cat as ParentId)
+        : readStoredParent();
+  const setParent = useCallback((p: ParentSel) => setSearch({ cat: p, sub: undefined }), [setSearch]);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(PARENT_KEY, parent);
+    } catch {
+      /* private mode — the choice just won't persist */
+    }
+  }, [parent]);
+
+  const sub = search.sub ?? "all";
+  const setSub = useCallback(
+    (v: string) => setSearch({ sub: v === "all" ? undefined : v }),
+    [setSearch],
+  );
+  const sortMode: SortMode = search.sort ?? "editorial";
+  const setSortMode = useCallback(
+    (m: SortMode) => setSearch({ sort: m === "editorial" ? undefined : m }),
+    [setSearch],
+  );
   const [view, setView] = useState<ViewMode>(readStoredView);
   useEffect(() => {
     try {
@@ -216,11 +276,6 @@ function PhotosManager() {
       alive = false;
     };
   }, [reloadKey]);
-
-  // Reset sub when parent changes.
-  useEffect(() => {
-    setSub("all");
-  }, [parent]);
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal flex">
@@ -412,7 +467,19 @@ function CategoryGrid({
   // quantity, dimensions, description, taxonomy, variants and photos, the
   // same drawer /admin/products uses. COLLECTION is a first-class editing
   // surface, not a viewer that bounces you to another route.
-  const [editId, setEditId] = useState<string | null>(null);
+  // The open editor is a URL state, not component state — Back closes the
+  // drawer, and a specific piece can be linked to directly.
+  const editId = Route.useSearch().id ?? null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [seed, setSeed] = useState<any>(null);
+  const editNavigate = useNavigate({ from: Route.fullPath });
+  const setEditId = useCallback(
+    (id: string | null) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      void editNavigate({ search: ((prev: any) => ({ ...prev, id: id ?? undefined })) as any });
+    },
+    [editNavigate],
+  );
   const openEditor = useCallback(async (item: Item) => {
     setErr(null);
     try {
@@ -423,6 +490,16 @@ function CategoryGrid({
         .maybeSingle();
       if (error) throw error;
       if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      // Hand the drawer what the grid already knows so it paints instantly
+      // instead of showing "Loading…" through a round trip.
+      setSeed({
+        id: data.id,
+        rms_id: item.rms_id,
+        title: item.title,
+        images: item.images,
+        card_background_url: item.card_background_url ?? null,
+        category_slug: item.categorySlug ?? null,
+      });
       setEditId(data.id);
     } catch (e) {
       setErr((e as Error).message);
@@ -786,16 +863,18 @@ function CategoryGrid({
                       }
                 }
               >
-                {sec.items.map((item, idx) => (
-                  <Tile
-                    key={item.id}
-                    item={item}
-                    index={idx}
-                    dense={view !== "grid"}
-                    draggable={false}
-                    onOpen={() => void openEditor(item)}
-                  />
-                ))}
+                <LazySection count={sec.items.length} dense={view !== "grid"}>
+                  {sec.items.map((item, idx) => (
+                    <Tile
+                      key={item.id}
+                      item={item}
+                      index={idx}
+                      dense={view !== "grid"}
+                      draggable={false}
+                      onOpen={() => void openEditor(item)}
+                    />
+                  ))}
+                </LazySection>
               </div>
             </section>
           ))}
@@ -865,6 +944,8 @@ function CategoryGrid({
       {editId && (
         <InventoryEditDrawer
           id={editId}
+          seed={seed?.id === editId ? seed : null}
+          focus="photos"
           onClose={() => setEditId(null)}
           onSaved={onCatalogChanged}
         />
@@ -890,6 +971,55 @@ function MissingFilterChip() {
   );
 }
 
+/** ALL is 670 pieces. Mounting every tile at once means 670 image fetches and
+ *  670 silhouette measurements competing for one main thread — on a slower
+ *  laptop that reads as a frozen page. A section only mounts its tiles once
+ *  it comes near the viewport; until then it holds its own height so the
+ *  scrollbar never jumps. */
+function LazySection({
+  count,
+  dense,
+  children,
+}: {
+  count: number;
+  dense: boolean;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(
+    () => typeof IntersectionObserver === "undefined",
+  );
+  useEffect(() => {
+    if (shown) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shown]);
+
+  if (shown) return <>{children}</>;
+  // Placeholder keeps the section roughly its final height.
+  const perRow = dense ? 12 : 3;
+  const rows = Math.max(1, Math.ceil(count / perRow));
+  return (
+    <div
+      ref={ref}
+      className="col-span-full"
+      style={{ minHeight: rows * (dense ? 90 : 300) }}
+      aria-hidden
+    />
+  );
+}
+
 function wallCols(n: number): number {
   if (n <= 0) return 1;
   return Math.max(3, Math.min(10, Math.ceil(Math.sqrt(n * 1.4))));
@@ -903,35 +1033,61 @@ function frameAspectFor(_item: Item): number {
   return PRODUCT_TILE_FRAME_ASPECT;
 }
 
-function Tile({
-  item,
-  index,
-  dense,
-  draggable = true,
-  onOpen,
-}: {
+type TileProps = {
   item: Item;
   index: number;
   dense: boolean;
   draggable?: boolean;
   onOpen: () => void;
-}) {
+};
+
+/** Draggable tiles pay for a dnd-kit sortable node; static ones must not.
+ *  In a read-only view (ALL, a sub filter, a non-editorial sort) there is no
+ *  DndContext at all, and 600+ idle useSortable() instances is pure cost. */
+function Tile(props: TileProps) {
+  return props.draggable ? <SortableTile {...props} /> : <TileFrame {...props} />;
+}
+
+function SortableTile(props: TileProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: item.id, disabled: !draggable });
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  };
+    useSortable({ id: props.item.id });
+  return (
+    <TileFrame
+      {...props}
+      dndRef={setNodeRef}
+      dndProps={{ ...attributes, ...listeners }}
+      dndStyle={{
+        transform: CSS.Translate.toString(transform),
+        transition,
+        opacity: isDragging ? 0.4 : 1,
+      }}
+    />
+  );
+}
+
+function TileFrame({
+  item,
+  index,
+  dense,
+  draggable = false,
+  onOpen,
+  dndRef,
+  dndProps,
+  dndStyle,
+}: TileProps & {
+  dndRef?: (node: HTMLElement | null) => void;
+  dndProps?: Record<string, unknown>;
+  dndStyle?: React.CSSProperties;
+}) {
+  const style = dndStyle ?? {};
 
   const imageCount = item.images.length;
   const needsAttention = imageCount === 0;
 
   return (
     <div
-      ref={setNodeRef}
-      {...(draggable ? attributes : {})}
-      {...(draggable ? listeners : {})}
+      ref={dndRef}
+      {...(dndProps ?? {})}
       onClick={(e) => {
         e.stopPropagation();
         onOpen();

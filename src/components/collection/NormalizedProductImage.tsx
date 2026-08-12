@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useState, type ImgHTMLAttributes } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState, type ImgHTMLAttributes } from "react";
 import type React from "react";
 import type { FitRule } from "./categoryFit";
 
@@ -278,8 +278,37 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   const cached = measurementCache.get(cacheKey);
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
+  // Silhouette measurement is a second image fetch plus a canvas
+  // getImageData() pixel walk. On a 600-tile admin grid, firing that for
+  // every tile at mount saturates the network and pins the main thread —
+  // the `loading="lazy"` on the visible <img> can't help, because the probe
+  // is its own request. So the probe waits until the tile is near the
+  // viewport. Eager tiles (LCP) and already-cached measurements skip the gate.
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const [inView, setInView] = useState(
+    () => eager || cached !== undefined || typeof IntersectionObserver === "undefined",
+  );
+  useEffect(() => {
+    if (inView) return;
+    const el = imgRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      // Measure a screen ahead so tiles are solved before they're read.
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [inView]);
+
   useEffect(() => {
     if (!src) return;
+    if (!inView) return;
 
     const existing = measurementCache.get(cacheKey);
     if (existing !== undefined) {
@@ -310,7 +339,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
     return () => {
       cancelled = true;
     };
-  }, [src, cacheKey, hasFocal, frameAspect, measurement]);
+  }, [src, cacheKey, hasFocal, frameAspect, measurement, inView]);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     onLoad?.(e);
@@ -376,10 +405,16 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // refine when the measurement arrives.
   const ready = measurement !== undefined || eager;
 
+  const setRefs = (node: HTMLImageElement | null) => {
+    imgRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = node;
+  };
+
   return (
     <img
       {...props}
-      ref={ref}
+      ref={setRefs}
       src={src}
       onLoad={handleLoad}
       className={`${className ?? ""} npi-fade`.trim()}

@@ -659,7 +659,17 @@ function DeleteZone({ title, disabled, onDelete }) {
 export function ProductEditDrawer({
   product, taxonomy, role = "staff", recentChanges = [], categoryPriceStats = {},
   onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved, onDelete,
+  focus,
 }) {
+  // Opened by clicking a photo in COLLECTION? Then photos are what you came
+  // for — put that section first and don't drop the cursor in a text field.
+  const photosFirst = focus === "photos";
+  const groups = photosFirst
+    ? [
+        GROUPS.find((g) => g.id === "photos"),
+        ...GROUPS.filter((g) => g.id !== "photos"),
+      ].filter(Boolean) as typeof GROUPS
+    : GROUPS;
 
 
 
@@ -703,8 +713,14 @@ export function ProductEditDrawer({
           'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
         )
       ).filter((el) => el.offsetParent !== null || el === document.activeElement);
-    const first = focusables()[0];
-    first?.focus();
+    // Photos-first opens focus the panel itself; landing in the Name input
+    // when you clicked a photograph is the wrong place to start.
+    if (photosFirst) {
+      aside.setAttribute("tabindex", "-1");
+      aside.focus();
+    } else {
+      focusables()[0]?.focus();
+    }
 
     // Mark siblings inert so background is fully unreachable.
     const root = document.getElementById("root") || document.body;
@@ -916,7 +932,7 @@ export function ProductEditDrawer({
         <div className="flex-1 min-h-0">
           <div className="eh-cols">
             <div className="overflow-y-auto" style={{ padding: "24px 26px 130px" }}>
-              {GROUPS.map((g) => {
+              {groups.map((g) => {
                 if (g.adminOnly && !isAdmin) return null;
                 if (g.id === "photos") {
                   if (!product) return null;
