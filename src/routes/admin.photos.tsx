@@ -1135,9 +1135,16 @@ function TileFrame({
                 "repeating-linear-gradient(135deg, #1a1a1a 0 1px, transparent 1px 9px)",
             }}
           />
-          <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-charcoal/80 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
-            <EyeOff className="h-2.5 w-2.5" /> Hidden
-          </span>
+          {dense ? (
+            /* Icon/wall density: a full-width label would cover the photo. */
+            <span className="absolute bottom-1 right-1 inline-flex items-center justify-center bg-charcoal/80 text-cream p-0.5">
+              <EyeOff className="h-2.5 w-2.5" />
+            </span>
+          ) : (
+            <span className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-charcoal/80 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
+              <EyeOff className="h-2.5 w-2.5" /> Hidden
+            </span>
+          )}
         </>
       )}
 
