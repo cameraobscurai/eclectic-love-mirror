@@ -294,6 +294,7 @@ function PhotosManager() {
             view={view}
             onView={setView}
             allProducts={allProducts}
+            onCatalogChanged={() => setReloadKey((k) => k + 1)}
           />
         )}
       </main>
@@ -310,6 +311,7 @@ function CategoryGrid({
   view,
   onView,
   allProducts,
+  onCatalogChanged,
 }: {
   parent: ParentSel;
   sub: string;
@@ -318,6 +320,8 @@ function CategoryGrid({
   onSortMode: (m: SortMode) => void;
   view: ViewMode;
   onView: (v: ViewMode) => void;
+  /** Called after a drawer save so the grid re-pulls titles/photos. */
+  onCatalogChanged: () => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
@@ -862,7 +866,7 @@ function CategoryGrid({
         <InventoryEditDrawer
           id={editId}
           onClose={() => setEditId(null)}
-          onSaved={() => setReloadKey((k) => k + 1)}
+          onSaved={onCatalogChanged}
         />
       )}
     </div>
