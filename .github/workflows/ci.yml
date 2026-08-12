@@ -34,6 +34,12 @@ jobs:
       - name: Engineering rules gate
         run: bun run rules:check
 
+      # Frame Studio engine fixtures (measure / place / verify, canonicalizer
+      # stability, anchor carve-out). Pure, no browser, no network.
+      - name: Unit tests
+        run: bun run test
+
+
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 
