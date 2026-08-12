@@ -729,7 +729,7 @@ export function verify(
   const fail = (code: VerifyFailureCode, message: string) => failures.push({ code, message });
 
   // V5 — exact dims.
-  const dimsOk = OUTPUT_SIZES.some((s) => s.w === rendered.w && s.h === rendered.h);
+  const dimsOk = VERIFY_SIZES.some((s) => s.w === rendered.w && s.h === rendered.h);
   if (!dimsOk) {
     fail("V5", `dims ${rendered.w}x${rendered.h} is not an allowed output size`);
   }
