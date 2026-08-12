@@ -578,7 +578,7 @@ function CategoryGrid({
             Admin · Photos
           </p>
           <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.02em]">
-            {PARENT_LABELS[parent]}
+            {selLabel(parent)}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
             {reorderDisabled
