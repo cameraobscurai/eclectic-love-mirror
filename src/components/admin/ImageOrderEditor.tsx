@@ -39,7 +39,11 @@ type Item = {
   title: string;
   images: string[];
   card_background_url?: string | null;
+  /** Fit inputs — let the focal preview render the real production rule. */
+  category_slug?: string | null;
+  dimensions?: string | null;
 };
+
 
 type Props = {
   item: Item;
