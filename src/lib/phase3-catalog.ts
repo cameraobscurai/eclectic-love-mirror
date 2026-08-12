@@ -227,9 +227,8 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // while the baked copy keeps the original name ("FLORENCE Lantern 2.png").
     // Without normalising both, a family tile shows the same photo twice —
     // which is exactly what /collection/florence-weathered-zinc-lantern did.
-    const imgKey = imageKey;
-    // Detail-shot demotion and cover promotion live in @/lib/family-cover so
-    // they are fixture-testable.
+    // Filename identity, detail-shot demotion and family cover precedence all
+    // live in @/lib/family-cover so they are fixture-testable.
 
 
 
