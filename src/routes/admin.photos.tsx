@@ -11,6 +11,7 @@
 // Tile sizing mirrors /collection: one fixed frame and one image-fit rule.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { InventoryEditDrawer } from "@/components/admin/InventoryEditDrawer";
 import { useServerFn } from "@tanstack/react-start";
