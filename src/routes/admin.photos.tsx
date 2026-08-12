@@ -447,7 +447,7 @@ function CategoryGrid({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const subs = PARENT_SUBS[parent];
+  const subs = allMode ? [] : PARENT_SUBS[parent as ParentId];
   const subList = useMemo(() => [{ id: "all", label: "All" }, ...subs], [subs]);
 
   // Seed the confirmed baseline whenever the source data refreshes.
