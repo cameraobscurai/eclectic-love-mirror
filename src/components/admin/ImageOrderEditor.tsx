@@ -426,11 +426,13 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
               <FocalEditor
                 id={item.id}
                 coverUrl={urls[0]}
-                initialX={null}
-                initialY={null}
+                initialX={item.cover_focal_x ?? null}
+                initialY={item.cover_focal_y ?? null}
+                coverFramedUrl={item.cover_framed_url ?? null}
                 categorySlug={item.category_slug ?? null}
                 dimensions={item.dimensions ?? null}
               />
+
 
               <DndContext
                 sensors={sensors}
