@@ -9,17 +9,8 @@ import {
   InventoryEditDrawer,
   useTaxonomyTree,
 } from "@/components/admin/InventoryEditDrawer";
-import {
-  listProducts,
-  getProduct,
-  updateProduct,
-  listProductAudit,
-  getMyRole,
-  deleteProduct,
+import { listProducts } from "@/lib/products-admin.functions";
 
-} from "@/lib/products-admin.functions";
-import { listTaxonomyTree, assignTaxonomy } from "@/lib/taxonomy-admin.functions";
-import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 
 // AdminShell is provided by the parent /admin layout route — do NOT re-wrap.
