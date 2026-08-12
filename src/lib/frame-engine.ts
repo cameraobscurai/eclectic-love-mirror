@@ -205,7 +205,7 @@ export function measureSilhouette(raw: RawImage): Measurement {
       if (data[i]! < ALPHA_THRESHOLD) transparent++;
     }
     if (transparent / total >= ALPHA_PATH_MIN_TRANSPARENT) {
-      const { box, hits } = bboxFrom(raw, (i) => data[i + 3]! >= ALPHA_THRESHOLD);
+      const { box } = bboxFrom(raw, (i) => data[i + 3]! >= ALPHA_THRESHOLD);
       if (!box) return { bbox: null, method: "fail", confidence: 0 };
       // Confidence drops as the subject approaches the full frame (a tight
       // crop is valid but leaves the engine no margin to judge placement).
