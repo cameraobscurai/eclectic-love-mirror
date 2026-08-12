@@ -117,10 +117,18 @@ export const Route = createFileRoute("/admin/photos")({
   //   ?filter=missing → hide fully-imaged rows (see visibleItems filter)
   //   ?product=<rms>  → reserved for future auto-open of the editor
   //   ?page=<pg>      → reserved for page-scoped subsets
+  //   ?cat / ?sub / ?sort → the working view, so a reload or a shared link
+  //                         lands on the same shelf in the same order
+  //   ?id=<uuid>      → the open editor. In the URL on purpose: Back closes
+  //                     the drawer instead of leaving the page.
   validateSearch: (s: Record<string, unknown>) => ({
     filter: s.filter === "missing" ? ("missing" as const) : undefined,
     product: typeof s.product === "string" ? s.product : undefined,
     page: typeof s.page === "string" ? s.page : undefined,
+    cat: typeof s.cat === "string" ? s.cat : undefined,
+    sub: typeof s.sub === "string" ? s.sub : undefined,
+    sort: SORT_MODES.some((m) => m.id === s.sort) ? (s.sort as SortMode) : undefined,
+    id: typeof s.id === "string" ? s.id : undefined,
   }),
   head: () => ({
     meta: [
