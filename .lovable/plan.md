@@ -1,54 +1,58 @@
-# Per-variant photos
+# Variants, configurations, and the delete ghost
 
-## What exists today (verified in code and the baked catalog)
+Claude is right on the substance. Three of his points change this plan, one I'm downgrading, and the sequencing moves.
 
-- 85 family tiles, 301 variant rows. 294 already resolve to a photo, 7 do not, and 1 family has two variants pointing at the same photo.
-- A variant's photo is **derived, not declared**: `phase3-catalog.ts:297` takes the variant row's live `images[0]`. Nothing states that rule in the admin, so reordering a row's gallery silently changes its variant photo.
-- The admin family panel is **read-only** and reads a build-time JSON file. There is no place to see, set, or verify a variant photo.
-- The product page has **no variant switcher at all**. Variant chips and image matching exist only in the old QuickView modal, which is no longer the primary way in. A shopper landing on a family page sees one merged gallery with no labels.
-- QuickView's matching falls back to guessing from filenames (numbers like `AKOYA 7.png`, tokens like Fork/Knife). That guess is the thing to remove.
+## What I verified in code before writing this
 
-## The model — pointer, not a second photo library
+- `deleteProduct` removes the database row and nothing else. The COLLECTION grid is built from the baked catalog plus the published overlay, and the overlay is assembled by walking live rows — a deleted row simply stops being mentioned, so its baked tile survives on both the admin grid and the live site until the next full bake. Adrienne's "image remains and there is an error" is exactly this.
+- 85 families, 301 variant rows. 294 resolve to a photo, 7 do not, 1 family has two variants on the same photo.
+- A variant's photo is derived, not declared: `phase3-catalog.ts:297` takes that row's `images[0]`.
+- The product page has no variant switcher. Variant chips and image-to-variant matching exist only in QuickView, which still guesses from filenames.
+- `/collection` sends a tile click to the product page when the row has a slug, and falls back to QuickView when it doesn't. So QuickView is a fallback entry, not the main one — narrower than Claude read it, but still the only place variants appear.
 
-Best practice across Shopify, BigCommerce and Squarespace: one image pool, and each variant holds a **pointer** into it. No parallel image store, no filename inference.
+## Accepted from Claude
 
-Each variant here is already a full inventory row with its own photos, so the pointer belongs on the row:
+**1. The option axis.** Adrienne isn't asking for a sibling list, she's asking for a configurator — "I click Square Bar and the title changes to Square Bar." Two fields:
 
 ```text
+product_families
+  option_name  text null   -- "Configuration", "Size", "Finish"; null = plain family
+
 inventory_items
-  variant_cover_url text null   -- must be one of this row's own images[]
+  variant_label text null  -- "Square Bar", "Patina", "8 ft"
 ```
 
-- Empty = AUTO (first photo), which is exactly today's behaviour, so nothing moves on day one.
-- Set = PINNED. Survives gallery reordering, upscales, and re-imports.
-- Same three-state language already used for focal points: AUTO / PINNED, with a reset.
-- Deleting the pointed-at photo clears the pointer back to AUTO rather than breaking the tile.
+`variant_label` falls back to the diffed portion of the title, but declared beats diffed. The chip then swaps photo, dimensions, quantity, and displayed label.
 
-This does not depend on the declared-families work in `docs/product-families-plan.md`. The pointer lives per row and works under today's grouping and under the future one.
+**2. The pointer must survive our own pipelines.** A URL pointer breaks the moment a migration rewrites `images[]` — cache-busting suffixes, mirroring, any bulk swap. So: the validation compares normalized URLs (query string stripped), and R6 gains a line requiring pointer remapping to travel in the same statement as any image rewrite. Clear-on-delete stays, but only for genuine removals.
 
-## Phases
+**3. "Add variant" from the parent.** The family board needs an action that creates a row pre-linked to the family and opens it. It wasn't in the plan; it is now.
 
-**1. Schema.** Add `variant_cover_url` plus a validation trigger that rejects a URL not present in that row's `images[]`, and clears it when that image is removed. Existing table, so grants are unchanged.
+## Downgraded
 
-**2. Bake and runtime.** `bake-catalog.mjs` selects the column; `phase3-catalog.ts` resolves `variant.imageUrl` as `variant_cover_url ?? images[0]`. The family gallery merge is untouched — the variant photo is already in the pool.
+**"9 images but only 2 show" is not a count bug.** The count is the merged family pool; the gallery is the filename guess. It disappears when the guess is deleted in phase 4. No separate fix.
 
-**3. Admin — the family board.** Replace the read-only panel inside the inventory drawer with a live board:
-   - every sibling as a row: thumbnail, title, dimensions, quantity, AUTO/PINNED badge
-   - "Set variant photo" picks from that row's own photos
-   - jump straight to a sibling in the same drawer instead of a search link
-   - coverage line ("5 of 6 variants have a distinct photo") and two warnings: no photo at all, and two variants pointing at the same photo
-   - which member supplies the family's landing image stays explicit
+## Order of work
 
-**4. Public — the switcher.** This is the payoff. Add variant chips to the product page: selecting one swaps the hero to that variant's photo and updates the dimensions and quantity shown. Deep-linkable as `?v=<id>`. Inquiry selections carry the chosen variant. Once coverage is complete, delete the filename-guessing fallback in QuickView.
+**0 — Delete tombstone. First, alone, today.** Delete writes a tombstone the publish overlay carries, so the piece leaves the live site at the next publish rather than the next bake, and the admin grid reconciles against the database instead of the snapshot. This is the one item where the system is lying to her.
 
-**5. Verification.** Fixtures in `tests/family-cover.test.ts` for pointer precedence and the delete-clears-pointer case; a `variant-photo-coverage` audit script listing the 7 photoless variants and any duplicates; confirm an RMS re-import never clobbers a pointer (rule R6).
+**1 — Schema.** `product_families` (with `option_name`), `inventory_items.family_id`, `variant_label`, `variant_cover_url`. Pointer validated against normalized URLs in that row's `images[]`. Empty pointer = AUTO, which is today's behaviour, so day one is a no-op.
 
-## Decisions I made — say if you disagree
+**2 — Bake and runtime.** Bake selects the new columns; `phase3-catalog` resolves the variant photo as pointer, then `images[0]`. Family membership reads declared first, heuristic second, until the 85 are walked.
 
-- A variant photo must be one of that variant row's own photos. Uploading a photo that belongs to no row would create a second, untracked image store.
-- The 7 photoless variants get flagged, not auto-filled from a sibling. A wrong photo is worse than none.
-- Landing image for the tile keeps its current rule: the lead row's first photo. Variant photos do not compete for it.
+**3 — The family board, inside the drawer.** Replaces the read-only panel: every sibling with thumbnail, label, dimensions, quantity, AUTO/PINNED badge; set the variant photo from that row's own photos; set the lead; add a variant; jump between siblings without leaving the drawer; coverage line plus warnings for the 7 photoless variants and the duplicate. A lead marker also goes in the `/admin/products` rows so the question is answerable outside the drawer.
 
-## Sequencing
+**4 — The configurator on the product page.** Option-name heading, chips of variant labels, selection swaps photo, dimensions, quantity, and label. Deep-linkable `?v=`. Inquiries carry the selection. Filename matching is deleted.
 
-Phases 1–3 are one working session and change nothing publicly. Phase 4 is the visible change and should land after you have walked the 85 families once in the new board.
+**5 — Verification.** Fixtures for pointer precedence, URL-normalization, and delete-clears-pointer; a coverage audit script; the RMS re-import loop test extended to prove pointers and labels survive.
+
+## Running alongside, not blocking
+
+- **"Changes convert right back."** Instrument before fixing — log overlay hit versus baked fallback per field on one of her reported reverts. Suspects in order: edits never published, the 60s catalog memo plus CDN TTL, or a variant edit hidden behind the lead's data on the family tile.
+- **Global search on live.** The catalog is already fully client-side on `/collection`; cross-collection search is cheap.
+- **Admin speed.** `admin.photos` pulls the whole catalog on every mount with no query cache and renders every tile. Two fixes: cache it the way the taxonomy tree is cached, and virtualize the icons grid.
+- **Repros needed from her:** the broken Back/Collection buttons, and the blank space from a hidden piece. Neither reproduces from reading the code.
+
+## One question for Adrienne
+
+"Available October 2026" in a description renders publicly. If that's a status rather than marketing copy, it's a small availability field with a badge, not prose.
