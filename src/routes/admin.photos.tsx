@@ -79,6 +79,15 @@ function readStoredView(): ViewMode {
 }
 
 type SortMode = "editorial" | "type" | "az" | "tonal";
+
+/** Category selection. "all" = every piece in one grid, grouped by category,
+ *  read-only (drag order is per-category, so it can't be persisted here). */
+type ParentSel = ParentId | "all";
+function selLabel(p: ParentSel): string {
+  return p === "all" ? "All" : PARENT_LABELS[p];
+}
+
+
 const SORT_MODES: { id: SortMode; label: string }[] = [
   { id: "editorial", label: "Editorial" },
   { id: "type", label: "By Type" },
@@ -143,7 +152,7 @@ function AdminPhotosPage() {
 }
 
 function PhotosManager() {
-  const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
+  const [parent, setParent] = useState<ParentSel>("all");
   const [sub, setSub] = useState<string>("all");
   const [sortMode, setSortMode] = useState<SortMode>("editorial");
   const [view, setView] = useState<ViewMode>(readStoredView);
@@ -217,9 +226,11 @@ function PhotosManager() {
           Categories
         </p>
         <nav className="flex flex-col">
-          {PARENT_ORDER.map((pid) => {
+          {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => {
             const count = allProducts
-              ? allProducts.filter((p) => productParent(p) === pid).length
+              ? pid === "all"
+                ? allProducts.length
+                : allProducts.filter((p) => productParent(p) === pid).length
               : null;
             return (
               <button
@@ -231,7 +242,8 @@ function PhotosManager() {
                     : "border-transparent text-charcoal/55 hover:text-charcoal hover:bg-charcoal/3"
                 }`}
               >
-                <span>{PARENT_LABELS[pid]}</span>
+                <span>{selLabel(pid)}</span>
+
                 {count !== null && (
                   <span className="ml-2 text-charcoal/35 tabular-nums">{count}</span>
                 )}
@@ -252,14 +264,15 @@ function PhotosManager() {
           </label>
           <select
             value={parent}
-            onChange={(e) => setParent(e.target.value as ParentId)}
+            onChange={(e) => setParent(e.target.value as ParentSel)}
             className="w-full border border-charcoal/20 bg-white px-3 py-2 text-[12px] uppercase tracking-[0.14em]"
           >
-            {PARENT_ORDER.map((pid) => (
+            {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => (
               <option key={pid} value={pid}>
-                {PARENT_LABELS[pid]}
+                {selLabel(pid)}
               </option>
             ))}
+
           </select>
         </div>
 
@@ -294,7 +307,7 @@ function CategoryGrid({
   onView,
   allProducts,
 }: {
-  parent: ParentId;
+  parent: ParentSel;
   sub: string;
   onSub: (s: string) => void;
   sortMode: SortMode;
@@ -304,21 +317,41 @@ function CategoryGrid({
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
+  const allMode = parent === "all";
 
   // Source items for this parent. Mirrors /collection so the admin shows
   // exactly what visitors see in each sort mode.
   //   - editorial → editorialOrder (drag-reorder writes this back)
   //   - type/az/tonal → same sortProductsForCollection() the public grid uses
+  // In ALL mode the list is every piece, ordered category-by-category in
+  // PARENT_ORDER so the whole collection can be cross-checked in one pass.
   const baseItems = useMemo<Item[]>(() => {
     if (!allProducts) return [];
-    const inParent = allProducts.filter((p) => productParent(p) === parent);
-    if (sortMode === "editorial") {
+    const inParent = allMode
+      ? [...allProducts]
+      : allProducts.filter((p) => productParent(p) === parent);
+    const editorialCmp = (a: CollectionProduct, b: CollectionProduct) => {
+      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
+      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
+      if (ar !== br) return ar - br;
+      return a.title.localeCompare(b.title);
+    };
+    if (allMode) {
+      const rank = (p: CollectionProduct) => {
+        const pid = productParent(p);
+        const i = pid ? PARENT_ORDER.indexOf(pid) : -1;
+        return i === -1 ? 999 : i;
+      };
       inParent.sort((a, b) => {
-        const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
-        const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
-        if (ar !== br) return ar - br;
-        return a.title.localeCompare(b.title);
+        const ra = rank(a);
+        const rb = rank(b);
+        if (ra !== rb) return ra - rb;
+        return sortMode === "az" ? a.title.localeCompare(b.title) : editorialCmp(a, b);
       });
+      return inParent.map(adapt);
+    }
+    if (sortMode === "editorial") {
+      inParent.sort(editorialCmp);
       return inParent.map(adapt);
     }
     const sorted = sortProductsForCollection(inParent, {
@@ -326,7 +359,8 @@ function CategoryGrid({
       activeGroup: parent as never,
     });
     return sorted.map(adapt);
-  }, [allProducts, parent, sortMode]);
+  }, [allProducts, parent, sortMode, allMode]);
+
 
   // Local items state so drag-reorder feels instant. Holds the FULL parent
   // list — the sub filter is purely a display filter (see `visibleItems`).
@@ -339,18 +373,21 @@ function CategoryGrid({
   // persist a partial parent list) or while viewing a non-editorial sort
   // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
   // mirrors of the public sort, not editable orderings).
-  const subActive = sub !== "all";
+  const subActive = !allMode && sub !== "all";
   const { filter: filterParam } = Route.useSearch();
   const missingOnly = filterParam === "missing";
-  const reorderDisabled = subActive || sortMode !== "editorial" || missingOnly;
+  // ALL is read-only: drag order is persisted per category, so a cross-category
+  // list has nowhere to write to.
+  const reorderDisabled = allMode || subActive || sortMode !== "editorial" || missingOnly;
   const visibleItems = useMemo(
     () => {
       let base = subActive
         ? items.filter((i) => {
             const p = (allProducts ?? []).find((pp) => pp.id === i.id);
-            return p ? productMatchesSub(p, parent, sub) : false;
+            return p ? productMatchesSub(p, parent as ParentId, sub) : false;
           })
         : items;
+
       if (missingOnly) base = base.filter((i) => i.images.length === 0);
       // Guard: dnd-kit's SortableContext throws on null/undefined ids
       // ("Cannot use 'in' operator to search for 'id' in null").
@@ -414,7 +451,32 @@ function CategoryGrid({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const subs = PARENT_SUBS[parent];
+  const subs = allMode ? [] : PARENT_SUBS[parent as ParentId];
+
+  // ALL mode: split the flat list into category sections, PARENT_ORDER first,
+  // anything unassigned last so it can't hide.
+  const allSections = useMemo(() => {
+    if (!allMode) return [] as { id: string; label: string; items: Item[] }[];
+    const byId = new Map((allProducts ?? []).map((p) => [p.id, p]));
+    const buckets = new Map<string, Item[]>();
+    for (const item of visibleItems) {
+      const p = byId.get(item.id);
+      const pid = p ? productParent(p) : null;
+      const key = pid ?? "__unassigned";
+      const arr = buckets.get(key);
+      if (arr) arr.push(item);
+      else buckets.set(key, [item]);
+    }
+    const out: { id: string; label: string; items: Item[] }[] = [];
+    for (const pid of PARENT_ORDER) {
+      const arr = buckets.get(pid);
+      if (arr?.length) out.push({ id: pid, label: PARENT_LABELS[pid], items: arr });
+    }
+    const rest = buckets.get("__unassigned");
+    if (rest?.length) out.push({ id: "__unassigned", label: "Unassigned", items: rest });
+    return out;
+  }, [allMode, allProducts, visibleItems]);
+
   const subList = useMemo(() => [{ id: "all", label: "All" }, ...subs], [subs]);
 
   // Seed the confirmed baseline whenever the source data refreshes.
@@ -542,10 +604,10 @@ function CategoryGrid({
       <header className="mb-4 flex items-end justify-between gap-6 border-b border-charcoal/10 pb-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">
-            Admin · Photos
+            Admin · Collection
           </p>
           <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.02em]">
-            {PARENT_LABELS[parent]}
+            {selLabel(parent)}
           </h1>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
             {reorderDisabled
@@ -554,7 +616,10 @@ function CategoryGrid({
                     ? "Missing-images filter active — reorder disabled"
                     : sortMode !== "editorial"
                     ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
+                    : allMode
+                    ? "Every piece, grouped by category — pick a category to reorder"
                     : "Reorder disabled while filtered"
+
                 }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
@@ -653,7 +718,10 @@ function CategoryGrid({
         })}
         <span className="ml-auto text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
           {sortMode === "editorial"
-            ? "Editable · drag to reorder"
+            ? allMode
+              ? "Read-only in All — open a category to reorder"
+              : "Editable · drag to reorder"
+
             : "Read-only mirror of public sort"}
         </span>
       </div>
@@ -699,7 +767,44 @@ function CategoryGrid({
         <div className="py-16 text-center text-xs uppercase tracking-widest text-charcoal/50">
           No items in this category.
         </div>
+      ) : allMode ? (
+        /* ALL — every piece once, grouped by category under sticky headings.
+           Read-only: reorder lives inside a single category. */
+        <div>
+          {allSections.map((sec) => (
+            <section key={sec.id} className="mb-10">
+              <h2 className="sticky top-12 z-10 -mx-6 lg:-mx-10 px-6 lg:px-10 py-2 bg-cream/95 backdrop-blur border-b border-charcoal/10 text-[11px] uppercase tracking-[0.24em] text-charcoal/70">
+                {sec.label}
+                <span className="ml-2 text-charcoal/35 tabular-nums">{sec.items.length}</span>
+              </h2>
+              <div
+                className={`mt-4 ${view === "grid" ? "collection-product-grid w-full" : "grid gap-1"}`}
+                style={
+                  view === "grid"
+                    ? undefined
+                    : {
+                        gridTemplateColumns: `repeat(${
+                          view === "icons" ? 12 : wallCols(sec.items.length)
+                        }, minmax(0, 1fr))`,
+                      }
+                }
+              >
+                {sec.items.map((item, idx) => (
+                  <Tile
+                    key={item.id}
+                    item={item}
+                    index={idx}
+                    dense={view !== "grid"}
+                    draggable={false}
+                    onOpen={() => void openEditor(item)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       ) : (
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

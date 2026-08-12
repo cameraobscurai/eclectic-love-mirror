@@ -60,7 +60,7 @@ type NavItem = {
 };
 
 const OVERVIEW: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   // Hidden: /admin/admin (chat/agent surface) — still reachable by direct URL.
 ];
 void Sparkles;
@@ -70,10 +70,12 @@ const INBOX: NavItem[] = [
 ];
 
 const INVENTORY: NavItem[] = [
+  // COLLECTION is the daily home: every piece, one grid, cross-checkable.
+  { to: "/admin/photos", label: "Collection", icon: ImageIcon },
   { to: "/admin/products", label: "Inventory", icon: Package },
   { to: "/admin/taxonomy", label: "Taxonomy studio", icon: ScanEye },
-  { to: "/admin/photos", label: "Collection photos", icon: ImageIcon },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
+
 
   // Hidden (routes still live, reachable by direct URL): /admin/render
   // (Photo studio) and /admin/gallery — not part of Adrienne's daily loop.
@@ -105,12 +107,14 @@ const SITE: NavItem[] = [
 
 // Crumb labels keyed off the path. Falls back to last segment if missing.
 const CRUMB_LABELS: Record<string, string> = {
-  "/admin": "Dashboard",
+  "/admin": "Admin",
+  "/admin/dashboard": "Dashboard",
+
   "/admin/products": "Inventory",
   "/admin/taxonomy": "Taxonomy studio",
 
   "/admin/team": "Team",
-  "/admin/photos": "Collection photos",
+  "/admin/photos": "Collection",
   "/admin/render": "Photo studio",
   "/admin/new-product": "New product",
   "/admin/gallery": "Gallery",

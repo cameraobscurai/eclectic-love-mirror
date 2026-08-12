@@ -62,6 +62,9 @@ function NewProductPage() {
 
   const [busy, setBusy] = useState<null | "draft" | "publish">(null);
   const [err, setErr] = useState<string | null>(null);
+  // Set once the user has acknowledged a duplicate-title warning.
+  const [dupAck, setDupAck] = useState(false);
+
 
   useEffect(() => {
     listTaxonomyTree()
@@ -117,6 +120,8 @@ function NewProductPage() {
         collectionSlug: deferTaxonomy ? null : collectionSlug,
         categorySlug: deferTaxonomy ? null : categorySlug,
         deferTaxonomy,
+        allowDuplicateTitle: dupAck,
+
       },
     });
     const next = { id: res.id, rmsId: res.rmsId ?? "" };
@@ -136,33 +141,40 @@ function NewProductPage() {
       const row = await ensureRow(false);
       const arr = Array.from(files);
       const appended: string[] = [];
+      const failed: string[] = [];
       for (const file of arr) {
         if (!/^image\/(jpeg|png|webp|avif)$/.test(file.type)) continue;
         if (file.size > 10 * 1024 * 1024) {
-          setErr(`${file.name} exceeds 10MB`);
+          failed.push(`${file.name} exceeds 10MB`);
           continue;
         }
-        const buf = new Uint8Array(await file.arrayBuffer());
-        let bin = "";
-        const chunk = 0x8000;
-        for (let i = 0; i < buf.length; i += chunk) {
-          bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+        // Per-file try: a single failure must not discard files that already
+        // uploaded — otherwise they orphan in storage, unattached and unseen.
+        try {
+          const buf = new Uint8Array(await file.arrayBuffer());
+          let bin = "";
+          const chunk = 0x8000;
+          for (let i = 0; i < buf.length; i += chunk) {
+            bin += String.fromCharCode(...buf.subarray(i, i + chunk));
+          }
+          const base64 = btoa(bin);
+          const res = await uploadFn({
+            data: {
+              id: row.id,
+              rmsId: row.rmsId,
+              filename: file.name,
+              contentType: file.type as
+                | "image/jpeg"
+                | "image/png"
+                | "image/webp"
+                | "image/avif",
+              base64,
+            },
+          });
+          appended.push(res.url);
+        } catch (e) {
+          failed.push(`${file.name}: ${(e as Error).message}`);
         }
-        const base64 = btoa(bin);
-        const res = await uploadFn({
-          data: {
-            id: row.id,
-            rmsId: row.rmsId,
-            filename: file.name,
-            contentType: file.type as
-              | "image/jpeg"
-              | "image/png"
-              | "image/webp"
-              | "image/avif",
-            base64,
-          },
-        });
-        appended.push(res.url);
       }
       if (appended.length) {
         const nextImages = [...images, ...appended];
@@ -171,6 +183,10 @@ function NewProductPage() {
           data: { id: row.id, images: nextImages, expectedLength: images.length },
         });
       }
+      if (failed.length) {
+        setErr(`${appended.length} of ${arr.length} added. Failed — ${failed.join("; ")}`);
+      }
+
     } catch (e) {
       setErr((e as Error).message || "Upload failed");
     } finally {
@@ -435,10 +451,23 @@ function NewProductPage() {
         </div>
 
         {err && (
-          <p className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
-            {err}
-          </p>
+          <div className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
+            <p>{err.replace(/^DUPLICATE_TITLE:\s*/, "")}</p>
+            {err.startsWith("DUPLICATE_TITLE") && !dupAck && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDupAck(true);
+                  setErr(null);
+                }}
+                className="mt-2 border border-red-300 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-red-700 hover:bg-red-100"
+              >
+                Create anyway
+              </button>
+            )}
+          </div>
         )}
+
 
         <div className="pt-4 border-t border-charcoal/10 flex flex-wrap items-center gap-3">
           <button
