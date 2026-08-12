@@ -161,8 +161,37 @@ function measureImage(
 }
 
 // ────────────────────────────────────────────────────────────────────────
+// Focal mapping — photo-space → frame-space.
+// ────────────────────────────────────────────────────────────────────────
+
+/**
+ * A focal point is authored in PHOTO space (0–1 across the visible picture).
+ * The tile transforms in FRAME space (0–1 across the tile box). With
+ * object-contain those two boxes are only the same when the photo's aspect
+ * matches the frame exactly. For a 391x151 cover in a 5:4 frame the photo
+ * fills 48% of the frame's height, so one unit of photo nudge must become
+ * 0.48 units of frame nudge — otherwise every correction overshoots ~2x and
+ * the piece slides out of the tile.
+ *
+ * renderedW/renderedH come from measureImage() and already encode the
+ * letterbox; the content is always centered, hence (1 - rendered) / 2.
+ */
+export function focalToFrame(
+  focalX: number,
+  focalY: number,
+  renderedW: number,
+  renderedH: number,
+): { fx: number; fy: number } {
+  return {
+    fx: (1 - renderedW) / 2 + focalX * renderedW,
+    fy: (1 - renderedH) / 2 + focalY * renderedH,
+  };
+}
+
+// ────────────────────────────────────────────────────────────────────────
 // The rigorous solver — takes a FitRule + measurement, returns Fit.
 // ────────────────────────────────────────────────────────────────────────
+
 
 function solveFit(m: Measurement, rule: FitRule): Fit {
   const inset = TILE_IMAGE_INSET;
