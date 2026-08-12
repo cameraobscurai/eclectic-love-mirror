@@ -107,7 +107,9 @@ const SITE: NavItem[] = [
 
 // Crumb labels keyed off the path. Falls back to last segment if missing.
 const CRUMB_LABELS: Record<string, string> = {
-  "/admin": "Dashboard",
+  "/admin": "Admin",
+  "/admin/dashboard": "Dashboard",
+
   "/admin/products": "Inventory",
   "/admin/taxonomy": "Taxonomy studio",
 
