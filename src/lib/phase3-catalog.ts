@@ -405,7 +405,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
-    }).filter((p) => p.publicReady !== false);
+    }).filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
 
 
     // Products added since the last bake exist only in the overlay. Append
