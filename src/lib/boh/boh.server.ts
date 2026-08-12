@@ -175,6 +175,9 @@ async function captureOne(slug: string, route: string) {
   try {
     const img = await scrapeRoute(route);
     const path = `${slug}.jpg`;
+    // R1 (docs/DECISIONS.md#r1) exempt: boh-tiles are back-of-house screenshot
+    // scratch, regenerated on every refresh run and never a published catalog
+    // image URL. Overwriting in place is the intended behaviour here.
     const { error } = await supabaseAdmin.storage
       .from("boh-tiles")
       .upload(path, img, { contentType: "image/jpeg", upsert: true });

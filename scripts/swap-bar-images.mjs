@@ -1,3 +1,16 @@
+// R1 — docs/DECISIONS.md#r1. This script overwrites bytes at an already
+// published image path (upsert: true on an image upload). That is the exact
+// mechanism behind the 2026-08-11 cover incident, where 633 live URLs silently
+// changed content and every cache went inconsistent. Retired behind an explicit
+// override: a revival must write a content-hashed path and repoint the row.
+if (!process.env.ALLOW_R1_OVERWRITE) {
+  console.error(
+    "Refusing to run: this script overwrites bytes at published image URLs (R1, docs/DECISIONS.md#r1).\n" +
+      "Rewrite it to write a content-hashed path and repoint the row, or set ALLOW_R1_OVERWRITE=1 to override deliberately."
+  );
+  process.exit(1);
+}
+
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 
