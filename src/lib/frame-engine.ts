@@ -28,11 +28,18 @@ export const CANVAS_W = 1500;
 export const CANVAS_H = 1200;
 export const FRAME_ASPECT = CANVAS_W / CANVAS_H; // 1.25
 
-/** Output sizes the renderer emits. V5 checks against these. */
+/** Output sizes the renderer emits (encodings of the one 1500x1200 render). */
 export const OUTPUT_SIZES = [
   { w: 1200, h: 960 },
   { w: 600, h: 480 },
 ] as const;
+
+/**
+ * Sizes V5 accepts. The render canvas is included because `verify` runs on the
+ * 1500x1200 composition — before any bytes are encoded, returned, or uploaded.
+ */
+export const VERIFY_SIZES = [{ w: CANVAS_W, h: CANVAS_H }, ...OUTPUT_SIZES] as const;
+
 
 /** V6 byte ceiling per derivative. */
 export const MAX_DERIVATIVE_BYTES = 400_000;
@@ -722,7 +729,7 @@ export function verify(
   const fail = (code: VerifyFailureCode, message: string) => failures.push({ code, message });
 
   // V5 — exact dims.
-  const dimsOk = OUTPUT_SIZES.some((s) => s.w === rendered.w && s.h === rendered.h);
+  const dimsOk = VERIFY_SIZES.some((s) => s.w === rendered.w && s.h === rendered.h);
   if (!dimsOk) {
     fail("V5", `dims ${rendered.w}x${rendered.h} is not an allowed output size`);
   }
@@ -740,19 +747,31 @@ export function verify(
 
   const box = toFrameBox(m.bbox, rendered.w, rendered.h, rendered.w / rendered.h);
 
-  // V1 — primary-axis coverage against the rule's target.
-  const inset = TILE_IMAGE_INSET;
-  let actual: number;
-  if (rule.primary === "width") actual = box.bw * inset;
-  else if (rule.primary === "height") actual = box.bh * inset;
-  else actual = Math.sqrt(box.bw * inset * box.bh * inset);
-  const delta = Math.abs(actual - rule.primaryTarget) / rule.primaryTarget;
-  if (delta > V1_TOL) {
+  // V1 — primary-axis coverage, checked as SOLVER IDEMPOTENCE: re-solve the
+  // rendered silhouette and require the solver to ask for no further change.
+  //
+  // Comparing raw coverage to `primaryTarget` is wrong and was rejected here
+  // on the first real render: `primaryTarget` is only the pre-blend seed. The
+  // aspect blend and the secondary/absolute caps both move the intended
+  // coverage, so a correctly-placed wide sofa (capped on height) reads 16% off
+  // a target it was never supposed to hit. Re-solving folds blend and caps in
+  // by construction — an idempotent placement is the actual contract.
+  const resolved = placeSilhouette(box, categorySlug, collectionSlug);
+  const scaleDelta = Math.abs(resolved.scale - 1);
+  if (scaleDelta > V1_TOL) {
+    const inset = TILE_IMAGE_INSET;
+    const actual =
+      rule.primary === "width"
+        ? box.bw * inset
+        : rule.primary === "height"
+          ? box.bh * inset
+          : Math.sqrt(box.bw * inset * box.bh * inset);
     fail(
       "V1",
-      `${rule.primary} coverage ${actual.toFixed(3)} vs target ${rule.primaryTarget} (${(delta * 100).toFixed(1)}% off)`,
+      `${rule.primary} coverage ${actual.toFixed(3)} needs a further ${resolved.scale.toFixed(3)}x (${(scaleDelta * 100).toFixed(1)}% off)`,
     );
   }
+
 
   // V2 — anchor edge, keyed to the rule's anchor.
   if (rule.anchor === "bottom") {
