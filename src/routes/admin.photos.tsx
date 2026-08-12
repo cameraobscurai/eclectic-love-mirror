@@ -224,7 +224,9 @@ function PhotosManager() {
         <nav className="flex flex-col">
           {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => {
             const count = allProducts
-              ? allProducts.filter((p) => productParent(p) === pid).length
+              ? pid === "all"
+                ? allProducts.length
+                : allProducts.filter((p) => productParent(p) === pid).length
               : null;
             return (
               <button
@@ -236,7 +238,8 @@ function PhotosManager() {
                     : "border-transparent text-charcoal/55 hover:text-charcoal hover:bg-charcoal/3"
                 }`}
               >
-                <span>{PARENT_LABELS[pid]}</span>
+                <span>{selLabel(pid)}</span>
+
                 {count !== null && (
                   <span className="ml-2 text-charcoal/35 tabular-nums">{count}</span>
                 )}
