@@ -83,6 +83,10 @@ type SortMode = "editorial" | "type" | "az" | "tonal";
 /** Category selection. "all" = every piece in one grid, grouped by category,
  *  read-only (drag order is per-category, so it can't be persisted here). */
 type ParentSel = ParentId | "all";
+function selLabel(p: ParentSel): string {
+  return p === "all" ? "All" : PARENT_LABELS[p];
+}
+
 
 const SORT_MODES: { id: SortMode; label: string }[] = [
   { id: "editorial", label: "Editorial" },
