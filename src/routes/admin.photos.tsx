@@ -69,6 +69,19 @@ import {
  *  a whole category at a glance. The choice is remembered per browser. */
 type ViewMode = "grid" | "wall" | "icons";
 const VIEW_KEY = "eh.admin.photos.view";
+const PARENT_KEY = "eh.admin.photos.parent";
+
+/** Reopen on the last category worked in. Falls back to the first category —
+ *  never ALL, which is a deliberate, heavier cross-check mode. */
+function readStoredParent(): ParentSel {
+  try {
+    const v = window.localStorage.getItem(PARENT_KEY);
+    if (v && (PARENT_ORDER as string[]).includes(v)) return v as ParentSel;
+  } catch {
+    /* SSR or private mode */
+  }
+  return PARENT_ORDER[0];
+}
 function readStoredView(): ViewMode {
   try {
     const v = window.localStorage.getItem(VIEW_KEY);
@@ -153,7 +166,17 @@ function AdminPhotosPage() {
 }
 
 function PhotosManager() {
-  const [parent, setParent] = useState<ParentSel>("all");
+  // Default is ONE category, never ALL. Painting 670 tiles on open is the
+  // fastest way to make a slower laptop feel broken; ALL is opt-in and
+  // renders section-by-section as you scroll (see LazySection).
+  const [parent, setParent] = useState<ParentSel>(readStoredParent);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(PARENT_KEY, parent);
+    } catch {
+      /* private mode — the choice just won't persist */
+    }
+  }, [parent]);
   const [sub, setSub] = useState<string>("all");
   const [sortMode, setSortMode] = useState<SortMode>("editorial");
   const [view, setView] = useState<ViewMode>(readStoredView);
