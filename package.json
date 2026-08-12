@@ -19,6 +19,7 @@
     "fit:check": "node scripts/audit/tile-fit-harness.mjs --ci",
     "fit:baseline": "node scripts/audit/tile-fit-harness.mjs --baseline",
     "size:baseline": "bun run scripts/bake-size-benchmarks.ts",
+    "frame:bake": "bun run scripts/bake-frames.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
