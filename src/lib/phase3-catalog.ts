@@ -276,41 +276,17 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
           for (const u of row.images) liveMemberUrls.push(u);
         }
         if (anyLive) {
-          const variantKeys = new Set(
-            members
-              .map((v) => (v.imageUrl ? imgKey(v.imageUrl) : ""))
-              .filter(Boolean),
-          );
-          const seen = new Set<string>();
-          const merged: CollectionImage[] = [];
-          const push = (url: string, altText: string | null) => {
-            const k = imgKey(url);
-            if (seen.has(k)) return;
-            seen.add(k);
-            merged.push({
-              url,
-              position: merged.length,
-              isHero: merged.length === 0,
-              inferredFilename: null,
-              altText,
-            });
-          };
-          // Owner control: any photo on the LEAD row that isn't one of the
-          // variant shots is a collection/group photo she uploaded — it wins
-          // the cover slot, in her drag order.
           const leadRow = overlay.get(p.id);
-          for (const u of (Array.isArray(leadRow?.images) ? leadRow.images : [])) {
-            if (variantKeys.has(imgKey(u))) continue;
-            push(u, null);
-          }
-          // Then baked group shots (the "Set" photo) — no variant row owns these.
-          for (const img of p.images) {
-            if (variantKeys.has(imgKey(img.url))) continue;
-            push(img.url, img.altText);
-          }
-          for (const u of liveMemberUrls) push(u, null);
+          baseImages = mergeFamilyImages(
+            {
+              leadImages: Array.isArray(leadRow?.images) ? leadRow.images : [],
+              bakedImages: p.images,
+              memberImages: liveMemberUrls,
+              variantCoverUrls: members.map((v) => v.imageUrl ?? ""),
+            },
+            { leadCoverWins: true },
+          );
 
-          baseImages = merged;
           variantsOut = members.map((v) => {
             const row = overlay.get(v.id);
             const firstLive = Array.isArray(row?.images) ? row?.images[0] : undefined;
