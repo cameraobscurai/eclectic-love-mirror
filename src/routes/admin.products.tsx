@@ -5,7 +5,10 @@ import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-quer
 import { Plus } from "lucide-react";
 
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
-import { ProductEditDrawer } from "@/components/admin/ProductEditDrawer";
+import {
+  InventoryEditDrawer,
+  useTaxonomyTree,
+} from "@/components/admin/InventoryEditDrawer";
 import {
   listProducts,
   getProduct,
@@ -66,16 +69,6 @@ const SORT_LABELS: Record<string, string> = {
 
 const PAGE = 50;
 
-/** Reference tree — the 10 collections / 33 categories, cached hard. */
-export function useTaxonomyTree() {
-  const treeFn = useServerFn(listTaxonomyTree);
-  return useQuery({
-    queryKey: ["admin", "taxonomy-tree"],
-    queryFn: () => treeFn(),
-    staleTime: 30 * 60_000,
-    gcTime: 60 * 60_000,
-  });
-}
 
 function Inner() {
   const search = Route.useSearch();
@@ -374,7 +367,7 @@ function Inner() {
       </div>
 
       {search.id && (
-        <EditDrawer
+        <InventoryEditDrawer
           id={search.id}
           onClose={() => navigate({ search: (s: any) => ({ ...s, id: "" }) })}
           onSaved={() => {
