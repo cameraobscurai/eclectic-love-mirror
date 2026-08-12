@@ -60,7 +60,7 @@ type NavItem = {
 };
 
 const OVERVIEW: NavItem[] = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   // Hidden: /admin/admin (chat/agent surface) — still reachable by direct URL.
 ];
 void Sparkles;
