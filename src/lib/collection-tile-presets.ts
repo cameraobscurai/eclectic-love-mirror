@@ -17,10 +17,20 @@ export const PRODUCT_TILE_WIDE_FRAME_ASPECT = 8 / 5;
 export const PRODUCT_TILE_IMAGE_CLASS = "object-contain object-center";
 
 /**
- * Per-product vertical nudges. Scale and anchoring come from the single fit
- * pipeline (`resolveProductFit`); this is only for hand-tuned offsets on
- * individual products whose silhouette measurement sits off-baseline.
+ * Per-product nudges. Scale and anchoring come from the single fit pipeline
+ * (`resolveProductFit`); this is only for hand-tuned offsets on individual
+ * products whose silhouette measurement sits off-baseline.
+ *
+ * `scaleNudge` is a multiplier on the resolved fit targets (1 = untouched).
+ * Use it only when the cover photo's framing — not the product's real size —
+ * makes a tile read wrong beside its neighbours.
  */
-export const PRODUCT_TILE_OVERRIDES: Record<string, { visualOffsetY?: number }> = {
+export const PRODUCT_TILE_OVERRIDES: Record<
+  string,
+  { visualOffsetY?: number; scaleNudge?: number }
+> = {
+  // INGRAM's cover is a slightly angled shot, so its silhouette out-masses the
+  // straight elevations beside it at the same solved scale. Trim 8%.
+  "4180": { scaleNudge: 0.92 },
 };
 
