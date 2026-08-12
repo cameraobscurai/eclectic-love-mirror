@@ -586,6 +586,20 @@ fs.writeFileSync(path.join(outDir, 'current_catalog.json'), JSON.stringify(paylo
 console.log('wrote current_catalog.json:', products.length, 'products,', facets.length, 'facets');
 console.log('facets:', facets.map(f=>`${f.slug}(${f.count})`).join(' '));
 
+// Tombstones are self-expiring: this bake read the live database, where the
+// deleted rows are already absent, so the suppress-list has done its job and
+// the table must not grow forever. Purge everything older than this bake.
+{
+  const cutoff = payload.meta.generatedAt;
+  const { error, count } = await sb
+    .from('deleted_items')
+    .delete({ count: 'exact' })
+    .lte('deleted_at', cutoff);
+  if (error) console.warn('tombstone purge failed (non-fatal):', error.message);
+  else console.log('purged tombstones:', count ?? 0);
+}
+
+
 // ---------------------------------------------------------------------------
 // Gallery orders snapshot — bake gallery_orders so /gallery serves the
 // admin-curated plate order from a static JSON file instead of hitting
