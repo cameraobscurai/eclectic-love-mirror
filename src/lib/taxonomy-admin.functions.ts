@@ -16,6 +16,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
+import { isTestArtifact } from "@/lib/test-artifact";
 
 const slug = z.string().min(1).max(64).regex(/^[a-z0-9-]+$/);
 
@@ -83,6 +84,8 @@ export const listTaxonomyRows = createServerFn({ method: "GET" })
       if (error) throw error;
       if (!data || data.length === 0) break;
       for (const r of data) {
+        // E2E artifacts never pollute the ledger counts (see test-artifact.ts).
+        if (isTestArtifact({ title: r.title, rms_id: r.rms_id })) continue;
         rows.push({
           id: r.id,
           rms_id: r.rms_id,

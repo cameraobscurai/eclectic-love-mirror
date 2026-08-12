@@ -9,6 +9,8 @@
 // (The legacy `phase3_catalog.json` snapshot is kept on disk for archival
 // reference but is no longer imported anywhere.)
 
+import { isTestArtifact } from "@/lib/test-artifact";
+
 // NOTE: catalog JSON is dynamically imported below so it doesn't land in any
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
@@ -405,7 +407,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         variants: variantsOut,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
-    }).filter((p) => p.publicReady !== false);
+    }).filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
 
 
     // Products added since the last bake exist only in the overlay. Append
@@ -423,6 +425,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     const additions: CollectionProduct[] = [];
     for (const [rmsId, live] of overlay) {
       if (known.has(rmsId)) continue;
+      if (isTestArtifact({ title: live.title, rms_id: rmsId })) continue;
       if (live.public_ready !== true) continue;
       if (!live.title || !live.category) continue;
       const urls = Array.isArray(live.images) ? live.images : [];

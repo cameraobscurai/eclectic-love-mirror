@@ -12,8 +12,8 @@ import { test, expect, type Page, type ConsoleMessage, type Response } from '@pl
 // Along the way it fails on: console errors, 4xx/5xx requests, raw/unfriendly
 // error text surfacing in the UI, and silent saves that don't persist.
 //
-// Artifacts are left as DRAFT + not public with a "ZZ E2E" name prefix, so
-// they never reach the live collection.
+// Artifacts carry a "ZZ E2E" name prefix (isTestArtifact) so they can never
+// reach public queries, and the run deletes every row it creates.
 // ---------------------------------------------------------------------------
 
 const CONSOLE_NOISE = [
@@ -92,11 +92,36 @@ async function visibleErrorText(page: Page): Promise<string[]> {
   });
 }
 
+// Ids created by a run, drained by afterAll if a test dies mid-flight.
+const createdIds: string[] = [];
+
+/** Delete a row through the drawer's real delete path (no direct DB writes). */
+async function deleteArtifact(page: Page, id: string) {
+  await page.goto(`http://localhost:8080/admin/products?id=${id}`, { waitUntil: 'domcontentloaded' });
+  const arm = page.getByRole('button', { name: /delete this piece/i });
+  await arm.waitFor({ state: 'visible', timeout: 20_000 });
+  await arm.click();
+  await page.getByRole('button', { name: /yes, delete it/i }).click();
+  await page.waitForTimeout(2500);
+}
+
 test.describe('Inventory add/edit — staff walkthrough', () => {
   test.skip(
     process.env['LOVABLE_BROWSER_AUTH_STATUS'] !== 'injected',
     'Needs an injected admin session; sign in via the preview first.',
   );
+
+  test.afterAll(async ({ browser }) => {
+    if (createdIds.length === 0) return;
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 } });
+    const page = await context.newPage();
+    await restoreSession(page, context);
+    for (const id of createdIds.splice(0)) {
+      await deleteArtifact(page, id).catch(() => {});
+    }
+    await context.close();
+  });
+
 
   test('create → land in editor → edit → persists → findable in search', async ({ page, context }) => {
     const h = watch(page);
@@ -139,6 +164,21 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await page.getByPlaceholder('—').fill('3');
     await page.getByPlaceholder('e.g. 24"W x 18"D x 22"H').fill('30"W x 30"D x 18"H');
 
+    // Declared taxonomy is required — saving must stay blocked until it's set.
+    await expect(saveDraft).toBeDisabled();
+    const collectionSelect = page.locator('select').nth(2);
+    const declaredCategory = page.locator('select').nth(3);
+    const collValues = await collectionSelect.locator('option').evaluateAll((os) =>
+      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+    );
+    expect(collValues.length, 'no collections offered on the new-product form').toBeGreaterThan(0);
+    await collectionSelect.selectOption(collValues[0]!);
+    const catValues = await declaredCategory.locator('option').evaluateAll((os) =>
+      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+    );
+    expect(catValues.length, 'no categories offered for the chosen collection').toBeGreaterThan(0);
+    await declaredCategory.selectOption(catValues[0]!);
+
     await expect(saveDraft).toBeEnabled();
 
     // --- 4. Save as draft → should land in the editor on the new piece -----
@@ -147,6 +187,8 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     const idMatch = /[?&]id=([0-9a-f-]{36})/.exec(page.url());
     expect(idMatch, 'save did not route to the new product (no id in URL)').not.toBeNull();
     const productId = idMatch![1];
+    createdIds.push(productId);
+
 
     const drawer = page.getByRole('dialog');
     await expect(drawer).toBeVisible({ timeout: 20_000 });
@@ -197,16 +239,14 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await page.getByText(renamed).first().click();
     await expect(page.locator('#f-title')).toHaveValue(renamed, { timeout: 20_000 });
 
-    // --- 8. Cleanup: park it as a non-public draft --------------------------
-    const status = page.locator('#f-status');
-    if (await status.count()) {
-      await status.selectOption('draft').catch(() => {});
-      const cleanupSave = page.getByRole('button', { name: /^save \d+ change/i });
-      if (await cleanupSave.isEnabled().catch(() => false)) {
-        await cleanupSave.click();
-        await page.waitForTimeout(2000);
-      }
-    }
+    // --- 8. Teardown: the harness deletes what it made ----------------------
+    // Parking the row as a draft was not cleanup — it left rows in the DB that
+    // later surfaced as "unassigned" in Taxonomy Studio. The run now removes
+    // its own artifact through the same delete path a staffer uses.
+    createdIds.push(productId);
+    await deleteArtifact(page, productId);
+    createdIds.pop();
+
 
     // --- 9. Nothing ugly leaked to the user, console, or network -----------
     h.uiErrors.push(...(await visibleErrorText(page)));
@@ -229,7 +269,7 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     // Photo uploads must be gated until the piece has a name, with a hint
     // that says why — not a silent dead zone.
     await page.getByPlaceholder('e.g. Travertine Side Table').fill('');
-    await expect(page.getByText(/add a title above to enable photo uploads/i)).toBeVisible();
+    await expect(page.getByText(/add a title and choose where it lives to enable photo uploads/i)).toBeVisible();
 
     const shown = await visibleErrorText(page);
     const unfriendly = shown.filter((t) => UNFRIENDLY_ERROR.test(t));

@@ -266,15 +266,29 @@ const CATEGORY_SLUGS = [
   "storage", "furs-pelts",
 ] as const;
 
-const createItemInput = z.object({
-  title: z.string().trim().min(1).max(200),
-  category: z.enum(CATEGORY_SLUGS),
-  quantity: z.number().int().min(0).max(9999).nullable().optional(),
-  quantityLabel: z.string().trim().max(50).nullable().optional(),
-  dimensionsRaw: z.string().trim().max(500).nullable().optional(),
-  subcategorySlug: z.string().trim().max(60).nullable().optional(),
-  publicReady: z.boolean().default(true),
-});
+const declaredSlug = z.string().trim().min(1).max(64).regex(/^[a-z0-9-]+$/);
+
+// Declared taxonomy is required at creation — a human filling this form is
+// present to answer. The only legal way out is an EXPLICIT deferral, which
+// routes the row to the studio's Unassigned queue labelled 'human-deferred'.
+// Silent omission (what produced Portia and Zala) is no longer representable.
+const createItemInput = z
+  .object({
+    title: z.string().trim().min(1).max(200),
+    category: z.enum(CATEGORY_SLUGS),
+    quantity: z.number().int().min(0).max(9999).nullable().optional(),
+    quantityLabel: z.string().trim().max(50).nullable().optional(),
+    dimensionsRaw: z.string().trim().max(500).nullable().optional(),
+    subcategorySlug: z.string().trim().max(60).nullable().optional(),
+    publicReady: z.boolean().default(true),
+    collectionSlug: declaredSlug.nullable().optional(),
+    categorySlug: declaredSlug.nullable().optional(),
+    deferTaxonomy: z.boolean().default(false),
+  })
+  .refine(
+    (d) => d.deferTaxonomy || (!!d.collectionSlug && !!d.categorySlug),
+    { message: "Choose a collection and category, or tick “Decide later”." },
+  );
 
 function slugifyTitle(s: string): string {
   return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "item";
@@ -286,6 +300,36 @@ export const createInventoryItem = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const rmsId = `MANUAL-${crypto.randomUUID().slice(0, 8)}`;
     const slug = `${slugifyTitle(data.title)}-${rmsId.toLowerCase()}`;
+
+    const deferred = data.deferTaxonomy || !data.collectionSlug || !data.categorySlug;
+
+    // Same server-side revalidation as assignTaxonomy — the dropdown is
+    // convenience, not security.
+    if (!deferred) {
+      const { data: pair, error: pairErr } = await supabaseAdmin
+        .from("taxonomy_categories")
+        .select("slug, collection_slug")
+        .eq("slug", data.categorySlug!)
+        .eq("collection_slug", data.collectionSlug!)
+        .maybeSingle();
+      if (pairErr) throw new Error(pairErr.message);
+      if (!pair) {
+        throw new Error(
+          `INVALID_PAIR: ${data.collectionSlug}/${data.categorySlug} is not in the declared taxonomy`,
+        );
+      }
+    }
+
+    const review = deferred
+      ? { confidence: "low", source: "human-deferred", reviewed: false, needs_owner: false }
+      : {
+          confidence: "high",
+          source: "human",
+          reviewed: true,
+          needs_owner: false,
+          reviewed_by: context.userId,
+          reviewed_at: new Date().toISOString(),
+        };
 
     const { data: row, error } = await supabaseAdmin
       .from("inventory_items")
@@ -299,6 +343,9 @@ export const createInventoryItem = createServerFn({ method: "POST" })
         quantity_label: data.quantityLabel ?? null,
         dimensions_raw: data.dimensionsRaw ?? null,
         subcategory_slug: data.subcategorySlug || null,
+        collection_slug: deferred ? null : data.collectionSlug!,
+        category_slug: deferred ? null : data.categorySlug!,
+        taxonomy_review: review,
         images: [],
         public_ready: data.publicReady,
       })
@@ -312,7 +359,14 @@ export const createInventoryItem = createServerFn({ method: "POST" })
       entity: "inventory_items",
       entityId: row.id,
       action: "create_manual_item",
-      after: { rms_id: row.rms_id, title: row.title, category: row.category },
+      after: {
+        rms_id: row.rms_id,
+        title: row.title,
+        category: row.category,
+        collection_slug: deferred ? null : data.collectionSlug,
+        category_slug: deferred ? null : data.categorySlug,
+        taxonomy_deferred: deferred,
+      },
     });
 
     return { id: row.id, rmsId: row.rms_id, title: row.title };

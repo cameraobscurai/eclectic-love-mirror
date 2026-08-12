@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ADMIN_CATEGORIES, subcategoryOptions } from "@/lib/admin-categories";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { requireAdminOrRedirect } from "@/lib/admin-guard";
+import { listTaxonomyTree } from "@/lib/taxonomy-admin.functions";
 import {
   createInventoryItem,
   updateInventoryItemMeta,
@@ -46,6 +47,12 @@ function NewProductPage() {
   const [quantity, setQuantity] = useState("");
   const [dimensions, setDimensions] = useState("");
 
+  // Declared taxonomy — required to create, unless deliberately deferred.
+  const [tree, setTree] = useState<Awaited<ReturnType<typeof listTaxonomyTree>> | null>(null);
+  const [collectionSlug, setCollectionSlug] = useState("");
+  const [categorySlug, setCategorySlug] = useState("");
+  const [deferTaxonomy, setDeferTaxonomy] = useState(false);
+
   // Local image staging: URLs (already uploaded once row exists) in order.
   const [images, setImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -54,11 +61,19 @@ function NewProductPage() {
   const [busy, setBusy] = useState<null | "draft" | "publish">(null);
   const [err, setErr] = useState<string | null>(null);
 
+  useEffect(() => {
+    listTaxonomyTree()
+      .then(setTree)
+      .catch(() => setTree({ collections: [], categories: [] }));
+  }, []);
+
   const titleTrim = title.trim();
   const qNum = quantity.trim() ? Number(quantity) : null;
   const quantityValue =
     qNum !== null && Number.isFinite(qNum) ? qNum : null;
   const dimensionsValue = dimensions.trim() || null;
+  const taxonomyResolved = deferTaxonomy || (!!collectionSlug && !!categorySlug);
+  const canSave = !!titleTrim && taxonomyResolved;
 
   // Ensure a draft row exists. First call creates; subsequent calls patch
   // metadata onto the existing row.
@@ -66,6 +81,9 @@ function NewProductPage() {
     publicReady: boolean,
   ): Promise<DraftRow> => {
     if (!titleTrim) throw new Error("Title is required");
+    if (!taxonomyResolved) {
+      throw new Error("Choose a collection and category, or tick “Decide later”.");
+    }
     if (draft) {
       await updateMeta({
         data: {
@@ -89,6 +107,9 @@ function NewProductPage() {
         quantityLabel: null,
         dimensionsRaw: dimensionsValue,
         publicReady,
+        collectionSlug: deferTaxonomy ? null : collectionSlug,
+        categorySlug: deferTaxonomy ? null : categorySlug,
+        deferTaxonomy,
       },
     });
     const next = { id: res.id, rmsId: res.rmsId ?? "" };
@@ -249,6 +270,56 @@ function NewProductPage() {
           </select>
         </Field>
 
+        {/* Declared taxonomy — required, with an explicit deferral. */}
+        <div className="border border-charcoal/15 p-4 space-y-4">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55">
+            Where it lives {deferTaxonomy ? "(deferred)" : "(required)"}
+          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Collection">
+              <select
+                value={collectionSlug}
+                disabled={deferTaxonomy}
+                onChange={(e) => {
+                  setCollectionSlug(e.target.value);
+                  setCategorySlug("");
+                }}
+                className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal disabled:opacity-40"
+              >
+                <option value="">— choose —</option>
+                {(tree?.collections ?? []).map((c) => (
+                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Category">
+              <select
+                value={categorySlug}
+                disabled={deferTaxonomy || !collectionSlug}
+                onChange={(e) => setCategorySlug(e.target.value)}
+                className="w-full border border-charcoal/25 px-3 py-2 text-sm bg-white focus:outline-none focus:border-charcoal disabled:opacity-40"
+              >
+                <option value="">— choose —</option>
+                {(tree?.categories ?? [])
+                  .filter((c) => c.collection_slug === collectionSlug)
+                  .map((c) => (
+                    <option key={c.slug} value={c.slug}>{c.label}</option>
+                  ))}
+              </select>
+            </Field>
+          </div>
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-charcoal/70">
+            <input
+              type="checkbox"
+              checked={deferTaxonomy}
+              onChange={(e) => setDeferTaxonomy(e.target.checked)}
+            />
+            Decide later — send it to the Unassigned queue
+          </label>
+        </div>
+
+
+
         <div className="grid grid-cols-2 gap-4">
           <Field label="Quantity (optional)">
             <input
@@ -280,13 +351,13 @@ function NewProductPage() {
 
           {images.length === 0 ? (
             <UploadDrop
-              disabled={!titleTrim || uploading}
+              disabled={!canSave || uploading}
               uploading={uploading}
               onFiles={handleFiles}
               hint={
-                titleTrim
+                canSave
                   ? "Drop images here or click to browse · JPG/PNG/WEBP/AVIF · max 10MB each"
-                  : "Add a title above to enable photo uploads"
+                  : "Add a title and choose where it lives to enable photo uploads"
               }
             />
           ) : (
@@ -342,7 +413,7 @@ function NewProductPage() {
         <div className="pt-4 border-t border-charcoal/10 flex flex-wrap items-center gap-3">
           <button
             type="button"
-            disabled={!titleTrim || !!busy}
+            disabled={!canSave || !!busy}
             onClick={() => void handleSave(true)}
             className="inline-flex items-center gap-2 bg-charcoal text-cream px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] disabled:opacity-40"
           >
@@ -352,7 +423,7 @@ function NewProductPage() {
           </button>
           <button
             type="button"
-            disabled={!titleTrim || !!busy}
+            disabled={!canSave || !!busy}
             onClick={() => void handleSave(false)}
             className="inline-flex items-center gap-2 border border-charcoal/30 px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] hover:bg-charcoal/5 disabled:opacity-40"
           >
