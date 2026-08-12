@@ -12,6 +12,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/admin/")({
   ssr: false,
   beforeLoad: () => {
-    throw redirect({ to: "/admin/photos", search: {} });
+    throw redirect({
+      to: "/admin/photos",
+      search: { filter: undefined, product: undefined, page: undefined },
+    });
+
   },
 });
