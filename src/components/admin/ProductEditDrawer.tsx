@@ -89,8 +89,9 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { mergeCategoryOptions, subcategoryOptions } from "@/lib/admin-categories";
-import { PARENT_SUBS, PARENT_LABELS, type ParentId } from "@/lib/collection-parents";
+/* ONE VOCABULARY: Collection → Category, from the declared taxonomy tables.
+   The old admin-categories / PARENT_SUBS pair is deliberately not imported. */
+
 import { markPublishPending } from "@/lib/publish-pending";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -139,14 +140,15 @@ const FIELD_META = {
     help: "Shown on the collection page, in inquiries, and in proposals.",
     validate: (v) => (!v || !String(v).trim() ? "Every piece needs a name." : null),
   },
-  category: {
-    group: "basics", label: "Category", type: "category", staffEditable: true,
-    help: "Which shelf of the archive this lives on.",
+  collection_slug: {
+    group: "basics", label: "Collection", type: "collection", staffEditable: true,
+    help: "One of the ten collections. This is the vocabulary from your spreadsheet — same words the site uses.",
   },
-  subcategory_slug: {
-    group: "basics", label: "Subcategory", type: "subcategory", staffEditable: true,
-    help: "Optional. The chip it files under inside its category (e.g. Cocktail Tables). Leave blank to let the site decide.",
+  category_slug: {
+    group: "basics", label: "Category", type: "taxonomy-category", staffEditable: true,
+    help: "The category inside that collection. Collection + Category decide where the piece appears.",
   },
+
   status: {
     group: "basics", label: "Status", type: "status", staffEditable: true,
     help: "Drafts and sold pieces stay in the system; only what's in rotation belongs on the site.",
@@ -284,7 +286,12 @@ function computeReadiness(values, product) {
   const checks = [
     { id: "photo", label: "At least one photo", pass: (product?.images?.length ?? 0) > 0 },
     { id: "title", label: "Named", pass: !!String(values.title ?? "").trim() },
-    { id: "category", label: "On a shelf (category)", pass: !!values.category },
+    {
+      id: "taxonomy",
+      label: "Filed under a collection + category",
+      pass: !!values.collection_slug && !!values.category_slug,
+    },
+
     { id: "dims", label: "Dimensions on record", pass: !!String(values.dimensions_raw ?? "").trim() },
     { id: "desc", label: "Described in the Hive voice", pass: String(values.description ?? "").trim().length >= 20 },
   ];
@@ -650,9 +657,10 @@ function DeleteZone({ title, disabled, onDelete }) {
 /* ═════════════ THE DRAWER (portable) ═════════════ */
 
 export function ProductEditDrawer({
-  product, categories, role = "staff", recentChanges = [], categoryPriceStats = {},
+  product, taxonomy, role = "staff", recentChanges = [], categoryPriceStats = {},
   onSave, onClose, onOpenPhotos, liveUrl, sketch, onPhotosSaved, onDelete,
 }) {
+
 
 
   const draft = useDraft(product);
@@ -817,35 +825,36 @@ export function ProductEditDrawer({
     const common = { k, meta, value: draft.values[k], dirty: draft.dirty[k], error: draft.errors[k], onChange: (v) => draft.setField(k, v) };
     if (meta.type === "toggle") return <ToggleField key={k} {...common} warning={k === "public_ready" ? visibilityWarning : null} />;
     if (meta.type === "status") return <SelectField key={k} {...common} options={STATUS_OPTIONS} />;
-    if (meta.type === "subcategory") {
-      const subs = subcategoryOptions(draft.values.category, draft.values.subcategory_slug);
-      // The HIVE COLLECTION heading is derived from the subcategory, never
-      // stored. Show it live so it's obvious where the piece will land.
-      const sub = draft.values.subcategory_slug as string | null | undefined;
-      const parent = sub
-        ? (Object.keys(PARENT_SUBS) as ParentId[]).find((p) =>
-            PARENT_SUBS[p].some((o) => o.id === sub))
-        : undefined;
+    if (meta.type === "collection") {
+      const cols = taxonomy?.collections ?? [];
       return (
-        <div key={k}>
-          <SelectField k={k} meta={meta} value={common.value} dirty={common.dirty} error={common.error} onChange={common.onChange}
-            options={[{ value: "", label: subs.length ? "— Let the site decide —" : "— None for this category —" },
-                      ...subs.map((s) => ({ value: s.id, label: s.label }))]} />
-          <p className="mt-1 text-[10px] uppercase tracking-[0.18em]" style={{ color: "rgba(26,26,26,0.5)" }}>
-            Hive Collection heading:{" "}
-            <span style={{ color: "#1a1a1a" }}>
-              {parent ? PARENT_LABELS[parent] : "not set — pick a subcategory"}
-            </span>
-          </p>
-        </div>
+        <SelectField key={k} {...common}
+          onChange={(v) => {
+            // Changing collection invalidates a category from the old one.
+            const stillValid = (taxonomy?.categories ?? [])
+              .some((c) => c.slug === draft.values.category_slug && c.collection_slug === v);
+            draft.setField(k, v);
+            if (!stillValid) draft.setField("category_slug", "");
+          }}
+          options={[{ value: "", label: "— Unassigned —" },
+                    ...cols.map((c) => ({ value: c.slug, label: c.label }))]} />
       );
     }
-    if (meta.type === "category") return <SelectField key={k} {...common} options={mergeCategoryOptions(categories || []).map((c) => ({ value: c.slug, label: c.label }))} />;
+    if (meta.type === "taxonomy-category") {
+      const col = draft.values.collection_slug as string | undefined;
+      const cats = (taxonomy?.categories ?? []).filter((c) => !col || c.collection_slug === col);
+      return (
+        <SelectField key={k} {...common}
+          options={[{ value: "", label: col ? "— Unassigned —" : "— Pick a collection first —" },
+                    ...cats.map((c) => ({ value: c.slug, label: c.label }))]} />
+      );
+    }
     if (meta.type === "textarea") return <TextField key={k} {...common} rows={4} />;
     if (meta.type === "price") return (
       <TextField key={k} {...common}
-        trailing={!common.error ? <RateContext category={draft.values.category} price={draft.values.price} stats={categoryPriceStats} /> : null} />
+        trailing={!common.error ? <RateContext category={draft.values.category_slug} price={draft.values.price} stats={categoryPriceStats} /> : null} />
     );
+
     return <TextField key={k} {...common} />;
 
   };
@@ -878,7 +887,9 @@ export function ProductEditDrawer({
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p style={micro(9, T.trackUltra, "rgba(26,26,26,0.4)")}>
-                {draft.values.category || "Uncategorized"}
+                {(taxonomy?.collections ?? []).find((c) => c.slug === draft.values.collection_slug)?.label
+                  || (draft.values.collection_slug ? String(draft.values.collection_slug) : "Unassigned")}
+
                 {product?.rms_id ? <span style={{ marginLeft: 10, letterSpacing: T.trackLabel }}>№ {product.rms_id}</span> : null}
               </p>
               <h2 style={{ fontFamily: T.serif, fontWeight: 400, fontSize: 25, lineHeight: 1.15, letterSpacing: "-0.01em", color: T.charcoal, marginTop: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

@@ -1,5 +1,4 @@
-import { mergeCategoryOptions, subcategoryOptions, CATEGORY_SUBCATEGORIES, type AdminSubcategory } from "@/lib/admin-categories";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -11,14 +10,12 @@ import {
   listProducts,
   getProduct,
   updateProduct,
-  listDistinctCategories,
   listProductAudit,
   getMyRole,
   deleteProduct,
 
 } from "@/lib/products-admin.functions";
-import { getCollectionCatalog } from "@/lib/phase3-catalog";
-import { productParent, PARENT_LABELS, PARENT_ORDER, type ParentId } from "@/lib/collection-parents";
+import { listTaxonomyTree, assignTaxonomy } from "@/lib/taxonomy-admin.functions";
 import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 
 
@@ -28,31 +25,32 @@ export const Route = createFileRoute("/admin/products")({
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
   head: () => ({
     meta: [
-      { title: "Products · Admin" },
+      { title: "Inventory · Admin" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Inner,
-  // `group` is the HIVE COLLECTION heading (parent) filter — the public
-  // grouping (Dining, Lounge Seating…) that is DERIVED from category +
-  // subcategory, not stored on the row. We resolve it to an rms_id set from
-  // the baked catalog and filter server-side.
+  // ONE VOCABULARY: Collection → Category, straight off the declared columns
+  // (inventory_items.collection_slug / category_slug) which are the same 10/33
+  // Adrienne wrote in her spreadsheet. The old General Category / Subcategory /
+  // derived-heading trio is gone — it was a third language nobody spoke.
   validateSearch: (s: Record<string, unknown>) => ({
     q: typeof s.q === "string" ? s.q : "",
+    col: typeof s.col === "string" ? s.col : "",
     cat: typeof s.cat === "string" ? s.cat : "",
-    sub: typeof s.sub === "string" ? s.sub : "",
-    sort: (["title", "category", "subcategory", "updated"].includes(s.sort as string)
+    sort: (["title", "collection", "category", "updated"].includes(s.sort as string)
       ? s.sort
-      : "title") as "title" | "category" | "subcategory" | "updated",
+      : "title") as "title" | "collection" | "category" | "updated",
     ready: (s.ready === "yes" || s.ready === "no" ? s.ready : "all") as "yes" | "no" | "all",
     id: typeof s.id === "string" ? s.id : "",
-    group: typeof s.group === "string" ? s.group : undefined,
   }),
 });
 
 type Row = {
   id: string; rms_id: string | null; title: string; slug: string | null;
-  category: string | null; subcategory_slug: string | null; status: string;
+  category: string | null; subcategory_slug: string | null;
+  collection_slug: string | null; category_slug: string | null;
+  status: string;
   quantity: number | null;
   quantity_label: string | null; public_ready: boolean | null;
   images: string[] | null;
@@ -61,18 +59,28 @@ type Row = {
 
 const SORT_LABELS: Record<string, string> = {
   title: "Title A–Z",
+  collection: "Collection, then title",
   category: "Category, then title",
-  subcategory: "Subcategory, then title",
   updated: "Recently edited",
 };
 
 const PAGE = 50;
 
+/** Reference tree — the 10 collections / 33 categories, cached hard. */
+export function useTaxonomyTree() {
+  const treeFn = useServerFn(listTaxonomyTree);
+  return useQuery({
+    queryKey: ["admin", "taxonomy-tree"],
+    queryFn: () => treeFn(),
+    staleTime: 30 * 60_000,
+    gcTime: 60 * 60_000,
+  });
+}
+
 function Inner() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const list = useServerFn(listProducts);
-  const catsFn = useServerFn(listDistinctCategories);
   const queryClient = useQueryClient();
 
   const [offset, setOffset] = useState(0);
@@ -96,50 +104,30 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchInput, search.q]);
 
+  const { data: tree } = useTaxonomyTree();
+  const collections = tree?.collections ?? [];
+  const categories = tree?.categories ?? [];
 
-
-  // Categories rarely change — cache hard so switching pages never refetches.
-  const { data: cats = [] } = useQuery({
-    queryKey: ["admin", "product-categories"],
-    queryFn: () => catsFn(),
-    staleTime: 5 * 60_000,
-    gcTime: 30 * 60_000,
-  });
-
-  // HIVE COLLECTION headings are derived, not stored. Build one rms_id →
-  // ParentId map from the baked catalog and reuse it for both the heading
-  // filter and the per-row "Collection" column, so Adrienne can see exactly
-  // which heading a piece lands under (Dining included).
-  const { data: parentMap = null } = useQuery({
-    queryKey: ["admin", "parent-map"],
-    staleTime: 5 * 60_000,
-    gcTime: 30 * 60_000,
-    queryFn: async () => {
-      const c = await getCollectionCatalog();
-      const map: Record<string, ParentId> = {};
-      for (const p of c.products) {
-        const parent = productParent(p);
-        if (!parent) continue;
-        map[p.id] = parent;
-        for (const v of p.variants ?? []) map[v.id] = parent;
-      }
-      return map;
-    },
-  });
-
-  const groupRmsIds = search.group
-    ? parentMap
-      ? Object.keys(parentMap).filter((id) => parentMap[id] === (search.group as ParentId))
-      : null
-    : null;
+  const collectionLabels = useMemo(
+    () => Object.fromEntries(collections.map((c) => [c.slug, c.label])) as Record<string, string>,
+    [collections],
+  );
+  const categoryLabels = useMemo(
+    () => Object.fromEntries(categories.map((c) => [c.slug, c.label])) as Record<string, string>,
+    [categories],
+  );
+  // Categories narrow to the chosen collection; with none picked we offer all.
+  const categoryOptions = useMemo(
+    () => (search.col ? categories.filter((c) => c.collection_slug === search.col) : categories),
+    [categories, search.col],
+  );
 
   const listArgs = {
     search: search.q,
-    category: search.cat || undefined,
-    subcategory: search.sub || undefined,
+    collection: search.col || undefined,
+    categorySlug: search.cat || undefined,
     publicReady: search.ready,
     sort: search.sort,
-    rmsIds: groupRmsIds ?? undefined,
     limit: PAGE,
     offset,
   };
@@ -150,8 +138,6 @@ function Inner() {
     isPending,
   } = useQuery({
     queryKey: ["admin", "products", listArgs],
-    // Don't fire until the group filter (if any) has resolved.
-    enabled: !search.group || groupRmsIds !== null,
     queryFn: () => list({ data: listArgs }),
     placeholderData: keepPreviousData,
     staleTime: 30_000,
@@ -173,7 +159,7 @@ function Inner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, offset, count]);
 
-  useEffect(() => { setOffset(0); }, [search.q, search.cat, search.sub, search.ready, search.group, search.sort]);
+  useEffect(() => { setOffset(0); }, [search.q, search.col, search.cat, search.ready, search.sort]);
 
   // Enter flushes the pending debounce immediately.
   const submitSearch = (e: React.FormEvent) => {
@@ -185,18 +171,7 @@ function Inner() {
 
 
   const visibleRows = rows;
-  const groupLabel = search.group ? (PARENT_LABELS[search.group as ParentId] ?? search.group) : null;
-  // Subcategory options follow the chosen category; with no category picked we
-  // offer the union so the filter is still usable.
-  const allSubs: AdminSubcategory[] = Object.values(CATEGORY_SUBCATEGORIES).flat();
-  const subOptions: AdminSubcategory[] = search.cat
-    ? subcategoryOptions(search.cat, search.sub || null)
-    : Array.from(new Map(allSubs.map((s) => [s.id, s])).values()).sort((a, b) =>
-        a.label.localeCompare(b.label),
-      );
-  const subLabels: Record<string, string> = Object.fromEntries(
-    allSubs.map((s) => [s.id, s.label]),
-  );
+
 
 
 
@@ -206,23 +181,27 @@ function Inner() {
         <header className="mb-8 flex items-start justify-between gap-6">
           <div>
             <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">Admin · Inventory</p>
-            <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Products</h1>
+            <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.02em]">Inventory</h1>
             <p className="mt-2 text-[11px] uppercase tracking-[0.2em] text-charcoal/55">
               {count.toLocaleString()} record{count === 1 ? "" : "s"} · edits log to activity trail
             </p>
-            {groupLabel && (
+            {(search.col || search.cat) && (
               <div className="mt-3 inline-flex items-center gap-2 border border-charcoal/20 px-2 py-1 text-[10px] uppercase tracking-[0.2em]">
-                <span className="text-charcoal/60">Group filter:</span>
-                <span className="text-charcoal">{groupLabel}</span>
+                <span className="text-charcoal/60">Filter:</span>
+                <span className="text-charcoal">
+                  {search.col ? (collectionLabels[search.col] ?? search.col) : "All collections"}
+                  {search.cat ? ` · ${categoryLabels[search.cat] ?? search.cat}` : ""}
+                </span>
                 <span className="text-charcoal/45 tabular-nums">({count} match{count === 1 ? "" : "es"})</span>
                 <button
                   type="button"
-                  onClick={() => navigate({ search: (s: any) => ({ ...s, group: undefined }) })}
+                  onClick={() => navigate({ search: (s: any) => ({ ...s, col: "", cat: "" }) })}
                   className="ml-2 text-charcoal/60 hover:text-charcoal"
-                  aria-label="Clear group filter"
+                  aria-label="Clear taxonomy filter"
                 >×</button>
               </div>
             )}
+
           </div>
           <Link
             to="/admin/new-product"
@@ -260,34 +239,26 @@ function Inner() {
             </span>
           </div>
 
-          {/* THREE-PART SORT: Category → Hive Collection heading → Subcategory */}
+          {/* ONE VOCABULARY: Collection → Category (her spreadsheet, verbatim) */}
           <select
-            value={search.cat}
-            aria-label="Filter by category"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value, sub: "" }) })}
-            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
-          >
-            <option value="">All categories</option>
-            {mergeCategoryOptions(cats).map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
-          </select>
-          <select
-            value={search.group ?? ""}
-            aria-label="Filter by Hive Collection heading"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, group: e.target.value || undefined }) })}
+            value={search.col}
+            aria-label="Filter by collection"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, col: e.target.value, cat: "" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All collections</option>
-            {PARENT_ORDER.map((p) => <option key={p} value={p}>{PARENT_LABELS[p]}</option>)}
+            {collections.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
           <select
-            value={search.sub}
-            aria-label="Filter by subcategory"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, sub: e.target.value }) })}
+            value={search.cat}
+            aria-label="Filter by category"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
-            <option value="">All subcategories</option>
-            {subOptions.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            <option value="">All categories</option>
+            {categoryOptions.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
+
           <select
             value={search.ready}
             aria-label="Filter by visibility"
@@ -321,9 +292,9 @@ function Inner() {
               <tr>
                 <th className="text-left px-3 py-2 w-14"></th>
                 <th className="text-left px-3 py-2">Title</th>
-                <th className="text-left px-3 py-2">Category</th>
                 <th className="text-left px-3 py-2">Collection</th>
-                <th className="text-left px-3 py-2">Subcategory</th>
+                <th className="text-left px-3 py-2">Category</th>
+
                 <th className="text-left px-3 py-2">Qty</th>
                 <th className="text-left px-3 py-2">Status</th>
                 <th className="text-left px-3 py-2">Public</th>
@@ -338,7 +309,6 @@ function Inner() {
                     <td className="px-3 py-2"><div className="h-3 w-56 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
-                    <td className="px-3 py-2"><div className="h-3 w-24 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-8 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-3 w-16 bg-charcoal/5 animate-pulse" /></td>
                     <td className="px-3 py-2"><div className="h-2 w-2 rounded-full bg-charcoal/5 animate-pulse" /></td>
@@ -346,15 +316,15 @@ function Inner() {
                   </tr>
                 ))}
               {!loading && visibleRows.length === 0 && (
-                <tr><td colSpan={9} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
+                <tr><td colSpan={8} className="px-3 py-10 text-center text-charcoal/40 text-[11px] uppercase tracking-[0.2em]">No products match</td></tr>
               )}
+
 
               {visibleRows.map((r) => {
                 // Must match the public site exactly: the original photo is the
                 // hero. Never fall back to upscaled_cover_url — that column is
                 // retired and showing it here makes admin disagree with live.
                 const cover = r.images?.[0] ?? null;
-                const parent = r.rms_id ? parentMap?.[r.rms_id] : undefined;
 
                 return (
                   <tr
@@ -366,11 +336,13 @@ function Inner() {
                       {cover ? <img src={cover} alt="" className="w-10 h-10 object-cover" loading="lazy" /> : <div className="w-10 h-10 bg-charcoal/5" />}
                     </td>
                     <td className="px-3 py-2 font-display text-[14px]">{r.title}</td>
-                    <td className="px-3 py-2 text-charcoal/70">{r.category ?? "—"}</td>
-                    <td className="px-3 py-2 text-charcoal/70">{parent ? PARENT_LABELS[parent] : "—"}</td>
                     <td className="px-3 py-2 text-charcoal/70">
-                      {r.subcategory_slug ? (subLabels[r.subcategory_slug] ?? r.subcategory_slug) : "—"}
+                      {r.collection_slug ? (collectionLabels[r.collection_slug] ?? r.collection_slug) : "— Unassigned"}
                     </td>
+                    <td className="px-3 py-2 text-charcoal/70">
+                      {r.category_slug ? (categoryLabels[r.category_slug] ?? r.category_slug) : "—"}
+                    </td>
+
                     <td className="px-3 py-2 tabular-nums">{r.quantity ?? "—"}{r.quantity_label ? ` ${r.quantity_label}` : ""}</td>
                     <td className="px-3 py-2 text-charcoal/70">{r.status}</td>
                     <td className="px-3 py-2">
@@ -432,15 +404,15 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const get = useServerFn(getProduct);
   const upd = useServerFn(updateProduct);
   const auditFn = useServerFn(listProductAudit);
-  const catsFn = useServerFn(listDistinctCategories);
   const roleFn = useServerFn(getMyRole);
   const del = useServerFn(deleteProduct);
+  const assign = useServerFn(assignTaxonomy);
+  const { data: tree } = useTaxonomyTree();
 
   const [row, setRow] = useState<ProductRow | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [audit, setAudit] = useState<any[]>([]);
-  const [cats, setCats] = useState<string[]>([]);
   const [role, setRole] = useState<"admin" | "staff">("staff");
   const [photoEditor, setPhotoEditor] = useState(false);
 
@@ -455,10 +427,10 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   useEffect(() => {
     setRow(null); setAudit([]);
     refetch();
-    catsFn().then(setCats).catch(() => {});
     roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
 
   if (!row) {
     return (
@@ -491,7 +463,7 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       <ProductEditDrawer
         product={row as any}
-        categories={cats}
+        taxonomy={tree ?? { collections: [], categories: [] }}
         role={role}
         recentChanges={audit as never}
         categoryPriceStats={{}}
@@ -513,11 +485,22 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
         }}
 
         onSave={async (patch: Record<string, unknown>) => {
-          const updated = await upd({ data: { id, patch } });
-          setRow(updated as ProductRow);
+          // Taxonomy is NOT a plain column write. The pair is revalidated
+          // against the reference tables and stamps taxonomy_review — that's
+          // assignTaxonomy's job, so split it out of the ordinary patch.
+          const { collection_slug, category_slug, ...rest } = patch as Record<string, string | undefined>;
+          if (collection_slug && category_slug) {
+            await assign({ data: { ids: [id], collection_slug, category_slug } });
+          }
+          if (Object.keys(rest).length > 0) {
+            await upd({ data: { id, patch: rest } });
+          }
+          const fresh = await get({ data: { id } });
+          setRow(fresh as ProductRow);
           onSaved();
           auditFn({ data: { entityId: id, limit: 20 } }).then((r) => setAudit(r as unknown[])).catch(() => {});
         }}
+
       />
       {photoEditor && (
         <ImageOrderEditor
