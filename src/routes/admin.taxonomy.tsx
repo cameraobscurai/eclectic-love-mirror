@@ -243,6 +243,11 @@ function TaxonomyStudio() {
               <p className="truncate text-[11px] uppercase tracking-wider" title={row.title}>
                 {row.title}
               </p>
+              {originTag(row) && (
+                <span className="inline-block border border-border px-1 py-0.5 text-[9px] uppercase tracking-widest text-muted-foreground">
+                  {originTag(row)}
+                </span>
+              )}
 
               <select
                 value={row.collection_slug ?? ""}
