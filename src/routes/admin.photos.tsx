@@ -65,6 +65,20 @@ import {
   PRODUCT_TILE_OVERRIDES,
 } from "@/lib/collection-tile-presets";
 
+/** Grid = rows of 3 · Wall = fit-to-screen · Icons = smallest, for auditing
+ *  a whole category at a glance. The choice is remembered per browser. */
+type ViewMode = "grid" | "wall" | "icons";
+const VIEW_KEY = "eh.admin.photos.view";
+function readStoredView(): ViewMode {
+  try {
+    const v = window.localStorage.getItem(VIEW_KEY);
+    if (v === "grid" || v === "wall" || v === "icons") return v;
+  } catch {
+    /* no storage */
+  }
+  return "icons";
+}
+
 type SortMode = "editorial" | "type" | "az" | "tonal";
 const SORT_MODES: { id: SortMode; label: string }[] = [
   { id: "editorial", label: "Editorial" },
@@ -105,6 +119,7 @@ type Item = {
   useWideFrame: boolean;
   categorySlug: string | null;
   dimensions: string | null;
+  hidden: boolean;
 };
 
 function adapt(p: CollectionProduct): Item {
@@ -118,6 +133,7 @@ function adapt(p: CollectionProduct): Item {
     variantCount: p.variants?.length ?? 0,
     categorySlug: p.categorySlug ?? null,
     dimensions: p.dimensions ?? null,
+    hidden: p.publicReady === false,
     useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
@@ -131,7 +147,14 @@ function PhotosManager() {
   const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
   const [sub, setSub] = useState<string>("all");
   const [sortMode, setSortMode] = useState<SortMode>("editorial");
-  const [view, setView] = useState<"grid" | "wall">("grid");
+  const [view, setView] = useState<ViewMode>(readStoredView);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(VIEW_KEY, view);
+    } catch {
+      /* private mode — the choice just won't persist */
+    }
+  }, [view]);
 
   // Load baked catalog once.
   const [allProducts, setAllProducts] = useState<CollectionProduct[] | null>(null);
@@ -241,8 +264,8 @@ function CategoryGrid({
   onSub: (s: string) => void;
   sortMode: SortMode;
   onSortMode: (m: SortMode) => void;
-  view: "grid" | "wall";
-  onView: (v: "grid" | "wall") => void;
+  view: ViewMode;
+  onView: (v: ViewMode) => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
@@ -654,11 +677,13 @@ function CategoryGrid({
                   : "grid gap-1"
               }
               style={
-                view === "wall"
-                  ? {
-                      gridTemplateColumns: `repeat(${wallCols(visibleItems.length)}, minmax(0, 1fr))`,
+                view === "grid"
+                  ? undefined
+                  : {
+                      gridTemplateColumns: `repeat(${
+                        view === "icons" ? 12 : wallCols(visibleItems.length)
+                      }, minmax(0, 1fr))`,
                     }
-                  : undefined
               }
             >
               {visibleItems.map((item, idx) => (
@@ -666,7 +691,7 @@ function CategoryGrid({
                   key={item.id}
                   item={item}
                   index={idx}
-                  dense={view === "wall"}
+                  dense={view !== "grid"}
                   draggable={!reorderDisabled}
                   onOpen={() => void openEditor(item)}
                 />
@@ -680,7 +705,7 @@ function CategoryGrid({
                 className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
                 style={{ aspectRatio: tileAspectFor(activeItem), width: ghostWidth ?? undefined }}
               >
-                <TileMedia item={activeItem} dense={view === "wall"} />
+                <TileMedia item={activeItem} dense={view !== "grid"} />
               </div>
             )}
           </DragOverlay>
