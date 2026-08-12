@@ -34,17 +34,32 @@ inventory_items
 
 ## Order of work
 
-**0 — Delete tombstone. First, alone, today.** Delete writes a tombstone the publish overlay carries, so the piece leaves the live site at the next publish rather than the next bake, and the admin grid reconciles against the database instead of the snapshot. This is the one item where the system is lying to her.
+**0 — Delete tombstone. First, alone, today.** The overlay is assembled by walking live rows, so a deletion is invisible to it — the tombstone cannot live on `inventory_items`. It gets its own table:
+
+```text
+deleted_items (id, rms_id, deleted_at, deleted_by)
+```
+
+The publish snapshot serializes it as a suppress-list; the phase-3 merge filters against it. Four rules:
+
+- **Suppress at both levels.** The check runs on the tile *and* on every entry in `variants[]`. A deleted variant row is folded inside a baked family, so filtering only top-level products moves the ghost down a level — a live tile with a dead chip, which phase 4 turns into a clickable error.
+- **Deleted lead falls through.** If the tombstoned row is a family's lead, the baked tile still carries its cover, title, and copy. Suppressing the ID must not remove the tile — the siblings are still rentable. Rule: lead tombstoned → the next sibling by family position becomes display-lead until the bake catches up.
+- **Self-expiring.** The next full bake reads the database, where the row is simply absent, so the tombstone has nothing left to suppress. Purge `deleted_items` at bake time — one line in `bake-catalog.mjs`, not a cron.
+- **Delete lights the Publish badge.** `deleteProduct` increments the same pending state every other edit does. Otherwise she deletes, sees it gone from the admin grid, assumes done, and the live ghost persists — the same trust failure one layer down.
+
+The admin grid also reconciles against the database rather than the snapshot, since it is an audit surface.
+
 
 **1 — Schema.** `product_families` (with `option_name`), `inventory_items.family_id`, `variant_label`, `variant_cover_url`. Pointer validated against normalized URLs in that row's `images[]`. Empty pointer = AUTO, which is today's behaviour, so day one is a no-op.
 
 **2 — Bake and runtime.** Bake selects the new columns; `phase3-catalog` resolves the variant photo as pointer, then `images[0]`. Family membership reads declared first, heuristic second, until the 85 are walked.
 
-**3 — The family board, inside the drawer.** Replaces the read-only panel: every sibling with thumbnail, label, dimensions, quantity, AUTO/PINNED badge; set the variant photo from that row's own photos; set the lead; add a variant; jump between siblings without leaving the drawer; coverage line plus warnings for the 7 photoless variants and the duplicate. A lead marker also goes in the `/admin/products` rows so the question is answerable outside the drawer.
+**3 — The family board, inside the drawer.** Replaces the read-only panel: every sibling with thumbnail, label, dimensions, quantity, AUTO/PINNED badge; set the variant photo from that row's own photos; set the lead; add a variant; jump between siblings without leaving the drawer; coverage line plus warnings for the 7 photoless variants, the duplicate photo, and duplicate `variant_label` within a family — two chips reading "Square Bar" is the same class of silent wrongness. A lead marker also goes in the `/admin/products` rows so the question is answerable outside the drawer.
 
-**4 — The configurator on the product page.** Option-name heading, chips of variant labels, selection swaps photo, dimensions, quantity, and label. Deep-linkable `?v=`. Inquiries carry the selection. Filename matching is deleted.
+**4 — The configurator on the product page.** Option-name heading, chips of variant labels, selection swaps photo, dimensions, quantity, and label. Deep-linkable `?v=`. Inquiries carry the selection. Filename matching is deleted. QuickView's remaining entry branch fires only when a row has no slug, so "one product page" means auditing standalone tiles for missing slugs and backfilling them first — otherwise QuickView is retired everywhere except the rows that need a real page most.
 
-**5 — Verification.** Fixtures for pointer precedence, URL-normalization, and delete-clears-pointer; a coverage audit script; the RMS re-import loop test extended to prove pointers and labels survive.
+**5 — Verification.** First fixture written is the deleted-lead fall-through, because nobody triggers it in testing and she will trigger it in week one. Then pointer precedence, URL-normalization, delete-clears-pointer, variant-level suppression; a coverage audit script; the RMS re-import loop test extended to prove pointers and labels survive.
+
 
 ## Running alongside, not blocking
 
