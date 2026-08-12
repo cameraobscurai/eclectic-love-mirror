@@ -99,8 +99,15 @@ regenerates for schema reasons.
 ## Done when
 
 Module compiles with zero React/Supabase/IO imports, exports the four surfaces
-above, and every `clampMin`/`clampMax` is absent from the engine's rule table.
+above, every `clampMin`/`clampMax` is absent from the engine's rule table, and
+the table is category-keyed with a collection default plus two judgment flags.
 Behavioural proof is 2.3's fixtures — no test is written in this task.
+
+## Nothing can break
+
+2.1 adds one new file and is imported by nothing yet. No existing module, route,
+render path, or database row changes. The live site behaves identically after
+this task; the engine only becomes load-bearing at 2.2, behind the verifier.
 
 ## Not in this task
 
@@ -109,10 +116,3 @@ trust slice (2.5). No edits to `categoryFit.ts`, `productFit.ts`,
 `productPhysicalScale.ts`, or `NormalizedProductImage.tsx` — the freeze holds
 until Phase 5.
 
-## One decision to confirm
-
-The legacy rule table is keyed by ~14 category slugs; the declared taxonomy has
-10 collections. The mapping is mechanical for most, judgment for a few
-(lighting in particular, which is exempt from true physical scale). I will
-propose the full collection→rule table as part of the 2.1 diff and flag every
-row where the mapping was a judgment call rather than a direct carry-over.
