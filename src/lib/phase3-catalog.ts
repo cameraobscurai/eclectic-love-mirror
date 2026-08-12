@@ -447,7 +447,12 @@ export function stockText(
   fallback: string | null = null,
 ): string | null {
   if (!row) return fallback;
-  if (row.quantity_label) return row.quantity_label;
+  // A bare number in the label ("1") reads as a mystery on the product page.
+  // Any real sentence ("Made to order", "2 in stock") passes through as-is.
+  if (row.quantity_label) {
+    const bare = row.quantity_label.trim();
+    return /^\d+$/.test(bare) ? `${Number(bare)} available` : bare;
+  }
   if (typeof row.quantity === "number" && row.quantity > 0) {
     return `${row.quantity} available`;
   }
