@@ -178,7 +178,28 @@ function PhotosManager() {
   // Default is ONE category, never ALL. Painting 670 tiles on open is the
   // fastest way to make a slower laptop feel broken; ALL is opt-in and
   // renders section-by-section as you scroll (see LazySection).
-  const [parent, setParent] = useState<ParentSel>(readStoredParent);
+  // Category / sub / sort live in the URL so a reload, a Back press, or a
+  // link pasted to someone else lands on the same shelf. localStorage is only
+  // the fallback for a bare /admin/photos.
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const setSearch = useCallback(
+    (patch: Record<string, string | undefined>) => {
+      void navigate({
+        search: (prev: Record<string, unknown>) => ({ ...prev, ...patch }),
+        replace: true,
+      });
+    },
+    [navigate],
+  );
+
+  const parent: ParentSel =
+    search.cat === "all"
+      ? "all"
+      : search.cat && (PARENT_ORDER as string[]).includes(search.cat)
+        ? (search.cat as ParentId)
+        : readStoredParent();
+  const setParent = useCallback((p: ParentSel) => setSearch({ cat: p, sub: undefined }), [setSearch]);
   useEffect(() => {
     try {
       window.localStorage.setItem(PARENT_KEY, parent);
@@ -186,8 +207,17 @@ function PhotosManager() {
       /* private mode — the choice just won't persist */
     }
   }, [parent]);
-  const [sub, setSub] = useState<string>("all");
-  const [sortMode, setSortMode] = useState<SortMode>("editorial");
+
+  const sub = search.sub ?? "all";
+  const setSub = useCallback(
+    (v: string) => setSearch({ sub: v === "all" ? undefined : v }),
+    [setSearch],
+  );
+  const sortMode: SortMode = search.sort ?? "editorial";
+  const setSortMode = useCallback(
+    (m: SortMode) => setSearch({ sort: m === "editorial" ? undefined : m }),
+    [setSearch],
+  );
   const [view, setView] = useState<ViewMode>(readStoredView);
   useEffect(() => {
     try {
@@ -248,11 +278,6 @@ function PhotosManager() {
       alive = false;
     };
   }, [reloadKey]);
-
-  // Reset sub when parent changes.
-  useEffect(() => {
-    setSub("all");
-  }, [parent]);
 
   return (
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal flex">
