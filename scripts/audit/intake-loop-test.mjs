@@ -46,7 +46,7 @@ const EXISTING = "9990001";
 const NEW = "9990002";
 
 const DECLARED = {
-  collection_slug: "seating",
+  collection_slug: "lounge-seating",
   category_slug: "lounge-chairs",
   images: ["https://example.invalid/intake-test-cover.png"],
   taxonomy_review: { source: "human", ruledBy: "intake-loop-test" },
