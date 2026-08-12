@@ -1,6 +1,6 @@
 # Bake receipt — lighting
 
-2026-08-12T08:08:55.354Z · rule fs2-2026-08-12 · DRY RUN
+2026-08-12T08:40:56.366Z · rule fs2-2026-08-12 · APPLIED
 
 | Outcome | Count |
 | --- | --- |
