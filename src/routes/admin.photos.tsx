@@ -303,7 +303,7 @@ function CategoryGrid({
   onView,
   allProducts,
 }: {
-  parent: ParentId;
+  parent: ParentSel;
   sub: string;
   onSub: (s: string) => void;
   sortMode: SortMode;
@@ -313,21 +313,41 @@ function CategoryGrid({
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
+  const allMode = parent === "all";
 
   // Source items for this parent. Mirrors /collection so the admin shows
   // exactly what visitors see in each sort mode.
   //   - editorial → editorialOrder (drag-reorder writes this back)
   //   - type/az/tonal → same sortProductsForCollection() the public grid uses
+  // In ALL mode the list is every piece, ordered category-by-category in
+  // PARENT_ORDER so the whole collection can be cross-checked in one pass.
   const baseItems = useMemo<Item[]>(() => {
     if (!allProducts) return [];
-    const inParent = allProducts.filter((p) => productParent(p) === parent);
-    if (sortMode === "editorial") {
+    const inParent = allMode
+      ? [...allProducts]
+      : allProducts.filter((p) => productParent(p) === parent);
+    const editorialCmp = (a: CollectionProduct, b: CollectionProduct) => {
+      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
+      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
+      if (ar !== br) return ar - br;
+      return a.title.localeCompare(b.title);
+    };
+    if (allMode) {
+      const rank = (p: CollectionProduct) => {
+        const pid = productParent(p);
+        const i = pid ? PARENT_ORDER.indexOf(pid) : -1;
+        return i === -1 ? 999 : i;
+      };
       inParent.sort((a, b) => {
-        const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
-        const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
-        if (ar !== br) return ar - br;
-        return a.title.localeCompare(b.title);
+        const ra = rank(a);
+        const rb = rank(b);
+        if (ra !== rb) return ra - rb;
+        return sortMode === "az" ? a.title.localeCompare(b.title) : editorialCmp(a, b);
       });
+      return inParent.map(adapt);
+    }
+    if (sortMode === "editorial") {
+      inParent.sort(editorialCmp);
       return inParent.map(adapt);
     }
     const sorted = sortProductsForCollection(inParent, {
@@ -335,7 +355,8 @@ function CategoryGrid({
       activeGroup: parent as never,
     });
     return sorted.map(adapt);
-  }, [allProducts, parent, sortMode]);
+  }, [allProducts, parent, sortMode, allMode]);
+
 
   // Local items state so drag-reorder feels instant. Holds the FULL parent
   // list — the sub filter is purely a display filter (see `visibleItems`).
