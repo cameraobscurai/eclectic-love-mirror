@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { UploadCloud } from "lucide-react";
 import { toast } from "sonner";
 
-import { publishCatalogOverlay } from "@/lib/photos-admin.functions";
+import { getPublishStatus, publishCatalogOverlay } from "@/lib/photos-admin.functions";
 import { invalidateCollectionCatalog } from "@/lib/phase3-catalog";
 import {
   clearPublishPending,
@@ -24,8 +24,33 @@ export function PublishBar() {
   const publishFn = useServerFn(publishCatalogOverlay);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState(isPublishPending());
+  const [count, setCount] = useState<number | null>(null);
 
   useEffect(() => subscribePublishPending(setPending), []);
+
+  // Server truth: how many rows changed since the last published snapshot.
+  // The in-memory flag above only survives the current page; this survives a
+  // reload, a different browser, and edits made by someone else.
+  const refresh = useCallback(async () => {
+    try {
+      const s = await getPublishStatus();
+      setCount(s.pending);
+      if (s.pending > 0) setPending(true);
+    } catch {
+      /* status is advisory — never block the button on it */
+    }
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+    const onFocus = () => void refresh();
+    window.addEventListener("focus", onFocus);
+    const t = setInterval(() => void refresh(), 60_000);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      clearInterval(t);
+    };
+  }, [refresh]);
 
   const onClick = useCallback(async () => {
     setBusy(true);
@@ -34,7 +59,10 @@ export function PublishBar() {
       const res = await publishFn();
       invalidateCollectionCatalog();
       clearPublishPending();
-      toast.success(`PUBLISHED · ${res.count} PRODUCTS LIVE`, { id });
+      setCount(0);
+      toast.success(`PUBLISHED · ${res.count} PRODUCTS LIVE · THE SITE NOW MATCHES THE ADMIN`, {
+        id,
+      });
     } catch (e) {
       toast.error(`PUBLISH FAILED — ${(e as Error).message}`, { id });
     } finally {
@@ -49,8 +77,8 @@ export function PublishBar() {
       disabled={busy}
       title={
         pending
-          ? "You have saved edits that are not on the live site yet"
-          : "Push all saved edits to the live site"
+          ? `${count && count > 0 ? `${count} saved change${count === 1 ? "" : "s"}` : "Saved edits"} are not on the live site yet — click to publish`
+          : "The live site matches the admin. Click to re-publish anyway."
       }
       className={`relative inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] disabled:opacity-50 disabled:cursor-not-allowed ${
         pending
@@ -59,7 +87,13 @@ export function PublishBar() {
       }`}
     >
       <UploadCloud className="h-3 w-3" aria-hidden />
-      {busy ? "Publishing…" : pending ? "Publish changes" : "Publish"}
+      {busy
+        ? "Publishing…"
+        : pending
+          ? count && count > 0
+            ? `Publish ${count} change${count === 1 ? "" : "s"}`
+            : "Publish changes"
+          : "Publish"}
       {pending && !busy && (
         <span
           aria-hidden
