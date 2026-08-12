@@ -179,6 +179,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         category: string | null;
         description: string | null;
         dimensions_raw: string | null;
+        quantity: number | null;
         quantity_label: string | null;
         public_ready: boolean | null;
         subcategory_slug: string | null;
@@ -198,7 +199,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -218,6 +219,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           category: row.category,
           description: row.description ? row.description.slice(0, 500) : null,
           dimensions_raw: row.dimensions_raw,
+          quantity: row.quantity ?? null,
           quantity_label: row.quantity_label,
           public_ready: row.public_ready,
           subcategory_slug: row.subcategory_slug ?? null,

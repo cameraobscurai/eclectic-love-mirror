@@ -293,7 +293,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
               ...v,
               title: row?.title ?? v.title,
               dimensions: row?.dimensions_raw ?? v.dimensions,
-              stockedQuantity: row?.quantity_label ?? v.stockedQuantity,
+              stockedQuantity: stockText(row, v.stockedQuantity),
               imageUrl: firstLive ?? v.imageUrl ?? null,
             };
           });
@@ -350,7 +350,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         title: live?.title ?? p.title,
         description: live?.description ?? p.description ?? null,
         dimensions: live?.dimensions_raw ?? p.dimensions ?? null,
-        stockedQuantity: live?.quantity_label ?? p.stockedQuantity ?? null,
+        stockedQuantity: stockText(live, p.stockedQuantity ?? null),
         // Hiding a piece has to reach the public site too; the baked filter
         // runs before this merge, so without an override an unpublish only
         // took effect at the next bake. Filtered immediately below.
@@ -401,7 +401,7 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         title: live.title,
         description: live.description ?? null,
         dimensions: live.dimensions_raw ?? null,
-        stockedQuantity: live.quantity_label ?? null,
+        stockedQuantity: stockText(live),
         isCustomOrder: false,
         confidence: 1,
         needsManualReview: false,
@@ -439,6 +439,21 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
   return loadPromise;
 }
 
+/** Stock text for a tile/PDP. The owner types a plain number in the admin;
+ *  only `quantity_label` was ever read, so her count never appeared. Label
+ *  wins when set, the number is the fallback. */
+export function stockText(
+  row: { quantity_label?: string | null; quantity?: number | null } | null | undefined,
+  fallback: string | null = null,
+): string | null {
+  if (!row) return fallback;
+  if (row.quantity_label) return row.quantity_label;
+  if (typeof row.quantity === "number" && row.quantity > 0) {
+    return `${row.quantity} available`;
+  }
+  return fallback;
+}
+
 type LiveOverlayRow = {
   editorial_order: number | null;
   images: string[] | null;
@@ -454,6 +469,7 @@ type LiveOverlayRow = {
   category?: string | null;
   description?: string | null;
   dimensions_raw?: string | null;
+  quantity?: number | null;
   quantity_label?: string | null;
   public_ready?: boolean | null;
   /** Frame Studio derivative (1200w). */
@@ -528,7 +544,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -547,6 +563,7 @@ async function fetchLiveOverlay(): Promise<Map<string, LiveOverlayRow>> {
             category: row.category,
             description: row.description,
             dimensions_raw: row.dimensions_raw,
+            quantity: row.quantity ?? null,
             quantity_label: row.quantity_label,
             public_ready: row.public_ready,
             subcategory_slug: row.subcategory_slug ?? null,
