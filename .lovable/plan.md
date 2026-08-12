@@ -1,45 +1,52 @@
-# Focal control, done right
+# Focal control — the bridge version
 
-Current state (verified): `FocalEditor.tsx` exists and already has a "Reset to auto" button, but it is **not mounted anywhere** in the admin. And **0 of 894 products** currently have a focal override — the whole catalog is on automatic centering. That's the healthy state, and it's what the design should protect.
+Two competitor reviews (Squarespace media, Wix/Shopify platform) came back with the same verdict, and they corrected me on two facts.
 
-So the answer to "add a reset per product?" is: yes, but reset alone isn't the fix. The Squarespace/Wix-grade version is **auto by default, override as a visible exception, one click back to auto, and a list of every override in the catalog.**
+**Correction 1:** `FocalEditor` *is* mounted — `ImageOrderEditor.tsx:420`. My earlier read was wrong.
+**Correction 2:** my previous plan ignored `docs/cover-system-spec.md` and `docs/frame-studio-plan.md`, which declare a freeze on `NormalizedProductImage` / `categoryFit` / focal, and schedule focal's deletion in Phase 5. Building a polished focal management suite on top of it is investing in a condemned mechanism.
 
-## What to build
+So: build the bridge, not the cathedral. Scope is small on purpose.
 
-### 1. Mount the focal editor where covers are edited
-Put `FocalEditor` inside the cover section of `ImageOrderEditor` (so it appears in the product edit drawer and in `/admin/photos`), collapsed by default behind an "Adjust framing" disclosure. Hidden until asked for — nobody touches it by accident.
+## The real bug found in review
 
-### 2. State is always visible
-The cover thumbnail gets a small badge:
+`ImageOrderEditor.tsx:423-424` passes `initialX={null} initialY={null}` hardcoded, even though the parent already has the row. `FocalEditor` papers over it with a client-side Supabase re-fetch on mount. Any badge driven off that field paints `AUTO` first and corrects later — a UI that lies about override state, which is the Ingram bug's sibling.
+
+## The dangerous gap
+
+Once a row has `cover_framed_url`, the tile renders the baked derivative directly — no fit rule, no focal. Focal edits on those rows save successfully and change nothing on the live site. That is a "the site didn't change" support ticket, the exact failure class R8 and the round-trip receipts exist to prevent.
+
+## What to build (four items)
+
+### 1. Pass the real focal values through
+Wire `initialX`/`initialY` from the row in `ImageOrderEditor`. Drop the compensating `useEffect` re-fetch in `FocalEditor`.
+
+### 2. Three-state badge on the cover
 - `AUTO` (grey) — no override, solver centering
-- `MANUAL 49% · 49%` (amber) — override active
+- `MANUAL 49% · 49%` (amber) — override active, with reset on the badge itself
+- `FRAMED` (blue) — row has `cover_framed_url`; **focal editor is disabled**, with a line pointing to Frame Studio
 
-Amber means "someone made a decision here". That single cue is what would have caught the Ingram issue in seconds.
+State 3 is the whole point. No silent no-op saves.
 
-### 3. Reset to auto, always available
-Move the reset button out of the collapsed panel and onto the badge itself, so clearing an override never requires opening the framing tool. Available whenever a manual value exists, disabled when already auto.
+### 3. Guard on frame-space delta, not photo-space distance
+The proposed "within 3% of center" block was wrong — it measured the wrong coordinate space. Ingram failed because of letterbox overshoot in *frame* space (`renderedH ≈ 0.48`), not because the click was near photo center.
 
-### 4. Preview before commit
-The editor previews the real production tile rule, but currently commits on click. Change to: click places a candidate dot, preview updates live, then **Save framing** / **Cancel**. Nothing writes to the database until Save.
+Run the click through `focalToFrame` — the same function the render path uses — and warn (do not block) when the resulting frame-space delta is under ~1% of frame height/width: "this override does effectively nothing; leave it on auto."
 
-### 5. Catalog-wide override list
-New panel in `/admin/photos`: "Manual framing overrides (N)". Lists every product with a focal value, showing thumbnail, title, category, who set it, when. Each row has "Reset to auto". A "Reset all" button with a typed confirmation.
+### 4. Surface the audit line
+`setCoverFocal` already writes before/after to `admin_audit_log`. Show "set by … on Aug 12" in the panel.
 
-Today N = 0. Keeping it near zero is the health metric.
+## Cut from the previous plan
+- **Catalog-wide overrides panel** — neither Shopify nor Wix ships one; at 894 SKUs with N=0 it is a dashboard for a metric with a scheduled end date. A `focal: manual` filter on the existing `/admin/photos` grid covers it.
+- **Preview-before-commit save/cancel flow** — both platforms commit on release with instant undo. Reset-to-auto already is the undo. Adding a save gate teaches modal state to a non-technical user for a control we want used rarely.
+- **Any expansion of focal as a durable primitive** — it is a bridge with a shelf life measured in Frame Studio phases.
 
-### 6. Guardrail against the mistake that caused Ingram
-If a clicked point lands within 3% of photo center, block the save with: "This is already centered — auto does this better. Reset to auto instead." Near-center overrides are the exact failure mode: they look harmless, but letterbox mapping shifts them off in frame space.
-
-### 7. Audit trail already exists — surface it
-`setCoverFocal` writes before/after to `admin_audit_log`. Show the last change ("set by adrienne@… on Aug 12") in the framing panel so history is answerable without a database query.
-
-## Not doing
-- No per-image focal points (cover only) — more control than the problem needs.
-- No focal on framed/baked derivatives; Frame Studio owns that path.
-- No change to the solver math. It is correct; the override was the bug.
+## Compatibility contract to write down now
+- Focal applies **only** where `cover_framed_url IS NULL`. Render-time and bake-time compositing never both own the same pixel placement.
+- Focal writes ride the existing `images_version` / `updated_at` cache-buster. No second versioning scheme.
+- At Frame Studio Phase 3+, focal becomes an **input to the bake recipe** — hashed into `canonicalizedPlacement`, verifier-gated — not a runtime prop. The manual bbox drag in the Studio editor is its successor.
 
 ## Technical notes
-- `FocalEditor` mounts inside `ImageOrderEditor.tsx`; `photos-admin.functions.ts` already returns `cover_focal_x/y` in the snapshot, so the badge needs no new fetch.
-- Override list needs one new read server fn in `photos-admin.functions.ts` (`listFocalOverrides`) selecting rows where `cover_focal_x is not null`, joined to the latest `admin_audit_log` entry with `action = 'set_cover_focal'`.
-- Reset reuses the existing `setCoverFocal(null, null)` path — no migration, no schema change.
-- Near-center guard is client-side in the editor; the server fn keeps accepting any valid pair so scripts aren't constrained.
+- `ImageOrderEditor.tsx:420-427` — pass through `item.cover_focal_x/y` and `item.cover_framed_url`.
+- `photos-admin.functions.ts` already returns `cover_focal_x/y` and `cover_framed_url` in the snapshot select — no new server fn, no migration.
+- Warn threshold computed with `focalToFrame` from `NormalizedProductImage` so the guard and the renderer can never disagree.
+- Add one test to `tests/focal-point.test.ts` locking that `focalToFrame` composes with the solved scale term — the Ingram bug was a composition bug across two functions and current fixtures only lock one.
