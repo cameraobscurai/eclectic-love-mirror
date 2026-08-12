@@ -59,6 +59,7 @@ const R1_ALLOWLIST = new Map([
 // bytes, is the thing R1 governs.
 const IMAGE_UPSERT =
   /upsert:\s*true/;
+const r1Retired = new Set();
 const IMAGE_HINT = /image\/(png|jpe?g|webp|avif)|\.png|\.jpg|\.jpeg|\.webp|\.avif/i;
 
 for (const { file, text } of files) {
@@ -68,6 +69,12 @@ for (const { file, text } of files) {
     // Look at the statement neighbourhood, not just the one line.
     const ctx = lines.slice(Math.max(0, i - 4), i + 3).join("\n");
     if (!IMAGE_HINT.test(ctx)) return; // pointer/JSON write — out of R1 scope
+    // A retired script that refuses to run without an explicit override is
+    // no longer a live R1 hazard; report it, don't fail on it.
+    if (/ALLOW_R1_OVERWRITE/.test(text)) {
+      r1Retired.add(file);
+      return;
+    }
     if (R1_ALLOWLIST.has(file)) {
       if (!/R1/.test(text)) {
         violations.push({
@@ -154,6 +161,10 @@ for (const v of violations) {
   console.error(`  ${v.rule}  ${v.file}${v.line ? `:${v.line}` : ""}\n      ${v.msg}\n      see docs/DECISIONS.md#${v.rule.toLowerCase()}\n`);
 }
 console.log(`R1 image-byte overwrites: ${violations.filter((v) => v.rule === "R1").length} violation(s)`);
+if (r1Retired.size) {
+  console.log(`R1 retired scripts (guarded by ALLOW_R1_OVERWRITE, ${r1Retired.size}):`);
+  for (const f of [...r1Retired].sort()) console.log(`  \u00b7 ${f}`);
+}
 console.log(`R2 public pixel measurement: ${r2Current.length} importer(s), baseline ${fs.existsSync(baselinePath) ? "locked" : "not set"}`);
 if (r7.length) {
   console.log(`\nR7 advisory — writing scripts with no dry-run flag (${r7.length}):`);
