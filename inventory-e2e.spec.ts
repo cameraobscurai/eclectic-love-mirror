@@ -168,16 +168,29 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await expect(saveDraft).toBeDisabled();
     const collectionSelect = page.locator('select').nth(2);
     const declaredCategory = page.locator('select').nth(3);
-    const collValues = await collectionSelect.locator('option').evaluateAll((os) =>
-      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
-    );
-    expect(collValues.length, 'no collections offered on the new-product form').toBeGreaterThan(0);
+    // The taxonomy tree is fetched async on mount — wait for it rather than
+    // racing the first paint (an empty dropdown here is a load race, not a bug).
+    const optionValues = (sel: typeof collectionSelect) =>
+      sel.locator('option').evaluateAll((os) =>
+        os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+      );
+    await expect
+      .poll(async () => (await optionValues(collectionSelect)).length, {
+        timeout: 20_000,
+        message: 'no collections offered on the new-product form',
+      })
+      .toBeGreaterThan(0);
+    const collValues = await optionValues(collectionSelect);
     await collectionSelect.selectOption(collValues[0]!);
-    const catValues = await declaredCategory.locator('option').evaluateAll((os) =>
-      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
-    );
-    expect(catValues.length, 'no categories offered for the chosen collection').toBeGreaterThan(0);
+    await expect
+      .poll(async () => (await optionValues(declaredCategory)).length, {
+        timeout: 20_000,
+        message: 'no categories offered for the chosen collection',
+      })
+      .toBeGreaterThan(0);
+    const catValues = await optionValues(declaredCategory);
     await declaredCategory.selectOption(catValues[0]!);
+
 
     await expect(saveDraft).toBeEnabled();
 
