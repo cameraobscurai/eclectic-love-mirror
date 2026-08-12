@@ -118,6 +118,11 @@ while (true) {
   all.push(...data); from += data.length;
   if (data.length < PAGE) break;
 }
+console.log('public rows (pre-filter):', all.length);
+// Mirrors src/lib/test-artifact.ts — E2E artifacts never reach a public query,
+// teardown or not.
+const isTestArtifact = (r) => /^\s*ZZ E2E\b/i.test(r.title ?? '') || /^ZZ-E2E/i.test(r.rms_id ?? '');
+for (let i = all.length - 1; i >= 0; i--) if (isTestArtifact(all[i])) all.splice(i, 1);
 console.log('public rows:', all.length);
 
 // Live per-product harvest (gallery, body) — used as fallback when the
