@@ -140,8 +140,15 @@ export const updateProduct = createServerFn({ method: "POST" })
       throw new Response("No editable fields in patch", { status: 400 });
     }
 
-    // Server-side validation mirror for numeric fields.
+    // Server-side validation mirror. The drawer validates too, but the
+    // endpoint is the enforcement boundary — a blank title breaks the tile.
+    if ("title" in patch) {
+      const t = typeof patch.title === "string" ? patch.title.trim() : "";
+      if (!t) throw new Response("Every piece needs a name.", { status: 400 });
+      patch.title = t;
+    }
     if ("price" in patch && patch.price != null) {
+
       const p = Number(patch.price);
       if (!Number.isFinite(p) || p < 0) {
         throw new Response("Price must be a non-negative number.", { status: 400 });
