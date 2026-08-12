@@ -239,34 +239,26 @@ function Inner() {
             </span>
           </div>
 
-          {/* THREE-PART SORT: Category → Hive Collection heading → Subcategory */}
+          {/* ONE VOCABULARY: Collection → Category (her spreadsheet, verbatim) */}
           <select
-            value={search.cat}
-            aria-label="Filter by category"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value, sub: "" }) })}
-            className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
-          >
-            <option value="">All categories</option>
-            {mergeCategoryOptions(cats).map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
-          </select>
-          <select
-            value={search.group ?? ""}
-            aria-label="Filter by Hive Collection heading"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, group: e.target.value || undefined }) })}
+            value={search.col}
+            aria-label="Filter by collection"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, col: e.target.value, cat: "" }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
             <option value="">All collections</option>
-            {PARENT_ORDER.map((p) => <option key={p} value={p}>{PARENT_LABELS[p]}</option>)}
+            {collections.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
           <select
-            value={search.sub}
-            aria-label="Filter by subcategory"
-            onChange={(e) => navigate({ search: (s: any) => ({ ...s, sub: e.target.value }) })}
+            value={search.cat}
+            aria-label="Filter by category"
+            onChange={(e) => navigate({ search: (s: any) => ({ ...s, cat: e.target.value }) })}
             className="bg-transparent border border-charcoal/20 px-2 py-1 text-charcoal"
           >
-            <option value="">All subcategories</option>
-            {subOptions.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
+            <option value="">All categories</option>
+            {categoryOptions.map((c) => <option key={c.slug} value={c.slug}>{c.label}</option>)}
           </select>
+
           <select
             value={search.ready}
             aria-label="Filter by visibility"
