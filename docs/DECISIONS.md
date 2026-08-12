@@ -148,3 +148,112 @@ Both must hold:
 - Interactions don't jump, clip, or trap the user
 - No fake content, no broken inbound links
 - All locked invariants above remain true
+
+---
+
+# Engineering rules
+
+Added 2026-08-12. These existed only in chat until now, which is why they were
+dropped from five plan rewrites in one day. Each has an id, a date, the rule,
+and the receipt — the failure that caused it. Plans cite the id. Lint errors
+cite the id. `bun run rules:check` enforces the mechanisable ones.
+
+## R1 — No new bytes at a published image URL
+
+**Rule.** Once an image URL is public, it never receives different bytes. A
+changed image is a new path (content-hashed), and the row is repointed. Storage
+writes in `scripts/**` and `src/**` may not pass `upsert: true` on an image
+upload.
+
+**Not covered:** pointer/metadata writes. The overlay snapshot
+(`photos-admin.functions.ts`, `catalog/manifest.json`) is *supposed* to
+overwrite — it is a pointer, not content. Allowlisted with a comment citing R1.
+
+**Receipt.** 2026-08-11: the AI upscaler wrote greyish-backdrop covers over 633
+live image URLs in place. Every cached copy, every CDN edge, every prior
+screenshot became inconsistent, and the only way back was re-deriving from
+`originals-backup/`. Nearly repeated at midnight on the normalize pass.
+
+**Enforced by:** `bun run rules:check` (allowlist in `scripts/audit/rules-check.mjs`).
+
+## R2 — The public browser never measures pixels
+
+**Rule.** Public routes decide layout from baked numbers, never from a
+`<canvas>` read of a decoded image. Measurement happens once, at ingest, on the
+server. Once Frame Studio Phase 5 lands, nothing under `src/routes/collection*`
+or `src/components/collection/*` may import `NormalizedProductImage`,
+`categoryFit`, `useImageSilhouette`, or `productPhysicalScale`.
+
+**Receipt.** Eight months of live solver tuning. Every fix moved the defect
+somewhere else because the system was asked to make heterogeneous photos look
+uniform, live, from inside the browser — a bet against its own inputs.
+
+**Enforced by:** `bun run rules:check` in baseline mode. The current importer
+count is frozen; it may fall, never rise. It becomes a hard ban at Phase 5.
+
+## R3 — Derivatives are verifier-gated
+
+**Rule.** No generated image reaches the public site without passing the
+measurement verifier that produced it. A derivative that fails verification is
+quarantined for review, never published as a best-effort.
+
+**Receipt.** 2026-08-11: upscaled covers shipped straight to production and
+introduced ~235-luminance backdrops on a pure-white grid. Nothing checked them
+between generation and display.
+
+## R4 — The studio composes; it never retouches
+
+**Rule.** Testable line: if the operation changes *which pixels exist*, it is
+retouching and out of scope. If it changes *where existing pixels land on the
+canvas*, it is composition and in scope. Framing, scale, baseline, rotation are
+in. Background removal by hand, colour, shadow, cloning, filters are out — a
+cover needing those has a wrong source photo and gets replaced.
+
+**Exception:** batch background removal at *ingest* is a framer step, not an
+editor feature. Automated, verifier-gated (R3), never a hand tool.
+
+**Receipt.** `docs/frame-studio-phase3-editor-amendment.md`. Two non-technical
+users editing destructively with no undo stack is a support load, not a feature.
+
+## R5 — Canvas aspect equals tile aspect
+
+**Rule.** Baked cover canvas matches the aspect of the tile that renders it.
+Object placement inside that canvas is the only free variable.
+
+**Receipt.** Square 1536×1536 canvases into non-square tiles reintroduced the
+per-shelf mass drift the canvas was built to remove.
+
+## R6 — RMS owns RMS fields; humans own declared fields
+
+**Rule.** `scripts/import.mjs` may never write `collection_slug`,
+`category_slug`, `taxonomy_review`, or `images` on an existing row. New RMS
+products insert with NULL taxonomy so they surface in the admin Unassigned
+queue. RMS owns title, stock, dimensions, group.
+
+**Receipt.** Unassigned products are out of nav. A routine re-import that
+clobbered declared columns would pull live products off the site with no error
+anywhere, and no one would notice for weeks.
+
+**Enforced by:** `node scripts/audit/intake-loop-test.mjs --apply` — drives the
+real importer against a synthetic two-row workbook. 13/13 as of 2026-08-12.
+
+## R7 — Dry-run by default; no defect count before measurement
+
+**Rule.** Every destructive or bulk script defaults to dry-run, emits a
+prediction/manifest file, and verifies actuals against that prediction on
+`--apply`. No plan states a defect count that has not been measured by a script
+whose grading rules are written down.
+
+**Receipt.** The cover audit reported 539 defects; measured properly it was 44
+padded covers — `MEASURE_FAIL` was flagging valid tight crops. Three plans were
+built on the wrong number.
+
+## R8 — Publish is the only path from admin edit to live
+
+**Rule.** Admin edits reach the public site through the published overlay
+snapshot and nothing else. The merge cache TTL and manifest cache-buster define
+the visible delay, and that delay is a written number with a test, not folklore.
+
+**Receipt.** `docs/round-trip-receipt.md`. Overlay text fields were silently
+dropped in the merge for existing products; the edit appeared to save and never
+appeared live.

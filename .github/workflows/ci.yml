@@ -28,6 +28,12 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      # Standing engineering rules (docs/DECISIONS.md). Fast, no browser, no
+      # network — runs before anything expensive so a rule break fails in
+      # seconds rather than after a 20-minute Playwright pass.
+      - name: Engineering rules gate
+        run: bun run rules:check
+
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 
