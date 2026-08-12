@@ -260,14 +260,15 @@ function PhotosManager() {
           </label>
           <select
             value={parent}
-            onChange={(e) => setParent(e.target.value as ParentId)}
+            onChange={(e) => setParent(e.target.value as ParentSel)}
             className="w-full border border-charcoal/20 bg-white px-3 py-2 text-[12px] uppercase tracking-[0.14em]"
           >
-            {PARENT_ORDER.map((pid) => (
+            {(["all", ...PARENT_ORDER] as ParentSel[]).map((pid) => (
               <option key={pid} value={pid}>
-                {PARENT_LABELS[pid]}
+                {selLabel(pid)}
               </option>
             ))}
+
           </select>
         </div>
 
