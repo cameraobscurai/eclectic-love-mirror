@@ -168,16 +168,29 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await expect(saveDraft).toBeDisabled();
     const collectionSelect = page.locator('select').nth(2);
     const declaredCategory = page.locator('select').nth(3);
-    const collValues = await collectionSelect.locator('option').evaluateAll((os) =>
-      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
-    );
-    expect(collValues.length, 'no collections offered on the new-product form').toBeGreaterThan(0);
+    // The taxonomy tree is fetched async on mount — wait for it rather than
+    // racing the first paint (an empty dropdown here is a load race, not a bug).
+    const optionValues = (sel: typeof collectionSelect) =>
+      sel.locator('option').evaluateAll((os) =>
+        os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
+      );
+    await expect
+      .poll(async () => (await optionValues(collectionSelect)).length, {
+        timeout: 20_000,
+        message: 'no collections offered on the new-product form',
+      })
+      .toBeGreaterThan(0);
+    const collValues = await optionValues(collectionSelect);
     await collectionSelect.selectOption(collValues[0]!);
-    const catValues = await declaredCategory.locator('option').evaluateAll((os) =>
-      os.map((o) => (o as HTMLOptionElement).value).filter(Boolean),
-    );
-    expect(catValues.length, 'no categories offered for the chosen collection').toBeGreaterThan(0);
+    await expect
+      .poll(async () => (await optionValues(declaredCategory)).length, {
+        timeout: 20_000,
+        message: 'no categories offered for the chosen collection',
+      })
+      .toBeGreaterThan(0);
+    const catValues = await optionValues(declaredCategory);
     await declaredCategory.selectOption(catValues[0]!);
+
 
     await expect(saveDraft).toBeEnabled();
 
@@ -198,18 +211,19 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await expect(page.locator('#f-quantity')).toHaveValue('3');
     await expect(page.locator('#f-dimensions_raw')).toHaveValue('30"W x 30"D x 18"H');
 
-    // Category must render as the friendly label list, with a real selection.
-    const drawerCategory = page.locator('#f-category');
+    // Declared taxonomy (Adrienne's vocabulary) must survive into the editor.
+    const drawerCollection = page.locator('#f-collection_slug');
+    await expect(drawerCollection).toBeVisible();
+    expect((await drawerCollection.inputValue()).trim(), 'collection lost on the way into the editor').not.toBe('');
+
+    const drawerCategory = page.locator('#f-category_slug');
     await expect(drawerCategory).toBeVisible();
     expect((await drawerCategory.inputValue()).trim(), 'category lost on the way into the editor').not.toBe('');
+    expect(
+      await drawerCategory.locator('option').count(),
+      'category selector is empty in the editor',
+    ).toBeGreaterThan(1);
 
-    // Subcategory must survive the round trip and still offer options.
-    const drawerSub = page.locator('#f-subcategory_slug');
-    if (await drawerSub.count()) {
-      const subs = await drawerSub.locator('option').count();
-      expect(subs, 'subcategory selector is empty in the editor').toBeGreaterThan(1);
-      if (subValue) expect(await drawerSub.inputValue()).toBe(subValue);
-    }
 
     // A brand-new draft must NOT be publicly visible.
     const publicToggle = page.locator('#f-public_ready');
