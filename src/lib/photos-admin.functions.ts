@@ -313,3 +313,39 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
 
     return { ok: true, publishedAt, count: Object.keys(overlay).length, galleryCount };
   });
+
+// ---------------------------------------------------------------------------
+// getPublishStatus — "does the live site match the database?"
+//
+// Every admin edit writes straight to inventory_items, but the public catalog
+// reads the last published snapshot. Before this, nothing on screen said so:
+// an owner would change a photo, see it in the admin, not see it live, and
+// report that the site had "reverted". It never reverted — it was never
+// published. This powers the pending bar in AdminShell.
+// ---------------------------------------------------------------------------
+export const getPublishStatus = createServerFn({ method: "GET" })
+  .middleware([requireStaffOrAdmin])
+  .handler(async () => {
+    let publishedAt: string | null = null;
+    try {
+      const { data } = await supabaseAdmin.storage
+        .from("squarespace-mirror")
+        .download("catalog/manifest.json");
+      if (data) {
+        const parsed = JSON.parse(await data.text()) as { publishedAt?: string };
+        publishedAt = parsed.publishedAt ?? null;
+      }
+    } catch {
+      publishedAt = null;
+    }
+
+    if (!publishedAt) return { publishedAt: null, pending: 0 };
+
+    const { count, error } = await supabaseAdmin
+      .from("inventory_items")
+      .select("id", { count: "exact", head: true })
+      .gt("updated_at", publishedAt);
+    if (error) return { publishedAt, pending: 0 };
+
+    return { publishedAt, pending: count ?? 0 };
+  });
