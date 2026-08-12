@@ -38,7 +38,6 @@ import { Loader2, AlertCircle, ImageOff, LayoutGrid, LayoutList, Grid2x2, Layers
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
-import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { resolveProductFit } from "@/components/collection/productFit";
 
@@ -326,20 +325,6 @@ function CategoryGrid({
 
 
   const [activeId, setActiveId] = useState<string | null>(null);
-  // editing.id is the inventory_items UUID (resolved by rms_id at open time),
-  // NOT the catalog id (which is the rms_id like "2408"). The server fn and
-  // editor's DB queries both key off the UUID.
-  const [editing, setEditing] = useState<Item | null>(null);
-  // Focal/framing state for the row being edited. Read once at open time and
-  // passed down as props — the editor must never re-fetch it, or the badge
-  // paints AUTO first and corrects later.
-  const [editingRow, setEditingRow] = useState<{
-    cover_focal_x: number | null;
-    cover_focal_y: number | null;
-    cover_framed_url: string | null;
-    category_slug: string | null;
-    dimensions_raw: string | null;
-  } | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   // Clicking a photo opens the FULL product editor (which embeds the same
@@ -731,39 +716,6 @@ function CategoryGrid({
             )}
           </DragOverlay>
         </DndContext>
-      )}
-
-      {editing && (
-        <ImageOrderEditor
-          item={{
-            id: editing.id,
-            rms_id: editing.rms_id,
-            title: editing.title,
-            images: editing.images,
-            card_background_url: editing.card_background_url,
-            cover_focal_x: editingRow?.cover_focal_x ?? null,
-            cover_focal_y: editingRow?.cover_focal_y ?? null,
-            cover_framed_url: editingRow?.cover_framed_url ?? null,
-            category_slug: editingRow?.category_slug ?? null,
-            dimensions: editingRow?.dimensions_raw ?? null,
-          }}
-          onClose={() => {
-            setEditing(null);
-            setEditingRow(null);
-          }}
-          onSaved={({ images, card_background_url }) => {
-            setItems((prev) =>
-              prev.map((i) =>
-                i.rms_id === editing.rms_id
-                  ? { ...i, images, card_background_url }
-                  : i,
-              ),
-            );
-            // Bust the public catalog cache so the next /collection load
-            // shows this edit immediately (same pattern as reorder saves).
-            invalidateCollectionCatalog();
-          }}
-        />
       )}
 
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
