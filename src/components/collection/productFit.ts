@@ -75,6 +75,15 @@ function withGain(rule: FitRule, gain: number): FitRule {
   };
 }
 
+/**
+ * Per-product framing nudge. Same uniform multiplier as `withGain`, exposed so
+ * a single product whose cover photo mis-reads beside its neighbours can be
+ * trimmed without touching category tuning.
+ */
+export function withScaleNudge(rule: FitRule, nudge: number): FitRule {
+  return withGain(rule, nudge);
+}
+
 export function resolveProductFit(
   product: FittableProduct,
   context: FitContext = "tile",
