@@ -42,6 +42,12 @@ type Item = {
   /** Fit inputs — let the focal preview render the real production rule. */
   category_slug?: string | null;
   dimensions?: string | null;
+  /** Focal state must come from the row — a child re-fetch paints AUTO first
+   *  and corrects later, i.e. a UI that lies about override state. */
+  cover_focal_x?: number | null;
+  cover_focal_y?: number | null;
+  /** Baked derivative: when set, focal is not read by the public tile. */
+  cover_framed_url?: string | null;
 };
 
 
