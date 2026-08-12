@@ -258,6 +258,33 @@ export type Database = {
         }
         Relationships: []
       }
+      deleted_items: {
+        Row: {
+          deleted_at: string
+          deleted_by: string | null
+          id: string
+          item_id: string
+          rms_id: string | null
+          title: string | null
+        }
+        Insert: {
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          item_id: string
+          rms_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          item_id?: string
+          rms_id?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
