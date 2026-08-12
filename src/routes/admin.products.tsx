@@ -292,9 +292,9 @@ function Inner() {
               <tr>
                 <th className="text-left px-3 py-2 w-14"></th>
                 <th className="text-left px-3 py-2">Title</th>
-                <th className="text-left px-3 py-2">Category</th>
                 <th className="text-left px-3 py-2">Collection</th>
-                <th className="text-left px-3 py-2">Subcategory</th>
+                <th className="text-left px-3 py-2">Category</th>
+
                 <th className="text-left px-3 py-2">Qty</th>
                 <th className="text-left px-3 py-2">Status</th>
                 <th className="text-left px-3 py-2">Public</th>
