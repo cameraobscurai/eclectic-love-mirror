@@ -694,7 +694,8 @@ header nav button:focus-visible,
    ---------------------------------------------------------------------------- */
 .page-title {
   font-family: "Saol Display", "Cormorant", serif;
-  font-weight: 300;
+  /* Saol Display faces available: 400 upright, 600 upright, 300 italic. */
+  font-weight: 400;
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   line-height: 1.05;
   letter-spacing: 0.04em;
