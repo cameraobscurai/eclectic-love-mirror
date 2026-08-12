@@ -28,11 +28,18 @@ export const CANVAS_W = 1500;
 export const CANVAS_H = 1200;
 export const FRAME_ASPECT = CANVAS_W / CANVAS_H; // 1.25
 
-/** Output sizes the renderer emits. V5 checks against these. */
+/** Output sizes the renderer emits (encodings of the one 1500x1200 render). */
 export const OUTPUT_SIZES = [
   { w: 1200, h: 960 },
   { w: 600, h: 480 },
 ] as const;
+
+/**
+ * Sizes V5 accepts. The render canvas is included because `verify` runs on the
+ * 1500x1200 composition — before any bytes are encoded, returned, or uploaded.
+ */
+export const VERIFY_SIZES = [{ w: CANVAS_W, h: CANVAS_H }, ...OUTPUT_SIZES] as const;
+
 
 /** V6 byte ceiling per derivative. */
 export const MAX_DERIVATIVE_BYTES = 400_000;
