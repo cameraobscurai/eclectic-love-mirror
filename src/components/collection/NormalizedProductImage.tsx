@@ -317,14 +317,11 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   };
 
   const transform = useMemo(() => {
-    // Admin focal override — bypass everything.
-    if (hasFocal) {
-      const tx = (0.5 - (focalX as number)) * 100;
-      const ty = (0.5 + visualOffsetY - (focalY as number)) * 100;
-      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(1)`;
-    }
-
     // ── The one solver path ──
+    // A focal point is an ANCHOR override, never a scale override. The solved
+    // scale is what keeps a sofa the same visual mass as its neighbours, so it
+    // always survives. Focal only moves which point of the photo lands where
+    // the solver would have put the silhouette's center.
     let f: Fit;
     if (measurement) {
       f = solveFit(measurement, fitRule);
@@ -332,7 +329,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       const fb = fitRule.fallback;
       f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
     }
-    const tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
+    let tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
     let ty: number;
     if (fitRule.anchor === "bottom") {
       const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
@@ -344,8 +341,24 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
       const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
       ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
     }
+
+    // Focal delta, applied on top of the auto solution. Focal == silhouette
+    // center is a no-op by construction, so a focal point can only ever nudge
+    // — it can never blow the tile up the way the old scale(1) bypass did.
+    // Needs the letterbox from the measurement; without it we stay on auto.
+    if (hasFocal && measurement) {
+      const { fx, fy } = focalToFrame(
+        focalX as number,
+        focalY as number,
+        measurement.renderedW,
+        measurement.renderedH,
+      );
+      tx += (measurement.cx - fx) * f.scale * 100;
+      ty += (measurement.cy - fy) * f.scale * 100;
+    }
     return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
   }, [
+
     measurement,
     fitRule,
     hasFocal,
