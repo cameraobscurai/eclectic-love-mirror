@@ -12,6 +12,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { InventoryEditDrawer } from "@/components/admin/InventoryEditDrawer";
 import { useServerFn } from "@tanstack/react-start";
 import {
   DndContext,
@@ -167,6 +168,9 @@ function PhotosManager() {
   // Load baked catalog once.
   const [allProducts, setAllProducts] = useState<CollectionProduct[] | null>(null);
   const [catalogErr, setCatalogErr] = useState<string | null>(null);
+  // Bumped after a drawer save so the grid repaints the new title/photos
+  // without a manual refresh.
+  const [reloadKey, setReloadKey] = useState(0);
   useEffect(() => {
     let alive = true;
     // The public catalog drops hidden pieces before it returns. On an audit
@@ -211,7 +215,7 @@ function PhotosManager() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
 
   // Reset sub when parent changes.
   useEffect(() => {
