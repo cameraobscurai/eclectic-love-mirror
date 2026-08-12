@@ -881,6 +881,9 @@ function Tile({
           </p>
           <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/55 tabular-nums">
             {imageCount} {imageCount === 1 ? "image" : "images"}
+            {item.variantCount > 0
+              ? ` across ${item.variantCount + 1} items`
+              : ""}
           </p>
         </div>
       </div>
