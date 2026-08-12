@@ -94,13 +94,36 @@ describe("anchor signs", () => {
   const src = alphaImage(900, 700, { x: 250, y: 120, w: 400, h: 380 });
   const box = boxOf(src, { x: 250, y: 120, w: 400, h: 380 });
 
-  it("bottom-anchored seating pushes the subject down, top-anchored chandeliers pull it up", () => {
+  it("a chandelier is always pulled up relative to the same silhouette as seating", () => {
     const seating = placeSilhouette(box, "sofas-loveseats");
     const chandelier = placeSilhouette(box, "chandeliers");
-    expect(Math.sign(seating.offsetY)).toBe(1);
-    expect(Math.sign(chandelier.offsetY)).toBe(-1);
-    expect(Math.sign(seating.offsetY)).not.toBe(Math.sign(chandelier.offsetY));
+    // The absolute sign of offsetY depends on where the subject already sits
+    // in its source frame; the invariant that encodes the carve-out is that a
+    // top-anchored rule always resolves higher than a bottom-anchored one.
+    expect(chandelier.offsetY).toBeLessThan(seating.offsetY);
   });
+
+  it("each anchor lands its own edge and fails the other's baseline check", () => {
+    const seating = placeSilhouette(box, "sofas-loveseats");
+    const chandelier = placeSilhouette(box, "chandeliers");
+
+    const seatingRender = composeToCanvas(src, seating, CANVAS_W, CANVAS_H);
+    const chandelierRender = composeToCanvas(src, chandelier, CANVAS_W, CANVAS_H);
+
+    expect(
+      verify({ rendered: seatingRender }, "sofas-loveseats").failures.map((f) => f.code),
+    ).not.toContain("V2");
+    expect(
+      verify({ rendered: chandelierRender }, "chandeliers").failures.map((f) => f.code),
+    ).not.toContain("V2");
+
+    // Swap the rules and the baseline check must object — proof the anchor,
+    // not the geometry, is what V2 is reading.
+    expect(
+      verify({ rendered: chandelierRender }, "sofas-loveseats").failures.map((f) => f.code),
+    ).toContain("V2");
+  });
+
 
   it("keys anchors off category, never collection", () => {
     expect(resolveRule("chandeliers", "lighting").anchor).toBe("top");
