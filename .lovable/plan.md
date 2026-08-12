@@ -1,57 +1,54 @@
-# COLLECTION home + real product families
+# Per-variant photos
 
-Two jobs. The first is a day's work. The second is structural and gets built in stages so nothing on the live site moves until the structure is proven.
+## What exists today (verified in code and the baked catalog)
 
-## 1. COLLECTION becomes the admin home
+- 85 family tiles, 301 variant rows. 294 already resolve to a photo, 7 do not, and 1 family has two variants pointing at the same photo.
+- A variant's photo is **derived, not declared**: `phase3-catalog.ts:297` takes the variant row's live `images[0]`. Nothing states that rule in the admin, so reordering a row's gallery silently changes its variant photo.
+- The admin family panel is **read-only** and reads a build-time JSON file. There is no place to see, set, or verify a variant photo.
+- The product page has **no variant switcher at all**. Variant chips and image matching exist only in the old QuickView modal, which is no longer the primary way in. A shopper landing on a family page sees one merged gallery with no labels.
+- QuickView's matching falls back to guessing from filenames (numbers like `AKOYA 7.png`, tokens like Fork/Knife). That guess is the thing to remove.
 
-- Rename "Collection photos" to **COLLECTION** in the sidebar and breadcrumbs.
-- `/admin` lands on COLLECTION. The old dashboard stays reachable under Dashboard.
-- New **ALL** entry at the top of the category list: every piece in one grid, grouped under sticky collection/category headings, small-icon size by default. This is the cross-check view — 636 tiles on one screen instead of one category at a time.
-- Drag-to-reorder stays off in ALL (order is per-category); pick a category to reorder.
+## The model — pointer, not a second photo library
 
-## 2. Product families
+Best practice across Shopify, BigCommerce and Squarespace: one image pool, and each variant holds a **pointer** into it. No parallel image store, no filename inference.
 
-Today there is no such thing as a family in the database. A script guesses them at bake time off the retired Squarespace snapshot: 85 guessed families covering 301 pieces. That is why the editor says "editing a collection" and can't show you what's in it — there is nothing to show.
-
-### The model
-
-Every variant stays a full product record: its own name, photos, quantity, dimensions, notes, price. A family is a new record that ties them together and names the parent.
+Each variant here is already a full inventory row with its own photos, so the pointer belongs on the row:
 
 ```text
-FAMILY  "Adonis Glassware"          <- cover photo, collection, category
-  |- ADONIS RED WINE GLASS    photos · qty · dims · notes
-  |- ADONIS WHITE WINE GLASS  photos · qty · dims · notes
-  |- ADONIS COUPE GLASS       photos · qty · dims · notes
-  +- ADONIS GOBLET            photos · qty · dims · notes
+inventory_items
+  variant_cover_url text null   -- must be one of this row's own images[]
 ```
 
-- The grid shows one tile per family.
-- The product page shows the parent, with a variant row underneath. Picking a variant swaps its photo, dimensions, quantity and notes.
-- Every variant keeps a working direct link. `…/adonis-coupe-glass` opens the parent with the coupe already selected, so all 301 existing links survive.
+- Empty = AUTO (first photo), which is exactly today's behaviour, so nothing moves on day one.
+- Set = PINNED. Survives gallery reordering, upscales, and re-imports.
+- Same three-state language already used for focal points: AUTO / PINNED, with a reset.
+- Deleting the pointed-at photo clears the pointer back to AUTO rather than breaking the tile.
 
-### Converting what exists
+This does not depend on the declared-families work in `docs/product-families-plan.md`. The pointer lives per row and works under today's grouping and under the future one.
 
-The 85 guessed families get written into the database as real families, marked **unreviewed**, with today's grouping preserved. Nothing on the live site changes at that moment. A review filter in COLLECTION lets Adrienne confirm, rename, re-cover, split or merge them at her pace. Anything she never touches keeps working exactly as it does now.
+## Phases
 
-### Admin
+**1. Schema.** Add `variant_cover_url` plus a validation trigger that rejects a URL not present in that row's `images[]`, and clears it when that image is removed. Existing table, so grants are unchanged.
 
-- Product editor gains a **Family** panel: which family this piece is in, every sibling with its cover thumb, drag to order, set the family cover, remove from family, break the family apart.
-- New Product gains a choice: standalone piece, or a variant added to an existing family — with its own photo upload at creation.
+**2. Bake and runtime.** `bake-catalog.mjs` selects the column; `phase3-catalog.ts` resolves `variant.imageUrl` as `variant_cover_url ?? images[0]`. The family gallery merge is untouched — the variant photo is already in the pool.
 
-## Order of work
+**3. Admin — the family board.** Replace the read-only panel inside the inventory drawer with a live board:
+   - every sibling as a row: thumbnail, title, dimensions, quantity, AUTO/PINNED badge
+   - "Set variant photo" picks from that row's own photos
+   - jump straight to a sibling in the same drawer instead of a search link
+   - coverage line ("5 of 6 variants have a distinct photo") and two warnings: no photo at all, and two variants pointing at the same photo
+   - which member supplies the family's landing image stays explicit
 
-1. Schema for families + convert the 85 existing groups (invisible change).
-2. Catalog bake reads families from the database; retire the Squarespace snapshot dependency.
-3. Family panel in the product editor + review filter in COLLECTION.
-4. Product page variant selector + variant-link redirects.
-5. Variant creation in New Product.
+**4. Public — the switcher.** This is the payoff. Add variant chips to the product page: selecting one swaps the hero to that variant's photo and updates the dimensions and quantity shown. Deep-linkable as `?v=<id>`. Inquiry selections carry the chosen variant. Once coverage is complete, delete the filename-guessing fallback in QuickView.
 
-Stages 1 and 2 ship together and are verified against the current live grid — same 636 tiles, same covers — before anything else starts.
+**5. Verification.** Fixtures in `tests/family-cover.test.ts` for pointer precedence and the delete-clears-pointer case; a `variant-photo-coverage` audit script listing the 7 photoless variants and any duplicates; confirm an RMS re-import never clobbers a pointer (rule R6).
 
-## Technical notes
+## Decisions I made — say if you disagree
 
-- New `product_families` table (title, slug, collection_slug, category_slug, cover_rms_id, source `converted|manual`, reviewed_at) with admin-write / public-read policies and grants. `inventory_items` gains `family_id`, `variant_label`, `variant_order`.
-- `scripts/family-rollup.mjs` stops reading `live-inventory-snapshot.json` and reads `product_families`; the snapshot file is retired under the engineering rules (R2 baseline unaffected).
-- `mergeCatalog` / `family-cover.ts` keep their cover-precedence logic but source membership from the database instead of inference; existing fixtures in `tests/family-cover.test.ts` extended with a converted-family case.
-- Variant URLs resolve in `collection_.$slug.tsx`: a slug that matches a variant loads the parent and preselects it — a redirect, not a duplicate page, so SEO stays on the parent.
-- The variant selector moves out of QuickView (now retired from tile clicks) and onto the product page.
+- A variant photo must be one of that variant row's own photos. Uploading a photo that belongs to no row would create a second, untracked image store.
+- The 7 photoless variants get flagged, not auto-filled from a sibling. A wrong photo is worse than none.
+- Landing image for the tile keeps its current rule: the lead row's first photo. Variant photos do not compete for it.
+
+## Sequencing
+
+Phases 1–3 are one working session and change nothing publicly. Phase 4 is the visible change and should land after you have walked the 85 families once in the new board.
