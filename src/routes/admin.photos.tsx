@@ -54,6 +54,7 @@ import {
   productMatchesSub,
   type ParentId,
 } from "@/lib/collection-parents";
+import { applyTombstones } from "@/lib/tombstones";
 import {
   getCollectionCatalog,
   invalidateCollectionCatalog,
@@ -248,8 +249,11 @@ function PhotosManager() {
         .from("inventory_items")
         .select("rms_id, title, images, collection_slug, category_slug, editorial_order")
         .eq("public_ready", false),
+      // The grid renders from the baked catalog, so a piece deleted since the
+      // last bake would keep its tile here and 404 on click. Suppress.
+      supabase.from("deleted_items").select("rms_id, item_id"),
     ])
-      .then(([c, hiddenRes]) => {
+      .then(([c, hiddenRes, tombRes]) => {
         if (!alive) return;
         const hidden = (hiddenRes.data ?? [])
           .filter((r) => r.rms_id)
@@ -274,7 +278,14 @@ function PhotosManager() {
                 dimensions: null,
               }) as unknown as CollectionProduct,
           );
-        setAllProducts([...c.products, ...hidden]);
+        const gone = new Set<string>();
+        for (const t of tombRes.data ?? []) {
+          if (t.rms_id) gone.add(t.rms_id as string);
+          if (t.item_id) gone.add(t.item_id as string);
+        }
+        setAllProducts(
+          applyTombstones([...c.products, ...hidden] as CollectionProduct[], gone),
+        );
       })
       .catch((e) => alive && setCatalogErr((e as Error).message));
     return () => {
