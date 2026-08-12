@@ -400,38 +400,27 @@ function CategoryGrid({
   const [activeId, setActiveId] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  // Clicking a photo opens the FULL product editor (which embeds the same
-  // photo/order panel), not a photos-only drawer. Splitting the two is what
-  // made auditing feel like hopping between pages.
-  const gridNavigate = useNavigate();
-  const openEditor = useCallback(
-    async (item: Item) => {
-      setErr(null);
-      try {
-        const { data, error } = await supabase
-          .from("inventory_items")
-          .select("id")
-          .eq("rms_id", item.rms_id)
-          .maybeSingle();
-        if (error) throw error;
-        if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
-        await gridNavigate({
-          to: "/admin/products",
-          search: {
-            q: "",
-            col: "",
-            cat: "",
-            sort: "title" as const,
-            ready: "all" as const,
-            id: data.id,
-          },
-        });
-      } catch (e) {
-        setErr((e as Error).message);
-      }
-    },
-    [gridNavigate],
-  );
+  // Clicking a photo opens the FULL inventory editor IN PLACE — name,
+  // quantity, dimensions, description, taxonomy, variants and photos, the
+  // same drawer /admin/products uses. COLLECTION is a first-class editing
+  // surface, not a viewer that bounces you to another route.
+  const [editId, setEditId] = useState<string | null>(null);
+  const openEditor = useCallback(async (item: Item) => {
+    setErr(null);
+    try {
+      const { data, error } = await supabase
+        .from("inventory_items")
+        .select("id")
+        .eq("rms_id", item.rms_id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+      setEditId(data.id);
+    } catch (e) {
+      setErr((e as Error).message);
+    }
+  }, []);
+
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
