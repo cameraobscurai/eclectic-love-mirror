@@ -185,6 +185,11 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         cover_framed_url: string | null;
         collection_slug: string | null;
         category_slug: string | null;
+        /** Epoch seconds of the row's last edit. Drives the public `?v=`
+         *  cache-buster so a re-uploaded photo at the SAME storage URL cannot
+         *  serve stale CDN bytes. Without it the buster stayed frozen at the
+         *  last bake. */
+        images_version: number | null;
       }
     > = {};
 
@@ -193,12 +198,14 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
       if (!data || data.length === 0) break;
-      for (const row of data as Array<{ rms_id: string | null } & (typeof overlay)[string]>) {
+      for (const row of data as Array<
+        { rms_id: string | null; updated_at?: string | null } & (typeof overlay)[string]
+      >) {
         if (!row.rms_id) continue;
         overlay[row.rms_id] = {
           editorial_order: row.editorial_order,
@@ -217,6 +224,9 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           cover_framed_url: row.cover_framed_url ?? null,
           collection_slug: row.collection_slug ?? null,
           category_slug: row.category_slug ?? null,
+          images_version: row.updated_at
+            ? Math.floor(new Date(row.updated_at).getTime() / 1000)
+            : null,
         };
       }
       if (data.length < PAGE) break;
