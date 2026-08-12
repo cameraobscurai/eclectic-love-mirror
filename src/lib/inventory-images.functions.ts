@@ -278,6 +278,7 @@ const createItemInput = z
     category: z.enum(CATEGORY_SLUGS),
     quantity: z.number().int().min(0).max(9999).nullable().optional(),
     quantityLabel: z.string().trim().max(50).nullable().optional(),
+    description: z.string().trim().max(4000).nullable().optional(),
     dimensionsRaw: z.string().trim().max(500).nullable().optional(),
     subcategorySlug: z.string().trim().max(60).nullable().optional(),
     publicReady: z.boolean().default(true),
@@ -341,6 +342,7 @@ export const createInventoryItem = createServerFn({ method: "POST" })
         status: "available",
         quantity: data.quantity ?? null,
         quantity_label: data.quantityLabel ?? null,
+        description: data.description ?? null,
         dimensions_raw: data.dimensionsRaw ?? null,
         subcategory_slug: data.subcategorySlug || null,
         collection_slug: deferred ? null : data.collectionSlug!,
@@ -379,6 +381,8 @@ const updateMetaInput = z.object({
   title: z.string().trim().min(1).max(200).optional(),
   category: z.enum(CATEGORY_SLUGS).optional(),
   quantity: z.number().int().min(0).max(9999).nullable().optional(),
+  quantityLabel: z.string().trim().max(50).nullable().optional(),
+  description: z.string().trim().max(4000).nullable().optional(),
   dimensionsRaw: z.string().trim().max(500).nullable().optional(),
   subcategorySlug: z.string().trim().max(60).nullable().optional(),
   publicReady: z.boolean().optional(),
@@ -395,6 +399,8 @@ export const updateInventoryItemMeta = createServerFn({ method: "POST" })
     }
     if (data.category !== undefined) patch.category = data.category;
     if (data.quantity !== undefined) patch.quantity = data.quantity;
+    if (data.quantityLabel !== undefined) patch.quantity_label = data.quantityLabel;
+    if (data.description !== undefined) patch.description = data.description;
     if (data.dimensionsRaw !== undefined) patch.dimensions_raw = data.dimensionsRaw;
     if (data.subcategorySlug !== undefined) patch.subcategory_slug = data.subcategorySlug || null;
     if (data.publicReady !== undefined) patch.public_ready = data.publicReady;

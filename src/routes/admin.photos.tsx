@@ -33,12 +33,11 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff, LayoutGrid, Grid2x2, Layers } from "lucide-react";
+import { Loader2, AlertCircle, ImageOff, LayoutGrid, LayoutList, Grid2x2, Layers, EyeOff } from "lucide-react";
 
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
 import { supabase } from "@/integrations/supabase/client";
-import { ImageOrderEditor } from "@/components/admin/ImageOrderEditor";
 import { NormalizedProductImage } from "@/components/collection/NormalizedProductImage";
 import { resolveProductFit } from "@/components/collection/productFit";
 
@@ -64,6 +63,20 @@ import {
   PRODUCT_TILE_IMAGE_CLASS,
   PRODUCT_TILE_OVERRIDES,
 } from "@/lib/collection-tile-presets";
+
+/** Grid = rows of 3 · Wall = fit-to-screen · Icons = smallest, for auditing
+ *  a whole category at a glance. The choice is remembered per browser. */
+type ViewMode = "grid" | "wall" | "icons";
+const VIEW_KEY = "eh.admin.photos.view";
+function readStoredView(): ViewMode {
+  try {
+    const v = window.localStorage.getItem(VIEW_KEY);
+    if (v === "grid" || v === "wall" || v === "icons") return v;
+  } catch {
+    /* no storage */
+  }
+  return "icons";
+}
 
 type SortMode = "editorial" | "type" | "az" | "tonal";
 const SORT_MODES: { id: SortMode; label: string }[] = [
@@ -105,6 +118,7 @@ type Item = {
   useWideFrame: boolean;
   categorySlug: string | null;
   dimensions: string | null;
+  hidden: boolean;
 };
 
 function adapt(p: CollectionProduct): Item {
@@ -118,6 +132,7 @@ function adapt(p: CollectionProduct): Item {
     variantCount: p.variants?.length ?? 0,
     categorySlug: p.categorySlug ?? null,
     dimensions: p.dimensions ?? null,
+    hidden: p.publicReady === false,
     useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
@@ -131,15 +146,58 @@ function PhotosManager() {
   const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
   const [sub, setSub] = useState<string>("all");
   const [sortMode, setSortMode] = useState<SortMode>("editorial");
-  const [view, setView] = useState<"grid" | "wall">("grid");
+  const [view, setView] = useState<ViewMode>(readStoredView);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(VIEW_KEY, view);
+    } catch {
+      /* private mode — the choice just won't persist */
+    }
+  }, [view]);
 
   // Load baked catalog once.
   const [allProducts, setAllProducts] = useState<CollectionProduct[] | null>(null);
   const [catalogErr, setCatalogErr] = useState<string | null>(null);
   useEffect(() => {
     let alive = true;
-    getCollectionCatalog()
-      .then((c) => alive && setAllProducts(c.products))
+    // The public catalog drops hidden pieces before it returns. On an audit
+    // screen that is the wrong default — a hidden piece looked deleted. Pull
+    // them separately and paint them faded so "why isn't this on the site?"
+    // answers itself.
+    Promise.all([
+      getCollectionCatalog(),
+      supabase
+        .from("inventory_items")
+        .select("rms_id, title, images, collection_slug, category_slug, editorial_order")
+        .eq("public_ready", false),
+    ])
+      .then(([c, hiddenRes]) => {
+        if (!alive) return;
+        const hidden = (hiddenRes.data ?? [])
+          .filter((r) => r.rms_id)
+          .map(
+            (r) =>
+              ({
+                id: r.rms_id as string,
+                title: r.title ?? "Untitled",
+                images: (Array.isArray(r.images) ? r.images : []).map((url, i) => ({
+                  url: url as string,
+                  position: i,
+                  isHero: i === 0,
+                  inferredFilename: null,
+                  altText: null,
+                })),
+                collectionSlug: r.collection_slug ?? null,
+                declaredCategory: r.category_slug ?? null,
+                editorialOrder: r.editorial_order ?? null,
+                publicReady: false,
+                variants: [],
+                categorySlug: null,
+                dimensions: null,
+              }) as unknown as CollectionProduct,
+          );
+        setAllProducts([...c.products, ...hidden]);
+      })
       .catch((e) => alive && setCatalogErr((e as Error).message));
     return () => {
       alive = false;
@@ -241,8 +299,8 @@ function CategoryGrid({
   onSub: (s: string) => void;
   sortMode: SortMode;
   onSortMode: (m: SortMode) => void;
-  view: "grid" | "wall";
-  onView: (v: "grid" | "wall") => void;
+  view: ViewMode;
+  onView: (v: ViewMode) => void;
   allProducts: CollectionProduct[] | null;
 }) {
   const reorderFn = useServerFn(reorderItems);
@@ -303,46 +361,40 @@ function CategoryGrid({
 
 
   const [activeId, setActiveId] = useState<string | null>(null);
-  // editing.id is the inventory_items UUID (resolved by rms_id at open time),
-  // NOT the catalog id (which is the rms_id like "2408"). The server fn and
-  // editor's DB queries both key off the UUID.
-  const [editing, setEditing] = useState<Item | null>(null);
-  // Focal/framing state for the row being edited. Read once at open time and
-  // passed down as props — the editor must never re-fetch it, or the badge
-  // paints AUTO first and corrects later.
-  const [editingRow, setEditingRow] = useState<{
-    cover_focal_x: number | null;
-    cover_focal_y: number | null;
-    cover_framed_url: string | null;
-    category_slug: string | null;
-    dimensions_raw: string | null;
-  } | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  const openEditor = useCallback(async (item: Item) => {
-    setErr(null);
-    try {
-      const { data, error } = await supabase
-        .from("inventory_items")
-        .select(
-          "id, cover_focal_x, cover_focal_y, cover_framed_url, category_slug, dimensions_raw",
-        )
-        .eq("rms_id", item.rms_id)
-        .maybeSingle();
-      if (error) throw error;
-      if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
-      setEditingRow({
-        cover_focal_x: data.cover_focal_x ?? null,
-        cover_focal_y: data.cover_focal_y ?? null,
-        cover_framed_url: data.cover_framed_url ?? null,
-        category_slug: data.category_slug ?? null,
-        dimensions_raw: data.dimensions_raw ?? null,
-      });
-      setEditing({ ...item, id: data.id });
-    } catch (e) {
-      setErr((e as Error).message);
-    }
-  }, []);
+  // Clicking a photo opens the FULL product editor (which embeds the same
+  // photo/order panel), not a photos-only drawer. Splitting the two is what
+  // made auditing feel like hopping between pages.
+  const gridNavigate = useNavigate();
+  const openEditor = useCallback(
+    async (item: Item) => {
+      setErr(null);
+      try {
+        const { data, error } = await supabase
+          .from("inventory_items")
+          .select("id")
+          .eq("rms_id", item.rms_id)
+          .maybeSingle();
+        if (error) throw error;
+        if (!data?.id) throw new Error(`No inventory row for RMS ${item.rms_id}`);
+        await gridNavigate({
+          to: "/admin/products",
+          search: {
+            q: "",
+            col: "",
+            cat: "",
+            sort: "title" as const,
+            ready: "all" as const,
+            id: data.id,
+          },
+        });
+      } catch (e) {
+        setErr((e as Error).message);
+      }
+    },
+    [gridNavigate],
+  );
   const [saveState, setSaveState] = useState<
     "idle" | "pending" | "syncing" | "synced" | "error"
   >("idle");
@@ -538,6 +590,19 @@ function CategoryGrid({
               <Grid2x2 className="h-4 w-4" />
             </button>
             <button
+              onClick={() => onView("icons")}
+              className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
+                view === "icons"
+                  ? "text-charcoal bg-charcoal/[0.05]"
+                  : "text-charcoal/40 hover:text-charcoal/80"
+              }`}
+              aria-label="Small icons"
+              aria-pressed={view === "icons"}
+              title="Small icons — audit a whole category at once"
+            >
+              <LayoutList className="h-4 w-4" />
+            </button>
+            <button
               onClick={() => onView("wall")}
               className={`h-9 w-9 inline-flex items-center justify-center transition-colors border-l border-charcoal/15 ${
                 view === "wall"
@@ -654,11 +719,13 @@ function CategoryGrid({
                   : "grid gap-1"
               }
               style={
-                view === "wall"
-                  ? {
-                      gridTemplateColumns: `repeat(${wallCols(visibleItems.length)}, minmax(0, 1fr))`,
+                view === "grid"
+                  ? undefined
+                  : {
+                      gridTemplateColumns: `repeat(${
+                        view === "icons" ? 12 : wallCols(visibleItems.length)
+                      }, minmax(0, 1fr))`,
                     }
-                  : undefined
               }
             >
               {visibleItems.map((item, idx) => (
@@ -666,7 +733,7 @@ function CategoryGrid({
                   key={item.id}
                   item={item}
                   index={idx}
-                  dense={view === "wall"}
+                  dense={view !== "grid"}
                   draggable={!reorderDisabled}
                   onOpen={() => void openEditor(item)}
                 />
@@ -680,44 +747,11 @@ function CategoryGrid({
                 className="bg-white border-2 border-charcoal shadow-xl overflow-hidden"
                 style={{ aspectRatio: tileAspectFor(activeItem), width: ghostWidth ?? undefined }}
               >
-                <TileMedia item={activeItem} dense={view === "wall"} />
+                <TileMedia item={activeItem} dense={view !== "grid"} />
               </div>
             )}
           </DragOverlay>
         </DndContext>
-      )}
-
-      {editing && (
-        <ImageOrderEditor
-          item={{
-            id: editing.id,
-            rms_id: editing.rms_id,
-            title: editing.title,
-            images: editing.images,
-            card_background_url: editing.card_background_url,
-            cover_focal_x: editingRow?.cover_focal_x ?? null,
-            cover_focal_y: editingRow?.cover_focal_y ?? null,
-            cover_framed_url: editingRow?.cover_framed_url ?? null,
-            category_slug: editingRow?.category_slug ?? null,
-            dimensions: editingRow?.dimensions_raw ?? null,
-          }}
-          onClose={() => {
-            setEditing(null);
-            setEditingRow(null);
-          }}
-          onSaved={({ images, card_background_url }) => {
-            setItems((prev) =>
-              prev.map((i) =>
-                i.rms_id === editing.rms_id
-                  ? { ...i, images, card_background_url }
-                  : i,
-              ),
-            );
-            // Bust the public catalog cache so the next /collection load
-            // shows this edit immediately (same pattern as reorder saves).
-            invalidateCollectionCatalog();
-          }}
-        />
       )}
 
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
@@ -798,9 +832,17 @@ function Tile({
           : "ring-0 hover:shadow-[0_8px_30px_-12px_rgba(26,26,26,0.18)]"
       }`}
       style={{ ...style, aspectRatio: tileAspectFor(item) }}
-      title={`${item.title} · click to edit${draggable ? " · drag to reorder" : ""}`}
+      title={`${item.title}${item.hidden ? " · HIDDEN from the live site" : ""} · click to edit${draggable ? " · drag to reorder" : ""}`}
     >
-      <TileMedia item={item} dense={dense} />
+      <div className={item.hidden ? "h-full w-full opacity-35 grayscale" : "h-full w-full"}>
+        <TileMedia item={item} dense={dense} />
+      </div>
+
+      {item.hidden && (
+        <span className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center gap-1 bg-charcoal/85 text-cream text-[9px] uppercase tracking-[0.22em] py-1">
+          <EyeOff className="h-2.5 w-2.5" /> Hidden
+        </span>
+      )}
 
       {/* Position index — small, editorial */}
       <span className="absolute top-2 left-2 text-[10px] uppercase tracking-[0.18em] tabular-nums text-charcoal/70 bg-white/85 backdrop-blur px-1.5 py-0.5">
@@ -839,6 +881,9 @@ function Tile({
           </p>
           <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/55 tabular-nums">
             {imageCount} {imageCount === 1 ? "image" : "images"}
+            {item.variantCount > 0
+              ? ` across ${item.variantCount + 1} items`
+              : ""}
           </p>
         </div>
       </div>

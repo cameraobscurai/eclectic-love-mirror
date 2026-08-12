@@ -45,7 +45,9 @@ function NewProductPage() {
   const [category, setCategory] = useState(CATEGORIES[0].slug);
   const [subcategory, setSubcategory] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [quantityLabel, setQuantityLabel] = useState("");
   const [dimensions, setDimensions] = useState("");
+  const [description, setDescription] = useState("");
 
   // Declared taxonomy — required to create, unless deliberately deferred.
   const [tree, setTree] = useState<Awaited<ReturnType<typeof listTaxonomyTree>> | null>(null);
@@ -72,6 +74,8 @@ function NewProductPage() {
   const quantityValue =
     qNum !== null && Number.isFinite(qNum) ? qNum : null;
   const dimensionsValue = dimensions.trim() || null;
+  const quantityLabelValue = quantityLabel.trim() || null;
+  const descriptionValue = description.trim() || null;
   const taxonomyResolved = deferTaxonomy || (!!collectionSlug && !!categorySlug);
   const canSave = !!titleTrim && taxonomyResolved;
 
@@ -92,6 +96,8 @@ function NewProductPage() {
           category: category as "seating",
           subcategorySlug: subcategory || null,
           quantity: quantityValue,
+          quantityLabel: quantityLabelValue,
+          description: descriptionValue,
           dimensionsRaw: dimensionsValue,
           publicReady,
         },
@@ -104,7 +110,8 @@ function NewProductPage() {
         category: category as "seating",
         subcategorySlug: subcategory || null,
         quantity: quantityValue,
-        quantityLabel: null,
+        quantityLabel: quantityLabelValue,
+        description: descriptionValue,
         dimensionsRaw: dimensionsValue,
         publicReady,
         collectionSlug: deferTaxonomy ? null : collectionSlug,
@@ -320,7 +327,7 @@ function NewProductPage() {
 
 
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <Field label="Quantity (optional)">
             <input
               type="number"
@@ -330,6 +337,15 @@ function NewProductPage() {
               onChange={(e) => setQuantity(e.target.value)}
               className="w-full border border-charcoal/25 px-3 py-2 text-sm focus:outline-none focus:border-charcoal"
               placeholder="—"
+            />
+          </Field>
+          <Field label="Quantity label (optional)">
+            <input
+              maxLength={50}
+              value={quantityLabel}
+              onChange={(e) => setQuantityLabel(e.target.value)}
+              className="w-full border border-charcoal/25 px-3 py-2 text-sm focus:outline-none focus:border-charcoal"
+              placeholder="e.g. SET OF 4"
             />
           </Field>
           <Field label="Dimensions (optional)">
@@ -342,6 +358,20 @@ function NewProductPage() {
             />
           </Field>
         </div>
+
+        <Field label="Notes / description (optional)">
+          <textarea
+            maxLength={4000}
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border border-charcoal/25 px-3 py-2 text-sm focus:outline-none focus:border-charcoal"
+            placeholder="e.g. Available October 2026"
+          />
+          <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-charcoal/45">
+            Shows on the product page
+          </p>
+        </Field>
 
         {/* Photos */}
         <div>
