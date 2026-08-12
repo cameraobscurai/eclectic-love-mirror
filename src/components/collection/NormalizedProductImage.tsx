@@ -279,8 +279,8 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
   useEffect(() => {
-    if (hasFocal) return;
     if (!src) return;
+
     const existing = measurementCache.get(cacheKey);
     if (existing !== undefined) {
       if (existing !== measurement) setMeasurement(existing);
