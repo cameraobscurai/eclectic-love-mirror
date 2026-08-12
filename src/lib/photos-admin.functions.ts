@@ -369,5 +369,13 @@ export const getPublishStatus = createServerFn({ method: "GET" })
       .gt("updated_at", publishedAt);
     if (error) return { publishedAt, pending: 0 };
 
-    return { publishedAt, pending: count ?? 0 };
+    // Deletions are pending work too. Without this a delete looks done in the
+    // admin while the live ghost waits for a publish nobody knows to click.
+    const { count: tombCount } = await supabaseAdmin
+      .from("deleted_items")
+      .select("id", { count: "exact", head: true })
+      .gt("deleted_at", publishedAt);
+
+    return { publishedAt, pending: (count ?? 0) + (tombCount ?? 0) };
+
   });
