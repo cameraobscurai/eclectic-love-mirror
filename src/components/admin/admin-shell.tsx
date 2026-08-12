@@ -112,7 +112,7 @@ const CRUMB_LABELS: Record<string, string> = {
   "/admin/taxonomy": "Taxonomy studio",
 
   "/admin/team": "Team",
-  "/admin/photos": "Collection photos",
+  "/admin/photos": "Collection",
   "/admin/render": "Photo studio",
   "/admin/new-product": "New product",
   "/admin/gallery": "Gallery",
