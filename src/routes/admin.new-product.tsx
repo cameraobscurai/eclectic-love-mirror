@@ -62,6 +62,9 @@ function NewProductPage() {
 
   const [busy, setBusy] = useState<null | "draft" | "publish">(null);
   const [err, setErr] = useState<string | null>(null);
+  // Set once the user has acknowledged a duplicate-title warning.
+  const [dupAck, setDupAck] = useState(false);
+
 
   useEffect(() => {
     listTaxonomyTree()
