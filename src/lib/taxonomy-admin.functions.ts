@@ -85,6 +85,7 @@ export const listTaxonomyRows = createServerFn({ method: "GET" })
       for (const r of data) {
         // E2E artifacts never pollute the ledger counts (see test-artifact.ts).
         if (isTestArtifact({ title: r.title, rms_id: r.rms_id })) continue;
+        rows.push({
           id: r.id,
           rms_id: r.rms_id,
           title: r.title,
