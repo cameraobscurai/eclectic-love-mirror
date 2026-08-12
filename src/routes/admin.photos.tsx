@@ -369,18 +369,21 @@ function CategoryGrid({
   // persist a partial parent list) or while viewing a non-editorial sort
   // mode (the drag order belongs to editorial only — Type/A–Z/Tonal are
   // mirrors of the public sort, not editable orderings).
-  const subActive = sub !== "all";
+  const subActive = !allMode && sub !== "all";
   const { filter: filterParam } = Route.useSearch();
   const missingOnly = filterParam === "missing";
-  const reorderDisabled = subActive || sortMode !== "editorial" || missingOnly;
+  // ALL is read-only: drag order is persisted per category, so a cross-category
+  // list has nowhere to write to.
+  const reorderDisabled = allMode || subActive || sortMode !== "editorial" || missingOnly;
   const visibleItems = useMemo(
     () => {
       let base = subActive
         ? items.filter((i) => {
             const p = (allProducts ?? []).find((pp) => pp.id === i.id);
-            return p ? productMatchesSub(p, parent, sub) : false;
+            return p ? productMatchesSub(p, parent as ParentId, sub) : false;
           })
         : items;
+
       if (missingOnly) base = base.filter((i) => i.images.length === 0);
       // Guard: dnd-kit's SortableContext throws on null/undefined ids
       // ("Cannot use 'in' operator to search for 'id' in null").
