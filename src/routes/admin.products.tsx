@@ -404,15 +404,15 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   const get = useServerFn(getProduct);
   const upd = useServerFn(updateProduct);
   const auditFn = useServerFn(listProductAudit);
-  const catsFn = useServerFn(listDistinctCategories);
   const roleFn = useServerFn(getMyRole);
   const del = useServerFn(deleteProduct);
+  const assign = useServerFn(assignTaxonomy);
+  const { data: tree } = useTaxonomyTree();
 
   const [row, setRow] = useState<ProductRow | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [audit, setAudit] = useState<any[]>([]);
-  const [cats, setCats] = useState<string[]>([]);
   const [role, setRole] = useState<"admin" | "staff">("staff");
   const [photoEditor, setPhotoEditor] = useState(false);
 
@@ -427,10 +427,10 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
   useEffect(() => {
     setRow(null); setAudit([]);
     refetch();
-    catsFn().then(setCats).catch(() => {});
     roleFn().then((r) => setRole(r.role === "admin" ? "admin" : "staff")).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
 
   if (!row) {
     return (
