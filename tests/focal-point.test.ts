@@ -83,3 +83,78 @@ describe("focalToFrame", () => {
     expect(deltaPercent).toBeCloseTo(0, 6);
   });
 });
+
+/**
+ * Composition, not just conversion. The Ingram bug lived in how focalToFrame
+ * combined with the solved scale term inside the transform — the fixtures
+ * above lock only one half of that. This restates the render path's delta
+ * arithmetic (NormalizedProductImage, transform memo) and locks the two
+ * properties that make the tool safe.
+ */
+describe("focal composes with the solved fit", () => {
+  const applyFocal = (
+    base: { tx: number; ty: number },
+    focal: { x: number; y: number },
+    silhouette: { cx: number; cy: number },
+    scale: number,
+    naturalAspect: number,
+  ) => {
+    const { renderedW, renderedH } = rendered(naturalAspect, FRAME);
+    const { fx, fy } = focalToFrame(focal.x, focal.y, renderedW, renderedH);
+    return {
+      tx: base.tx + (silhouette.cx - fx) * scale * 100,
+      ty: base.ty + (silhouette.cy - fy) * scale * 100,
+      scale,
+    };
+  };
+
+  it("is a no-op when focal lands on the silhouette center, at any scale", () => {
+    const aspect = 391 / 151;
+    const { renderedW, renderedH } = rendered(aspect, FRAME);
+    const center = focalToFrame(0.5, 0.5, renderedW, renderedH);
+    for (const scale of [0.7, 1, 1.2, 2]) {
+      const out = applyFocal(
+        { tx: -12, ty: 7 },
+        { x: 0.5, y: 0.5 },
+        { cx: center.fx, cy: center.fy },
+        scale,
+        aspect,
+      );
+      expect(out.tx).toBeCloseTo(-12, 6);
+      expect(out.ty).toBeCloseTo(7, 6);
+    }
+  });
+
+  it("never alters the solved scale", () => {
+    const out = applyFocal(
+      { tx: 0, ty: 0 },
+      { x: 0.05, y: 0.95 },
+      { cx: 0.5, cy: 0.5 },
+      0.83,
+      391 / 151,
+    );
+    expect(out.scale).toBe(0.83);
+  });
+
+  it("scales the focal delta with the fit, so travel stays proportional", () => {
+    const args = [
+      { tx: 0, ty: 0 },
+      { x: 0.5, y: 1 },
+      { cx: 0.5, cy: 0.5 },
+    ] as const;
+    const small = applyFocal(args[0], args[1], args[2], 0.5, 391 / 151);
+    const large = applyFocal(args[0], args[1], args[2], 1.0, 391 / 151);
+    expect(large.ty).toBeCloseTo(small.ty * 2, 6);
+  });
+
+  it("keeps a full-photo focal sweep bounded by the letterbox on a wide cover", () => {
+    const aspect = 391 / 151;
+    const { renderedH } = rendered(aspect, FRAME);
+    const top = applyFocal({ tx: 0, ty: 0 }, { x: 0.5, y: 0 }, { cx: 0.5, cy: 0.5 }, 1, aspect);
+    const bottom = applyFocal({ tx: 0, ty: 0 }, { x: 0.5, y: 1 }, { cx: 0.5, cy: 0.5 }, 1, aspect);
+    // Full sweep must equal the letterbox height in percent — the old code
+    // treated it as 100%, which is the ~2x overshoot that dropped the sofa.
+    expect(Math.abs(bottom.ty - top.ty)).toBeCloseTo(renderedH * 100, 4);
+    expect(Math.abs(bottom.ty - top.ty)).toBeLessThan(50);
+  });
+});
