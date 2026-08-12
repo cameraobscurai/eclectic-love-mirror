@@ -211,18 +211,19 @@ test.describe('Inventory add/edit — staff walkthrough', () => {
     await expect(page.locator('#f-quantity')).toHaveValue('3');
     await expect(page.locator('#f-dimensions_raw')).toHaveValue('30"W x 30"D x 18"H');
 
-    // Category must render as the friendly label list, with a real selection.
-    const drawerCategory = page.locator('#f-category');
+    // Declared taxonomy (Adrienne's vocabulary) must survive into the editor.
+    const drawerCollection = page.locator('#f-collection_slug');
+    await expect(drawerCollection).toBeVisible();
+    expect((await drawerCollection.inputValue()).trim(), 'collection lost on the way into the editor').not.toBe('');
+
+    const drawerCategory = page.locator('#f-category_slug');
     await expect(drawerCategory).toBeVisible();
     expect((await drawerCategory.inputValue()).trim(), 'category lost on the way into the editor').not.toBe('');
+    expect(
+      await drawerCategory.locator('option').count(),
+      'category selector is empty in the editor',
+    ).toBeGreaterThan(1);
 
-    // Subcategory must survive the round trip and still offer options.
-    const drawerSub = page.locator('#f-subcategory_slug');
-    if (await drawerSub.count()) {
-      const subs = await drawerSub.locator('option').count();
-      expect(subs, 'subcategory selector is empty in the editor').toBeGreaterThan(1);
-      if (subValue) expect(await drawerSub.inputValue()).toBe(subValue);
-    }
 
     // A brand-new draft must NOT be publicly visible.
     const publicToggle = page.locator('#f-public_ready');
