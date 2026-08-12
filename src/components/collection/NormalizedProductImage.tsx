@@ -374,7 +374,7 @@ export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(functi
   // until measurement resolves, then fade in. Above-fold (eager) tiles skip
   // this gate so LCP stays fast — they render with the fallback fit and
   // refine when the measurement arrives.
-  const ready = hasFocal || measurement !== undefined || eager;
+  const ready = measurement !== undefined || eager;
 
   return (
     <img
