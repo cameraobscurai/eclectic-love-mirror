@@ -226,34 +226,10 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // while the baked copy keeps the original name ("FLORENCE Lantern 2.png").
     // Without normalising both, a family tile shows the same photo twice —
     // which is exactly what /collection/florence-weathered-zinc-lantern did.
-    const imgKey = (url: string) => {
-      try {
-        const base = decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
-        const ext = (base.match(/\.[a-z0-9]+$/i)?.[0] ?? "").toLowerCase();
-        const stem = base
-          .slice(0, base.length - ext.length)
-          .replace(/^[0-9a-f]{8,}-/i, "")
-          .replace(/[_+\-\s]+/g, " ")
-          .trim()
-          .toLowerCase();
-        return (stem ? stem + ext : base.toLowerCase()) || url;
-      } catch {
-        return url;
-      }
-    };
+    const imgKey = imageKey;
+    // Detail-shot demotion and cover promotion live in @/lib/family-cover so
+    // they are fixture-testable.
 
-    // A macro/close-up shot is never a cover. These are shot against a wall
-    // (opaque backdrop, cropped hardware) and read as a broken tile next to
-    // the transparent full-product cutouts. Demote, never drop.
-    const isDetailShot = (url: string) =>
-      /(detail|close[\s._-]?up|closeup|macro|hardware)/i.test(imgKey(url));
-    const coverFirst = (imgs: CollectionImage[]): CollectionImage[] => {
-      if (imgs.length < 2 || !isDetailShot(imgs[0].url)) return imgs;
-      const idx = imgs.findIndex((i) => !isDetailShot(i.url));
-      if (idx <= 0) return imgs;
-      const next = [...imgs.slice(idx, idx + 1), ...imgs.filter((_, i) => i !== idx)];
-      return next.map((img, i) => ({ ...img, position: i, isHero: i === 0 }));
-    };
 
 
 
