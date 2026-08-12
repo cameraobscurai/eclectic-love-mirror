@@ -1,0 +1,1 @@
+update public.inventory_items set cover_focal_x = null, cover_focal_y = null where rms_id = '4180';
