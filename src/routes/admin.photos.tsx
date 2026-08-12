@@ -855,6 +855,16 @@ function CategoryGrid({
       <p className="mt-12 pt-6 border-t border-charcoal/10 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
         Order saves live. /collection reflects it on next page load — no bake needed.
       </p>
+
+      {/* Same editor as /admin/products — opened over the grid, so a photo
+          audit and a details fix are one motion. */}
+      {editId && (
+        <InventoryEditDrawer
+          id={editId}
+          onClose={() => setEditId(null)}
+          onSaved={() => setReloadKey((k) => k + 1)}
+        />
+      )}
     </div>
   );
 }
