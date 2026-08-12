@@ -510,6 +510,11 @@ function EditDrawer({ id, onClose, onSaved }: { id: string; onClose: () => void;
             title: (row.title as string) ?? "",
             images: Array.isArray(row.images) ? (row.images as string[]) : [],
             card_background_url: (row.card_background_url as string | null) ?? null,
+            category_slug: (row.category_slug as string | null) ?? null,
+            dimensions: (row.dimensions_raw as string | null) ?? null,
+            cover_focal_x: (row.cover_focal_x as number | null) ?? null,
+            cover_focal_y: (row.cover_focal_y as number | null) ?? null,
+            cover_framed_url: (row.cover_framed_url as string | null) ?? null,
           }}
           onClose={() => setPhotoEditor(false)}
           onSaved={(next) => {

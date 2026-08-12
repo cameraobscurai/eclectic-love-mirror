@@ -42,6 +42,12 @@ type Item = {
   /** Fit inputs — let the focal preview render the real production rule. */
   category_slug?: string | null;
   dimensions?: string | null;
+  /** Focal state must come from the row — a child re-fetch paints AUTO first
+   *  and corrects later, i.e. a UI that lies about override state. */
+  cover_focal_x?: number | null;
+  cover_focal_y?: number | null;
+  /** Baked derivative: when set, focal is not read by the public tile. */
+  cover_framed_url?: string | null;
 };
 
 
@@ -420,11 +426,13 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
               <FocalEditor
                 id={item.id}
                 coverUrl={urls[0]}
-                initialX={null}
-                initialY={null}
+                initialX={item.cover_focal_x ?? null}
+                initialY={item.cover_focal_y ?? null}
+                coverFramedUrl={item.cover_framed_url ?? null}
                 categorySlug={item.category_slug ?? null}
                 dimensions={item.dimensions ?? null}
               />
+
 
               <DndContext
                 sensors={sensors}
