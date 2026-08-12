@@ -695,8 +695,16 @@ function CategoryGrid({
             title: editing.title,
             images: editing.images,
             card_background_url: editing.card_background_url,
+            cover_focal_x: editingRow?.cover_focal_x ?? null,
+            cover_focal_y: editingRow?.cover_focal_y ?? null,
+            cover_framed_url: editingRow?.cover_framed_url ?? null,
+            category_slug: editingRow?.category_slug ?? null,
+            dimensions: editingRow?.dimensions_raw ?? null,
           }}
-          onClose={() => setEditing(null)}
+          onClose={() => {
+            setEditing(null);
+            setEditingRow(null);
+          }}
           onSaved={({ images, card_background_url }) => {
             setItems((prev) =>
               prev.map((i) =>
