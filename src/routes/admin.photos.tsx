@@ -469,7 +469,18 @@ function CategoryGrid({
   // quantity, dimensions, description, taxonomy, variants and photos, the
   // same drawer /admin/products uses. COLLECTION is a first-class editing
   // surface, not a viewer that bounces you to another route.
-  const [editId, setEditId] = useState<string | null>(null);
+  // The open editor is a URL state, not component state — Back closes the
+  // drawer, and a specific piece can be linked to directly.
+  const editId = Route.useSearch().id ?? null;
+  const editNavigate = useNavigate({ from: Route.fullPath });
+  const setEditId = useCallback(
+    (id: string | null) => {
+      void editNavigate({
+        search: (prev: Record<string, unknown>) => ({ ...prev, id: id ?? undefined }),
+      });
+    },
+    [editNavigate],
+  );
   const openEditor = useCallback(async (item: Item) => {
     setErr(null);
     try {
