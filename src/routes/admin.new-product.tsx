@@ -451,10 +451,23 @@ function NewProductPage() {
         </div>
 
         {err && (
-          <p className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
-            {err}
-          </p>
+          <div className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
+            <p>{err.replace(/^DUPLICATE_TITLE:\s*/, "")}</p>
+            {err.startsWith("DUPLICATE_TITLE") && !dupAck && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDupAck(true);
+                  setErr(null);
+                }}
+                className="mt-2 border border-red-300 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-red-700 hover:bg-red-100"
+              >
+                Create anyway
+              </button>
+            )}
+          </div>
         )}
+
 
         <div className="pt-4 border-t border-charcoal/10 flex flex-wrap items-center gap-3">
           <button
