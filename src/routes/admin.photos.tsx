@@ -604,7 +604,7 @@ function CategoryGrid({
       <header className="mb-4 flex items-end justify-between gap-6 border-b border-charcoal/10 pb-4">
         <div>
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">
-            Admin · Photos
+            Admin · Collection
           </p>
           <h1 className="mt-2 font-display text-3xl uppercase tracking-[0.02em]">
             {selLabel(parent)}
