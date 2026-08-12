@@ -616,7 +616,10 @@ function CategoryGrid({
                     ? "Missing-images filter active — reorder disabled"
                     : sortMode !== "editorial"
                     ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
+                    : allMode
+                    ? "Every piece, grouped by category — pick a category to reorder"
                     : "Reorder disabled while filtered"
+
                 }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
