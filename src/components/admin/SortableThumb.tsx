@@ -24,6 +24,11 @@ export function SortableThumb({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: url });
 
+  // Storage filename, decoded and stripped of the hash prefix uploads add.
+  const fileLabel = decodeURIComponent(
+    (url.split("?")[0].split("/").pop() ?? url).replace(/^[0-9a-f]{8,}-/i, ""),
+  );
+
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
@@ -38,7 +43,18 @@ export function SortableThumb({
         isCover ? "border-emerald-500 border-2" : "border-neutral-300"
       }`}
     >
-      <img src={url} alt="" className="h-full w-full object-cover" loading="lazy" />
+      <img
+        src={url}
+        alt={fileLabel}
+        title={fileLabel}
+        className="h-full w-full object-cover"
+        loading="lazy"
+      />
+
+      {/* Filename — "when I click an image I need to see what it is". */}
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-black/65 px-1 py-0.5 text-[9px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+        {fileLabel}
+      </span>
 
       {isCover && (
         <span className="absolute top-1 left-1 bg-emerald-600 text-white text-[9px] uppercase tracking-widest px-1.5 py-0.5 font-semibold">
