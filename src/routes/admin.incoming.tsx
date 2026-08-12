@@ -54,7 +54,10 @@ function IncomingPage() {
     } else {
       setFiles(
         (data ?? [])
-          .filter((f) => f.name && !f.name.startsWith("."))
+          // Storage returns folders in the same list as files, with a null id.
+          // Rendering one as an <img> gives a broken thumbnail, which is what
+          // the whole bucket root looked like: 14 legacy folders, 0 photos.
+          .filter((f) => f.name && !f.name.startsWith(".") && (f as any).id != null)
           .map((f) => ({
             name: f.name,
             path: f.name,
@@ -63,6 +66,7 @@ function IncomingPage() {
             updated_at: (f as any).updated_at,
           })),
       );
+
     }
     setLoading(false);
   }, []);
