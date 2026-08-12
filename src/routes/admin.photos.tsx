@@ -143,7 +143,7 @@ function AdminPhotosPage() {
 }
 
 function PhotosManager() {
-  const [parent, setParent] = useState<ParentId>(PARENT_ORDER[0]);
+  const [parent, setParent] = useState<ParentSel>("all");
   const [sub, setSub] = useState<string>("all");
   const [sortMode, setSortMode] = useState<SortMode>("editorial");
   const [view, setView] = useState<ViewMode>(readStoredView);
