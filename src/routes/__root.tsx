@@ -14,6 +14,8 @@ import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
 import { Toaster } from "../components/ui/sonner";
 import { InquiryTray } from "../components/collection/InquiryTray";
+import { QuickViewCatalogProvider } from "../components/collection/quick-view-context";
+import { QuickViewHost } from "../components/collection/QuickViewHost";
 import { installServerFnAuth } from "../lib/server-fn-auth";
 
 // Install the Supabase → server-fn Authorization bridge as early as possible
@@ -257,10 +259,15 @@ function RootComponent() {
         Skip to main content
       </a>
       {!isAdmin && !isSketch && <Navigation />}
-      <div id="devedit-canvas">
-        <Outlet />
-        {!hideFooter && <Footer />}
-      </div>
+      <QuickViewCatalogProvider>
+        <div id="devedit-canvas">
+          <Outlet />
+          {!hideFooter && <Footer />}
+        </div>
+        {/* Quick View is hosted once, globally — every product surface
+            (grid, wall, search, PDP rails) opens the same modal. */}
+        {!isAdmin && !isSketch && <QuickViewHost />}
+      </QuickViewCatalogProvider>
 
       {!isAdmin && !isSketch && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />
