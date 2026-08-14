@@ -290,13 +290,24 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
 
           variantsOut = members.map((v) => {
             const row = overlay.get(v.id);
-            const firstLive = Array.isArray(row?.images) ? row?.images[0] : undefined;
+            const rowImages = Array.isArray(row?.images) ? row.images : [];
+            // PINNED beats convention. The pointer is only honoured while the
+            // photo is still on that row — a removed photo falls back to AUTO
+            // rather than rendering a dead URL.
+            const pinnedKey = row?.variant_cover_url
+              ? imageKey(row.variant_cover_url)
+              : null;
+            const pinned = pinnedKey
+              ? rowImages.find((u) => imageKey(u) === pinnedKey)
+              : undefined;
             return {
               ...v,
               title: row?.title ?? v.title,
               dimensions: row?.dimensions_raw ?? v.dimensions,
               stockedQuantity: stockText(row, v.stockedQuantity),
-              imageUrl: firstLive ?? v.imageUrl ?? null,
+              imageUrl: pinned ?? rowImages[0] ?? v.imageUrl ?? null,
+              label: row?.variant_label ?? v.label ?? null,
+              pinned: !!pinned,
             };
           });
         }
