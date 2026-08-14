@@ -49,10 +49,11 @@ function sameWord(a: string, b: string): boolean {
   return A.some((x) => B.includes(x));
 }
 
-/** Number of leading words shared by every title (never the whole title). */
+/** Number of leading words shared by every title. May consume a short title
+ *  entirely — that member becomes the BASE_LABEL variant. */
 export function prefixLength(titleWords: string[][]): number {
   if (titleWords.length < 2) return 0;
-  const cap = Math.min(...titleWords.map((w) => w.length)) - 1;
+  const cap = Math.min(...titleWords.map((w) => w.length));
   let n = 0;
   while (n < cap && titleWords.every((w) => sameWord(w[n], titleWords[0][n]))) n++;
   return Math.max(0, n);
@@ -61,7 +62,7 @@ export function prefixLength(titleWords: string[][]): number {
 /** Number of trailing words shared by every title, after the prefix. */
 export function suffixLength(titleWords: string[][], prefix: number): number {
   if (titleWords.length < 2) return 0;
-  const cap = Math.min(...titleWords.map((w) => w.length - prefix)) - 1;
+  const cap = Math.min(...titleWords.map((w) => w.length - prefix));
   let n = 0;
   while (
     n < cap &&
