@@ -427,7 +427,7 @@ function ProductDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
           {/* Editorial stage — resolution-safe primary + secondary grid. */}
           <div className="lg:col-span-7">
-            <ProductStage product={product} />
+            <ProductStage product={product} activeImageUrl={selected?.imageUrl ?? null} />
           </div>
 
           {/* Meta column — sticky spec sheet. */}
@@ -436,20 +436,38 @@ function ProductDetailPage({
               {crumbLabel}
             </p>
             <h1 className="font-display text-4xl md:text-5xl tracking-wide uppercase leading-[1.1] mb-10">
-              {product.title}
+              {selected?.title ?? product.title}
             </h1>
+
+            {chips.length > 1 && product.optionName && (
+              <VariantConfigurator
+                optionName={product.optionName}
+                variants={chips}
+                selected={selected}
+                onSelect={(v) =>
+                  navigate({
+                    to: ".",
+                    search: { v: variantKey(v) },
+                    replace: true,
+                    resetScroll: false,
+                  })
+                }
+              />
+            )}
 
             <div className="border-t border-foreground/10 pt-10 space-y-10">
               <div className="grid grid-cols-2 gap-6">
-                {product.dimensions && (
+                {(selected?.dimensions ?? product.dimensions) && (
                   <div>
                     <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
                       Dimensions
                     </span>
-                    <p className="text-sm leading-relaxed">{product.dimensions}</p>
+                    <p className="text-sm leading-relaxed">
+                      {selected?.dimensions ?? product.dimensions}
+                    </p>
                   </div>
                 )}
-                {(product.stockedQuantity || product.isCustomOrder) && (
+                {(selected?.stockedQuantity || product.stockedQuantity || product.isCustomOrder) && (
                   <div>
                     <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
                       Availability
@@ -457,11 +475,12 @@ function ProductDetailPage({
                     <p className="text-sm leading-relaxed">
                       {product.isCustomOrder
                         ? "Made to order"
-                        : product.stockedQuantity}
+                        : (selected?.stockedQuantity ?? product.stockedQuantity)}
                     </p>
                   </div>
                 )}
               </div>
+
 
               {product.description && (
                 <div>
