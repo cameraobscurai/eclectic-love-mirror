@@ -108,10 +108,19 @@ function scoreRow(row) {
 }
 
 
+/**
+ * Product tiles are selected structurally, via the `.product-tile-media`
+ * wrapper that `ProductTile` renders. The previous heuristic ("alt text is
+ * ALL CAPS") silently matched nothing once catalog titles started arriving in
+ * Title Case with the uppercasing done in CSS — every slice reported 0 tiles.
+ * Never identify tiles by their copy again.
+ */
+const TILE_IMG_SELECTOR = '.product-tile-media img';
+
 async function measureSlice(page, slice) {
   const url = `${BASE}/collection?group=${slice.group}&subcategory=${slice.subcategory}`;
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1500);
+  await page.waitForSelector(TILE_IMG_SELECTOR, { timeout: 30000 });
 
   // Lazy tiles only measure correctly once they've been in the viewport.
   for (let i = 0; i < 14; i++) {
@@ -120,6 +129,14 @@ async function measureSlice(page, slice) {
   }
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(1200);
+
+  // Decode every tile image before measuring; a lazy image that has not
+  // decoded reports naturalWidth 0 and would land in `broken`.
+  await page.evaluate(async (sel) => {
+    const imgs = [...document.querySelectorAll(sel)];
+    await Promise.all(imgs.map((i) => (i.decode ? i.decode().catch(() => {}) : null)));
+  }, TILE_IMG_SELECTOR);
+  await page.waitForTimeout(600);
 
   // The <img> element box is NOT the product. It is a letterboxed frame with
   // whitespace around the silhouette, so measuring it reports the transform
