@@ -67,6 +67,9 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
   useEffect(() => {
     let live = true;
     setBoard(null);
+    // A drawer can paint from a seed row before the real uuid lands. Calling
+    // the server fn with an undefined id throws a Zod error and blanks the app.
+    if (!itemId || !/^[0-9a-f-]{36}$/i.test(itemId)) return;
     getBoard({ data: { id: itemId } })
       .then((b) => {
         if (!live) return;
