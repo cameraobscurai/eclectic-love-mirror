@@ -233,24 +233,39 @@ async function measureSlice(page, slice) {
       });
     }
     return out;
-  });
-
-
+  }, TILE_IMG_SELECTOR);
 
   const measured = tiles.filter((t) => !t.broken && !t.unmeasurable);
+
+  // Trust gate. A slice that finds no tiles, or measures fewer than 60% of the
+  // tiles it found, is reporting on nothing — that is a harness failure and it
+  // throws instead of returning a number the eye would read as a pass.
+  if (tiles.length === 0) {
+    throw new Error(`no product tiles matched ${TILE_IMG_SELECTOR} at ${url}`);
+  }
+  if (measured.length < 2 || measured.length / tiles.length < 0.6) {
+    throw new Error(
+      `only ${measured.length}/${tiles.length} tiles measurable at ${url} ` +
+        `(broken ${tiles.filter((t) => t.broken).length}, unmeasurable ${tiles.filter((t) => t.unmeasurable).length})`,
+    );
+  }
+
   const rows = groupIntoRows(measured).map(scoreRow);
+  if (rows.length === 0) {
+    throw new Error(`no multi-tile rows resolved from ${measured.length} tiles at ${url}`);
+  }
+
   return {
     slice: `${slice.group}/${slice.subcategory}`,
     tiles: measured.length,
+    found: tiles.length,
     broken: tiles.filter((t) => t.broken).map((t) => t.title),
     unmeasurable: tiles.filter((t) => t.unmeasurable).map((t) => t.title),
     rows,
-    worstMassRatio: rows.length ? Math.min(...rows.map((r) => r.massRatio)) : null,
-    worstFloorSpread: rows.length ? Math.max(...rows.map((r) => r.floorSpread)) : null,
-    // No measurable rows is a harness failure, not a pass.
-    failing: rows.length === 0 ? 1 : rows.filter((r) => !r.pass).length,
+    worstMassRatio: Math.min(...rows.map((r) => r.massRatio)),
+    worstFloorSpread: Math.max(...rows.map((r) => r.floorSpread)),
+    failing: rows.filter((r) => !r.pass).length,
   };
-
 }
 
 async function main() {
