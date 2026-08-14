@@ -230,6 +230,8 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           cover_framed_url: row.cover_framed_url ?? null,
           collection_slug: row.collection_slug ?? null,
           category_slug: row.category_slug ?? null,
+          variant_cover_url: row.variant_cover_url ?? null,
+          variant_label: row.variant_label ?? null,
           images_version: row.updated_at
             ? Math.floor(new Date(row.updated_at).getTime() / 1000)
             : null,
