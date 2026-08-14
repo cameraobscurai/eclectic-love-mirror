@@ -186,6 +186,10 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         cover_framed_url: string | null;
         collection_slug: string | null;
         category_slug: string | null;
+        /** Pinned variant photo (inventory_items.variant_cover_url) and the
+         *  configurator label. Null = AUTO, i.e. today's convention. */
+        variant_cover_url: string | null;
+        variant_label: string | null;
         /** Epoch seconds of the row's last edit. Drives the public `?v=`
          *  cache-buster so a re-uploaded photo at the SAME storage URL cannot
          *  serve stale CDN bytes. Without it the buster stayed frozen at the
