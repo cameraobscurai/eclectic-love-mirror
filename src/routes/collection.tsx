@@ -588,71 +588,14 @@ function CollectionPage() {
   // sticky utility row.
   const resultsTopRef = useRef<HTMLDivElement>(null);
 
-  // ---------- Quick View — URL-driven + scroll snapshot + focus return ----
-  const grabbedScrollY = useRef<number | null>(null);
-  // Remember which tile opened the modal so we can return focus on close.
-  const openerRef = useRef<HTMLElement | null>(null);
-  // Quick View is the middle layer: tile click opens the modal in place
-  // (`?view=<slug>`), and the modal's "View full page →" is the only exit to
-  // the PDP. Users never lose their scroll position or filters to peek.
-  const setQuickViewId = (id: string | null) => {
-    if (id !== null && grabbedScrollY.current === null) {
-      grabbedScrollY.current = window.scrollY;
-      // Snapshot the active element (the tile button) for focus return.
-      openerRef.current = document.activeElement as HTMLElement | null;
-    }
-    // Prefer the product's human-readable slug in the URL — `?view=auset-linen-banquette`
-    // reads better than `?view=3190`. The matcher below already accepts either.
-    let key = id;
-    if (id) {
-      const hit = products.find((p) => p.id === id || p.slug === id);
-      if (hit?.slug) key = hit.slug;
-    }
-    navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, view: key ?? "" }),
-      // Opening pushes a history entry so the back button closes the modal.
-      // Closing REPLACES that entry so the back button leaves the page
-      // entirely instead of reopening the modal (open→close→back = ghost).
-      replace: id === null,
-      // Opening / closing Quick View must never scroll the underlying grid.
-      resetScroll: false,
-    });
-  };
-
-  const quickViewIndex = useMemo(() => {
-    if (!view) return -1;
-    return visibleProducts.findIndex((p) => p.id === view || p.slug === view);
-  }, [visibleProducts, view]);
-  const quickViewFallbackProduct = useMemo(() => {
-    if (!view || quickViewIndex >= 0) return null;
-    return products.find((p) => p.id === view || p.slug === view) ?? null;
-  }, [products, quickViewIndex, view]);
-  const quickViewProduct: CollectionProduct | null =
-    quickViewIndex >= 0 ? visibleProducts[quickViewIndex] : quickViewFallbackProduct;
-
-  // Body lock + scroll restore + focus return on Quick View open/close.
-  // Uses the shared ref-counted scroll lock (see src/lib/scroll-lock.ts).
-  useEffect(() => {
-    if (!quickViewProduct) return undefined;
-    const release = acquireScrollLock();
-    return () => {
-      release();
-      // Restore the grid scroll position so the user lands where they left.
-      const y = grabbedScrollY.current;
-      grabbedScrollY.current = null;
-      const opener = openerRef.current;
-      openerRef.current = null;
-      if (y !== null) {
-        requestAnimationFrame(() => {
-          window.scrollTo({ top: y, behavior: "auto" });
-          // Return focus to the originating tile if it's still in the DOM.
-          if (opener && document.contains(opener)) {
-            opener.focus({ preventScroll: true });
-          }
-        });
-      }
-    };
-  }, [quickViewProduct]);
+  // ---------- Quick View — global host, shared opener --------------------
+  // Quick View is the middle layer: tile click opens the modal in place via
+  // the global `peek` param (URL masked to /collection/<slug>), and the
+  // modal's "View full page →" is the only exit to the PDP. The modal itself
+  // is mounted once in __root.tsx (QuickViewHost) — this route only publishes
+  // its catalog + filtered ordering so prev/next walk the visible grid.
+  const { open: openQuickView } = useQuickView();
+  usePublishQuickViewCatalog(products, visibleProducts);
 
   const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
@@ -1153,7 +1096,7 @@ function CollectionPage() {
                   ) : (
                     <CollectionWall
                       products={visibleProducts}
-                      onOpen={(id) => setQuickViewId(id)}
+                      onOpen={(id) => openQuickView(id)}
                       cap={600}
                     />
                   )}
@@ -1208,7 +1151,7 @@ function CollectionPage() {
                                   key={p.id}
                                   product={p}
                                   index={i}
-                                  onOpen={() => setQuickViewId(p.id)}
+                                  onOpen={() => openQuickView(p.id)}
                                   alignToSharedBaseline={true}
                                 />
                               ));
@@ -1362,21 +1305,6 @@ function CollectionPage() {
         )}
       </AnimatePresence>
 
-      <Suspense fallback={null}>
-        <AnimatePresence>
-          {quickViewProduct && (
-            <QuickViewModal
-              key={quickViewProduct.id}
-              product={quickViewProduct}
-              hasPrev={quickViewIndex > 0}
-              hasNext={quickViewIndex >= 0 && quickViewIndex < visibleProducts.length - 1}
-              onPrev={() => setQuickViewId(visibleProducts[quickViewIndex - 1]?.id ?? null)}
-              onNext={() => setQuickViewId(visibleProducts[quickViewIndex + 1]?.id ?? null)}
-              onClose={() => setQuickViewId(null)}
-            />
-          )}
-        </AnimatePresence>
-      </Suspense>
 
       {/* InquiryTray is now globalized in __root.tsx */}
 
