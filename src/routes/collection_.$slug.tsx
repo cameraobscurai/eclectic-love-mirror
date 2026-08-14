@@ -39,6 +39,14 @@ import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import type { BrowseGroupId } from "@/lib/collection-browse-groups";
 import { RelatedPieces } from "@/components/collection/RelatedPieces";
 import { ProductStage } from "@/components/pdp/ProductStage";
+import {
+  VariantConfigurator,
+  configurableVariants,
+  resolveVariant,
+  variantKey,
+  type ProductVariant,
+} from "@/components/pdp/VariantConfigurator";
+
 
 const SITE = "https://eclectichive.com";
 
