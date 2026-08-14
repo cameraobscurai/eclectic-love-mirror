@@ -115,15 +115,17 @@ const SUBCATEGORY_BENCHMARKS = BENCHMARKS.subcategories as Record<string, Benchm
  * real-size mass matching; small centred objects get the multiplier applied to
  * their existing area target instead, which keeps their layout mode intact.
  */
+// Lighting (`lighting`, `chandeliers`, `candlelight`, legacy `light`) is
+// deliberately excluded: a hung fixture's bounding box carries no comparative
+// meaning, so pooling it into one inches-per-tile unit made BOTOND a hairline
+// beside ERIZO. Lighting keeps its category layout rule + relativeMassFor nudge.
+// See mem://features/lighting-not-true-scaled.md — do NOT re-add lighting here.
 const REAL_SIZE_CATEGORIES = new Set([
   "seating",
   "tables",
   "bars",
   "storage",
   "large-decor",
-  "lighting",
-  "chandeliers",
-  "candlelight",
 ]);
 
 /** Width-only rows: assume the catalog's typical width:height ratio. */
