@@ -26,7 +26,6 @@ import {
 } from "@tanstack/react-router";
 import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { Navigation } from "@/components/navigation";
-import { Footer } from "@/components/footer";
 import {
   PARENT_LABELS,
   PARENT_SUBS,
@@ -40,6 +39,9 @@ import type { BrowseGroupId } from "@/lib/collection-browse-groups";
 import { RelatedPieces } from "@/components/collection/RelatedPieces";
 import { ProductStage } from "@/components/pdp/ProductStage";
 import { ShareButton } from "@/components/pdp/ShareButton";
+import { ScaleRuleWidth, ScaleRuleHeight } from "@/components/collection/ScaleRule";
+import { parseDimensionsInches } from "@/components/collection/productPhysicalScale";
+import { useInquiry } from "@/hooks/use-inquiry";
 
 import {
   VariantConfigurator,
@@ -246,11 +248,15 @@ export const Route = createFileRoute("/collection_/$slug")({
         { "@type": "PropertyValue", name: "Dimensions", value: product.dimensions },
       ];
     }
+    // Rental inventory has no list price and no purchasable stock. Emitting
+    // price:"0" + InStock made rich results advertise free products, so the
+    // offer now carries a quote-only PriceSpecification and no fake price.
     jsonLd.offers = {
       "@type": "Offer",
-      availability: "https://schema.org/InStock",
+      availability: product.isCustomOrder
+        ? "https://schema.org/PreOrder"
+        : "https://schema.org/LimitedAvailability",
       priceCurrency: "USD",
-      price: "0",
       priceSpecification: {
         "@type": "PriceSpecification",
         priceCurrency: "USD",
@@ -304,7 +310,6 @@ export const Route = createFileRoute("/collection_/$slug")({
           Browse the Collection
         </Link>
       </main>
-      <Footer />
     </div>
   ),
   component: SlugRoutePage,
@@ -370,7 +375,6 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
           Browse {label}
         </Link>
       </main>
-      <Footer />
     </div>
   );
 }
@@ -397,6 +401,34 @@ function ProductDetailPage({
   const { v } = Route.useSearch();
   const chips = configurableVariants(product);
   const selected = resolveVariant(product, v);
+
+  // Same inquiry tray every other product surface writes to (QuickView,
+  // ShopTheLookRail, StudioBrowser, /compose). The PDP used to dead-end at
+  // /contact and drop the item id — that was the conversion leak.
+  const inquiry = useInquiry();
+  const inInquiry = inquiry.has(product.id);
+
+  // Measurement zone: the stage is the largest frame on the site, so it gets
+  // the same architectural rules QuickView has had all along.
+  const dims = parseDimensionsInches(selected?.dimensions ?? product.dimensions);
+
+  // `stockedQuantity` is a label ("2 available"). Pull the leading count so
+  // the rail can show pips without inventing a new field.
+  const stockLabel = selected?.stockedQuantity ?? product.stockedQuantity ?? null;
+  const stockCount = (() => {
+    const m = stockLabel?.match(/(\d+)/);
+    const n = m ? Number(m[1]) : NaN;
+    return Number.isFinite(n) && n > 0 && n <= 40 ? n : null;
+  })();
+
+  const swatches = [product.colorHex, product.colorHexSecondary].filter(
+    (h): h is string => typeof h === "string" && /^#[0-9a-f]{3,8}$/i.test(h),
+  );
+  const colorLine = [product.colorFamily, product.colorTemperature]
+    .filter(Boolean)
+    .join(" · ");
+
+
 
 
 
@@ -450,17 +482,32 @@ function ProductDetailPage({
 
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
-          {/* Editorial stage — resolution-safe primary + secondary grid. */}
+          {/* Editorial stage — resolution-safe primary + secondary grid,
+              wrapped in the same architectural rules QuickView uses. */}
           <div className="lg:col-span-7">
-            <ProductStage product={product} activeImageUrl={selected?.imageUrl ?? null} />
+            <div className={dims ? "flex items-stretch gap-3" : undefined}>
+              {dims && (
+                <div className="hidden md:block shrink-0">
+                  <ScaleRuleHeight inches={dims.height} />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <ProductStage product={product} activeImageUrl={selected?.imageUrl ?? null} />
+              </div>
+            </div>
+            {dims && (
+              <div className="mt-4 md:pl-[calc(6px+0.75rem)]">
+                <ScaleRuleWidth inches={dims.width} />
+              </div>
+            )}
           </div>
 
           {/* Meta column — sticky spec sheet. */}
           <div className="lg:col-span-5 lg:sticky lg:top-28">
-            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-5">
               {crumbLabel}
             </p>
-            <h1 className="font-display text-4xl md:text-5xl tracking-wide uppercase leading-[1.1] mb-10">
+            <h1 className="font-display text-[2.25rem] md:text-[2.6rem] tracking-[0.01em] leading-[1.08] mb-8">
               {selected?.title ?? product.title}
             </h1>
 
@@ -480,32 +527,75 @@ function ProductDetailPage({
               />
             )}
 
-            <div className="border-t border-foreground/10 pt-10 space-y-10">
-              <div className="grid grid-cols-2 gap-6">
+            <div className="border-t border-foreground/10 pt-8 space-y-8">
+              {/* Specs on one row — no 2-col grid with a hole in it. */}
+              <div className="flex flex-wrap items-start gap-x-10 gap-y-6">
                 {(selected?.dimensions ?? product.dimensions) && (
                   <div>
                     <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
                       Dimensions
                     </span>
-                    <p className="text-sm leading-relaxed">
+                    <p className="text-sm leading-relaxed tabular-nums">
                       {selected?.dimensions ?? product.dimensions}
                     </p>
                   </div>
                 )}
-                {(selected?.stockedQuantity || product.stockedQuantity || product.isCustomOrder) && (
+                {(swatches.length > 0 || colorLine) && (
                   <div>
                     <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
-                      Availability
+                      Palette
                     </span>
-                    <p className="text-sm leading-relaxed">
-                      {product.isCustomOrder
-                        ? "Made to order"
-                        : (selected?.stockedQuantity ?? product.stockedQuantity)}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      {swatches.map((hex) => (
+                        <span
+                          key={hex}
+                          aria-hidden
+                          className="h-4 w-4 rounded-full border border-foreground/15"
+                          style={{ background: hex }}
+                        />
+                      ))}
+                      {colorLine && (
+                        <span className="text-[10px] tracking-[0.2em] uppercase text-foreground/70">
+                          {colorLine}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
 
+              {/* Archive count — honest about what stock means. No holds, no
+                  scheduling system implied. */}
+              {(stockCount || stockLabel || product.isCustomOrder) && (
+                <div>
+                  <span className="block text-[9px] tracking-[0.25em] uppercase text-muted-foreground mb-2">
+                    In the archive
+                  </span>
+                  {product.isCustomOrder ? (
+                    <p className="text-sm leading-relaxed">Made to order</p>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        {stockCount && (
+                          <span className="flex items-center gap-1" aria-hidden>
+                            {Array.from({ length: Math.min(stockCount, 12) }).map((_, i) => (
+                              <span
+                                key={i}
+                                className="h-1.5 w-1.5 rounded-full bg-foreground/70"
+                              />
+                            ))}
+                          </span>
+                        )}
+                        <span className="text-sm leading-relaxed">{stockLabel}</span>
+                      </div>
+                      <p className="mt-3 text-xs leading-relaxed text-foreground/60">
+                        We confirm what&rsquo;s free for your date when you send the
+                        inquiry — nothing here is held until then.
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
 
               {product.description && (
                 <div>
@@ -519,12 +609,26 @@ function ProductDetailPage({
               )}
             </div>
 
-            <div className="mt-14">
+            {/* Writes to the same tray as every other product surface. */}
+            <div className="mt-12 space-y-2">
+              <button
+                type="button"
+                onClick={() => inquiry.toggle(product.id)}
+                className={`block w-full text-center py-5 text-[11px] tracking-[0.35em] uppercase border transition-colors ${
+                  inInquiry
+                    ? "bg-background text-foreground border-foreground"
+                    : "bg-foreground text-background border-foreground hover:bg-foreground/85"
+                }`}
+              >
+                {inInquiry ? "Added to inquiry" : "Add to inquiry"}
+              </button>
               <Link
                 to="/contact"
-                className="block w-full text-center bg-foreground text-background py-5 text-[11px] tracking-[0.35em] uppercase hover:bg-foreground/85 transition-colors"
+                className="block w-full text-center py-3 text-[10px] tracking-[0.28em] uppercase text-foreground/70 border border-foreground/20 hover:text-foreground hover:border-foreground/60 transition-colors"
               >
-                Inquire About This Piece
+                {inquiry.count > 0
+                  ? `Review inquiry (${inquiry.count})`
+                  : "Contact the studio"}
               </Link>
             </div>
           </div>
@@ -533,7 +637,6 @@ function ProductDetailPage({
 
         <RelatedPieces product={product} allProducts={allProducts} />
       </main>
-      <Footer />
     </div>
   );
 }
