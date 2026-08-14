@@ -44,7 +44,6 @@ export function QuickViewHost() {
     return () => {
       release();
       const y = quickViewOpener.scrollY;
-      console.log("[qv-debug] close restore y=", y, "cur=", window.scrollY);
       quickViewOpener.scrollY = null;
       const opener = quickViewOpener.element;
       quickViewOpener.element = null;
