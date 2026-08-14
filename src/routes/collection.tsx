@@ -1166,7 +1166,7 @@ function CollectionPage() {
                                   key={p.id}
                                   product={p}
                                   index={i}
-                                  onOpen={() => openQuickView(p.id)}
+                                  onOpen={() => openQuickView(p.slug ?? p.id)}
                                   alignToSharedBaseline={true}
                                 />
                               ));
