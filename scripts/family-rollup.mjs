@@ -258,6 +258,13 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = [], famili
     const imageForVariant = (member) => {
       const imgs = member.images || [];
       if (!imgs.length) return null;
+      // PINNED pointer wins over every convention. The DB trigger already
+      // guarantees the URL belongs to this row's own images[].
+      if (member.variantCoverUrl) {
+        const pinnedKey = keyFor(member.variantCoverUrl);
+        const hit = imgs.find((img) => keyFor(urlFor(img)) === pinnedKey);
+        if (hit) return hit;
+      }
       const first = imgs[0];
       if (!isSetImage(first)) return first;
       let best = null;
