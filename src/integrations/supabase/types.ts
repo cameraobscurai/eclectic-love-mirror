@@ -1773,6 +1773,53 @@ export type Database = {
         }
         Relationships: []
       }
+      variant_config_snapshots: {
+        Row: {
+          action: string
+          batch_id: string
+          created_at: string
+          created_by: string | null
+          family_id: string
+          family_title: string
+          id: string
+          prev_members: Json
+          prev_option_name: string | null
+          rolled_back_at: string | null
+        }
+        Insert: {
+          action: string
+          batch_id: string
+          created_at?: string
+          created_by?: string | null
+          family_id: string
+          family_title?: string
+          id?: string
+          prev_members?: Json
+          prev_option_name?: string | null
+          rolled_back_at?: string | null
+        }
+        Update: {
+          action?: string
+          batch_id?: string
+          created_at?: string
+          created_by?: string | null
+          family_id?: string
+          family_title?: string
+          id?: string
+          prev_members?: Json
+          prev_option_name?: string | null
+          rolled_back_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "variant_config_snapshots_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "product_families"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       llm_reextract_candidates_canonical: {
