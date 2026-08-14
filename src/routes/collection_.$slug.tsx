@@ -382,6 +382,15 @@ function ProductDetailPage({
     : null;
   const crumbLabel = categoryLabel ?? product.displayCategory;
 
+  // Configurator: only families with a declared option axis get chips. The
+  // selection lives in `?v=` so it survives a share or a reload.
+  const navigate = useNavigate();
+  const { v } = Route.useSearch();
+  const chips = configurableVariants(product);
+  const selected = resolveVariant(product, v);
+
+
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
