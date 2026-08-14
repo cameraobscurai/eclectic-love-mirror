@@ -438,7 +438,14 @@ function ProductDetailPage({
           >
             {crumbLabel}
           </Link>
+          <span aria-hidden className="opacity-30 ml-auto">|</span>
+          <ShareButton
+            title={selected?.title ?? product.title}
+            slug={product.slug ?? String(product.id)}
+            variantKey={selected ? variantKey(selected) : null}
+          />
         </nav>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
           {/* Editorial stage — resolution-safe primary + secondary grid. */}
