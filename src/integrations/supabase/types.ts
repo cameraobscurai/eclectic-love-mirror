@@ -504,6 +504,8 @@ export type Database = {
           description: string | null
           dimensions_raw: string | null
           editorial_order: number | null
+          family_id: string | null
+          family_position: number | null
           height_cm: number | null
           hidden_note: string | null
           id: string
@@ -531,6 +533,8 @@ export type Database = {
           title: string
           updated_at: string
           upscaled_cover_url: string | null
+          variant_cover_url: string | null
+          variant_label: string | null
           weight_kg: number | null
           width_cm: number | null
         }
@@ -561,6 +565,8 @@ export type Database = {
           description?: string | null
           dimensions_raw?: string | null
           editorial_order?: number | null
+          family_id?: string | null
+          family_position?: number | null
           height_cm?: number | null
           hidden_note?: string | null
           id?: string
@@ -588,6 +594,8 @@ export type Database = {
           title: string
           updated_at?: string
           upscaled_cover_url?: string | null
+          variant_cover_url?: string | null
+          variant_label?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
@@ -618,6 +626,8 @@ export type Database = {
           description?: string | null
           dimensions_raw?: string | null
           editorial_order?: number | null
+          family_id?: string | null
+          family_position?: number | null
           height_cm?: number | null
           hidden_note?: string | null
           id?: string
@@ -645,10 +655,19 @@ export type Database = {
           title?: string
           updated_at?: string
           upscaled_cover_url?: string | null
+          variant_cover_url?: string | null
+          variant_label?: string | null
           weight_kg?: number | null
           width_cm?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_items_family_id_fkey"
+            columns: ["family_id"]
+            isOneToOne: false
+            referencedRelation: "product_families"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_items_taxonomy_pair_fkey"
             columns: ["collection_slug", "category_slug"]
@@ -801,6 +820,36 @@ export type Database = {
           recommended_phase?: string
           scrape_priority?: number
           url?: string
+        }
+        Relationships: []
+      }
+      product_families: {
+        Row: {
+          created_at: string
+          id: string
+          lead_rms_id: string | null
+          option_name: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_rms_id?: string | null
+          option_name?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_rms_id?: string | null
+          option_name?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1959,6 +2008,7 @@ export type Database = {
         }
         Returns: number
       }
+      normalize_image_url: { Args: { _url: string }; Returns: string }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
