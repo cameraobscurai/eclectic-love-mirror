@@ -143,13 +143,10 @@ async function measureSlice(page, slice) {
   // scale rather than how big the sofa actually looks. Measure the silhouette:
   // find the non-background bbox in the natural image, map it through
   // object-contain into the element's content box, then into page space.
-  const tiles = await page.evaluate(async () => {
-    const imgs = [...document.querySelectorAll('img')].filter((img) => {
+  const tiles = await page.evaluate(async (sel) => {
+    const imgs = [...document.querySelectorAll(sel)].filter((img) => {
       const r = img.getBoundingClientRect();
-      if (r.width < 60 || r.height < 60) return false;
-      const title = (img.alt || '').trim();
-      // Product alts are the ALL-CAPS catalog titles; nav/category art is not.
-      return !!title && title === title.toUpperCase();
+      return r.width >= 60 && r.height >= 60;
     });
 
     // The rendered <img> has no crossorigin attribute, so drawing it taints the
