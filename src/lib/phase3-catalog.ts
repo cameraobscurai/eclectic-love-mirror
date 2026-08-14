@@ -488,6 +488,9 @@ type LiveOverlayRow = {
   /** Declared taxonomy — owner truth, carried through publish. */
   collection_slug?: string | null;
   category_slug?: string | null;
+  /** Pinned variant photo + configurator label. Absent/null = AUTO. */
+  variant_cover_url?: string | null;
+  variant_label?: string | null;
   /** Epoch seconds of the row's last edit, carried by overlays published
    *  after 2026-08-12. Wins over the bake-time `imagesVersion` so a photo
    *  re-uploaded at the SAME storage URL busts CDN cache immediately. */
