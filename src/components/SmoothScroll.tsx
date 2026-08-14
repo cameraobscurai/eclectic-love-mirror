@@ -82,12 +82,19 @@ export function SmoothScroll(overrides: Partial<SmoothScrollConfig> = {}) {
         rafId = requestAnimationFrame(raf);
       };
       rafId = requestAnimationFrame(raf);
+      // Exposed so scroll-restoring surfaces (Quick View close) can hand the
+      // position back to Lenis. A raw window.scrollTo is overwritten by
+      // Lenis's own RAF loop on the very next frame.
+      (window as unknown as { __lenis?: Lenis | null }).__lenis = lenisInstance;
     });
 
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
       lenisInstance?.destroy();
+      if (typeof window !== "undefined") {
+        (window as unknown as { __lenis?: Lenis | null }).__lenis = null;
+      }
     };
     // Re-init when any tuning value changes.
   }, [cfg.duration, cfg.easing, cfg.lerp, cfg.wheelMultiplier, cfg.smoothWheel]);
