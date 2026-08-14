@@ -22,6 +22,7 @@ import {
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { useQuickView } from "@/hooks/use-quick-view";
 
 const MAX_TILES = 6;
 const MIN_TILES = 3;
@@ -283,7 +284,14 @@ function RelatedRail({
           const added = inquiry.has(p.id);
           return (
             <li key={p.id} className="relative group">
-              <a href={`/collection/${p.slug}`} className="block">
+              {/* Quick View, not a hard navigation — a rail tile peeks in
+                  place and keeps the visitor on the piece they came for. */}
+              <button
+                type="button"
+                onClick={() => openQuickView(p.slug ?? p.id)}
+                aria-label={`Quick view ${p.title}`}
+                className="block w-full text-left"
+              >
                 <div className="aspect-[4/5] bg-muted/30 overflow-hidden mb-3">
                   {img ? (
                     <img
@@ -301,7 +309,7 @@ function RelatedRail({
                 <p className="text-xs tracking-wide uppercase leading-snug">
                   {p.title}
                 </p>
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => inquiry.toggle(p.id)}
