@@ -380,6 +380,9 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         primaryImage: images[0] ?? null,
         imageCount: images.length,
         variants: variantsOut,
+        // Axis override: turning a family on in /admin/variants must reach the
+        // site at Publish, not only at the next bake.
+        optionName: live?.family_option_name ?? p.optionName ?? null,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
     }).filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
