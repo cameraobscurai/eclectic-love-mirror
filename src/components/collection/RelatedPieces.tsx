@@ -23,6 +23,7 @@ import {
 } from "@/lib/phase3-catalog";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { useQuickView } from "@/hooks/use-quick-view";
+import { usePublishQuickViewCatalog } from "./quick-view-context";
 
 const MAX_TILES = 6;
 const MIN_TILES = 3;
@@ -191,10 +192,16 @@ export function RelatedPieces({
   const [split, setSplit] = useState<RelatedSplit | null>(() =>
     allProducts ? pickRelatedSplit(product, allProducts) : null,
   );
+  // Pool the rails resolve against — also what Quick View resolves a rail
+  // tile's slug against. No sequence: a PDP has no meaningful ordering, so
+  // the modal's prev/next arrows stay hidden here.
+  const [pool, setPool] = useState<CollectionProduct[]>(allProducts ?? []);
+  usePublishQuickViewCatalog(pool);
 
   useEffect(() => {
     if (allProducts) {
       setSplit(pickRelatedSplit(product, allProducts));
+      setPool(allProducts);
       return;
     }
     let cancelled = false;
@@ -202,6 +209,7 @@ export function RelatedPieces({
       .then((cat) => {
         if (cancelled) return;
         setSplit(pickRelatedSplit(product, cat.products));
+        setPool(cat.products);
       })
       .catch(() => {
         if (!cancelled) setSplit({ taxonomy: [], palette: [] });
