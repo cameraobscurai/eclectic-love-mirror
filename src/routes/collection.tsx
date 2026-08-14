@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate, ErrorComponent } from "@tanstack/react-ro
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import type React from "react";
-import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
@@ -593,6 +593,18 @@ function CollectionPage() {
   // its catalog + filtered ordering so prev/next walk the visible grid.
   const { open: openQuickView } = useQuickView();
   usePublishQuickViewCatalog(products, visibleProducts);
+
+  // Legacy `?view=` links (bookmarks, anything shared before the global
+  // `peek` param existed) translate into a Quick View open and drop `view`.
+  useEffect(() => {
+    if (!view) return;
+    openQuickView(view);
+    navigate({
+      search: (prev: CollectionSearch) => ({ ...prev, view: "" }),
+      replace: true,
+      resetScroll: false,
+    });
+  }, [view, openQuickView, navigate]);
 
   const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
@@ -1383,7 +1395,7 @@ function CollectionPage() {
                 subcategory: "all",
                 q: next,
                 view: "",
-        peek: undefined,
+                peek: undefined,
               }),
               replace: true,
               resetScroll: false,
@@ -1402,7 +1414,7 @@ function CollectionPage() {
                 subcategory: "all",
                 q: "",
                 view: "",
-        peek: undefined,
+                peek: undefined,
               }),
               replace: true,
               resetScroll: false,
