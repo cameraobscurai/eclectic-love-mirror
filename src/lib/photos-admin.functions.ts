@@ -190,6 +190,10 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
          *  configurator label. Null = AUTO, i.e. today's convention. */
         variant_cover_url: string | null;
         variant_label: string | null;
+        /** Configurator axis of this row's family (product_families.option_name).
+         *  Carried here so /admin/variants reaches the live site at Publish —
+         *  the baked catalog only reads option_name at bake time. */
+        family_option_name: string | null;
         /** Epoch seconds of the row's last edit. Drives the public `?v=`
          *  cache-buster so a re-uploaded photo at the SAME storage URL cannot
          *  serve stale CDN bytes. Without it the buster stayed frozen at the
@@ -198,18 +202,31 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       }
     > = {};
 
+    // Family axes: 85-ish rows, one read, joined in memory.
+    const famAxis = new Map<string, string | null>();
+    {
+      const { data: fams, error: fErr } = await supabaseAdmin
+        .from("product_families")
+        .select("id, option_name");
+      if (fErr) throw new Error(`PUBLISH_FAMILY_READ_FAILED: ${fErr.message}`);
+      for (const f of (fams ?? []) as Array<{ id: string; option_name: string | null }>) {
+        famAxis.set(f.id, f.option_name ?? null);
+      }
+    }
+
     let from = 0;
     for (;;) {
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, updated_at",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, family_id, updated_at",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
       if (!data || data.length === 0) break;
       for (const row of data as Array<
-        { rms_id: string | null; updated_at?: string | null } & (typeof overlay)[string]
+        { rms_id: string | null; family_id?: string | null; updated_at?: string | null } &
+          (typeof overlay)[string]
       >) {
         if (!row.rms_id) continue;
         overlay[row.rms_id] = {
@@ -232,6 +249,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           category_slug: row.category_slug ?? null,
           variant_cover_url: row.variant_cover_url ?? null,
           variant_label: row.variant_label ?? null,
+          family_option_name: row.family_id ? famAxis.get(row.family_id) ?? null : null,
           images_version: row.updated_at
             ? Math.floor(new Date(row.updated_at).getTime() / 1000)
             : null,

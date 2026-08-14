@@ -380,6 +380,9 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
         primaryImage: images[0] ?? null,
         imageCount: images.length,
         variants: variantsOut,
+        // Axis override: turning a family on in /admin/variants must reach the
+        // site at Publish, not only at the next bake.
+        optionName: live?.family_option_name ?? p.optionName ?? null,
         ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
       };
     }).filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
@@ -510,6 +513,11 @@ type LiveOverlayRow = {
   /** Pinned variant photo + configurator label. Absent/null = AUTO. */
   variant_cover_url?: string | null;
   variant_label?: string | null;
+  /** Configurator axis for the family this row belongs to. Carried on the
+   *  overlay so /admin/variants goes live at Publish instead of waiting for
+   *  the next bake — option_name lives on product_families, which the baked
+   *  catalog only reads at bake time. */
+  family_option_name?: string | null;
   /** Epoch seconds of the row's last edit, carried by overlays published
    *  after 2026-08-12. Wins over the bake-time `imagesVersion` so a photo
    *  re-uploaded at the SAME storage URL busts CDN cache immediately. */
@@ -582,15 +590,31 @@ async function fetchLiveOverlay(): Promise<{
     const { supabase } = await import("@/integrations/supabase/client");
     const PAGE = 1000;
     let from = 0;
+
+    // Family axes (85 rows). product_families is public-readable for exactly
+    // this: option_name is display metadata, and without it the fallback path
+    // would leave every configurator dark until the next Publish.
+    const famAxis = new Map<string, string | null>();
+    try {
+      const { data: fams } = await supabase
+        .from("product_families")
+        .select("id, option_name");
+      for (const f of (fams ?? []) as Array<{ id: string; option_name: string | null }>) {
+        famAxis.set(f.id, f.option_name ?? null);
+      }
+    } catch {
+      /* non-fatal: baked optionName stays the fallback */
+    }
+
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, updated_at")
+        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, family_id, updated_at")
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
       for (const row of data as Array<
-        { rms_id: string; updated_at?: string | null } & LiveOverlayRow
+        { rms_id: string; family_id?: string | null; updated_at?: string | null } & LiveOverlayRow
       >) {
         if (row.rms_id) {
           map.set(row.rms_id, {
@@ -613,6 +637,7 @@ async function fetchLiveOverlay(): Promise<{
             category_slug: row.category_slug ?? null,
             variant_cover_url: row.variant_cover_url ?? null,
             variant_label: row.variant_label ?? null,
+            family_option_name: row.family_id ? famAxis.get(row.family_id) ?? null : null,
             images_version: row.updated_at
               ? Math.floor(new Date(row.updated_at).getTime() / 1000)
               : null,
