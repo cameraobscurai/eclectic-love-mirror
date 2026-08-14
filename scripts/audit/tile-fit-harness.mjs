@@ -59,15 +59,18 @@ export const THRESHOLDS = { massRatio: 0.65, floorSpread: 15 };
 
 // One representative slice per parent. Subcategories are where mixed silhouette
 // aspects collide, so the check runs against the slice, not the parent blend.
+// Ids must match SUBS_BY_PARENT in src/lib/collection-parents.ts. A slice
+// naming a category that no longer exists renders an empty grid, which is why
+// these now throw rather than report a clean zero.
 const SLICES = [
   { group: 'lounge-seating', subcategory: 'sofas-loveseats' },
-  { group: 'lounge-seating', subcategory: 'chairs' },
+  { group: 'lounge-seating', subcategory: 'lounge-chairs' },
   { group: 'lounge-seating', subcategory: 'benches' },
   { group: 'lounge-tables', subcategory: 'coffee-tables' },
   { group: 'lounge-tables', subcategory: 'side-tables' },
   { group: 'lounge-tables', subcategory: 'consoles' },
   { group: 'cocktail-bar', subcategory: 'bars' },
-  { group: 'cocktail-bar', subcategory: 'stools' },
+  { group: 'cocktail-bar', subcategory: 'bar-stools' },
   { group: 'dining', subcategory: 'dining-tables' },
   { group: 'dining', subcategory: 'dining-chairs' },
 ];
@@ -108,10 +111,19 @@ function scoreRow(row) {
 }
 
 
+/**
+ * Product tiles are selected structurally, via the `.product-tile-media`
+ * wrapper that `ProductTile` renders. The previous heuristic ("alt text is
+ * ALL CAPS") silently matched nothing once catalog titles started arriving in
+ * Title Case with the uppercasing done in CSS — every slice reported 0 tiles.
+ * Never identify tiles by their copy again.
+ */
+const TILE_IMG_SELECTOR = '.product-tile-media img';
+
 async function measureSlice(page, slice) {
   const url = `${BASE}/collection?group=${slice.group}&subcategory=${slice.subcategory}`;
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1500);
+  await page.waitForSelector(TILE_IMG_SELECTOR, { timeout: 30000 });
 
   // Lazy tiles only measure correctly once they've been in the viewport.
   for (let i = 0; i < 14; i++) {
@@ -121,18 +133,23 @@ async function measureSlice(page, slice) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(1200);
 
+  // Decode every tile image before measuring; a lazy image that has not
+  // decoded reports naturalWidth 0 and would land in `broken`.
+  await page.evaluate(async (sel) => {
+    const imgs = [...document.querySelectorAll(sel)];
+    await Promise.all(imgs.map((i) => (i.decode ? i.decode().catch(() => {}) : null)));
+  }, TILE_IMG_SELECTOR);
+  await page.waitForTimeout(600);
+
   // The <img> element box is NOT the product. It is a letterboxed frame with
   // whitespace around the silhouette, so measuring it reports the transform
   // scale rather than how big the sofa actually looks. Measure the silhouette:
   // find the non-background bbox in the natural image, map it through
   // object-contain into the element's content box, then into page space.
-  const tiles = await page.evaluate(async () => {
-    const imgs = [...document.querySelectorAll('img')].filter((img) => {
+  const tiles = await page.evaluate(async (sel) => {
+    const imgs = [...document.querySelectorAll(sel)].filter((img) => {
       const r = img.getBoundingClientRect();
-      if (r.width < 60 || r.height < 60) return false;
-      const title = (img.alt || '').trim();
-      // Product alts are the ALL-CAPS catalog titles; nav/category art is not.
-      return !!title && title === title.toUpperCase();
+      return r.width >= 60 && r.height >= 60;
     });
 
     // The rendered <img> has no crossorigin attribute, so drawing it taints the
@@ -219,24 +236,39 @@ async function measureSlice(page, slice) {
       });
     }
     return out;
-  });
-
-
+  }, TILE_IMG_SELECTOR);
 
   const measured = tiles.filter((t) => !t.broken && !t.unmeasurable);
+
+  // Trust gate. A slice that finds no tiles, or measures fewer than 60% of the
+  // tiles it found, is reporting on nothing — that is a harness failure and it
+  // throws instead of returning a number the eye would read as a pass.
+  if (tiles.length === 0) {
+    throw new Error(`no product tiles matched ${TILE_IMG_SELECTOR} at ${url}`);
+  }
+  if (measured.length < 2 || measured.length / tiles.length < 0.6) {
+    throw new Error(
+      `only ${measured.length}/${tiles.length} tiles measurable at ${url} ` +
+        `(broken ${tiles.filter((t) => t.broken).length}, unmeasurable ${tiles.filter((t) => t.unmeasurable).length})`,
+    );
+  }
+
   const rows = groupIntoRows(measured).map(scoreRow);
+  if (rows.length === 0) {
+    throw new Error(`no multi-tile rows resolved from ${measured.length} tiles at ${url}`);
+  }
+
   return {
     slice: `${slice.group}/${slice.subcategory}`,
     tiles: measured.length,
+    found: tiles.length,
     broken: tiles.filter((t) => t.broken).map((t) => t.title),
     unmeasurable: tiles.filter((t) => t.unmeasurable).map((t) => t.title),
     rows,
-    worstMassRatio: rows.length ? Math.min(...rows.map((r) => r.massRatio)) : null,
-    worstFloorSpread: rows.length ? Math.max(...rows.map((r) => r.floorSpread)) : null,
-    // No measurable rows is a harness failure, not a pass.
-    failing: rows.length === 0 ? 1 : rows.filter((r) => !r.pass).length,
+    worstMassRatio: Math.min(...rows.map((r) => r.massRatio)),
+    worstFloorSpread: Math.max(...rows.map((r) => r.floorSpread)),
+    failing: rows.filter((r) => !r.pass).length,
   };
-
 }
 
 async function main() {
