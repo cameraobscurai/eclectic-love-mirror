@@ -56,7 +56,7 @@ function LoginPage() {
         "This account is not authorized for admin access. Contact the site owner.",
       );
     }
-    navigate({ to: redirectTo as "/admin", search: { page: undefined } });
+    navigate({ to: redirectTo as "/admin" });
   }
 
 
@@ -67,7 +67,7 @@ function LoginPage() {
       if (!data.user || cancelled) return;
       const isAdmin = await checkOwnAdminRole(data.user.id);
       if (cancelled) return;
-      if (isAdmin) navigate({ to: redirectTo as "/admin", search: { page: undefined } });
+      if (isAdmin) navigate({ to: redirectTo as "/admin" });
     })();
     return () => {
       cancelled = true;

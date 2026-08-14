@@ -99,7 +99,7 @@ function CareersPage() {
           <p className="mt-4">
             <Link
               to="/contact"
-              search={{ subject: "Careers | Eclectic Hive" }}
+              search={{ subject: "Careers | Eclectic Hive" } as never}
               className="text-[11px] uppercase tracking-[0.28em] no-underline border-b border-charcoal/40 pb-1 hover:border-charcoal transition-colors"
             >
               EMAIL US →
