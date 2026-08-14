@@ -96,7 +96,7 @@ import { markPublishPending } from "@/lib/publish-pending";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ImageOrderEditor } from "./ImageOrderEditor";
-import { FamilyPanel } from "./FamilyPanel";
+import { FamilyBoard } from "./FamilyBoard";
 import { useBodyScrollLock } from "@/hooks/use-body-scroll-lock";
 
 
@@ -939,7 +939,7 @@ export function ProductEditDrawer({
                   return (
                     <section key={g.id} style={{ marginBottom: 34 }}>
                       <SectionHeader>{g.title}</SectionHeader>
-                      <FamilyPanel rmsId={(product.rms_id as string | null) ?? null} />
+                      <FamilyBoard itemId={product.id as string} />
                       <ImageOrderEditor
                         embedded
                         item={{
