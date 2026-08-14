@@ -41,11 +41,11 @@ export function useQuickView() {
       }
       navigate({
         to: ".",
-        search: (prev: Record<string, unknown>) => ({ ...prev, peek: slug }),
+        search: ((prev: Record<string, unknown>) => ({ ...prev, peek: slug })) as never,
         // Opening pushes a history entry so back closes the modal.
         replace: false,
         resetScroll: false,
-        mask: { to: "/collection/$slug", params: { slug }, unmaskOnReload: false },
+        mask: { to: "/collection/$slug", params: { slug }, search: {} } as never,
       });
     },
     [catalog, navigate],
@@ -54,13 +54,18 @@ export function useQuickView() {
   const close = useCallback(() => {
     navigate({
       to: ".",
-      search: (prev: Record<string, unknown>) => ({ ...prev, peek: "" }),
+      search: ((prev: Record<string, unknown>) => {
+        const next = { ...prev };
+        delete next.peek;
+        return next;
+      }) as never,
       // Closing REPLACES the masked entry so open → close → back leaves the
       // page instead of reopening the modal.
       replace: true,
       resetScroll: false,
     });
   }, [navigate]);
+
 
   return { peek, open, close };
 }
