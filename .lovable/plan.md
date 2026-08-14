@@ -1,60 +1,70 @@
-# What's left: phases 1-5, ordered by risk
+# Variant family track — what's left, step by step
 
-Phase 0 (delete tombstones) shipped. Everything below is the variant/configurator
-work, plus the loose items running alongside.
+Done and not reopening: delete tombstones, family schema, 85-family backfill
+(301 rows, 0 drift), bake + runtime resolver, writable Family Board in the drawer.
 
-## Phase 1 — Schema (low risk, reversible)
+Remaining: A → B → C → D. Nothing else belongs in this track.
 
-- `product_families(id, title, slug unique, lead_rms_id, option_name, created_at, updated_at)`
-- `inventory_items`: `family_id`, `family_position`, `variant_label`, `variant_cover_url`
-- `variant_cover_url` validated against normalized URLs (query string stripped) in that row's `images[]`; cleared on genuine image removal.
-- Backfill `product_families` + `family_id` from `family-map.json` so membership is byte-identical on day one.
+## Step A — Walk the 85 families in the admin
 
-Risk: near zero. Empty pointer = AUTO = today's behaviour. Nothing reads the columns yet.
+Before anything public renders chips, the declared data has to be true.
 
-## Phase 2 — Bake and runtime (medium risk, catalog-wide)
+1. Warning sweep in the board: 7 photoless variants, 1 duplicate photo,
+   duplicate `variant_label` inside a family.
+2. Set `option_name` only where a real axis exists (Size, Finish). No axis = no
+   configurator later. This is the per-family gate.
+3. Set the landing piece where AUTO picked wrong.
+4. Publish once at the end, not per family.
 
-- `bake-catalog.mjs` selects the new columns; `family-rollup.mjs` uses `db:<family_id>` when set, heuristic otherwise.
-- `phase3-catalog.ts` resolves a variant photo as pointer → `images[0]`.
-- Invariants to hold: `variants[]` includes the lead row; a single-member DB family still emits `variants: []`.
+Risk: low. Admin-only, reversible, no public surface reads `option_name` yet.
+Failure mode: nobody walks it, and step C ships guesses. That's the real risk in
+this whole plan.
 
-Risk: this is the one that can move 636 tiles. Mitigation: diff baked JSON before/after the switch and require zero product-count delta and zero cover-URL delta on families with no pointers set.
+## Step B — Prove the drawer workflow end to end
 
-## Phase 3 — Family board in the drawer (medium risk, admin only)
+Playwright: open COLLECTION → click a family photo → rename variant → reorder →
+pin a photo → reset to AUTO → close → reopen → values persisted. Plus the
+negative: pin a photo that isn't that row's own and confirm Postgres rejects it
+with a readable message.
 
-Replaces the read-only `FamilyPanel`: sibling thumbnails, label, dimensions, quantity, AUTO/PINNED badge; set variant photo from that row's own photos; set lead; add variant pre-linked to the family; jump between siblings without closing the drawer. Warnings for the 7 photoless variants, the 1 duplicate photo, and duplicate `variant_label` inside a family. Lead marker also shows in `/admin/products` rows.
+Risk: low. Catches a broken write before Adrienne does.
 
-Risk: contained to admin. Worst case is a confusing panel, not a broken site.
+## Step C — PDP configurator (the only public change)
 
-## Phase 4 — Configurator on the PDP (highest risk, public)
+Gated per family on `option_name`. Families without it keep today's gallery.
 
-Option-name heading, chips of variant labels, selection swaps photo/dimensions/quantity/label, deep-linkable `?v=`, inquiries carry the selection. Filename matching deleted.
+- Option heading + chips of `variant_label`.
+- Selection swaps photo, dimensions, quantity, title.
+- Deep-linkable `?v=`.
+- Inquiry carries the selected variant.
+- Filename matching deleted — but only after the slug audit below.
 
-Blocker to clear first: QuickView still fires for rows without a slug. Audit standalone tiles for missing slugs and backfill before retiring the filename guess — otherwise the rows most needing a real page lose their only surface.
+Blocker: QuickView still fires for rows with no slug. Audit standalone tiles for
+missing slugs and backfill first; otherwise retiring the filename guess removes
+the only surface those rows have.
 
-Risk: public-facing and it removes the fallback. Ship behind a per-family gate: only families with `option_name` set render the configurator; everything else keeps today's gallery.
+Risk: highest in the track. Public, and it drops a fallback. Mitigation is the
+per-family gate plus staged rollout — turn on `option_name` for three families,
+look at them live, then the rest.
 
-## Phase 5 — Verification
+## Step D — Lock it
 
-First fixture is deleted-lead fall-through. Then pointer precedence, URL normalization, delete-clears-pointer, variant-level suppression. Coverage audit script. Extend `intake:test` to prove pointers and labels survive an RMS re-import (R6).
+- Fixtures: pointer precedence, URL normalization, delete-clears-pointer,
+  variant-level suppression, deleted-lead fall-through.
+- Extend `intake:test` to prove pointers and labels survive an RMS re-import (R6).
+- Coverage audit: families with an axis but missing labels.
 
-## Chronological risk analysis
+Risk: none. Cost is skipping it — the pointers become unowned within a month.
 
-The order 1→2→3→4 is correct and shouldn't be reshuffled:
+## Ordering
 
-- **1 before 2** is forced — the bake can't select columns that don't exist.
-- **2 before 3** is the one worth questioning. Building the board first would let Adrienne set pointers that nothing reads yet, which feels safe but means her first pointers land untested against the bake. Keep 2 first, verify with the diff, then hand her the board.
-- **3 before 4** is non-negotiable. Shipping a public configurator on heuristic membership means the chips are guesses. The 85 families have to be walked in the admin before they're rendered to customers.
-- **5 runs alongside, not after.** Each phase lands with its fixtures. A trailing test phase gets cut.
+A before C is non-negotiable: chips rendered off unreviewed membership are
+guesses shown to customers. B is cheap and belongs before A so a broken write
+doesn't waste the walk. D lands with each step, not after.
 
-The real risk isn't ordering, it's Phase 2 landing on a Friday. Bake, diff, review, publish next morning — same discipline as the lighting bake.
-
-## Running alongside (not blocking)
-
-- "Changes convert right back" — instrument first: log overlay hit vs baked fallback per field on one reported revert.
-- Admin speed: cache the catalog on `admin.photos` mount, virtualize the icons grid.
-- Repros still needed from Adrienne: broken Back/Collection buttons, blank space from a hidden piece.
+Bake/publish never on a Friday afternoon. Same discipline as the lighting bake.
 
 ## One open question for Adrienne
 
-"Available October 2026" in a description renders publicly. If that's status rather than copy, it's an availability field with a badge, not prose.
+"Available October 2026" in a description renders publicly. If that's status, it
+is an availability field with a badge, not prose.
