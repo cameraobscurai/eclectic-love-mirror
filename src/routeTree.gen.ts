@@ -82,6 +82,7 @@ import { Route as CandlelightSplatRouteImport } from './routes/candlelight.$'
 import { Route as BarsSplatRouteImport } from './routes/bars.$'
 import { Route as ApiAdminRenderRouteImport } from './routes/api/admin-render'
 import { Route as ApiAdminChatRouteImport } from './routes/api/admin-chat'
+import { Route as AdminVariantsRouteImport } from './routes/admin.variants'
 import { Route as AdminUploadHeroRouteImport } from './routes/admin.upload-hero'
 import { Route as AdminTeamRouteImport } from './routes/admin.team'
 import { Route as AdminTaxonomyRouteImport } from './routes/admin.taxonomy'
@@ -472,6 +473,11 @@ const ApiAdminChatRoute = ApiAdminChatRouteImport.update({
   path: '/api/admin-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminVariantsRoute = AdminVariantsRouteImport.update({
+  id: '/variants',
+  path: '/variants',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUploadHeroRoute = AdminUploadHeroRouteImport.update({
   id: '/upload-hero',
   path: '/upload-hero',
@@ -643,6 +649,7 @@ export interface FileRoutesByFullPath {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
+  '/admin/variants': typeof AdminVariantsRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
@@ -741,6 +748,7 @@ export interface FileRoutesByTo {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
+  '/admin/variants': typeof AdminVariantsRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
@@ -841,6 +849,7 @@ export interface FileRoutesById {
   '/admin/taxonomy': typeof AdminTaxonomyRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/upload-hero': typeof AdminUploadHeroRoute
+  '/admin/variants': typeof AdminVariantsRoute
   '/api/admin-chat': typeof ApiAdminChatRoute
   '/api/admin-render': typeof ApiAdminRenderRoute
   '/bars/$': typeof BarsSplatRoute
@@ -942,6 +951,7 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
+    | '/admin/variants'
     | '/api/admin-chat'
     | '/api/admin-render'
     | '/bars/$'
@@ -1040,6 +1050,7 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
+    | '/admin/variants'
     | '/api/admin-chat'
     | '/api/admin-render'
     | '/bars/$'
@@ -1139,6 +1150,7 @@ export interface FileRouteTypes {
     | '/admin/taxonomy'
     | '/admin/team'
     | '/admin/upload-hero'
+    | '/admin/variants'
     | '/api/admin-chat'
     | '/api/admin-render'
     | '/bars/$'
@@ -1785,6 +1797,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/variants': {
+      id: '/admin/variants'
+      path: '/variants'
+      fullPath: '/admin/variants'
+      preLoaderRoute: typeof AdminVariantsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/upload-hero': {
       id: '/admin/upload-hero'
       path: '/upload-hero'
@@ -1987,6 +2006,7 @@ interface AdminRouteChildren {
   AdminTaxonomyRoute: typeof AdminTaxonomyRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminUploadHeroRoute: typeof AdminUploadHeroRoute
+  AdminVariantsRoute: typeof AdminVariantsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -2009,6 +2029,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminTaxonomyRoute: AdminTaxonomyRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminUploadHeroRoute: AdminUploadHeroRoute,
+  AdminVariantsRoute: AdminVariantsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
