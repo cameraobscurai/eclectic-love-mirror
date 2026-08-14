@@ -106,6 +106,20 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = [], famili
   }
 
   function familyKeyForRms(p) {
+    // -1. DECLARED membership (product_families). Once a row carries a
+    // family_id, every heuristic branch below is skipped — the admin's
+    // grouping is authority, not a guess against a frozen scrape.
+    if (p.familyId && familiesById.has(p.familyId)) {
+      const fam = familiesById.get(p.familyId);
+      return {
+        key: 'db:' + p.familyId,
+        source: 'declared',
+        familyTitle: fam.title,
+        liveSlug: fam.slug,
+        leadRmsId: fam.lead_rms_id ?? null,
+        optionName: fam.option_name ?? null,
+      };
+    }
     // 0. owner-forced override
     const forced = forcedByRms.get(String(p.id));
     if (forced) return forced;
