@@ -59,15 +59,18 @@ export const THRESHOLDS = { massRatio: 0.65, floorSpread: 15 };
 
 // One representative slice per parent. Subcategories are where mixed silhouette
 // aspects collide, so the check runs against the slice, not the parent blend.
+// Ids must match SUBS_BY_PARENT in src/lib/collection-parents.ts. A slice
+// naming a category that no longer exists renders an empty grid, which is why
+// these now throw rather than report a clean zero.
 const SLICES = [
   { group: 'lounge-seating', subcategory: 'sofas-loveseats' },
-  { group: 'lounge-seating', subcategory: 'chairs' },
+  { group: 'lounge-seating', subcategory: 'lounge-chairs' },
   { group: 'lounge-seating', subcategory: 'benches' },
   { group: 'lounge-tables', subcategory: 'coffee-tables' },
   { group: 'lounge-tables', subcategory: 'side-tables' },
   { group: 'lounge-tables', subcategory: 'consoles' },
   { group: 'cocktail-bar', subcategory: 'bars' },
-  { group: 'cocktail-bar', subcategory: 'stools' },
+  { group: 'cocktail-bar', subcategory: 'bar-stools' },
   { group: 'dining', subcategory: 'dining-tables' },
   { group: 'dining', subcategory: 'dining-chairs' },
 ];
