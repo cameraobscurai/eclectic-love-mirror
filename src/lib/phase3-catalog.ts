@@ -76,7 +76,15 @@ export interface CollectionProduct {
     dimensions: string | null;
     stockedQuantity: string | null;
     imageUrl?: string | null;
+    /** Configurator label ("Single 5'", "Square Bar"). Null = unlabelled. */
+    label?: string | null;
+    /** True when the photo came from an explicit pointer, not convention. */
+    pinned?: boolean;
+    /** True for the family's display lead. */
+    isLead?: boolean;
   }>;
+  /** Configurator axis name ("Size", "Base"). Null = configurator off. */
+  optionName?: string | null;
   /** AI-tagged primary material color, hex (e.g. "#8b6f4a"). Null when untagged. */
   colorHex?: string | null;
   /** Secondary dominant hex for patterned/multi-color items. */
