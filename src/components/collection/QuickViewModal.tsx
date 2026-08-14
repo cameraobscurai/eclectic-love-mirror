@@ -299,6 +299,7 @@ export function QuickViewModal({
       ref={trapRef}
       role="dialog"
       aria-modal="true"
+      data-quick-view=""
       aria-label={product.title}
       className="fixed inset-0 z-50 flex items-stretch md:items-center justify-center p-0 md:p-10 lg:p-14"
     >

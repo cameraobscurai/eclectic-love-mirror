@@ -14,6 +14,8 @@ import { DevEditOverlay } from "../components/DevEditOverlay";
 import { SmoothScroll } from "../components/SmoothScroll";
 import { Toaster } from "../components/ui/sonner";
 import { InquiryTray } from "../components/collection/InquiryTray";
+import { QuickViewCatalogProvider } from "../components/collection/quick-view-context";
+import { QuickViewHost } from "../components/collection/QuickViewHost";
 import { installServerFnAuth } from "../lib/server-fn-auth";
 
 // Install the Supabase → server-fn Authorization bridge as early as possible
@@ -56,6 +58,17 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
+  // `peek` is the global Quick View transport — any route can carry it, so
+  // the modal opens in place from the collection grid, search results, or a
+  // PDP's related rails. The displayed URL is masked to /collection/<slug>.
+  // Optional on purpose: making it required would force every <Link> in the
+  // app to pass `search`.
+  validateSearch: (search: Record<string, unknown>): { peek?: string } => {
+    const peek = typeof search.peek === "string" ? search.peek : "";
+    return peek ? { peek } : {};
+  },
+
+
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -202,9 +215,16 @@ function RootComponent() {
   // returning from a PDP snaps to the top of /collection instead of the
   // tile the user opened. history.state.__TSR_index increments on push
   // and stays flat on pop; a ref remembers the last index we saw.
+  // A Quick View open/close is not a route change — it must never scroll the
+  // page under the modal. The masked URL makes pathname look like a PDP, so
+  // this effect has to be told to sit still.
+  const peek = (search as { peek?: string } | undefined)?.peek ?? "";
+  const lastPeekRef = useRef(peek);
   const lastIndexRef = useRef<number | null>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const peekChanged = lastPeekRef.current !== peek;
+    lastPeekRef.current = peek;
     if (hash) return;
     const idx =
       (window.history.state as { __TSR_index?: number } | null)?.__TSR_index ??
@@ -212,10 +232,12 @@ function RootComponent() {
     const isForward =
       lastIndexRef.current === null || idx === null || idx > lastIndexRef.current;
     lastIndexRef.current = idx;
+    if (peekChanged || peek) return;
     if (isForward) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, peek]);
+
 
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
@@ -246,10 +268,15 @@ function RootComponent() {
         Skip to main content
       </a>
       {!isAdmin && !isSketch && <Navigation />}
-      <div id="devedit-canvas">
-        <Outlet />
-        {!hideFooter && <Footer />}
-      </div>
+      <QuickViewCatalogProvider>
+        <div id="devedit-canvas">
+          <Outlet />
+          {!hideFooter && <Footer />}
+        </div>
+        {/* Quick View is hosted once, globally — every product surface
+            (grid, wall, search, PDP rails) opens the same modal. */}
+        {!isAdmin && !isSketch && <QuickViewHost />}
+      </QuickViewCatalogProvider>
 
       {!isAdmin && !isSketch && pathname !== "/contact" && <InquiryTray />}
       <DevEditOverlay />

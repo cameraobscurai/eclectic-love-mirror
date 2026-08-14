@@ -22,6 +22,8 @@ import {
   type CollectionProduct,
 } from "@/lib/phase3-catalog";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { useQuickView } from "@/hooks/use-quick-view";
+import { usePublishQuickViewCatalog } from "./quick-view-context";
 
 const MAX_TILES = 6;
 const MIN_TILES = 3;
@@ -190,10 +192,16 @@ export function RelatedPieces({
   const [split, setSplit] = useState<RelatedSplit | null>(() =>
     allProducts ? pickRelatedSplit(product, allProducts) : null,
   );
+  // Pool the rails resolve against — also what Quick View resolves a rail
+  // tile's slug against. No sequence: a PDP has no meaningful ordering, so
+  // the modal's prev/next arrows stay hidden here.
+  const [pool, setPool] = useState<CollectionProduct[]>(allProducts ?? []);
+  usePublishQuickViewCatalog(pool);
 
   useEffect(() => {
     if (allProducts) {
       setSplit(pickRelatedSplit(product, allProducts));
+      setPool(allProducts);
       return;
     }
     let cancelled = false;
@@ -201,6 +209,7 @@ export function RelatedPieces({
       .then((cat) => {
         if (cancelled) return;
         setSplit(pickRelatedSplit(product, cat.products));
+        setPool(cat.products);
       })
       .catch(() => {
         if (!cancelled) setSplit({ taxonomy: [], palette: [] });
@@ -252,6 +261,7 @@ function RelatedRail({
   action?: { href: string; label: string };
 }) {
   const inquiry = useInquiry();
+  const { open: openQuickView } = useQuickView();
 
   return (
     <section
@@ -283,7 +293,14 @@ function RelatedRail({
           const added = inquiry.has(p.id);
           return (
             <li key={p.id} className="relative group">
-              <a href={`/collection/${p.slug}`} className="block">
+              {/* Quick View, not a hard navigation — a rail tile peeks in
+                  place and keeps the visitor on the piece they came for. */}
+              <button
+                type="button"
+                onClick={() => openQuickView(p.slug ?? p.id)}
+                aria-label={`Quick view ${p.title}`}
+                className="block w-full text-left"
+              >
                 <div className="aspect-[4/5] bg-muted/30 overflow-hidden mb-3">
                   {img ? (
                     <img
@@ -301,7 +318,7 @@ function RelatedRail({
                 <p className="text-xs tracking-wide uppercase leading-snug">
                   {p.title}
                 </p>
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => inquiry.toggle(p.id)}
