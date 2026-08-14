@@ -74,6 +74,7 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/photos", label: "Collection", icon: ImageIcon },
   { to: "/admin/products", label: "Inventory", icon: Package },
   { to: "/admin/taxonomy", label: "Taxonomy studio", icon: ScanEye },
+  { to: "/admin/variants", label: "Variant setup", icon: Layers },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
 
 
