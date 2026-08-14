@@ -510,6 +510,11 @@ type LiveOverlayRow = {
   /** Pinned variant photo + configurator label. Absent/null = AUTO. */
   variant_cover_url?: string | null;
   variant_label?: string | null;
+  /** Configurator axis for the family this row belongs to. Carried on the
+   *  overlay so /admin/variants goes live at Publish instead of waiting for
+   *  the next bake — option_name lives on product_families, which the baked
+   *  catalog only reads at bake time. */
+  family_option_name?: string | null;
   /** Epoch seconds of the row's last edit, carried by overlays published
    *  after 2026-08-12. Wins over the bake-time `imagesVersion` so a photo
    *  re-uploaded at the SAME storage URL busts CDN cache immediately. */
