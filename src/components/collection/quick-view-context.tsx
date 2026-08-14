@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
@@ -14,8 +14,7 @@ import type { CollectionProduct } from "@/lib/phase3-catalog";
  *   - `catalog`  — every product the route has in memory (slug → product).
  *   - `sequence` — the ordered, currently-visible list, if the route has one.
  *                  The host's prev/next arrows walk this list; a route with
- *                  no meaningful ordering (a PDP) simply omits it and the
- *                  arrows hide.
+ *                  no meaningful ordering (a PDP) omits it and the arrows hide.
  */
 
 interface QuickViewCatalogValue {
@@ -31,18 +30,22 @@ const QuickViewCatalogContext = createContext<QuickViewCatalogValue>({
 });
 
 export function QuickViewCatalogProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<{
-    catalog: CollectionProduct[];
-    sequence: CollectionProduct[] | null;
-  }>({ catalog: [], sequence: null });
+  const [catalog, setCatalog] = useState<CollectionProduct[]>([]);
+  const [sequence, setSequence] = useState<CollectionProduct[] | null>(null);
+
+  // Stable identity — usePublishQuickViewCatalog depends on it, so an
+  // unstable publish would re-fire the effect on every state commit.
+  const publish = useCallback(
+    (next: CollectionProduct[], nextSequence: CollectionProduct[] | null) => {
+      setCatalog((prev) => (prev === next ? prev : next));
+      setSequence((prev) => (prev === nextSequence ? prev : nextSequence));
+    },
+    [],
+  );
 
   const value = useMemo<QuickViewCatalogValue>(
-    () => ({
-      catalog: state.catalog,
-      sequence: state.sequence,
-      publish: (catalog, sequence) => setState({ catalog, sequence }),
-    }),
-    [state],
+    () => ({ catalog, sequence, publish }),
+    [catalog, sequence, publish],
   );
 
   return (
