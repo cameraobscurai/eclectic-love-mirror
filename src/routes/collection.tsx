@@ -50,7 +50,7 @@ import { useScrollSpy } from "@/hooks/useScrollSpy";
 // Quick View modal is split into its own chunk — only fetched when a tile
 // is opened. ProductTile preloads on hover/focus so the chunk is already
 // warm by the time the click resolves.
-const QuickViewModal = lazy(() =>
+const __REMOVED_QuickViewModal = (() =>
   import("@/components/collection/QuickViewModal").then((m) => ({
     default: m.QuickViewModal,
   })),
