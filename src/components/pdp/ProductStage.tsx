@@ -21,25 +21,40 @@ interface Props {
   product: CollectionProduct;
   className?: string;
   onOpenLightbox?: (index: number) => void;
+  /** Configurator selection: the photo that belongs to the chosen variant.
+   *  Selects it in the existing image set when present, otherwise leads the
+   *  stage with it. */
+  activeImageUrl?: string | null;
 }
 
 const MAX_STAGE_W = 560;
 
-export function ProductStage({ product, className, onOpenLightbox }: Props) {
-  const images =
+export function ProductStage({ product, className, onOpenLightbox, activeImageUrl }: Props) {
+  const baseImages =
     product.images && product.images.length > 0
       ? product.images
       : product.primaryImage
         ? [product.primaryImage]
         : [];
 
+  const sameUrl = (a: string, b: string) => a.split("?")[0] === b.split("?")[0];
+  const pointerIdx = activeImageUrl
+    ? baseImages.findIndex((im) => sameUrl(im.url, activeImageUrl))
+    : -1;
+  const images =
+    activeImageUrl && pointerIdx === -1
+      ? [{ url: activeImageUrl, altText: product.title }, ...baseImages]
+      : baseImages;
+  const forcedIdx = activeImageUrl ? (pointerIdx === -1 ? 0 : pointerIdx) : null;
+
   // Active image drives the hero viewport. Clicking any thumbnail swaps it in.
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(forcedIdx ?? 0);
   const active = images[activeIdx] ?? images[0];
 
   useEffect(() => {
-    setActiveIdx(0);
-  }, [product.id]);
+    setActiveIdx(forcedIdx ?? 0);
+  }, [product.id, forcedIdx]);
+
 
   // Same solver as the browse grid, detail context: the PDP hero keeps the
   // cross-product size relationship a shopper just saw in the archive instead

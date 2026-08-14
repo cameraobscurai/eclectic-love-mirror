@@ -83,10 +83,40 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
   if (!board) return null;
   const { family, members } = board;
 
+  // --- Step A warning sweep -------------------------------------------------
+  // Everything that would make the public switcher read wrong, surfaced where
+  // it gets fixed instead of in a script nobody runs.
+  const warnings: string[] = [];
+  const photoless = members.filter((m) => m.images.length === 0);
+  if (photoless.length > 0) {
+    warnings.push(
+      `${photoless.length} piece${photoless.length > 1 ? "s have" : " has"} no photo yet: ${photoless
+        .map((m) => m.title)
+        .join(", ")}.`,
+    );
+  }
+  const labels = members.map((m) => (m.variant_label ?? "").trim().toLowerCase()).filter(Boolean);
+  const dupLabels = [...new Set(labels.filter((l, i) => labels.indexOf(l) !== i))];
+  if (dupLabels.length > 0) {
+    warnings.push(`Two pieces share the same variant name: ${dupLabels.join(", ")}.`);
+  }
+  const pins = members.map((m) => (m.variant_cover_url ?? "").split("?")[0]).filter(Boolean);
+  if (new Set(pins).size !== pins.length) {
+    warnings.push("Two variants are pinned to the same photo — customers can't tell them apart.");
+  }
+  const named = members.filter((m) => (m.variant_label ?? "").trim()).length;
+  if (family.option_name && named < members.length) {
+    warnings.push(`${members.length - named} piece(s) still need a variant name before this shows choices.`);
+  }
+  if (!family.option_name) {
+    warnings.push("No option name yet, so this tile keeps its plain photo gallery on the site.");
+  }
+
   const patchMember = (next: FamilyMember) =>
     setBoard((b) =>
       b ? { ...b, members: b.members.map((m) => (m.id === next.id ? { ...m, ...next } : m)) } : b,
     );
+
 
   async function commitOptionName() {
     if ((family.option_name ?? "") === optionName.trim()) return;
@@ -196,6 +226,26 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
           onBlur={() => void commitOptionName()}
         />
       </div>
+
+      {warnings.length > 0 && (
+        <ul
+          data-testid="family-warnings"
+          style={{
+            listStyle: "none",
+            padding: "9px 11px",
+            margin: "0 0 14px",
+            border: "1px solid rgba(140,47,34,0.25)",
+            background: "rgba(140,47,34,0.05)",
+          }}
+        >
+          {warnings.map((w) => (
+            <li key={w} style={{ fontSize: 11, lineHeight: 1.55, color: "rgba(140,47,34,0.9)" }}>
+              {w}
+            </li>
+          ))}
+        </ul>
+      )}
+
 
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {members.map((m, i) => {

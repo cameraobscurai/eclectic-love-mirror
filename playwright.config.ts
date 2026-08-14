@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: '.',
   // CI gate = console + network health only.
 
-  testMatch: ['console-health.spec.ts', 'stylebrief-console.spec.ts', 'audit-pages.spec.ts', 'quickview-view-full-page.spec.ts', 'inventory-e2e.spec.ts', 'layout-visual.spec.ts'],
+  testMatch: ['console-health.spec.ts', 'stylebrief-console.spec.ts', 'audit-pages.spec.ts', 'quickview-view-full-page.spec.ts', 'inventory-e2e.spec.ts', 'family-board.spec.ts', 'layout-visual.spec.ts'],
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
