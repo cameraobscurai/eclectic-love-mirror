@@ -115,10 +115,17 @@ type ProductLoad = {
 type LoadResult = ParentLoad | ProductLoad;
 
 export const Route = createFileRoute("/collection_/$slug")({
+  // `?v=` is the configurator selection. Unknown values fall back to the
+  // family lead rather than erroring, so an old link never 404s.
+  validateSearch: (search: Record<string, unknown>): { v?: string } => {
+    const v = typeof search.v === "string" ? search.v.slice(0, 80) : undefined;
+    return v ? { v } : {};
+  },
   // The catalog is baked (static JSON) + a live overlay behind a module-level
   // singleton, so once resolved it doesn't change within a session. Skip
   // re-running the loader on client-side nav between PDPs.
   staleTime: Infinity,
+
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
       const parent = params.slug as ParentId;
