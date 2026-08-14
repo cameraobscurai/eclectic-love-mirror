@@ -252,25 +252,21 @@ export const rollbackVariantBatch = createServerFn({ method: "POST" })
     for (const snap of earliest.values()) {
       await snapshotFamily(db, snap.family_id, data.undoBatchId, "rollback", actor);
 
-      const { error: fErr } = await db
-        .from("product_families")
+      // Atomic per family: the axis and every member label are restored in one
+      // statement, so a mid-loop failure can no longer strand labels without an
+      // axis (or an axis without labels).
+      const { data: touched, error: rErr } = await db.rpc("rollback_variant_family", {
+        _family_id: snap.family_id,
+        _prev_option_name: snap.prev_option_name,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .update({ option_name: snap.prev_option_name, updated_at: new Date().toISOString() } as any)
-        .eq("id", snap.family_id);
-      if (fErr) throw new Response(fErr.message, { status: 500 });
+        _prev_members: (snap.prev_members ?? []) as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any);
+      if (rErr) throw new Response(rErr.message, { status: 500 });
       families++;
-
-      for (const m of snap.prev_members ?? []) {
-        const { error: iErr } = await db
-          .from("inventory_items")
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .update({ variant_label: m.variant_label, family_position: m.family_position } as any)
-          .eq("id", m.id)
-          .eq("family_id", snap.family_id);
-        if (iErr) throw new Response(iErr.message, { status: 500 });
-        items++;
-      }
+      items += typeof touched === "number" ? touched : 0;
     }
+
 
     const { error: mErr } = await db
       .from("variant_config_snapshots")
