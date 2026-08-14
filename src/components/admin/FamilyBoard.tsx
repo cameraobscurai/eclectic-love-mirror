@@ -227,6 +227,26 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
         />
       </div>
 
+      {warnings.length > 0 && (
+        <ul
+          data-testid="family-warnings"
+          style={{
+            listStyle: "none",
+            padding: "9px 11px",
+            margin: "0 0 14px",
+            border: "1px solid rgba(140,47,34,0.25)",
+            background: "rgba(140,47,34,0.05)",
+          }}
+        >
+          {warnings.map((w) => (
+            <li key={w} style={{ fontSize: 11, lineHeight: 1.55, color: "rgba(140,47,34,0.9)" }}>
+              {w}
+            </li>
+          ))}
+        </ul>
+      )}
+
+
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {members.map((m, i) => {
           const isCurrent = m.id === itemId;
