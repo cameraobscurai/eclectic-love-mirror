@@ -215,9 +215,16 @@ function RootComponent() {
   // returning from a PDP snaps to the top of /collection instead of the
   // tile the user opened. history.state.__TSR_index increments on push
   // and stays flat on pop; a ref remembers the last index we saw.
+  // A Quick View open/close is not a route change — it must never scroll the
+  // page under the modal. The masked URL makes pathname look like a PDP, so
+  // this effect has to be told to sit still.
+  const peek = (search as { peek?: string } | undefined)?.peek ?? "";
+  const lastPeekRef = useRef(peek);
   const lastIndexRef = useRef<number | null>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const peekChanged = lastPeekRef.current !== peek;
+    lastPeekRef.current = peek;
     if (hash) return;
     const idx =
       (window.history.state as { __TSR_index?: number } | null)?.__TSR_index ??
@@ -225,10 +232,12 @@ function RootComponent() {
     const isForward =
       lastIndexRef.current === null || idx === null || idx > lastIndexRef.current;
     lastIndexRef.current = idx;
+    if (peekChanged || peek) return;
     if (isForward) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
-  }, [pathname, hash]);
+  }, [pathname, hash, peek]);
+
 
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
