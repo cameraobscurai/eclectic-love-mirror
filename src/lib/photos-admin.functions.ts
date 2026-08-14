@@ -186,6 +186,10 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
         cover_framed_url: string | null;
         collection_slug: string | null;
         category_slug: string | null;
+        /** Pinned variant photo (inventory_items.variant_cover_url) and the
+         *  configurator label. Null = AUTO, i.e. today's convention. */
+        variant_cover_url: string | null;
+        variant_label: string | null;
         /** Epoch seconds of the row's last edit. Drives the public `?v=`
          *  cache-buster so a re-uploaded photo at the SAME storage URL cannot
          *  serve stale CDN bytes. Without it the buster stayed frozen at the
@@ -199,7 +203,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       const { data, error } = await supabaseAdmin
         .from("inventory_items")
         .select(
-          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, updated_at",
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, updated_at",
         )
         .range(from, from + PAGE - 1);
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
@@ -226,6 +230,8 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           cover_framed_url: row.cover_framed_url ?? null,
           collection_slug: row.collection_slug ?? null,
           category_slug: row.category_slug ?? null,
+          variant_cover_url: row.variant_cover_url ?? null,
+          variant_label: row.variant_label ?? null,
           images_version: row.updated_at
             ? Math.floor(new Date(row.updated_at).getTime() / 1000)
             : null,

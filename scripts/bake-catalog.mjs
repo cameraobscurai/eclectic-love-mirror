@@ -111,7 +111,7 @@ const all = [];
 let from = 0; const PAGE = 1000;
 while (true) {
   const { data, error } = await sb.from('inventory_items')
-    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready,cover_framed_url,collection_slug,category_slug')
+    .select('rms_id,title,slug,category,quantity,quantity_label,dimensions_raw,images,updated_at,color_hex,color_hex_secondary,color_lightness,color_hue,color_chroma,color_family,color_temperature,color_needs_review,owner_site_rank,manual_order,editorial_order,public_ready,cover_framed_url,collection_slug,category_slug,family_id,family_position,variant_label,variant_cover_url')
     .neq('status','draft').neq('public_ready', false).range(from, from+PAGE-1).order('title');
   if (error) { console.error(error); process.exit(1); }
   if (!data.length) break;
@@ -209,6 +209,10 @@ const products = all.map((r, i) => {
     coverFramedUrl: r.cover_framed_url ?? null,
     collectionSlug: r.collection_slug ?? null,
     declaredCategory: r.category_slug ?? null,
+    familyId: r.family_id ?? null,
+    familyPosition: r.family_position ?? null,
+    variantLabel: r.variant_label ?? null,
+    variantCoverUrl: r.variant_cover_url ? restoredInventoryUrl(r.variant_cover_url) : null,
   };
 });
 
@@ -217,9 +221,23 @@ const visibleProducts = products.filter(p => p.imageCount >= 1);
 const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
+// Declared families (product_families). Membership for any row carrying a
+// family_id comes from here; rows without one still fall through to the
+// heuristic in family-rollup until the table covers everything.
+const familiesById = new Map();
+{
+  const { data, error } = await sb
+    .from('product_families')
+    .select('id,title,slug,lead_rms_id,option_name');
+  if (error) { console.error('[bake] product_families read failed:', error.message); process.exit(1); }
+  for (const f of data) familiesById.set(f.id, f);
+  console.log(`[bake] declared families: ${familiesById.size}`);
+}
+
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups);
+const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups, familiesById);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
+console.log('[rollup] sources:', JSON.stringify(stats.sourceCounts));
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
 // Match by slug first, then by normalized title (RMS titles often differ).

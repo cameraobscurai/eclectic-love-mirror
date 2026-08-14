@@ -68,7 +68,7 @@ const hasVariantNoun = title => {
   return false;
 };
 
-export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
+export function rollupFamilies(products, liveSnapshot, forcedGroups = [], familiesById = new Map()) {
   // Index live products by various keys
   const liveProducts = [];
   for (const [liveCat, items] of Object.entries(liveSnapshot || {})) {
@@ -106,6 +106,20 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
   }
 
   function familyKeyForRms(p) {
+    // -1. DECLARED membership (product_families). Once a row carries a
+    // family_id, every heuristic branch below is skipped — the admin's
+    // grouping is authority, not a guess against a frozen scrape.
+    if (p.familyId && familiesById.has(p.familyId)) {
+      const fam = familiesById.get(p.familyId);
+      return {
+        key: 'db:' + p.familyId,
+        source: 'declared',
+        familyTitle: fam.title,
+        liveSlug: fam.slug,
+        leadRmsId: fam.lead_rms_id ?? null,
+        optionName: fam.option_name ?? null,
+      };
+    }
     // 0. owner-forced override
     const forced = forcedByRms.get(String(p.id));
     if (forced) return forced;
@@ -244,6 +258,13 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
     const imageForVariant = (member) => {
       const imgs = member.images || [];
       if (!imgs.length) return null;
+      // PINNED pointer wins over every convention. The DB trigger already
+      // guarantees the URL belongs to this row's own images[].
+      if (member.variantCoverUrl) {
+        const pinnedKey = keyFor(member.variantCoverUrl);
+        const hit = imgs.find((img) => keyFor(urlFor(img)) === pinnedKey);
+        if (hit) return hit;
+      }
       const first = imgs[0];
       if (!isSetImage(first)) return first;
       let best = null;
@@ -327,10 +348,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = []) {
           dimensions: m.dimensions,
           stockedQuantity: m.stockedQuantity,
           imageUrl,
+          // Configurator axis. Null until Adrienne labels the family, which is
+          // also the Phase 4 gate — no label, no chips.
+          label: m.variantLabel ?? null,
+          isLead: g.fam.leadRmsId != null && String(m.id) === String(g.fam.leadRmsId),
+          pinned: !!m.variantCoverUrl,
         };
       }),
       // Sum imageCount across the group so callers can show "8 photos"
       imageCount: mergedImages.length,
+      optionName: g.fam.optionName ?? null,
       // Mark how this family was identified
       _familySource: g.fam.source,
     };
