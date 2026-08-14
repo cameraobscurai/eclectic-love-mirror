@@ -253,6 +253,7 @@ function RelatedRail({
   action?: { href: string; label: string };
 }) {
   const inquiry = useInquiry();
+  const { open: openQuickView } = useQuickView();
 
   return (
     <section
