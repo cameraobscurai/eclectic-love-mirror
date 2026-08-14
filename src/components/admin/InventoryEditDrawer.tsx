@@ -121,7 +121,16 @@ export function InventoryEditDrawer({
         onClose={onClose}
         onOpenPhotos={() => setPhotoEditor(true)}
         onDelete={async () => {
-          await del({ data: { id } });
+          try {
+            await del({ data: { id } });
+          } catch (e) {
+            // Server fns reject with a raw Response; unwrapped it surfaces as
+            // "Error: [object Response]" and a blank screen.
+            const msg =
+              e instanceof Response ? await e.text() : (e as Error)?.message || "Delete failed.";
+            alert(msg);
+            return;
+          }
           onSaved();
           onClose();
         }}
