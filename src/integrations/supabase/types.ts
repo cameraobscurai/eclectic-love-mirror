@@ -2065,6 +2065,14 @@ export type Database = {
         }[]
       }
       reorder_inventory_items: { Args: { p_updates: Json }; Returns: undefined }
+      rollback_variant_family: {
+        Args: {
+          _family_id: string
+          _prev_members: Json
+          _prev_option_name: string
+        }
+        Returns: number
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
