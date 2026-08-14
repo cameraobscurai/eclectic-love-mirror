@@ -41,3 +41,23 @@ test('QuickView "view full page" lands on the PDP', async ({ page }) => {
   expect(new URL(page.url()).pathname).toBe(href);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
+
+// Quick View is the middle layer between the grid and the PDP: clicking a
+// tile must open the modal in place (?view=<slug>) and NOT navigate away.
+test('tile click opens Quick View without leaving the collection page', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto('/collection?group=lounge-seating&cat=sofas-loveseats', {
+    waitUntil: 'domcontentloaded',
+  });
+  const tile = page.locator('button:has(.product-tile-media)').first();
+  await tile.waitFor({ state: 'visible', timeout: 30_000 });
+  await tile.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(3000); // let hydration attach the tile handler
+  await tile.click();
+
+  const dialog = page.getByRole('dialog');
+  await dialog.waitFor({ state: 'visible', timeout: 10_000 });
+  expect(new URL(page.url()).pathname).toBe('/collection');
+  expect(new URL(page.url()).searchParams.get('view')).toBeTruthy();
+  await expect(dialog.getByRole('link', { name: /view full page/i })).toBeVisible();
+});

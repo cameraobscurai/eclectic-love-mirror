@@ -592,18 +592,10 @@ function CollectionPage() {
   const grabbedScrollY = useRef<number | null>(null);
   // Remember which tile opened the modal so we can return focus on close.
   const openerRef = useRef<HTMLElement | null>(null);
-  // ONE product page. Clicking a tile goes straight to the PDP instead of
-  // opening Quick View — two half-pages for the same piece is what made the
-  // site feel like it had two answers for "what is this?". Existing
-  // `?view=<slug>` links still open the modal so shared URLs don't break.
+  // Quick View is the middle layer: tile click opens the modal in place
+  // (`?view=<slug>`), and the modal's "View full page →" is the only exit to
+  // the PDP. Users never lose their scroll position or filters to peek.
   const setQuickViewId = (id: string | null) => {
-    if (id !== null) {
-      const hit = products.find((p) => p.id === id || p.slug === id);
-      if (hit?.slug) {
-        navigate({ to: "/collection/$slug", params: { slug: hit.slug } });
-        return;
-      }
-    }
     if (id !== null && grabbedScrollY.current === null) {
       grabbedScrollY.current = window.scrollY;
       // Snapshot the active element (the tile button) for focus return.
