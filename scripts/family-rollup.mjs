@@ -348,10 +348,16 @@ export function rollupFamilies(products, liveSnapshot, forcedGroups = [], famili
           dimensions: m.dimensions,
           stockedQuantity: m.stockedQuantity,
           imageUrl,
+          // Configurator axis. Null until Adrienne labels the family, which is
+          // also the Phase 4 gate — no label, no chips.
+          label: m.variantLabel ?? null,
+          isLead: g.fam.leadRmsId != null && String(m.id) === String(g.fam.leadRmsId),
+          pinned: !!m.variantCoverUrl,
         };
       }),
       // Sum imageCount across the group so callers can show "8 photos"
       imageCount: mergedImages.length,
+      optionName: g.fam.optionName ?? null,
       // Mark how this family was identified
       _familySource: g.fam.source,
     };
