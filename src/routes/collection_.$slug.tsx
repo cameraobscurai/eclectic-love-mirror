@@ -44,7 +44,6 @@ import {
   configurableVariants,
   resolveVariant,
   variantKey,
-  type ProductVariant,
 } from "@/components/pdp/VariantConfigurator";
 
 
