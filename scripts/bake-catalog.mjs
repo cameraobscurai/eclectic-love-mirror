@@ -221,9 +221,23 @@ const visibleProducts = products.filter(p => p.imageCount >= 1);
 const hiddenForMissingImage = products.length - visibleProducts.length;
 console.log('hidden (no image):', hiddenForMissingImage);
 
+// Declared families (product_families). Membership for any row carrying a
+// family_id comes from here; rows without one still fall through to the
+// heuristic in family-rollup until the table covers everything.
+const familiesById = new Map();
+{
+  const { data, error } = await sb
+    .from('product_families')
+    .select('id,title,slug,lead_rms_id,option_name');
+  if (error) { console.error('[bake] product_families read failed:', error.message); process.exit(1); }
+  for (const f of data) familiesById.set(f.id, f);
+  console.log(`[bake] declared families: ${familiesById.size}`);
+}
+
 // Roll up RMS variant rows into one tile per product family
-const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups);
+const { products: rolled, stats } = rollupFamilies(visibleProducts, liveSnapshot, forcedFamilyGroups, familiesById);
 console.log(`[rollup] ${stats.inputRows} RMS rows -> ${stats.outputFamilies} family tiles (collapsed ${stats.collapsed})`);
+console.log('[rollup] sources:', JSON.stringify(stats.sourceCounts));
 
 // Assign ownerSiteRank + liveCategory/liveSubcategories from live-site map.
 // Match by slug first, then by normalized title (RMS titles often differ).
