@@ -596,15 +596,18 @@ function CollectionPage() {
 
   // Legacy `?view=` links (bookmarks, anything shared before the global
   // `peek` param existed) translate into a Quick View open and drop `view`.
+  // One navigate, so the two params can't race each other.
   useEffect(() => {
     if (!view) return;
-    openQuickView(view);
+    const hit = products.find((p) => p.id === view || p.slug === view);
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, view: "" }),
+      search: (prev: CollectionSearch) =>
+        ({ ...prev, view: "", peek: hit?.slug ?? view }) as never,
       replace: true,
       resetScroll: false,
     });
-  }, [view, openQuickView, navigate]);
+  }, [view, products, navigate]);
+
 
   const hasActiveFilters = !!(activeParent || q);
   const resetAll = () => {
