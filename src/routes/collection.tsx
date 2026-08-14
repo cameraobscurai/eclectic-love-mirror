@@ -46,15 +46,12 @@ import hiveSignatureHeroMobile from "@/assets/collection/hive-signature-hero-mob
 import { heroPreloadLink } from "@/components/hero-image";
 import { acquireScrollLock } from "@/lib/scroll-lock";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { useQuickView } from "@/hooks/use-quick-view";
+import { usePublishQuickViewCatalog } from "@/components/collection/quick-view-context";
 
-// Quick View modal is split into its own chunk — only fetched when a tile
-// is opened. ProductTile preloads on hover/focus so the chunk is already
+// The Quick View modal chunk is owned by QuickViewHost (mounted in
+// __root.tsx). ProductTile still preloads it on hover/focus so the chunk is
 // warm by the time the click resolves.
-const __REMOVED_QuickViewModal = (() =>
-  import("@/components/collection/QuickViewModal").then((m) => ({
-    default: m.QuickViewModal,
-  })),
-);
 
 
 const INITIAL_BATCH = 60;
@@ -608,6 +605,7 @@ function CollectionPage() {
         sort: "type" as SortKey,
         layout: "grid" as Layout,
         view: "",
+        peek: undefined,
       }),
       replace: true,
       // Stay where we are — clearing filters should not yank the page.
@@ -633,6 +631,7 @@ function CollectionPage() {
         group: parent,
         subcategory: "all",
         view: "",
+        peek: undefined,
       }),
       replace: true,
       resetScroll: false,
@@ -643,7 +642,7 @@ function CollectionPage() {
   // Selecting a subcategory updates `subcategory` and clears `view`.
   const selectSubcategory = (sub: string) => {
     navigate({
-      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub, view: "" }),
+      search: (prev: CollectionSearch) => ({ ...prev, subcategory: sub, view: "", peek: undefined }),
       replace: true,
       resetScroll: false,
     });
@@ -663,6 +662,7 @@ function CollectionPage() {
         subcategory: mapping.sub,
         q: "",
         view: "",
+        peek: undefined,
       }),
       replace: true,
       resetScroll: false,
@@ -1383,6 +1383,7 @@ function CollectionPage() {
                 subcategory: "all",
                 q: next,
                 view: "",
+        peek: undefined,
               }),
               replace: true,
               resetScroll: false,
@@ -1401,6 +1402,7 @@ function CollectionPage() {
                 subcategory: "all",
                 q: "",
                 view: "",
+        peek: undefined,
               }),
               replace: true,
               resetScroll: false,
