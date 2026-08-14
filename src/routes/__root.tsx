@@ -56,6 +56,13 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
+  // `peek` is the global Quick View transport — any route can carry it, so
+  // the modal opens in place from the collection grid, search results, or a
+  // PDP's related rails. The displayed URL is masked to /collection/<slug>.
+  validateSearch: (search: Record<string, unknown>) => ({
+    peek: typeof search.peek === "string" ? search.peek : "",
+  }),
+
   head: () => ({
     meta: [
       { charSet: "utf-8" },
