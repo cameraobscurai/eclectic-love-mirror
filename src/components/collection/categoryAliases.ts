@@ -23,11 +23,13 @@ export function canonicalCategorySlug(categorySlug: string | null | undefined): 
   return CATEGORY_ALIASES[categorySlug] ?? categorySlug;
 }
 
+// Lighting is deliberately absent: hung fixtures have no floor to sit on, and
+// bottom-aligning short pendants leaves huge dead space above them.
+// See mem://features/lighting-not-true-scaled.md — do NOT re-add lighting here.
 const FLOOR_ANCHORED_CATEGORIES = new Set([
   "seating",
   "tables",
   "bars",
-  "lighting",
   "large-decor",
   "storage",
 ]);
