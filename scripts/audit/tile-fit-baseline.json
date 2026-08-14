@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T20:17:04.127Z",
+  "generatedAt": "2026-08-14T20:19:45.142Z",
   "thresholds": {
     "massRatio": 0.65,
     "floorSpread": 15
@@ -202,8 +202,315 @@
       "failing": 1
     },
     {
-      "slice": "lounge-seating/chairs",
-      "error": "TimeoutError: page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.product-tile-media img') to be visible\n"
+      "slice": "lounge-seating/lounge-chairs",
+      "tiles": 39,
+      "found": 39,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.871,
+          "widthRatio": 0.759,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Noelle Black Cane Chair",
+              "w": 142,
+              "h": 178
+            },
+            {
+              "title": "Benecio Leather Knit Chair",
+              "w": 187,
+              "h": 178
+            },
+            {
+              "title": "Antonio Black Leather Butterfly Chair",
+              "w": 144,
+              "h": 177
+            }
+          ]
+        },
+        {
+          "massRatio": 0.843,
+          "widthRatio": 0.71,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Fabian Grey Hide Barrel Chair",
+              "w": 169,
+              "h": 178
+            },
+            {
+              "title": "Marshall Mango Wood Chair",
+              "w": 120,
+              "h": 178
+            },
+            {
+              "title": "Fawn Natural Cane Chair",
+              "w": 146,
+              "h": 175
+            }
+          ]
+        },
+        {
+          "massRatio": 0.779,
+          "widthRatio": 0.607,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Jesamay Chair",
+              "w": 133,
+              "h": 178
+            },
+            {
+              "title": "Giles Goat Hide Chair",
+              "w": 136,
+              "h": 178
+            },
+            {
+              "title": "Hirshfield Leather Chair",
+              "w": 219,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.924,
+          "widthRatio": 0.854,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Nomad Wood Chair",
+              "w": 140,
+              "h": 178
+            },
+            {
+              "title": "Artesia Chair",
+              "w": 164,
+              "h": 178
+            },
+            {
+              "title": "Lagos Swivel Chair",
+              "w": 149,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.934,
+          "widthRatio": 0.872,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Hemingway Brown Leather Chair",
+              "w": 153,
+              "h": 178
+            },
+            {
+              "title": "Tailor Brown Leather Chair",
+              "w": 156,
+              "h": 178
+            },
+            {
+              "title": "Ford Deconstructed Leather Wingback Chair",
+              "w": 136,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.953,
+          "widthRatio": 0.907,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Bard Deconstructed Leather Chair",
+              "w": 150,
+              "h": 178
+            },
+            {
+              "title": "Amun Brown Leather Butterfly Chair",
+              "w": 151,
+              "h": 178
+            },
+            {
+              "title": "Poe Deconstructed Leather Chair",
+              "w": 137,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.861,
+          "widthRatio": 0.741,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Suhana Cognac Leather Chair",
+              "w": 193,
+              "h": 177
+            },
+            {
+              "title": "Niva Burl Wood Chair",
+              "w": 177,
+              "h": 178
+            },
+            {
+              "title": "Azalea Botanical Velvet Chair",
+              "w": 239,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.988,
+          "widthRatio": 0.976,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Elspeth Almond Velour Chair",
+              "w": 164,
+              "h": 178
+            },
+            {
+              "title": "Natori Oak + Fur Chair",
+              "w": 163,
+              "h": 178
+            },
+            {
+              "title": "Florian Ivory Hide Barrel Chair",
+              "w": 167,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.814,
+          "widthRatio": 0.663,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Aramita Cotton Velvet Chair",
+              "w": 182,
+              "h": 178
+            },
+            {
+              "title": "Corwin Canvas Lounge Chair",
+              "w": 187,
+              "h": 178
+            },
+            {
+              "title": "Adelaide Antique Arm Chair",
+              "w": 124,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.881,
+          "widthRatio": 0.777,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Helena Antique Carved Chair",
+              "w": 101,
+              "h": 178
+            },
+            {
+              "title": "Jennie Antique Linen Chair",
+              "w": 130,
+              "h": 178
+            },
+            {
+              "title": "Millicent Antique Arm Chair",
+              "w": 108,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.82,
+          "widthRatio": 0.672,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Rosie Antique Linen Chair",
+              "w": 135,
+              "h": 178
+            },
+            {
+              "title": "Osprey Black Metal Chair",
+              "w": 201,
+              "h": 178
+            },
+            {
+              "title": "Claude White Upholstered Chair",
+              "w": 182,
+              "h": 176
+            }
+          ]
+        },
+        {
+          "massRatio": 0.794,
+          "widthRatio": 0.631,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Fulton White Leather Butterfly Chair",
+              "w": 135,
+              "h": 178
+            },
+            {
+              "title": "Carwyn White + Wood Chair",
+              "w": 214,
+              "h": 178
+            },
+            {
+              "title": "Alora Botanical Sculptural Chair",
+              "w": 186,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.828,
+          "widthRatio": 0.686,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Mara Hunter Leather Chair",
+              "w": 120,
+              "h": 178
+            },
+            {
+              "title": "Donnelly Navy Leather Wingback Chair",
+              "w": 134,
+              "h": 178
+            },
+            {
+              "title": "Zeki Kilim Armchair",
+              "w": 175,
+              "h": 178
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.779,
+      "worstFloorSpread": 1,
+      "failing": 0
     },
     {
       "slice": "lounge-seating/benches",
@@ -1020,8 +1327,62 @@
       "failing": 1
     },
     {
-      "slice": "cocktail-bar/stools",
-      "error": "TimeoutError: page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('.product-tile-media img') to be visible\n"
+      "slice": "cocktail-bar/bar-stools",
+      "tiles": 6,
+      "found": 6,
+      "broken": [],
+      "unmeasurable": [],
+      "rows": [
+        {
+          "massRatio": 0.763,
+          "widthRatio": 0.701,
+          "floorSpread": 0,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Vixxen Black Bar Stool",
+              "w": 137,
+              "h": 214
+            },
+            {
+              "title": "Farrell Grey Hide Bar Stool",
+              "w": 125,
+              "h": 187
+            },
+            {
+              "title": "Axel Bar Stool",
+              "w": 96,
+              "h": 178
+            }
+          ]
+        },
+        {
+          "massRatio": 0.942,
+          "widthRatio": 0.853,
+          "floorSpread": 1,
+          "pass": true,
+          "tiles": [
+            {
+              "title": "Amanita Bar Stool",
+              "w": 129,
+              "h": 178
+            },
+            {
+              "title": "Julien Adjustable Counter Stool",
+              "w": 118,
+              "h": 178
+            },
+            {
+              "title": "Thatcher Green Natural Woven Bar Stool",
+              "w": 110,
+              "h": 215
+            }
+          ]
+        }
+      ],
+      "worstMassRatio": 0.763,
+      "worstFloorSpread": 1,
+      "failing": 0
     },
     {
       "slice": "dining/dining-tables",
