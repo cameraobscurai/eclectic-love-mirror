@@ -209,6 +209,10 @@ const products = all.map((r, i) => {
     coverFramedUrl: r.cover_framed_url ?? null,
     collectionSlug: r.collection_slug ?? null,
     declaredCategory: r.category_slug ?? null,
+    familyId: r.family_id ?? null,
+    familyPosition: r.family_position ?? null,
+    variantLabel: r.variant_label ?? null,
+    variantCoverUrl: r.variant_cover_url ? restoredInventoryUrl(r.variant_cover_url) : null,
   };
 });
 
