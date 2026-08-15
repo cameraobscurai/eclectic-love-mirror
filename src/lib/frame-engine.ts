@@ -125,7 +125,7 @@ export function canonicalizeRecipe(recipe: FrameRecipe): string {
 }
 
 /** Bump when the rule table or solver math changes meaning. */
-export const RULE_VERSION = "fs2-2026-08-12";
+export const RULE_VERSION = "fs3-2026-08-15";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // measureSilhouette
@@ -426,6 +426,14 @@ export type FrameRule = {
   centerX: number;
 };
 
+/**
+ * The shared ground line. Every bottom-anchored rule sits on this one number:
+ * a lamp, a sofa and a candlestick photographed on the same floor must render
+ * on the same floor. Per-rule deviations are how a grid row develops a wobble
+ * no one can name.
+ */
+const FLOOR_LINE = 0.9;
+
 const R_SEATING: FrameRule = {
   primary: "width",
   /**
@@ -448,7 +456,7 @@ const R_SEATING: FrameRule = {
   primaryTarget: 0.82,
   secondaryMax: 0.58,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -465,7 +473,7 @@ const R_TABLES: FrameRule = {
   primaryTarget: 0.8,
   secondaryMax: 0.6,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -474,7 +482,7 @@ const R_BARS: FrameRule = {
   primaryTarget: 0.7,
   secondaryMax: 0.82,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -483,7 +491,7 @@ const R_STORAGE: FrameRule = {
   primaryTarget: 0.68,
   secondaryMax: 0.62,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -521,7 +529,7 @@ const R_CANDLELIGHT: FrameRule = {
   primaryTarget: 0.55,
   secondaryMax: 0.55,
   anchor: "bottom",
-  anchorY: 0.85,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -584,7 +592,7 @@ const R_LARGE_DECOR: FrameRule = {
   primaryTarget: 0.72,
   secondaryMax: 0.62,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
@@ -598,7 +606,7 @@ const R_BAR_STOOLS: FrameRule = {
   primaryTarget: 0.72,
   secondaryMax: 0.5,
   anchor: "bottom",
-  anchorY: 0.9,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
