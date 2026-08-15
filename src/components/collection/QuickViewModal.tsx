@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type React from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -43,7 +43,6 @@ export function QuickViewModal({
   onNext,
   onClose,
 }: QuickViewModalProps) {
-  const navigate = useNavigate();
   const reduced = useReducedMotion();
   const isMobile = useIsMobile();
   const canDrag = isMobile && !reduced;
@@ -825,11 +824,10 @@ export function QuickViewModal({
                 onClick={(e) => {
                   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
                   e.preventDefault();
-                  void navigate({
-                    to: "/collection/$slug",
-                    params: { slug: product.slug },
-                    replace: true,
-                  });
+                  // Router navigation dedupes here: the masked location
+                  // already reads /collection/{slug}. A location.assign is
+                  // the only thing that reliably unmasks into the real PDP.
+                  window.location.assign(`/collection/${product.slug}`);
                 }}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
