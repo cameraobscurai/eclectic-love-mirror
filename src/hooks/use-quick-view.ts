@@ -46,6 +46,7 @@ export function useQuickView() {
         // modal is already up, so prev/next never re-record (they'd store the
         // locked-body scroll, i.e. 0). A stale value from a previous session
         // is overwritten here rather than trusted.
+        console.log('[qv] open', slug, 'peek=', peek, 'y=', window.scrollY);
         if (!peek) {
           quickViewOpener.scrollY = window.scrollY;
           quickViewOpener.element = document.activeElement as HTMLElement | null;
