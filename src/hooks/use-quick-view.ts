@@ -25,46 +25,59 @@ export const quickViewOpener = {
 export function useQuickView() {
   const navigate = useNavigate();
   const { catalog } = useQuickViewCatalog();
-  const peek = useRouterState({
-    select: (s) => ((s.location.search as { peek?: string }).peek ?? ""),
+  // The router's `location` is the REAL (unmasked) location — the mask only
+  // affects the address bar. Pin every peek navigation to this pathname and
+  // search instead of `to: "."`, which resolves relative to the masked route
+  // while the modal is open and can drop filters mid-sequence.
+  const { pathname, search, peek } = useRouterState({
+    select: (s) => ({
+      pathname: s.location.pathname,
+      search: s.location.search as Record<string, unknown>,
+      peek: ((s.location.search as { peek?: string }).peek ?? ""),
+    }),
   });
 
   const open = useCallback(
-    (slugOrId: string) => {
+    (slugOrId: string, options?: { replace?: boolean }) => {
       const hit = catalog.find((p) => p.id === slugOrId || p.slug === slugOrId);
       const slug = hit?.slug ?? slugOrId;
       if (typeof window !== "undefined") {
-        if (quickViewOpener.scrollY === null) {
+        // Captured on the OPENING click only. `peek` is truthy while the
+        // modal is already up, so prev/next never re-record (they'd store the
+        // locked-body scroll, i.e. 0). A stale value from a previous session
+        // is overwritten here rather than trusted.
+        if (!peek) {
           quickViewOpener.scrollY = window.scrollY;
           quickViewOpener.element = document.activeElement as HTMLElement | null;
         }
       }
+
       navigate({
-        to: ".",
-        search: ((prev: Record<string, unknown>) => ({ ...prev, peek: slug })) as never,
+        to: pathname,
+        search: { ...search, peek: slug } as never,
         // Opening pushes a history entry so back closes the modal.
-        replace: false,
+        // Prev/next REPLACE, so one back press closes after any number of steps.
+        replace: options?.replace ?? false,
         resetScroll: false,
         mask: { to: "/collection/$slug", params: { slug }, search: {} } as never,
       });
     },
-    [catalog, navigate],
+    [catalog, navigate, pathname, search, peek],
   );
 
   const close = useCallback(() => {
+    const next = { ...search };
+    delete next.peek;
     navigate({
-      to: ".",
-      search: ((prev: Record<string, unknown>) => {
-        const next = { ...prev };
-        delete next.peek;
-        return next;
-      }) as never,
+      to: pathname,
+      search: next as never,
       // Closing REPLACES the masked entry so open → close → back leaves the
       // page instead of reopening the modal.
       replace: true,
       resetScroll: false,
     });
-  }, [navigate]);
+  }, [navigate, pathname, search]);
+
 
 
   return { peek, open, close };

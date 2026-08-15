@@ -38,8 +38,13 @@ export function QuickViewHost() {
   }, [catalog, index, list, peek]);
 
   // Body lock + scroll restore + focus return, shared by every surface.
+  // Keyed on OPEN/CLOSED, never on product identity: prev/next swap the
+  // product while the modal stays open, and re-running this effect there
+  // would release the lock and consume the stored scroll mid-sequence
+  // (closing would then restore to 0 instead of the grid).
+  const isOpen = Boolean(product);
   useEffect(() => {
-    if (!product) return undefined;
+    if (!isOpen) return undefined;
     const release = acquireScrollLock();
     return () => {
       release();
@@ -62,7 +67,8 @@ export function QuickViewHost() {
         });
       }
     };
-  }, [product]);
+  }, [isOpen]);
+
 
   return (
     <Suspense fallback={null}>
@@ -75,11 +81,11 @@ export function QuickViewHost() {
             hasNext={index >= 0 && index < list.length - 1}
             onPrev={() => {
               const prev = list[index - 1];
-              if (prev) open(prev.slug ?? prev.id);
+              if (prev) open(prev.slug ?? prev.id, { replace: true });
             }}
             onNext={() => {
               const next = list[index + 1];
-              if (next) open(next.slug ?? next.id);
+              if (next) open(next.slug ?? next.id, { replace: true });
             }}
             onClose={close}
           />
