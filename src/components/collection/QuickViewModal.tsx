@@ -360,7 +360,12 @@ export function QuickViewModal({
           style={glassBandLightNoTop}
         >
           <p className="text-[10px] uppercase tracking-[0.28em] text-charcoal/70">
-            {product.displayCategory}
+            {/* Name the surface: this is a peek, not the page. The only exit
+                to the full page is the outlined CTA in the footer. */}
+            <span className="text-charcoal">QUICK VIEW</span>
+            {product.displayCategory ? (
+              <span className="text-charcoal/45"> · {product.displayCategory}</span>
+            ) : null}
           </p>
           <div className="flex items-center gap-1 text-charcoal">
             <button
@@ -809,12 +814,28 @@ export function QuickViewModal({
               >
                 {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
+              {/* The ONE control that leaves the peek. The URL is already
+                  masked to /collection/{slug}, so a same-URL <a> click is a
+                  no-op — unmask it via the router instead, keeping the href
+                  for middle-click / new-tab / crawlers. */}
               <a
                 href={`/collection/${product.slug}`}
+                aria-label={`View the full page for ${product.title}`}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                  e.preventDefault();
+                  // Router navigation dedupes here: the masked location
+                  // already reads /collection/{slug}. A location.assign is
+                  // the only thing that reliably unmasks into the real PDP.
+                  window.location.assign(`/collection/${product.slug}`);
+                }}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
-                View full page →
+                VIEW FULL PAGE →
               </a>
+              <p className="pt-1 text-center text-[9px] uppercase tracking-[0.28em] text-charcoal/35">
+                ESC TO CLOSE
+              </p>
             </div>
           </div>
         </div>

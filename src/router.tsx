@@ -65,6 +65,11 @@ export const getRouter = () => {
     defaultPreload: "intent",
     defaultPreloadStaleTime: 30_000,
     defaultErrorComponent: DefaultErrorComponent,
+    // Quick View masks the URL to /collection/{slug} while the visitor stays
+    // on the grid. A reload (or the modal's VIEW FULL PAGE, which is a real
+    // load at that same URL) must resolve to the actual PDP, not replay the
+    // masked grid + peek out of sessionStorage.
+    unmaskOnReload: true,
   });
 
   return router;
