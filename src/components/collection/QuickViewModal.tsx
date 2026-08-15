@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type React from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useFocusTrap } from "@/hooks/use-focus-trap";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -814,12 +814,22 @@ export function QuickViewModal({
               >
                 {inInquiry ? "ADDED TO INQUIRY" : "ADD TO INQUIRY"}
               </button>
-              {/* Deliberately a plain <a>: the URL is already masked to
-                  /collection/{slug}, so a client <Link> to the same path can
-                  no-op. This is the ONE control that leaves the page. */}
+              {/* The ONE control that leaves the peek. The URL is already
+                  masked to /collection/{slug}, so a same-URL <a> click is a
+                  no-op — unmask it via the router instead, keeping the href
+                  for middle-click / new-tab / crawlers. */}
               <a
                 href={`/collection/${product.slug}`}
                 aria-label={`View the full page for ${product.title}`}
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                  e.preventDefault();
+                  void navigate({
+                    to: "/collection/$slug",
+                    params: { slug: product.slug },
+                    replace: true,
+                  });
+                }}
                 className="block w-full text-center px-6 py-3 text-[10px] uppercase tracking-[0.28em] text-charcoal/80 border border-charcoal/20 hover:text-charcoal hover:border-charcoal/60 transition-colors"
               >
                 VIEW FULL PAGE →
