@@ -43,6 +43,7 @@ export function QuickViewModal({
   onNext,
   onClose,
 }: QuickViewModalProps) {
+  const navigate = useNavigate();
   const reduced = useReducedMotion();
   const isMobile = useIsMobile();
   const canDrag = isMobile && !reduced;
