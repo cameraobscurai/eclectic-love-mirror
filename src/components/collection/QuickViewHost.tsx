@@ -44,13 +44,11 @@ export function QuickViewHost() {
   // (closing would then restore to 0 instead of the grid).
   const isOpen = Boolean(product);
   useEffect(() => {
-    console.log('[qv] effect isOpen', isOpen, 'stored=', quickViewOpener.scrollY, 'winY=', typeof window!=='undefined'?window.scrollY:-1);
     if (!isOpen) return undefined;
     const release = acquireScrollLock();
     return () => {
       release();
       const y = quickViewOpener.scrollY;
-      console.log('[qv] restore', y, window.scrollY);
       quickViewOpener.scrollY = null;
       const opener = quickViewOpener.element;
       quickViewOpener.element = null;
