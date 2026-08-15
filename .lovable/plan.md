@@ -3,8 +3,9 @@
 Your corrections hold against the code. Confirmed before planning:
 
 - `frame-engine.ts`: every seating/table/bar/storage/large-decor rule is `anchorY: 0.9`. Only lighting (0.92) and candlelight (0.85) deviate. No intra-seating floor drift to collapse.
-- `R_SEATING.aspectBlend: 0.65` → rendered bbox area ∝ aspect^(blend−1) = aspect^−0.35. That is the size gradient in the screenshot.
-- `NormalizedProductImage.tsx:247` still clamps (`rule.clampMin, rule.clampMax`); the engine has no clamp band. The 281 CLAMP_MASSIVE rows are a legacy-path measurement, not a photography verdict.
+- The aspect exponent derivation checks out. Width-primary: `s = (T/w)·(a/ref)^(b/2)`, so rendered bbox area `= T²·ref^−b·a^(b−1)`. At `b = 0.65` that is `a^−0.35`; chair (a≈1.1) vs bench (a≈3.0) = **1.42× more box area for the chair**. `b = 1.0` makes it aspect-invariant. Both paths carry the same pair: `frame-engine` `R_SEATING` and `categoryFit` seating are each `aspectBlend 0.65 / refAspect 2.4`, so the gradient survives the bake unless the exponent is fitted.
+- `NormalizedProductImage.tsx:247` still clamps (`rule.clampMin, rule.clampMax`; seating floor 0.7, tableware/styling 0.75); the engine has no clamp band. The 281 CLAMP_MASSIVE rows are a legacy-path measurement, not a photography verdict.
+- Caveat on step 4: `secondaryMax` and `widthMax`/`heightMax` bind before the exponent does on extreme aspects, so refitting `b` alone will not move every tile. The fit has to be solved against the caps, not in isolation.
 - Bake coverage today: 39 of 634 rows carry `cover_framed_url` (lighting 38/45, lounge-seating 1/88, everything else 0).
 - `bboxFrom` returns `hits` and `measureSilhouette` discards it.
 - `PRODUCT_TILE_OVERRIDES` has one entry.
