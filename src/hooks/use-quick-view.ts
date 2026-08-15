@@ -62,7 +62,7 @@ export function useQuickView() {
         mask: { to: "/collection/$slug", params: { slug }, search: {} } as never,
       });
     },
-    [catalog, navigate, pathname, search],
+    [catalog, navigate, pathname, search, peek],
   );
 
   const close = useCallback(() => {
