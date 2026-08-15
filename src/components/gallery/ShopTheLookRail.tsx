@@ -2,7 +2,10 @@ import { useMemo } from "react";
 
 import { Check, Plus } from "lucide-react";
 import catalog from "@/data/inventory/current_catalog.json";
+import { usePublishQuickViewCatalog } from "@/components/collection/quick-view-context";
+import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { useInquiry } from "@/hooks/use-inquiry";
+import { useQuickView } from "@/hooks/use-quick-view";
 
 interface CatalogProduct {
   id: number | string;
@@ -21,9 +24,16 @@ interface ShopTheLookRailProps {
 
 export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
   const { has, toggle } = useInquiry();
+  const { open: openQuickView } = useQuickView();
   const items = useMemo(
     () => slugs.map((s) => BY_SLUG.get(s)).filter(Boolean) as CatalogProduct[],
     [slugs]
+  );
+  // Publish the rail so Quick View can resolve a tile's slug and walk the
+  // rail with prev/next. A gallery tile peeks — it never leaves the story.
+  usePublishQuickViewCatalog(
+    items as unknown as CollectionProduct[],
+    items as unknown as CollectionProduct[],
   );
   if (items.length === 0) return null;
 
@@ -37,9 +47,11 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
           const selected = has(String(p.id));
           return (
             <li key={p.id} className="shrink-0 w-[112px] snap-start">
-              <a
-                href={`/collection/${p.slug}`}
-                className="block aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
+              <button
+                type="button"
+                onClick={() => openQuickView(p.slug)}
+                aria-label={`Quick view ${p.title ?? p.slug}`}
+                className="block w-full aspect-[3/4] bg-[color-mix(in_oklab,var(--cream)_6%,var(--charcoal))] overflow-hidden focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
               >
                 {p.primaryImage?.url && (
                   <img
@@ -49,7 +61,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
                     className="h-full w-full object-cover"
                   />
                 )}
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => toggle(String(p.id))}
