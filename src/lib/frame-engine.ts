@@ -149,6 +149,80 @@ export type Measurement = {
   method: MeasureMethod;
   /** 0–1. Rough trust signal; 0 when method === 'fail'. */
   confidence: number;
+  /**
+   * INK, not box. `bboxFrom` has always counted subject pixels and thrown the
+   * count away; persisting it is what turns `aspectBlend` from a guess into a
+   * fit. A sofa fills its bounding box densely, a legged chair does not, so
+   * equal *box* area is not equal visual mass.
+   *
+   * - `ink` — subject pixel count.
+   * - `inkFill` — ink / bbox area (0–1). The density term.
+   * - `centroid` — ink centroid in pixel space (NOT the bbox centre).
+   * - `floorLine` — lowest y carrying real ink, ignoring stray specks and
+   *   shadow noise (rows below 2% of the densest row are discarded). This is
+   *   the true ground line for anchoring, independent of bbox bottom.
+   *
+   * Null when method === 'fail'.
+   */
+  ink: number | null;
+  inkFill: number | null;
+  centroid: { x: number; y: number } | null;
+  floorLine: number | null;
+};
+
+/** Ink statistics gathered on the same pass as the bbox. */
+type InkStats = {
+  hits: number;
+  centroid: { x: number; y: number } | null;
+  floorLine: number | null;
+};
+
+const FLOOR_ROW_MIN_FRACTION = 0.02;
+
+function inkStatsFrom(rows: number[], sumX: number, sumY: number, hits: number): InkStats {
+  if (!hits) return { hits: 0, centroid: null, floorLine: null };
+  const maxRow = Math.max(...rows);
+  const cutoff = Math.max(1, maxRow * FLOOR_ROW_MIN_FRACTION);
+  let floorLine: number | null = null;
+  for (let y = rows.length - 1; y >= 0; y--) {
+    if (rows[y]! >= cutoff) {
+      floorLine = y;
+      break;
+    }
+  }
+  return {
+    hits,
+    centroid: { x: sumX / hits, y: sumY / hits },
+    floorLine,
+  };
+}
+
+function measurementFrom(
+  box: PixelBBox,
+  stats: InkStats,
+  method: MeasureMethod,
+  confidence: number,
+): Measurement {
+  const area = Math.max(1, box.w * box.h);
+  return {
+    bbox: box,
+    method,
+    confidence,
+    ink: stats.hits,
+    inkFill: Math.min(1, stats.hits / area),
+    centroid: stats.centroid,
+    floorLine: stats.floorLine,
+  };
+}
+
+const FAILED_MEASUREMENT: Measurement = {
+  bbox: null,
+  method: "fail",
+  confidence: 0,
+  ink: null,
+  inkFill: null,
+  centroid: null,
+  floorLine: null,
 };
 
 const ALPHA_THRESHOLD = 12;
@@ -165,27 +239,34 @@ function median(values: number[]): number {
 function bboxFrom(
   raw: RawImage,
   isSubject: (i: number) => boolean,
-): { box: PixelBBox | null; hits: number } {
+): { box: PixelBBox | null; stats: InkStats } {
   let minX = raw.w;
   let minY = raw.h;
   let maxX = -1;
   let maxY = -1;
   let hits = 0;
+  let sumX = 0;
+  let sumY = 0;
+  const rows = new Array<number>(raw.h).fill(0);
   for (let y = 0; y < raw.h; y++) {
     for (let x = 0; x < raw.w; x++) {
       const i = (y * raw.w + x) * raw.channels;
       if (!isSubject(i)) continue;
       hits++;
+      sumX += x;
+      sumY += y;
+      rows[y]!++;
       if (x < minX) minX = x;
       if (x > maxX) maxX = x;
       if (y < minY) minY = y;
       if (y > maxY) maxY = y;
     }
   }
-  if (maxX < 0 || maxY < 0) return { box: null, hits: 0 };
+  const stats = inkStatsFrom(rows, sumX, sumY, hits);
+  if (maxX < 0 || maxY < 0) return { box: null, stats };
   return {
     box: { x: minX, y: minY, w: maxX - minX + 1, h: maxY - minY + 1 },
-    hits,
+    stats,
   };
 }
 
@@ -200,7 +281,7 @@ function bboxFrom(
 export function measureSilhouette(raw: RawImage): Measurement {
   const { data, w, h, channels } = raw;
   if (!w || !h || !channels || data.length < w * h * channels) {
-    return { bbox: null, method: "fail", confidence: 0 };
+    return FAILED_MEASUREMENT;
   }
 
   const total = w * h;
@@ -212,16 +293,12 @@ export function measureSilhouette(raw: RawImage): Measurement {
       if (data[i]! < ALPHA_THRESHOLD) transparent++;
     }
     if (transparent / total >= ALPHA_PATH_MIN_TRANSPARENT) {
-      const { box } = bboxFrom(raw, (i) => data[i + 3]! >= ALPHA_THRESHOLD);
-      if (!box) return { bbox: null, method: "fail", confidence: 0 };
+      const { box, stats } = bboxFrom(raw, (i) => data[i + 3]! >= ALPHA_THRESHOLD);
+      if (!box) return FAILED_MEASUREMENT;
       // Confidence drops as the subject approaches the full frame (a tight
       // crop is valid but leaves the engine no margin to judge placement).
       const coverage = (box.w * box.h) / total;
-      return {
-        bbox: box,
-        method: "alpha",
-        confidence: coverage > 0.98 ? 0.6 : 0.95,
-      };
+      return measurementFrom(box, stats, "alpha", coverage > 0.98 ? 0.6 : 0.95);
     }
   }
 
@@ -248,27 +325,27 @@ export function measureSilhouette(raw: RawImage): Measurement {
   const minBg = Math.min(bg[0], bg[1], bg[2]);
   if (minBg <= COLOR_PATH_MIN_BG) {
     // Not a light studio background. Do not guess — this row goes to review.
-    return { bbox: null, method: "fail", confidence: 0 };
+    return FAILED_MEASUREMENT;
   }
 
   const tol = Math.max(16, (255 - minBg) * 0.7);
-  const { box, hits } = bboxFrom(raw, (i) => {
+  const { box, stats } = bboxFrom(raw, (i) => {
     const dr = Math.abs(data[i]! - bg[0]);
     const dg = Math.abs((data[i + 1] ?? data[i]!) - bg[1]);
     const db = Math.abs((data[i + 2] ?? data[i]!) - bg[2]);
     return dr > tol || dg > tol || db > tol;
   });
 
-  if (!box || hits / total < 0.001) {
-    return { bbox: null, method: "fail", confidence: 0 };
+  if (!box || stats.hits / total < 0.001) {
+    return FAILED_MEASUREMENT;
   }
 
   const coverage = (box.w * box.h) / total;
   // The colour path is inherently less certain than alpha, and a box that
   // fills the frame usually means the background was not actually uniform.
-  const confidence = coverage > 0.995 ? 0.4 : 0.8;
-  return { bbox: box, method: "color", confidence };
+  return measurementFrom(box, stats, "color", coverage > 0.995 ? 0.4 : 0.8);
 }
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Frame-space projection
@@ -351,7 +428,22 @@ export type FrameRule = {
 
 const R_SEATING: FrameRule = {
   primary: "width",
-  aspectBlend: 0.65,
+  /**
+   * FITTED, not chosen. Rendered bbox area scales as aspect^(blend−1), so the
+   * old 0.65 handed a lounge chair (aspect ~1.1) about 1.4x the box area of a
+   * bench (aspect ~3.0) — the correction ran backwards from physical reality.
+   *
+   * 0.79 is the pooled ink fit across all six seating categories (n = 97,
+   * slope 0.208 ± 0.068, ~3 SE from zero): see
+   * docs/receipts/aspect-blend-fit.md, produced by
+   * scripts/audit/fit-aspect-blend.ts from the ink stats the bake persists.
+   *
+   * It is not 1.0 because bbox area is not ink — a sofa fills its box, a
+   * legged chair does not — and it is not per-category because per-category
+   * fits on n<20 are noise (dining-chairs returned 0.20 on nine samples).
+   * Re-run the fit as coverage grows; do not hand-tune this number.
+   */
+  aspectBlend: 0.79,
   refAspect: 2.4,
   primaryTarget: 0.82,
   secondaryMax: 0.58,
@@ -359,6 +451,12 @@ const R_SEATING: FrameRule = {
   anchorY: 0.9,
   centerX: 0.5,
 };
+
+/**
+ * Tables were fitted in the same pass and HELD at 0.5: slope −0.089 ± 0.090
+ * over n = 84 cannot be told from zero. No evidence is not a new constant.
+ */
+
 
 const R_TABLES: FrameRule = {
   primary: "width",

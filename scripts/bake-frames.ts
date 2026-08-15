@@ -212,6 +212,13 @@ async function bakeOne(product: CatalogProduct & Record<string, unknown>): Promi
           hash16,
           recipe: out.recipe,
           bboxPx: out.bboxPx,
+          // Ink, not box (plan step 2). Persisted on the bake pass so the
+          // aspectBlend refit can be solved against real density instead of
+          // bounding-box area. No render change — same bytes, richer row.
+          ink: out.measurement.ink,
+          inkFill: out.measurement.inkFill,
+          centroidPx: out.measurement.centroid,
+          floorLinePx: out.measurement.floorLine,
           method: out.measurement.method === "alpha" ? "auto-alpha" : "auto-color",
           canvas: [CANVAS_W, CANVAS_H],
           approved: true,
