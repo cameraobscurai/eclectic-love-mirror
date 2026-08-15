@@ -487,12 +487,17 @@ const R_STORAGE: FrameRule = {
   centerX: 0.5,
 };
 
+/**
+ * Floor line 0.9 — the shared one. Lamps stand on the same ground plane as
+ * every other bottom-anchored piece, and the old 0.92 put them 2% of canvas
+ * lower than the sofa beside them for no stated reason.
+ */
 const R_LIGHTING: FrameRule = {
   primary: "height",
   primaryTarget: 0.72,
   secondaryMax: 0.55,
   anchor: "bottom",
-  anchorY: 0.92,
+  anchorY: FLOOR_LINE,
   centerX: 0.5,
 };
 
