@@ -75,11 +75,11 @@ export function QuickViewHost() {
             hasNext={index >= 0 && index < list.length - 1}
             onPrev={() => {
               const prev = list[index - 1];
-              if (prev) open(prev.slug ?? prev.id);
+              if (prev) open(prev.slug ?? prev.id, { replace: true });
             }}
             onNext={() => {
               const next = list[index + 1];
-              if (next) open(next.slug ?? next.id);
+              if (next) open(next.slug ?? next.id, { replace: true });
             }}
             onClose={close}
           />
