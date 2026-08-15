@@ -42,13 +42,16 @@ export function useQuickView() {
       const hit = catalog.find((p) => p.id === slugOrId || p.slug === slugOrId);
       const slug = hit?.slug ?? slugOrId;
       if (typeof window !== "undefined") {
-        // Captured ONCE per modal session. Prev/next must never re-record it,
-        // or closing restores the locked-body scroll instead of the grid.
-        if (quickViewOpener.scrollY === null) {
+        // Captured on the OPENING click only. `peek` is truthy while the
+        // modal is already up, so prev/next never re-record (they'd store the
+        // locked-body scroll, i.e. 0). A stale value from a previous session
+        // is overwritten here rather than trusted.
+        if (!peek) {
           quickViewOpener.scrollY = window.scrollY;
           quickViewOpener.element = document.activeElement as HTMLElement | null;
         }
       }
+
       navigate({
         to: pathname,
         search: { ...search, peek: slug } as never,
