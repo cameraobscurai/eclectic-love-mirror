@@ -24,7 +24,8 @@ import {
   useNavigate,
   ErrorComponent,
 } from "@tanstack/react-router";
-import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
+import { type CollectionProduct } from "@/lib/phase3-catalog";
+import { getPdpProduct, getParentFallbackImage } from "@/lib/pdp.functions";
 import { Navigation } from "@/components/navigation";
 import {
   PARENT_LABELS,
@@ -141,21 +142,12 @@ export const Route = createFileRoute("/collection_/$slug")({
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
       const parent = params.slug as ParentId;
-      let fallbackImage: string | null = null;
-      if (!PARENT_HERO_GROUP[parent]) {
-        const catalog = await getCollectionCatalog();
-        const firstImaged = catalog.products.find(
-          (p) => p.collectionSlug === parent && p.primaryImage?.url,
-        );
-        fallbackImage = firstImaged?.primaryImage?.url ?? null;
-      }
+      const fallbackImage = PARENT_HERO_GROUP[parent]
+        ? null
+        : await getParentFallbackImage({ data: { slug: parent } });
       return { kind: "parent", parent, fallbackImage };
     }
-    const catalog = await getCollectionCatalog();
-    const product =
-      catalog.products.find((p) => p.slug === params.slug) ??
-      catalog.products.find((p) => p.id === params.slug) ??
-      null;
+    const product = await getPdpProduct({ data: { slug: params.slug } });
     if (!product) throw notFound();
     return { kind: "product", product };
   },
