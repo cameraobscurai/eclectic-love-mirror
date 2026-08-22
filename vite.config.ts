@@ -8,7 +8,6 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { imagetools } from "vite-imagetools";
 import { VitePWA } from "vite-plugin-pwa";
 
-
 // vite-imagetools: drop one source image into src/assets/, append a query string,
 // and the build emits AVIF/WebP/responsive widths automatically.
 //
@@ -84,8 +83,7 @@ export default defineConfig({
               // render-signed image). Signed URLs rotate tokens each session;
               // strip the token from the cache key so revisits hit the cache
               // instead of storing a fresh copy per visit.
-              urlPattern: ({ url }) =>
-                /\/storage\/v1\/render\/image\/sign\//.test(url.pathname),
+              urlPattern: ({ url }) => /\/storage\/v1\/render\/image\/sign\//.test(url.pathname),
               handler: "CacheFirst",
               options: {
                 cacheName: "sketch-tiles-v1",
@@ -118,4 +116,3 @@ export default defineConfig({
     ],
   },
 });
-

@@ -130,9 +130,7 @@ function Section({
 }) {
   return (
     <div>
-      <h4 className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2">
-        {title}
-      </h4>
+      <h4 className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2">{title}</h4>
       {files.length === 0 ? (
         <p className="text-xs text-neutral-400">{empty}</p>
       ) : (
@@ -150,17 +148,12 @@ function Section({
                   sel
                     ? "border-emerald-600 border-2 ring-2 ring-emerald-200"
                     : already
-                    ? "border-neutral-300 opacity-40 cursor-not-allowed"
-                    : "border-neutral-300 hover:border-neutral-600"
+                      ? "border-neutral-300 opacity-40 cursor-not-allowed"
+                      : "border-neutral-300 hover:border-neutral-600"
                 }`}
                 title={showFolder && f.folder ? `${f.folder} / ${f.name}` : f.name}
               >
-                <img
-                  src={f.url}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
+                <img src={f.url} alt="" loading="lazy" className="h-full w-full object-cover" />
                 {already && (
                   <span className="absolute inset-0 bg-white/60 flex items-center justify-center text-[10px] uppercase tracking-widest text-neutral-700">
                     Attached

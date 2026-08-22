@@ -32,10 +32,7 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 const BUCKET = "squarespace-mirror";
 const COLD_ROOT = "/mnt/documents/squarespace-backup";
 const OUT_DIR = "scripts/backup/out";
-const SQS_HOSTS = new Set([
-  "images.squarespace-cdn.com",
-  "static1.squarespace.com",
-]);
+const SQS_HOSTS = new Set(["images.squarespace-cdn.com", "static1.squarespace.com"]);
 const CONCURRENCY = 8;
 const MAX_RETRIES = 4;
 
@@ -58,8 +55,9 @@ function keyFor(rmsId, url) {
   const u = new URL(url);
   // basename without query, scrub anything weird
   const base =
-    basename(u.pathname).replace(/[^\w.\-]+/g, "_").slice(0, 80) ||
-    "image.jpg";
+    basename(u.pathname)
+      .replace(/[^\w.\-]+/g, "_")
+      .slice(0, 80) || "image.jpg";
   const id = (rmsId || "unknown").toString().replace(/[^\w\-]+/g, "_");
   return `squarespace/${id}/${sha1(url).slice(0, 12)}-${base}`;
 }
@@ -107,8 +105,7 @@ async function bucketObjectInfo(key) {
 async function downloadOnce(url) {
   const res = await fetch(url, {
     headers: {
-      "User-Agent":
-        "EclecticHive-Backup/1.0 (+defensive mirror; contact admin)",
+      "User-Agent": "EclecticHive-Backup/1.0 (+defensive mirror; contact admin)",
       Accept: "image/*,*/*;q=0.8",
     },
     redirect: "follow",
@@ -189,13 +186,11 @@ async function processOne(job, manifest, failed, counters) {
     await mkdir(dirname(coldPath), { recursive: true });
     await writeFile(coldPath, buf);
 
-    const { error: upErr } = await supabase.storage
-      .from(BUCKET)
-      .upload(key, buf, {
-        contentType,
-        upsert: true,
-        cacheControl: "31536000",
-      });
+    const { error: upErr } = await supabase.storage.from(BUCKET).upload(key, buf, {
+      contentType,
+      upsert: true,
+      cacheControl: "31536000",
+    });
     if (upErr) throw upErr;
 
     counters.ok++;
@@ -269,20 +264,14 @@ async function main() {
     done++;
     if (done % 25 === 0 || done === dedup.length) {
       process.stdout.write(
-        `\r  ${done}/${dedup.length}  ok=${counters.ok} skip=${counters.skipped} fail=${counters.failed}  `
+        `\r  ${done}/${dedup.length}  ok=${counters.ok} skip=${counters.skipped} fail=${counters.failed}  `,
       );
     }
   });
   process.stdout.write("\n");
 
-  await writeFile(
-    join(OUT_DIR, "download-manifest.json"),
-    JSON.stringify(manifest, null, 2)
-  );
-  await writeFile(
-    join(OUT_DIR, "download-failed.json"),
-    JSON.stringify(failed, null, 2)
-  );
+  await writeFile(join(OUT_DIR, "download-manifest.json"), JSON.stringify(manifest, null, 2));
+  await writeFile(join(OUT_DIR, "download-failed.json"), JSON.stringify(failed, null, 2));
 
   const totalBytes = manifest.reduce((a, m) => a + (m.bytes || 0), 0);
   const summary = [

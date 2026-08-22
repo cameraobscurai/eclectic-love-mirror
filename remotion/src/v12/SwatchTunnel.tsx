@@ -19,7 +19,13 @@ export const SwatchTunnel: React.FC = () => {
   return (
     <mesh position={[0, 0, 2]}>
       <planeGeometry args={[60, 40]} />
-      <meshBasicMaterial color="#c7b6a1" transparent opacity={opacity} side={THREE.DoubleSide} toneMapped={false} />
+      <meshBasicMaterial
+        color="#c7b6a1"
+        transparent
+        opacity={opacity}
+        side={THREE.DoubleSide}
+        toneMapped={false}
+      />
     </mesh>
   );
 };

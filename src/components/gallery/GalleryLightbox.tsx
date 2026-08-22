@@ -53,8 +53,7 @@ export function GalleryLightbox({
 
   const project = projects[projectIndex];
   const pending = !!project.pending;
-  const plates =
-    project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
+  const plates = project.detailImages.length > 0 ? project.detailImages : [project.heroImage];
   const plate = plates[Math.min(plateIndex, plates.length - 1)] ?? plates[0];
   const plateIsVideo = !!plate.video;
   const plateIsStorage = plate.src.includes("/storage/v1/object/public/");
@@ -71,16 +70,16 @@ export function GalleryLightbox({
   // unmount. Pairs with role="dialog" + aria-modal="true" below.
   const dialogRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const previouslyFocused = (typeof document !== "undefined"
-      ? document.activeElement
-      : null) as HTMLElement | null;
+    const previouslyFocused = (
+      typeof document !== "undefined" ? document.activeElement : null
+    ) as HTMLElement | null;
     const root = dialogRef.current;
     if (!root) return;
     const FOCUSABLE =
       'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
     const getFocusable = () =>
       Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null
+        (el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null,
       );
     const focusables = getFocusable();
     (focusables[0] ?? root).focus();
@@ -137,7 +136,6 @@ export function GalleryLightbox({
     onPlateChange?.(plateIndex);
   }, [plateIndex, onPlateChange]);
 
-
   // plateChanging is now driven by CrossfadeImage's actual decode lifecycle
   // (see onLoadingChange below). The safety timer here only fires if a decode
   // hangs past the ceiling — keeps the lightbox from getting stuck frozen.
@@ -172,7 +170,7 @@ export function GalleryLightbox({
         return next;
       });
     },
-    [plates.length]
+    [plates.length],
   );
 
   const stepProject = useCallback(
@@ -189,7 +187,7 @@ export function GalleryLightbox({
       }
       setProjectIndex(wrap);
     },
-    [projects.length, onProjectChange, projectIndex]
+    [projects.length, onProjectChange, projectIndex],
   );
 
   // Keyboard nav.
@@ -309,7 +307,9 @@ export function GalleryLightbox({
               <video
                 key={plate.video}
                 src={plate.video}
-                poster={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+                poster={
+                  plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src
+                }
                 controls
                 playsInline
                 preload="metadata"
@@ -343,7 +343,11 @@ export function GalleryLightbox({
                   <div className="relative w-full h-full pointer-events-auto">
                     <CrossfadeImage
                       srcKey={plate.src}
-                      src={plateIsStorage ? renderUrl(plate.src, { width: 1600, quality: 78 }) : plate.src}
+                      src={
+                        plateIsStorage
+                          ? renderUrl(plate.src, { width: 1600, quality: 78 })
+                          : plate.src
+                      }
                       srcSet={plateIsStorage ? renderSrcSet(plate.src, [1200, 1600, 2000], 78) : ""}
                       sizes="(min-width: 1024px) 66vw, 100vw"
                       alt={plate.alt}
@@ -373,21 +377,22 @@ export function GalleryLightbox({
           )}
 
           {/* Preload neighbors (±2) for instant decode on next/prev. */}
-          {!pending && plates.map((p, i) => {
-            if (i === plateIndex) return null;
-            if (Math.abs(i - plateIndex) > 2) return null;
-            if (!p.src.includes("/storage/v1/object/public/")) return null;
-            return (
-              <link
-                key={p.src}
-                rel="preload"
-                as="image"
-                href={renderUrl(p.src, { width: 1600, quality: 78 })}
-                imageSrcSet={renderSrcSet(p.src, [1200, 1600, 2000], 78)}
-                imageSizes="(min-width: 1024px) 66vw, 100vw"
-              />
-            );
-          })}
+          {!pending &&
+            plates.map((p, i) => {
+              if (i === plateIndex) return null;
+              if (Math.abs(i - plateIndex) > 2) return null;
+              if (!p.src.includes("/storage/v1/object/public/")) return null;
+              return (
+                <link
+                  key={p.src}
+                  rel="preload"
+                  as="image"
+                  href={renderUrl(p.src, { width: 1600, quality: 78 })}
+                  imageSrcSet={renderSrcSet(p.src, [1200, 1600, 2000], 78)}
+                  imageSizes="(min-width: 1024px) 66vw, 100vw"
+                />
+              );
+            })}
 
           {/* Persistent counter badge — always visible bottom-left on the hero. */}
           {!pending && (
@@ -426,7 +431,6 @@ export function GalleryLightbox({
               </button>
             </>
           )}
-
         </div>
 
         {/* Sidebar (desktop) */}
@@ -442,9 +446,7 @@ export function GalleryLightbox({
 
           <div className="mt-2 lg:mt-12">
             <p className="lg:hidden text-[10px] uppercase tracking-[0.32em] text-cream/40 tabular-nums">
-              {pending
-                ? "—"
-                : `${(plateIndex + 1).toString().padStart(2, "0")}`}
+              {pending ? "—" : `${(plateIndex + 1).toString().padStart(2, "0")}`}
               {!pending && <span className="mx-2 text-cream/20">/</span>}
               {!pending && plates.length.toString().padStart(2, "0")}
             </p>
@@ -464,11 +466,12 @@ export function GalleryLightbox({
               </p>
             )}
             <GalleryCreditsBlock credits={project.credits} />
-            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
-              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
-            )}
+            {!pending &&
+              project.relatedInventorySlugs &&
+              project.relatedInventorySlugs.length > 0 && (
+                <ShopTheLookRail slugs={project.relatedInventorySlugs} />
+              )}
           </div>
-
 
           <div className="mt-auto pt-12 flex items-center justify-between gap-6 border-t border-cream/10 -mx-8 lg:-mx-12 px-8 lg:px-12 pt-6">
             <button
@@ -493,11 +496,7 @@ export function GalleryLightbox({
 
       {/* Filmstrip — hidden for pending projects (no real plates yet) */}
       {!pending && (
-        <GalleryLightboxRail
-          images={plates}
-          currentIndex={plateIndex}
-          onSelect={setPlateIndex}
-        />
+        <GalleryLightboxRail images={plates} currentIndex={plateIndex} onSelect={setPlateIndex} />
       )}
 
       {/* Mobile project nav + details trigger */}
@@ -569,9 +568,11 @@ export function GalleryLightbox({
               </p>
             )}
             <GalleryCreditsBlock credits={project.credits} />
-            {!pending && project.relatedInventorySlugs && project.relatedInventorySlugs.length > 0 && (
-              <ShopTheLookRail slugs={project.relatedInventorySlugs} />
-            )}
+            {!pending &&
+              project.relatedInventorySlugs &&
+              project.relatedInventorySlugs.length > 0 && (
+                <ShopTheLookRail slugs={project.relatedInventorySlugs} />
+              )}
           </div>
         </div>
       )}

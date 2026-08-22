@@ -44,16 +44,42 @@ const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
   ],
   tables: [
     // Live site tags Community + Counter as Dining Tables; mirror that.
-    { id: "dining-tables", label: "Dining Tables", keywords: ["dining table", "farm table", "community table", "counter table"] },
+    {
+      id: "dining-tables",
+      label: "Dining Tables",
+      keywords: ["dining table", "farm table", "community table", "counter table"],
+    },
     { id: "highboys", label: "Highboys", keywords: ["highboy"] },
     { id: "consoles", label: "Consoles", keywords: ["console", "entry table", "sofa table"] },
     // Live site tags columns + plinths under Cocktail Tables.
-    { id: "coffee-tables", label: "Coffee Tables", keywords: ["coffee table", "cocktail table", "column", "plinth"] },
-    { id: "side-tables", label: "Side Tables", keywords: ["side table", "end table", "accent table", "drink table"] },
+    {
+      id: "coffee-tables",
+      label: "Coffee Tables",
+      keywords: ["coffee table", "cocktail table", "column", "plinth"],
+    },
+    {
+      id: "side-tables",
+      label: "Side Tables",
+      keywords: ["side table", "end table", "accent table", "drink table"],
+    },
   ],
   "cocktail-bar": [
     // Live "Storage" tag covers shelves / cabinets / credenzas / sideboards behind bars.
-    { id: "back-bars", label: "Back Bars", keywords: ["back bar", "backbar", "bar shelving", "shelving", "shelf", "cabinet", "credenza", "sideboard", "etagere"] },
+    {
+      id: "back-bars",
+      label: "Back Bars",
+      keywords: [
+        "back bar",
+        "backbar",
+        "bar shelving",
+        "shelving",
+        "shelf",
+        "cabinet",
+        "credenza",
+        "sideboard",
+        "etagere",
+      ],
+    },
     // Live tags ALL bar carts as "Bars", so collapse carts into bars.
     { id: "bars", label: "Bars", keywords: ["bar"] },
   ],
@@ -62,7 +88,11 @@ const SUBCATEGORY_RULES: Record<string, SubcategoryRule[]> = {
     { id: "fireplaces", label: "Fireplaces", keywords: ["fireplace", "firepit", "chiminea"] },
     { id: "planters", label: "Planters", keywords: ["planter", "pot", "urn"] },
     { id: "mirrors", label: "Mirrors", keywords: ["mirror"] },
-    { id: "structures", label: "Structures", keywords: ["arch", "arbor", "wall", "structure", "canopy"] },
+    {
+      id: "structures",
+      label: "Structures",
+      keywords: ["arch", "arbor", "wall", "structure", "canopy"],
+    },
   ],
   lighting: [
     { id: "floor-lamps", label: "Floor Lamps", keywords: ["floor lamp", "standing lamp"] },
@@ -115,9 +145,7 @@ export function getSubcategoryOptions(
     counts.set(id, (counts.get(id) ?? 0) + 1);
   }
 
-  const options: SubcategoryOption[] = [
-    { id: "all", label: "All", count: products.length },
-  ];
+  const options: SubcategoryOption[] = [{ id: "all", label: "All", count: products.length }];
   for (const rule of rules) {
     const count = counts.get(rule.id) ?? 0;
     if (count > 0) {

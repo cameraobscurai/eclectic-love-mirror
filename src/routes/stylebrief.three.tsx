@@ -33,10 +33,7 @@ const MODELS: ModelEntry[] = [
 
 export const Route = createFileRoute("/stylebrief/three")({
   head: () => ({
-    meta: [
-      { title: "3D · Studio" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "3D · Studio" }, { name: "robots", content: "noindex, nofollow" }],
     links: [
       // Preload the first model only. Others prefetch on hover/focus.
       {
@@ -56,9 +53,7 @@ const pad = (n: number, w = 2) => String(n).padStart(w, "0");
 // Kick the viewer module off the moment this route's JS evaluates
 // (parallel with the GLB preload), not after the component mounts.
 const viewerReady: Promise<unknown> =
-  typeof window === "undefined"
-    ? Promise.resolve()
-    : import("@google/model-viewer");
+  typeof window === "undefined" ? Promise.resolve() : import("@google/model-viewer");
 
 // Track prefetched URLs so we don't fire the same fetch twice.
 const prefetched = new Set<string>();
@@ -66,8 +61,8 @@ function prefetchModel(src: string) {
   if (typeof window === "undefined" || prefetched.has(src)) return;
   prefetched.add(src);
   // Low-priority warm fetch — browser caches, model-viewer reuses on switch.
-  fetch(src, { priority: "low" as RequestPriority, cache: "force-cache" }).catch(
-    () => prefetched.delete(src),
+  fetch(src, { priority: "low" as RequestPriority, cache: "force-cache" }).catch(() =>
+    prefetched.delete(src),
   );
 }
 
@@ -89,16 +84,12 @@ function ThreePage() {
   // next switch is instant.
   useEffect(() => {
     if (!ready) return;
-    const idle =
-      (window as any).requestIdleCallback ??
-      ((cb: () => void) => setTimeout(cb, 600));
+    const idle = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 600));
     const handle = idle(() => {
       for (const m of MODELS) if (m.id !== active.id) prefetchModel(m.src);
     });
     return () => {
-      const cancel =
-        (window as any).cancelIdleCallback ??
-        ((h: number) => clearTimeout(h));
+      const cancel = (window as any).cancelIdleCallback ?? ((h: number) => clearTimeout(h));
       cancel(handle);
     };
   }, [ready, active.id]);
@@ -222,7 +213,9 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
       // Explicit cleanup — drop GPU resources from the previous instance.
       try {
         (el as any).dismissPoster?.();
-      } catch {}
+      } catch {
+        /* element already torn down */
+      }
     };
   }, [model.id, ready]);
 
@@ -247,7 +240,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
     >
       {ready ? (
         // @ts-expect-error - custom element
-        (<model-viewer
+        <model-viewer
           key={model.id}
           src={model.src}
           alt={model.name}
@@ -269,15 +262,17 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
           max-camera-orbit="auto auto 4m"
           poster-color="transparent"
           className="viewer-swap"
-          style={{
-            width: "100%",
-            height: "100%",
-            background: "transparent",
-            opacity: swapping ? 0.15 : 1,
-            "--progress-bar-color": "#1a1a1a",
-            "--progress-bar-height": "1px",
-          } as React.CSSProperties}
-        />)
+          style={
+            {
+              width: "100%",
+              height: "100%",
+              background: "transparent",
+              opacity: swapping ? 0.15 : 1,
+              "--progress-bar-color": "#1a1a1a",
+              "--progress-bar-height": "1px",
+            } as React.CSSProperties
+          }
+        />
       ) : (
         <div className="absolute inset-0 grid place-items-center text-[10px] uppercase tracking-[0.3em] text-charcoal/35">
           Loading
@@ -285,10 +280,7 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
       )}
       {/* Swap indicator — hairline scan line during model change */}
       {swapping && (
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-px bg-charcoal/40 animate-pulse"
-        />
+        <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-charcoal/40 animate-pulse" />
       )}
       <div className="absolute top-3 right-3 flex flex-col gap-px">
         <ControlButton onClick={reset} aria-label="Reset view">
@@ -299,13 +291,10 @@ function Viewer({ model, ready }: { model: ModelEntry; ready: boolean }) {
         </ControlButton>
       </div>
     </div>
-  )
+  );
 }
 
-function ControlButton({
-  children,
-  ...rest
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function ControlButton({ children, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       type="button"

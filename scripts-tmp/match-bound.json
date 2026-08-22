@@ -5901,10 +5901,7 @@
       "live_category": "lounge",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "rowntree",
-          "leather"
-        ],
+        "shared_tokens": ["rowntree", "leather"],
         "category": true,
         "slug_substr": true
       },
@@ -5923,10 +5920,7 @@
       "live_category": "lounge",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "elizabeth",
-          "velvet"
-        ],
+        "shared_tokens": ["elizabeth", "velvet"],
         "category": true,
         "slug_substr": true
       },
@@ -5945,11 +5939,7 @@
       "live_category": "lounge-tables",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "calloway",
-          "marble",
-          "table"
-        ],
+        "shared_tokens": ["calloway", "marble", "table"],
         "category": true
       },
       "pts": 4,
@@ -5966,12 +5956,7 @@
       "live_category": "cocktail-bar",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "barclay",
-          "concrete",
-          "wood",
-          "tasting"
-        ],
+        "shared_tokens": ["barclay", "concrete", "wood", "tasting"],
         "category": true,
         "slug_substr": true
       },
@@ -5989,11 +5974,7 @@
       "live_category": "cocktail-bar",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "woodsley",
-          "concrete",
-          "wood"
-        ],
+        "shared_tokens": ["woodsley", "concrete", "wood"],
         "category": true,
         "slug_substr": true
       },
@@ -6012,11 +5993,7 @@
       "live_category": "cocktail-bar",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "pickford",
-          "concrete",
-          "wood"
-        ],
+        "shared_tokens": ["pickford", "concrete", "wood"],
         "category": true,
         "slug_substr": true
       },
@@ -6034,11 +6011,7 @@
       "live_category": "tableware",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "evita",
-          "marble",
-          "charger"
-        ],
+        "shared_tokens": ["evita", "marble", "charger"],
         "category": true
       },
       "pts": 4,
@@ -6056,11 +6029,7 @@
       "live_category": "textiles",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "brown",
-          "black",
-          "plaid"
-        ],
+        "shared_tokens": ["brown", "black", "plaid"],
         "category": true
       },
       "pts": 4,
@@ -6077,11 +6046,7 @@
       "live_category": "textiles",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "fringe",
-          "cashmere",
-          "ivory"
-        ],
+        "shared_tokens": ["fringe", "cashmere", "ivory"],
         "category": true
       },
       "pts": 4,
@@ -6098,11 +6063,7 @@
       "live_category": "rugs",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "byron",
-          "black",
-          "hide"
-        ],
+        "shared_tokens": ["byron", "black", "hide"],
         "category": true,
         "slug_substr": true
       },
@@ -6121,11 +6082,7 @@
       "live_category": "rugs",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "eniko",
-          "brindle",
-          "hide"
-        ],
+        "shared_tokens": ["eniko", "brindle", "hide"],
         "category": true,
         "slug_substr": true
       },
@@ -6144,13 +6101,7 @@
       "live_category": "rugs",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "felina",
-          "5x8",
-          "grey",
-          "natural",
-          "jute"
-        ],
+        "shared_tokens": ["felina", "5x8", "grey", "natural", "jute"],
         "category": true
       },
       "pts": 6,
@@ -6167,11 +6118,7 @@
       "live_category": "rugs",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "ninsun",
-          "silver",
-          "hide"
-        ],
+        "shared_tokens": ["ninsun", "silver", "hide"],
         "category": true,
         "slug_substr": true
       },
@@ -6190,11 +6137,7 @@
       "live_category": "rugs",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "valdiva",
-          "8x10",
-          "olive"
-        ],
+        "shared_tokens": ["valdiva", "8x10", "olive"],
         "category": true
       },
       "pts": 4,
@@ -6211,12 +6154,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "verna",
-          "wood",
-          "picnic",
-          "box"
-        ],
+        "shared_tokens": ["verna", "wood", "picnic", "box"],
         "category": true
       },
       "pts": 5,
@@ -6233,11 +6171,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "cernunnos",
-          "elk",
-          "mount"
-        ],
+        "shared_tokens": ["cernunnos", "elk", "mount"],
         "category": true
       },
       "pts": 4,
@@ -6254,11 +6188,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "bambi",
-          "antler",
-          "rack"
-        ],
+        "shared_tokens": ["bambi", "antler", "rack"],
         "category": true
       },
       "pts": 4,
@@ -6275,12 +6205,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "black",
-          "tourmaline",
-          "acrylic",
-          "stand"
-        ],
+        "shared_tokens": ["black", "tourmaline", "acrylic", "stand"],
         "category": true
       },
       "pts": 5,
@@ -6297,12 +6222,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "clyde",
-          "blue",
-          "wood",
-          "chain"
-        ],
+        "shared_tokens": ["clyde", "blue", "wood", "chain"],
         "category": true
       },
       "pts": 5,
@@ -6319,11 +6239,7 @@
       "live_category": "styling",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "kette",
-          "marble",
-          "chain"
-        ],
+        "shared_tokens": ["kette", "marble", "chain"],
         "category": true
       },
       "pts": 4,
@@ -6340,11 +6256,7 @@
       "live_category": "large-decor",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "hudson",
-          "rock",
-          "wall"
-        ],
+        "shared_tokens": ["hudson", "rock", "wall"],
         "category": true,
         "slug_substr": true
       },
@@ -6365,12 +6277,7 @@
       "live_category": "large-decor",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "pema",
-          "carved",
-          "wood",
-          "wall"
-        ],
+        "shared_tokens": ["pema", "carved", "wood", "wall"],
         "category": true,
         "slug_substr": true
       },
@@ -6388,10 +6295,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "georgia",
-          "brass"
-        ],
+        "shared_tokens": ["georgia", "brass"],
         "category": true,
         "slug_substr": true
       },
@@ -6409,11 +6313,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "cressida",
-          "maroon",
-          "marble"
-        ],
+        "shared_tokens": ["cressida", "maroon", "marble"],
         "category": true
       },
       "pts": 4,
@@ -6430,11 +6330,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "winona",
-          "silver",
-          "trophy"
-        ],
+        "shared_tokens": ["winona", "silver", "trophy"],
         "category": true
       },
       "pts": 4,
@@ -6451,11 +6347,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "evy",
-          "ivory",
-          "stucco"
-        ],
+        "shared_tokens": ["evy", "ivory", "stucco"],
         "category": true
       },
       "pts": 4,
@@ -6472,11 +6364,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "marvin",
-          "white",
-          "stucco"
-        ],
+        "shared_tokens": ["marvin", "white", "stucco"],
         "category": true
       },
       "pts": 4,
@@ -6493,11 +6381,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "oni",
-          "grey",
-          "ceramic"
-        ],
+        "shared_tokens": ["oni", "grey", "ceramic"],
         "category": true
       },
       "pts": 4,
@@ -6514,12 +6398,7 @@
       "live_category": "light",
       "wave": 4,
       "evidence": {
-        "shared_tokens": [
-          "darnell",
-          "color",
-          "mixing",
-          "uplight"
-        ],
+        "shared_tokens": ["darnell", "color", "mixing", "uplight"],
         "category": true
       },
       "pts": 5,

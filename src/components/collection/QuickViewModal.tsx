@@ -10,7 +10,6 @@ import { useInquiry } from "@/hooks/use-inquiry";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
-
 import { withCdnWidth } from "@/lib/image-url";
 import { NormalizedProductImage } from "./NormalizedProductImage";
 import { resolveProductFit } from "./productFit";
@@ -34,7 +33,6 @@ interface QuickViewModalProps {
 //
 // Charcoal/white only. Glass on scrim + footer. No accent colors. No pills.
 
-
 export function QuickViewModal({
   product,
   hasPrev,
@@ -47,7 +45,7 @@ export function QuickViewModal({
   const isMobile = useIsMobile();
   const canDrag = isMobile && !reduced;
   const [imgIdx, setImgIdx] = useState(0);
-  
+
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const inquiry = useInquiry();
   const inInquiry = inquiry.has(product.id);
@@ -69,7 +67,8 @@ export function QuickViewModal({
 
   const variantTokens = useMemo(() => {
     const stripFamily = (t: string) =>
-      t.replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
+      t
+        .replace(new RegExp("^" + familyToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"), "")
         .trim()
         .toUpperCase();
     const all = variants.map((v) => {
@@ -80,9 +79,7 @@ export function QuickViewModal({
     // Distinguishing = token not present in EVERY other variant
     return all.map(({ id, tokens }) => {
       const others = all.filter((o) => o.id !== id);
-      const distinguishing = tokens.filter(
-        (t) => !others.every((o) => o.tokens.includes(t)),
-      );
+      const distinguishing = tokens.filter((t) => !others.every((o) => o.tokens.includes(t)));
       return { id, tokens, distinguishing };
     });
   }, [variants, familyToken]);
@@ -97,7 +94,7 @@ export function QuickViewModal({
       if (v) return v;
     }
     // Score by distinguishing tokens present in filename
-    let best: { v: typeof variants[number]; score: number } | null = null;
+    let best: { v: (typeof variants)[number]; score: number } | null = null;
     for (const v of variants) {
       const meta = variantTokens.find((m) => m.id === v.id);
       if (!meta || meta.distinguishing.length === 0) continue;
@@ -144,9 +141,7 @@ export function QuickViewModal({
     // Images already claimed by a variant (via baked imageUrl or filename
     // heuristic) are NOT the set shot. Find the first image not claimed.
     const claimed = new Set(variantImageIdx.values());
-    let i = product.images.findIndex(
-      (im, idx) => !claimed.has(idx) && matchVariant(im) === null,
-    );
+    let i = product.images.findIndex((im, idx) => !claimed.has(idx) && matchVariant(im) === null);
     if (i < 0) i = product.images.findIndex((im) => matchVariant(im) === null);
     return i >= 0 ? i : null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,7 +157,7 @@ export function QuickViewModal({
   const selectedVariant =
     selectedKey === "set"
       ? null
-      : variants.find((v) => v.id === selectedKey) ?? imageDerivedVariant ?? null;
+      : (variants.find((v) => v.id === selectedKey) ?? imageDerivedVariant ?? null);
 
   const activeImg = imgFromIdx;
   // Same solver as the browse grid, detail context. Keeps cross-product scale
@@ -170,7 +165,8 @@ export function QuickViewModal({
   const detailFit = useMemo(() => resolveProductFit(product, "detail"), [product]);
   const activeVariant = selectedVariant;
   const activeDimensions = activeVariant?.dimensions ?? product.dimensions;
-  const isSetActive = selectedKey === "set" || (selectedKey === null && imageDerivedVariant === null);
+  const isSetActive =
+    selectedKey === "set" || (selectedKey === null && imageDerivedVariant === null);
 
   function selectSet() {
     setSelectedKey("set");
@@ -255,9 +251,7 @@ export function QuickViewModal({
     return () => ro.disconnect();
   }, []);
 
-
   // Title is now small and inline — no fit-to-lines billboard.
-
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -414,7 +408,15 @@ export function QuickViewModal({
               aria-label="Share this piece"
               className="h-11 px-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] hover:text-charcoal/60 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                aria-hidden
+              >
                 <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" />
                 <path d="M12 15V3" />
                 <path d="m8 7 4-4 4 4" />
@@ -473,7 +475,9 @@ export function QuickViewModal({
                         setImgNatural({ w: t.naturalWidth, h: t.naturalHeight });
                       }}
                       className="absolute inset-0 w-full h-full object-contain p-4 md:p-10 drop-shadow-[0_18px_28px_rgba(26,26,26,0.10)]"
-                      style={{ viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}` }}
+                      style={{
+                        viewTransitionName: `hero-${String(product.id).replace(/[^a-zA-Z0-9_-]/g, "-")}`,
+                      }}
                     />
                   </motion.div>
                 ) : (
@@ -482,7 +486,6 @@ export function QuickViewModal({
                   </div>
                 )}
               </AnimatePresence>
-
 
               {/* Variant label — surfaced over the image so the active piece
                   in a multi-piece set (e.g. "7\" GOBLET") is identifiable
@@ -525,7 +528,15 @@ export function QuickViewModal({
                 title="Copy name"
                 className="shrink-0 mt-2 h-7 w-7 grid place-items-center text-charcoal/45 hover:text-charcoal focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 transition-colors"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden
+                >
                   <rect x="9" y="9" width="11" height="11" rx="1.5" />
                   <path d="M5 15V5.5A1.5 1.5 0 0 1 6.5 4H15" />
                 </svg>
@@ -539,184 +550,203 @@ export function QuickViewModal({
 
             {/* Specs */}
             <div className="mt-6 md:mt-8 flex flex-col gap-5">
-              {Array.isArray(product.variants) && product.variants.length > 1 ? (() => {
-                const familyHero = product.primaryImage;
-                 const FAMILY_WORDS = /^(flatware|glassware|glass|china|dinnerware|serveware)$/i;
-                 const familyTokens = String(product.title || "").trim().split(/\s+/);
-                 const rows = product.variants.map((v) => {
-                  const variantTokens = String(v.title || "").trim().split(/\s+/);
-                  let i = 0;
-                  while (
-                    i < variantTokens.length &&
-                    i < familyTokens.length &&
-                    variantTokens[i].toLowerCase() === familyTokens[i].toLowerCase()
-                  ) {
-                    i++;
-                  }
-                  // Drop a leading family-category word (FLATWARE/GLASS/etc.) if present
-                  while (i < variantTokens.length - 1 && FAMILY_WORDS.test(variantTokens[i])) {
-                    i++;
-                  }
-                  let label = variantTokens.slice(i).join(" ")
-                    .replace(/\s+(glass|flatware)$/i, "")
-                    .trim();
-                  if (!label) label = v.title;
-                  const targetIdx = variantImageIdx.get(v.id);
-                  const chipImg =
-                    typeof targetIdx === "number" ? product.images[targetIdx] : familyHero;
-                  return { v, label, targetIdx, chipImg, hasOwnImage: typeof targetIdx === "number" };
-                });
-                const anyLabel = rows.some((r) => r.label && r.label.trim() !== "");
-                const anyDims = rows.some((r) => !!r.v.dimensions);
-                const heading = anyLabel ? "Configurations" : anyDims ? "Sizes" : "Stocked Quantity";
-                return (
-                  <div className="flex flex-col gap-3">
-                    <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
-                      {heading}
-                    </span>
-                    <ul className="text-[14px] leading-[1.45] text-charcoal flex flex-col gap-1">
-                      {/* SET row — the family group shot, distinct from any
+              {Array.isArray(product.variants) && product.variants.length > 1 ? (
+                (() => {
+                  const familyHero = product.primaryImage;
+                  const FAMILY_WORDS = /^(flatware|glassware|glass|china|dinnerware|serveware)$/i;
+                  const familyTokens = String(product.title || "")
+                    .trim()
+                    .split(/\s+/);
+                  const rows = product.variants.map((v) => {
+                    const variantTokens = String(v.title || "")
+                      .trim()
+                      .split(/\s+/);
+                    let i = 0;
+                    while (
+                      i < variantTokens.length &&
+                      i < familyTokens.length &&
+                      variantTokens[i].toLowerCase() === familyTokens[i].toLowerCase()
+                    ) {
+                      i++;
+                    }
+                    // Drop a leading family-category word (FLATWARE/GLASS/etc.) if present
+                    while (i < variantTokens.length - 1 && FAMILY_WORDS.test(variantTokens[i])) {
+                      i++;
+                    }
+                    let label = variantTokens
+                      .slice(i)
+                      .join(" ")
+                      .replace(/\s+(glass|flatware)$/i, "")
+                      .trim();
+                    if (!label) label = v.title;
+                    const targetIdx = variantImageIdx.get(v.id);
+                    const chipImg =
+                      typeof targetIdx === "number" ? product.images[targetIdx] : familyHero;
+                    return {
+                      v,
+                      label,
+                      targetIdx,
+                      chipImg,
+                      hasOwnImage: typeof targetIdx === "number",
+                    };
+                  });
+                  const anyLabel = rows.some((r) => r.label && r.label.trim() !== "");
+                  const anyDims = rows.some((r) => !!r.v.dimensions);
+                  const heading = anyLabel
+                    ? "Configurations"
+                    : anyDims
+                      ? "Sizes"
+                      : "Stocked Quantity";
+                  return (
+                    <div className="flex flex-col gap-3">
+                      <span className="text-[11px] uppercase tracking-[0.24em] text-charcoal/80 font-medium">
+                        {heading}
+                      </span>
+                      <ul className="text-[14px] leading-[1.45] text-charcoal flex flex-col gap-1">
+                        {/* SET row — the family group shot, distinct from any
                           single variant. Only when a set image actually exists. */}
-                      {setImageIdx !== null && (() => {
-                        const setImg = product.images[setImageIdx];
-                        return (
-                          <li>
-                            <button
-                              type="button"
-                              onClick={selectSet}
-                              aria-current={isSetActive}
-                              className={cn(
-                                "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
-                                isSetActive
-                                  ? "border-charcoal bg-charcoal/[0.04]"
-                                  : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
-                              )}
-                            >
-                              <div className="flex items-center gap-3">
-                                <span
+                        {setImageIdx !== null &&
+                          (() => {
+                            const setImg = product.images[setImageIdx];
+                            return (
+                              <li>
+                                <button
+                                  type="button"
+                                  onClick={selectSet}
+                                  aria-current={isSetActive}
                                   className={cn(
-                                    "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
-                                    isSetActive ? "border-charcoal" : "border-charcoal/15",
+                                    "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
+                                    isSetActive
+                                      ? "border-charcoal bg-charcoal/[0.04]"
+                                      : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
                                   )}
-                                  aria-hidden
                                 >
-                                  {setImg && (
-                                    <img
-                                      src={withCdnWidth(setImg.url, 200)}
-                                      alt=""
-                                      className="absolute inset-0 w-full h-full object-contain p-1"
-                                      loading="lazy"
-                                      decoding="async"
-                                    />
-                                  )}
-                                </span>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center gap-3">
                                     <span
                                       className={cn(
-                                        "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
-                                        isSetActive
-                                          ? "bg-charcoal text-cream"
-                                          : "bg-charcoal/[0.06] text-charcoal/80",
+                                        "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
+                                        isSetActive ? "border-charcoal" : "border-charcoal/15",
                                       )}
+                                      aria-hidden
                                     >
-                                      SET
-                                    </span>
-                                    <span
-                                      className={cn(
-                                        "uppercase tracking-[0.06em] truncate",
-                                        isSetActive ? "font-medium" : "",
+                                      {setImg && (
+                                        <img
+                                          src={withCdnWidth(setImg.url, 200)}
+                                          alt=""
+                                          className="absolute inset-0 w-full h-full object-contain p-1"
+                                          loading="lazy"
+                                          decoding="async"
+                                        />
                                       )}
-                                    >
-                                      Full Collection
                                     </span>
-                                  </div>
-                                </div>
-                              </div>
-                            </button>
-                          </li>
-                        );
-                      })()}
-                      {rows.map(({ v, label, chipImg, hasOwnImage }) => {
-                        const isActive = activeVariant?.id === v.id;
-                        const qty = v.stockedQuantity || "—";
-                        return (
-                          <li key={v.id}>
-                            <button
-                              type="button"
-                              onClick={hasOwnImage ? () => selectVariant(v.id) : undefined}
-                              aria-current={isActive}
-                              aria-disabled={!hasOwnImage || undefined}
-                              disabled={!hasOwnImage}
-                              tabIndex={hasOwnImage ? undefined : -1}
-                              className={cn(
-                                "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
-                                !hasOwnImage
-                                  ? "border-transparent cursor-default opacity-60"
-                                  : isActive
-                                    ? "border-charcoal bg-charcoal/[0.04]"
-                                    : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
-                              )}
-                            >
-                              <div className="flex items-center gap-3">
-                                {/* Image chip — blank when variant has no own image */}
-                                <span
-                                  className={cn(
-                                    "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
-                                    isActive && hasOwnImage ? "border-charcoal" : "border-charcoal/15",
-                                  )}
-                                  aria-hidden
-                                >
-                                  {hasOwnImage && chipImg && (
-                                    <img
-                                      src={withCdnWidth(chipImg.url, 200)}
-                                      alt=""
-                                      className="absolute inset-0 w-full h-full object-contain p-1"
-                                      loading="lazy"
-                                      decoding="async"
-                                    />
-                                  )}
-                                </span>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2">
-                                    <span
-                                      className={cn(
-                                        "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
-                                        isActive
-                                          ? "bg-charcoal text-cream"
-                                          : "bg-charcoal/[0.06] text-charcoal/80",
-                                      )}
-                                    >
-                                      {qty}
-                                    </span>
-                                    <span
-                                      className={cn(
-                                        "uppercase tracking-[0.06em] line-clamp-2 break-words",
-                                        isActive ? "font-medium" : "",
-                                      )}
-                                    >
-                                      {label}
-                                    </span>
-                                  </div>
-                                  {v.dimensions ? (
-                                    <div className="mt-0.5 text-[12px] text-charcoal/60 pl-[calc(2.25rem+0.5rem)]">
-                                      {v.dimensions}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <span
+                                          className={cn(
+                                            "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
+                                            isSetActive
+                                              ? "bg-charcoal text-cream"
+                                              : "bg-charcoal/[0.06] text-charcoal/80",
+                                          )}
+                                        >
+                                          SET
+                                        </span>
+                                        <span
+                                          className={cn(
+                                            "uppercase tracking-[0.06em] truncate",
+                                            isSetActive ? "font-medium" : "",
+                                          )}
+                                        >
+                                          Full Collection
+                                        </span>
+                                      </div>
                                     </div>
-                                  ) : null}
+                                  </div>
+                                </button>
+                              </li>
+                            );
+                          })()}
+                        {rows.map(({ v, label, chipImg, hasOwnImage }) => {
+                          const isActive = activeVariant?.id === v.id;
+                          const qty = v.stockedQuantity || "—";
+                          return (
+                            <li key={v.id}>
+                              <button
+                                type="button"
+                                onClick={hasOwnImage ? () => selectVariant(v.id) : undefined}
+                                aria-current={isActive}
+                                aria-disabled={!hasOwnImage || undefined}
+                                disabled={!hasOwnImage}
+                                tabIndex={hasOwnImage ? undefined : -1}
+                                className={cn(
+                                  "group block w-full text-left transition-colors border-l-2 pl-2 pr-2 py-1.5",
+                                  !hasOwnImage
+                                    ? "border-transparent cursor-default opacity-60"
+                                    : isActive
+                                      ? "border-charcoal bg-charcoal/[0.04]"
+                                      : "border-transparent hover:bg-charcoal/[0.03] hover:border-charcoal/30",
+                                )}
+                              >
+                                <div className="flex items-center gap-3">
+                                  {/* Image chip — blank when variant has no own image */}
+                                  <span
+                                    className={cn(
+                                      "shrink-0 relative h-10 w-10 bg-white border overflow-hidden",
+                                      isActive && hasOwnImage
+                                        ? "border-charcoal"
+                                        : "border-charcoal/15",
+                                    )}
+                                    aria-hidden
+                                  >
+                                    {hasOwnImage && chipImg && (
+                                      <img
+                                        src={withCdnWidth(chipImg.url, 200)}
+                                        alt=""
+                                        className="absolute inset-0 w-full h-full object-contain p-1"
+                                        loading="lazy"
+                                        decoding="async"
+                                      />
+                                    )}
+                                  </span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className={cn(
+                                          "shrink-0 inline-flex items-center justify-center min-w-[2.25rem] px-2 py-0.5 text-[11px] tracking-[0.08em] tabular-nums transition-colors",
+                                          isActive
+                                            ? "bg-charcoal text-cream"
+                                            : "bg-charcoal/[0.06] text-charcoal/80",
+                                        )}
+                                      >
+                                        {qty}
+                                      </span>
+                                      <span
+                                        className={cn(
+                                          "uppercase tracking-[0.06em] line-clamp-2 break-words",
+                                          isActive ? "font-medium" : "",
+                                        )}
+                                      >
+                                        {label}
+                                      </span>
+                                    </div>
+                                    {v.dimensions ? (
+                                      <div className="mt-0.5 text-[12px] text-charcoal/60 pl-[calc(2.25rem+0.5rem)]">
+                                        {v.dimensions}
+                                      </div>
+                                    ) : null}
+                                  </div>
                                 </div>
-                              </div>
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              })() : (
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  );
+                })()
+              ) : (
                 <>
-                  {activeDimensions && (
-                    <SpecCol label="Dimensions" value={activeDimensions} />
-                  )}
+                  {activeDimensions && <SpecCol label="Dimensions" value={activeDimensions} />}
                   {product.stockedQuantity && (
                     <SpecCol label="Stocked" value={product.stockedQuantity} />
                   )}
@@ -725,7 +755,6 @@ export function QuickViewModal({
                   )}
                 </>
               )}
-
             </div>
 
             {/* Thumbs — overflow-x scroller with explicit prev/next chips when
@@ -746,63 +775,64 @@ export function QuickViewModal({
                     ref={thumbsScrollerRef}
                     className="flex gap-2 overflow-x-auto snap-x snap-mandatory px-7 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                   >
-                  {product.images.map((im, i) => {
-                    const v = matchVariant(im);
-                    const tip = v && v.title !== product.title ? v.title : (im.altText ?? "");
-                    return (
-                      <button
-                        key={im.url}
-                        onClick={() => setImgIdx(i)}
-                        title={tip}
-                        aria-label={`View image ${i + 1} of ${product.images.length}${tip ? ` — ${tip}` : ""}`}
-                        aria-current={i === imgIdx}
-                        className={cn(
-                          "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
-                          i === imgIdx ? "border-charcoal" : "border-charcoal/15 hover:border-charcoal/45",
-                        )}
-                      >
-                        <img
-                          src={withCdnWidth(im.url, 300)}
-                          alt=""
-                          className="absolute inset-0 w-full h-full object-contain p-1"
-                        />
-                      </button>
-                    );
-                  })}
+                    {product.images.map((im, i) => {
+                      const v = matchVariant(im);
+                      const tip = v && v.title !== product.title ? v.title : (im.altText ?? "");
+                      return (
+                        <button
+                          key={im.url}
+                          onClick={() => setImgIdx(i)}
+                          title={tip}
+                          aria-label={`View image ${i + 1} of ${product.images.length}${tip ? ` — ${tip}` : ""}`}
+                          aria-current={i === imgIdx}
+                          className={cn(
+                            "relative h-14 w-16 flex-shrink-0 snap-start bg-white/60 border transition-colors active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40",
+                            i === imgIdx
+                              ? "border-charcoal"
+                              : "border-charcoal/15 hover:border-charcoal/45",
+                          )}
+                        >
+                          <img
+                            src={withCdnWidth(im.url, 300)}
+                            alt=""
+                            className="absolute inset-0 w-full h-full object-contain p-1"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-              {/* Counter + scroll chips. Counter shows whenever there are
+                {/* Counter + scroll chips. Counter shows whenever there are
                   multiple images so the owner always knows position; chips
                   enable when overflow exists. */}
-              <div className="mt-2 flex items-center justify-between text-charcoal/70">
-                <button
-                  type="button"
-                  onClick={() => nudgeThumbs(-1)}
-                  disabled={!thumbsOverflow.left}
-                  aria-label="Scroll thumbnails left"
-                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                >
-                  ←
-                </button>
-                <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
-                  {imgIdx + 1} / {product.images.length}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => nudgeThumbs(1)}
-                  disabled={!thumbsOverflow.right}
-                  aria-label="Scroll thumbnails right"
-                  className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
-                >
-                  →
-                </button>
+                <div className="mt-2 flex items-center justify-between text-charcoal/70">
+                  <button
+                    type="button"
+                    onClick={() => nudgeThumbs(-1)}
+                    disabled={!thumbsOverflow.left}
+                    aria-label="Scroll thumbnails left"
+                    className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                  >
+                    ←
+                  </button>
+                  <span className="text-[10px] uppercase tracking-[0.24em] text-charcoal/55">
+                    {imgIdx + 1} / {product.images.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => nudgeThumbs(1)}
+                    disabled={!thumbsOverflow.right}
+                    aria-label="Scroll thumbnails right"
+                    className="h-7 px-2 text-[10px] uppercase tracking-[0.28em] disabled:opacity-25 hover:text-charcoal transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40"
+                  >
+                    →
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
             {/* CTA — sits naturally after specs so short rails don't have a void below. */}
             <div className="mt-6 pt-4 space-y-2">
-
               <button
                 onClick={() => inquiry.toggle(product.id)}
                 className={cn(
@@ -840,7 +870,6 @@ export function QuickViewModal({
           </div>
         </div>
       </motion.div>
-
 
       {/* Lightbox temporarily disabled — pending polish. */}
     </div>,

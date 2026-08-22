@@ -49,9 +49,7 @@ export const createAdminThread = createServerFn({ method: "POST" })
 
 export const getAdminThreadMessages = createServerFn({ method: "GET" })
   .middleware([requireAdmin])
-  .inputValidator((d: { threadId: string }) =>
-    z.object({ threadId: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: { threadId: string }) => z.object({ threadId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await context.supabase
       .from("admin_messages")
@@ -64,14 +62,9 @@ export const getAdminThreadMessages = createServerFn({ method: "GET" })
 
 export const deleteAdminThread = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
-  .inputValidator((d: { threadId: string }) =>
-    z.object({ threadId: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: { threadId: string }) => z.object({ threadId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("admin_threads")
-      .delete()
-      .eq("id", data.threadId);
+    const { error } = await context.supabase.from("admin_threads").delete().eq("id", data.threadId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

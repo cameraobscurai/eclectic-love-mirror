@@ -57,9 +57,11 @@ export function QuickViewHost() {
           window.scrollTo({ top: y, behavior: "auto" });
           // Lenis owns the scroll position on desktop — a bare window.scrollTo
           // is undone by its next RAF tick.
-          const lenis = (window as unknown as {
-            __lenis?: { scrollTo: (t: number, o?: { immediate?: boolean }) => void } | null;
-          }).__lenis;
+          const lenis = (
+            window as unknown as {
+              __lenis?: { scrollTo: (t: number, o?: { immediate?: boolean }) => void } | null;
+            }
+          ).__lenis;
           lenis?.scrollTo(y, { immediate: true });
           if (opener && document.contains(opener)) {
             opener.focus({ preventScroll: true });
@@ -68,7 +70,6 @@ export function QuickViewHost() {
       }
     };
   }, [isOpen]);
-
 
   return (
     <Suspense fallback={null}>

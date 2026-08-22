@@ -4,9 +4,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Green Lumbar.png",
       "storage_path": "PILLOWS/Blue Green Lumbar.png",
       "member_count": 13,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -80,9 +78,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Brown Grey fur.png",
       "storage_path": "PILLOWS/Brown Grey fur.png",
       "member_count": 12,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -151,9 +147,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Black Geo.png",
       "storage_path": "PILLOWS/Ivory Black Geo.png",
       "member_count": 10,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -212,9 +206,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Green Block Print.png",
       "storage_path": "PILLOWS/Green Block Print.png",
       "member_count": 9,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -268,9 +260,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Red Zebra Lumbar.png",
       "storage_path": "PILLOWS/Red Zebra Lumbar.png",
       "member_count": 8,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -319,9 +309,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Orange Textile Dos.png",
       "storage_path": "PILLOWS/Orange Textile Dos.png",
       "member_count": 5,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -355,9 +343,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Gold Fringe Lumbar.png",
       "storage_path": "PILLOWS/Gold Fringe Lumbar.png",
       "member_count": 4,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -386,9 +372,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/White Raffia.png",
       "storage_path": "PILLOWS/White Raffia.png",
       "member_count": 4,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -417,9 +401,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Pink and Yellow.png",
       "storage_path": "PILLOWS/Pink and Yellow.png",
       "member_count": 3,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -443,9 +425,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/BELLOW 3' Partition 1.png",
       "storage_path": "LARGE-DECOR/BELLOW 3' Partition 1.png",
       "member_count": 2,
-      "categories": [
-        "large-decor"
-      ],
+      "categories": ["large-decor"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -464,9 +444,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/LARGE-DECOR/HUDSON Render.png",
       "storage_path": "LARGE-DECOR/HUDSON Render.png",
       "member_count": 2,
-      "categories": [
-        "large-decor"
-      ],
+      "categories": ["large-decor"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -485,9 +463,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Cream Dimensional.png",
       "storage_path": "PILLOWS/Black Cream Dimensional.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -506,9 +482,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Black Leather Lattice.png",
       "storage_path": "PILLOWS/Black Leather Lattice.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -527,9 +501,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Blue Velvet.png",
       "storage_path": "PILLOWS/Blue Velvet.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -548,9 +520,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Ivory Boucle.png",
       "storage_path": "PILLOWS/Ivory Boucle.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -569,9 +539,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/PILLOWS/Silver Leather Woven.png",
       "storage_path": "PILLOWS/Silver Leather Woven.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -590,9 +558,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/THROWS/PENDLETON Grey Cross.png",
       "storage_path": "THROWS/PENDLETON Grey Cross.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -611,9 +577,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/ELGIN Bronze.png",
       "storage_path": "STYLING/ELGIN Bronze.png",
       "member_count": 2,
-      "categories": [
-        "styling"
-      ],
+      "categories": ["styling"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {
@@ -632,9 +596,7 @@
       "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
       "storage_path": "_squarespace/652149ab14_ALPACA_Snake_Oatmeal.png",
       "member_count": 2,
-      "categories": [
-        "pillows-throws"
-      ],
+      "categories": ["pillows-throws"],
       "reason": "titles diverge — likely false bind from color-token fallback",
       "members": [
         {

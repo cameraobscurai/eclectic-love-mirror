@@ -51,7 +51,8 @@ advisories:[] }`
 
 `advisories` carries non-blocking flags — first defined one is
 `SRC_UPSCALED` (Phase 2 sets it when composition upscales the source
->1.25×; it never queues or blocks).
+
+> 1.25×; it never queues or blocks).
 
 Existing grants and RLS on the table cover the new columns; types
 regenerated.

@@ -106,9 +106,9 @@ function ContactPage() {
 
   const [pieces, setPieces] = useState<SelectedPiece[]>([]);
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
-  const [selectionStatus, setSelectionStatus] = useState<
-    "idle" | "loading" | "ready" | "error"
-  >("idle");
+  const [selectionStatus, setSelectionStatus] = useState<"idle" | "loading" | "ready" | "error">(
+    "idle",
+  );
   const [fetchNonce, setFetchNonce] = useState(0);
 
   // Hydrate selection from the baked catalog (rms_id is the identity used
@@ -153,10 +153,7 @@ function ContactPage() {
     };
   }, [initialIds, fetchNonce]);
 
-  const piecesById = useMemo(
-    () => new Map(pieces.map((p) => [p.id, p])),
-    [pieces],
-  );
+  const piecesById = useMemo(() => new Map(pieces.map((p) => [p.id, p])), [pieces]);
   const effectiveIds = useMemo(
     () => initialIds.filter((id) => !removedIds.has(id)),
     [initialIds, removedIds],
@@ -164,10 +161,7 @@ function ContactPage() {
   // Ids the user expects to see, but the catalog couldn't resolve. Surfaces
   // as a blocker on the form so we never silently submit phantom items.
   const unresolvedIds = useMemo(
-    () =>
-      selectionStatus === "ready"
-        ? effectiveIds.filter((id) => !piecesById.has(id))
-        : [],
+    () => (selectionStatus === "ready" ? effectiveIds.filter((id) => !piecesById.has(id)) : []),
     [effectiveIds, piecesById, selectionStatus],
   );
   const retryFetch = () => setFetchNonce((n) => n + 1);
@@ -232,215 +226,219 @@ function ContactPage() {
     if (typeof window !== "undefined") {
       const last = Number(window.localStorage.getItem(RATE_LIMIT_KEY) ?? 0);
       if (Date.now() - last < RATE_LIMIT_MS) {
-        setErrorMsg("Just received your last style brief request — please wait a moment before sending another.");
+        setErrorMsg(
+          "Just received your last style brief request — please wait a moment before sending another.",
+        );
         return;
       }
     }
 
     setSubmitting(true);
     try {
-    const generatedSubject = [scope || "Style Brief Request", projectDate].filter(Boolean).join(" · ");
-    const subject = urlSubject || generatedSubject;
+      const generatedSubject = [scope || "Style Brief Request", projectDate]
+        .filter(Boolean)
+        .join(" · ");
+      const subject = urlSubject || generatedSubject;
 
-    const selectedLines = effectiveIds.map((id) => {
-      const p = piecesById.get(id);
-      if (p) {
-        return `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`;
-      }
-      return `• Item [${id}]`;
-    });
-
-    const messageLines = [
-      `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
-      "",
-      "— Project details —",
-      projectDate ? `Project date: ${projectDate}` : null,
-      budget ? `Budget: ${budget}` : null,
-      scope ? `Scope of work: ${scope}` : null,
-      "",
-      "— Vision / wish list —",
-      vision.trim(),
-      "",
-      effectiveIds.length > 0 ? "— Selected from Collection —" : null,
-      ...selectedLines,
-    ].filter((l): l is string => l !== null);
-
-    // Frozen-at-submit snapshot. Even if catalog rebinds an image tomorrow,
-    // the admin inbox always renders what the customer actually saw.
-    //
-    // RLS WITH CHECK caps item_snapshots at 16,000 bytes. A 50-item selection
-    // with long titles + CDN URLs blows past that and the insert is rejected.
-    // We build the full snapshot first; if it would exceed the cap we strip
-    // image_url (the heaviest field — admin can re-resolve from rms_id),
-    // then truncate titles as a last resort.
-    type Snap = { rms_id: string; title: string; category: string | null; image_url: string | null };
-    const fullSnapshots: Snap[] = effectiveIds
-      .map((id) => piecesById.get(id))
-      .filter((p): p is SelectedPiece => Boolean(p))
-      .map((p) => ({
-        rms_id: p.id,
-        title: p.title,
-        category: p.category,
-        image_url: p.image ? withCdnWidth(p.image, 480) : null,
-      }));
-
-    const SNAPSHOT_MAX_BYTES = 15500; // leave headroom under the 16,000 cap
-    const bytes = (v: unknown) =>
-      typeof TextEncoder !== "undefined"
-        ? new TextEncoder().encode(JSON.stringify(v)).length
-        : JSON.stringify(v).length;
-
-    let itemSnapshots: Snap[] = fullSnapshots;
-    if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
-      itemSnapshots = fullSnapshots.map((s) => ({ ...s, image_url: null }));
-    }
-    if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
-      itemSnapshots = itemSnapshots.map((s) => ({
-        ...s,
-        title: s.title.length > 60 ? s.title.slice(0, 57) + "…" : s.title,
-      }));
-    }
-    // Final guard — if still over cap (extreme edge: 50 items, very long
-    // category names), drop trailing items rather than let RLS reject the
-    // whole inquiry. rms_ids stay in metadata so admin loses nothing.
-    while (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES && itemSnapshots.length > 1) {
-      itemSnapshots = itemSnapshots.slice(0, -1);
-    }
-
-
-    // Snapshot for the admin email — keep the original (with images) so the
-    // email can show product thumbnails. The DB row only stores the trimmed
-    // version to stay under the RLS cap.
-    const emailItemSnapshots = fullSnapshots;
-
-
-    // Resolve catalog rms_ids → DB UUIDs for the typed `item_ids` column.
-    // Failures are non-fatal — snapshots + metadata.rms_ids preserve the
-    // selection even if a row was retired between baked catalog and DB.
-    let resolvedUuids: string[] = [];
-    if (effectiveIds.length > 0) {
-      const { data: rows } = await supabase
-        .from("inventory_items")
-        .select("id,rms_id")
-        .in("rms_id", effectiveIds);
-      if (rows) {
-        const uuidByRms = new Map(rows.map((r) => [r.rms_id, r.id]));
-        resolvedUuids = effectiveIds
-          .map((id) => uuidByRms.get(id))
-          .filter((x): x is string => Boolean(x));
-      }
-    }
-
-    // Client-generated ID so we don't depend on RLS SELECT to read the row
-    // back after insert. Anon users have INSERT-only access; .select().single()
-    // returned empty under RLS and threw a false "couldn't send" error even
-    // when the row actually saved. We assign the UUID, insert, and forward
-    // the same id to the notify endpoint.
-    const inquiryId =
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : null;
-
-    const payload = {
-      ...(inquiryId ? { id: inquiryId } : {}),
-      name: name.trim().slice(0, 200),
-      email: email.trim().slice(0, 320),
-      phone: phone.trim() ? phone.trim().slice(0, 50) : null,
-      subject: subject.slice(0, 250) || null,
-      message: messageLines.join("\n").slice(0, 5000),
-      // Legacy single-item column kept for backward compat with older admin code.
-      item_id: resolvedUuids[0] ?? null,
-      item_ids: resolvedUuids,
-      item_snapshots: itemSnapshots,
-      metadata: {
-        project_date: projectDate || null,
-        budget: budget || null,
-        scope: scope || null,
-        rms_ids: effectiveIds,
-      },
-    };
-
-    const { error } = await supabase.from("inquiries").insert(payload);
-
-    if (error) {
-      // Log full detail so admin can diagnose RLS / WITH CHECK failures
-      // (e.g. item_snapshots > 16KB, item_ids > 50).
-      console.error("Inquiry insert failed:", error);
-      setErrorMsg(
-        `We couldn't send that just now. Please email ${SUPPORT_EMAIL} and we'll respond directly.`,
-      );
-      return;
-    }
-
-    const inserted = { id: inquiryId };
-
-
-    // Fire-and-forget owner notification to info@eclectichive.com.
-    // Failure here doesn't block the user — the inquiry is already saved
-    // and visible in the admin inbox.
-    fetch("/api/public/notify-inquiry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: payload.name,
-        email: payload.email,
-        phone: payload.phone,
-        subject: payload.subject,
-        message: payload.message,
-        project_date: projectDate || null,
-        budget: budget || null,
-        scope: scope || null,
-        items: emailItemSnapshots,
-        inquiry_id: inserted?.id ?? null,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          console.error("Inquiry notification endpoint returned non-OK", {
-            status: res.status,
-            inquiry_id: inserted?.id ?? null,
-          });
+      const selectedLines = effectiveIds.map((id) => {
+        const p = piecesById.get(id);
+        if (p) {
+          return `• ${p.title}${p.category ? ` (${p.category})` : ""} [${p.id}]`;
         }
-      })
-      .catch((err) => {
-        console.error("Inquiry notification failed", {
-          err,
-          inquiry_id: inserted?.id ?? null,
-        });
+        return `• Item [${id}]`;
       });
 
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
-    }
+      const messageLines = [
+        `From: ${name} <${email}>${phone ? ` · ${phone}` : ""}`,
+        "",
+        "— Project details —",
+        projectDate ? `Project date: ${projectDate}` : null,
+        budget ? `Budget: ${budget}` : null,
+        scope ? `Scope of work: ${scope}` : null,
+        "",
+        "— Vision / wish list —",
+        vision.trim(),
+        "",
+        effectiveIds.length > 0 ? "— Selected from Collection —" : null,
+        ...selectedLines,
+      ].filter((l): l is string => l !== null);
 
-    // Track conversion in GA4. Primary category = the most-frequent category
-    // among selected pieces (so a 12-item inquiry that's mostly tableware
-    // reads as "tableware"). Item names truncated to first 5 inside helper.
-    const selectedPieces = effectiveIds
-      .map((id) => piecesById.get(id))
-      .filter((p): p is NonNullable<typeof p> => Boolean(p));
-    const categoryCounts = new Map<string, number>();
-    for (const p of selectedPieces) {
-      if (!p.category) continue;
-      categoryCounts.set(p.category, (categoryCounts.get(p.category) ?? 0) + 1);
-    }
-    const primaryCategory =
-      [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-    analytics.inquirySubmitted({
-      item_count: effectiveIds.length,
-      primary_category: primaryCategory,
-      item_names: selectedPieces.map((p) => p.title),
-      message_length: payload.message.length,
-      has_phone: Boolean(payload.phone),
-      has_date: Boolean(projectDate),
-      has_budget: Boolean(budget),
-    });
+      // Frozen-at-submit snapshot. Even if catalog rebinds an image tomorrow,
+      // the admin inbox always renders what the customer actually saw.
+      //
+      // RLS WITH CHECK caps item_snapshots at 16,000 bytes. A 50-item selection
+      // with long titles + CDN URLs blows past that and the insert is rejected.
+      // We build the full snapshot first; if it would exceed the cap we strip
+      // image_url (the heaviest field — admin can re-resolve from rms_id),
+      // then truncate titles as a last resort.
+      type Snap = {
+        rms_id: string;
+        title: string;
+        category: string | null;
+        image_url: string | null;
+      };
+      const fullSnapshots: Snap[] = effectiveIds
+        .map((id) => piecesById.get(id))
+        .filter((p): p is SelectedPiece => Boolean(p))
+        .map((p) => ({
+          rms_id: p.id,
+          title: p.title,
+          category: p.category,
+          image_url: p.image ? withCdnWidth(p.image, 480) : null,
+        }));
 
-    clearInquiry();
-    setPieces([]);
-    setRemovedIds(new Set());
-    setSubmittedCount(effectiveIds.length);
-    setSuccess(true);
+      const SNAPSHOT_MAX_BYTES = 15500; // leave headroom under the 16,000 cap
+      const bytes = (v: unknown) =>
+        typeof TextEncoder !== "undefined"
+          ? new TextEncoder().encode(JSON.stringify(v)).length
+          : JSON.stringify(v).length;
+
+      let itemSnapshots: Snap[] = fullSnapshots;
+      if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
+        itemSnapshots = fullSnapshots.map((s) => ({ ...s, image_url: null }));
+      }
+      if (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES) {
+        itemSnapshots = itemSnapshots.map((s) => ({
+          ...s,
+          title: s.title.length > 60 ? s.title.slice(0, 57) + "…" : s.title,
+        }));
+      }
+      // Final guard — if still over cap (extreme edge: 50 items, very long
+      // category names), drop trailing items rather than let RLS reject the
+      // whole inquiry. rms_ids stay in metadata so admin loses nothing.
+      while (bytes(itemSnapshots) > SNAPSHOT_MAX_BYTES && itemSnapshots.length > 1) {
+        itemSnapshots = itemSnapshots.slice(0, -1);
+      }
+
+      // Snapshot for the admin email — keep the original (with images) so the
+      // email can show product thumbnails. The DB row only stores the trimmed
+      // version to stay under the RLS cap.
+      const emailItemSnapshots = fullSnapshots;
+
+      // Resolve catalog rms_ids → DB UUIDs for the typed `item_ids` column.
+      // Failures are non-fatal — snapshots + metadata.rms_ids preserve the
+      // selection even if a row was retired between baked catalog and DB.
+      let resolvedUuids: string[] = [];
+      if (effectiveIds.length > 0) {
+        const { data: rows } = await supabase
+          .from("inventory_items")
+          .select("id,rms_id")
+          .in("rms_id", effectiveIds);
+        if (rows) {
+          const uuidByRms = new Map(rows.map((r) => [r.rms_id, r.id]));
+          resolvedUuids = effectiveIds
+            .map((id) => uuidByRms.get(id))
+            .filter((x): x is string => Boolean(x));
+        }
+      }
+
+      // Client-generated ID so we don't depend on RLS SELECT to read the row
+      // back after insert. Anon users have INSERT-only access; .select().single()
+      // returned empty under RLS and threw a false "couldn't send" error even
+      // when the row actually saved. We assign the UUID, insert, and forward
+      // the same id to the notify endpoint.
+      const inquiryId =
+        typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : null;
+
+      const payload = {
+        ...(inquiryId ? { id: inquiryId } : {}),
+        name: name.trim().slice(0, 200),
+        email: email.trim().slice(0, 320),
+        phone: phone.trim() ? phone.trim().slice(0, 50) : null,
+        subject: subject.slice(0, 250) || null,
+        message: messageLines.join("\n").slice(0, 5000),
+        // Legacy single-item column kept for backward compat with older admin code.
+        item_id: resolvedUuids[0] ?? null,
+        item_ids: resolvedUuids,
+        item_snapshots: itemSnapshots,
+        metadata: {
+          project_date: projectDate || null,
+          budget: budget || null,
+          scope: scope || null,
+          rms_ids: effectiveIds,
+        },
+      };
+
+      const { error } = await supabase.from("inquiries").insert(payload);
+
+      if (error) {
+        // Log full detail so admin can diagnose RLS / WITH CHECK failures
+        // (e.g. item_snapshots > 16KB, item_ids > 50).
+        console.error("Inquiry insert failed:", error);
+        setErrorMsg(
+          `We couldn't send that just now. Please email ${SUPPORT_EMAIL} and we'll respond directly.`,
+        );
+        return;
+      }
+
+      const inserted = { id: inquiryId };
+
+      // Fire-and-forget owner notification to info@eclectichive.com.
+      // Failure here doesn't block the user — the inquiry is already saved
+      // and visible in the admin inbox.
+      fetch("/api/public/notify-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          subject: payload.subject,
+          message: payload.message,
+          project_date: projectDate || null,
+          budget: budget || null,
+          scope: scope || null,
+          items: emailItemSnapshots,
+          inquiry_id: inserted?.id ?? null,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            console.error("Inquiry notification endpoint returned non-OK", {
+              status: res.status,
+              inquiry_id: inserted?.id ?? null,
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Inquiry notification failed", {
+            err,
+            inquiry_id: inserted?.id ?? null,
+          });
+        });
+
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(RATE_LIMIT_KEY, String(Date.now()));
+      }
+
+      // Track conversion in GA4. Primary category = the most-frequent category
+      // among selected pieces (so a 12-item inquiry that's mostly tableware
+      // reads as "tableware"). Item names truncated to first 5 inside helper.
+      const selectedPieces = effectiveIds
+        .map((id) => piecesById.get(id))
+        .filter((p): p is NonNullable<typeof p> => Boolean(p));
+      const categoryCounts = new Map<string, number>();
+      for (const p of selectedPieces) {
+        if (!p.category) continue;
+        categoryCounts.set(p.category, (categoryCounts.get(p.category) ?? 0) + 1);
+      }
+      const primaryCategory =
+        [...categoryCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+      analytics.inquirySubmitted({
+        item_count: effectiveIds.length,
+        primary_category: primaryCategory,
+        item_names: selectedPieces.map((p) => p.title),
+        message_length: payload.message.length,
+        has_phone: Boolean(payload.phone),
+        has_date: Boolean(projectDate),
+        has_budget: Boolean(budget),
+      });
+
+      clearInquiry();
+      setPieces([]);
+      setRemovedIds(new Set());
+      setSubmittedCount(effectiveIds.length);
+      setSuccess(true);
     } finally {
       setSubmitting(false);
     }
@@ -456,22 +454,15 @@ function ContactPage() {
       }}
     >
       <div className="fluid-canvas">
-        <div
-          className="grid lg:grid-cols-12"
-          style={{ gap: "clamp(2.5rem, 1rem + 3vw, 4rem)" }}
-        >
+        <div className="grid lg:grid-cols-12" style={{ gap: "clamp(2.5rem, 1rem + 3vw, 4rem)" }}>
           {/* LEFT — editorial intro */}
           <aside className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
-              CONTACT
-            </p>
-            <h1 className="page-title mt-6 text-charcoal">
-              LET'S COLLABORATE
-            </h1>
+            <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">CONTACT</p>
+            <h1 className="page-title mt-6 text-charcoal">LET'S COLLABORATE</h1>
             <p className="mt-6 lg:mt-8 max-w-md text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/65">
-              We would love to hear about your project and how we can support
-              your needs. Every style brief request is personally reviewed and
-              answered within two business days. Thank you for reaching out to us!
+              We would love to hear about your project and how we can support your needs. Every
+              style brief request is personally reviewed and answered within two business days.
+              Thank you for reaching out to us!
             </p>
             <a
               href="/stylebrief"
@@ -502,7 +493,10 @@ function ContactPage() {
             </div>
 
             {/* Editorial video accent — desktop only */}
-            <div aria-hidden className="hidden lg:block mt-12 relative aspect-[4/5] w-full max-w-md overflow-hidden bg-charcoal ring-1 ring-charcoal/10">
+            <div
+              aria-hidden
+              className="hidden lg:block mt-12 relative aspect-[4/5] w-full max-w-md overflow-hidden bg-charcoal ring-1 ring-charcoal/10"
+            >
               <video
                 src="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/01-rehearsal.mp4"
                 poster="https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/videos/dunton-easton/01-rehearsal.jpg"
@@ -515,7 +509,6 @@ function ContactPage() {
               />
             </div>
           </aside>
-
 
           {/* RIGHT — single form */}
           <section id="inquiry" className="lg:col-span-7 scroll-mt-32">
@@ -576,18 +569,10 @@ function ContactPage() {
                 <FormSection number="02" label="Project details">
                   <div className="space-y-6 lg:space-y-8">
                     <Field label="Budget" asGroup>
-                      <PillGroup
-                        options={[...BUDGET_RANGES]}
-                        value={budget}
-                        onChange={setBudget}
-                      />
+                      <PillGroup options={[...BUDGET_RANGES]} value={budget} onChange={setBudget} />
                     </Field>
                     <Field label="Scope of work" asGroup>
-                      <PillGroup
-                        options={[...SCOPE_OPTIONS]}
-                        value={scope}
-                        onChange={setScope}
-                      />
+                      <PillGroup options={[...SCOPE_OPTIONS]} value={scope} onChange={setScope} />
                     </Field>
                   </div>
                 </FormSection>
@@ -639,10 +624,7 @@ function ContactPage() {
                           </div>
                         </div>
                       )}
-                      <ul
-                        className="divide-y"
-                        style={{ borderColor: "var(--archive-rule)" }}
-                      >
+                      <ul className="divide-y" style={{ borderColor: "var(--archive-rule)" }}>
                         {effectiveIds.map((id) => {
                           const p = piecesById.get(id);
                           const shortId = id.slice(-6).toUpperCase();
@@ -651,8 +633,7 @@ function ContactPage() {
                             p?.category?.trim().charAt(0).toUpperCase() ||
                             p?.title?.trim().charAt(0).toUpperCase() ||
                             "·";
-                          const isMissing =
-                            selectionStatus === "ready" && !p;
+                          const isMissing = selectionStatus === "ready" && !p;
                           return (
                             <li
                               key={id}
@@ -807,9 +788,7 @@ function FormSection({
         <span className="text-[12px] uppercase tracking-[0.18em] text-charcoal/40 tabular-nums">
           {number}
         </span>
-        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">
-          {label}
-        </p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/55">{label}</p>
       </div>
       {children}
     </section>
@@ -918,13 +897,8 @@ function PillGroup({
 
 function SuccessPanel({ count }: { count: number }) {
   return (
-    <div
-      className="border-t pt-12"
-      style={{ borderColor: "var(--archive-rule)" }}
-    >
-      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
-        RECEIVED
-      </p>
+    <div className="border-t pt-12" style={{ borderColor: "var(--archive-rule)" }}>
+      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">RECEIVED</p>
       <h2
         className="mt-6 font-display uppercase max-w-xl text-charcoal"
         style={{
@@ -943,8 +917,7 @@ function SuccessPanel({ count }: { count: number }) {
         </p>
       )}
       <p className="mt-6 max-w-lg text-[12px] uppercase tracking-[0.18em] leading-[1.9] text-charcoal/70">
-        WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE,
-        EMAIL US DIRECTLY AT{" "}
+        WE RESPOND WITHIN TWO BUSINESS DAYS. IF YOUR EVENT IS TIME-SENSITIVE, EMAIL US DIRECTLY AT{" "}
         <a className="editorial-link" href={`mailto:${SUPPORT_EMAIL}`}>
           {SUPPORT_EMAIL}
         </a>

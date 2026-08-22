@@ -84,11 +84,15 @@ function concat() {
   }
   console.log("[concat] joining halves with ffmpeg…");
   const listFile = "/tmp/v12-concat.txt";
-  spawnSync("sh", ["-c", `printf "file '%s'\\nfile '%s'\\n" "${HALF_A}" "${HALF_B}" > ${listFile}`]);
-  const r = spawnSync("ffmpeg", [
-    "-y", "-f", "concat", "-safe", "0", "-i", listFile,
-    "-c", "copy", OUT,
-  ], { stdio: "inherit" });
+  spawnSync("sh", [
+    "-c",
+    `printf "file '%s'\\nfile '%s'\\n" "${HALF_A}" "${HALF_B}" > ${listFile}`,
+  ]);
+  const r = spawnSync(
+    "ffmpeg",
+    ["-y", "-f", "concat", "-safe", "0", "-i", listFile, "-c", "copy", OUT],
+    { stdio: "inherit" },
+  );
   if (r.status !== 0) process.exit(r.status ?? 1);
   console.log("[concat] done →", OUT);
 }

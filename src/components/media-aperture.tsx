@@ -193,9 +193,7 @@ export function MediaAperture({
       loading={lazy ? "lazy" : "eager"}
       decoding="async"
       onLoad={reportLoaded}
-      {...(fetchPriority
-        ? ({ fetchPriority: fetchPriority } as Record<string, string>)
-        : {})}
+      {...(fetchPriority ? ({ fetchPriority: fetchPriority } as Record<string, string>) : {})}
       className="absolute inset-0 w-full h-full object-cover will-change-opacity"
       style={{
         opacity: revealReady === undefined ? 1 : loaded && revealReady ? 1 : 0,

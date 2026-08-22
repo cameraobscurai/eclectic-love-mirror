@@ -6,7 +6,7 @@ Run: 2026-08-11 · `node scripts/cover-audit.mjs` · 636 live covers · zero byt
 
 `MEASURE_FAIL` previously fired on any cover whose silhouette filled >93% of the
 frame, regardless of how that silhouette was measured. That conflated a genuine
-detection failure with a *correct* measurement of a tight-cropped source.
+detection failure with a _correct_ measurement of a tight-cropped source.
 
 ```text
 MEASURE_FAIL  = detection failed OR (frameCoverage > 0.93 AND no alpha channel)
@@ -38,23 +38,23 @@ WOULD_CLIP 2. (LOW_RES 308 and TIGHT_CROP 226 are advisories riding along.)
 
 ## Per category
 
-| category | pass | at-risk | broken |
-| --- | --- | --- | --- |
-| pillows-throws | 0 | 17 | **136** |
-| styling | 0 | 2 | **63** |
-| tableware | 0 | 0 | **41** |
-| serveware | 0 | 2 | **36** |
-| rugs | 0 | 1 | **25** |
-| large-decor | 0 | 22 | 3 |
-| furs-pelts | 0 | 4 | 2 |
-| bars | 37 | 7 | 1 |
-| candlelight | 0 | 9 | 1 |
-| lighting | 0 | 28 | 1 |
-| chandeliers | 0 | 11 | 0 |
-| seating | 1 | 99 | 0 |
-| storage | 1 | 10 | 0 |
-| tables | 2 | 74 | 0 |
-| **total** | **41** | **286** | **309** |
+| category       | pass   | at-risk | broken  |
+| -------------- | ------ | ------- | ------- |
+| pillows-throws | 0      | 17      | **136** |
+| styling        | 0      | 2       | **63**  |
+| tableware      | 0      | 0       | **41**  |
+| serveware      | 0      | 2       | **36**  |
+| rugs           | 0      | 1       | **25**  |
+| large-decor    | 0      | 22      | 3       |
+| furs-pelts     | 0      | 4       | 2       |
+| bars           | 37     | 7       | 1       |
+| candlelight    | 0      | 9       | 1       |
+| lighting       | 0      | 28      | 1       |
+| chandeliers    | 0      | 11      | 0       |
+| seating        | 1      | 99      | 0       |
+| storage        | 1      | 10      | 0       |
+| tables         | 2      | 74      | 0       |
+| **total**      | **41** | **286** | **309** |
 
 The day-one prediction was "rugs cleanest, seating worst." Both halves are
 wrong, and the reason is structural rather than random: seating and tables were

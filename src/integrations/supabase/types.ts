@@ -1,2231 +1,2208 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
+    PostgrestVersion: "14.5";
+  };
   public: {
     Tables: {
       admin_audit_log: {
         Row: {
-          action: string
-          actor_id: string | null
-          after: Json | null
-          at: string
-          before: Json | null
-          entity: string
-          entity_id: string
-          id: string
-          metadata: Json
-          task_id: string | null
-          thread_id: string | null
-        }
+          action: string;
+          actor_id: string | null;
+          after: Json | null;
+          at: string;
+          before: Json | null;
+          entity: string;
+          entity_id: string;
+          id: string;
+          metadata: Json;
+          task_id: string | null;
+          thread_id: string | null;
+        };
         Insert: {
-          action: string
-          actor_id?: string | null
-          after?: Json | null
-          at?: string
-          before?: Json | null
-          entity: string
-          entity_id: string
-          id?: string
-          metadata?: Json
-          task_id?: string | null
-          thread_id?: string | null
-        }
+          action: string;
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity: string;
+          entity_id: string;
+          id?: string;
+          metadata?: Json;
+          task_id?: string | null;
+          thread_id?: string | null;
+        };
         Update: {
-          action?: string
-          actor_id?: string | null
-          after?: Json | null
-          at?: string
-          before?: Json | null
-          entity?: string
-          entity_id?: string
-          id?: string
-          metadata?: Json
-          task_id?: string | null
-          thread_id?: string | null
-        }
+          action?: string;
+          actor_id?: string | null;
+          after?: Json | null;
+          at?: string;
+          before?: Json | null;
+          entity?: string;
+          entity_id?: string;
+          id?: string;
+          metadata?: Json;
+          task_id?: string | null;
+          thread_id?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "admin_audit_log_task_id_fkey"
-            columns: ["task_id"]
-            isOneToOne: false
-            referencedRelation: "admin_tasks"
-            referencedColumns: ["id"]
+            foreignKeyName: "admin_audit_log_task_id_fkey";
+            columns: ["task_id"];
+            isOneToOne: false;
+            referencedRelation: "admin_tasks";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "admin_audit_log_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "admin_threads"
-            referencedColumns: ["id"]
+            foreignKeyName: "admin_audit_log_thread_id_fkey";
+            columns: ["thread_id"];
+            isOneToOne: false;
+            referencedRelation: "admin_threads";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       admin_memory: {
         Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          key: string
-          updated_at: string
-          value: string
-        }
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          key: string;
+          updated_at: string;
+          value: string;
+        };
         Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          key: string
-          updated_at?: string
-          value: string
-        }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          key: string;
+          updated_at?: string;
+          value: string;
+        };
         Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          key?: string
-          updated_at?: string
-          value?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          key?: string;
+          updated_at?: string;
+          value?: string;
+        };
+        Relationships: [];
+      };
       admin_messages: {
         Row: {
-          ai_sdk_message_id: string | null
-          created_at: string
-          id: string
-          parts: Json
-          role: string
-          thread_id: string
-        }
+          ai_sdk_message_id: string | null;
+          created_at: string;
+          id: string;
+          parts: Json;
+          role: string;
+          thread_id: string;
+        };
         Insert: {
-          ai_sdk_message_id?: string | null
-          created_at?: string
-          id?: string
-          parts?: Json
-          role: string
-          thread_id: string
-        }
+          ai_sdk_message_id?: string | null;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role: string;
+          thread_id: string;
+        };
         Update: {
-          ai_sdk_message_id?: string | null
-          created_at?: string
-          id?: string
-          parts?: Json
-          role?: string
-          thread_id?: string
-        }
+          ai_sdk_message_id?: string | null;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role?: string;
+          thread_id?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "admin_messages_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "admin_threads"
-            referencedColumns: ["id"]
+            foreignKeyName: "admin_messages_thread_id_fkey";
+            columns: ["thread_id"];
+            isOneToOne: false;
+            referencedRelation: "admin_threads";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       admin_tasks: {
         Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          kind: string
-          manifest: Json
-          result: Json | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string
-          summary: string | null
-          thread_id: string | null
-          title: string
-          updated_at: string
-        }
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          kind: string;
+          manifest: Json;
+          result: Json | null;
+          reviewed_at: string | null;
+          reviewed_by: string | null;
+          status: string;
+          summary: string | null;
+          thread_id: string | null;
+          title: string;
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          kind: string
-          manifest?: Json
-          result?: Json | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          summary?: string | null
-          thread_id?: string | null
-          title: string
-          updated_at?: string
-        }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          kind: string;
+          manifest?: Json;
+          result?: Json | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          status?: string;
+          summary?: string | null;
+          thread_id?: string | null;
+          title: string;
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          kind?: string
-          manifest?: Json
-          result?: Json | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          summary?: string | null
-          thread_id?: string | null
-          title?: string
-          updated_at?: string
-        }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          kind?: string;
+          manifest?: Json;
+          result?: Json | null;
+          reviewed_at?: string | null;
+          reviewed_by?: string | null;
+          status?: string;
+          summary?: string | null;
+          thread_id?: string | null;
+          title?: string;
+          updated_at?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "admin_tasks_thread_id_fkey"
-            columns: ["thread_id"]
-            isOneToOne: false
-            referencedRelation: "admin_threads"
-            referencedColumns: ["id"]
+            foreignKeyName: "admin_tasks_thread_id_fkey";
+            columns: ["thread_id"];
+            isOneToOne: false;
+            referencedRelation: "admin_threads";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       admin_threads: {
         Row: {
-          created_at: string
-          id: string
-          title: string
-          updated_at: string
-          user_id: string
-        }
+          created_at: string;
+          id: string;
+          title: string;
+          updated_at: string;
+          user_id: string;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id: string
-        }
+          created_at?: string;
+          id?: string;
+          title?: string;
+          updated_at?: string;
+          user_id: string;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          id?: string;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       boh_refresh_runs: {
         Row: {
-          actor: string
-          finished_at: string | null
-          id: string
-          started_at: string
-          status: string
-        }
+          actor: string;
+          finished_at: string | null;
+          id: string;
+          started_at: string;
+          status: string;
+        };
         Insert: {
-          actor: string
-          finished_at?: string | null
-          id?: string
-          started_at?: string
-          status?: string
-        }
+          actor: string;
+          finished_at?: string | null;
+          id?: string;
+          started_at?: string;
+          status?: string;
+        };
         Update: {
-          actor?: string
-          finished_at?: string | null
-          id?: string
-          started_at?: string
-          status?: string
-        }
-        Relationships: []
-      }
+          actor?: string;
+          finished_at?: string | null;
+          id?: string;
+          started_at?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       boh_tile_snapshots: {
         Row: {
-          route_slug: string
-          status: string
-          storage_path: string | null
-          updated_at: string | null
-        }
+          route_slug: string;
+          status: string;
+          storage_path: string | null;
+          updated_at: string | null;
+        };
         Insert: {
-          route_slug: string
-          status?: string
-          storage_path?: string | null
-          updated_at?: string | null
-        }
+          route_slug: string;
+          status?: string;
+          storage_path?: string | null;
+          updated_at?: string | null;
+        };
         Update: {
-          route_slug?: string
-          status?: string
-          storage_path?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+          route_slug?: string;
+          status?: string;
+          storage_path?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       deleted_items: {
         Row: {
-          deleted_at: string
-          deleted_by: string | null
-          id: string
-          item_id: string
-          rms_id: string | null
-          title: string | null
-        }
+          deleted_at: string;
+          deleted_by: string | null;
+          id: string;
+          item_id: string;
+          rms_id: string | null;
+          title: string | null;
+        };
         Insert: {
-          deleted_at?: string
-          deleted_by?: string | null
-          id?: string
-          item_id: string
-          rms_id?: string | null
-          title?: string | null
-        }
+          deleted_at?: string;
+          deleted_by?: string | null;
+          id?: string;
+          item_id: string;
+          rms_id?: string | null;
+          title?: string | null;
+        };
         Update: {
-          deleted_at?: string
-          deleted_by?: string | null
-          id?: string
-          item_id?: string
-          rms_id?: string | null
-          title?: string | null
-        }
-        Relationships: []
-      }
+          deleted_at?: string;
+          deleted_by?: string | null;
+          id?: string;
+          item_id?: string;
+          rms_id?: string | null;
+          title?: string | null;
+        };
+        Relationships: [];
+      };
       email_send_log: {
         Row: {
-          created_at: string
-          error_message: string | null
-          id: string
-          message_id: string | null
-          metadata: Json | null
-          recipient_email: string
-          status: string
-          template_name: string
-        }
+          created_at: string;
+          error_message: string | null;
+          id: string;
+          message_id: string | null;
+          metadata: Json | null;
+          recipient_email: string;
+          status: string;
+          template_name: string;
+        };
         Insert: {
-          created_at?: string
-          error_message?: string | null
-          id?: string
-          message_id?: string | null
-          metadata?: Json | null
-          recipient_email: string
-          status: string
-          template_name: string
-        }
+          created_at?: string;
+          error_message?: string | null;
+          id?: string;
+          message_id?: string | null;
+          metadata?: Json | null;
+          recipient_email: string;
+          status: string;
+          template_name: string;
+        };
         Update: {
-          created_at?: string
-          error_message?: string | null
-          id?: string
-          message_id?: string | null
-          metadata?: Json | null
-          recipient_email?: string
-          status?: string
-          template_name?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          error_message?: string | null;
+          id?: string;
+          message_id?: string | null;
+          metadata?: Json | null;
+          recipient_email?: string;
+          status?: string;
+          template_name?: string;
+        };
+        Relationships: [];
+      };
       email_send_state: {
         Row: {
-          auth_email_ttl_minutes: number
-          batch_size: number
-          id: number
-          last_run_at: string | null
-          last_run_processed: number | null
-          last_run_status: string | null
-          retry_after_until: string | null
-          send_delay_ms: number
-          transactional_email_ttl_minutes: number
-          updated_at: string
-        }
+          auth_email_ttl_minutes: number;
+          batch_size: number;
+          id: number;
+          last_run_at: string | null;
+          last_run_processed: number | null;
+          last_run_status: string | null;
+          retry_after_until: string | null;
+          send_delay_ms: number;
+          transactional_email_ttl_minutes: number;
+          updated_at: string;
+        };
         Insert: {
-          auth_email_ttl_minutes?: number
-          batch_size?: number
-          id?: number
-          last_run_at?: string | null
-          last_run_processed?: number | null
-          last_run_status?: string | null
-          retry_after_until?: string | null
-          send_delay_ms?: number
-          transactional_email_ttl_minutes?: number
-          updated_at?: string
-        }
+          auth_email_ttl_minutes?: number;
+          batch_size?: number;
+          id?: number;
+          last_run_at?: string | null;
+          last_run_processed?: number | null;
+          last_run_status?: string | null;
+          retry_after_until?: string | null;
+          send_delay_ms?: number;
+          transactional_email_ttl_minutes?: number;
+          updated_at?: string;
+        };
         Update: {
-          auth_email_ttl_minutes?: number
-          batch_size?: number
-          id?: number
-          last_run_at?: string | null
-          last_run_processed?: number | null
-          last_run_status?: string | null
-          retry_after_until?: string | null
-          send_delay_ms?: number
-          transactional_email_ttl_minutes?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          auth_email_ttl_minutes?: number;
+          batch_size?: number;
+          id?: number;
+          last_run_at?: string | null;
+          last_run_processed?: number | null;
+          last_run_status?: string | null;
+          retry_after_until?: string | null;
+          send_delay_ms?: number;
+          transactional_email_ttl_minutes?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       email_unsubscribe_tokens: {
         Row: {
-          created_at: string
-          email: string
-          id: string
-          token: string
-          used_at: string | null
-        }
+          created_at: string;
+          email: string;
+          id: string;
+          token: string;
+          used_at: string | null;
+        };
         Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          token: string
-          used_at?: string | null
-        }
+          created_at?: string;
+          email: string;
+          id?: string;
+          token: string;
+          used_at?: string | null;
+        };
         Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          token?: string
-          used_at?: string | null
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          email?: string;
+          id?: string;
+          token?: string;
+          used_at?: string | null;
+        };
+        Relationships: [];
+      };
       gallery_orders: {
         Row: {
-          gallery_slug: string
-          order_keys: string[]
-          updated_at: string
-          updated_by: string | null
-        }
+          gallery_slug: string;
+          order_keys: string[];
+          updated_at: string;
+          updated_by: string | null;
+        };
         Insert: {
-          gallery_slug: string
-          order_keys?: string[]
-          updated_at?: string
-          updated_by?: string | null
-        }
+          gallery_slug: string;
+          order_keys?: string[];
+          updated_at?: string;
+          updated_by?: string | null;
+        };
         Update: {
-          gallery_slug?: string
-          order_keys?: string[]
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
+          gallery_slug?: string;
+          order_keys?: string[];
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [];
+      };
       inquiries: {
         Row: {
-          created_at: string
-          deleted_at: string | null
-          email: string
-          handled: boolean
-          id: string
-          item_id: string | null
-          item_ids: string[]
-          item_snapshots: Json
-          message: string
-          metadata: Json
-          name: string
-          outcome_notes: string | null
-          outcome_updated_at: string | null
-          outcome_updated_by: string | null
-          phone: string | null
-          quote_value: number | null
-          source: string
-          status: Database["public"]["Enums"]["inquiry_status"]
-          subject: string | null
-        }
+          created_at: string;
+          deleted_at: string | null;
+          email: string;
+          handled: boolean;
+          id: string;
+          item_id: string | null;
+          item_ids: string[];
+          item_snapshots: Json;
+          message: string;
+          metadata: Json;
+          name: string;
+          outcome_notes: string | null;
+          outcome_updated_at: string | null;
+          outcome_updated_by: string | null;
+          phone: string | null;
+          quote_value: number | null;
+          source: string;
+          status: Database["public"]["Enums"]["inquiry_status"];
+          subject: string | null;
+        };
         Insert: {
-          created_at?: string
-          deleted_at?: string | null
-          email: string
-          handled?: boolean
-          id?: string
-          item_id?: string | null
-          item_ids?: string[]
-          item_snapshots?: Json
-          message: string
-          metadata?: Json
-          name: string
-          outcome_notes?: string | null
-          outcome_updated_at?: string | null
-          outcome_updated_by?: string | null
-          phone?: string | null
-          quote_value?: number | null
-          source?: string
-          status?: Database["public"]["Enums"]["inquiry_status"]
-          subject?: string | null
-        }
+          created_at?: string;
+          deleted_at?: string | null;
+          email: string;
+          handled?: boolean;
+          id?: string;
+          item_id?: string | null;
+          item_ids?: string[];
+          item_snapshots?: Json;
+          message: string;
+          metadata?: Json;
+          name: string;
+          outcome_notes?: string | null;
+          outcome_updated_at?: string | null;
+          outcome_updated_by?: string | null;
+          phone?: string | null;
+          quote_value?: number | null;
+          source?: string;
+          status?: Database["public"]["Enums"]["inquiry_status"];
+          subject?: string | null;
+        };
         Update: {
-          created_at?: string
-          deleted_at?: string | null
-          email?: string
-          handled?: boolean
-          id?: string
-          item_id?: string | null
-          item_ids?: string[]
-          item_snapshots?: Json
-          message?: string
-          metadata?: Json
-          name?: string
-          outcome_notes?: string | null
-          outcome_updated_at?: string | null
-          outcome_updated_by?: string | null
-          phone?: string | null
-          quote_value?: number | null
-          source?: string
-          status?: Database["public"]["Enums"]["inquiry_status"]
-          subject?: string | null
-        }
+          created_at?: string;
+          deleted_at?: string | null;
+          email?: string;
+          handled?: boolean;
+          id?: string;
+          item_id?: string | null;
+          item_ids?: string[];
+          item_snapshots?: Json;
+          message?: string;
+          metadata?: Json;
+          name?: string;
+          outcome_notes?: string | null;
+          outcome_updated_at?: string | null;
+          outcome_updated_by?: string | null;
+          phone?: string | null;
+          quote_value?: number | null;
+          source?: string;
+          status?: Database["public"]["Enums"]["inquiry_status"];
+          subject?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "inquiries_item_id_fkey"
-            columns: ["item_id"]
-            isOneToOne: false
-            referencedRelation: "inventory_items"
-            referencedColumns: ["id"]
+            foreignKeyName: "inquiries_item_id_fkey";
+            columns: ["item_id"];
+            isOneToOne: false;
+            referencedRelation: "inventory_items";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       inventory_items: {
         Row: {
-          card_background_url: string | null
-          category: string | null
-          category_slug: string | null
-          collection_slug: string | null
-          color_chroma: number | null
-          color_confidence: number | null
-          color_family: string | null
-          color_hex: string | null
-          color_hex_secondary: string | null
-          color_hue: number | null
-          color_lightness: number | null
-          color_locked: boolean
-          color_needs_review: boolean
-          color_notes: string | null
-          color_source: string | null
-          color_tagged_at: string | null
-          color_temperature: string | null
-          cover_focal_x: number | null
-          cover_focal_y: number | null
-          cover_framed_meta: Json | null
-          cover_framed_url: string | null
-          created_at: string
-          depth_cm: number | null
-          description: string | null
-          dimensions_raw: string | null
-          editorial_order: number | null
-          family_id: string | null
-          family_position: number | null
-          height_cm: number | null
-          hidden_note: string | null
-          id: string
-          images: string[]
-          images_archive: Json
-          images_meta: Json
-          live_subcategories: string[] | null
-          manual_injection: boolean
-          manual_order: number | null
-          materials: string[] | null
-          meta_description: string | null
-          meta_title: string | null
-          og_image: string | null
-          origin: string | null
-          owner_site_rank: number | null
-          price: number | null
-          public_ready: boolean
-          quantity: number | null
-          quantity_label: string | null
-          rms_id: string | null
-          slug: string
-          status: Database["public"]["Enums"]["item_status"]
-          subcategory_slug: string | null
-          taxonomy_review: Json | null
-          title: string
-          updated_at: string
-          upscaled_cover_url: string | null
-          variant_cover_url: string | null
-          variant_label: string | null
-          weight_kg: number | null
-          width_cm: number | null
-        }
+          card_background_url: string | null;
+          category: string | null;
+          category_slug: string | null;
+          collection_slug: string | null;
+          color_chroma: number | null;
+          color_confidence: number | null;
+          color_family: string | null;
+          color_hex: string | null;
+          color_hex_secondary: string | null;
+          color_hue: number | null;
+          color_lightness: number | null;
+          color_locked: boolean;
+          color_needs_review: boolean;
+          color_notes: string | null;
+          color_source: string | null;
+          color_tagged_at: string | null;
+          color_temperature: string | null;
+          cover_focal_x: number | null;
+          cover_focal_y: number | null;
+          cover_framed_meta: Json | null;
+          cover_framed_url: string | null;
+          created_at: string;
+          depth_cm: number | null;
+          description: string | null;
+          dimensions_raw: string | null;
+          editorial_order: number | null;
+          family_id: string | null;
+          family_position: number | null;
+          height_cm: number | null;
+          hidden_note: string | null;
+          id: string;
+          images: string[];
+          images_archive: Json;
+          images_meta: Json;
+          live_subcategories: string[] | null;
+          manual_injection: boolean;
+          manual_order: number | null;
+          materials: string[] | null;
+          meta_description: string | null;
+          meta_title: string | null;
+          og_image: string | null;
+          origin: string | null;
+          owner_site_rank: number | null;
+          price: number | null;
+          public_ready: boolean;
+          quantity: number | null;
+          quantity_label: string | null;
+          rms_id: string | null;
+          slug: string;
+          status: Database["public"]["Enums"]["item_status"];
+          subcategory_slug: string | null;
+          taxonomy_review: Json | null;
+          title: string;
+          updated_at: string;
+          upscaled_cover_url: string | null;
+          variant_cover_url: string | null;
+          variant_label: string | null;
+          weight_kg: number | null;
+          width_cm: number | null;
+        };
         Insert: {
-          card_background_url?: string | null
-          category?: string | null
-          category_slug?: string | null
-          collection_slug?: string | null
-          color_chroma?: number | null
-          color_confidence?: number | null
-          color_family?: string | null
-          color_hex?: string | null
-          color_hex_secondary?: string | null
-          color_hue?: number | null
-          color_lightness?: number | null
-          color_locked?: boolean
-          color_needs_review?: boolean
-          color_notes?: string | null
-          color_source?: string | null
-          color_tagged_at?: string | null
-          color_temperature?: string | null
-          cover_focal_x?: number | null
-          cover_focal_y?: number | null
-          cover_framed_meta?: Json | null
-          cover_framed_url?: string | null
-          created_at?: string
-          depth_cm?: number | null
-          description?: string | null
-          dimensions_raw?: string | null
-          editorial_order?: number | null
-          family_id?: string | null
-          family_position?: number | null
-          height_cm?: number | null
-          hidden_note?: string | null
-          id?: string
-          images?: string[]
-          images_archive?: Json
-          images_meta?: Json
-          live_subcategories?: string[] | null
-          manual_injection?: boolean
-          manual_order?: number | null
-          materials?: string[] | null
-          meta_description?: string | null
-          meta_title?: string | null
-          og_image?: string | null
-          origin?: string | null
-          owner_site_rank?: number | null
-          price?: number | null
-          public_ready?: boolean
-          quantity?: number | null
-          quantity_label?: string | null
-          rms_id?: string | null
-          slug: string
-          status?: Database["public"]["Enums"]["item_status"]
-          subcategory_slug?: string | null
-          taxonomy_review?: Json | null
-          title: string
-          updated_at?: string
-          upscaled_cover_url?: string | null
-          variant_cover_url?: string | null
-          variant_label?: string | null
-          weight_kg?: number | null
-          width_cm?: number | null
-        }
+          card_background_url?: string | null;
+          category?: string | null;
+          category_slug?: string | null;
+          collection_slug?: string | null;
+          color_chroma?: number | null;
+          color_confidence?: number | null;
+          color_family?: string | null;
+          color_hex?: string | null;
+          color_hex_secondary?: string | null;
+          color_hue?: number | null;
+          color_lightness?: number | null;
+          color_locked?: boolean;
+          color_needs_review?: boolean;
+          color_notes?: string | null;
+          color_source?: string | null;
+          color_tagged_at?: string | null;
+          color_temperature?: string | null;
+          cover_focal_x?: number | null;
+          cover_focal_y?: number | null;
+          cover_framed_meta?: Json | null;
+          cover_framed_url?: string | null;
+          created_at?: string;
+          depth_cm?: number | null;
+          description?: string | null;
+          dimensions_raw?: string | null;
+          editorial_order?: number | null;
+          family_id?: string | null;
+          family_position?: number | null;
+          height_cm?: number | null;
+          hidden_note?: string | null;
+          id?: string;
+          images?: string[];
+          images_archive?: Json;
+          images_meta?: Json;
+          live_subcategories?: string[] | null;
+          manual_injection?: boolean;
+          manual_order?: number | null;
+          materials?: string[] | null;
+          meta_description?: string | null;
+          meta_title?: string | null;
+          og_image?: string | null;
+          origin?: string | null;
+          owner_site_rank?: number | null;
+          price?: number | null;
+          public_ready?: boolean;
+          quantity?: number | null;
+          quantity_label?: string | null;
+          rms_id?: string | null;
+          slug: string;
+          status?: Database["public"]["Enums"]["item_status"];
+          subcategory_slug?: string | null;
+          taxonomy_review?: Json | null;
+          title: string;
+          updated_at?: string;
+          upscaled_cover_url?: string | null;
+          variant_cover_url?: string | null;
+          variant_label?: string | null;
+          weight_kg?: number | null;
+          width_cm?: number | null;
+        };
         Update: {
-          card_background_url?: string | null
-          category?: string | null
-          category_slug?: string | null
-          collection_slug?: string | null
-          color_chroma?: number | null
-          color_confidence?: number | null
-          color_family?: string | null
-          color_hex?: string | null
-          color_hex_secondary?: string | null
-          color_hue?: number | null
-          color_lightness?: number | null
-          color_locked?: boolean
-          color_needs_review?: boolean
-          color_notes?: string | null
-          color_source?: string | null
-          color_tagged_at?: string | null
-          color_temperature?: string | null
-          cover_focal_x?: number | null
-          cover_focal_y?: number | null
-          cover_framed_meta?: Json | null
-          cover_framed_url?: string | null
-          created_at?: string
-          depth_cm?: number | null
-          description?: string | null
-          dimensions_raw?: string | null
-          editorial_order?: number | null
-          family_id?: string | null
-          family_position?: number | null
-          height_cm?: number | null
-          hidden_note?: string | null
-          id?: string
-          images?: string[]
-          images_archive?: Json
-          images_meta?: Json
-          live_subcategories?: string[] | null
-          manual_injection?: boolean
-          manual_order?: number | null
-          materials?: string[] | null
-          meta_description?: string | null
-          meta_title?: string | null
-          og_image?: string | null
-          origin?: string | null
-          owner_site_rank?: number | null
-          price?: number | null
-          public_ready?: boolean
-          quantity?: number | null
-          quantity_label?: string | null
-          rms_id?: string | null
-          slug?: string
-          status?: Database["public"]["Enums"]["item_status"]
-          subcategory_slug?: string | null
-          taxonomy_review?: Json | null
-          title?: string
-          updated_at?: string
-          upscaled_cover_url?: string | null
-          variant_cover_url?: string | null
-          variant_label?: string | null
-          weight_kg?: number | null
-          width_cm?: number | null
-        }
+          card_background_url?: string | null;
+          category?: string | null;
+          category_slug?: string | null;
+          collection_slug?: string | null;
+          color_chroma?: number | null;
+          color_confidence?: number | null;
+          color_family?: string | null;
+          color_hex?: string | null;
+          color_hex_secondary?: string | null;
+          color_hue?: number | null;
+          color_lightness?: number | null;
+          color_locked?: boolean;
+          color_needs_review?: boolean;
+          color_notes?: string | null;
+          color_source?: string | null;
+          color_tagged_at?: string | null;
+          color_temperature?: string | null;
+          cover_focal_x?: number | null;
+          cover_focal_y?: number | null;
+          cover_framed_meta?: Json | null;
+          cover_framed_url?: string | null;
+          created_at?: string;
+          depth_cm?: number | null;
+          description?: string | null;
+          dimensions_raw?: string | null;
+          editorial_order?: number | null;
+          family_id?: string | null;
+          family_position?: number | null;
+          height_cm?: number | null;
+          hidden_note?: string | null;
+          id?: string;
+          images?: string[];
+          images_archive?: Json;
+          images_meta?: Json;
+          live_subcategories?: string[] | null;
+          manual_injection?: boolean;
+          manual_order?: number | null;
+          materials?: string[] | null;
+          meta_description?: string | null;
+          meta_title?: string | null;
+          og_image?: string | null;
+          origin?: string | null;
+          owner_site_rank?: number | null;
+          price?: number | null;
+          public_ready?: boolean;
+          quantity?: number | null;
+          quantity_label?: string | null;
+          rms_id?: string | null;
+          slug?: string;
+          status?: Database["public"]["Enums"]["item_status"];
+          subcategory_slug?: string | null;
+          taxonomy_review?: Json | null;
+          title?: string;
+          updated_at?: string;
+          upscaled_cover_url?: string | null;
+          variant_cover_url?: string | null;
+          variant_label?: string | null;
+          weight_kg?: number | null;
+          width_cm?: number | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "inventory_items_family_id_fkey"
-            columns: ["family_id"]
-            isOneToOne: false
-            referencedRelation: "product_families"
-            referencedColumns: ["id"]
+            foreignKeyName: "inventory_items_family_id_fkey";
+            columns: ["family_id"];
+            isOneToOne: false;
+            referencedRelation: "product_families";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "inventory_items_taxonomy_pair_fkey"
-            columns: ["collection_slug", "category_slug"]
-            isOneToOne: false
-            referencedRelation: "taxonomy_categories"
-            referencedColumns: ["collection_slug", "slug"]
+            foreignKeyName: "inventory_items_taxonomy_pair_fkey";
+            columns: ["collection_slug", "category_slug"];
+            isOneToOne: false;
+            referencedRelation: "taxonomy_categories";
+            referencedColumns: ["collection_slug", "slug"];
           },
-        ]
-      }
+        ];
+      };
       llm_reextract_candidates: {
         Row: {
-          ambiguity_flags: string[] | null
-          category_slug: string | null
-          created_at: string
-          decided_at: string | null
-          decided_by: string | null
-          id: string
-          missing_fields: string[] | null
-          parse_confidence: number | null
-          product_slug: string | null
-          reason: string
-          run_id: string | null
-          status: string
-          url: string
-        }
+          ambiguity_flags: string[] | null;
+          category_slug: string | null;
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string;
+          missing_fields: string[] | null;
+          parse_confidence: number | null;
+          product_slug: string | null;
+          reason: string;
+          run_id: string | null;
+          status: string;
+          url: string;
+        };
         Insert: {
-          ambiguity_flags?: string[] | null
-          category_slug?: string | null
-          created_at?: string
-          decided_at?: string | null
-          decided_by?: string | null
-          id?: string
-          missing_fields?: string[] | null
-          parse_confidence?: number | null
-          product_slug?: string | null
-          reason: string
-          run_id?: string | null
-          status?: string
-          url: string
-        }
+          ambiguity_flags?: string[] | null;
+          category_slug?: string | null;
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          missing_fields?: string[] | null;
+          parse_confidence?: number | null;
+          product_slug?: string | null;
+          reason: string;
+          run_id?: string | null;
+          status?: string;
+          url: string;
+        };
         Update: {
-          ambiguity_flags?: string[] | null
-          category_slug?: string | null
-          created_at?: string
-          decided_at?: string | null
-          decided_by?: string | null
-          id?: string
-          missing_fields?: string[] | null
-          parse_confidence?: number | null
-          product_slug?: string | null
-          reason?: string
-          run_id?: string | null
-          status?: string
-          url?: string
-        }
+          ambiguity_flags?: string[] | null;
+          category_slug?: string | null;
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          id?: string;
+          missing_fields?: string[] | null;
+          parse_confidence?: number | null;
+          product_slug?: string | null;
+          reason?: string;
+          run_id?: string | null;
+          status?: string;
+          url?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "llm_reextract_candidates_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "llm_reextract_candidates_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       phase3_category_summary: {
         Row: {
-          category_slug: string
-          classification: Database["public"]["Enums"]["phase3_classification"]
-          created_at: string
-          human_review_required: boolean
-          id: string
-          include_in_phase3a: boolean
-          notes: string | null
-          product_count: number
-          reason: string
-        }
+          category_slug: string;
+          classification: Database["public"]["Enums"]["phase3_classification"];
+          created_at: string;
+          human_review_required: boolean;
+          id: string;
+          include_in_phase3a: boolean;
+          notes: string | null;
+          product_count: number;
+          reason: string;
+        };
         Insert: {
-          category_slug: string
-          classification: Database["public"]["Enums"]["phase3_classification"]
-          created_at?: string
-          human_review_required: boolean
-          id?: string
-          include_in_phase3a: boolean
-          notes?: string | null
-          product_count: number
-          reason: string
-        }
+          category_slug: string;
+          classification: Database["public"]["Enums"]["phase3_classification"];
+          created_at?: string;
+          human_review_required: boolean;
+          id?: string;
+          include_in_phase3a: boolean;
+          notes?: string | null;
+          product_count: number;
+          reason: string;
+        };
         Update: {
-          category_slug?: string
-          classification?: Database["public"]["Enums"]["phase3_classification"]
-          created_at?: string
-          human_review_required?: boolean
-          id?: string
-          include_in_phase3a?: boolean
-          notes?: string | null
-          product_count?: number
-          reason?: string
-        }
-        Relationships: []
-      }
+          category_slug?: string;
+          classification?: Database["public"]["Enums"]["phase3_classification"];
+          created_at?: string;
+          human_review_required?: boolean;
+          id?: string;
+          include_in_phase3a?: boolean;
+          notes?: string | null;
+          product_count?: number;
+          reason?: string;
+        };
+        Relationships: [];
+      };
       phase3_scrape_manifest: {
         Row: {
-          category_slug: string | null
-          classification: Database["public"]["Enums"]["phase3_classification"]
-          classification_reason: string
-          created_at: string
-          has_base_category_pair: boolean
-          id: string
-          is_1_suffixed_category: boolean
-          is_custom_order_co: boolean
-          is_ut_prefixed: boolean
-          overlaps_with_base_category: boolean
-          product_count_group: number | null
-          product_slug: string | null
-          recommended_phase: string
-          scrape_priority: number
-          url: string
-        }
+          category_slug: string | null;
+          classification: Database["public"]["Enums"]["phase3_classification"];
+          classification_reason: string;
+          created_at: string;
+          has_base_category_pair: boolean;
+          id: string;
+          is_1_suffixed_category: boolean;
+          is_custom_order_co: boolean;
+          is_ut_prefixed: boolean;
+          overlaps_with_base_category: boolean;
+          product_count_group: number | null;
+          product_slug: string | null;
+          recommended_phase: string;
+          scrape_priority: number;
+          url: string;
+        };
         Insert: {
-          category_slug?: string | null
-          classification: Database["public"]["Enums"]["phase3_classification"]
-          classification_reason: string
-          created_at?: string
-          has_base_category_pair?: boolean
-          id?: string
-          is_1_suffixed_category?: boolean
-          is_custom_order_co?: boolean
-          is_ut_prefixed?: boolean
-          overlaps_with_base_category?: boolean
-          product_count_group?: number | null
-          product_slug?: string | null
-          recommended_phase: string
-          scrape_priority?: number
-          url: string
-        }
+          category_slug?: string | null;
+          classification: Database["public"]["Enums"]["phase3_classification"];
+          classification_reason: string;
+          created_at?: string;
+          has_base_category_pair?: boolean;
+          id?: string;
+          is_1_suffixed_category?: boolean;
+          is_custom_order_co?: boolean;
+          is_ut_prefixed?: boolean;
+          overlaps_with_base_category?: boolean;
+          product_count_group?: number | null;
+          product_slug?: string | null;
+          recommended_phase: string;
+          scrape_priority?: number;
+          url: string;
+        };
         Update: {
-          category_slug?: string | null
-          classification?: Database["public"]["Enums"]["phase3_classification"]
-          classification_reason?: string
-          created_at?: string
-          has_base_category_pair?: boolean
-          id?: string
-          is_1_suffixed_category?: boolean
-          is_custom_order_co?: boolean
-          is_ut_prefixed?: boolean
-          overlaps_with_base_category?: boolean
-          product_count_group?: number | null
-          product_slug?: string | null
-          recommended_phase?: string
-          scrape_priority?: number
-          url?: string
-        }
-        Relationships: []
-      }
+          category_slug?: string | null;
+          classification?: Database["public"]["Enums"]["phase3_classification"];
+          classification_reason?: string;
+          created_at?: string;
+          has_base_category_pair?: boolean;
+          id?: string;
+          is_1_suffixed_category?: boolean;
+          is_custom_order_co?: boolean;
+          is_ut_prefixed?: boolean;
+          overlaps_with_base_category?: boolean;
+          product_count_group?: number | null;
+          product_slug?: string | null;
+          recommended_phase?: string;
+          scrape_priority?: number;
+          url?: string;
+        };
+        Relationships: [];
+      };
       product_families: {
         Row: {
-          created_at: string
-          id: string
-          lead_rms_id: string | null
-          option_name: string | null
-          slug: string
-          title: string
-          updated_at: string
-        }
+          created_at: string;
+          id: string;
+          lead_rms_id: string | null;
+          option_name: string | null;
+          slug: string;
+          title: string;
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          lead_rms_id?: string | null
-          option_name?: string | null
-          slug: string
-          title: string
-          updated_at?: string
-        }
+          created_at?: string;
+          id?: string;
+          lead_rms_id?: string | null;
+          option_name?: string | null;
+          slug: string;
+          title: string;
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          lead_rms_id?: string | null
-          option_name?: string | null
-          slug?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          id?: string;
+          lead_rms_id?: string | null;
+          option_name?: string | null;
+          slug?: string;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       reconciliation_matches: {
         Row: {
-          applied_at: string | null
-          applied_inventory_item_id: string | null
-          confidence: number | null
-          conflicts: Json
-          created_at: string
-          decided_at: string | null
-          decided_by: string | null
-          decision: Database["public"]["Enums"]["match_decision"]
-          id: string
-          local_image_path: string | null
-          match_reasons: Json
-          scraped_product_id: string | null
-          updated_at: string
-          xlsx_current_rms_id: string | null
-          xlsx_name: string | null
-          xlsx_product_group: string | null
-        }
+          applied_at: string | null;
+          applied_inventory_item_id: string | null;
+          confidence: number | null;
+          conflicts: Json;
+          created_at: string;
+          decided_at: string | null;
+          decided_by: string | null;
+          decision: Database["public"]["Enums"]["match_decision"];
+          id: string;
+          local_image_path: string | null;
+          match_reasons: Json;
+          scraped_product_id: string | null;
+          updated_at: string;
+          xlsx_current_rms_id: string | null;
+          xlsx_name: string | null;
+          xlsx_product_group: string | null;
+        };
         Insert: {
-          applied_at?: string | null
-          applied_inventory_item_id?: string | null
-          confidence?: number | null
-          conflicts?: Json
-          created_at?: string
-          decided_at?: string | null
-          decided_by?: string | null
-          decision?: Database["public"]["Enums"]["match_decision"]
-          id?: string
-          local_image_path?: string | null
-          match_reasons?: Json
-          scraped_product_id?: string | null
-          updated_at?: string
-          xlsx_current_rms_id?: string | null
-          xlsx_name?: string | null
-          xlsx_product_group?: string | null
-        }
+          applied_at?: string | null;
+          applied_inventory_item_id?: string | null;
+          confidence?: number | null;
+          conflicts?: Json;
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          decision?: Database["public"]["Enums"]["match_decision"];
+          id?: string;
+          local_image_path?: string | null;
+          match_reasons?: Json;
+          scraped_product_id?: string | null;
+          updated_at?: string;
+          xlsx_current_rms_id?: string | null;
+          xlsx_name?: string | null;
+          xlsx_product_group?: string | null;
+        };
         Update: {
-          applied_at?: string | null
-          applied_inventory_item_id?: string | null
-          confidence?: number | null
-          conflicts?: Json
-          created_at?: string
-          decided_at?: string | null
-          decided_by?: string | null
-          decision?: Database["public"]["Enums"]["match_decision"]
-          id?: string
-          local_image_path?: string | null
-          match_reasons?: Json
-          scraped_product_id?: string | null
-          updated_at?: string
-          xlsx_current_rms_id?: string | null
-          xlsx_name?: string | null
-          xlsx_product_group?: string | null
-        }
+          applied_at?: string | null;
+          applied_inventory_item_id?: string | null;
+          confidence?: number | null;
+          conflicts?: Json;
+          created_at?: string;
+          decided_at?: string | null;
+          decided_by?: string | null;
+          decision?: Database["public"]["Enums"]["match_decision"];
+          id?: string;
+          local_image_path?: string | null;
+          match_reasons?: Json;
+          scraped_product_id?: string | null;
+          updated_at?: string;
+          xlsx_current_rms_id?: string | null;
+          xlsx_name?: string | null;
+          xlsx_product_group?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products"
-            referencedColumns: ["id"]
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_canonical";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_final_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "reconciliation_matches_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_final_canonical";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scrape_errors: {
         Row: {
-          attempt: number
-          created_at: string
-          error_message: string | null
-          error_type: string
-          http_status: number | null
-          id: string
-          phase: string
-          raw: Json | null
-          run_id: string | null
-          url: string
-        }
+          attempt: number;
+          created_at: string;
+          error_message: string | null;
+          error_type: string;
+          http_status: number | null;
+          id: string;
+          phase: string;
+          raw: Json | null;
+          run_id: string | null;
+          url: string;
+        };
         Insert: {
-          attempt?: number
-          created_at?: string
-          error_message?: string | null
-          error_type: string
-          http_status?: number | null
-          id?: string
-          phase: string
-          raw?: Json | null
-          run_id?: string | null
-          url: string
-        }
+          attempt?: number;
+          created_at?: string;
+          error_message?: string | null;
+          error_type: string;
+          http_status?: number | null;
+          id?: string;
+          phase: string;
+          raw?: Json | null;
+          run_id?: string | null;
+          url: string;
+        };
         Update: {
-          attempt?: number
-          created_at?: string
-          error_message?: string | null
-          error_type?: string
-          http_status?: number | null
-          id?: string
-          phase?: string
-          raw?: Json | null
-          run_id?: string | null
-          url?: string
-        }
+          attempt?: number;
+          created_at?: string;
+          error_message?: string | null;
+          error_type?: string;
+          http_status?: number | null;
+          id?: string;
+          phase?: string;
+          raw?: Json | null;
+          run_id?: string | null;
+          url?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "scrape_errors_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scrape_errors_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scrape_runs: {
         Row: {
-          created_at: string
-          credits_estimated: number | null
-          credits_used: number | null
-          error_message: string | null
-          finished_at: string | null
-          firecrawl_job_id: string | null
-          id: string
-          items_completed: number
-          items_total: number | null
-          notes: string | null
-          phase: Database["public"]["Enums"]["scrape_phase"]
-          source_url: string | null
-          started_at: string
-          status: Database["public"]["Enums"]["scrape_run_status"]
-          updated_at: string
-        }
+          created_at: string;
+          credits_estimated: number | null;
+          credits_used: number | null;
+          error_message: string | null;
+          finished_at: string | null;
+          firecrawl_job_id: string | null;
+          id: string;
+          items_completed: number;
+          items_total: number | null;
+          notes: string | null;
+          phase: Database["public"]["Enums"]["scrape_phase"];
+          source_url: string | null;
+          started_at: string;
+          status: Database["public"]["Enums"]["scrape_run_status"];
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          credits_estimated?: number | null
-          credits_used?: number | null
-          error_message?: string | null
-          finished_at?: string | null
-          firecrawl_job_id?: string | null
-          id?: string
-          items_completed?: number
-          items_total?: number | null
-          notes?: string | null
-          phase: Database["public"]["Enums"]["scrape_phase"]
-          source_url?: string | null
-          started_at?: string
-          status?: Database["public"]["Enums"]["scrape_run_status"]
-          updated_at?: string
-        }
+          created_at?: string;
+          credits_estimated?: number | null;
+          credits_used?: number | null;
+          error_message?: string | null;
+          finished_at?: string | null;
+          firecrawl_job_id?: string | null;
+          id?: string;
+          items_completed?: number;
+          items_total?: number | null;
+          notes?: string | null;
+          phase: Database["public"]["Enums"]["scrape_phase"];
+          source_url?: string | null;
+          started_at?: string;
+          status?: Database["public"]["Enums"]["scrape_run_status"];
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          credits_estimated?: number | null
-          credits_used?: number | null
-          error_message?: string | null
-          finished_at?: string | null
-          firecrawl_job_id?: string | null
-          id?: string
-          items_completed?: number
-          items_total?: number | null
-          notes?: string | null
-          phase?: Database["public"]["Enums"]["scrape_phase"]
-          source_url?: string | null
-          started_at?: string
-          status?: Database["public"]["Enums"]["scrape_run_status"]
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          credits_estimated?: number | null;
+          credits_used?: number | null;
+          error_message?: string | null;
+          finished_at?: string | null;
+          firecrawl_job_id?: string | null;
+          id?: string;
+          items_completed?: number;
+          items_total?: number | null;
+          notes?: string | null;
+          phase?: Database["public"]["Enums"]["scrape_phase"];
+          source_url?: string | null;
+          started_at?: string;
+          status?: Database["public"]["Enums"]["scrape_run_status"];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       scraped_categories: {
         Row: {
-          display_order: number | null
-          id: string
-          name: string
-          parent_slug: string | null
-          product_count: number | null
-          raw: Json | null
-          run_id: string
-          scraped_at: string
-          slug: string
-          url: string
-        }
+          display_order: number | null;
+          id: string;
+          name: string;
+          parent_slug: string | null;
+          product_count: number | null;
+          raw: Json | null;
+          run_id: string;
+          scraped_at: string;
+          slug: string;
+          url: string;
+        };
         Insert: {
-          display_order?: number | null
-          id?: string
-          name: string
-          parent_slug?: string | null
-          product_count?: number | null
-          raw?: Json | null
-          run_id: string
-          scraped_at?: string
-          slug: string
-          url: string
-        }
+          display_order?: number | null;
+          id?: string;
+          name: string;
+          parent_slug?: string | null;
+          product_count?: number | null;
+          raw?: Json | null;
+          run_id: string;
+          scraped_at?: string;
+          slug: string;
+          url: string;
+        };
         Update: {
-          display_order?: number | null
-          id?: string
-          name?: string
-          parent_slug?: string | null
-          product_count?: number | null
-          raw?: Json | null
-          run_id?: string
-          scraped_at?: string
-          slug?: string
-          url?: string
-        }
+          display_order?: number | null;
+          id?: string;
+          name?: string;
+          parent_slug?: string | null;
+          product_count?: number | null;
+          raw?: Json | null;
+          run_id?: string;
+          scraped_at?: string;
+          slug?: string;
+          url?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_categories_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_categories_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_product_images: {
         Row: {
-          alt_text: string | null
-          height: number | null
-          id: string
-          image_url: string
-          inferred_filename: string | null
-          is_hero: boolean
-          position: number
-          scraped_product_id: string
-          source_page_url: string | null
-          visible_filename: string | null
-          width: number | null
-        }
+          alt_text: string | null;
+          height: number | null;
+          id: string;
+          image_url: string;
+          inferred_filename: string | null;
+          is_hero: boolean;
+          position: number;
+          scraped_product_id: string;
+          source_page_url: string | null;
+          visible_filename: string | null;
+          width: number | null;
+        };
         Insert: {
-          alt_text?: string | null
-          height?: number | null
-          id?: string
-          image_url: string
-          inferred_filename?: string | null
-          is_hero?: boolean
-          position?: number
-          scraped_product_id: string
-          source_page_url?: string | null
-          visible_filename?: string | null
-          width?: number | null
-        }
+          alt_text?: string | null;
+          height?: number | null;
+          id?: string;
+          image_url: string;
+          inferred_filename?: string | null;
+          is_hero?: boolean;
+          position?: number;
+          scraped_product_id: string;
+          source_page_url?: string | null;
+          visible_filename?: string | null;
+          width?: number | null;
+        };
         Update: {
-          alt_text?: string | null
-          height?: number | null
-          id?: string
-          image_url?: string
-          inferred_filename?: string | null
-          is_hero?: boolean
-          position?: number
-          scraped_product_id?: string
-          source_page_url?: string | null
-          visible_filename?: string | null
-          width?: number | null
-        }
+          alt_text?: string | null;
+          height?: number | null;
+          id?: string;
+          image_url?: string;
+          inferred_filename?: string | null;
+          is_hero?: boolean;
+          position?: number;
+          scraped_product_id?: string;
+          source_page_url?: string | null;
+          visible_filename?: string | null;
+          width?: number | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_canonical";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_final_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_final_canonical";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_product_llm_repairs: {
         Row: {
-          alt_texts: string[] | null
-          category_slug: string | null
-          confidence: number | null
-          created_at: string
-          description: string | null
-          dimensions: string | null
-          error_message: string | null
-          id: string
-          image_urls: string[] | null
-          inferred_filenames: string[] | null
-          model: string | null
-          primary_image_url: string | null
-          product_slug: string | null
-          product_title_normalized: string | null
-          product_title_original: string | null
-          raw_response: Json | null
-          repair_notes: string | null
-          repaired_fields: string[] | null
-          run_id: string | null
-          source_url: string
-          status: string
-          still_missing_fields: string[] | null
-          stocked_quantity: string | null
-        }
+          alt_texts: string[] | null;
+          category_slug: string | null;
+          confidence: number | null;
+          created_at: string;
+          description: string | null;
+          dimensions: string | null;
+          error_message: string | null;
+          id: string;
+          image_urls: string[] | null;
+          inferred_filenames: string[] | null;
+          model: string | null;
+          primary_image_url: string | null;
+          product_slug: string | null;
+          product_title_normalized: string | null;
+          product_title_original: string | null;
+          raw_response: Json | null;
+          repair_notes: string | null;
+          repaired_fields: string[] | null;
+          run_id: string | null;
+          source_url: string;
+          status: string;
+          still_missing_fields: string[] | null;
+          stocked_quantity: string | null;
+        };
         Insert: {
-          alt_texts?: string[] | null
-          category_slug?: string | null
-          confidence?: number | null
-          created_at?: string
-          description?: string | null
-          dimensions?: string | null
-          error_message?: string | null
-          id?: string
-          image_urls?: string[] | null
-          inferred_filenames?: string[] | null
-          model?: string | null
-          primary_image_url?: string | null
-          product_slug?: string | null
-          product_title_normalized?: string | null
-          product_title_original?: string | null
-          raw_response?: Json | null
-          repair_notes?: string | null
-          repaired_fields?: string[] | null
-          run_id?: string | null
-          source_url: string
-          status?: string
-          still_missing_fields?: string[] | null
-          stocked_quantity?: string | null
-        }
+          alt_texts?: string[] | null;
+          category_slug?: string | null;
+          confidence?: number | null;
+          created_at?: string;
+          description?: string | null;
+          dimensions?: string | null;
+          error_message?: string | null;
+          id?: string;
+          image_urls?: string[] | null;
+          inferred_filenames?: string[] | null;
+          model?: string | null;
+          primary_image_url?: string | null;
+          product_slug?: string | null;
+          product_title_normalized?: string | null;
+          product_title_original?: string | null;
+          raw_response?: Json | null;
+          repair_notes?: string | null;
+          repaired_fields?: string[] | null;
+          run_id?: string | null;
+          source_url: string;
+          status?: string;
+          still_missing_fields?: string[] | null;
+          stocked_quantity?: string | null;
+        };
         Update: {
-          alt_texts?: string[] | null
-          category_slug?: string | null
-          confidence?: number | null
-          created_at?: string
-          description?: string | null
-          dimensions?: string | null
-          error_message?: string | null
-          id?: string
-          image_urls?: string[] | null
-          inferred_filenames?: string[] | null
-          model?: string | null
-          primary_image_url?: string | null
-          product_slug?: string | null
-          product_title_normalized?: string | null
-          product_title_original?: string | null
-          raw_response?: Json | null
-          repair_notes?: string | null
-          repaired_fields?: string[] | null
-          run_id?: string | null
-          source_url?: string
-          status?: string
-          still_missing_fields?: string[] | null
-          stocked_quantity?: string | null
-        }
-        Relationships: []
-      }
+          alt_texts?: string[] | null;
+          category_slug?: string | null;
+          confidence?: number | null;
+          created_at?: string;
+          description?: string | null;
+          dimensions?: string | null;
+          error_message?: string | null;
+          id?: string;
+          image_urls?: string[] | null;
+          inferred_filenames?: string[] | null;
+          model?: string | null;
+          primary_image_url?: string | null;
+          product_slug?: string | null;
+          product_title_normalized?: string | null;
+          product_title_original?: string | null;
+          raw_response?: Json | null;
+          repair_notes?: string | null;
+          repaired_fields?: string[] | null;
+          run_id?: string | null;
+          source_url?: string;
+          status?: string;
+          still_missing_fields?: string[] | null;
+          stocked_quantity?: string | null;
+        };
+        Relationships: [];
+      };
       scraped_product_pages_markdown: {
         Row: {
-          category_slug: string | null
-          credits_used: number | null
-          http_status: number | null
-          id: string
-          links: string[] | null
-          markdown: string | null
-          metadata: Json | null
-          product_slug: string | null
-          run_id: string
-          scraped_at: string
-          url: string
-        }
+          category_slug: string | null;
+          credits_used: number | null;
+          http_status: number | null;
+          id: string;
+          links: string[] | null;
+          markdown: string | null;
+          metadata: Json | null;
+          product_slug: string | null;
+          run_id: string;
+          scraped_at: string;
+          url: string;
+        };
         Insert: {
-          category_slug?: string | null
-          credits_used?: number | null
-          http_status?: number | null
-          id?: string
-          links?: string[] | null
-          markdown?: string | null
-          metadata?: Json | null
-          product_slug?: string | null
-          run_id: string
-          scraped_at?: string
-          url: string
-        }
+          category_slug?: string | null;
+          credits_used?: number | null;
+          http_status?: number | null;
+          id?: string;
+          links?: string[] | null;
+          markdown?: string | null;
+          metadata?: Json | null;
+          product_slug?: string | null;
+          run_id: string;
+          scraped_at?: string;
+          url: string;
+        };
         Update: {
-          category_slug?: string | null
-          credits_used?: number | null
-          http_status?: number | null
-          id?: string
-          links?: string[] | null
-          markdown?: string | null
-          metadata?: Json | null
-          product_slug?: string | null
-          run_id?: string
-          scraped_at?: string
-          url?: string
-        }
+          category_slug?: string | null;
+          credits_used?: number | null;
+          http_status?: number | null;
+          id?: string;
+          links?: string[] | null;
+          markdown?: string | null;
+          metadata?: Json | null;
+          product_slug?: string | null;
+          run_id?: string;
+          scraped_at?: string;
+          url?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_product_pages_markdown_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_pages_markdown_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_product_variants: {
         Row: {
-          created_at: string
-          id: string
-          kind: string
-          label: string | null
-          position: number
-          raw: Json | null
-          scraped_product_id: string
-          value: string | null
-        }
+          created_at: string;
+          id: string;
+          kind: string;
+          label: string | null;
+          position: number;
+          raw: Json | null;
+          scraped_product_id: string;
+          value: string | null;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          kind: string
-          label?: string | null
-          position?: number
-          raw?: Json | null
-          scraped_product_id: string
-          value?: string | null
-        }
+          created_at?: string;
+          id?: string;
+          kind: string;
+          label?: string | null;
+          position?: number;
+          raw?: Json | null;
+          scraped_product_id: string;
+          value?: string | null;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          kind?: string
-          label?: string | null
-          position?: number
-          raw?: Json | null
-          scraped_product_id?: string
-          value?: string | null
-        }
+          created_at?: string;
+          id?: string;
+          kind?: string;
+          label?: string | null;
+          position?: number;
+          raw?: Json | null;
+          scraped_product_id?: string;
+          value?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_canonical";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_final_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_variants_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_final_canonical";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_products: {
         Row: {
-          add_to_cart_present: boolean | null
-          ambiguity_flags: string[] | null
-          breadcrumb: string[] | null
-          category_slug: string | null
-          color_notes: string | null
-          description: string | null
-          dimensions: string | null
-          extraction_confidence: number | null
-          generic_notes: string | null
-          hero_image_url: string | null
-          id: string
-          inferred_category_label: string | null
-          is_custom_order_co: boolean | null
-          material_notes: string | null
-          missing_fields: string[] | null
-          needs_llm_reextract: boolean | null
-          next_product_url: string | null
-          parse_confidence: number | null
-          parse_errors: string[] | null
-          phase: string | null
-          previous_product_url: string | null
-          product_title_normalized: string | null
-          product_title_original: string | null
-          quantity_selector_present: boolean | null
-          raw: Json | null
-          reextract_reason: string | null
-          related_product_urls: string[] | null
-          run_id: string
-          scraped_at: string
-          size_notes: string | null
-          slug: string
-          stocked_quantity: string | null
-          subcategory_slug: string | null
-          title: string
-          url: string
-          variant_selector_present: boolean | null
-          warnings: string[] | null
-        }
+          add_to_cart_present: boolean | null;
+          ambiguity_flags: string[] | null;
+          breadcrumb: string[] | null;
+          category_slug: string | null;
+          color_notes: string | null;
+          description: string | null;
+          dimensions: string | null;
+          extraction_confidence: number | null;
+          generic_notes: string | null;
+          hero_image_url: string | null;
+          id: string;
+          inferred_category_label: string | null;
+          is_custom_order_co: boolean | null;
+          material_notes: string | null;
+          missing_fields: string[] | null;
+          needs_llm_reextract: boolean | null;
+          next_product_url: string | null;
+          parse_confidence: number | null;
+          parse_errors: string[] | null;
+          phase: string | null;
+          previous_product_url: string | null;
+          product_title_normalized: string | null;
+          product_title_original: string | null;
+          quantity_selector_present: boolean | null;
+          raw: Json | null;
+          reextract_reason: string | null;
+          related_product_urls: string[] | null;
+          run_id: string;
+          scraped_at: string;
+          size_notes: string | null;
+          slug: string;
+          stocked_quantity: string | null;
+          subcategory_slug: string | null;
+          title: string;
+          url: string;
+          variant_selector_present: boolean | null;
+          warnings: string[] | null;
+        };
         Insert: {
-          add_to_cart_present?: boolean | null
-          ambiguity_flags?: string[] | null
-          breadcrumb?: string[] | null
-          category_slug?: string | null
-          color_notes?: string | null
-          description?: string | null
-          dimensions?: string | null
-          extraction_confidence?: number | null
-          generic_notes?: string | null
-          hero_image_url?: string | null
-          id?: string
-          inferred_category_label?: string | null
-          is_custom_order_co?: boolean | null
-          material_notes?: string | null
-          missing_fields?: string[] | null
-          needs_llm_reextract?: boolean | null
-          next_product_url?: string | null
-          parse_confidence?: number | null
-          parse_errors?: string[] | null
-          phase?: string | null
-          previous_product_url?: string | null
-          product_title_normalized?: string | null
-          product_title_original?: string | null
-          quantity_selector_present?: boolean | null
-          raw?: Json | null
-          reextract_reason?: string | null
-          related_product_urls?: string[] | null
-          run_id: string
-          scraped_at?: string
-          size_notes?: string | null
-          slug: string
-          stocked_quantity?: string | null
-          subcategory_slug?: string | null
-          title: string
-          url: string
-          variant_selector_present?: boolean | null
-          warnings?: string[] | null
-        }
+          add_to_cart_present?: boolean | null;
+          ambiguity_flags?: string[] | null;
+          breadcrumb?: string[] | null;
+          category_slug?: string | null;
+          color_notes?: string | null;
+          description?: string | null;
+          dimensions?: string | null;
+          extraction_confidence?: number | null;
+          generic_notes?: string | null;
+          hero_image_url?: string | null;
+          id?: string;
+          inferred_category_label?: string | null;
+          is_custom_order_co?: boolean | null;
+          material_notes?: string | null;
+          missing_fields?: string[] | null;
+          needs_llm_reextract?: boolean | null;
+          next_product_url?: string | null;
+          parse_confidence?: number | null;
+          parse_errors?: string[] | null;
+          phase?: string | null;
+          previous_product_url?: string | null;
+          product_title_normalized?: string | null;
+          product_title_original?: string | null;
+          quantity_selector_present?: boolean | null;
+          raw?: Json | null;
+          reextract_reason?: string | null;
+          related_product_urls?: string[] | null;
+          run_id: string;
+          scraped_at?: string;
+          size_notes?: string | null;
+          slug: string;
+          stocked_quantity?: string | null;
+          subcategory_slug?: string | null;
+          title: string;
+          url: string;
+          variant_selector_present?: boolean | null;
+          warnings?: string[] | null;
+        };
         Update: {
-          add_to_cart_present?: boolean | null
-          ambiguity_flags?: string[] | null
-          breadcrumb?: string[] | null
-          category_slug?: string | null
-          color_notes?: string | null
-          description?: string | null
-          dimensions?: string | null
-          extraction_confidence?: number | null
-          generic_notes?: string | null
-          hero_image_url?: string | null
-          id?: string
-          inferred_category_label?: string | null
-          is_custom_order_co?: boolean | null
-          material_notes?: string | null
-          missing_fields?: string[] | null
-          needs_llm_reextract?: boolean | null
-          next_product_url?: string | null
-          parse_confidence?: number | null
-          parse_errors?: string[] | null
-          phase?: string | null
-          previous_product_url?: string | null
-          product_title_normalized?: string | null
-          product_title_original?: string | null
-          quantity_selector_present?: boolean | null
-          raw?: Json | null
-          reextract_reason?: string | null
-          related_product_urls?: string[] | null
-          run_id?: string
-          scraped_at?: string
-          size_notes?: string | null
-          slug?: string
-          stocked_quantity?: string | null
-          subcategory_slug?: string | null
-          title?: string
-          url?: string
-          variant_selector_present?: boolean | null
-          warnings?: string[] | null
-        }
+          add_to_cart_present?: boolean | null;
+          ambiguity_flags?: string[] | null;
+          breadcrumb?: string[] | null;
+          category_slug?: string | null;
+          color_notes?: string | null;
+          description?: string | null;
+          dimensions?: string | null;
+          extraction_confidence?: number | null;
+          generic_notes?: string | null;
+          hero_image_url?: string | null;
+          id?: string;
+          inferred_category_label?: string | null;
+          is_custom_order_co?: boolean | null;
+          material_notes?: string | null;
+          missing_fields?: string[] | null;
+          needs_llm_reextract?: boolean | null;
+          next_product_url?: string | null;
+          parse_confidence?: number | null;
+          parse_errors?: string[] | null;
+          phase?: string | null;
+          previous_product_url?: string | null;
+          product_title_normalized?: string | null;
+          product_title_original?: string | null;
+          quantity_selector_present?: boolean | null;
+          raw?: Json | null;
+          reextract_reason?: string | null;
+          related_product_urls?: string[] | null;
+          run_id?: string;
+          scraped_at?: string;
+          size_notes?: string | null;
+          slug?: string;
+          stocked_quantity?: string | null;
+          subcategory_slug?: string | null;
+          title?: string;
+          url?: string;
+          variant_selector_present?: boolean | null;
+          warnings?: string[] | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_products_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_products_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_urls: {
         Row: {
-          canonical_category_candidate: string | null
-          category_slug_candidate: string | null
-          classification_confidence: number | null
-          classification_reason: string | null
-          co_flag: boolean | null
-          depth: number | null
-          discovered_at: string
-          first_segment: string | null
-          id: string
-          is_category_index: boolean | null
-          is_likely_legacy: boolean | null
-          is_product_detail_candidate: boolean | null
-          is_subbrand: boolean | null
-          kind: Database["public"]["Enums"]["scraped_url_kind"]
-          page_type: string | null
-          path: string
-          path_depth: number | null
-          product_slug_candidate: string | null
-          run_id: string
-          second_segment: string | null
-          url: string
-        }
+          canonical_category_candidate: string | null;
+          category_slug_candidate: string | null;
+          classification_confidence: number | null;
+          classification_reason: string | null;
+          co_flag: boolean | null;
+          depth: number | null;
+          discovered_at: string;
+          first_segment: string | null;
+          id: string;
+          is_category_index: boolean | null;
+          is_likely_legacy: boolean | null;
+          is_product_detail_candidate: boolean | null;
+          is_subbrand: boolean | null;
+          kind: Database["public"]["Enums"]["scraped_url_kind"];
+          page_type: string | null;
+          path: string;
+          path_depth: number | null;
+          product_slug_candidate: string | null;
+          run_id: string;
+          second_segment: string | null;
+          url: string;
+        };
         Insert: {
-          canonical_category_candidate?: string | null
-          category_slug_candidate?: string | null
-          classification_confidence?: number | null
-          classification_reason?: string | null
-          co_flag?: boolean | null
-          depth?: number | null
-          discovered_at?: string
-          first_segment?: string | null
-          id?: string
-          is_category_index?: boolean | null
-          is_likely_legacy?: boolean | null
-          is_product_detail_candidate?: boolean | null
-          is_subbrand?: boolean | null
-          kind?: Database["public"]["Enums"]["scraped_url_kind"]
-          page_type?: string | null
-          path: string
-          path_depth?: number | null
-          product_slug_candidate?: string | null
-          run_id: string
-          second_segment?: string | null
-          url: string
-        }
+          canonical_category_candidate?: string | null;
+          category_slug_candidate?: string | null;
+          classification_confidence?: number | null;
+          classification_reason?: string | null;
+          co_flag?: boolean | null;
+          depth?: number | null;
+          discovered_at?: string;
+          first_segment?: string | null;
+          id?: string;
+          is_category_index?: boolean | null;
+          is_likely_legacy?: boolean | null;
+          is_product_detail_candidate?: boolean | null;
+          is_subbrand?: boolean | null;
+          kind?: Database["public"]["Enums"]["scraped_url_kind"];
+          page_type?: string | null;
+          path: string;
+          path_depth?: number | null;
+          product_slug_candidate?: string | null;
+          run_id: string;
+          second_segment?: string | null;
+          url: string;
+        };
         Update: {
-          canonical_category_candidate?: string | null
-          category_slug_candidate?: string | null
-          classification_confidence?: number | null
-          classification_reason?: string | null
-          co_flag?: boolean | null
-          depth?: number | null
-          discovered_at?: string
-          first_segment?: string | null
-          id?: string
-          is_category_index?: boolean | null
-          is_likely_legacy?: boolean | null
-          is_product_detail_candidate?: boolean | null
-          is_subbrand?: boolean | null
-          kind?: Database["public"]["Enums"]["scraped_url_kind"]
-          page_type?: string | null
-          path?: string
-          path_depth?: number | null
-          product_slug_candidate?: string | null
-          run_id?: string
-          second_segment?: string | null
-          url?: string
-        }
+          canonical_category_candidate?: string | null;
+          category_slug_candidate?: string | null;
+          classification_confidence?: number | null;
+          classification_reason?: string | null;
+          co_flag?: boolean | null;
+          depth?: number | null;
+          discovered_at?: string;
+          first_segment?: string | null;
+          id?: string;
+          is_category_index?: boolean | null;
+          is_likely_legacy?: boolean | null;
+          is_product_detail_candidate?: boolean | null;
+          is_subbrand?: boolean | null;
+          kind?: Database["public"]["Enums"]["scraped_url_kind"];
+          page_type?: string | null;
+          path?: string;
+          path_depth?: number | null;
+          product_slug_candidate?: string | null;
+          run_id?: string;
+          second_segment?: string | null;
+          url?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_urls_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_urls_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       studio_renders: {
         Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          model: string
-          preset: string
-          product_title: string | null
-          prompt: string
-          rms_id: string | null
-          status: string
-          storage_path: string
-        }
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          model: string;
+          preset: string;
+          product_title: string | null;
+          prompt: string;
+          rms_id: string | null;
+          status: string;
+          storage_path: string;
+        };
         Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          model: string
-          preset: string
-          product_title?: string | null
-          prompt: string
-          rms_id?: string | null
-          status?: string
-          storage_path: string
-        }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          model: string;
+          preset: string;
+          product_title?: string | null;
+          prompt: string;
+          rms_id?: string | null;
+          status?: string;
+          storage_path: string;
+        };
         Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          model?: string
-          preset?: string
-          product_title?: string | null
-          prompt?: string
-          rms_id?: string | null
-          status?: string
-          storage_path?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          model?: string;
+          preset?: string;
+          product_title?: string | null;
+          prompt?: string;
+          rms_id?: string | null;
+          status?: string;
+          storage_path?: string;
+        };
+        Relationships: [];
+      };
       style_boards: {
         Row: {
-          client_view_count: number
-          cover_pinned_rms_id: string | null
-          created_at: string
-          created_by: string | null
-          curator_notes: string | null
-          id: string
-          inquiry_id: string
-          insights: Json
-          inspo_images: Json
-          last_viewed_at: string | null
-          palette: Json
-          pin_notes: Json
-          pinned_rms_ids: string[]
-          prepared_by_name: string | null
-          prepared_by_user_id: string | null
-          production_notes: Json
-          project_title: string | null
-          section_word: string | null
-          sent_at: string | null
-          share_token_expires_at: string | null
-          share_token_hash: string | null
-          share_token_revoked_at: string | null
-          status: string
-          tones: Json
-          updated_at: string
-        }
+          client_view_count: number;
+          cover_pinned_rms_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          curator_notes: string | null;
+          id: string;
+          inquiry_id: string;
+          insights: Json;
+          inspo_images: Json;
+          last_viewed_at: string | null;
+          palette: Json;
+          pin_notes: Json;
+          pinned_rms_ids: string[];
+          prepared_by_name: string | null;
+          prepared_by_user_id: string | null;
+          production_notes: Json;
+          project_title: string | null;
+          section_word: string | null;
+          sent_at: string | null;
+          share_token_expires_at: string | null;
+          share_token_hash: string | null;
+          share_token_revoked_at: string | null;
+          status: string;
+          tones: Json;
+          updated_at: string;
+        };
         Insert: {
-          client_view_count?: number
-          cover_pinned_rms_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          curator_notes?: string | null
-          id?: string
-          inquiry_id: string
-          insights?: Json
-          inspo_images?: Json
-          last_viewed_at?: string | null
-          palette?: Json
-          pin_notes?: Json
-          pinned_rms_ids?: string[]
-          prepared_by_name?: string | null
-          prepared_by_user_id?: string | null
-          production_notes?: Json
-          project_title?: string | null
-          section_word?: string | null
-          sent_at?: string | null
-          share_token_expires_at?: string | null
-          share_token_hash?: string | null
-          share_token_revoked_at?: string | null
-          status?: string
-          tones?: Json
-          updated_at?: string
-        }
+          client_view_count?: number;
+          cover_pinned_rms_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          curator_notes?: string | null;
+          id?: string;
+          inquiry_id: string;
+          insights?: Json;
+          inspo_images?: Json;
+          last_viewed_at?: string | null;
+          palette?: Json;
+          pin_notes?: Json;
+          pinned_rms_ids?: string[];
+          prepared_by_name?: string | null;
+          prepared_by_user_id?: string | null;
+          production_notes?: Json;
+          project_title?: string | null;
+          section_word?: string | null;
+          sent_at?: string | null;
+          share_token_expires_at?: string | null;
+          share_token_hash?: string | null;
+          share_token_revoked_at?: string | null;
+          status?: string;
+          tones?: Json;
+          updated_at?: string;
+        };
         Update: {
-          client_view_count?: number
-          cover_pinned_rms_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          curator_notes?: string | null
-          id?: string
-          inquiry_id?: string
-          insights?: Json
-          inspo_images?: Json
-          last_viewed_at?: string | null
-          palette?: Json
-          pin_notes?: Json
-          pinned_rms_ids?: string[]
-          prepared_by_name?: string | null
-          prepared_by_user_id?: string | null
-          production_notes?: Json
-          project_title?: string | null
-          section_word?: string | null
-          sent_at?: string | null
-          share_token_expires_at?: string | null
-          share_token_hash?: string | null
-          share_token_revoked_at?: string | null
-          status?: string
-          tones?: Json
-          updated_at?: string
-        }
+          client_view_count?: number;
+          cover_pinned_rms_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          curator_notes?: string | null;
+          id?: string;
+          inquiry_id?: string;
+          insights?: Json;
+          inspo_images?: Json;
+          last_viewed_at?: string | null;
+          palette?: Json;
+          pin_notes?: Json;
+          pinned_rms_ids?: string[];
+          prepared_by_name?: string | null;
+          prepared_by_user_id?: string | null;
+          production_notes?: Json;
+          project_title?: string | null;
+          section_word?: string | null;
+          sent_at?: string | null;
+          share_token_expires_at?: string | null;
+          share_token_hash?: string | null;
+          share_token_revoked_at?: string | null;
+          status?: string;
+          tones?: Json;
+          updated_at?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "style_boards_inquiry_id_fkey"
-            columns: ["inquiry_id"]
-            isOneToOne: false
-            referencedRelation: "inquiries"
-            referencedColumns: ["id"]
+            foreignKeyName: "style_boards_inquiry_id_fkey";
+            columns: ["inquiry_id"];
+            isOneToOne: false;
+            referencedRelation: "inquiries";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       suppressed_emails: {
         Row: {
-          created_at: string
-          email: string
-          id: string
-          metadata: Json | null
-          reason: string
-        }
+          created_at: string;
+          email: string;
+          id: string;
+          metadata: Json | null;
+          reason: string;
+        };
         Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          metadata?: Json | null
-          reason: string
-        }
+          created_at?: string;
+          email: string;
+          id?: string;
+          metadata?: Json | null;
+          reason: string;
+        };
         Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          metadata?: Json | null
-          reason?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          email?: string;
+          id?: string;
+          metadata?: Json | null;
+          reason?: string;
+        };
+        Relationships: [];
+      };
       taxonomy_categories: {
         Row: {
-          collection_slug: string
-          created_at: string
-          label: string
-          slug: string
-          sort_order: number
-          updated_at: string
-        }
+          collection_slug: string;
+          created_at: string;
+          label: string;
+          slug: string;
+          sort_order: number;
+          updated_at: string;
+        };
         Insert: {
-          collection_slug: string
-          created_at?: string
-          label: string
-          slug: string
-          sort_order?: number
-          updated_at?: string
-        }
+          collection_slug: string;
+          created_at?: string;
+          label: string;
+          slug: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
         Update: {
-          collection_slug?: string
-          created_at?: string
-          label?: string
-          slug?: string
-          sort_order?: number
-          updated_at?: string
-        }
+          collection_slug?: string;
+          created_at?: string;
+          label?: string;
+          slug?: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
         Relationships: [
           {
-            foreignKeyName: "taxonomy_categories_collection_slug_fkey"
-            columns: ["collection_slug"]
-            isOneToOne: false
-            referencedRelation: "taxonomy_collections"
-            referencedColumns: ["slug"]
+            foreignKeyName: "taxonomy_categories_collection_slug_fkey";
+            columns: ["collection_slug"];
+            isOneToOne: false;
+            referencedRelation: "taxonomy_collections";
+            referencedColumns: ["slug"];
           },
-        ]
-      }
+        ];
+      };
       taxonomy_collections: {
         Row: {
-          created_at: string
-          label: string
-          slug: string
-          sort_order: number
-          updated_at: string
-        }
+          created_at: string;
+          label: string;
+          slug: string;
+          sort_order: number;
+          updated_at: string;
+        };
         Insert: {
-          created_at?: string
-          label: string
-          slug: string
-          sort_order?: number
-          updated_at?: string
-        }
+          created_at?: string;
+          label: string;
+          slug: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
         Update: {
-          created_at?: string
-          label?: string
-          slug?: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          label?: string;
+          slug?: string;
+          sort_order?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       user_roles: {
         Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
+          created_at: string;
+          id: string;
+          role: Database["public"]["Enums"]["app_role"];
+          user_id: string;
+        };
         Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
+          created_at?: string;
+          id?: string;
+          role: Database["public"]["Enums"]["app_role"];
+          user_id: string;
+        };
         Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+          created_at?: string;
+          id?: string;
+          role?: Database["public"]["Enums"]["app_role"];
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       variant_config_snapshots: {
         Row: {
-          action: string
-          batch_id: string
-          created_at: string
-          created_by: string | null
-          family_id: string
-          family_title: string
-          id: string
-          prev_members: Json
-          prev_option_name: string | null
-          rolled_back_at: string | null
-        }
+          action: string;
+          batch_id: string;
+          created_at: string;
+          created_by: string | null;
+          family_id: string;
+          family_title: string;
+          id: string;
+          prev_members: Json;
+          prev_option_name: string | null;
+          rolled_back_at: string | null;
+        };
         Insert: {
-          action: string
-          batch_id: string
-          created_at?: string
-          created_by?: string | null
-          family_id: string
-          family_title?: string
-          id?: string
-          prev_members?: Json
-          prev_option_name?: string | null
-          rolled_back_at?: string | null
-        }
+          action: string;
+          batch_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          family_id: string;
+          family_title?: string;
+          id?: string;
+          prev_members?: Json;
+          prev_option_name?: string | null;
+          rolled_back_at?: string | null;
+        };
         Update: {
-          action?: string
-          batch_id?: string
-          created_at?: string
-          created_by?: string | null
-          family_id?: string
-          family_title?: string
-          id?: string
-          prev_members?: Json
-          prev_option_name?: string | null
-          rolled_back_at?: string | null
-        }
+          action?: string;
+          batch_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          family_id?: string;
+          family_title?: string;
+          id?: string;
+          prev_members?: Json;
+          prev_option_name?: string | null;
+          rolled_back_at?: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "variant_config_snapshots_family_id_fkey"
-            columns: ["family_id"]
-            isOneToOne: false
-            referencedRelation: "product_families"
-            referencedColumns: ["id"]
+            foreignKeyName: "variant_config_snapshots_family_id_fkey";
+            columns: ["family_id"];
+            isOneToOne: false;
+            referencedRelation: "product_families";
+            referencedColumns: ["id"];
           },
-        ]
-      }
-    }
+        ];
+      };
+    };
     Views: {
       llm_reextract_candidates_canonical: {
         Row: {
-          ambiguity_flags: string[] | null
-          category_slug: string | null
-          created_at: string | null
-          decided_at: string | null
-          decided_by: string | null
-          id: string | null
-          missing_fields: string[] | null
-          parse_confidence: number | null
-          product_slug: string | null
-          reason: string | null
-          rn: number | null
-          run_id: string | null
-          status: string | null
-          url: string | null
-        }
+          ambiguity_flags: string[] | null;
+          category_slug: string | null;
+          created_at: string | null;
+          decided_at: string | null;
+          decided_by: string | null;
+          id: string | null;
+          missing_fields: string[] | null;
+          parse_confidence: number | null;
+          product_slug: string | null;
+          reason: string | null;
+          rn: number | null;
+          run_id: string | null;
+          status: string | null;
+          url: string | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "llm_reextract_candidates_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "llm_reextract_candidates_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_product_images_canonical: {
         Row: {
-          alt_text: string | null
-          height: number | null
-          id: string | null
-          image_url: string | null
-          inferred_filename: string | null
-          is_hero: boolean | null
-          position: number | null
-          scraped_product_id: string | null
-          source_page_url: string | null
-          visible_filename: string | null
-          width: number | null
-        }
+          alt_text: string | null;
+          height: number | null;
+          id: string | null;
+          image_url: string | null;
+          inferred_filename: string | null;
+          is_hero: boolean | null;
+          position: number | null;
+          scraped_product_id: string | null;
+          source_page_url: string | null;
+          visible_filename: string | null;
+          width: number | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_canonical";
+            referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "scraped_product_images_scraped_product_id_fkey"
-            columns: ["scraped_product_id"]
-            isOneToOne: false
-            referencedRelation: "scraped_products_final_canonical"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_product_images_scraped_product_id_fkey";
+            columns: ["scraped_product_id"];
+            isOneToOne: false;
+            referencedRelation: "scraped_products_final_canonical";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_product_images_final_canonical: {
         Row: {
-          alt_text: string | null
-          id: string | null
-          image_source: string | null
-          image_url: string | null
-          inferred_filename: string | null
-          is_hero: boolean | null
-          position: number | null
-          scraped_product_id: string | null
-          source_page_url: string | null
-        }
-        Relationships: []
-      }
+          alt_text: string | null;
+          id: string | null;
+          image_source: string | null;
+          image_url: string | null;
+          inferred_filename: string | null;
+          is_hero: boolean | null;
+          position: number | null;
+          scraped_product_id: string | null;
+          source_page_url: string | null;
+        };
+        Relationships: [];
+      };
       scraped_product_llm_repairs_latest: {
         Row: {
-          alt_texts: string[] | null
-          category_slug: string | null
-          confidence: number | null
-          created_at: string | null
-          description: string | null
-          dimensions: string | null
-          error_message: string | null
-          id: string | null
-          image_urls: string[] | null
-          inferred_filenames: string[] | null
-          model: string | null
-          primary_image_url: string | null
-          product_slug: string | null
-          product_title_normalized: string | null
-          product_title_original: string | null
-          raw_response: Json | null
-          repair_notes: string | null
-          repaired_fields: string[] | null
-          rn: number | null
-          run_id: string | null
-          source_url: string | null
-          status: string | null
-          still_missing_fields: string[] | null
-          stocked_quantity: string | null
-        }
-        Relationships: []
-      }
+          alt_texts: string[] | null;
+          category_slug: string | null;
+          confidence: number | null;
+          created_at: string | null;
+          description: string | null;
+          dimensions: string | null;
+          error_message: string | null;
+          id: string | null;
+          image_urls: string[] | null;
+          inferred_filenames: string[] | null;
+          model: string | null;
+          primary_image_url: string | null;
+          product_slug: string | null;
+          product_title_normalized: string | null;
+          product_title_original: string | null;
+          raw_response: Json | null;
+          repair_notes: string | null;
+          repaired_fields: string[] | null;
+          rn: number | null;
+          run_id: string | null;
+          source_url: string | null;
+          status: string | null;
+          still_missing_fields: string[] | null;
+          stocked_quantity: string | null;
+        };
+        Relationships: [];
+      };
       scraped_products_canonical: {
         Row: {
-          add_to_cart_present: boolean | null
-          ambiguity_flags: string[] | null
-          breadcrumb: string[] | null
-          category_slug: string | null
-          color_notes: string | null
-          description: string | null
-          dimensions: string | null
-          extraction_confidence: number | null
-          generic_notes: string | null
-          hero_image_url: string | null
-          id: string | null
-          inferred_category_label: string | null
-          is_custom_order_co: boolean | null
-          material_notes: string | null
-          missing_fields: string[] | null
-          needs_llm_reextract: boolean | null
-          next_product_url: string | null
-          parse_confidence: number | null
-          parse_errors: string[] | null
-          phase: string | null
-          previous_product_url: string | null
-          product_title_normalized: string | null
-          product_title_original: string | null
-          quantity_selector_present: boolean | null
-          raw: Json | null
-          reextract_reason: string | null
-          related_product_urls: string[] | null
-          rn: number | null
-          run_id: string | null
-          scraped_at: string | null
-          size_notes: string | null
-          slug: string | null
-          stocked_quantity: string | null
-          subcategory_slug: string | null
-          title: string | null
-          url: string | null
-          variant_selector_present: boolean | null
-          warnings: string[] | null
-        }
+          add_to_cart_present: boolean | null;
+          ambiguity_flags: string[] | null;
+          breadcrumb: string[] | null;
+          category_slug: string | null;
+          color_notes: string | null;
+          description: string | null;
+          dimensions: string | null;
+          extraction_confidence: number | null;
+          generic_notes: string | null;
+          hero_image_url: string | null;
+          id: string | null;
+          inferred_category_label: string | null;
+          is_custom_order_co: boolean | null;
+          material_notes: string | null;
+          missing_fields: string[] | null;
+          needs_llm_reextract: boolean | null;
+          next_product_url: string | null;
+          parse_confidence: number | null;
+          parse_errors: string[] | null;
+          phase: string | null;
+          previous_product_url: string | null;
+          product_title_normalized: string | null;
+          product_title_original: string | null;
+          quantity_selector_present: boolean | null;
+          raw: Json | null;
+          reextract_reason: string | null;
+          related_product_urls: string[] | null;
+          rn: number | null;
+          run_id: string | null;
+          scraped_at: string | null;
+          size_notes: string | null;
+          slug: string | null;
+          stocked_quantity: string | null;
+          subcategory_slug: string | null;
+          title: string | null;
+          url: string | null;
+          variant_selector_present: boolean | null;
+          warnings: string[] | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_products_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_products_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
+        ];
+      };
       scraped_products_final_canonical: {
         Row: {
-          add_to_cart_present: boolean | null
-          breadcrumb: string[] | null
-          category_slug: string | null
-          color_notes: string | null
-          description: string | null
-          dimensions: string | null
-          extraction_method: string | null
-          final_confidence: number | null
-          generic_notes: string | null
-          hero_image_url: string | null
-          id: string | null
-          is_custom_order_co: boolean | null
-          markdown_confidence: number | null
-          markdown_missing_fields: string[] | null
-          material_notes: string | null
-          needs_llm_reextract: boolean | null
-          next_product_url: string | null
-          previous_product_url: string | null
-          product_slug: string | null
-          product_title_normalized: string | null
-          product_title_original: string | null
-          quantity_selector_present: boolean | null
-          related_product_urls: string[] | null
-          repair_confidence: number | null
-          repaired_by_llm: boolean | null
-          repaired_fields: string[] | null
-          run_id: string | null
-          scraped_at: string | null
-          size_notes: string | null
-          still_missing_fields: string[] | null
-          stocked_quantity: string | null
-          url: string | null
-          variant_selector_present: boolean | null
-        }
+          add_to_cart_present: boolean | null;
+          breadcrumb: string[] | null;
+          category_slug: string | null;
+          color_notes: string | null;
+          description: string | null;
+          dimensions: string | null;
+          extraction_method: string | null;
+          final_confidence: number | null;
+          generic_notes: string | null;
+          hero_image_url: string | null;
+          id: string | null;
+          is_custom_order_co: boolean | null;
+          markdown_confidence: number | null;
+          markdown_missing_fields: string[] | null;
+          material_notes: string | null;
+          needs_llm_reextract: boolean | null;
+          next_product_url: string | null;
+          previous_product_url: string | null;
+          product_slug: string | null;
+          product_title_normalized: string | null;
+          product_title_original: string | null;
+          quantity_selector_present: boolean | null;
+          related_product_urls: string[] | null;
+          repair_confidence: number | null;
+          repaired_by_llm: boolean | null;
+          repaired_fields: string[] | null;
+          run_id: string | null;
+          scraped_at: string | null;
+          size_notes: string | null;
+          still_missing_fields: string[] | null;
+          stocked_quantity: string | null;
+          url: string | null;
+          variant_selector_present: boolean | null;
+        };
         Relationships: [
           {
-            foreignKeyName: "scraped_products_run_id_fkey"
-            columns: ["run_id"]
-            isOneToOne: false
-            referencedRelation: "scrape_runs"
-            referencedColumns: ["id"]
+            foreignKeyName: "scraped_products_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "scrape_runs";
+            referencedColumns: ["id"];
           },
-        ]
-      }
-    }
+        ];
+      };
+    };
     Functions: {
       delete_email: {
-        Args: { message_id: number; queue_name: string }
-        Returns: boolean
-      }
-      email_queue_dispatch: { Args: never; Returns: undefined }
+        Args: { message_id: number; queue_name: string };
+        Returns: boolean;
+      };
+      email_queue_dispatch: { Args: never; Returns: undefined };
       enqueue_email: {
-        Args: { payload: Json; queue_name: string }
-        Returns: number
-      }
+        Args: { payload: Json; queue_name: string };
+        Returns: number;
+      };
       has_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_staff_or_admin: { Args: { _user_id: string }; Returns: boolean }
+          _role: Database["public"]["Enums"]["app_role"];
+          _user_id: string;
+        };
+        Returns: boolean;
+      };
+      is_staff_or_admin: { Args: { _user_id: string }; Returns: boolean };
       move_to_dlq: {
         Args: {
-          dlq_name: string
-          message_id: number
-          payload: Json
-          source_queue: string
-        }
-        Returns: number
-      }
-      normalize_image_url: { Args: { _url: string }; Returns: string }
+          dlq_name: string;
+          message_id: number;
+          payload: Json;
+          source_queue: string;
+        };
+        Returns: number;
+      };
+      normalize_image_url: { Args: { _url: string }; Returns: string };
       read_email_batch: {
-        Args: { batch_size: number; queue_name: string; vt: number }
+        Args: { batch_size: number; queue_name: string; vt: number };
         Returns: {
-          message: Json
-          msg_id: number
-          read_ct: number
-        }[]
-      }
-      reorder_inventory_items: { Args: { p_updates: Json }; Returns: undefined }
+          message: Json;
+          msg_id: number;
+          read_ct: number;
+        }[];
+      };
+      reorder_inventory_items: { Args: { p_updates: Json }; Returns: undefined };
       rollback_variant_family: {
         Args: {
-          _family_id: string
-          _prev_members: Json
-          _prev_option_name: string
-        }
-        Returns: number
-      }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
-    }
+          _family_id: string;
+          _prev_members: Json;
+          _prev_option_name: string;
+        };
+        Returns: number;
+      };
+      show_limit: { Args: never; Returns: number };
+      show_trgm: { Args: { "": string }; Returns: string[] };
+    };
     Enums: {
-      app_role: "admin" | "user" | "staff"
-      inquiry_status: "new" | "quoted" | "booked" | "lost" | "ghosted"
-      item_status: "available" | "reserved" | "sold" | "draft"
-      match_decision: "pending" | "approved" | "rejected" | "needs_review"
+      app_role: "admin" | "user" | "staff";
+      inquiry_status: "new" | "quoted" | "booked" | "lost" | "ghosted";
+      item_status: "available" | "reserved" | "sold" | "draft";
+      match_decision: "pending" | "approved" | "rejected" | "needs_review";
       phase3_classification:
         | "scrape_phase3a_main_inventory"
         | "hold_parallel_category_review"
         | "hold_subbrand_review"
         | "exclude_test"
         | "exclude_vanity_or_marketing"
-        | "unknown_needs_review"
-      scrape_phase:
-        | "map"
-        | "category_scrape"
-        | "product_scrape"
-        | "reconcile"
-        | "phase3a_markdown"
-      scrape_run_status:
-        | "pending"
-        | "running"
-        | "succeeded"
-        | "failed"
-        | "cancelled"
-      scraped_url_kind:
-        | "unclassified"
-        | "category_index"
-        | "product_detail"
-        | "nav_page"
-        | "noise"
-    }
+        | "unknown_needs_review";
+      scrape_phase: "map" | "category_scrape" | "product_scrape" | "reconcile" | "phase3a_markdown";
+      scrape_run_status: "pending" | "running" | "succeeded" | "failed" | "cancelled";
+      scraped_url_kind: "unclassified" | "category_index" | "product_detail" | "nav_page" | "noise";
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+      [_ in never]: never;
+    };
+  };
+};
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+      Row: infer R;
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
       }
       ? R
       : never
-    : never
+    : never;
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+      Insert: infer I;
     }
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I
+        Insert: infer I;
       }
       ? I
       : never
-    : never
+    : never;
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+      Update: infer U;
     }
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U
+        Update: infer U;
       }
       ? U
       : never
-    : never
+    : never;
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
+    : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+  schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+    : never;
 
 export const Constants = {
   public: {
@@ -2242,27 +2219,9 @@ export const Constants = {
         "exclude_vanity_or_marketing",
         "unknown_needs_review",
       ],
-      scrape_phase: [
-        "map",
-        "category_scrape",
-        "product_scrape",
-        "reconcile",
-        "phase3a_markdown",
-      ],
-      scrape_run_status: [
-        "pending",
-        "running",
-        "succeeded",
-        "failed",
-        "cancelled",
-      ],
-      scraped_url_kind: [
-        "unclassified",
-        "category_index",
-        "product_detail",
-        "nav_page",
-        "noise",
-      ],
+      scrape_phase: ["map", "category_scrape", "product_scrape", "reconcile", "phase3a_markdown"],
+      scrape_run_status: ["pending", "running", "succeeded", "failed", "cancelled"],
+      scraped_url_kind: ["unclassified", "category_index", "product_detail", "nav_page", "noise"],
     },
   },
-} as const
+} as const;

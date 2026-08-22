@@ -96,14 +96,7 @@ interface RailItemProps {
   muted?: boolean;
 }
 
-function RailItem({
-  label,
-  count,
-  active,
-  onClick,
-  reduced,
-  muted,
-}: RailItemProps) {
+function RailItem({ label, count, active, onClick, reduced, muted }: RailItemProps) {
   return (
     <button
       onClick={onClick}
@@ -116,9 +109,7 @@ function RailItem({
             : "text-charcoal/60 hover:text-charcoal",
       )}
     >
-      <span className="text-[11px] uppercase tracking-[0.18em] leading-relaxed">
-        {label}
-      </span>
+      <span className="text-[11px] uppercase tracking-[0.18em] leading-relaxed">{label}</span>
       {typeof count === "number" && (
         <span
           className={cn(
@@ -134,11 +125,7 @@ function RailItem({
           layoutId="inventory-index-active"
           aria-hidden
           className="absolute -left-3 top-1/2 -translate-y-1/2 h-3 w-[2px] bg-charcoal"
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { type: "spring", stiffness: 500, damping: 38 }
-          }
+          transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 38 }}
         />
       )}
     </button>

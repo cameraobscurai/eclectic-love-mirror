@@ -20,9 +20,7 @@ function ThanksPage() {
         <div className="mx-auto w-10 h-10 border border-charcoal/30 grid place-items-center mb-6">
           <Check className="h-4 w-4" />
         </div>
-        <h1 className="font-display text-3xl uppercase tracking-[0.06em]">
-          Brief Received
-        </h1>
+        <h1 className="font-display text-3xl uppercase tracking-[0.06em]">Brief Received</h1>
         <p className="mt-4 text-[10px] uppercase tracking-[0.22em] text-charcoal/60 leading-relaxed">
           We'll be in touch within 24 hours.
         </p>

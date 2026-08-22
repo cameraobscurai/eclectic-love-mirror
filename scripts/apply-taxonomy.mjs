@@ -20,54 +20,62 @@
  *  - Rows absent from the workbook are left NULL (Unassigned queue), never
  *    guessed.
  */
-import { createClient } from '@supabase/supabase-js';
-import fs from 'fs';
-import path from 'path';
-import xlsx from 'xlsx';
+import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
+import path from "path";
+import xlsx from "xlsx";
 
 const file = process.argv[2];
-const APPLY = process.argv.includes('--apply');
+const APPLY = process.argv.includes("--apply");
 if (!file || !fs.existsSync(file)) {
-  console.error('usage: node scripts/apply-taxonomy.mjs <workbook.xlsx> [--apply]');
+  console.error("usage: node scripts/apply-taxonomy.mjs <workbook.xlsx> [--apply]");
   process.exit(1);
 }
 
 const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 const wb = xlsx.readFile(file);
-const sheetName = wb.SheetNames.includes('Remap Draft') ? 'Remap Draft' : wb.SheetNames[0];
+const sheetName = wb.SheetNames.includes("Remap Draft") ? "Remap Draft" : wb.SheetNames[0];
 const rows = xlsx.utils.sheet_to_json(wb.Sheets[sheetName]);
 console.log(`sheet "${sheetName}": ${rows.length} rows`);
 
 // ── Reference vocabulary ────────────────────────────────────────────────────
 const { data: cats, error: catErr } = await sb
-  .from('taxonomy_categories')
-  .select('slug, collection_slug, label');
-if (catErr) { console.error('taxonomy fetch error', catErr); process.exit(1); }
+  .from("taxonomy_categories")
+  .select("slug, collection_slug, label");
+if (catErr) {
+  console.error("taxonomy fetch error", catErr);
+  process.exit(1);
+}
 
-const validPairs = new Set(cats.map(c => `${c.collection_slug}::${c.slug}`));
-const bySlug = new Map(cats.map(c => [c.slug, c]));
-const byLabel = new Map(cats.map(c => [c.label.toLowerCase(), c]));
+const validPairs = new Set(cats.map((c) => `${c.collection_slug}::${c.slug}`));
+const bySlug = new Map(cats.map((c) => [c.slug, c]));
+const byLabel = new Map(cats.map((c) => [c.label.toLowerCase(), c]));
 
-const slugify = s => String(s).trim().toLowerCase()
-  .replace(/\+/g, ' ').replace(/&/g, ' ')
-  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const slugify = (s) =>
+  String(s)
+    .trim()
+    .toLowerCase()
+    .replace(/\+/g, " ")
+    .replace(/&/g, " ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 /** Accept either the slug or her display label ("Sofas + Loveseats"). */
 function resolveCategory(collectionRaw, categoryRaw) {
-  const cRaw = String(categoryRaw ?? '').trim();
+  const cRaw = String(categoryRaw ?? "").trim();
   if (!cRaw) return null;
   const hit = bySlug.get(slugify(cRaw)) || byLabel.get(cRaw.toLowerCase()) || bySlug.get(cRaw);
   if (!hit) return null;
-  const collection = slugify(collectionRaw ?? '') || hit.collection_slug;
+  const collection = slugify(collectionRaw ?? "") || hit.collection_slug;
   if (!validPairs.has(`${collection}::${hit.slug}`)) return null;
   return { collection_slug: collection, category_slug: hit.slug };
 }
 
 // ── Family map: variant rows inherit the lead row's assignment ──────────────
-const familyPath = path.join(process.cwd(), 'src/data/inventory/family-map.json');
+const familyPath = path.join(process.cwd(), "src/data/inventory/family-map.json");
 const families = fs.existsSync(familyPath)
-  ? JSON.parse(fs.readFileSync(familyPath, 'utf8')).families
+  ? JSON.parse(fs.readFileSync(familyPath, "utf8")).families
   : {};
 
 // ── Build the assignment set ────────────────────────────────────────────────
@@ -75,7 +83,7 @@ const assignments = new Map(); // rms_id -> { collection_slug, category_slug, vi
 const rejects = [];
 
 for (const r of rows) {
-  const rmsId = String(r.rms_id ?? '').trim();
+  const rmsId = String(r.rms_id ?? "").trim();
   if (!rmsId) continue;
   const resolved = resolveCategory(r.proposed_collection, r.proposed_category);
   if (!resolved) {
@@ -87,7 +95,7 @@ for (const r of rows) {
     });
     continue;
   }
-  assignments.set(rmsId, { ...resolved, via: 'reviewed' });
+  assignments.set(rmsId, { ...resolved, via: "reviewed" });
 
   const fam = families[rmsId];
   if (fam?.members) {
@@ -104,7 +112,7 @@ if (rejects.length) {
     console.error(`  ${r.rms_id}  ${r.title}  →  "${r.collection}" / "${r.category}"`);
   }
   if (rejects.length > 40) console.error(`  … and ${rejects.length - 40} more`);
-  console.error('\nValid categories:', [...bySlug.keys()].join(', '));
+  console.error("\nValid categories:", [...bySlug.keys()].join(", "));
   process.exit(1);
 }
 
@@ -113,24 +121,24 @@ const byCollection = {};
 for (const a of assignments.values()) {
   byCollection[a.collection_slug] = (byCollection[a.collection_slug] ?? 0) + 1;
 }
-const inherited = [...assignments.values()].filter(a => a.via !== 'reviewed').length;
+const inherited = [...assignments.values()].filter((a) => a.via !== "reviewed").length;
 
-console.log('\n── manifest ──');
-console.log('reviewed rows      :', rows.length);
-console.log('rows to write      :', assignments.size, `(${inherited} inherited by family)`);
+console.log("\n── manifest ──");
+console.log("reviewed rows      :", rows.length);
+console.log("rows to write      :", assignments.size, `(${inherited} inherited by family)`);
 for (const [k, v] of Object.entries(byCollection).sort((a, b) => b[1] - a[1])) {
   console.log(`  ${k.padEnd(16)} ${v}`);
 }
 
 const { count: totalRows } = await sb
-  .from('inventory_items')
-  .select('*', { count: 'exact', head: true })
-  .not('rms_id', 'is', null);
-console.log('rows in db         :', totalRows);
-console.log('will stay unassigned:', (totalRows ?? 0) - assignments.size);
+  .from("inventory_items")
+  .select("*", { count: "exact", head: true })
+  .not("rms_id", "is", null);
+console.log("rows in db         :", totalRows);
+console.log("will stay unassigned:", (totalRows ?? 0) - assignments.size);
 
 if (!APPLY) {
-  console.log('\n[dry run] nothing written. re-run with --apply');
+  console.log("\n[dry run] nothing written. re-run with --apply");
   process.exit(0);
 }
 
@@ -138,18 +146,21 @@ if (!APPLY) {
 let written = 0;
 for (const [rmsId, a] of assignments) {
   const { error } = await sb
-    .from('inventory_items')
+    .from("inventory_items")
     .update({ collection_slug: a.collection_slug, category_slug: a.category_slug })
-    .eq('rms_id', rmsId);
-  if (error) { console.error('update error', rmsId, error); process.exit(1); }
+    .eq("rms_id", rmsId);
+  if (error) {
+    console.error("update error", rmsId, error);
+    process.exit(1);
+  }
   written += 1;
-  if (written % 100 === 0) console.log('written', written, '/', assignments.size);
+  if (written % 100 === 0) console.log("written", written, "/", assignments.size);
 }
-console.log('written', written, '/', assignments.size);
+console.log("written", written, "/", assignments.size);
 
 const { count: stillUnassigned } = await sb
-  .from('inventory_items')
-  .select('*', { count: 'exact', head: true })
-  .not('rms_id', 'is', null)
-  .is('collection_slug', null);
-console.log('unassigned remaining:', stillUnassigned);
+  .from("inventory_items")
+  .select("*", { count: "exact", head: true })
+  .not("rms_id", "is", null)
+  .is("collection_slug", null);
+console.log("unassigned remaining:", stillUnassigned);

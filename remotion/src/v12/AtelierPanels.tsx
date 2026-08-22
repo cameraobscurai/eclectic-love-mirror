@@ -29,19 +29,26 @@ const Panel: React.FC<PanelProps> = ({ file, x, z, opacity }) => {
   return (
     <mesh position={[x, 0, z]}>
       <planeGeometry args={[3.6, 4.8]} />
-      <meshBasicMaterial map={texture} transparent opacity={opacity} side={THREE.DoubleSide} toneMapped={false} />
+      <meshBasicMaterial
+        map={texture}
+        transparent
+        opacity={opacity}
+        side={THREE.DoubleSide}
+        toneMapped={false}
+      />
     </mesh>
   );
 };
 
 export const AtelierPanels: React.FC = () => {
   const frame = useCurrentFrame();
-  const opacity = easeIn(frame, [PHASE.TRIPTYCH[0] - 40, PHASE.TRIPTYCH[0] + 40])
-    * (1 - easeIn(frame, [PHASE.TRIPTYCH[1] - 40, PHASE.TRIPTYCH[1] + 40]));
+  const opacity =
+    easeIn(frame, [PHASE.TRIPTYCH[0] - 40, PHASE.TRIPTYCH[0] + 40]) *
+    (1 - easeIn(frame, [PHASE.TRIPTYCH[1] - 40, PHASE.TRIPTYCH[1] + 40]));
 
   return (
     <group>
-      <Panel file={PANELS[0].file} x={8}  z={-4} opacity={opacity} />
+      <Panel file={PANELS[0].file} x={8} z={-4} opacity={opacity} />
       <Panel file={PANELS[1].file} x={12} z={-3} opacity={opacity} />
       <Panel file={PANELS[2].file} x={16} z={-4} opacity={opacity} />
     </group>

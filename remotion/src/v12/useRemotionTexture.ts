@@ -52,7 +52,7 @@ export function useRemotionTexture(url: string): THREE.Texture | null {
           continueRender(handleRef.current);
           handleRef.current = null;
         }
-      }
+      },
     );
     return () => {
       cancelled = true;

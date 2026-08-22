@@ -20,7 +20,6 @@ import {
   Layers,
 } from "lucide-react";
 
-
 import {
   Sidebar,
   SidebarContent,
@@ -66,9 +65,7 @@ const OVERVIEW: NavItem[] = [
 ];
 void Sparkles;
 
-const INBOX: NavItem[] = [
-  { to: "/admin/insights", label: "Inquiries & insights", icon: Inbox },
-];
+const INBOX: NavItem[] = [{ to: "/admin/insights", label: "Inquiries & insights", icon: Inbox }];
 
 const INVENTORY: NavItem[] = [
   // COLLECTION is the daily home: every piece, one grid, cross-checkable.
@@ -78,21 +75,15 @@ const INVENTORY: NavItem[] = [
   { to: "/admin/variants", label: "Variant setup", icon: Layers },
   { to: "/admin/new-product", label: "New product", icon: PlusCircle },
 
-
   // Hidden (routes still live, reachable by direct URL): /admin/render
   // (Photo studio) and /admin/gallery — not part of Adrienne's daily loop.
 ];
 void Wand2;
 void Images;
 
+const HELP: NavItem[] = [{ to: "/admin/guide", label: "Inventory guide", icon: BookOpen }];
 
-const HELP: NavItem[] = [
-  { to: "/admin/guide", label: "Inventory guide", icon: BookOpen },
-];
-
-const ACCESS: NavItem[] = [
-  { to: "/admin/team", label: "Team", icon: Users },
-];
+const ACCESS: NavItem[] = [{ to: "/admin/team", label: "Team", icon: Users }];
 void Upload;
 // Hidden utility routes — still reachable by direct URL, just removed from
 // sidebar to reduce admin clutter: /admin/image-health, /admin/image-qa,
@@ -190,9 +181,7 @@ function NavGroup({
                   )}
                 </SidebarMenuButton>
                 {isInbox && openCount && openCount > 0 ? (
-                  <SidebarMenuBadge className="tabular-nums">
-                    {openCount}
-                  </SidebarMenuBadge>
+                  <SidebarMenuBadge className="tabular-nums">{openCount}</SidebarMenuBadge>
                 ) : null}
               </SidebarMenuItem>
             );
@@ -295,25 +284,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
             {isAdmin && (
               <>
                 <NavGroup label="Overview" items={OVERVIEW} pathname={pathname} />
-                <NavGroup
-                  label="Inbox"
-                  items={INBOX}
-                  pathname={pathname}
-                  openCount={openCount}
-                />
+                <NavGroup label="Inbox" items={INBOX} pathname={pathname} openCount={openCount} />
               </>
             )}
             <NavGroup label="Inventory" items={INVENTORY} pathname={pathname} />
             <NavGroup label="Help" items={HELP} pathname={pathname} />
             {isAdmin && <NavGroup label="Access" items={ACCESS} pathname={pathname} />}
             <NavGroup label="Site" items={SITE} pathname={pathname} />
-
           </SidebarContent>
           <SidebarFooter className="border-t border-charcoal/10 px-3 py-3">
             <div className="px-2 group-data-[collapsible=icon]:hidden">
-              <p className="text-[9px] uppercase tracking-[0.24em] text-charcoal/45">
-                Signed in
-              </p>
+              <p className="text-[9px] uppercase tracking-[0.24em] text-charcoal/45">Signed in</p>
               <p className="mt-1 text-[11px] tabular-nums text-charcoal/85 truncate">
                 {email ?? "—"}
               </p>
@@ -342,18 +323,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 return (
                   <span key={c.href} className="flex items-center gap-1.5 min-w-0">
                     {i > 0 && (
-                      <ChevronRight
-                        className="h-3 w-3 text-charcoal/30 shrink-0"
-                        aria-hidden
-                      />
+                      <ChevronRight className="h-3 w-3 text-charcoal/30 shrink-0" aria-hidden />
                     )}
                     {isLast ? (
                       <span className="text-charcoal/85 truncate">{c.label}</span>
                     ) : (
-                      <Link
-                        to={c.href}
-                        className="hover:text-charcoal truncate"
-                      >
+                      <Link to={c.href} className="hover:text-charcoal truncate">
                         {c.label}
                       </Link>
                     )}
@@ -382,7 +357,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 Live
               </a>
             </div>
-
           </header>
           <main id="main-content" className="flex-1 min-w-0">
             {children}

@@ -106,7 +106,11 @@ export async function getSnapshotsData(): Promise<SnapshotRow[]> {
   const rows = new Map((data ?? []).map((r) => [r.route_slug, r]));
 
   // Batch: one storage round-trip for all signable paths instead of one per page.
-  const signable: { slug: string; path: string; row: (typeof rows) extends Map<string, infer R> ? R : never }[] = [];
+  const signable: {
+    slug: string;
+    path: string;
+    row: typeof rows extends Map<string, infer R> ? R : never;
+  }[] = [];
   for (const p of PAGES) {
     const row = rows.get(p.slug);
     if (row && row.storage_path && row.status !== "empty") {
@@ -115,9 +119,10 @@ export async function getSnapshotsData(): Promise<SnapshotRow[]> {
   }
   const signedMap = new Map<string, string>();
   if (signable.length > 0) {
-    const { data: signed } = await supabaseAdmin.storage
-      .from("boh-tiles")
-      .createSignedUrls(signable.map((s) => s.path), 3600);
+    const { data: signed } = await supabaseAdmin.storage.from("boh-tiles").createSignedUrls(
+      signable.map((s) => s.path),
+      3600,
+    );
     (signed ?? []).forEach((s, i) => {
       if (s?.signedUrl) signedMap.set(signable[i].path, s.signedUrl);
     });
@@ -187,7 +192,10 @@ async function captureOne(slug: string, route: string) {
       .update({ status: "fresh", storage_path: path, updated_at: new Date().toISOString() })
       .eq("route_slug", slug);
   } catch {
-    await supabaseAdmin.from("boh_tile_snapshots").update({ status: "failed" }).eq("route_slug", slug);
+    await supabaseAdmin
+      .from("boh_tile_snapshots")
+      .update({ status: "failed" })
+      .eq("route_slug", slug);
   }
 }
 

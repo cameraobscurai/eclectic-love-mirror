@@ -12,9 +12,7 @@
 // minimum surface area that fixes the actual bug (silent failure).
 import { toast } from "sonner";
 
-export type AdminMutationResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: unknown };
+export type AdminMutationResult<T> = { ok: true; data: T } | { ok: false; error: unknown };
 
 interface Options {
   /** User-facing failure copy. Keep it plain — no error details. */

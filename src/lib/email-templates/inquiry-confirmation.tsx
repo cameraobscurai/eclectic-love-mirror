@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from "react";
 import {
   Body,
   Container,
@@ -9,28 +9,28 @@ import {
   Preview,
   Section,
   Text,
-} from '@react-email/components'
-import type { TemplateEntry } from './registry'
+} from "@react-email/components";
+import type { TemplateEntry } from "./registry";
 
 interface ItemSnapshot {
-  rms_id?: string
-  title?: string
-  category?: string | null
-  image_url?: string | null
+  rms_id?: string;
+  title?: string;
+  category?: string | null;
+  image_url?: string | null;
 }
 
 interface Props {
-  name?: string
-  projectDate?: string | null
-  budget?: string | null
-  scope?: string | null
-  items?: ItemSnapshot[]
-  inquiryId?: string
-  palette?: string[]
+  name?: string;
+  projectDate?: string | null;
+  budget?: string | null;
+  scope?: string | null;
+  items?: ItemSnapshot[];
+  inquiryId?: string;
+  palette?: string[];
 }
 
 const InquiryConfirmation = ({
-  name = 'there',
+  name = "there",
   projectDate,
   budget,
   scope,
@@ -54,38 +54,83 @@ const InquiryConfirmation = ({
         {(projectDate || budget || scope) && (
           <Section style={section}>
             <Text style={sectionLabel}>YOUR BRIEF</Text>
-            {projectDate ? <Text style={body}><strong>DATE:</strong> {projectDate}</Text> : null}
-            {budget ? <Text style={body}><strong>BUDGET:</strong> {budget}</Text> : null}
-            {scope ? <Text style={body}><strong>SCOPE:</strong> {scope}</Text> : null}
+            {projectDate ? (
+              <Text style={body}>
+                <strong>DATE:</strong> {projectDate}
+              </Text>
+            ) : null}
+            {budget ? (
+              <Text style={body}>
+                <strong>BUDGET:</strong> {budget}
+              </Text>
+            ) : null}
+            {scope ? (
+              <Text style={body}>
+                <strong>SCOPE:</strong> {scope}
+              </Text>
+            ) : null}
           </Section>
         )}
 
         {items.length > 0 ? (
           <Section style={section}>
             <Text style={sectionLabel}>YOUR PIECES ({items.length})</Text>
-            <table cellPadding={0} cellSpacing={0} border={0} role="presentation" style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <table
+              cellPadding={0}
+              cellSpacing={0}
+              border={0}
+              role="presentation"
+              style={{ borderCollapse: "collapse", width: "100%" }}
+            >
               <tbody>
                 {items.map((item, idx) => (
                   <tr key={item.rms_id ?? idx}>
-                    <td width="72" style={{ padding: '0 14px 14px 0', verticalAlign: 'top', width: '72px' }}>
+                    <td
+                      width="72"
+                      style={{ padding: "0 14px 14px 0", verticalAlign: "top", width: "72px" }}
+                    >
                       {item.image_url ? (
                         <img
                           src={item.image_url}
-                          alt={item.title ?? 'Piece'}
+                          alt={item.title ?? "Piece"}
                           width="72"
                           height="72"
-                          style={{ width: '72px', height: '72px', objectFit: 'cover', display: 'block', border: '1px solid #1a1a1a14', backgroundColor: '#f5f2ed' }}
+                          style={{
+                            width: "72px",
+                            height: "72px",
+                            objectFit: "cover",
+                            display: "block",
+                            border: "1px solid #1a1a1a14",
+                            backgroundColor: "#f5f2ed",
+                          }}
                         />
                       ) : (
-                        <div style={{ width: '72px', height: '72px', backgroundColor: '#f5f2ed', border: '1px solid #1a1a1a14' }}>&nbsp;</div>
+                        <div
+                          style={{
+                            width: "72px",
+                            height: "72px",
+                            backgroundColor: "#f5f2ed",
+                            border: "1px solid #1a1a1a14",
+                          }}
+                        >
+                          &nbsp;
+                        </div>
                       )}
                     </td>
-                    <td style={{ padding: '0 0 14px 0', verticalAlign: 'top' }}>
-                      <Text style={{ ...body, margin: '0 0 4px', fontFamily: 'Georgia, "Cormorant Garamond", serif', fontSize: '16px', letterSpacing: '0' }}>
-                        {item.title ?? 'Untitled'}
+                    <td style={{ padding: "0 0 14px 0", verticalAlign: "top" }}>
+                      <Text
+                        style={{
+                          ...body,
+                          margin: "0 0 4px",
+                          fontFamily: 'Georgia, "Cormorant Garamond", serif',
+                          fontSize: "16px",
+                          letterSpacing: "0",
+                        }}
+                      >
+                        {item.title ?? "Untitled"}
                       </Text>
                       {item.category ? (
-                        <Text style={{ ...sectionLabel, margin: '0' }}>{item.category}</Text>
+                        <Text style={{ ...sectionLabel, margin: "0" }}>{item.category}</Text>
                       ) : null}
                     </td>
                   </tr>
@@ -98,7 +143,13 @@ const InquiryConfirmation = ({
         {palette.length > 0 ? (
           <Section style={section}>
             <Text style={sectionLabel}>YOUR COLOR PALETTE</Text>
-            <table cellPadding={0} cellSpacing={0} border={0} role="presentation" style={{ borderCollapse: 'collapse' }}>
+            <table
+              cellPadding={0}
+              cellSpacing={0}
+              border={0}
+              role="presentation"
+              style={{ borderCollapse: "collapse" }}
+            >
               <tbody>
                 <tr>
                   {palette.map((hex, i) => (
@@ -107,7 +158,12 @@ const InquiryConfirmation = ({
                       {...({ bgcolor: hex } as any)}
                       width="40"
                       height="40"
-                      style={{ backgroundColor: hex, width: '40px', height: '40px', border: '1px solid #1a1a1a14' }}
+                      style={{
+                        backgroundColor: hex,
+                        width: "40px",
+                        height: "40px",
+                        border: "1px solid #1a1a1a14",
+                      }}
                     >
                       &nbsp;
                     </td>
@@ -122,38 +178,79 @@ const InquiryConfirmation = ({
 
         <Text style={footer}>
           REPLY TO THIS EMAIL TO REACH US DIRECTLY AT INFO@ECLECTICHIVE.COM.
-          {inquiryId ? ` · REF ${inquiryId.slice(0, 8).toUpperCase()}` : ''}
+          {inquiryId ? ` · REF ${inquiryId.slice(0, 8).toUpperCase()}` : ""}
         </Text>
       </Container>
     </Body>
   </Html>
-)
+);
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Inter, Arial, sans-serif', color: '#1a1a1a' }
-const container = { padding: '40px 28px', maxWidth: '560px', margin: '0 auto' }
-const eyebrow = { fontSize: '10px', letterSpacing: '0.28em', textTransform: 'uppercase' as const, color: '#1a1a1a99', margin: '0 0 16px' }
-const h1 = { fontFamily: 'Georgia, "Cormorant Garamond", serif', fontSize: '30px', fontWeight: 400, margin: '0 0 14px', color: '#1a1a1a', letterSpacing: '-0.01em' }
-const lede = { fontSize: '12px', letterSpacing: '0.12em', lineHeight: '1.7', color: '#1a1a1a', margin: '0' }
-const hr = { borderColor: '#1a1a1a14', margin: '28px 0' }
-const section = { marginBottom: '4px' }
-const sectionLabel = { fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase' as const, color: '#1a1a1a80', margin: '0 0 10px' }
-const body = { fontSize: '12px', letterSpacing: '0.08em', lineHeight: '1.7', color: '#1a1a1a', margin: '0 0 6px' }
-const footer = { fontSize: '10px', letterSpacing: '0.18em', color: '#1a1a1a80', margin: '0', lineHeight: '1.6' }
+const main = {
+  backgroundColor: "#ffffff",
+  fontFamily: "Inter, Arial, sans-serif",
+  color: "#1a1a1a",
+};
+const container = { padding: "40px 28px", maxWidth: "560px", margin: "0 auto" };
+const eyebrow = {
+  fontSize: "10px",
+  letterSpacing: "0.28em",
+  textTransform: "uppercase" as const,
+  color: "#1a1a1a99",
+  margin: "0 0 16px",
+};
+const h1 = {
+  fontFamily: 'Georgia, "Cormorant Garamond", serif',
+  fontSize: "30px",
+  fontWeight: 400,
+  margin: "0 0 14px",
+  color: "#1a1a1a",
+  letterSpacing: "-0.01em",
+};
+const lede = {
+  fontSize: "12px",
+  letterSpacing: "0.12em",
+  lineHeight: "1.7",
+  color: "#1a1a1a",
+  margin: "0",
+};
+const hr = { borderColor: "#1a1a1a14", margin: "28px 0" };
+const section = { marginBottom: "4px" };
+const sectionLabel = {
+  fontSize: "10px",
+  letterSpacing: "0.2em",
+  textTransform: "uppercase" as const,
+  color: "#1a1a1a80",
+  margin: "0 0 10px",
+};
+const body = {
+  fontSize: "12px",
+  letterSpacing: "0.08em",
+  lineHeight: "1.7",
+  color: "#1a1a1a",
+  margin: "0 0 6px",
+};
+const footer = {
+  fontSize: "10px",
+  letterSpacing: "0.18em",
+  color: "#1a1a1a80",
+  margin: "0",
+  lineHeight: "1.6",
+};
 
 export const template = {
   component: InquiryConfirmation,
-  subject: 'We received your style brief — Eclectic Hive',
-  displayName: 'Inquiry Confirmation (submitter)',
+  subject: "We received your style brief — Eclectic Hive",
+  displayName: "Inquiry Confirmation (submitter)",
   previewData: {
-    name: 'Jane',
-    projectDate: '2026-09-12',
-    budget: '$15k–$25k',
-    scope: 'Full styling',
-    palette: ['#d4cdc4', '#8a7361', '#3c2e25', '#c9a98c'],
+    name: "Jane",
+    projectDate: "2026-09-12",
+    budget: "$15k–$25k",
+    scope: "Full styling",
+    palette: ["#d4cdc4", "#8a7361", "#3c2e25", "#c9a98c"],
     items: [
-      { rms_id: 'RMS-001', title: 'Birch Lounge Chair', category: 'Seating' },
-      { rms_id: 'RMS-002', title: 'Pampas Tall Vessel', category: 'Styling' },
+      { rms_id: "RMS-001", title: "Birch Lounge Chair", category: "Seating" },
+      { rms_id: "RMS-002", title: "Pampas Tall Vessel", category: "Styling" },
     ],
-    inquiryId: 'demo-id',
+    inquiryId: "demo-id",
   },
-} satisfies TemplateEntry
+} satisfies TemplateEntry;

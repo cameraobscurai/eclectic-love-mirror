@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-
 const JOBS = [
   {
     title: "Fabricator & Set Design",
@@ -44,16 +43,11 @@ function CareersPage() {
     >
       <div className="max-w-3xl mx-auto px-6 lg:px-12">
         <header className="pb-12">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-charcoal/50">
-            Join the hive
-          </p>
-          <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95]">
-            Careers.
-          </h1>
+          <p className="text-[11px] uppercase tracking-[0.32em] text-charcoal/50">Join the hive</p>
+          <h1 className="mt-6 font-brand text-[clamp(3rem,8vw,6rem)] leading-[0.95]">Careers.</h1>
           <p className="mt-6 max-w-xl text-[15px] leading-[1.75] text-charcoal/70">
-            We build cinematic, art-forward environments for weddings, galas, and
-            corporate events. If you craft with precision and think in scale, we
-            want to hear from you.
+            We build cinematic, art-forward environments for weddings, galas, and corporate events.
+            If you craft with precision and think in scale, we want to hear from you.
           </p>
         </header>
 

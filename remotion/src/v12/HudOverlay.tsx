@@ -58,113 +58,133 @@ export const HudOverlay: React.FC = () => {
       {/* Cold open hairlines */}
       {frame < PHASE.COLD_OPEN_END + 60 && (
         <>
-          <div style={{
-            position: "absolute",
-            top: 48,
-            left: 96,
-            right: 96,
-            height: 1,
-            background: "rgba(255,255,255,0.18)",
-            transformOrigin: "left",
-            transform: `scaleX(${easeIn(frame, [10, 70])})`,
-          }} />
-          <div style={{
-            position: "absolute",
-            bottom: 48,
-            left: 96,
-            right: 96,
-            height: 1,
-            background: "rgba(255,255,255,0.18)",
-            transformOrigin: "right",
-            transform: `scaleX(${easeIn(frame, [10, 70])})`,
-          }} />
+          <div
+            style={{
+              position: "absolute",
+              top: 48,
+              left: 96,
+              right: 96,
+              height: 1,
+              background: "rgba(255,255,255,0.18)",
+              transformOrigin: "left",
+              transform: `scaleX(${easeIn(frame, [10, 70])})`,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: 48,
+              left: 96,
+              right: 96,
+              height: 1,
+              background: "rgba(255,255,255,0.18)",
+              transformOrigin: "right",
+              transform: `scaleX(${easeIn(frame, [10, 70])})`,
+            }}
+          />
         </>
       )}
 
       {/* Top-left phase label */}
-      <div style={{
-        position: "absolute",
-        top: 64,
-        left: 96,
-        fontFamily: mono,
-        fontSize: 11,
-        letterSpacing: "0.22em",
-        color: hudColor,
-        opacity: openFade * (1 - endFade * 0.8),
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 64,
+          left: 96,
+          fontFamily: mono,
+          fontSize: 11,
+          letterSpacing: "0.22em",
+          color: hudColor,
+          opacity: openFade * (1 - endFade * 0.8),
+        }}
+      >
         {phaseLabel(frame)}
       </div>
 
       {/* Top-right timecode */}
-      <div style={{
-        position: "absolute",
-        top: 64,
-        right: 96,
-        fontFamily: mono,
-        fontSize: 11,
-        letterSpacing: "0.22em",
-        color: hudColorDim,
-        opacity: openFade * (1 - endFade * 0.8),
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          top: 64,
+          right: 96,
+          fontFamily: mono,
+          fontSize: 11,
+          letterSpacing: "0.22em",
+          color: hudColorDim,
+          opacity: openFade * (1 - endFade * 0.8),
+        }}
+      >
         {tcSec} / {totalSec}
       </div>
 
       {/* Bottom-left caption */}
-      <div style={{
-        position: "absolute",
-        bottom: 72,
-        left: 96,
-        fontFamily: mono,
-        fontSize: 11,
-        letterSpacing: "0.22em",
-        color: hudColor,
-        opacity: openFade * (1 - endFade * 0.8),
-      }}>
+      <div
+        style={{
+          position: "absolute",
+          bottom: 72,
+          left: 96,
+          fontFamily: mono,
+          fontSize: 11,
+          letterSpacing: "0.22em",
+          color: hudColor,
+          opacity: openFade * (1 - endFade * 0.8),
+        }}
+      >
         {phaseCaption(frame)}
       </div>
 
       {/* Center wordmark on end */}
       {wordmarkOpacity > 0.01 && (
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          opacity: wordmarkOpacity,
-        }}>
-          <div style={{
-            fontFamily: display,
-            fontSize: 96,
-            letterSpacing: "0.32em",
-            color: "rgba(255,255,255,0.92)",
-            paddingLeft: "0.32em", // optical centering for tracking
-          }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: wordmarkOpacity,
+          }}
+        >
+          <div
+            style={{
+              fontFamily: display,
+              fontSize: 96,
+              letterSpacing: "0.32em",
+              color: "rgba(255,255,255,0.92)",
+              paddingLeft: "0.32em", // optical centering for tracking
+            }}
+          >
             ECLECTIC HIVE
           </div>
-          <div style={{
-            marginTop: 28,
-            width: 220,
-            height: 1,
-            background: "rgba(255,255,255,0.35)",
-          }} />
-          <div style={{
-            marginTop: 18,
-            fontFamily: mono,
-            fontSize: 11,
-            letterSpacing: "0.34em",
-            color: "rgba(255,255,255,0.55)",
-          }}>
+          <div
+            style={{
+              marginTop: 28,
+              width: 220,
+              height: 1,
+              background: "rgba(255,255,255,0.35)",
+            }}
+          />
+          <div
+            style={{
+              marginTop: 18,
+              fontFamily: mono,
+              fontSize: 11,
+              letterSpacing: "0.34em",
+              color: "rgba(255,255,255,0.55)",
+            }}
+          >
             RENTAL · STAGING · DESIGN
           </div>
-          <div style={{
-            marginTop: 36,
-            fontFamily: mono,
-            fontSize: 10,
-            letterSpacing: "0.28em",
-            color: "rgba(255,255,255,0.35)",
-          }}>
+          <div
+            style={{
+              marginTop: 36,
+              fontFamily: mono,
+              fontSize: 10,
+              letterSpacing: "0.28em",
+              color: "rgba(255,255,255,0.35)",
+            }}
+          >
             ECLECTICHIVE.COM
           </div>
         </div>

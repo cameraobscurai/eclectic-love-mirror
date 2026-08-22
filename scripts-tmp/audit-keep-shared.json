@@ -3,9 +3,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ARIAN Set.png",
     "storage_path": "TABLEWEAR/ARIAN Set.png",
     "member_count": 6,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -44,9 +42,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/HESTON Set.png",
     "storage_path": "TABLEWEAR/HESTON Set.png",
     "member_count": 6,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -85,9 +81,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/NISHA Set.png",
     "storage_path": "TABLEWEAR/NISHA Set.png",
     "member_count": 6,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -126,9 +120,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/STYLING/TIVOLI Mini Plinth.png",
     "storage_path": "STYLING/TIVOLI Mini Plinth.png",
     "member_count": 5,
-    "categories": [
-      "styling"
-    ],
+    "categories": ["styling"],
     "reason": "size-variant family (plinth/banquette/column)",
     "members": [
       {
@@ -162,9 +154,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/e813c4197a_CARLISLE_Set_0.png",
     "storage_path": "_squarespace/e813c4197a_CARLISLE_Set_0.png",
     "member_count": 5,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"carlisle\" (5 variants in tableware)",
     "members": [
       {
@@ -198,9 +188,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MILLIE Set.png",
     "storage_path": "TABLEWEAR/MILLIE Set.png",
     "member_count": 5,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -234,9 +222,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SEATING/SPECIAL/NIMA Banquette 1.png",
     "storage_path": "SEATING/SPECIAL/NIMA Banquette 1.png",
     "member_count": 4,
-    "categories": [
-      "seating"
-    ],
+    "categories": ["seating"],
     "reason": "size-variant family (plinth/banquette/column)",
     "members": [
       {
@@ -265,9 +251,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ADONIS Set.png",
     "storage_path": "TABLEWEAR/ADONIS Set.png",
     "member_count": 4,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -296,9 +280,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLES/Farrow 28.png",
     "storage_path": "TABLES/Farrow 28.png",
     "member_count": 4,
-    "categories": [
-      "tables"
-    ],
+    "categories": ["tables"],
     "reason": "brand family \"farrow\" (4 variants in tables)",
     "members": [
       {
@@ -327,9 +309,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MIDAS Set.png",
     "storage_path": "TABLEWEAR/MIDAS Set.png",
     "member_count": 4,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -358,9 +338,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/Sage All Set.png",
     "storage_path": "TABLEWEAR/Sage All Set.png",
     "member_count": 4,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -389,9 +367,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/_squarespace/38ce415cb9_LARIQUE_Set.png",
     "storage_path": "_squarespace/38ce415cb9_LARIQUE_Set.png",
     "member_count": 4,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"larique\" (4 variants in tableware)",
     "members": [
       {
@@ -420,9 +396,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/CANDLELIGHT/FLORENCE Lantern Set.png",
     "storage_path": "CANDLELIGHT/FLORENCE Lantern Set.png",
     "member_count": 3,
-    "categories": [
-      "candlelight"
-    ],
+    "categories": ["candlelight"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -446,9 +420,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAVANYA Set.png",
     "storage_path": "TABLEWEAR/LAVANYA Set.png",
     "member_count": 3,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -472,9 +444,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/ARCUS - BEVIN 1.png",
     "storage_path": "BARS/ARCUS - BEVIN 1.png",
     "member_count": 2,
-    "categories": [
-      "bars"
-    ],
+    "categories": ["bars"],
     "reason": "brand family \"arcus\" (2 variants in bars)",
     "members": [
       {
@@ -493,9 +463,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/INOLA Single 1.png",
     "storage_path": "BARS/INOLA Single 1.png",
     "member_count": 2,
-    "categories": [
-      "bars"
-    ],
+    "categories": ["bars"],
     "reason": "brand family \"inola\" (2 variants in bars)",
     "members": [
       {
@@ -514,9 +482,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ZAHAVI Decanter Set.png",
     "storage_path": "SERVEWARE/ZAHAVI Decanter Set.png",
     "member_count": 2,
-    "categories": [
-      "serveware"
-    ],
+    "categories": ["serveware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -535,9 +501,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/SERVEWARE/ZALENA Decanter Set.png",
     "storage_path": "SERVEWARE/ZALENA Decanter Set.png",
     "member_count": 2,
-    "categories": [
-      "serveware"
-    ],
+    "categories": ["serveware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -556,9 +520,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BULAN Set.png",
     "storage_path": "TABLEWEAR/BULAN Set.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -577,9 +539,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/LAPIS 10in.png",
     "storage_path": "TABLEWEAR/LAPIS 10in.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"lapis\" (2 variants in tableware)",
     "members": [
       {
@@ -598,9 +558,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/MIDAS VIDAL Butter Knife.png",
     "storage_path": "TABLEWEAR/MIDAS VIDAL Butter Knife.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"midas\" (2 variants in tableware)",
     "members": [
       {
@@ -619,9 +577,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MONROE Black Slat Double 10'.png",
     "storage_path": "BARS/MONROE Black Slat Double 10'.png",
     "member_count": 2,
-    "categories": [
-      "bars"
-    ],
+    "categories": ["bars"],
     "reason": "brand family \"monroe\" (2 variants in bars)",
     "members": [
       {
@@ -640,9 +596,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/BARS/MONROE Black Slat Single 5'.png",
     "storage_path": "BARS/MONROE Black Slat Single 5'.png",
     "member_count": 2,
-    "categories": [
-      "bars"
-    ],
+    "categories": ["bars"],
     "reason": "brand family \"monroe\" (2 variants in bars)",
     "members": [
       {
@@ -661,9 +615,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/AKOYA 11.png",
     "storage_path": "TABLEWEAR/AKOYA 11.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"akoya\" (2 variants in tableware)",
     "members": [
       {
@@ -682,9 +634,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/ALUMINA 11.png",
     "storage_path": "TABLEWEAR/ALUMINA 11.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"alumina\" (2 variants in tableware)",
     "members": [
       {
@@ -703,9 +653,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/BELISSA 11.png",
     "storage_path": "TABLEWEAR/BELISSA 11.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "brand family \"belissa\" (2 variants in tableware)",
     "members": [
       {
@@ -724,9 +672,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/DEJA Set.png",
     "storage_path": "TABLEWEAR/DEJA Set.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {
@@ -745,9 +691,7 @@
     "hero_url": "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/inventory/TABLEWEAR/KIMORA Set.png",
     "storage_path": "TABLEWEAR/KIMORA Set.png",
     "member_count": 2,
-    "categories": [
-      "tableware"
-    ],
+    "categories": ["tableware"],
     "reason": "set hero (filename ends in Set)",
     "members": [
       {

@@ -33,7 +33,9 @@ const PIXELS = Number(flag("pixels") ?? 0) || 0;
 const SNAP_PATH = flag("file") ?? "docs/receipts/bake-blast-radius-snapshot.json";
 
 if (SNAPSHOT === VERIFY) {
-  console.error("usage: bake-blast-radius.ts (--snapshot | --verify --collection <slug>) [--pixels N] [--file path]");
+  console.error(
+    "usage: bake-blast-radius.ts (--snapshot | --verify --collection <slug>) [--pixels N] [--file path]",
+  );
   process.exit(1);
 }
 if (VERIFY && !COLLECTION) {
@@ -190,9 +192,16 @@ const lines = [
 ];
 
 if (stray.length) {
-  lines.push(`## Unintended changes`, ``, `| Title | Collection | Fields | Before hash | After hash |`, `| --- | --- | --- | --- | --- |`);
+  lines.push(
+    `## Unintended changes`,
+    ``,
+    `| Title | Collection | Fields | Before hash | After hash |`,
+    `| --- | --- | --- | --- | --- |`,
+  );
   for (const d of stray)
-    lines.push(`| ${d.entry.title} | ${d.entry.collection} | ${d.fields.join(" ")} | ${d.before?.hash16 ?? "—"} | ${d.entry.hash16 ?? "—"} |`);
+    lines.push(
+      `| ${d.entry.title} | ${d.entry.collection} | ${d.fields.join(" ")} | ${d.before?.hash16 ?? "—"} | ${d.entry.hash16 ?? "—"} |`,
+    );
   lines.push(``);
 }
 if (missing.length) lines.push(`## Missing rows`, ``, ...missing.map((m) => `- ${m}`), ``);
@@ -205,10 +214,13 @@ lines.push(
   `| Title | Fields | Before hash | After hash |`,
   `| --- | --- | --- | --- |`,
   ...intended.map(
-    (d) => `| ${d.entry.title} | ${d.fields.join(" ")} | ${d.before?.hash16 ?? "—"} | ${d.entry.hash16 ?? "—"} |`,
+    (d) =>
+      `| ${d.entry.title} | ${d.fields.join(" ")} | ${d.before?.hash16 ?? "—"} | ${d.entry.hash16 ?? "—"} |`,
   ),
   ``,
-  fail ? `Do NOT publish until the unintended rows are explained.` : `Safe to publish (R8: a human still clicks it).`,
+  fail
+    ? `Do NOT publish until the unintended rows are explained.`
+    : `Safe to publish (R8: a human still clicks it).`,
   ``,
 );
 

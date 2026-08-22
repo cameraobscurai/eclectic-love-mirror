@@ -17,7 +17,7 @@ const DUP_THRESHOLD = 5; // hamming distance cutoff for "near duplicate"
 console.error("loading items from DB…");
 const raw = execSync(
   `psql -At -F$'\\t' -c "SELECT rms_id, slug, title, array_to_string(images, '|||') FROM inventory_items WHERE array_length(images,1) >= 2 AND status <> 'draft' ORDER BY slug"`,
-  { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 }
+  { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
 );
 const items = raw
   .trim()
@@ -35,7 +35,8 @@ async function fetchAndHash(url) {
     const res = await fetch(url);
     if (!res.ok) return { url, ok: false, status: res.status, reason: "http" };
     const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length < 2048) return { url, ok: false, status: res.status, bytes: buf.length, reason: "tiny" };
+    if (buf.length < 2048)
+      return { url, ok: false, status: res.status, bytes: buf.length, reason: "tiny" };
     let raw;
     try {
       raw = await sharp(buf, { failOn: "none" })
@@ -44,7 +45,14 @@ async function fetchAndHash(url) {
         .raw()
         .toBuffer();
     } catch (e) {
-      return { url, ok: false, status: res.status, bytes: buf.length, reason: "decode", error: e.message };
+      return {
+        url,
+        ok: false,
+        status: res.status,
+        bytes: buf.length,
+        reason: "decode",
+        error: e.message,
+      };
     }
     // dHash: compare each pixel to the next horizontally → 64 bits
     let hash = 0n;
@@ -55,7 +63,13 @@ async function fetchAndHash(url) {
         hash = (hash << 1n) | (left > right ? 1n : 0n);
       }
     }
-    return { url, ok: true, status: res.status, bytes: buf.length, hash: hash.toString(16).padStart(16, "0") };
+    return {
+      url,
+      ok: true,
+      status: res.status,
+      bytes: buf.length,
+      hash: hash.toString(16).padStart(16, "0"),
+    };
   } catch (e) {
     return { url, ok: false, reason: "network", error: e.message };
   }
@@ -101,7 +115,9 @@ console.error(`hashing ${tasks.length} images with ${CONCURRENCY} workers…`);
 const hashed = await pool(tasks, CONCURRENCY, (t) => fetchAndHash(t.url));
 
 // rebuild per-item map
-const byItem = new Map(items.map((i) => [i.rms_id, { ...i, perImage: new Array(i.images.length) }]));
+const byItem = new Map(
+  items.map((i) => [i.rms_id, { ...i, perImage: new Array(i.images.length) }]),
+);
 hashed.forEach((r, i) => {
   const t = tasks[i];
   byItem.get(t.rms_id).perImage[t.idx] = r;
@@ -114,7 +130,8 @@ for (const item of byItem.values()) {
   const dupes = [];
   for (let i = 0; i < item.perImage.length; i++) {
     const r = item.perImage[i];
-    if (!r.ok) broken.push({ idx: i, url: r.url, reason: r.reason, status: r.status, bytes: r.bytes });
+    if (!r.ok)
+      broken.push({ idx: i, url: r.url, reason: r.reason, status: r.status, bytes: r.bytes });
   }
   for (let i = 0; i < item.perImage.length; i++) {
     for (let j = i + 1; j < item.perImage.length; j++) {
@@ -146,7 +163,9 @@ const summary = {
   totalDupePairs: findings.reduce((s, f) => s + f.dupes.length, 0),
   byDistance: {},
 };
-for (const f of findings) for (const d of f.dupes) summary.byDistance[d.distance] = (summary.byDistance[d.distance] || 0) + 1;
+for (const f of findings)
+  for (const d of f.dupes)
+    summary.byDistance[d.distance] = (summary.byDistance[d.distance] || 0) + 1;
 
 const out = { summary, findings };
 writeFileSync("/tmp/gallery-audit.json", JSON.stringify(out, null, 2));

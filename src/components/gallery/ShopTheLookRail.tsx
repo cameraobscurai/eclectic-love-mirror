@@ -27,7 +27,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
   const { open: openQuickView } = useQuickView();
   const items = useMemo(
     () => slugs.map((s) => BY_SLUG.get(s)).filter(Boolean) as CatalogProduct[],
-    [slugs]
+    [slugs],
   );
   // Publish the rail so Quick View can resolve a tile's slug and walk the
   // rail with prev/next. A gallery tile peeks — it never leaves the story.
@@ -39,9 +39,7 @@ export function ShopTheLookRail({ slugs }: ShopTheLookRailProps) {
 
   return (
     <div className="mt-8 -mx-8 lg:-mx-12 px-8 lg:px-12 pt-6 border-t border-cream/10">
-      <p className="text-[10px] uppercase tracking-[0.32em] text-cream/45 mb-4">
-        SHOP THE LOOK
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.32em] text-cream/45 mb-4">SHOP THE LOOK</p>
       <ul className="flex gap-3 overflow-x-auto -mx-1 px-1 pb-2 snap-x">
         {items.map((p) => {
           const selected = has(String(p.id));

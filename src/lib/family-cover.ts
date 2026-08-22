@@ -91,9 +91,7 @@ export function mergeFamilyImages(
   options: MergeFamilyImagesOptions,
 ): FamilyImage[] {
   const { leadImages, bakedImages, memberImages, variantCoverUrls } = input;
-  const variantKeys = new Set(
-    variantCoverUrls.filter(Boolean).map((u) => imageKey(u)),
-  );
+  const variantKeys = new Set(variantCoverUrls.filter(Boolean).map((u) => imageKey(u)));
 
   const seen = new Set<string>();
   const merged: FamilyImage[] = [];

@@ -45,7 +45,9 @@ const LIMIT = Number(flag("limit") ?? 0) || 0;
 const CONCURRENCY = 4;
 
 if (!COLLECTION) {
-  console.error("usage: bake-frames.ts --collection <slug> [--category <slug>] [--limit N] [--force] [--apply]");
+  console.error(
+    "usage: bake-frames.ts --collection <slug> [--category <slug>] [--limit N] [--force] [--apply]",
+  );
   process.exit(1);
 }
 
@@ -110,9 +112,23 @@ console.log(
 
 // ---------------------------------------------------------------- work
 type Outcome =
-  | { kind: "pass"; product: CatalogProduct; hash16: string; url: string; advisories: string[]; origin: string }
+  | {
+      kind: "pass";
+      product: CatalogProduct;
+      hash16: string;
+      url: string;
+      advisories: string[];
+      origin: string;
+    }
   | { kind: "unchanged"; product: CatalogProduct; hash16: string; url: string | null }
-  | { kind: "queued"; product: CatalogProduct; codes: string[]; method: string; srcUrl: string; action: string }
+  | {
+      kind: "queued";
+      product: CatalogProduct;
+      codes: string[];
+      method: string;
+      srcUrl: string;
+      action: string;
+    }
   | { kind: "skipped"; product: CatalogProduct; reason: string };
 
 const results: Outcome[] = [];
@@ -265,7 +281,10 @@ const date = new Date().toISOString().slice(0, 10);
 const passed = results.filter((r) => r.kind === "pass") as Extract<Outcome, { kind: "pass" }>[];
 const unchanged = results.filter((r) => r.kind === "unchanged");
 const queued = results.filter((r) => r.kind === "queued") as Extract<Outcome, { kind: "queued" }>[];
-const skipped = results.filter((r) => r.kind === "skipped") as Extract<Outcome, { kind: "skipped" }>[];
+const skipped = results.filter((r) => r.kind === "skipped") as Extract<
+  Outcome,
+  { kind: "skipped" }
+>[];
 
 mkdirSync("docs/receipts", { recursive: true });
 
@@ -286,7 +305,12 @@ const queueDoc = [
   }),
   ``,
   ...(skipped.length
-    ? [`## Skipped`, ``, ...skipped.map((s) => `- ${s.product.title ?? s.product.id} — ${s.reason}`), ``]
+    ? [
+        `## Skipped`,
+        ``,
+        ...skipped.map((s) => `- ${s.product.title ?? s.product.id} — ${s.reason}`),
+        ``,
+      ]
     : []),
 ].join("\n");
 writeFileSync(`docs/frame-queue-${COLLECTION}.md`, queueDoc);
@@ -311,9 +335,7 @@ const receipt = [
   ``,
   `## Advisories`,
   ``,
-  advHist.size
-    ? [...advHist].map(([k, v]) => `- ${k}: ${v}`).join("\n")
-    : "- none",
+  advHist.size ? [...advHist].map(([k, v]) => `- ${k}: ${v}`).join("\n") : "- none",
   ``,
   `Queue: [docs/frame-queue-${COLLECTION}.md](../frame-queue-${COLLECTION}.md)`,
   `Contact sheet: \`docs/receipts/contact-sheet-${COLLECTION}-${date}.html\``,
@@ -333,7 +355,8 @@ const cells = slice
       r.kind === "pass" || r.kind === "unchanged"
         ? (r.url ?? "").replace("-1200.webp", "-600.webp")
         : "";
-    const state = r.kind === "queued" ? `QUEUED ${r.codes.join(" ")}` : r.kind === "skipped" ? r.reason : "";
+    const state =
+      r.kind === "queued" ? `QUEUED ${r.codes.join(" ")}` : r.kind === "skipped" ? r.reason : "";
     return `<figure class="${r.kind}">${
       src ? `<img loading="lazy" src="${src}" alt="">` : `<div class="ph">${state}</div>`
     }<figcaption>${p.title ?? p.id}${state ? ` — ${state}` : ""}</figcaption></figure>`;

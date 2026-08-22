@@ -223,8 +223,8 @@ export function FocalEditor({
 
       {framed && (
         <div className="px-3 py-2 text-[11px] text-sky-800 bg-sky-50/60 border-b border-sky-100">
-          This cover is baked by Frame Studio — the live tile renders the framed
-          derivative and never reads a focal point. Change the framing in Frame Studio.
+          This cover is baked by Frame Studio — the live tile renders the framed derivative and
+          never reads a focal point. Change the framing in Frame Studio.
         </div>
       )}
 
@@ -323,8 +323,8 @@ export function FocalEditor({
         <div className="px-3 py-2 text-[11px] text-red-600 border-t border-neutral-200">{err}</div>
       )}
       <p className="px-3 py-2 text-[10px] uppercase tracking-widest text-neutral-500 border-t border-neutral-200">
-        Click the cover to anchor the visual center. Size is always solved automatically —
-        focal only shifts the framing.
+        Click the cover to anchor the visual center. Size is always solved automatically — focal
+        only shifts the framing.
         {lastEdit && ` · Last changed ${new Date(lastEdit).toLocaleString()}`}
       </p>
     </div>

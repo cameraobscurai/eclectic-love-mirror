@@ -41,52 +41,62 @@ function isCrossSiteWrite(request: Request, pathname: string): boolean {
   }
 }
 
-export const securityMiddleware = createMiddleware().server(
-  async ({ next, request, pathname }) => {
-    if (isCrossSiteWrite(request, pathname)) {
-      return new Response("Cross-site request blocked", { status: 403 });
+/** An unknown server-function id is a 404, not a server fault. */
+const UNKNOWN_SERVER_FN = /server function (info )?not found|invalid server function/i;
+
+export const securityMiddleware = createMiddleware().server(async ({ next, request, pathname }) => {
+  if (isCrossSiteWrite(request, pathname)) {
+    return new Response("Cross-site request blocked", { status: 403 });
+  }
+
+  let result: Awaited<ReturnType<typeof next>>;
+  try {
+    result = await next();
+  } catch (err) {
+    // Enumerating server-function ids should read as "no such endpoint".
+    // A 500 tells a prober they touched a live code path; a 404 tells them
+    // nothing.
+    const message = err instanceof Error ? err.message : String(err);
+    if (UNKNOWN_SERVER_FN.test(message)) {
+      return new Response("Not found", { status: 404 });
     }
+    throw err;
+  }
+  const headers = result.response.headers;
 
-    const result = await next();
-    const headers = result.response.headers;
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("X-Frame-Options", "SAMEORIGIN");
+  headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), interest-cohort=()");
 
-    headers.set("X-Content-Type-Options", "nosniff");
-    headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-    headers.set("X-Frame-Options", "SAMEORIGIN");
+  // Report-Only first: this site loads GA, Supabase storage, Google Fonts and
+  // inline hydration scripts. Enforcing blind would break the page; collect
+  // violations, then flip to enforcing once the report is clean.
+  if (!headers.has("Content-Security-Policy-Report-Only")) {
     headers.set(
-      "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+      "Content-Security-Policy-Report-Only",
+      [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "img-src 'self' data: blob: https:",
+        "media-src 'self' blob: https:",
+        "connect-src 'self' https: wss:",
+        "frame-ancestors 'self'",
+        "base-uri 'self'",
+        "form-action 'self'",
+      ].join("; "),
     );
+  }
 
-    // Report-Only first: this site loads GA, Supabase storage, Google Fonts and
-    // inline hydration scripts. Enforcing blind would break the page; collect
-    // violations, then flip to enforcing once the report is clean.
-    if (!headers.has("Content-Security-Policy-Report-Only")) {
-      headers.set(
-        "Content-Security-Policy-Report-Only",
-        [
-          "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
-          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-          "font-src 'self' data: https://fonts.gstatic.com",
-          "img-src 'self' data: blob: https:",
-          "media-src 'self' blob: https:",
-          "connect-src 'self' https: wss:",
-          "frame-ancestors 'self'",
-          "base-uri 'self'",
-          "form-action 'self'",
-        ].join("; "),
-      );
-    }
+  // Admin screens and share links: never cached by a proxy, never indexed.
+  // A share token in a URL that a CDN caches is the same leak as putting it
+  // in analytics.
+  if (PRIVATE_PATH.test(pathname)) {
+    headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+    headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  }
 
-    // Admin screens and share links: never cached by a proxy, never indexed.
-    // A share token in a URL that a CDN caches is the same leak as putting it
-    // in analytics.
-    if (PRIVATE_PATH.test(pathname)) {
-      headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
-      headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-    }
-
-    return result;
-  },
-);
+  return result;
+});

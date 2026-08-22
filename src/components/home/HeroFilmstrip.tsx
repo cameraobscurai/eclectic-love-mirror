@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence, useScroll, useTransform, useReducedMotion, type MotionValue } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+  type MotionValue,
+} from "framer-motion";
 import { Play, X, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { acquireScrollLock } from "@/lib/scroll-lock";
@@ -45,10 +52,9 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
   useEffect(() => {
     const el = containerRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.1 },
-    );
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.1,
+    });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -76,7 +82,6 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
     });
   }, [lightboxId, reduced, inView, soundOn, audioId]);
 
-
   // Hero videos must begin fetching immediately when visible. The poster still
   // owns first paint, but waiting for browser idle made the frames look static.
   useEffect(() => {
@@ -100,7 +105,9 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
         v.preload = "auto";
         if (!keepAudio) v.load();
         v.play().catch(() => {});
-      } catch {}
+      } catch {
+        /* autoplay is best-effort */
+      }
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -198,7 +205,6 @@ export function HeroFilmstrip({ clips = HERO_CLIPS, className }: HeroFilmstripPr
       )}
 
       <Lightbox clip={activeClip} originRect={originRect} onClose={() => setLightboxId(null)} />
-
     </div>
   );
 }
@@ -227,13 +233,7 @@ function MobilePosterTile({
         aria-label={`Play ${clip.label ?? clip.season} with sound`}
         className="relative block w-full overflow-hidden bg-[#f1f1f1] aspect-[3/4] focus:outline-none"
       >
-        {clip.poster && (
-          <PosterPicture
-            clip={clip}
-            loading="lazy"
-            className="absolute inset-0"
-          />
-        )}
+        {clip.poster && <PosterPicture clip={clip} loading="lazy" className="absolute inset-0" />}
       </button>
       <figcaption
         className="mt-1.5 px-1 flex items-baseline gap-1 font-brand text-charcoal"
@@ -245,7 +245,10 @@ function MobilePosterTile({
         >
           {clip.id}
         </span>
-        <span className="text-[10px] uppercase truncate text-charcoal/55" style={{ letterSpacing: "0.22em" }}>
+        <span
+          className="text-[10px] uppercase truncate text-charcoal/55"
+          style={{ letterSpacing: "0.22em" }}
+        >
           {clip.season}
         </span>
       </figcaption>
@@ -306,10 +309,7 @@ function FilmstripFrame({
     <div className={cn("flex flex-col", className)}>
       <figure
         ref={figureRef}
-        className={cn(
-          "group relative overflow-hidden bg-[#f1f1f1] cursor-pointer",
-          "aspect-[3/4]",
-        )}
+        className={cn("group relative overflow-hidden bg-[#f1f1f1] cursor-pointer", "aspect-[3/4]")}
         onMouseEnter={() => onHoverChange(clip.id)}
         onMouseLeave={() => onHoverChange(null)}
         onClick={() => {
@@ -432,7 +432,10 @@ function FilmstripFrame({
         >
           {clip.id}
         </span>
-        <span className="text-[11px] md:text-[13px] uppercase text-charcoal/55" style={{ letterSpacing: "0.22em" }}>
+        <span
+          className="text-[11px] md:text-[13px] uppercase text-charcoal/55"
+          style={{ letterSpacing: "0.22em" }}
+        >
           {clip.season}
         </span>
       </figcaption>

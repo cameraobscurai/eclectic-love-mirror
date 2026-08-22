@@ -109,7 +109,9 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
   }
   const named = members.filter((m) => (m.variant_label ?? "").trim()).length;
   if (family.option_name && named < members.length) {
-    warnings.push(`${members.length - named} piece(s) still need a variant name before this shows choices.`);
+    warnings.push(
+      `${members.length - named} piece(s) still need a variant name before this shows choices.`,
+    );
   }
   if (!family.option_name) {
     warnings.push("No option name yet, so this tile keeps its plain photo gallery on the site.");
@@ -120,7 +122,6 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
       b ? { ...b, members: b.members.map((m) => (m.id === next.id ? { ...m, ...next } : m)) } : b,
     );
 
-
   async function commitOptionName() {
     if ((family.option_name ?? "") === optionName.trim()) return;
     setBusy(true);
@@ -130,7 +131,9 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
     );
     setBusy(false);
     if (r.ok) {
-      setBoard((b) => (b ? { ...b, family: { ...b.family, option_name: optionName.trim() || null } } : b));
+      setBoard((b) =>
+        b ? { ...b, family: { ...b.family, option_name: optionName.trim() || null } } : b,
+      );
       markPublishPending();
       toast.success("Option name saved");
     }
@@ -205,12 +208,24 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
       }}
     >
       <p style={label}>Part of a collection</p>
-      <p style={{ fontFamily: "var(--font-display, serif)", fontSize: 17, margin: "6px 0 2px", color: "#1a1a1a" }}>
+      <p
+        style={{
+          fontFamily: "var(--font-display, serif)",
+          fontSize: 17,
+          margin: "6px 0 2px",
+          color: "#1a1a1a",
+        }}
+      >
         {family.title}
       </p>
       <p style={{ fontSize: 12, color: "rgba(26,26,26,0.62)", margin: "0 0 12px" }}>
         These {members.length} pieces show as ONE tile at{" "}
-        <a href={`/collection/${family.slug}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
+        <a
+          href={`/collection/${family.slug}`}
+          target="_blank"
+          rel="noreferrer"
+          style={{ textDecoration: "underline" }}
+        >
           /collection/{family.slug}
         </a>
         .
@@ -249,7 +264,6 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
         </ul>
       )}
 
-
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
         {members.map((m, i) => {
           const isCurrent = m.id === itemId;
@@ -264,12 +278,18 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 11, color: "rgba(26,26,26,0.4)", width: 18 }}>{i + 1}</span>
+                <span style={{ fontSize: 11, color: "rgba(26,26,26,0.4)", width: 18 }}>
+                  {i + 1}
+                </span>
                 <span style={{ fontSize: 12, color: "#1a1a1a", flex: 1, minWidth: 0 }}>
                   {m.title}
                   {isCurrent ? " — you are editing this" : ""}
                 </span>
-                <button type="button" style={chip(isLead)} onClick={() => void setLead(isLead ? null : m.rms_id)}>
+                <button
+                  type="button"
+                  style={chip(isLead)}
+                  onClick={() => void setLead(isLead ? null : m.rms_id)}
+                >
                   {isLead ? "Landing piece" : "Make landing"}
                 </button>
                 <button
@@ -312,7 +332,9 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
 
               <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
                 {m.images.length === 0 && (
-                  <span style={{ fontSize: 11, color: "rgba(26,26,26,0.45)" }}>No photos on this piece yet.</span>
+                  <span style={{ fontSize: 11, color: "rgba(26,26,26,0.45)" }}>
+                    No photos on this piece yet.
+                  </span>
                 )}
                 {m.images.map((url) => {
                   const pinned = m.variant_cover_url === url;
@@ -346,7 +368,9 @@ export function FamilyBoard({ itemId }: { itemId: string }) {
         })}
       </ul>
 
-      <p style={{ fontSize: 11, color: "rgba(26,26,26,0.55)", margin: "12px 0 0", lineHeight: 1.5 }}>
+      <p
+        style={{ fontSize: 11, color: "rgba(26,26,26,0.55)", margin: "12px 0 0", lineHeight: 1.5 }}
+      >
         Changes here are saved right away, then go live on the next Publish.
       </p>
     </div>

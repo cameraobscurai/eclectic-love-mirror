@@ -78,9 +78,7 @@ for (const p of catalog.products) {
 /** @type {{ id: string; from: string; to: string; title: string }[]} */
 const movedProducts = [];
 let snapshotExists = existsSync(SNAPSHOT_PATH);
-let snapshot = snapshotExists
-  ? JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"))
-  : null;
+let snapshot = snapshotExists ? JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) : null;
 
 if (snapshot) {
   for (const id of Object.keys(byId)) {
@@ -105,9 +103,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   totalProducts: catalog.products.length,
   perGroupCounts: Object.fromEntries(
-    BROWSE_GROUP_ORDER.map((id) => [id, counts.get(id) ?? 0]).filter(
-      ([, n]) => n > 0,
-    ),
+    BROWSE_GROUP_ORDER.map((id) => [id, counts.get(id) ?? 0]).filter(([, n]) => n > 0),
   ),
   noRuleFiredCount: noRuleFired.length,
   noRuleFired: noRuleFired.map((p) => ({
@@ -141,14 +137,10 @@ if (!snapshotExists || UPDATE) {
   const newSnapshot = {
     generatedAt: new Date().toISOString(),
     totalProducts: catalog.products.length,
-    assignments: Object.fromEntries(
-      Object.entries(byId).map(([id, v]) => [id, v.group]),
-    ),
+    assignments: Object.fromEntries(Object.entries(byId).map(([id, v]) => [id, v.group])),
   };
   writeFileSync(SNAPSHOT_PATH, JSON.stringify(newSnapshot, null, 2));
-  console.log(
-    `\n📸 Snapshot ${snapshotExists ? "UPDATED" : "WRITTEN"} → ${SNAPSHOT_PATH}\n`,
-  );
+  console.log(`\n📸 Snapshot ${snapshotExists ? "UPDATED" : "WRITTEN"} → ${SNAPSHOT_PATH}\n`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -168,9 +160,7 @@ console.log(`  No rule fired (true fallbacks): ${noRuleFired.length}`);
 console.log(`  Low-margin (<${LOW_MARGIN_THRESHOLD}):              ${lowMargin.length}`);
 
 if (movedProducts.length > 0) {
-  console.log(
-    `\n⚠  ${movedProducts.length} product(s) moved groups since the last snapshot:`,
-  );
+  console.log(`\n⚠  ${movedProducts.length} product(s) moved groups since the last snapshot:`);
   for (const m of movedProducts.slice(0, 25)) {
     console.log(`    ${m.from} → ${m.to}    ${m.title}`);
   }
@@ -178,14 +168,10 @@ if (movedProducts.length > 0) {
     console.log(`    … and ${movedProducts.length - 25} more`);
   }
   if (UPDATE) {
-    console.log(
-      "\n   (snapshot was updated — these moves are now the new baseline)",
-    );
+    console.log("\n   (snapshot was updated — these moves are now the new baseline)");
     process.exit(0);
   }
-  console.log(
-    "\n   If these moves are intentional, re-run with --update to lock them in.",
-  );
+  console.log("\n   If these moves are intentional, re-run with --update to lock them in.");
   process.exit(1);
 }
 

@@ -41,9 +41,7 @@ export const listColorRows = createServerFn({ method: "GET" })
   .inputValidator((d) =>
     z
       .object({
-        filter: z
-          .enum(["all", "needs_review", "untagged", "low_confidence", "locked"])
-          .optional(),
+        filter: z.enum(["all", "needs_review", "untagged", "low_confidence", "locked"]).optional(),
         family: z.string().optional(),
         category: z.string().optional(),
         limit: z.number().int().positive().max(2000).optional(),
@@ -72,7 +70,8 @@ export const listColorRows = createServerFn({ method: "GET" })
       slug: String(r.slug),
       title: String(r.title),
       category: (r.category as string) ?? null,
-      hero: Array.isArray(r.images) && r.images.length > 0 ? String((r.images as string[])[0]) : null,
+      hero:
+        Array.isArray(r.images) && r.images.length > 0 ? String((r.images as string[])[0]) : null,
       color_hex: (r.color_hex as string) ?? null,
       color_hex_secondary: (r.color_hex_secondary as string) ?? null,
       color_lightness: r.color_lightness != null ? Number(r.color_lightness) : null,
@@ -107,22 +106,43 @@ export const listColorRows = createServerFn({ method: "GET" })
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 const FAMILIES = [
-  "black","charcoal","grey","brown","tan","cream","white",
-  "red","orange","yellow","green","blue","purple","pink",
-  "metallic-warm","metallic-cool","multi",
+  "black",
+  "charcoal",
+  "grey",
+  "brown",
+  "tan",
+  "cream",
+  "white",
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "pink",
+  "metallic-warm",
+  "metallic-cool",
+  "multi",
 ] as const;
 
 // CIELAB conversion duplicated server-side so we can compute lightness/hue
 // from a manual hex override without trusting client math.
-function srgbToLinear(c: number) { c /= 255; return c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); }
+function srgbToLinear(c: number) {
+  c /= 255;
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
 function rgbToLab(r: number, g: number, b: number) {
-  const R = srgbToLinear(r), G = srgbToLinear(g), B = srgbToLinear(b);
-  const X = (R*0.4124 + G*0.3576 + B*0.1805) / 0.95047;
-  const Y = (R*0.2126 + G*0.7152 + B*0.0722) / 1.00000;
-  const Z = (R*0.0193 + G*0.1192 + B*0.9505) / 1.08883;
-  const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : 7.787*t + 16/116;
-  const fx = f(X), fy = f(Y), fz = f(Z);
-  return [116*fy - 16, 500*(fx-fy), 200*(fy-fz)] as const;
+  const R = srgbToLinear(r),
+    G = srgbToLinear(g),
+    B = srgbToLinear(b);
+  const X = (R * 0.4124 + G * 0.3576 + B * 0.1805) / 0.95047;
+  const Y = (R * 0.2126 + G * 0.7152 + B * 0.0722) / 1.0;
+  const Z = (R * 0.0193 + G * 0.1192 + B * 0.9505) / 1.08883;
+  const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+  const fx = f(X),
+    fy = f(Y),
+    fz = f(Z);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)] as const;
 }
 
 export const overrideColor = createServerFn({ method: "POST" })
@@ -170,9 +190,7 @@ export const overrideColor = createServerFn({ method: "POST" })
 
 export const setColorLocked = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
-  .inputValidator((d) =>
-    z.object({ rms_id: z.string().min(1), locked: z.boolean() }).parse(d),
-  )
+  .inputValidator((d) => z.object({ rms_id: z.string().min(1), locked: z.boolean() }).parse(d))
   .handler(async ({ data }) => {
     const { error } = await supabaseAdmin
       .from("inventory_items")
@@ -189,9 +207,7 @@ export type ClearColorResult =
 
 export const clearColorTag = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
-  .inputValidator((d) =>
-    z.object({ rms_id: z.string().min(1) }).parse(d),
-  )
+  .inputValidator((d) => z.object({ rms_id: z.string().min(1) }).parse(d))
   .handler(async ({ data }): Promise<ClearColorResult> => {
     // Look up first so we can distinguish locked vs missing vs cleared.
     const { data: existing, error: readErr } = await supabaseAdmin

@@ -25,13 +25,29 @@ if (!API_KEY) {
 // sofas-loveseats1 + chairs-stools1 + benches-ottomans1, etc.). The build
 // script will resolve a product against the most specific match it has.
 const SOURCES = [
-  { live: "lounge", url: "https://www.eclectichive.com/lounge", maps: ["lounge", "sofas-loveseats1", "chairs-stools1", "benches-ottomans1"] },
-  { live: "lounge-tables", url: "https://www.eclectichive.com/lounge-tables", maps: ["lounge-tables", "tables1"] },
-  { live: "cocktail-bar", url: "https://www.eclectichive.com/cocktail-bar", maps: ["cocktail-bar", "bars1"] },
+  {
+    live: "lounge",
+    url: "https://www.eclectichive.com/lounge",
+    maps: ["lounge", "sofas-loveseats1", "chairs-stools1", "benches-ottomans1"],
+  },
+  {
+    live: "lounge-tables",
+    url: "https://www.eclectichive.com/lounge-tables",
+    maps: ["lounge-tables", "tables1"],
+  },
+  {
+    live: "cocktail-bar",
+    url: "https://www.eclectichive.com/cocktail-bar",
+    maps: ["cocktail-bar", "bars1"],
+  },
   { live: "dining", url: "https://www.eclectichive.com/dining", maps: ["dining"] },
   { live: "tableware", url: "https://www.eclectichive.com/tableware", maps: ["tableware"] },
   { live: "light", url: "https://www.eclectichive.com/light", maps: ["light"] },
-  { live: "textiles", url: "https://www.eclectichive.com/textiles", maps: ["textiles", "pillows-throws1"] },
+  {
+    live: "textiles",
+    url: "https://www.eclectichive.com/textiles",
+    maps: ["textiles", "pillows-throws1"],
+  },
   { live: "rugs", url: "https://www.eclectichive.com/rugs", maps: ["rugs"] },
   { live: "styling", url: "https://www.eclectichive.com/styling", maps: ["styling", "accents1"] },
   { live: "large-decor", url: "https://www.eclectichive.com/large-decor", maps: ["large-decor"] },
@@ -41,7 +57,7 @@ async function scrape(url) {
   const res = await fetch("https://api.firecrawl.dev/v2/scrape", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${API_KEY}`,
+      Authorization: `Bearer ${API_KEY}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -72,7 +88,12 @@ function extractTitles(markdown) {
     const t = m[1].trim();
     // Skip the page header (the category name itself often appears as h1).
     // Heuristic: skip headings that match a known nav label exactly.
-    if (/^(lounge seating|lounge tables|cocktail & bar|dining|tableware|lighting|textiles|rugs|styling|large decor|inventory)$/i.test(t)) continue;
+    if (
+      /^(lounge seating|lounge tables|cocktail & bar|dining|tableware|lighting|textiles|rugs|styling|large decor|inventory)$/i.test(
+        t,
+      )
+    )
+      continue;
     // De-dupe — Squarespace sometimes duplicates titles in alt text blocks.
     const key = t.toLowerCase();
     if (seen.has(key)) continue;

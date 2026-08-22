@@ -24,7 +24,8 @@ import {
   useNavigate,
   ErrorComponent,
 } from "@tanstack/react-router";
-import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
+import { type CollectionProduct } from "@/lib/phase3-catalog";
+import { getPdpProduct, getParentFallbackImage } from "@/lib/pdp.functions";
 import { Navigation } from "@/components/navigation";
 import {
   PARENT_LABELS,
@@ -49,7 +50,6 @@ import {
   resolveVariant,
   variantKey,
 } from "@/components/pdp/VariantConfigurator";
-
 
 const SITE = "https://eclectichive.com";
 
@@ -101,8 +101,7 @@ const PARENT_DESCRIPTIONS: Record<ParentId, string> = {
     "Candlelight, chandeliers, lamps, and specialty lighting from Eclectic Hive's rental archive. Built for ambient, editorial events.",
   textiles:
     "Pillows, throws, and hides — texture for lounges, ceremony seating, and styled corners. From Eclectic Hive's curated event rental archive.",
-  rugs:
-    "Vintage and contemporary rugs for ceremony aisles, lounge floors, and outdoor installations. Eclectic Hive's rug program for event rental.",
+  rugs: "Vintage and contemporary rugs for ceremony aisles, lounge floors, and outdoor installations. Eclectic Hive's rug program for event rental.",
   styling:
     "Accents, crates, baskets, and styling props. The detail layer for editorial event design — by Eclectic Hive.",
   "large-decor":
@@ -118,10 +117,13 @@ function absoluteCover(parent: ParentId): string | null {
 }
 
 type ParentLoad = { kind: "parent"; parent: ParentId; fallbackImage: string | null };
+// Deliberately does NOT carry the catalog. Everything the PDP needs beyond
+// this one product (the related rails, prev/next) is derived client-side from
+// the shared catalog chunk — see RelatedPieces. Returning `allProducts` here
+// serialized ~950KB of JSON into every product page's HTML.
 type ProductLoad = {
   kind: "product";
   product: CollectionProduct;
-  allProducts: CollectionProduct[];
 };
 type LoadResult = ParentLoad | ProductLoad;
 
@@ -140,23 +142,14 @@ export const Route = createFileRoute("/collection_/$slug")({
   loader: async ({ params }): Promise<LoadResult> => {
     if (isParentId(params.slug)) {
       const parent = params.slug as ParentId;
-      let fallbackImage: string | null = null;
-      if (!PARENT_HERO_GROUP[parent]) {
-        const catalog = await getCollectionCatalog();
-        const firstImaged = catalog.products.find(
-          (p) => p.collectionSlug === parent && p.primaryImage?.url,
-        );
-        fallbackImage = firstImaged?.primaryImage?.url ?? null;
-      }
+      const fallbackImage = PARENT_HERO_GROUP[parent]
+        ? null
+        : await getParentFallbackImage({ data: { slug: parent } });
       return { kind: "parent", parent, fallbackImage };
     }
-    const catalog = await getCollectionCatalog();
-    const product =
-      catalog.products.find((p) => p.slug === params.slug) ??
-      catalog.products.find((p) => p.id === params.slug) ??
-      null;
+    const product = await getPdpProduct({ data: { slug: params.slug } });
     if (!product) throw notFound();
-    return { kind: "product", product, allProducts: catalog.products };
+    return { kind: "product", product };
   },
   head: ({ loaderData, params }) => {
     const data = loaderData as LoadResult | undefined;
@@ -168,10 +161,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       const label = PARENT_LABELS[parent];
       const desc = PARENT_DESCRIPTIONS[parent];
       const url = parentUrl(parent);
-      const img =
-        absoluteCover(parent) ??
-        toAbsolute(data.fallbackImage) ??
-        COLLECTION_DEFAULT_OG;
+      const img = absoluteCover(parent) ?? toAbsolute(data.fallbackImage) ?? COLLECTION_DEFAULT_OG;
       const title = `${label} — Event Rental Archive | Eclectic Hive`;
 
       const jsonLd = {
@@ -218,10 +208,7 @@ export const Route = createFileRoute("/collection_/$slug")({
     const product = data?.kind === "product" ? data.product : undefined;
     if (!product) {
       return {
-        meta: [
-          { title: "Not Found — Eclectic Hive" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Not Found — Eclectic Hive" }, { name: "robots", content: "noindex" }],
       };
     }
 
@@ -281,9 +268,7 @@ export const Route = createFileRoute("/collection_/$slug")({
             ]
           : []),
       ],
-      links: [
-        { rel: "canonical", href: url },
-      ],
+      links: [{ rel: "canonical", href: url }],
       scripts: [
         {
           type: "application/ld+json",
@@ -297,9 +282,7 @@ export const Route = createFileRoute("/collection_/$slug")({
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
       <main className="mx-auto max-w-3xl px-6 py-32 text-center">
-        <h1 className="font-display text-3xl tracking-wide uppercase mb-4">
-          Piece Not Found
-        </h1>
+        <h1 className="font-display text-3xl tracking-wide uppercase mb-4">Piece Not Found</h1>
         <p className="text-sm tracking-widest uppercase text-muted-foreground mb-8">
           This item may have been retired or renamed.
         </p>
@@ -318,7 +301,7 @@ export const Route = createFileRoute("/collection_/$slug")({
 function SlugRoutePage() {
   const data = Route.useLoaderData() as LoadResult;
   if (data.kind === "parent") return <ParentLandingPage parent={data.parent} />;
-  return <ProductDetailPage product={data.product} allProducts={data.allProducts} />;
+  return <ProductDetailPage product={data.product} />;
 }
 
 // Category landing: SSR emits real h1 + intro copy for crawlers; on mount,
@@ -352,12 +335,8 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
         <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mb-6">
           The Collection
         </p>
-        <h1 className="font-display text-4xl lg:text-5xl tracking-wide uppercase mb-6">
-          {label}
-        </h1>
-        <p className="text-sm leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-10">
-          {desc}
-        </p>
+        <h1 className="font-display text-4xl lg:text-5xl tracking-wide uppercase mb-6">{label}</h1>
+        <p className="text-sm leading-relaxed text-foreground/80 max-w-2xl mx-auto mb-10">{desc}</p>
         {img && (
           <img
             src={img}
@@ -379,19 +358,13 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
   );
 }
 
-function ProductDetailPage({
-  product,
-  allProducts,
-}: {
-  product: CollectionProduct;
-  allProducts: CollectionProduct[];
-}) {
+function ProductDetailPage({ product }: { product: CollectionProduct }) {
   // Breadcrumb reads the DECLARED taxonomy. Unassigned products keep a
   // reachable PDP — they simply lose the category crumb instead of 404ing.
   const parent = productParent(product);
   const category = productCategory(product);
   const categoryLabel = parent
-    ? PARENT_SUBS[parent].find((s) => s.id === category)?.label ?? PARENT_LABELS[parent]
+    ? (PARENT_SUBS[parent].find((s) => s.id === category)?.label ?? PARENT_LABELS[parent])
     : null;
   const crumbLabel = categoryLabel ?? product.displayCategory;
 
@@ -424,13 +397,7 @@ function ProductDetailPage({
   const swatches = [product.colorHex, product.colorHexSecondary].filter(
     (h): h is string => typeof h === "string" && /^#[0-9a-f]{3,8}$/i.test(h),
   );
-  const colorLine = [product.colorFamily, product.colorTemperature]
-    .filter(Boolean)
-    .join(" · ");
-
-
-
-
+  const colorLine = [product.colorFamily, product.colorTemperature].filter(Boolean).join(" · ");
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -460,7 +427,9 @@ function ProductDetailPage({
           >
             <span aria-hidden>←</span> Back
           </button>
-          <span aria-hidden className="opacity-30">|</span>
+          <span aria-hidden className="opacity-30">
+            |
+          </span>
           <Link to="/collection" className="hover:text-foreground transition-colors">
             Collection
           </Link>
@@ -472,14 +441,15 @@ function ProductDetailPage({
           >
             {crumbLabel}
           </Link>
-          <span aria-hidden className="opacity-30 ml-auto">|</span>
+          <span aria-hidden className="opacity-30 ml-auto">
+            |
+          </span>
           <ShareButton
             title={selected?.title ?? product.title}
             slug={product.slug ?? String(product.id)}
             variantKey={selected ? variantKey(selected) : null}
           />
         </nav>
-
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
           {/* Editorial stage — resolution-safe primary + secondary grid,
@@ -579,18 +549,15 @@ function ProductDetailPage({
                         {stockCount && (
                           <span className="flex items-center gap-1" aria-hidden>
                             {Array.from({ length: Math.min(stockCount, 12) }).map((_, i) => (
-                              <span
-                                key={i}
-                                className="h-1.5 w-1.5 rounded-full bg-foreground/70"
-                              />
+                              <span key={i} className="h-1.5 w-1.5 rounded-full bg-foreground/70" />
                             ))}
                           </span>
                         )}
                         <span className="text-sm leading-relaxed">{stockLabel}</span>
                       </div>
                       <p className="mt-3 text-xs leading-relaxed text-foreground/60">
-                        We confirm what&rsquo;s free for your date when you send the
-                        inquiry — nothing here is held until then.
+                        We confirm what&rsquo;s free for your date when you send the inquiry —
+                        nothing here is held until then.
                       </p>
                     </>
                   )}
@@ -626,16 +593,13 @@ function ProductDetailPage({
                 to="/contact"
                 className="block w-full text-center py-3 text-[10px] tracking-[0.28em] uppercase text-foreground/70 border border-foreground/20 hover:text-foreground hover:border-foreground/60 transition-colors"
               >
-                {inquiry.count > 0
-                  ? `Review inquiry (${inquiry.count})`
-                  : "Contact the studio"}
+                {inquiry.count > 0 ? `Review inquiry (${inquiry.count})` : "Contact the studio"}
               </Link>
             </div>
           </div>
         </div>
 
-
-        <RelatedPieces product={product} allProducts={allProducts} />
+        <RelatedPieces product={product} />
       </main>
     </div>
   );

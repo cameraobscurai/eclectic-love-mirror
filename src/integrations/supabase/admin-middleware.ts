@@ -23,7 +23,6 @@ export function invalidateRoleCache(userId?: string) {
   else roleCache.clear();
 }
 
-
 async function loadRoles(
   supabase: { from: (t: "user_roles") => any },
   userId: string,
@@ -31,10 +30,7 @@ async function loadRoles(
   const hit = roleCache.get(userId);
   if (hit && hit.expires > Date.now()) return hit.roles;
 
-  const { data, error } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId);
+  const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId);
 
   if (error) {
     console.error("[roleGate] role lookup failed:", error);
@@ -61,7 +57,6 @@ function makeRoleGate(allowed: readonly AppRole[]) {
       return next({ context: { role } });
     });
 }
-
 
 export const requireAdmin = makeRoleGate(["admin"]);
 export const requireStaffOrAdmin = makeRoleGate(["admin", "staff"]);

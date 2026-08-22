@@ -46,7 +46,9 @@ function ImageQA() {
     (async () => {
       const { data } = await supabase
         .from("inventory_items")
-        .select("id,rms_id,title,category,images,public_ready,hidden_note,card_background_url,updated_at")
+        .select(
+          "id,rms_id,title,category,images,public_ready,hidden_note,card_background_url,updated_at",
+        )
         .neq("status", "draft")
         .order("category")
         .order("title")
@@ -132,7 +134,8 @@ function ImageQA() {
       <div className="mx-auto max-w-7xl">
         <h1 className="font-serif text-4xl text-[hsl(var(--charcoal))]">IMAGE QA</h1>
         <p className="mt-2 text-sm uppercase tracking-widest text-[hsl(var(--charcoal))]/70">
-          {filtered.length} ITEMS · OK {counts.ok} · MISSING {counts.missing} · BROKEN {counts.broken} · LOADING {counts.loading} · HIDDEN {hiddenCount}
+          {filtered.length} ITEMS · OK {counts.ok} · MISSING {counts.missing} · BROKEN{" "}
+          {counts.broken} · LOADING {counts.loading} · HIDDEN {hiddenCount}
         </p>
 
         <div className="mt-6 flex flex-wrap gap-2">
@@ -187,10 +190,17 @@ function ImageQA() {
                     ? "ring-2 ring-red-600"
                     : "ring-2 ring-neutral-400";
             return (
-              <div key={it.id} className={`relative bg-white ${ring} ${hidden ? "opacity-60" : ""}`}>
+              <div
+                key={it.id}
+                className={`relative bg-white ${ring} ${hidden ? "opacity-60" : ""}`}
+              >
                 <div className="aspect-square bg-neutral-100 flex items-center justify-center overflow-hidden">
                   {it.images?.[0] && s !== "broken" ? (
-                    <img src={it.images[0]} alt={it.title} className={`h-full w-full object-cover ${hidden ? "grayscale" : ""}`} />
+                    <img
+                      src={it.images[0]}
+                      alt={it.title}
+                      className={`h-full w-full object-cover ${hidden ? "grayscale" : ""}`}
+                    />
                   ) : (
                     <span className="text-xs uppercase tracking-widest text-neutral-500">
                       {s === "broken" ? "404" : "NO IMAGE"}

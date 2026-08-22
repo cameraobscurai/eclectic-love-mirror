@@ -68,7 +68,6 @@ export const Route = createRootRoute({
     return peek ? { peek } : {};
   },
 
-
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -81,8 +80,16 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: "ECLECTIC HIVE" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/BmgCc4OLNyNSZ471TxWoDK8we002/social-images/social-1778320784967-Screenshot_2026-05-09_at_3.59.24_AM.webp",
+      },
       { name: "google-site-verification", content: "uiC6Uylte-uDMLi1vmcTQZ4b3s3Om3rnI4v-vTDl-uk" },
     ],
     links: [
@@ -115,8 +122,7 @@ export const Route = createRootRoute({
       {
         rel: "icon",
         type: "image/svg+xml",
-        href:
-          "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='20' fill='%23f5f2ed' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
+        href: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='20' fill='%23f5f2ed' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
       },
     ],
   }),
@@ -159,20 +165,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="en" className="bg-charcoal">
       <head>
         <HeadContent />
-        <script
-          type="speculationrules"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
-        />
+        <script type="speculationrules" dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }} />
       </head>
       <body className="antialiased">
         {children}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
         <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        />
-        <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });`,
           }}
@@ -187,9 +185,12 @@ function RootComponent() {
   const { pathname, search, hash } = useLocation();
   const isHome = pathname === "/";
   // One QueryClient per browser session. Lazy-init so SSR doesn't share state across requests.
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } },
-  }));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { staleTime: 30_000, refetchOnWindowFocus: false } },
+      }),
+  );
 
   // Register the tile-cache service worker exactly once on the client.
   // The wrapper refuses registration in dev, iframes, Lovable preview, and
@@ -197,7 +198,6 @@ function RootComponent() {
   useEffect(() => {
     import("../lib/sw-register").then((m) => m.registerAppServiceWorker());
   }, []);
-
 
   // Send a GA4 page_view on every TanStack route change.
   // NEVER send window.location.href: /stylebrief/$token puts a live share
@@ -207,14 +207,16 @@ function RootComponent() {
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.gtag !== "function") return;
     if (/^\/(stylebrief|admin)(\/|$)/.test(pathname)) return;
-    const path = pathname + (search ? `?${new URLSearchParams(search as Record<string, string>).toString()}` : "") + (hash ?? "");
+    const path =
+      pathname +
+      (search ? `?${new URLSearchParams(search as Record<string, string>).toString()}` : "") +
+      (hash ?? "");
     window.gtag("event", "page_view", {
       page_path: path,
       page_location: window.location.origin + path,
       page_title: document.title,
     });
   }, [pathname, search, hash]);
-
 
   // Native scroll-to-top on FORWARD route change only. TanStack's
   // scrollRestoration handles back/forward — we must not override it or
@@ -232,18 +234,14 @@ function RootComponent() {
     const peekChanged = lastPeekRef.current !== peek;
     lastPeekRef.current = peek;
     if (hash) return;
-    const idx =
-      (window.history.state as { __TSR_index?: number } | null)?.__TSR_index ??
-      null;
-    const isForward =
-      lastIndexRef.current === null || idx === null || idx > lastIndexRef.current;
+    const idx = (window.history.state as { __TSR_index?: number } | null)?.__TSR_index ?? null;
+    const isForward = lastIndexRef.current === null || idx === null || idx > lastIndexRef.current;
     lastIndexRef.current = idx;
     if (peekChanged || peek) return;
     if (isForward) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
   }, [pathname, hash, peek]);
-
 
   // Routes that should render as a single self-contained fold — no global
   // footer, the page owns its own bottom edge. Atelier & Gallery keep the
@@ -290,5 +288,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
-

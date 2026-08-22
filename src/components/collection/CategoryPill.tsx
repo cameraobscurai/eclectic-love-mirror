@@ -43,9 +43,7 @@ export function CategoryPill({
         isSub
           ? "text-[11px] tracking-[0.16em] px-3 py-1.5"
           : "text-xs tracking-[0.18em] px-3 py-2.5 pb-3",
-        active
-          ? "text-charcoal"
-          : "text-charcoal/55 hover:text-charcoal",
+        active ? "text-charcoal" : "text-charcoal/55 hover:text-charcoal",
       )}
       style={{ transition: "color 150ms, transform 100ms" }}
     >
@@ -57,11 +55,7 @@ export function CategoryPill({
             "absolute left-2 right-2 bottom-0 bg-charcoal",
             isSub ? "h-[1.5px]" : "h-[2px]",
           )}
-          transition={
-            reduced
-              ? { duration: 0 }
-              : { type: "spring", stiffness: 500, damping: 35 }
-          }
+          transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 35 }}
         />
       )}
     </button>

@@ -15,13 +15,13 @@ injection). This run tests current health rather than re-diagnosing.
 
 ## Run 1 — found one live defect
 
-| Time (UTC) | Step | Observed |
-|---|---|---|
-| 08:29:52 | Live PDP before | cover = `DARNELL LED Uplight 1.png?v=1786482743` |
-| 08:30:10 | Admin: "Set as cover" on image 2, autosaved | row `updated_at` → 08:30:09 |
-| 08:30:14 | Live PDP, saved but NOT published | cover unchanged — publish gate holds (R8) |
-| 08:30:31 | Publish clicked, completed | overlay blob written |
-| 08:30:37 | Live PDP after | cover = `DARNELL Uplight 2.png?v=1786482743` |
+| Time (UTC) | Step                                        | Observed                                         |
+| ---------- | ------------------------------------------- | ------------------------------------------------ |
+| 08:29:52   | Live PDP before                             | cover = `DARNELL LED Uplight 1.png?v=1786482743` |
+| 08:30:10   | Admin: "Set as cover" on image 2, autosaved | row `updated_at` → 08:30:09                      |
+| 08:30:14   | Live PDP, saved but NOT published           | cover unchanged — publish gate holds (R8)        |
+| 08:30:31   | Publish clicked, completed                  | overlay blob written                             |
+| 08:30:37   | Live PDP after                              | cover = `DARNELL Uplight 2.png?v=1786482743`     |
 
 Cover swap: PASS. Publish gating: PASS.
 **Defect:** `?v=` did not move. The buster came from the baked catalog's
@@ -39,13 +39,13 @@ old bytes. That is a live mechanism for "the photo reverted."
 
 ## Run 2 — verification after the fix
 
-| Time (UTC) | Step | Observed |
-|---|---|---|
-| 08:34:08 | Live PDP before | `DARNELL LED Uplight 1.png?v=1786482743` |
-| 08:34:25 | Admin cover swap, autosaved | row `updated_at` → 08:34:22 |
-| 08:34:30 | Live PDP, saved not published | unchanged — gate holds |
-| 08:34:38 | Publish completed | new overlay blob |
-| 08:35:50 | Live PDP after | `DARNELL Uplight 2.png?v=1786523662` |
+| Time (UTC) | Step                          | Observed                                 |
+| ---------- | ----------------------------- | ---------------------------------------- |
+| 08:34:08   | Live PDP before               | `DARNELL LED Uplight 1.png?v=1786482743` |
+| 08:34:25   | Admin cover swap, autosaved   | row `updated_at` → 08:34:22              |
+| 08:34:30   | Live PDP, saved not published | unchanged — gate holds                   |
+| 08:34:38   | Publish completed             | new overlay blob                         |
+| 08:35:50   | Live PDP after                | `DARNELL Uplight 2.png?v=1786523662`     |
 
 New URL **and** new version stamp (`1786523662` = the row's live `updated_at`).
 PASS.

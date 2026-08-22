@@ -57,8 +57,7 @@ export function useOrderedGalleryProjects(): GalleryProject[] {
 
   return useMemo<GalleryProject[]>(() => {
     const src =
-      liveOrders ??
-      ((bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {});
+      liveOrders ?? (bakedGalleryOrders as { orders?: Record<string, string[]> }).orders ?? {};
     const orders = new Map<string, string[]>();
     for (const [slug, keys] of Object.entries(src)) {
       if (Array.isArray(keys) && keys.length > 0) orders.set(slug, keys);

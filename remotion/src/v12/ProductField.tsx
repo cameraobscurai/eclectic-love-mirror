@@ -30,7 +30,10 @@ function restPos(c: number, r: number): [number, number, number] {
 }
 
 // Find the match-cut tile index (first seating product) — for macro phase
-const MATCH_INDEX = Math.max(0, manifest.tiles.findIndex((t) => t.category === "seating"));
+const MATCH_INDEX = Math.max(
+  0,
+  manifest.tiles.findIndex((t) => t.category === "seating"),
+);
 const MATCH_COL = MATCH_INDEX % COLS;
 const MATCH_ROW = Math.floor(MATCH_INDEX / COLS);
 const MATCH_REST = restPos(MATCH_COL, MATCH_ROW);
@@ -54,10 +57,10 @@ textiles.forEach(({ i }, idx) => {
 interface CardProps {
   tile: Tile;
   index: number;
-  fieldBuild: number;     // 0→1 cards fade in
-  tonalSort: number;      // 0→1 textile migration
-  macroLock: number;      // 0→1 match-cut card moves to camera focus
-  exit: number;           // 0→1 all cards fade out as we transition
+  fieldBuild: number; // 0→1 cards fade in
+  tonalSort: number; // 0→1 textile migration
+  macroLock: number; // 0→1 match-cut card moves to camera focus
+  exit: number; // 0→1 all cards fade out as we transition
 }
 
 const Card: React.FC<CardProps> = ({ tile, index, fieldBuild, tonalSort, macroLock, exit }) => {
@@ -131,7 +134,13 @@ const Card: React.FC<CardProps> = ({ tile, index, fieldBuild, tonalSort, macroLo
 };
 
 // Backdrop card (the white square behind each silhouette, matching v11 cards)
-const Backdrop: React.FC<{ index: number; fieldBuild: number; tonalSort: number; macroLock: number; exit: number; }> = ({ index, fieldBuild, tonalSort, macroLock, exit }) => {
+const Backdrop: React.FC<{
+  index: number;
+  fieldBuild: number;
+  tonalSort: number;
+  macroLock: number;
+  exit: number;
+}> = ({ index, fieldBuild, tonalSort, macroLock, exit }) => {
   const c = index % COLS;
   const r = Math.floor(index / COLS);
   const rest = restPos(c, r);
@@ -187,8 +196,21 @@ export const ProductField: React.FC = () => {
     <group>
       {manifest.tiles.slice(0, TOTAL).map((tile, i) => (
         <React.Fragment key={tile.slug}>
-          <Backdrop index={i} fieldBuild={fieldBuild} tonalSort={tonalSort} macroLock={macroLock} exit={exit} />
-          <Card tile={tile} index={i} fieldBuild={fieldBuild} tonalSort={tonalSort} macroLock={macroLock} exit={exit} />
+          <Backdrop
+            index={i}
+            fieldBuild={fieldBuild}
+            tonalSort={tonalSort}
+            macroLock={macroLock}
+            exit={exit}
+          />
+          <Card
+            tile={tile}
+            index={i}
+            fieldBuild={fieldBuild}
+            tonalSort={tonalSort}
+            macroLock={macroLock}
+            exit={exit}
+          />
         </React.Fragment>
       ))}
     </group>

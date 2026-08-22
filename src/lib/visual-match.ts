@@ -5,7 +5,11 @@
 
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 
-interface RGB { r: number; g: number; b: number }
+interface RGB {
+  r: number;
+  g: number;
+  b: number;
+}
 
 function hexToRgb(hex: string): RGB | null {
   if (!hex || hex[0] !== "#" || hex.length !== 7) return null;

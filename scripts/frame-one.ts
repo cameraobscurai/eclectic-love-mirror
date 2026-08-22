@@ -76,7 +76,9 @@ const out = await renderCover({
   collectionSlug: row.collection_slug,
 });
 
-console.log(`  measure  ${out.measurement.method} conf=${out.measurement.confidence} bbox=${JSON.stringify(out.bboxPx)}`);
+console.log(
+  `  measure  ${out.measurement.method} conf=${out.measurement.confidence} bbox=${JSON.stringify(out.bboxPx)}`,
+);
 console.log(`  recipe   ${JSON.stringify(out.recipe.placement)}  bg=${out.background}`);
 console.log(`  resample ${out.resampleFactor.toFixed(3)}x  canvas ${CANVAS_W}x${CANVAS_H}`);
 for (const a of out.verify.advisories) console.log(`  advisory ${a.code}: ${a.message}`);

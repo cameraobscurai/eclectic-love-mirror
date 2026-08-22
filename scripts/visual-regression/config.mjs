@@ -49,5 +49,4 @@ export const DIFF_OPTIONS = {
 
 // Default base URL — override with --url=... flag.
 export const DEFAULT_BASE_URL =
-  process.env.VR_BASE_URL ||
-  "https://id-preview--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app";
+  process.env.VR_BASE_URL || "https://id-preview--a0ee6478-cac8-4430-9157-0742820605f7.lovable.app";

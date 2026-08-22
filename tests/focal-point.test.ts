@@ -60,7 +60,13 @@ describe("focalToFrame", () => {
   it("keeps focal inside the frame for every corner of any aspect", () => {
     for (const aspect of [0.4, 0.8, 1.25, 2.59, 5]) {
       const { renderedW, renderedH } = rendered(aspect, FRAME);
-      for (const [px, py] of [[0, 0], [1, 0], [0, 1], [1, 1], [0.5, 0.5]]) {
+      for (const [px, py] of [
+        [0, 0],
+        [1, 0],
+        [0, 1],
+        [1, 1],
+        [0.5, 0.5],
+      ]) {
         const { fx, fy } = focalToFrame(px, py, renderedW, renderedH);
         expect(fx).toBeGreaterThanOrEqual(0);
         expect(fx).toBeLessThanOrEqual(1);

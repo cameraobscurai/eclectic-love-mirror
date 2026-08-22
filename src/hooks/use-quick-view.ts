@@ -33,7 +33,7 @@ export function useQuickView() {
     select: (s) => ({
       pathname: s.location.pathname,
       search: s.location.search as Record<string, unknown>,
-      peek: ((s.location.search as { peek?: string }).peek ?? ""),
+      peek: (s.location.search as { peek?: string }).peek ?? "",
     }),
   });
 
@@ -77,8 +77,6 @@ export function useQuickView() {
       resetScroll: false,
     });
   }, [navigate, pathname, search]);
-
-
 
   return { peek, open, close };
 }

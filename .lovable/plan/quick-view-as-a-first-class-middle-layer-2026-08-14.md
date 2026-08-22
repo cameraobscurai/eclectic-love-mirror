@@ -17,6 +17,7 @@ This replaces that with a single global Quick View host plus one shared opener h
 TanStack Router supports **route masking**: navigate for real to one place while the browser displays a different URL, and on reload the displayed URL wins.
 
 Applied here:
+
 - **Real navigation:** stay on the current route, add a global `peek=<slug>` search param. That keeps the collection's filters, sort, layout, and scroll fully intact, and it works identically from `/collection` or from a product page.
 - **Displayed URL:** masked to `/collection/$slug`.
 - **Reload / share / crawler:** the mask is not persisted, so the request resolves to the real product page — a full SSR page with its own metadata. No modal-only URL ever escapes into the wild.

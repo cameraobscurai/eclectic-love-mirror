@@ -10,20 +10,37 @@ const toneConfig = [
   { key: "muted", label: "Muted", fill: "hsl(45, 5%, 68%)" },
 ] as const;
 
-export function TonesTab({ tones, imageCount }: { tones: ToneAnalysis | null; imageCount: number }) {
+export function TonesTab({
+  tones,
+  imageCount,
+}: {
+  tones: ToneAnalysis | null;
+  imageCount: number;
+}) {
   if (!tones) {
-    return <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 p-4">Run analyze to read tones</p>;
+    return (
+      <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/45 p-4">
+        Run analyze to read tones
+      </p>
+    );
   }
-  const temp = tones.warm > tones.cool
-    ? (tones.warm > tones.neutral ? "Warm" : "Warm-neutral")
-    : (tones.cool > tones.neutral ? "Cool" : "Cool-neutral");
+  const temp =
+    tones.warm > tones.cool
+      ? tones.warm > tones.neutral
+        ? "Warm"
+        : "Warm-neutral"
+      : tones.cool > tones.neutral
+        ? "Cool"
+        : "Cool-neutral";
   const value = tones.light > tones.dark ? "Light" : "Dark";
   const sat = tones.saturated > tones.muted ? "Vibrant" : "Subdued";
 
   return (
     <div>
       <div className="p-4 border-b border-charcoal/10">
-        <h3 className="text-[10px] uppercase tracking-[0.24em] text-charcoal/50 mb-3">Temperature & value</h3>
+        <h3 className="text-[10px] uppercase tracking-[0.24em] text-charcoal/50 mb-3">
+          Temperature & value
+        </h3>
         <div className="space-y-2">
           {toneConfig.map((t) => (
             <div key={t.key} className="space-y-1">
@@ -32,7 +49,10 @@ export function TonesTab({ tones, imageCount }: { tones: ToneAnalysis | null; im
                 <span className="tabular-nums">{tones[t.key]}%</span>
               </div>
               <div className="h-[3px] bg-charcoal/10 overflow-hidden">
-                <div className="h-full transition-all duration-500" style={{ width: `${tones[t.key]}%`, background: t.fill }} />
+                <div
+                  className="h-full transition-all duration-500"
+                  style={{ width: `${tones[t.key]}%`, background: t.fill }}
+                />
               </div>
             </div>
           ))}
@@ -49,7 +69,9 @@ export function TonesTab({ tones, imageCount }: { tones: ToneAnalysis | null; im
           ].map((s) => (
             <div key={s.label} className="bg-cream p-3">
               <p className="font-display text-lg leading-none">{s.val}</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50 mt-1.5">{s.label}</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50 mt-1.5">
+                {s.label}
+              </p>
             </div>
           ))}
         </div>

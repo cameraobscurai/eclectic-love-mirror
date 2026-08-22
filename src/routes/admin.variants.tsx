@@ -28,10 +28,7 @@ export const Route = createFileRoute("/admin/variants")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   component: VariantSetup,
   head: () => ({
-    meta: [
-      { title: "Variant Setup — Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Variant Setup — Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
 });
 
@@ -175,7 +172,10 @@ function VariantSetup() {
           ? {
               ...f,
               option_name: axis.trim(),
-              members: f.members.map((m) => ({ ...m, variant_label: labels[m.id] || m.variant_label })),
+              members: f.members.map((m) => ({
+                ...m,
+                variant_label: labels[m.id] || m.variant_label,
+              })),
             }
           : f,
       ),
@@ -186,16 +186,17 @@ function VariantSetup() {
 
   async function turnOff() {
     if (!current) return;
-    const res = await runAdminMutation(() => clearFamilySetup({ data: { familyId: current.id, batchId } }), {
-      surface: "variants:clear",
-      errorMessage: "Couldn't turn this collection off.",
-    });
+    const res = await runAdminMutation(
+      () => clearFamilySetup({ data: { familyId: current.id, batchId } }),
+      {
+        surface: "variants:clear",
+        errorMessage: "Couldn't turn this collection off.",
+      },
+    );
     if (!res.ok) return;
     toast.success("Back to a plain photo gallery.");
     void refreshHistory();
-    setFamilies((prev) =>
-      prev.map((f) => (f.id === current.id ? { ...f, option_name: null } : f)),
-    );
+    setFamilies((prev) => prev.map((f) => (f.id === current.id ? { ...f, option_name: null } : f)));
   }
 
   const dupe = (() => {
@@ -214,8 +215,8 @@ function VariantSetup() {
       <header className="mb-8">
         <h1 className="font-display text-3xl uppercase tracking-[0.12em]">Variant setup</h1>
         <p className="mt-3 max-w-2xl text-sm uppercase tracking-[0.08em] text-muted-foreground">
-          Some products come in a set — sizes, finishes, pieces. Tell us what makes them
-          different and the live product page gets a picker instead of a pile of photos.
+          Some products come in a set — sizes, finishes, pieces. Tell us what makes them different
+          and the live product page gets a picker instead of a pile of photos.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.1em]">
           <span className="text-muted-foreground">
@@ -237,9 +238,7 @@ function VariantSetup() {
       {loading && <p className="text-sm uppercase tracking-[0.1em]">Loading…</p>}
 
       {!loading && !current && (
-        <p className="text-sm uppercase tracking-[0.1em]">
-          Nothing left in this list. Nice.
-        </p>
+        <p className="text-sm uppercase tracking-[0.1em]">Nothing left in this list. Nice.</p>
       )}
 
       {current && (
@@ -389,8 +388,8 @@ function VariantSetup() {
                     {b.families.length > 3 ? ` +${b.families.length - 3} more` : ""}
                   </p>
                   <p className="mt-1 text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
-                    {new Date(b.at).toLocaleString()} ·{" "}
-                    {b.families.length} collection{b.families.length === 1 ? "" : "s"}
+                    {new Date(b.at).toLocaleString()} · {b.families.length} collection
+                    {b.families.length === 1 ? "" : "s"}
                     {b.batchId === batchId ? " · this session" : ""}
                   </p>
                 </div>

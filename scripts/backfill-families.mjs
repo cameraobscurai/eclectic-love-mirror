@@ -36,9 +36,7 @@ const sb = createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false },
 });
 
-const raw = JSON.parse(
-  fs.readFileSync("src/data/inventory/family-map.json", "utf8"),
-);
+const raw = JSON.parse(fs.readFileSync("src/data/inventory/family-map.json", "utf8"));
 
 // The map is keyed per-member, so every family appears once per row it holds.
 // Collapse to one entry per family, keyed by slug (unique per family tile).
@@ -69,10 +67,7 @@ const allRms = [...new Set([...families.values()].flatMap((f) => f.members.map((
 const found = new Set();
 for (let i = 0; i < allRms.length; i += 500) {
   const chunk = allRms.slice(i, i + 500);
-  const { data, error } = await sb
-    .from("inventory_items")
-    .select("rms_id")
-    .in("rms_id", chunk);
+  const { data, error } = await sb.from("inventory_items").select("rms_id").in("rms_id", chunk);
   if (error) {
     console.error("Preflight select failed:", error.message);
     process.exit(1);
@@ -93,9 +88,7 @@ if (missing.length) {
 // cover from a row that isn't in the tile.
 for (const f of families.values()) {
   if (!f.members.some((m) => m.id === f.leadId)) {
-    console.error(
-      `ASSERT FAIL: family "${f.slug}" lead ${f.leadId} is not among its members`,
-    );
+    console.error(`ASSERT FAIL: family "${f.slug}" lead ${f.leadId} is not among its members`);
     process.exit(1);
   }
 }
@@ -137,10 +130,7 @@ let linkedRows = 0;
 for (const f of families.values()) {
   const { data: fam, error: famErr } = await sb
     .from("product_families")
-    .upsert(
-      { title: f.title, slug: f.slug, lead_rms_id: f.leadId },
-      { onConflict: "slug" },
-    )
+    .upsert({ title: f.title, slug: f.slug, lead_rms_id: f.leadId }, { onConflict: "slug" })
     .select("id")
     .single();
   if (famErr || !fam) {
@@ -203,7 +193,5 @@ for (const f of families.values()) {
   }
 }
 
-console.log(
-  `\nfamilies written: ${createdFamilies}  rows linked: ${linkedRows}  drift: ${drift}`,
-);
+console.log(`\nfamilies written: ${createdFamilies}  rows linked: ${linkedRows}  drift: ${drift}`);
 process.exit(drift === 0 ? 0 : 1);

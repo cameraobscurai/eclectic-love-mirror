@@ -86,10 +86,7 @@ function PreviewTile({ product, eager, onOpen, onImageFailed }: PreviewTileProps
 
   return (
     <li>
-      <button
-        onClick={onOpen}
-        className="group block w-full text-left"
-      >
+      <button onClick={onOpen} className="group block w-full text-left">
         <div className="aspect-square bg-white overflow-hidden relative">
           {/* Quiet skeleton — pure white. Holds the slot until the image
               decodes, then cross-fades. No grey block, no shimmer. */}

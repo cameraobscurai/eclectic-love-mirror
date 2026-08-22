@@ -132,6 +132,10 @@ todo.forEach((p, i) => slices[i % CONCURRENCY].push(p));
 await Promise.all(slices.map(worker));
 
 // Stable, sorted write.
-const sorted = Object.fromEntries(Object.keys(results).sort().map((k) => [k, results[k]]));
+const sorted = Object.fromEntries(
+  Object.keys(results)
+    .sort()
+    .map((k) => [k, results[k]]),
+);
 await fs.writeFile(SCORES_PATH, JSON.stringify(sorted, null, 2));
 console.log(`Done. ${done} scored, ${failed} failed. Wrote ${SCORES_PATH}.`);

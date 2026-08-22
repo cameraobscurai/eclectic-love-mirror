@@ -14,11 +14,7 @@
 
 import type { FitRule } from "./categoryFit";
 import { resolveFit } from "./categoryFit";
-import {
-  physicalScaleFor,
-  relativeMassFor,
-  type ScalableProduct,
-} from "./productPhysicalScale";
+import { physicalScaleFor, relativeMassFor, type ScalableProduct } from "./productPhysicalScale";
 
 export type FittableProduct = ScalableProduct;
 
@@ -84,10 +80,7 @@ export function withScaleNudge(rule: FitRule, nudge: number): FitRule {
   return withGain(rule, nudge);
 }
 
-export function resolveProductFit(
-  product: FittableProduct,
-  context: FitContext = "tile",
-): FitRule {
+export function resolveProductFit(product: FittableProduct, context: FitContext = "tile"): FitRule {
   const rule = resolveFit(product.categorySlug ?? null);
   const phys = physicalScaleFor(product);
   const gain = context === "detail" ? DETAIL_GAIN : 1;
@@ -107,7 +100,6 @@ export function resolveProductFit(
       gain,
     );
   }
-
 
   return withGain(
     {
@@ -138,5 +130,3 @@ export function resolveProductFit(
     gain,
   );
 }
-
-

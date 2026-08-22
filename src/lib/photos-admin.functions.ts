@@ -17,7 +17,11 @@ import { audit } from "@/server/_audit.server";
 // ---------------------------------------------------------------------------
 
 const reorderInput = z.object({
-  category: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
+  category: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-z0-9-]+$/),
   ids: z.array(z.string().min(1).max(64)).min(1).max(500),
 });
 
@@ -59,7 +63,12 @@ export const reorderItems = createServerFn({ method: "POST" })
 // ---------------------------------------------------------------------------
 
 const listFilesInput = z.object({
-  rmsId: z.string().min(1).max(64).regex(/^[a-zA-Z0-9._-]+$/).nullable(),
+  rmsId: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-zA-Z0-9._-]+$/)
+    .nullable(),
   limit: z.number().int().min(1).max(200).default(60),
   search: z.string().max(120).optional(),
 });
@@ -89,7 +98,8 @@ export const listStorageFiles = createServerFn({ method: "POST" })
     }
 
     // 2. Recent across whole inventory folder (last N folders, 5 each).
-    const recent: Array<{ url: string; name: string; folder: string; updatedAt: string | null }> = [];
+    const recent: Array<{ url: string; name: string; folder: string; updatedAt: string | null }> =
+      [];
     const { data: folders } = await bucket.list("inventory", {
       limit: 40,
       sortBy: { column: "updated_at", order: "desc" },
@@ -105,7 +115,12 @@ export const listStorageFiles = createServerFn({ method: "POST" })
         if (data.search && !r.name.toLowerCase().includes(data.search.toLowerCase())) continue;
         const path = `inventory/${folder.name}/${r.name}`;
         const { data: pub } = bucket.getPublicUrl(path);
-        recent.push({ url: pub.publicUrl, name: r.name, folder: folder.name, updatedAt: r.updated_at });
+        recent.push({
+          url: pub.publicUrl,
+          name: r.name,
+          folder: folder.name,
+          updatedAt: r.updated_at,
+        });
         if (recent.length >= data.limit) break;
       }
       if (recent.length >= data.limit) break;
@@ -119,7 +134,11 @@ export const listStorageFiles = createServerFn({ method: "POST" })
 // ---------------------------------------------------------------------------
 
 const listCategoryInput = z.object({
-  category: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
+  category: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-z0-9-]+$/),
 });
 
 export const listCategoryItems = createServerFn({ method: "POST" })
@@ -225,8 +244,11 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       if (error) throw new Error(`PUBLISH_READ_FAILED: ${error.message}`);
       if (!data || data.length === 0) break;
       for (const row of data as Array<
-        { rms_id: string | null; family_id?: string | null; updated_at?: string | null } &
-          (typeof overlay)[string]
+        {
+          rms_id: string | null;
+          family_id?: string | null;
+          updated_at?: string | null;
+        } & (typeof overlay)[string]
       >) {
         if (!row.rms_id) continue;
         overlay[row.rms_id] = {
@@ -249,7 +271,7 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
           category_slug: row.category_slug ?? null,
           variant_cover_url: row.variant_cover_url ?? null,
           variant_label: row.variant_label ?? null,
-          family_option_name: row.family_id ? famAxis.get(row.family_id) ?? null : null,
+          family_option_name: row.family_id ? (famAxis.get(row.family_id) ?? null) : null,
           images_version: row.updated_at
             ? Math.floor(new Date(row.updated_at).getTime() / 1000)
             : null,
@@ -258,7 +280,6 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       if (data.length < PAGE) break;
       from += PAGE;
     }
-
 
     // Suppress-list. Deletion is invisible to the walk above (a deleted row
     // just stops being mentioned), so its baked tile would survive on the
@@ -285,7 +306,6 @@ export const publishCatalogOverlay = createServerFn({ method: "POST" })
       deleted,
     });
     const blob = new Blob([payload], { type: "application/json" });
-
 
     // Immutable, timestamped key — never overwritten, so concurrent readers
     // never see a torn write. Manifest below is the sole mutable pointer.
@@ -401,5 +421,4 @@ export const getPublishStatus = createServerFn({ method: "GET" })
       .gt("deleted_at", publishedAt);
 
     return { publishedAt, pending: (count ?? 0) + (tombCount ?? 0) };
-
   });

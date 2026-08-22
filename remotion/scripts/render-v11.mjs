@@ -37,7 +37,8 @@ await renderMedia({
   jpegQuality: 92,
   crf: 18,
   onProgress: ({ progress }) => {
-    if (Math.round(progress * 100) % 5 === 0) process.stdout.write(`  ${Math.round(progress * 100)}%\r`);
+    if (Math.round(progress * 100) % 5 === 0)
+      process.stdout.write(`  ${Math.round(progress * 100)}%\r`);
   },
 });
 

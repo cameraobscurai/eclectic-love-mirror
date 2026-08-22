@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  BROWSE_GROUP_LABELS,
-  type BrowseGroupId,
-} from "@/lib/collection-browse-groups";
+import { BROWSE_GROUP_LABELS, type BrowseGroupId } from "@/lib/collection-browse-groups";
 import { CATEGORY_COVERS, coverUrl } from "@/lib/category-covers";
 import { withCdnWidth } from "@/lib/image-url";
 import type { CollectionProduct } from "@/lib/phase3-catalog";
 import { NormalizedProductImage } from "./NormalizedProductImage";
-
 
 interface CategoryTonalGridProps {
   groups: Array<{ id: BrowseGroupId; products: CollectionProduct[] }>;
@@ -35,9 +31,21 @@ interface CategoryTonalGridProps {
 //   coffee tables · dining · bar · lighting · storage
 //   pillows · throws · tableware · styling · rugs
 const ORDER: BrowseGroupId[] = [
-  "sofas", "chairs", "benches-ottomans", "cocktail-tables", "side-tables",
-  "coffee-tables", "dining", "bar", "lighting", "storage",
-  "pillows", "throws", "tableware", "styling", "rugs",
+  "sofas",
+  "chairs",
+  "benches-ottomans",
+  "cocktail-tables",
+  "side-tables",
+  "coffee-tables",
+  "dining",
+  "bar",
+  "lighting",
+  "storage",
+  "pillows",
+  "throws",
+  "tableware",
+  "styling",
+  "rugs",
 ];
 
 // Greyscale checker pair from the brand baseline.
@@ -65,9 +73,6 @@ const COVER_AREA: Partial<Record<BrowseGroupId, number>> = {
   lighting: 0.38,
 };
 
-
-
-
 function preloadGridImage(src: string) {
   const existing = Array.from(
     document.head.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="image"]'),
@@ -82,10 +87,7 @@ function preloadGridImage(src: string) {
   document.head.appendChild(link);
 }
 
-export function CategoryTonalGrid({
-  groups,
-  onSelectCategory,
-}: CategoryTonalGridProps) {
+export function CategoryTonalGrid({ groups, onSelectCategory }: CategoryTonalGridProps) {
   const byId = useMemo(() => {
     const map = new Map<BrowseGroupId, CollectionProduct[]>();
     for (const g of groups) map.set(g.id, g.products);
@@ -106,7 +108,7 @@ export function CategoryTonalGrid({
         const heroSrc = rawHero ? withCdnWidth(rawHero, 600) : null;
         const heroAlt = cover
           ? BROWSE_GROUP_LABELS[id]
-          : fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id];
+          : (fallbackHero?.altText ?? BROWSE_GROUP_LABELS[id]);
         return {
           id,
           heroSrc,
@@ -142,7 +144,6 @@ export function CategoryTonalGrid({
       .filter(Boolean) as string[];
     imageUrls.forEach(preloadGridImage);
   }, [tiles]);
-
 
   return (
     <>
@@ -180,34 +181,29 @@ export function CategoryTonalGrid({
         }
       `}</style>
 
-      <div
-      data-tonal-grid
-      role="list"
-      aria-label="Browse by category"
-    >
-      {tiles.map((t, i) => {
-        // Real checkerboard parity, computed from the actual rendered
-        // column count (3 mobile / 5 desktop). Tracked via matchMedia so
-        // it updates on resize.
-        const cols = renderedCols;
-        const row = Math.floor(i / cols);
-        const col = i % cols;
-        const tone = TONES[(row + col) % 2];
-        return (
-          <TonalCell
-            key={t.id}
-            id={t.id}
-            heroSrc={t.heroSrc}
-            heroAlt={t.heroAlt}
-            label={t.label}
-            tone={tone}
-            priority={i < 5}
-            onSelectCategory={onSelectCategory}
-          />
-        );
-      })}
-
-    </div>
+      <div data-tonal-grid role="list" aria-label="Browse by category">
+        {tiles.map((t, i) => {
+          // Real checkerboard parity, computed from the actual rendered
+          // column count (3 mobile / 5 desktop). Tracked via matchMedia so
+          // it updates on resize.
+          const cols = renderedCols;
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          const tone = TONES[(row + col) % 2];
+          return (
+            <TonalCell
+              key={t.id}
+              id={t.id}
+              heroSrc={t.heroSrc}
+              heroAlt={t.heroAlt}
+              label={t.label}
+              tone={tone}
+              priority={i < 5}
+              onSelectCategory={onSelectCategory}
+            />
+          );
+        })}
+      </div>
     </>
   );
 }
@@ -282,8 +278,6 @@ function TonalCell({
           </span>
         ) : null}
       </span>
-
-
 
       <span
         className="absolute left-2 right-2 bottom-2 sm:left-4 sm:right-4 sm:bottom-3 uppercase pointer-events-none"

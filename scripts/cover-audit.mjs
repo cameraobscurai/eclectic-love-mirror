@@ -33,39 +33,161 @@
 // No env needed — reads src/data/inventory/current_catalog.json and the public
 // overlay manifest, exactly like the live site does.
 
-import fs from 'node:fs';
-import path from 'node:path';
-import sharp from 'sharp';
+import fs from "node:fs";
+import path from "node:path";
+import sharp from "sharp";
 
-const CATALOG = JSON.parse(
-  fs.readFileSync('src/data/inventory/current_catalog.json', 'utf8'),
-);
-const SUPABASE = 'https://wdyfavzfquegrxklcpmq.supabase.co';
-const REFETCH = process.argv.includes('--refetch');
-const CATEGORY_FILTER = process.argv.slice(2).find((a) => !a.startsWith('--')) || null;
+const CATALOG = JSON.parse(fs.readFileSync("src/data/inventory/current_catalog.json", "utf8"));
+const SUPABASE = "https://wdyfavzfquegrxklcpmq.supabase.co";
+const REFETCH = process.argv.includes("--refetch");
+const CATEGORY_FILTER = process.argv.slice(2).find((a) => !a.startsWith("--")) || null;
 const CONCURRENCY = 8;
 const FRAME_ASPECT = 5 / 4; // PRODUCT_TILE_FRAME_ASPECT
-const INSET = 0.94;         // TILE_IMAGE_INSET
+const INSET = 0.94; // TILE_IMAGE_INSET
 
 // ── Category fit rules — MIRROR of src/components/collection/categoryFit.ts.
 // Keep in sync by hand; the audit is only as honest as this table.
 const RULES = {
-  seating:          { primary: 'width',  aspectBlend: 0.65, refAspect: 2.4, primaryTarget: 0.82, secondaryMax: 0.58, anchor: 'bottom', anchorY: 0.90, clampMin: 0.70, clampMax: 1.10 },
-  tables:           { primary: 'width',  aspectBlend: 0.50, refAspect: 2.0, primaryTarget: 0.80, secondaryMax: 0.60, anchor: 'bottom', anchorY: 0.90, clampMin: 0.70, clampMax: 1.10 },
-  bars:             { primary: 'height', primaryTarget: 0.70, secondaryMax: 0.82, anchor: 'bottom', anchorY: 0.90, clampMin: 0.55, clampMax: 1.15 },
-  lighting:         { primary: 'height', primaryTarget: 0.72, secondaryMax: 0.55, anchor: 'bottom', anchorY: 0.92, clampMin: 0.50, clampMax: 1.15 },
-  chandeliers:      { primary: 'height', primaryTarget: 0.78, secondaryMax: 0.60, anchor: 'top',    anchorY: 0.08, clampMin: 0.50, clampMax: 1.15 },
-  candlelight:      { primary: 'height', primaryTarget: 0.55, secondaryMax: 0.55, anchor: 'bottom', anchorY: 0.85, clampMin: 0.60, clampMax: 1.15 },
-  tableware:        { primary: 'area',   primaryTarget: 0.30, secondaryMax: 0.90, anchor: 'center', anchorY: 0.50, clampMin: 0.75, clampMax: 1.20 },
-  serveware:        { primary: 'area',   primaryTarget: 0.32, secondaryMax: 0.90, anchor: 'center', anchorY: 0.50, clampMin: 0.75, clampMax: 1.20 },
-  'pillows-throws': { primary: 'area',   primaryTarget: 0.42, secondaryMax: 0.90, anchor: 'center', anchorY: 0.50, clampMin: 0.75, clampMax: 1.20 },
-  rugs:             { primary: 'width',  primaryTarget: 0.88, secondaryMax: 0.35, anchor: 'center', anchorY: 0.55, clampMin: 0.60, clampMax: 1.20 },
-  'large-decor':    { primary: 'height', primaryTarget: 0.72, secondaryMax: 0.62, anchor: 'bottom', anchorY: 0.90, clampMin: 0.55, clampMax: 1.15 },
-  storage:          { primary: 'height', primaryTarget: 0.68, secondaryMax: 0.62, anchor: 'bottom', anchorY: 0.90, clampMin: 0.55, clampMax: 1.15 },
-  styling:          { primary: 'area',   primaryTarget: 0.34, secondaryMax: 0.90, anchor: 'center', anchorY: 0.55, clampMin: 0.75, clampMax: 1.20 },
-  'furs-pelts':     { primary: 'area',   primaryTarget: 0.42, secondaryMax: 0.90, anchor: 'center', anchorY: 0.55, clampMin: 0.75, clampMax: 1.20 },
+  seating: {
+    primary: "width",
+    aspectBlend: 0.65,
+    refAspect: 2.4,
+    primaryTarget: 0.82,
+    secondaryMax: 0.58,
+    anchor: "bottom",
+    anchorY: 0.9,
+    clampMin: 0.7,
+    clampMax: 1.1,
+  },
+  tables: {
+    primary: "width",
+    aspectBlend: 0.5,
+    refAspect: 2.0,
+    primaryTarget: 0.8,
+    secondaryMax: 0.6,
+    anchor: "bottom",
+    anchorY: 0.9,
+    clampMin: 0.7,
+    clampMax: 1.1,
+  },
+  bars: {
+    primary: "height",
+    primaryTarget: 0.7,
+    secondaryMax: 0.82,
+    anchor: "bottom",
+    anchorY: 0.9,
+    clampMin: 0.55,
+    clampMax: 1.15,
+  },
+  lighting: {
+    primary: "height",
+    primaryTarget: 0.72,
+    secondaryMax: 0.55,
+    anchor: "bottom",
+    anchorY: 0.92,
+    clampMin: 0.5,
+    clampMax: 1.15,
+  },
+  chandeliers: {
+    primary: "height",
+    primaryTarget: 0.78,
+    secondaryMax: 0.6,
+    anchor: "top",
+    anchorY: 0.08,
+    clampMin: 0.5,
+    clampMax: 1.15,
+  },
+  candlelight: {
+    primary: "height",
+    primaryTarget: 0.55,
+    secondaryMax: 0.55,
+    anchor: "bottom",
+    anchorY: 0.85,
+    clampMin: 0.6,
+    clampMax: 1.15,
+  },
+  tableware: {
+    primary: "area",
+    primaryTarget: 0.3,
+    secondaryMax: 0.9,
+    anchor: "center",
+    anchorY: 0.5,
+    clampMin: 0.75,
+    clampMax: 1.2,
+  },
+  serveware: {
+    primary: "area",
+    primaryTarget: 0.32,
+    secondaryMax: 0.9,
+    anchor: "center",
+    anchorY: 0.5,
+    clampMin: 0.75,
+    clampMax: 1.2,
+  },
+  "pillows-throws": {
+    primary: "area",
+    primaryTarget: 0.42,
+    secondaryMax: 0.9,
+    anchor: "center",
+    anchorY: 0.5,
+    clampMin: 0.75,
+    clampMax: 1.2,
+  },
+  rugs: {
+    primary: "width",
+    primaryTarget: 0.88,
+    secondaryMax: 0.35,
+    anchor: "center",
+    anchorY: 0.55,
+    clampMin: 0.6,
+    clampMax: 1.2,
+  },
+  "large-decor": {
+    primary: "height",
+    primaryTarget: 0.72,
+    secondaryMax: 0.62,
+    anchor: "bottom",
+    anchorY: 0.9,
+    clampMin: 0.55,
+    clampMax: 1.15,
+  },
+  storage: {
+    primary: "height",
+    primaryTarget: 0.68,
+    secondaryMax: 0.62,
+    anchor: "bottom",
+    anchorY: 0.9,
+    clampMin: 0.55,
+    clampMax: 1.15,
+  },
+  styling: {
+    primary: "area",
+    primaryTarget: 0.34,
+    secondaryMax: 0.9,
+    anchor: "center",
+    anchorY: 0.55,
+    clampMin: 0.75,
+    clampMax: 1.2,
+  },
+  "furs-pelts": {
+    primary: "area",
+    primaryTarget: 0.42,
+    secondaryMax: 0.9,
+    anchor: "center",
+    anchorY: 0.55,
+    clampMin: 0.75,
+    clampMax: 1.2,
+  },
 };
-const DEFAULT_RULE = { primary: 'area', primaryTarget: 0.32, secondaryMax: 0.90, anchor: 'center', anchorY: 0.50, clampMin: 0.70, clampMax: 1.20 };
+const DEFAULT_RULE = {
+  primary: "area",
+  primaryTarget: 0.32,
+  secondaryMax: 0.9,
+  anchor: "center",
+  anchorY: 0.5,
+  clampMin: 0.7,
+  clampMax: 1.2,
+};
 
 // ── Live cover per product: overlay images[0] wins when non-empty, else baked.
 async function liveCovers() {
@@ -80,7 +202,9 @@ async function liveCovers() {
       ).then((r) => (r.ok ? r.json() : null));
       overlay = payload?.overlay ?? {};
     }
-  } catch { /* baked-only audit */ }
+  } catch {
+    /* baked-only audit */
+  }
 
   const rows = [];
   for (const p of CATALOG.products) {
@@ -89,7 +213,8 @@ async function liveCovers() {
     const live = overlay[p.id];
     const url =
       (Array.isArray(live?.images) && live.images.length > 0 ? live.images[0] : null) ??
-      p.images?.[0]?.url ?? null;
+      p.images?.[0]?.url ??
+      null;
     if (!url) continue;
     rows.push({ id: p.id, title: p.title, category: p.categorySlug, url });
   }
@@ -103,12 +228,14 @@ async function liveCovers() {
 async function measure(buf) {
   const img = sharp(buf, { limitInputPixels: 1e9 });
   const meta = await img.metadata();
-  const W = meta.width, H = meta.height;
+  const W = meta.width,
+    H = meta.height;
   const maxSide = 360;
   const s = Math.min(1, maxSide / Math.max(W, H));
-  const w = Math.max(1, Math.round(W * s)), h = Math.max(1, Math.round(H * s));
+  const w = Math.max(1, Math.round(W * s)),
+    h = Math.max(1, Math.round(H * s));
   const { data } = await img
-    .resize(w, h, { fit: 'fill' })
+    .resize(w, h, { fit: "fill" })
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
@@ -122,30 +249,44 @@ async function measure(buf) {
   let bg = null;
   if (!hasAlphaBg) {
     const ring = [];
-    const px = (x, y) => { const i = (y * w + x) * 4; return [data[i], data[i + 1], data[i + 2]]; };
-    for (let x = 0; x < w; x += 2) { ring.push(px(x, 0), px(x, h - 1)); }
-    for (let y = 0; y < h; y += 2) { ring.push(px(0, y), px(w - 1, y)); }
+    const px = (x, y) => {
+      const i = (y * w + x) * 4;
+      return [data[i], data[i + 1], data[i + 2]];
+    };
+    for (let x = 0; x < w; x += 2) {
+      ring.push(px(x, 0), px(x, h - 1));
+    }
+    for (let y = 0; y < h; y += 2) {
+      ring.push(px(0, y), px(w - 1, y));
+    }
     const med = (k) => ring.map((c) => c[k]).sort((a, b) => a - b)[ring.length >> 1];
     bg = [med(0), med(1), med(2)];
   }
   const light = bg && Math.min(...bg) > 198;
   const tol = light ? Math.max(16, (255 - Math.min(...bg)) * 0.7) : 0;
 
-  let minX = w, minY = h, maxX = -1, maxY = -1;
+  let minX = w,
+    minY = h,
+    maxX = -1,
+    maxY = -1;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const i = (y * w + x) * 4;
-      if (hasAlphaBg) { if (data[i + 3] < 12) continue; }
-      else if (light) {
+      if (hasAlphaBg) {
+        if (data[i + 3] < 12) continue;
+      } else if (light) {
         if (
           Math.abs(data[i] - bg[0]) <= tol &&
           Math.abs(data[i + 1] - bg[1]) <= tol &&
           Math.abs(data[i + 2] - bg[2]) <= tol
-        ) continue;
+        )
+          continue;
       }
       // opaque + non-light bg: every pixel is "product" → bbox = frame → MEASURE_FAIL
-      if (x < minX) minX = x; if (x > maxX) maxX = x;
-      if (y < minY) minY = y; if (y > maxY) maxY = y;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
     }
   }
   if (maxX < 0) return { W, H, fail: true, hasAlphaBg };
@@ -167,27 +308,28 @@ async function measure(buf) {
 
 // ── solveFit mirror — returns solved scale + whether clamps bound.
 function solve(m, rule) {
-  const wi = INSET * m.bw, hi = INSET * m.bh;
+  const wi = INSET * m.bw,
+    hi = INSET * m.bh;
   let sT;
-  if (rule.primary === 'width') sT = rule.primaryTarget / Math.max(0.001, wi);
-  else if (rule.primary === 'height') sT = rule.primaryTarget / Math.max(0.001, hi);
+  if (rule.primary === "width") sT = rule.primaryTarget / Math.max(0.001, wi);
+  else if (rule.primary === "height") sT = rule.primaryTarget / Math.max(0.001, hi);
   else sT = rule.primaryTarget / Math.sqrt(Math.max(0.001, wi * hi));
   const blend = rule.aspectBlend ?? 0;
-  if (blend > 0 && rule.primary !== 'area') {
+  if (blend > 0 && rule.primary !== "area") {
     const aspect = wi / Math.max(0.001, hi);
-    const exp = rule.primary === 'width' ? blend / 2 : -blend / 2;
+    const exp = rule.primary === "width" ? blend / 2 : -blend / 2;
     sT *= Math.pow(aspect / (rule.refAspect ?? 1), exp);
   }
   let cap = Infinity;
-  if (rule.primary === 'width') cap = rule.secondaryMax / Math.max(0.001, hi);
-  else if (rule.primary === 'height') cap = rule.secondaryMax / Math.max(0.001, wi);
+  if (rule.primary === "width") cap = rule.secondaryMax / Math.max(0.001, hi);
+  else if (rule.primary === "height") cap = rule.secondaryMax / Math.max(0.001, wi);
   const unclamped = Math.min(sT, cap);
   const s = Math.max(rule.clampMin, Math.min(rule.clampMax, unclamped));
   return { s, unclamped, hitMax: unclamped > rule.clampMax, hitMin: unclamped < rule.clampMin };
 }
 
 // Soft flags never make a cover BROKEN on their own.
-const SOFT_FLAGS = new Set(['OPAQUE_BG', 'LOW_RES', 'TIGHT_CROP']);
+const SOFT_FLAGS = new Set(["OPAQUE_BG", "LOW_RES", "TIGHT_CROP"]);
 
 function grade(m, rule) {
   const flags = [];
@@ -196,37 +338,40 @@ function grade(m, rule) {
   // MEASURE_FAIL when detection actually failed or there was no alpha to
   // trust (color-threshold path defaulting the bbox to the whole frame).
   const fullFrame = m.frameCoverage > 0.93;
-  if (m.fail || (fullFrame && !m.hasAlphaBg)) flags.push('MEASURE_FAIL');
-  else if (fullFrame) flags.push('TIGHT_CROP');
-  if (!m.hasAlphaBg) flags.push('OPAQUE_BG');
-  if (Math.max(m.W, m.H) < 900) flags.push('LOW_RES');
+  if (m.fail || (fullFrame && !m.hasAlphaBg)) flags.push("MEASURE_FAIL");
+  else if (fullFrame) flags.push("TIGHT_CROP");
+  if (!m.hasAlphaBg) flags.push("OPAQUE_BG");
+  if (Math.max(m.W, m.H) < 900) flags.push("LOW_RES");
   let solved = null;
-  if (!flags.includes('MEASURE_FAIL')) {
+  if (!flags.includes("MEASURE_FAIL")) {
     // TIGHT_CROP rows reach the solver — that's the point of the downgrade.
     // Their clamp numbers were previously swallowed by the false positive.
     solved = solve(m, rule);
     // >15% residual error after clamp = visibly off next to a passing neighbor.
-    if (solved.hitMax && solved.unclamped / solved.s > 1.15) flags.push('CLAMP_TINY');
-    if (solved.hitMin && solved.s / solved.unclamped > 1.15) flags.push('CLAMP_MASSIVE');
+    if (solved.hitMax && solved.unclamped / solved.s > 1.15) flags.push("CLAMP_TINY");
+    if (solved.hitMin && solved.s / solved.unclamped > 1.15) flags.push("CLAMP_MASSIVE");
     // Clip check at solved placement.
-    const sw = m.bw * solved.s, sh = m.bh * solved.s;
-    const cyS = rule.anchor === 'bottom'
-      ? rule.anchorY - sh / 2
-      : rule.anchor === 'top' ? rule.anchorY + sh / 2 : rule.anchorY;
-    if (cyS - sh / 2 < -0.01 || cyS + sh / 2 > 1.01 || sw > 1.02) flags.push('WOULD_CLIP');
+    const sw = m.bw * solved.s,
+      sh = m.bh * solved.s;
+    const cyS =
+      rule.anchor === "bottom"
+        ? rule.anchorY - sh / 2
+        : rule.anchor === "top"
+          ? rule.anchorY + sh / 2
+          : rule.anchorY;
+    if (cyS - sh / 2 < -0.01 || cyS + sh / 2 > 1.01 || sw > 1.02) flags.push("WOULD_CLIP");
   }
   const hard = flags.filter((f) => !SOFT_FLAGS.has(f));
-  const verdict = hard.length ? 'BROKEN' : flags.length ? 'AT_RISK' : 'PASS';
+  const verdict = hard.length ? "BROKEN" : flags.length ? "AT_RISK" : "PASS";
   return { flags, verdict, solved };
 }
-
 
 // ── Fetching. A transform-service hiccup and a missing object are different
 // diagnoses, so retry the given URL, then fall back to the RAW storage object
 // (no transform querystring, /render/image/ → /object/).
 function rawVariant(url) {
-  const noQuery = url.split('?')[0];
-  const raw = noQuery.replace('/storage/v1/render/image/public/', '/storage/v1/object/public/');
+  const noQuery = url.split("?")[0];
+  const raw = noQuery.replace("/storage/v1/render/image/public/", "/storage/v1/object/public/");
   return raw === url ? null : raw;
 }
 
@@ -244,12 +389,12 @@ async function fetchCover(url, { attempts = 1 } = {}) {
       } catch (e) {
         lastErr = e;
         // 404 on this target won't heal with another try — move to the fallback.
-        if (String(e).includes('http 404')) break;
+        if (String(e).includes("http 404")) break;
         if (a < attempts - 1) await new Promise((r) => setTimeout(r, 400 * (a + 1)));
       }
     }
   }
-  throw lastErr ?? new Error('fetch failed');
+  throw lastErr ?? new Error("fetch failed");
 }
 
 async function auditRows(rows, { attempts = 1 } = {}) {
@@ -265,7 +410,13 @@ async function auditRows(rows, { attempts = 1 } = {}) {
           const g = grade(m, RULES[r.category] ?? DEFAULT_RULE);
           out.push({ ...r, ...g, m });
         } catch (e) {
-          out.push({ ...r, verdict: 'BROKEN', flags: ['FETCH_FAIL'], m: null, err: String(e).slice(0, 80) });
+          out.push({
+            ...r,
+            verdict: "BROKEN",
+            flags: ["FETCH_FAIL"],
+            m: null,
+            err: String(e).slice(0, 80),
+          });
         }
         if (out.length % 50 === 0) process.stdout.write(`  ${out.length}/${rows.length}\n`);
       }
@@ -279,70 +430,82 @@ async function auditRows(rows, { attempts = 1 } = {}) {
 // genuinely dead objects are blank tiles on the live site and get their own
 // ticket list.
 async function refetch() {
-  const csvPath = 'cover-audit.csv';
+  const csvPath = "cover-audit.csv";
   if (!fs.existsSync(csvPath)) {
-    console.error('no cover-audit.csv — run a full audit first');
+    console.error("no cover-audit.csv — run a full audit first");
     process.exit(1);
   }
-  const lines = fs.readFileSync(csvPath, 'utf8').split('\n');
+  const lines = fs.readFileSync(csvPath, "utf8").split("\n");
   const targets = [];
   lines.forEach((line, idx) => {
-    if (!line.includes('FETCH_FAIL')) return;
-    const parts = line.split(',');
+    if (!line.includes("FETCH_FAIL")) return;
+    const parts = line.split(",");
     targets.push({
       lineIdx: idx,
       id: parts[0],
       category: parts[1],
-      title: (line.match(/"(.*)"/)?.[1] ?? '').slice(0, 80),
+      title: (line.match(/"(.*)"/)?.[1] ?? "").slice(0, 80),
       url: parts[parts.length - 1],
     });
   });
   console.log(`refetching ${targets.length} FETCH_FAIL rows (3 attempts + raw-URL fallback)…`);
 
   const results = await auditRows(targets, { attempts: 3 });
-  const dead = results.filter((r) => r.flags.includes('FETCH_FAIL'));
-  const healed = results.filter((r) => !r.flags.includes('FETCH_FAIL'));
+  const dead = results.filter((r) => r.flags.includes("FETCH_FAIL"));
+  const healed = results.filter((r) => !r.flags.includes("FETCH_FAIL"));
 
   for (const r of healed) {
     lines[r.lineIdx] = [
-      r.id, r.category, JSON.stringify(r.title ?? ''), r.verdict, r.flags.join('|'),
-      r.m?.W ?? '', r.m?.H ?? '', r.m?.frameCoverage?.toFixed(3) ?? '',
-      r.solved?.s?.toFixed(3) ?? '', r.solved?.unclamped?.toFixed(3) ?? '', r.url,
-    ].join(',');
+      r.id,
+      r.category,
+      JSON.stringify(r.title ?? ""),
+      r.verdict,
+      r.flags.join("|"),
+      r.m?.W ?? "",
+      r.m?.H ?? "",
+      r.m?.frameCoverage?.toFixed(3) ?? "",
+      r.solved?.s?.toFixed(3) ?? "",
+      r.solved?.unclamped?.toFixed(3) ?? "",
+      r.url,
+    ].join(",");
   }
-  fs.writeFileSync(csvPath, lines.join('\n'));
+  fs.writeFileSync(csvPath, lines.join("\n"));
 
   const doc = [
-    '# Cover fetch failures',
-    '',
+    "# Cover fetch failures",
+    "",
     `Re-run ${new Date().toISOString()} — ${targets.length} FETCH_FAIL rows retried`,
     `(3 attempts each, plus a raw storage-object fallback).`,
-    '',
+    "",
     `- Transient (healed, re-graded in the CSV): **${healed.length}**`,
     `- Genuinely dead (blank tile on the live site right now): **${dead.length}**`,
-    '',
-    dead.length ? '## Dead objects — replacement photo tickets' : '## No dead objects.',
-    '',
+    "",
+    dead.length ? "## Dead objects — replacement photo tickets" : "## No dead objects.",
+    "",
     ...(dead.length
-      ? ['| rms_id | category | title | url | error |', '| --- | --- | --- | --- | --- |',
-         ...dead.map((r) => `| ${r.id} | ${r.category} | ${r.title} | ${r.url} | ${r.err} |`)]
+      ? [
+          "| rms_id | category | title | url | error |",
+          "| --- | --- | --- | --- | --- |",
+          ...dead.map((r) => `| ${r.id} | ${r.category} | ${r.title} | ${r.url} | ${r.err} |`),
+        ]
       : []),
-    '',
-  ].join('\n');
-  fs.mkdirSync('docs', { recursive: true });
-  fs.writeFileSync('docs/cover-fetch-failures.md', doc);
+    "",
+  ].join("\n");
+  fs.mkdirSync("docs", { recursive: true });
+  fs.writeFileSync("docs/cover-fetch-failures.md", doc);
 
   console.log(`\nhealed ${healed.length} · dead ${dead.length}`);
   for (const r of dead) console.log(`  DEAD ${r.category.padEnd(15)} ${r.title} — ${r.err}`);
-  console.log('wrote docs/cover-fetch-failures.md; patched cover-audit.csv');
+  console.log("wrote docs/cover-fetch-failures.md; patched cover-audit.csv");
 }
 
 async function run() {
   if (REFETCH) return refetch();
   const rows = await liveCovers();
-  console.log(`auditing ${rows.length} live covers${CATEGORY_FILTER ? ` in ${CATEGORY_FILTER}` : ''}…`);
+  console.log(
+    `auditing ${rows.length} live covers${CATEGORY_FILTER ? ` in ${CATEGORY_FILTER}` : ""}…`,
+  );
   const out = await auditRows(rows);
-
 
   // ── Report
   const byCat = {};
@@ -351,40 +514,74 @@ async function run() {
     byCat[r.category][r.verdict]++;
     for (const f of r.flags) byCat[r.category].flags[f] = (byCat[r.category].flags[f] || 0) + 1;
   }
-  console.log('\ncategory        pass  risk  broken   dominant failures');
-  let tP = 0, tR = 0, tB = 0;
+  console.log("\ncategory        pass  risk  broken   dominant failures");
+  let tP = 0,
+    tR = 0,
+    tB = 0;
   for (const [cat, s] of Object.entries(byCat).sort()) {
-    tP += s.PASS; tR += s.AT_RISK; tB += s.BROKEN;
-    const top = Object.entries(s.flags).sort((a, b) => b[1] - a[1]).slice(0, 3)
-      .map(([k, v]) => `${k}:${v}`).join(' ');
-    console.log(`${cat.padEnd(15)} ${String(s.PASS).padStart(4)} ${String(s.AT_RISK).padStart(5)} ${String(s.BROKEN).padStart(7)}   ${top}`);
+    tP += s.PASS;
+    tR += s.AT_RISK;
+    tB += s.BROKEN;
+    const top = Object.entries(s.flags)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(" ");
+    console.log(
+      `${cat.padEnd(15)} ${String(s.PASS).padStart(4)} ${String(s.AT_RISK).padStart(5)} ${String(s.BROKEN).padStart(7)}   ${top}`,
+    );
   }
-  console.log(`${'TOTAL'.padEnd(15)} ${String(tP).padStart(4)} ${String(tR).padStart(5)} ${String(tB).padStart(7)}`);
+  console.log(
+    `${"TOTAL".padEnd(15)} ${String(tP).padStart(4)} ${String(tR).padStart(5)} ${String(tB).padStart(7)}`,
+  );
 
-  const csv = ['rms_id,category,title,verdict,flags,imgW,imgH,frameCoverage,solvedScale,unclampedScale,url'];
+  const csv = [
+    "rms_id,category,title,verdict,flags,imgW,imgH,frameCoverage,solvedScale,unclampedScale,url",
+  ];
   for (const r of out) {
-    csv.push([
-      r.id, r.category, JSON.stringify(r.title ?? ''), r.verdict, r.flags.join('|'),
-      r.m?.W ?? '', r.m?.H ?? '', r.m?.frameCoverage?.toFixed(3) ?? '',
-      r.solved?.s?.toFixed(3) ?? '', r.solved?.unclamped?.toFixed(3) ?? '', r.url,
-    ].join(','));
+    csv.push(
+      [
+        r.id,
+        r.category,
+        JSON.stringify(r.title ?? ""),
+        r.verdict,
+        r.flags.join("|"),
+        r.m?.W ?? "",
+        r.m?.H ?? "",
+        r.m?.frameCoverage?.toFixed(3) ?? "",
+        r.solved?.s?.toFixed(3) ?? "",
+        r.solved?.unclamped?.toFixed(3) ?? "",
+        r.url,
+      ].join(","),
+    );
   }
-  fs.writeFileSync('cover-audit.csv', csv.join('\n'));
+  fs.writeFileSync("cover-audit.csv", csv.join("\n"));
 
-  const color = { PASS: '#2f7d32', AT_RISK: '#b8860b', BROKEN: '#c62828' };
+  const color = { PASS: "#2f7d32", AT_RISK: "#b8860b", BROKEN: "#c62828" };
   const cats = [...new Set(out.map((r) => r.category))].sort();
   const html = `<!doctype html><meta charset=utf8><title>cover audit</title>
 <style>body{font:12px/1.4 system-ui;margin:24px;background:#fafafa}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:8px 0 32px}
 .t{background:#fff;border:3px solid #ccc;padding:4px}.t img{width:100%;aspect-ratio:5/4;object-fit:contain;display:block}
 .f{color:#c62828;font-weight:600}h2{margin:24px 0 4px}</style>
-${cats.map((cat) => `<h2>${cat} — ${byCat[cat].BROKEN} broken / ${byCat[cat].AT_RISK} at-risk / ${byCat[cat].PASS} pass</h2><div class=grid>${
-  out.filter((r) => r.category === cat)
-    .sort((a, b) => (a.verdict === 'BROKEN' ? -1 : 1) - (b.verdict === 'BROKEN' ? -1 : 1))
-    .map((r) => `<div class=t style="border-color:${color[r.verdict]}"><img loading=lazy src="${r.url}"><div>${(r.title ?? '').slice(0, 40)}</div><div class=f>${r.flags.join(' ')}</div><div>s=${r.solved?.s?.toFixed(2) ?? '—'} want=${r.solved?.unclamped?.toFixed(2) ?? '—'}</div></div>`).join('')
-}</div>`).join('')}`;
-  fs.writeFileSync('cover-audit.html', html);
-  console.log('\nwrote cover-audit.csv + cover-audit.html (open in browser for contact sheet)');
+${cats
+  .map(
+    (cat) =>
+      `<h2>${cat} — ${byCat[cat].BROKEN} broken / ${byCat[cat].AT_RISK} at-risk / ${byCat[cat].PASS} pass</h2><div class=grid>${out
+        .filter((r) => r.category === cat)
+        .sort((a, b) => (a.verdict === "BROKEN" ? -1 : 1) - (b.verdict === "BROKEN" ? -1 : 1))
+        .map(
+          (r) =>
+            `<div class=t style="border-color:${color[r.verdict]}"><img loading=lazy src="${r.url}"><div>${(r.title ?? "").slice(0, 40)}</div><div class=f>${r.flags.join(" ")}</div><div>s=${r.solved?.s?.toFixed(2) ?? "—"} want=${r.solved?.unclamped?.toFixed(2) ?? "—"}</div></div>`,
+        )
+        .join("")}</div>`,
+  )
+  .join("")}`;
+  fs.writeFileSync("cover-audit.html", html);
+  console.log("\nwrote cover-audit.csv + cover-audit.html (open in browser for contact sheet)");
 }
 
-run().catch((e) => { console.error(e); process.exit(1); });
+run().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

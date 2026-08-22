@@ -6,9 +6,7 @@
     "ours": 87,
     "matched": 86,
     "liveOnly": [],
-    "oursOnly": [
-      "Ingram Black Leather + Wood Sofa [rms4180]"
-    ]
+    "oursOnly": ["Ingram Black Leather + Wood Sofa [rms4180]"]
   },
   {
     "parent": "lounge-tables",
@@ -16,13 +14,8 @@
     "live": 49,
     "ours": 48,
     "matched": 47,
-    "liveOnly": [
-      "Boulder 36\" Coffee Table",
-      "River 54\" Coffee Table"
-    ],
-    "oursOnly": [
-      "Hacier Mahogany 60\" Dining Table [rms3896]"
-    ]
+    "liveOnly": ["Boulder 36\" Coffee Table", "River 54\" Coffee Table"],
+    "oursOnly": ["Hacier Mahogany 60\" Dining Table [rms3896]"]
   },
   {
     "parent": "cocktail-bar",
@@ -30,10 +23,7 @@
     "live": 61,
     "ours": 70,
     "matched": 59,
-    "liveOnly": [
-      "Gold Acrylic Slatted Bar",
-      "Vespa Shelf + Antique Mirror Back"
-    ],
+    "liveOnly": ["Gold Acrylic Slatted Bar", "Vespa Shelf + Antique Mirror Back"],
     "oursOnly": [
       "Boone Barrel Stave Bar [rms4086]",
       "Gold Zebra Velvet Pillow [rms4160]",
@@ -64,11 +54,7 @@
     "live": 79,
     "ours": 91,
     "matched": 76,
-    "liveOnly": [
-      "Lavanya Stoneware Bowls",
-      "Powel Dark Brass Tray",
-      "Vintage Silver Goblets"
-    ],
+    "liveOnly": ["Lavanya Stoneware Bowls", "Powel Dark Brass Tray", "Vintage Silver Goblets"],
     "oursOnly": [
       "Dover 10.5\" Matte Oyster Plate [rms2727]",
       "Dover 8.25\" Matte Oyster Plate [rms2728]",
@@ -93,10 +79,7 @@
     "live": 48,
     "ours": 52,
     "matched": 46,
-    "liveOnly": [
-      "Amitola LED Corner Light",
-      "Maor Market Lighting"
-    ],
+    "liveOnly": ["Amitola LED Corner Light", "Maor Market Lighting"],
     "oursOnly": [
       "Gideon Small Bamboo Mesh Pendant [rms2864]",
       "Juno Clear Glass Lamp [rms2754]",

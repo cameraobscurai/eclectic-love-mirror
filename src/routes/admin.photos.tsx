@@ -35,7 +35,16 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Loader2, AlertCircle, ImageOff, LayoutGrid, LayoutList, Grid2x2, Layers, EyeOff } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  ImageOff,
+  LayoutGrid,
+  LayoutList,
+  Grid2x2,
+  Layers,
+  EyeOff,
+} from "lucide-react";
 
 import { requireStaffOrRedirect } from "@/lib/admin-guard";
 import { glassNamePlate, webkitGlassBlur } from "@/lib/glass";
@@ -106,14 +115,12 @@ function selLabel(p: ParentSel): string {
   return p === "all" ? "All" : p === "hidden" ? "Hidden" : PARENT_LABELS[p];
 }
 
-
 const SORT_MODES: { id: SortMode; label: string }[] = [
   { id: "editorial", label: "Editorial" },
   { id: "type", label: "By Type" },
   { id: "az", label: "A–Z" },
   { id: "tonal", label: "Tonal" },
 ];
-
 
 export const Route = createFileRoute("/admin/photos")({
   beforeLoad: ({ location }) => requireStaffOrRedirect(location.href),
@@ -135,10 +142,7 @@ export const Route = createFileRoute("/admin/photos")({
     id: typeof s.id === "string" ? s.id : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Photos · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Photos · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminPhotosPage,
 });
@@ -169,10 +173,10 @@ function adapt(p: CollectionProduct): Item {
     categorySlug: p.categorySlug ?? null,
     dimensions: p.dimensions ?? null,
     hidden: p.publicReady === false,
-    useWideFrame: browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
+    useWideFrame:
+      browseGroup === "bar" || browseGroup === "cocktail-tables" || browseGroup === "storage",
   };
 }
-
 
 function AdminPhotosPage() {
   return <PhotosManager />;
@@ -201,9 +205,12 @@ function PhotosManager() {
       : search.cat === "hidden"
         ? "hidden"
         : search.cat && (PARENT_ORDER as string[]).includes(search.cat)
-        ? (search.cat as ParentId)
-        : readStoredParent();
-  const setParent = useCallback((p: ParentSel) => setSearch({ cat: p, sub: undefined }), [setSearch]);
+          ? (search.cat as ParentId)
+          : readStoredParent();
+  const setParent = useCallback(
+    (p: ParentSel) => setSearch({ cat: p, sub: undefined }),
+    [setSearch],
+  );
   useEffect(() => {
     try {
       window.localStorage.setItem(PARENT_KEY, parent);
@@ -283,9 +290,7 @@ function PhotosManager() {
           if (t.rms_id) gone.add(t.rms_id as string);
           if (t.item_id) gone.add(t.item_id as string);
         }
-        setAllProducts(
-          applyTombstones([...c.products, ...hidden] as CollectionProduct[], gone),
-        );
+        setAllProducts(applyTombstones([...c.products, ...hidden] as CollectionProduct[], gone));
       })
       .catch((e) => alive && setCatalogErr((e as Error).message));
     return () => {
@@ -349,7 +354,6 @@ function PhotosManager() {
                 {selLabel(pid)}
               </option>
             ))}
-
           </select>
         </div>
 
@@ -414,8 +418,8 @@ function CategoryGrid({
         ? allProducts.filter((p) => p.publicReady === false)
         : allProducts.filter((p) => productParent(p) === parent);
     const editorialCmp = (a: CollectionProduct, b: CollectionProduct) => {
-      const ar = a.editorialOrder ?? (9e8 + (a.ownerSiteRank ?? 9e7));
-      const br = b.editorialOrder ?? (9e8 + (b.ownerSiteRank ?? 9e7));
+      const ar = a.editorialOrder ?? 9e8 + (a.ownerSiteRank ?? 9e7);
+      const br = b.editorialOrder ?? 9e8 + (b.ownerSiteRank ?? 9e7);
       if (ar !== br) return ar - br;
       return a.title.localeCompare(b.title);
     };
@@ -444,7 +448,6 @@ function CategoryGrid({
     return sorted.map(adapt);
   }, [allProducts, parent, sortMode, allMode]);
 
-
   // Local items state so drag-reorder feels instant. Holds the FULL parent
   // list — the sub filter is purely a display filter (see `visibleItems`).
   const [items, setItems] = useState<Item[]>([]);
@@ -461,24 +464,21 @@ function CategoryGrid({
   const missingOnly = filterParam === "missing";
   // ALL is read-only: drag order is persisted per category, so a cross-category
   // list has nowhere to write to.
-  const reorderDisabled = allMode || parent === "hidden" || subActive || sortMode !== "editorial" || missingOnly;
-  const visibleItems = useMemo(
-    () => {
-      let base = subActive
-        ? items.filter((i) => {
-            const p = (allProducts ?? []).find((pp) => pp.id === i.id);
-            return p ? productMatchesSub(p, parent as ParentId, sub) : false;
-          })
-        : items;
+  const reorderDisabled =
+    allMode || parent === "hidden" || subActive || sortMode !== "editorial" || missingOnly;
+  const visibleItems = useMemo(() => {
+    let base = subActive
+      ? items.filter((i) => {
+          const p = (allProducts ?? []).find((pp) => pp.id === i.id);
+          return p ? productMatchesSub(p, parent as ParentId, sub) : false;
+        })
+      : items;
 
-      if (missingOnly) base = base.filter((i) => i.images.length === 0);
-      // Guard: dnd-kit's SortableContext throws on null/undefined ids
-      // ("Cannot use 'in' operator to search for 'id' in null").
-      return base.filter((i) => i.id != null && i.id !== "");
-    },
-    [items, subActive, allProducts, parent, sub, missingOnly],
-  );
-
+    if (missingOnly) base = base.filter((i) => i.images.length === 0);
+    // Guard: dnd-kit's SortableContext throws on null/undefined ids
+    // ("Cannot use 'in' operator to search for 'id' in null").
+    return base.filter((i) => i.id != null && i.id !== "");
+  }, [items, subActive, allProducts, parent, sub, missingOnly]);
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -526,9 +526,9 @@ function CategoryGrid({
     }
   }, []);
 
-  const [saveState, setSaveState] = useState<
-    "idle" | "pending" | "syncing" | "synced" | "error"
-  >("idle");
+  const [saveState, setSaveState] = useState<"idle" | "pending" | "syncing" | "synced" | "error">(
+    "idle",
+  );
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSaved = useRef<string>("");
@@ -576,7 +576,10 @@ function CategoryGrid({
   // Seed the confirmed baseline whenever the source data refreshes.
   useEffect(() => {
     lastConfirmed.current = baseItems;
-    lastSaved.current = baseItems.map((i) => i.rms_id).filter(Boolean).join("|");
+    lastSaved.current = baseItems
+      .map((i) => i.rms_id)
+      .filter(Boolean)
+      .join("|");
     undoStack.current = [];
     setUndoCount(0);
   }, [baseItems]);
@@ -590,7 +593,9 @@ function CategoryGrid({
         // User dragged back to the last-saved order — nothing to persist.
         // Clear any leftover "pending" from the prior drag so the badge
         // doesn't stick on orange forever.
-        setSaveState((s) => (s === "pending" || s === "syncing" ? (savedAt ? "synced" : "idle") : s));
+        setSaveState((s) =>
+          s === "pending" || s === "syncing" ? (savedAt ? "synced" : "idle") : s,
+        );
         return;
       }
       setSaveState("pending");
@@ -683,8 +688,6 @@ function CategoryGrid({
     return () => window.removeEventListener("keydown", onKey);
   }, [doUndo]);
 
-
-
   const activeItem = useMemo(
     () => (items ?? []).find((i) => i.id === activeId) ?? null,
     [items, activeId],
@@ -709,11 +712,10 @@ function CategoryGrid({
                   missingOnly
                     ? "Missing-images filter active — reorder disabled"
                     : sortMode !== "editorial"
-                    ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
-                    : allMode
-                    ? "Every piece, grouped by category — pick a category to reorder"
-                    : "Reorder disabled while filtered"
-
+                      ? `Mirroring public ${SORT_MODES.find((s) => s.id === sortMode)?.label} sort — switch to Editorial to reorder`
+                      : allMode
+                        ? "Every piece, grouped by category — pick a category to reorder"
+                        : "Reorder disabled while filtered"
                 }`
               : `${items.length} items · Drag to reorder · Click to edit`}
           </p>
@@ -782,9 +784,7 @@ function CategoryGrid({
           matches exactly what the public sees in each mode. Editorial is the
           only editable mode (drag → writes editorialOrder). */}
       <div className="mb-4 flex flex-wrap items-center gap-1 border-b border-charcoal/10 pb-3">
-        <span className="mr-3 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">
-          Sort
-        </span>
+        <span className="mr-3 text-[10px] uppercase tracking-[0.22em] text-charcoal/40">Sort</span>
         {SORT_MODES.map((opt) => {
           const active = sortMode === opt.id;
           return (
@@ -804,9 +804,7 @@ function CategoryGrid({
               }
             >
               {opt.label}
-              {opt.id === "editorial" && (
-                <span className="ml-1.5 text-charcoal/35">●</span>
-              )}
+              {opt.id === "editorial" && <span className="ml-1.5 text-charcoal/35">●</span>}
             </button>
           );
         })}
@@ -815,7 +813,6 @@ function CategoryGrid({
             ? allMode
               ? "Read-only in All — open a category to reorder"
               : "Editable · drag to reorder"
-
             : "Read-only mirror of public sort"}
         </span>
       </div>
@@ -843,7 +840,6 @@ function CategoryGrid({
                 ? "Switch to Editorial sort to reorder"
                 : "Reorder writes the full parent list"}
           </span>
-
         </div>
       )}
 
@@ -900,7 +896,6 @@ function CategoryGrid({
           ))}
         </div>
       ) : (
-
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -908,17 +903,10 @@ function CategoryGrid({
           onDragEnd={handleDragEnd}
           modifiers={[restrictToParentElement]}
         >
-          <SortableContext
-            items={visibleItems.map((i) => i.id)}
-            strategy={rectSortingStrategy}
-          >
+          <SortableContext items={visibleItems.map((i) => i.id)} strategy={rectSortingStrategy}>
             <div
               ref={gridRef}
-              className={
-                view === "grid"
-                  ? "collection-product-grid w-full"
-                  : "grid gap-1"
-              }
+              className={view === "grid" ? "collection-product-grid w-full" : "grid gap-1"}
               style={
                 view === "grid"
                   ? undefined
@@ -986,7 +974,9 @@ function MissingFilterChip() {
         onClick={() => navigate({ search: (s: any) => ({ ...s, filter: undefined }) })}
         className="text-amber-900/70 hover:text-amber-900"
         aria-label="Clear missing filter"
-      >×</button>
+      >
+        ×
+      </button>
     </div>
   );
 }
@@ -1006,9 +996,7 @@ function LazySection({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(
-    () => typeof IntersectionObserver === "undefined",
-  );
+  const [shown, setShown] = useState(() => typeof IntersectionObserver === "undefined");
   useEffect(() => {
     if (shown) return;
     const el = ref.current;
@@ -1069,8 +1057,9 @@ function Tile(props: TileProps) {
 }
 
 function SortableTile(props: TileProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: props.item.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: props.item.id,
+  });
   return (
     <TileFrame
       {...props}
@@ -1174,10 +1163,7 @@ function TileFrame({
       )}
 
       {needsAttention && (
-        <span
-          className="absolute bottom-2 right-2 bg-amber-500 text-white p-1"
-          title="No images"
-        >
+        <span className="absolute bottom-2 right-2 bg-amber-500 text-white p-1" title="No images">
           <ImageOff className="h-3 w-3" />
         </span>
       )}
@@ -1187,18 +1173,13 @@ function TileFrame({
         aria-hidden
         className="hidden md:block pointer-events-none absolute left-3 right-3 bottom-3 opacity-0 translate-y-1.5 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-y-0"
       >
-        <div
-          className={`${glassNamePlate} rounded-[6px] px-3 py-2`}
-          style={webkitGlassBlur}
-        >
+        <div className={`${glassNamePlate} rounded-[6px] px-3 py-2`} style={webkitGlassBlur}>
           <p className="text-[12px] leading-[1.3] text-charcoal line-clamp-2 uppercase tracking-[0.06em]">
             {item.title}
           </p>
           <p className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-charcoal/55 tabular-nums">
             {imageCount} {imageCount === 1 ? "image" : "images"}
-            {item.variantCount > 0
-              ? ` across ${item.variantCount + 1} items`
-              : ""}
+            {item.variantCount > 0 ? ` across ${item.variantCount + 1} items` : ""}
           </p>
         </div>
       </div>
@@ -1231,7 +1212,6 @@ function TileMedia({ item }: { item: Item; dense?: boolean }) {
     </div>
   );
 }
-
 
 function SaveBadge({
   state,
@@ -1330,9 +1310,7 @@ function PublishButton() {
 
   return (
     <div>
-      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-2">
-        Publish
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45 mb-2">Publish</p>
       <button
         type="button"
         onClick={onClick}
@@ -1351,9 +1329,7 @@ function PublishButton() {
         </p>
       )}
       {state === "error" && msg && (
-        <p className="mt-2 text-[10px] leading-snug text-red-700 break-words">
-          Failed: {msg}
-        </p>
+        <p className="mt-2 text-[10px] leading-snug text-red-700 break-words">Failed: {msg}</p>
       )}
     </div>
   );

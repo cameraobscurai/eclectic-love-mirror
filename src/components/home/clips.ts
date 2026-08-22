@@ -6,8 +6,8 @@
 const STORAGE_BASE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/videos`;
 
 export type FilmstripClip = {
-  id: string;       // "01" … "05"
-  season: string;   // "Spring", "Summer", …
+  id: string; // "01" … "05"
+  season: string; // "Spring", "Summer", …
   /** Legacy single-format poster (JPG). Kept for `<video poster>` attribute
    *  which only accepts a single URL. */
   poster: string;
@@ -15,7 +15,7 @@ export type FilmstripClip = {
   posterAvif?: string;
   posterWebp?: string;
   src?: { mp4?: string; webm?: string };
-  label?: string;   // sr-only caption
+  label?: string; // sr-only caption
   /** Width / height of the source clip. Defaults to 3/4. */
   aspect?: number;
 };
@@ -30,9 +30,44 @@ const posterSet = (id: string) => ({
 const PORTRAIT = 9 / 16;
 
 export const HERO_CLIPS: FilmstripClip[] = [
-  { id: "01", season: "Spring",      ...posterSet("01"), label: "Spring",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/01SPRING-v3.mp4` } },
-  { id: "02", season: "Summer",      ...posterSet("02"), label: "Summer",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/02SUMMER-v3.mp4` } },
-  { id: "03", season: "Late Summer", ...posterSet("03"), label: "Late Summer", aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/03LATESUMER-v3.mp4` } },
-  { id: "04", season: "Autumn",      ...posterSet("04"), label: "Autumn",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/04AUTUMN-v3.mp4` } },
-  { id: "05", season: "Winter",      ...posterSet("05"), label: "Winter",      aspect: PORTRAIT, src: { mp4: `${STORAGE_BASE}/05WINTER-v3.mp4` } },
+  {
+    id: "01",
+    season: "Spring",
+    ...posterSet("01"),
+    label: "Spring",
+    aspect: PORTRAIT,
+    src: { mp4: `${STORAGE_BASE}/01SPRING-v3.mp4` },
+  },
+  {
+    id: "02",
+    season: "Summer",
+    ...posterSet("02"),
+    label: "Summer",
+    aspect: PORTRAIT,
+    src: { mp4: `${STORAGE_BASE}/02SUMMER-v3.mp4` },
+  },
+  {
+    id: "03",
+    season: "Late Summer",
+    ...posterSet("03"),
+    label: "Late Summer",
+    aspect: PORTRAIT,
+    src: { mp4: `${STORAGE_BASE}/03LATESUMER-v3.mp4` },
+  },
+  {
+    id: "04",
+    season: "Autumn",
+    ...posterSet("04"),
+    label: "Autumn",
+    aspect: PORTRAIT,
+    src: { mp4: `${STORAGE_BASE}/04AUTUMN-v3.mp4` },
+  },
+  {
+    id: "05",
+    season: "Winter",
+    ...posterSet("05"),
+    label: "Winter",
+    aspect: PORTRAIT,
+    src: { mp4: `${STORAGE_BASE}/05WINTER-v3.mp4` },
+  },
 ];

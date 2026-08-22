@@ -223,7 +223,7 @@ async function main() {
     ...orphans.map((o) =>
       [o.bucket, o.key, o.size, o.content_type, o.updated_at, o.public_url]
         .map(csvEscape)
-        .join(",")
+        .join(","),
     ),
   ].join("\n");
   await writeFile(join(OUT_DIR, "orphans.csv"), csv);

@@ -22,9 +22,10 @@ const CameraRig: React.FC = () => {
   cam.lookAt(look[0], look[1], look[2]);
   // Subtle FOV breathing: tighter on macro hold, wider on field
   const baseFov = 35;
-  const fov = baseFov
-    + easeIn(frame, [PHASE.MACRO_HOLD[0] - 40, PHASE.MACRO_HOLD[0]]) * -8
-    + easeIn(frame, [PHASE.MACRO_HOLD[1], PHASE.MACRO_HOLD[1] + 60]) * 8;
+  const fov =
+    baseFov +
+    easeIn(frame, [PHASE.MACRO_HOLD[0] - 40, PHASE.MACRO_HOLD[0]]) * -8 +
+    easeIn(frame, [PHASE.MACRO_HOLD[1], PHASE.MACRO_HOLD[1] + 60]) * 8;
   cam.fov = fov;
   cam.updateProjectionMatrix();
   return null;
@@ -35,9 +36,7 @@ const ColdOpen: React.FC = () => {
   const frame = useCurrentFrame();
   const opacity = 1 - easeIn(frame, [40, PHASE.COLD_OPEN_END]);
   if (opacity <= 0.001) return null;
-  return (
-    <AbsoluteFill style={{ background: "#0a0a0a", opacity, pointerEvents: "none" }} />
-  );
+  return <AbsoluteFill style={{ background: "#0a0a0a", opacity, pointerEvents: "none" }} />;
 };
 
 // End-fade overlay (to charcoal)

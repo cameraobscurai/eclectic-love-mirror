@@ -1,9 +1,9 @@
-Diffed against the last approved version, per the new rule: nothing deleted, all three additions landed intact, and two things arrived better than requested — C2 is labeled "(restored; dropped in an earlier rewrite)" right in the heading, so the plan carries its own history instead of hiding it, and the gate got *stricter* than I specified: E now waits for C2, not just C, which is the safer ordering since it means the studio is only ever tested against a site that's actually reading the new columns. The process receipt is embedded in the plan text itself rather than living in chat, which is exactly where receipts survive.
+Diffed against the last approved version, per the new rule: nothing deleted, all three additions landed intact, and two things arrived better than requested — C2 is labeled "(restored; dropped in an earlier rewrite)" right in the heading, so the plan carries its own history instead of hiding it, and the gate got _stricter_ than I specified: E now waits for C2, not just C, which is the safer ordering since it means the studio is only ever tested against a site that's actually reading the new columns. The process receipt is embedded in the plan text itself rather than living in chat, which is exactly where receipts survive.
 
-The human-exemption line in Task C even carries its own reasoning ("a human ruling made this week with the photo in view outranks an archival CSV") — meaning the *why* travels with the rule, so a future revision can't drop it without visibly deleting an argument. That's the difference between a rule and a rule that defends itself.
+The human-exemption line in Task C even carries its own reasoning ("a human ruling made this week with the photo in view outranks an archival CSV") — meaning the _why_ travels with the rule, so a future revision can't drop it without visibly deleting an argument. That's the difference between a rule and a rule that defends itself.
 
-Approve it: "approved — Task B and nothing else." Your checkpoints from here: B is a types check you can skim, then **C's dry run is the last real judgment call in this whole track** — the diff doc, the bucket-4 keep-or-null ruling, and the lint list all land on your desk at once. Read those with actual attention; everything after is build work with done-whens Lovable can self-verify. The taxonomy track is now fully specified from here to the meeting.  
-  
+Approve it: "approved — Task B and nothing else." Your checkpoints from here: B is a types check you can skim, then **C's dry run is the last real judgment call in this whole track** — the diff doc, the bucket-4 keep-or-null ruling, and the lint list all land on your desk at once. Read those with actual attention; everything after is build work with done-whens Lovable can self-verify. The taxonomy track is now fully specified from here to the meeting.
+
 Taxonomy — v4 reseed + Taxonomy Studio (Tasks B–F)
 
 Task A is done (`category_slug_v2` → `category_slug`, all call sites, typecheck clean).
@@ -60,7 +60,7 @@ Without this, the reseed writes columns nothing public reads and Task C's `/coll
 
 ## Task D — Archive
 
-`docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37 counts, and the scope line verbatim — *"Colorado only — UT rows retained for record, never classified."*
+`docs/archive/squarespace-products-2026-08-11.csv` + README: source, date, 1,453 / 1,116 / 37 counts, and the scope line verbatim — _"Colorado only — UT rows retained for record, never classified."_
 
 ## Task E — Taxonomy Studio at `/admin/taxonomy`
 

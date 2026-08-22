@@ -4,10 +4,7 @@
     "title": "ALISTAIR GREEN LEATHER BENCH",
     "group": "benches-ottomans",
     "dims": "62\"W x 32\"D x 18\"H",
-    "canvas": [
-      364,
-      124
-    ],
+    "canvas": [364, 124],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.935,
@@ -18,10 +15,7 @@
     "title": "AVALON IRON + LINEN BENCH",
     "group": "benches-ottomans",
     "dims": "58\"w x 18\"D x 22\"H",
-    "canvas": [
-      303,
-      134
-    ],
+    "canvas": [303, 134],
     "bboxW": 0.997,
     "bboxH": 1.0,
     "aspect": 2.261,
@@ -32,10 +26,7 @@
     "title": "BLANC WHITE & GREY COW HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "17\"W X 17\"D X 17\"H",
-    "canvas": [
-      231,
-      226
-    ],
+    "canvas": [231, 226],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.022,
@@ -46,10 +37,7 @@
     "title": "DUNE WOOD AND TAN BOUCLE BENCH",
     "group": "benches-ottomans",
     "dims": "64\"W x 18\"D x 20\"H",
-    "canvas": [
-      362,
-      177
-    ],
+    "canvas": [362, 177],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.045,
@@ -60,10 +48,7 @@
     "title": "ELLORA SAGE VELVET OTTOMAN",
     "group": "benches-ottomans",
     "dims": "47.5\"W x 47.5\"D x 16.5\"H",
-    "canvas": [
-      334,
-      169
-    ],
+    "canvas": [334, 169],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.976,
@@ -74,10 +59,7 @@
     "title": "EVANDER GREY HIDE TAPERED OTTOMAN",
     "group": "benches-ottomans",
     "dims": "36\"Dia x 18.5\"H",
-    "canvas": [
-      260,
-      178
-    ],
+    "canvas": [260, 178],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.461,
@@ -88,10 +70,7 @@
     "title": "GERALDINE GOAT FUR WOOD BENCH",
     "group": "benches-ottomans",
     "dims": "35.5\"W x 11.75\"D x 17.75\"H",
-    "canvas": [
-      367,
-      228
-    ],
+    "canvas": [367, 228],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.61,
@@ -102,10 +81,7 @@
     "title": "GREY HILLS LINEN OTTOMAN",
     "group": "benches-ottomans",
     "dims": "18\"Dia x 18\"H",
-    "canvas": [
-      191,
-      231
-    ],
+    "canvas": [191, 231],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.827,
@@ -116,10 +92,7 @@
     "title": "JESSIE COW HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "16\"W x 16\"D x 17\"H",
-    "canvas": [
-      400,
-      300
-    ],
+    "canvas": [400, 300],
     "bboxW": 0.595,
     "bboxH": 0.727,
     "aspect": 1.333,
@@ -130,10 +103,7 @@
     "title": "JOSEPH GOAT HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "17\"W x 17\"D x 17\"H",
-    "canvas": [
-      800,
-      600
-    ],
+    "canvas": [800, 600],
     "bboxW": 0.67,
     "bboxH": 0.912,
     "aspect": 1.333,
@@ -144,10 +114,7 @@
     "title": "JOURDAIN NATURAL BENCH",
     "group": "benches-ottomans",
     "dims": "79\"W x 28\"D x 20\"H",
-    "canvas": [
-      348,
-      121
-    ],
+    "canvas": [348, 121],
     "bboxW": 0.997,
     "bboxH": 1.0,
     "aspect": 2.876,
@@ -158,10 +125,7 @@
     "title": "LEANNA IVORY HIDE TAPERED OTTOMAN",
     "group": "benches-ottomans",
     "dims": "36\"Dia x 18.5\"H",
-    "canvas": [
-      292,
-      200
-    ],
+    "canvas": [292, 200],
     "bboxW": 1.0,
     "bboxH": 0.995,
     "aspect": 1.46,
@@ -172,10 +136,7 @@
     "title": "LORENZO IVORY ROUND HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "42\"Dia x x19\"H",
-    "canvas": [
-      400,
-      300
-    ],
+    "canvas": [400, 300],
     "bboxW": 0.655,
     "bboxH": 0.6,
     "aspect": 1.333,
@@ -186,10 +147,7 @@
     "title": "MORRISON CHARCOAL OTTOMAN",
     "group": "benches-ottomans",
     "dims": "28\"W x 26\"D x 16\"H",
-    "canvas": [
-      293,
-      221
-    ],
+    "canvas": [293, 221],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.326,
@@ -200,10 +158,7 @@
     "title": "NAZARA GREY HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "15\"Dia x 19\"H",
-    "canvas": [
-      131,
-      184
-    ],
+    "canvas": [131, 184],
     "bboxW": 1.0,
     "bboxH": 0.995,
     "aspect": 0.712,
@@ -214,10 +169,7 @@
     "title": "NERIYA IVORY HIDE OTTOMAN",
     "group": "benches-ottomans",
     "dims": "15\"Dia x 19\"H",
-    "canvas": [
-      139,
-      195
-    ],
+    "canvas": [139, 195],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.713,
@@ -228,10 +180,7 @@
     "title": "OMAR BROWN LEATHER OTTOMAN",
     "group": "benches-ottomans",
     "dims": "21\"Dia x 12\"H",
-    "canvas": [
-      800,
-      600
-    ],
+    "canvas": [800, 600],
     "bboxW": 0.833,
     "bboxH": 0.755,
     "aspect": 1.333,
@@ -242,10 +191,7 @@
     "title": "SIETE RATTAN OTTOMAN",
     "group": "benches-ottomans",
     "dims": "20\"Dia x 19\"H",
-    "canvas": [
-      245,
-      269
-    ],
+    "canvas": [245, 269],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.911,
@@ -256,10 +202,7 @@
     "title": "SPENCER BEIGE COT BENCH",
     "group": "benches-ottomans",
     "dims": "84\"W x 38\"D x 18.5\" H",
-    "canvas": [
-      347,
-      122
-    ],
+    "canvas": [347, 122],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.844,
@@ -270,10 +213,7 @@
     "title": "TORRO LEATHER KNIT OTTOMAN",
     "group": "benches-ottomans",
     "dims": "22.5\"W x 15.25\"D x 18.5\"H",
-    "canvas": [
-      202,
-      187
-    ],
+    "canvas": [202, 187],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.08,
@@ -284,10 +224,7 @@
     "title": "TRAPPER CANVAS OTTOMAN",
     "group": "benches-ottomans",
     "dims": "18\"W x 18\"D x 18\"H",
-    "canvas": [
-      264,
-      226
-    ],
+    "canvas": [264, 226],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.168,
@@ -298,10 +235,7 @@
     "title": "YGRITTE EBONY TUFTED BENCH",
     "group": "benches-ottomans",
     "dims": "63\"W x 36\"D x 15\"H",
-    "canvas": [
-      354,
-      120
-    ],
+    "canvas": [354, 120],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.95,
@@ -312,10 +246,7 @@
     "title": "ADELAIDE ANTIQUE ARM CHAIR",
     "group": "chairs",
     "dims": "24\"W x 19\"D x 38\"H",
-    "canvas": [
-      201,
-      286
-    ],
+    "canvas": [201, 286],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.703,
@@ -326,10 +257,7 @@
     "title": "ALORA BOTANICAL SCULPTURAL CHAIR",
     "group": "chairs",
     "dims": "33\"W x 30.5\"D x 30\"H",
-    "canvas": [
-      275,
-      263
-    ],
+    "canvas": [275, 263],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.046,
@@ -340,10 +268,7 @@
     "title": "AMUN BROWN LEATHER BUTTERFLY CHAIR",
     "group": "chairs",
     "dims": "28\"W x 27\"D x 36\"H",
-    "canvas": [
-      218,
-      256
-    ],
+    "canvas": [218, 256],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.852,
@@ -354,10 +279,7 @@
     "title": "ANTONIO BLACK LEATHER BUTTERFLY CHAIR",
     "group": "chairs",
     "dims": "28\"W x 27\"D x 36\"H",
-    "canvas": [
-      220,
-      270
-    ],
+    "canvas": [220, 270],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.815,
@@ -368,10 +290,7 @@
     "title": "ARAMITA COTTON VELVET CHAIR",
     "group": "chairs",
     "dims": "37\"W x 38\"D x 34\"H",
-    "canvas": [
-      227,
-      221
-    ],
+    "canvas": [227, 221],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.027,
@@ -382,10 +301,7 @@
     "title": "ARTESIA CHAIR",
     "group": "chairs",
     "dims": "28\"W x 28\"D x 32\"H - 20\" Seat Height",
-    "canvas": [
-      261,
-      283
-    ],
+    "canvas": [261, 283],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.922,
@@ -396,10 +312,7 @@
     "title": "AXEL BAR STOOL",
     "group": "chairs",
     "dims": "16\"W x 17\"D x 45\"H",
-    "canvas": [
-      1448,
-      1086
-    ],
+    "canvas": [1448, 1086],
     "bboxW": 0.351,
     "bboxH": 0.855,
     "aspect": 1.333,
@@ -410,10 +323,7 @@
     "title": "AZALEA BOTANICAL VELVET CHAIR",
     "group": "chairs",
     "dims": "40.5\"W x 47\"D x 34\"H",
-    "canvas": [
-      364,
-      270
-    ],
+    "canvas": [364, 270],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.348,
@@ -424,10 +334,7 @@
     "title": "BARD DECONSTRUCTED LEATHER CHAIR",
     "group": "chairs",
     "dims": "28\"W x 27\"D x 38\"H",
-    "canvas": [
-      242,
-      287
-    ],
+    "canvas": [242, 287],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.843,
@@ -438,10 +345,7 @@
     "title": "BENECIO LEATHER KNIT CHAIR",
     "group": "chairs",
     "dims": "24\"W x 26\"D x 24\"H",
-    "canvas": [
-      247,
-      235
-    ],
+    "canvas": [247, 235],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.051,
@@ -452,10 +356,7 @@
     "title": "CARWYN WHITE + WOOD CHAIR",
     "group": "chairs",
     "dims": "32\"W x 32\"D x 28\"H",
-    "canvas": [
-      278,
-      231
-    ],
+    "canvas": [278, 231],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.203,
@@ -466,10 +367,7 @@
     "title": "CLAUDE WHITE UPHOLSTERED CHAIR",
     "group": "chairs",
     "dims": "28.25\"W x 29.5\"D x 33\"H",
-    "canvas": [
-      258,
-      252
-    ],
+    "canvas": [258, 252],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.024,
@@ -480,10 +378,7 @@
     "title": "CORWIN CANVAS LOUNGE CHAIR",
     "group": "chairs",
     "dims": "30\"W x 30\"D x 27\"H",
-    "canvas": [
-      266,
-      253
-    ],
+    "canvas": [266, 253],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.051,
@@ -494,10 +389,7 @@
     "title": "DONNELLY NAVY LEATHER WINGBACK CHAIR",
     "group": "chairs",
     "dims": "30\"W x 32\"D x 40\"H",
-    "canvas": [
-      206,
-      272
-    ],
+    "canvas": [206, 272],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.757,
@@ -508,10 +400,7 @@
     "title": "ELSPETH ALMOND VELOUR CHAIR",
     "group": "chairs",
     "dims": "27.5\"W x 28\"D x 27.5\"H",
-    "canvas": [
-      254,
-      274
-    ],
+    "canvas": [254, 274],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.927,
@@ -522,10 +411,7 @@
     "title": "FABIAN GREY HIDE BARREL CHAIR",
     "group": "chairs",
     "dims": "28\"W x 25\"D x 27\"H",
-    "canvas": [
-      224,
-      236
-    ],
+    "canvas": [224, 236],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.949,
@@ -536,10 +422,7 @@
     "title": "FARRELL GREY HIDE BAR STOOL",
     "group": "chairs",
     "dims": "18\"W x 16.5\"D x 30\"H",
-    "canvas": [
-      149,
-      223
-    ],
+    "canvas": [149, 223],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.668,
@@ -550,10 +433,7 @@
     "title": "FAWN NATURAL CANE CHAIR",
     "group": "chairs",
     "dims": "27\"W x 22\"D x 36\"H",
-    "canvas": [
-      238,
-      278
-    ],
+    "canvas": [238, 278],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.856,
@@ -564,10 +444,7 @@
     "title": "FLORIAN IVORY HIDE BARREL CHAIR",
     "group": "chairs",
     "dims": "28\"W x 25\"D x 27\"H",
-    "canvas": [
-      224,
-      238
-    ],
+    "canvas": [224, 238],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.941,
@@ -578,10 +455,7 @@
     "title": "FORD DECONSTRUCTED LEATHER WINGBACK CHAIR",
     "group": "chairs",
     "dims": "32\"W x 32\"D x 45\"H",
-    "canvas": [
-      228,
-      296
-    ],
+    "canvas": [228, 296],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.77,
@@ -592,10 +466,7 @@
     "title": "FULTON WHITE LEATHER BUTTERFLY CHAIR",
     "group": "chairs",
     "dims": "23\"W x 29\"D x 36\"H",
-    "canvas": [
-      209,
-      274
-    ],
+    "canvas": [209, 274],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.763,
@@ -606,10 +477,7 @@
     "title": "GILES GOAT HIDE CHAIR",
     "group": "chairs",
     "dims": "22\"W x 31\"D x 23\"H",
-    "canvas": [
-      198,
-      260
-    ],
+    "canvas": [198, 260],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.762,
@@ -620,10 +488,7 @@
     "title": "HELENA ANTIQUE CARVED CHAIR",
     "group": "chairs",
     "dims": "25\"W x 23\"D x 52\"H",
-    "canvas": [
-      168,
-      295
-    ],
+    "canvas": [168, 295],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.569,
@@ -634,10 +499,7 @@
     "title": "HEMINGWAY BROWN LEATHER CHAIR",
     "group": "chairs",
     "dims": "27\"W x 32\"D x 34\"H",
-    "canvas": [
-      226,
-      262
-    ],
+    "canvas": [226, 262],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.863,
@@ -648,10 +510,7 @@
     "title": "HIRSHFIELD LEATHER CHAIR",
     "group": "chairs",
     "dims": "24\"W x 30\"D x 26\"H",
-    "canvas": [
-      302,
-      244
-    ],
+    "canvas": [302, 244],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.238,
@@ -662,10 +521,7 @@
     "title": "JENNIE ANTIQUE LINEN CHAIR",
     "group": "chairs",
     "dims": "26\"W x 22\"D x 38\"H",
-    "canvas": [
-      209,
-      285
-    ],
+    "canvas": [209, 285],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.733,
@@ -676,10 +532,7 @@
     "title": "JESAMAY ARMCHAIR",
     "group": "chairs",
     "dims": "23.5\"W x 24\"D x 33.75\"H - 19\" Seat Height",
-    "canvas": [
-      206,
-      274
-    ],
+    "canvas": [206, 274],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.752,
@@ -690,10 +543,7 @@
     "title": "JULIEN ADJUSTABLE COUNTER STOOL",
     "group": "chairs",
     "dims": "16\"W x 16\"D x 27.5\"H",
-    "canvas": [
-      164,
-      247
-    ],
+    "canvas": [164, 247],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.664,
@@ -704,10 +554,7 @@
     "title": "MARA HUNTER LEATHER CHAIR",
     "group": "chairs",
     "dims": "18\"W x 20\"D x 33.5\"H",
-    "canvas": [
-      800,
-      600
-    ],
+    "canvas": [800, 600],
     "bboxW": 0.431,
     "bboxH": 0.852,
     "aspect": 1.333,
@@ -718,10 +565,7 @@
     "title": "MARSHALL MANGO WOOD CHAIR",
     "group": "chairs",
     "dims": "20\"W x 20\"D x 32\"H",
-    "canvas": [
-      162,
-      239
-    ],
+    "canvas": [162, 239],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.678,
@@ -732,10 +576,7 @@
     "title": "MILLICENT ANTIQUE ARM CHAIR",
     "group": "chairs",
     "dims": "25\"W x 19\"D x 41\"H",
-    "canvas": [
-      174,
-      286
-    ],
+    "canvas": [174, 286],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.608,
@@ -746,10 +587,7 @@
     "title": "NATORI OAK + FUR CHAIR",
     "group": "chairs",
     "dims": "24.5\"W x 29.\"D x 32\"H",
-    "canvas": [
-      236,
-      257
-    ],
+    "canvas": [236, 257],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.918,
@@ -760,10 +598,7 @@
     "title": "NOELLE BLACK CANE CHAIR",
     "group": "chairs",
     "dims": "24\"W x 24\"D x 33\"H",
-    "canvas": [
-      222,
-      278
-    ],
+    "canvas": [222, 278],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.799,
@@ -774,10 +609,7 @@
     "title": "NOMAD WOOD CHAIR",
     "group": "chairs",
     "dims": "20\"W x 30\"D x ?\"H",
-    "canvas": [
-      220,
-      280
-    ],
+    "canvas": [220, 280],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.786,
@@ -788,10 +620,7 @@
     "title": "OSPREY BLACK METAL CHAIR",
     "group": "chairs",
     "dims": "33.75\"W x 30\"D x 35.25\"H",
-    "canvas": [
-      294,
-      260
-    ],
+    "canvas": [294, 260],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.131,
@@ -802,10 +631,7 @@
     "title": "POE DECONSTRUCTED LEATHER CHAIR",
     "group": "chairs",
     "dims": "24\"W x 28\"D x 34\"H",
-    "canvas": [
-      212,
-      276
-    ],
+    "canvas": [212, 276],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.768,
@@ -816,10 +642,7 @@
     "title": "ROSIE ANTIQUE LINEN CHAIR",
     "group": "chairs",
     "dims": "26\"W x 23\"D x 39\"H",
-    "canvas": [
-      210,
-      276
-    ],
+    "canvas": [210, 276],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.761,
@@ -830,10 +653,7 @@
     "title": "SUHANA COGNAC LEATHER CHAIR",
     "group": "chairs",
     "dims": "26\"W x 32\"D x 28\"H",
-    "canvas": [
-      298,
-      266
-    ],
+    "canvas": [298, 266],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.12,
@@ -844,10 +664,7 @@
     "title": "TAILOR BROWN LEATHER CHAIR",
     "group": "chairs",
     "dims": "31\"W x 36\"D x 35\"H",
-    "canvas": [
-      230,
-      262
-    ],
+    "canvas": [230, 262],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.878,
@@ -858,10 +675,7 @@
     "title": "THATCHER GREEN NATURAL WOVEN BAR STOOL",
     "group": "chairs",
     "dims": "16.5\"W x 20\"D x 45\"H",
-    "canvas": [
-      137,
-      281
-    ],
+    "canvas": [137, 281],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.488,
@@ -872,10 +686,7 @@
     "title": "VIXXEN BLACK BAR STOOL",
     "group": "chairs",
     "dims": "22\"W x 20.\"D x 42\"H Back",
-    "canvas": [
-      173,
-      285
-    ],
+    "canvas": [173, 285],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.607,
@@ -886,10 +697,7 @@
     "title": "ZEKI KILIM ARM CHAIR",
     "group": "chairs",
     "dims": "27\"W X 28\"D X 33\"H",
-    "canvas": [
-      248,
-      252
-    ],
+    "canvas": [248, 252],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 0.984,
@@ -900,10 +708,7 @@
     "title": "ANTONELLA COTTON VELVET SOFA",
     "group": "sofas",
     "dims": "76\"W x 38\"D x 33\"H",
-    "canvas": [
-      343,
-      201
-    ],
+    "canvas": [343, 201],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.706,
@@ -914,10 +719,7 @@
     "title": "AVIANA BOTANICAL LINEN SOFA",
     "group": "sofas",
     "dims": "83\"W x 39\"D x 39\"H",
-    "canvas": [
-      393,
-      226
-    ],
+    "canvas": [393, 226],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.739,
@@ -928,10 +730,7 @@
     "title": "BROOKLYN PLUSH CHARCOAL SOFA",
     "group": "sofas",
     "dims": "90\"W x 30\"D x 35\"H",
-    "canvas": [
-      376,
-      155
-    ],
+    "canvas": [376, 155],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.426,
@@ -942,10 +741,7 @@
     "title": "CALISTA FRINGE SOFA",
     "group": "sofas",
     "dims": "80\"W x 37.75\"D x 29.25\"H",
-    "canvas": [
-      389,
-      132
-    ],
+    "canvas": [389, 132],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.947,
@@ -956,10 +752,7 @@
     "title": "CICELY WICKER + LINEN LOVESEAT",
     "group": "sofas",
     "dims": "60\"W x 23\"D x 35\"H",
-    "canvas": [
-      372,
-      221
-    ],
+    "canvas": [372, 221],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.683,
@@ -970,10 +763,7 @@
     "title": "COMMODORE CANVAS LOVESEAT",
     "group": "sofas",
     "dims": "71\"W x 30\"D x 30\"H",
-    "canvas": [
-      360,
-      199
-    ],
+    "canvas": [360, 199],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.809,
@@ -984,10 +774,7 @@
     "title": "COSETTE SAGE VELVET LOVESEAT",
     "group": "sofas",
     "dims": "52\"W x 30\"D x 36.5\"H",
-    "canvas": [
-      800,
-      600
-    ],
+    "canvas": [800, 600],
     "bboxW": 0.67,
     "bboxH": 0.767,
     "aspect": 1.333,
@@ -998,10 +785,7 @@
     "title": "ELIZABETH CHAMPAGNE VELVET SOFA",
     "group": "sofas",
     "dims": "90\"W x 28\"D x 33\"H",
-    "canvas": [
-      370,
-      163
-    ],
+    "canvas": [370, 163],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.27,
@@ -1012,10 +796,7 @@
     "title": "ELOISE ANTIQUE WHITE FRENCH LOVESEAT",
     "group": "sofas",
     "dims": "72\"W x 34\"D x 35\"H",
-    "canvas": [
-      360,
-      196
-    ],
+    "canvas": [360, 196],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.837,
@@ -1026,10 +807,7 @@
     "title": "ERIN ANTIQUE WHITE FRENCH SOFA",
     "group": "sofas",
     "dims": "96\"W x 38\"D x 35\"H",
-    "canvas": [
-      382,
-      164
-    ],
+    "canvas": [382, 164],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.329,
@@ -1040,10 +818,7 @@
     "title": "HENRY UPHOLSTERED GREY SOFA",
     "group": "sofas",
     "dims": "98\"W x 40.5\"D x 30\"H",
-    "canvas": [
-      379,
-      144
-    ],
+    "canvas": [379, 144],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.632,
@@ -1054,10 +829,7 @@
     "title": "INDIWIN BLACK LEATHER SOFA",
     "group": "sofas",
     "dims": "91\"W x 35\"D x 25\"H",
-    "canvas": [
-      378,
-      146
-    ],
+    "canvas": [378, 146],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.589,
@@ -1068,10 +840,7 @@
     "title": "JACINDA ARMLESS TEXTILE LOVESEAT",
     "group": "sofas",
     "dims": "64.5\"W x 41\"D x 27\"H",
-    "canvas": [
-      390,
-      187
-    ],
+    "canvas": [390, 187],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.086,
@@ -1082,10 +851,7 @@
     "title": "LINDT TOFFEE VELVET CHANNEL TUFTED SOFA",
     "group": "sofas",
     "dims": "91\"W x 38\"D x 31\"H",
-    "canvas": [
-      386,
-      179
-    ],
+    "canvas": [386, 179],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.156,
@@ -1096,10 +862,7 @@
     "title": "PHILLIPE GREY SILK LOVESEAT",
     "group": "sofas",
     "dims": "51\"W x 26\"D x 37\"H",
-    "canvas": [
-      800,
-      600
-    ],
+    "canvas": [800, 600],
     "bboxW": 0.688,
     "bboxH": 0.727,
     "aspect": 1.333,
@@ -1110,10 +873,7 @@
     "title": "RESHMA BOTANICAL SCULPTURAL SOFA",
     "group": "sofas",
     "dims": "82.5\"W x 34\"D x 28\"H",
-    "canvas": [
-      384,
-      174
-    ],
+    "canvas": [384, 174],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.207,
@@ -1124,10 +884,7 @@
     "title": "ROSALIND CREAM VELVET ROUND BANQUETTE",
     "group": "sofas",
     "dims": "90\"Dia x 30\"H",
-    "canvas": [
-      396,
-      218
-    ],
+    "canvas": [396, 218],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.817,
@@ -1138,10 +895,7 @@
     "title": "ROWNTREE CHOCOLATE LEATHER LOVESEAT",
     "group": "sofas",
     "dims": "49\"W x 30\"D x 26\"H",
-    "canvas": [
-      330,
-      207
-    ],
+    "canvas": [330, 207],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 1.594,
@@ -1152,10 +906,7 @@
     "title": "SIDONY WHITE + WOOD SOFA",
     "group": "sofas",
     "dims": "94\"W x 30\"D x 32\"H",
-    "canvas": [
-      386,
-      112
-    ],
+    "canvas": [386, 112],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 3.446,
@@ -1166,10 +917,7 @@
     "title": "SILAS SAGE + OAK CANE SOFA",
     "group": "sofas",
     "dims": "80.5\"W x 27.5\"D x 30\"H",
-    "canvas": [
-      392,
-      185
-    ],
+    "canvas": [392, 185],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.119,
@@ -1180,10 +928,7 @@
     "title": "STANHOPE CHOCOLATE LEATHER SOFA",
     "group": "sofas",
     "dims": "94.5\"W x 41\"D x 31.5\"H",
-    "canvas": [
-      396,
-      149
-    ],
+    "canvas": [396, 149],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.658,
@@ -1194,10 +939,7 @@
     "title": "SYLVANUS GREEN & ASH SOFA",
     "group": "sofas",
     "dims": "79\"W x 34\"D x 30\"H",
-    "canvas": [
-      369,
-      170
-    ],
+    "canvas": [369, 170],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.171,
@@ -1208,10 +950,7 @@
     "title": "TALON BLACK METAL SOFA",
     "group": "sofas",
     "dims": "83\"W x 28.5\"W x 34\"H",
-    "canvas": [
-      400,
-      175
-    ],
+    "canvas": [400, 175],
     "bboxW": 1.0,
     "bboxH": 1.0,
     "aspect": 2.286,

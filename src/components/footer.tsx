@@ -31,9 +31,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-y-10 sm:gap-y-14 gap-x-6 sm:gap-x-8 md:gap-x-10">
           {/* Brand block */}
           <div className="col-span-2 md:col-span-5">
-            <h2 className="footer-wordmark transition-opacity duration-300 hover:opacity-75">ECLECTIC HIVE</h2>
+            <h2 className="footer-wordmark transition-opacity duration-300 hover:opacity-75">
+              ECLECTIC HIVE
+            </h2>
             <p className="footer-link mt-5 sm:mt-8 text-cream/65 max-w-md">
-              AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE ENVIRONMENTS.
+              AN ATELIER OF DESIGN AND PRODUCTION. CONCEPT, FABRICATION, AND SPACE — IMMERSIVE
+              ENVIRONMENTS.
             </p>
           </div>
 
@@ -72,7 +75,6 @@ export function Footer() {
           <p className={META_CLASS}>EST. 2012</p>
           <p className={META_CLASS}>DENVER, COLORADO</p>
         </div>
-
       </div>
     </footer>
   );

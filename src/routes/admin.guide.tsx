@@ -126,7 +126,10 @@ const STEPS: Step[] = [
     title: "Publish",
     intro: "Edits are saved instantly, but the public site reads a published snapshot.",
     items: [
-      { label: "Finish your batch of edits", body: "Save each product as you go. Nothing is lost between sessions." },
+      {
+        label: "Finish your batch of edits",
+        body: "Save each product as you go. Nothing is lost between sessions.",
+      },
       { label: "Find the black Publish button", body: "Top right of every admin page." },
       {
         label: "Click Publish and wait for confirmation",

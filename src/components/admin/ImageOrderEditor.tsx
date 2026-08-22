@@ -54,7 +54,6 @@ type Item = {
   updated_at?: string | null;
 };
 
-
 type Props = {
   item: Item;
   onClose: () => void;
@@ -70,16 +69,12 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   const [urls, setUrls] = useState<string[]>(item.images ?? []);
   const [bg, setBg] = useState<string | null>(item.card_background_url ?? null);
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">(
-    "idle",
-  );
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [dropActive, setDropActive] = useState(false);
   const [tab, setTab] = useState<"manage" | "pick">("manage");
-  const [publishState, setPublishState] = useState<"idle" | "publishing" | "live">(
-    "idle",
-  );
+  const [publishState, setPublishState] = useState<"idle" | "publishing" | "live">("idle");
 
   const lastSavedRef = useRef<string[]>(item.images ?? []);
   // Rolls forward on every successful write; the server returns the row's new
@@ -115,10 +110,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
           invalidateCollectionCatalog();
           clearPublishPending();
           setPublishState("live");
-          setTimeout(
-            () => setPublishState((s) => (s === "live" ? "idle" : s)),
-            4000,
-          );
+          setTimeout(() => setPublishState((s) => (s === "live" ? "idle" : s)), 4000);
         })
         .catch(() => {
           // Non-fatal: the edit is saved. The header Publish button stays lit.
@@ -184,12 +176,11 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     (next: string[]) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
-        void flushSave(next).then(() => {
-          setTimeout(
-            () => setSaveState((s) => (s === "saved" ? "idle" : s)),
-            3000,
-          );
-        }).catch(() => {});
+        void flushSave(next)
+          .then(() => {
+            setTimeout(() => setSaveState((s) => (s === "saved" ? "idle" : s)), 3000);
+          })
+          .catch(() => {});
       }, 400);
     },
     [flushSave],
@@ -208,7 +199,6 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     }
     onClose();
   }, [flushSave, urls, onClose]);
-
 
   useEffect(() => {
     return () => {
@@ -305,11 +295,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
               id: item.id,
               rmsId: item.rms_id,
               filename: file.name,
-              contentType: file.type as
-                | "image/jpeg"
-                | "image/png"
-                | "image/webp"
-                | "image/avif",
+              contentType: file.type as "image/jpeg" | "image/png" | "image/webp" | "image/avif",
               base64,
             },
           });
@@ -323,15 +309,12 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
       if (failed.length) notes.push(`${failed.length} failed — ${failed.join("; ")}`);
       if (skipped.length) notes.push(`${skipped.length} skipped — ${skipped.join("; ")}`);
       if (notes.length) {
-        setErrMsg(
-          `${appended.length} of ${arr.length} added. ${notes.join(" · ")}`,
-        );
+        setErrMsg(`${appended.length} of ${arr.length} added. ${notes.join(" · ")}`);
       }
     } finally {
       setUploading(false);
     }
   };
-
 
   // Re-fetch row on mount in case data is stale (single read, no refetch loop).
   useEffect(() => {
@@ -361,16 +344,16 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
       )}
       {saveState === "saved" && <span className="text-emerald-600">Saved</span>}
       {saveState === "error" && (
-        <span className="text-red-600" title={errMsg ?? ""}>Error — reverted</span>
+        <span className="text-red-600" title={errMsg ?? ""}>
+          Error — reverted
+        </span>
       )}
       {publishState === "publishing" && (
         <span className="text-neutral-500 inline-flex items-center gap-1">
           <Loader2 className="h-3 w-3 animate-spin" /> Pushing to site
         </span>
       )}
-      {publishState === "live" && (
-        <span className="text-emerald-700">Live on site</span>
-      )}
+      {publishState === "live" && <span className="text-emerald-700">Live on site</span>}
     </span>
   );
 
@@ -411,133 +394,126 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
         </div>
       )}
 
+      {/* Tabs */}
+      <div className="flex items-center border-b border-neutral-200 px-5">
+        <TabBtn active={tab === "manage"} onClick={() => setTab("manage")}>
+          <LayoutGrid className="h-3.5 w-3.5" /> Manage
+        </TabBtn>
+        <TabBtn active={tab === "pick"} onClick={() => setTab("pick")}>
+          <FolderOpen className="h-3.5 w-3.5" /> Pick from storage
+        </TabBtn>
+      </div>
 
-        {/* Tabs */}
-        <div className="flex items-center border-b border-neutral-200 px-5">
-          <TabBtn active={tab === "manage"} onClick={() => setTab("manage")}>
-            <LayoutGrid className="h-3.5 w-3.5" /> Manage
-          </TabBtn>
-          <TabBtn active={tab === "pick"} onClick={() => setTab("pick")}>
-            <FolderOpen className="h-3.5 w-3.5" /> Pick from storage
-          </TabBtn>
-        </div>
-
-        {/* Body */}
-        <div
-          className={`flex-1 overflow-auto p-5 ${
-            tab === "manage" && dropActive
-              ? "bg-emerald-50/50 ring-2 ring-emerald-400 ring-inset"
-              : ""
-          }`}
-          onDragOver={(e) => {
-            if (tab !== "manage") return;
-            if (e.dataTransfer.types.includes("Files")) {
-              e.preventDefault();
-              setDropActive(true);
-            }
-          }}
-          onDragLeave={() => setDropActive(false)}
-          onDrop={(e) => {
-            if (tab !== "manage") return;
-            if (e.dataTransfer.files.length) {
-              e.preventDefault();
-              setDropActive(false);
-              void handleFiles(e.dataTransfer.files);
-            }
-          }}
-        >
-          {tab === "pick" ? (
-            <StoragePicker
-              rmsId={item.rms_id}
-              existingUrls={urls}
-              onPick={(picked) => {
-                const next = [...urls, ...picked.filter((u) => !urls.includes(u))];
-                apply(next);
-                setTab("manage");
-              }}
+      {/* Body */}
+      <div
+        className={`flex-1 overflow-auto p-5 ${
+          tab === "manage" && dropActive
+            ? "bg-emerald-50/50 ring-2 ring-emerald-400 ring-inset"
+            : ""
+        }`}
+        onDragOver={(e) => {
+          if (tab !== "manage") return;
+          if (e.dataTransfer.types.includes("Files")) {
+            e.preventDefault();
+            setDropActive(true);
+          }
+        }}
+        onDragLeave={() => setDropActive(false)}
+        onDrop={(e) => {
+          if (tab !== "manage") return;
+          if (e.dataTransfer.files.length) {
+            e.preventDefault();
+            setDropActive(false);
+            void handleFiles(e.dataTransfer.files);
+          }
+        }}
+      >
+        {tab === "pick" ? (
+          <StoragePicker
+            rmsId={item.rms_id}
+            existingUrls={urls}
+            onPick={(picked) => {
+              const next = [...urls, ...picked.filter((u) => !urls.includes(u))];
+              apply(next);
+              setTab("manage");
+            }}
+          />
+        ) : urls.length === 0 ? (
+          <div className="text-center py-16 text-neutral-500 text-sm">
+            No images yet. Drop files here, upload below, or pick from storage.
+          </div>
+        ) : (
+          <div className="space-y-5">
+            <FocalEditor
+              id={item.id}
+              coverUrl={urls[0]}
+              initialX={item.cover_focal_x ?? null}
+              initialY={item.cover_focal_y ?? null}
+              coverFramedUrl={item.cover_framed_url ?? null}
+              categorySlug={item.category_slug ?? null}
+              dimensions={item.dimensions ?? null}
             />
-          ) : urls.length === 0 ? (
-            <div className="text-center py-16 text-neutral-500 text-sm">
-              No images yet. Drop files here, upload below, or pick from storage.
-            </div>
-          ) : (
-            <div className="space-y-5">
-              <FocalEditor
-                id={item.id}
-                coverUrl={urls[0]}
-                initialX={item.cover_focal_x ?? null}
-                initialY={item.cover_focal_y ?? null}
-                coverFramedUrl={item.cover_framed_url ?? null}
-                categorySlug={item.category_slug ?? null}
-                dimensions={item.dimensions ?? null}
-              />
 
-
-              <DndContext
-                sensors={sensors}
-                collisionDetection={closestCenter}
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-              >
-                <SortableContext items={urls} strategy={rectSortingStrategy}>
-                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {urls.map((url, i) => (
-                      <SortableThumb
-                        key={url}
-                        url={url}
-                        index={i}
-                        isCover={i === 0}
-                        isBackground={bg === url}
-                        onPromote={() => promote(url)}
-                        onDelete={() => remove(url)}
-                        onSetBackground={() => toggleBackground(url)}
-                      />
-                    ))}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={urls} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  {urls.map((url, i) => (
+                    <SortableThumb
+                      key={url}
+                      url={url}
+                      index={i}
+                      isCover={i === 0}
+                      isBackground={bg === url}
+                      onPromote={() => promote(url)}
+                      onDelete={() => remove(url)}
+                      onSetBackground={() => toggleBackground(url)}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+              <DragOverlay>
+                {activeUrl && (
+                  <div className="aspect-square w-full max-w-[180px] border-2 border-emerald-500 shadow-lg">
+                    <img src={activeUrl} alt="" className="h-full w-full object-cover" />
                   </div>
-                </SortableContext>
-                <DragOverlay>
-                  {activeUrl && (
-                    <div className="aspect-square w-full max-w-[180px] border-2 border-emerald-500 shadow-lg">
-                      <img
-                        src={activeUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                </DragOverlay>
-              </DndContext>
-            </div>
+                )}
+              </DragOverlay>
+            </DndContext>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-neutral-200 px-5 py-3 flex items-center justify-between">
+        <label className="inline-flex items-center gap-2 text-xs uppercase tracking-widest cursor-pointer border border-neutral-300 px-3 py-1.5 hover:bg-neutral-50">
+          {uploading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Upload className="h-3.5 w-3.5" />
           )}
-        </div>
-
-
-        {/* Footer */}
-        <div className="border-t border-neutral-200 px-5 py-3 flex items-center justify-between">
-          <label className="inline-flex items-center gap-2 text-xs uppercase tracking-widest cursor-pointer border border-neutral-300 px-3 py-1.5 hover:bg-neutral-50">
-            {uploading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Upload className="h-3.5 w-3.5" />
-            )}
-            {uploading ? "Uploading…" : "Upload images"}
-            <input
-              type="file"
-              multiple
-              accept="image/jpeg,image/png,image/webp,image/avif"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  void handleFiles(e.target.files);
-                  e.target.value = "";
-                }
-              }}
-            />
-          </label>
-          <p className="text-[10px] uppercase tracking-widest text-neutral-500">
-            First image is the cover · Drag to reorder · Autosaves
-          </p>
-        </div>
+          {uploading ? "Uploading…" : "Upload images"}
+          <input
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) {
+                void handleFiles(e.target.files);
+                e.target.value = "";
+              }
+            }}
+          />
+        </label>
+        <p className="text-[10px] uppercase tracking-widest text-neutral-500">
+          First image is the cover · Drag to reorder · Autosaves
+        </p>
+      </div>
     </div>
   );
 

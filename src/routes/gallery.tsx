@@ -114,8 +114,7 @@ export const Route = createFileRoute("/gallery")({
         { property: "og:title", content: "The Gallery — Eclectic Hive" },
         {
           property: "og:description",
-          content:
-            "Selected projects from Eclectic Hive — cinematic event environments.",
+          content: "Selected projects from Eclectic Hive — cinematic event environments.",
         },
         { property: "og:type", content: "website" },
         { property: "og:url", content: GALLERY_URL },
@@ -154,7 +153,6 @@ export const Route = createFileRoute("/gallery")({
   },
   component: GalleryPage,
 });
-
 
 // Stable list of regions in first-appearance order. "All" pinned first.
 const REGION_FILTERS: string[] = (() => {
@@ -267,7 +265,10 @@ function GalleryPage() {
         <div className="stack-card stack-card--last" style={{ "--i": 3 } as CSSProperties}>
           <div className="stack-card-pin">
             <div className="stack-card-face">
-              <section aria-labelledby="press-heading" className="bg-charcoal pt-10 lg:pt-12 pb-16 lg:pb-20 px-6 lg:px-12">
+              <section
+                aria-labelledby="press-heading"
+                className="bg-charcoal pt-10 lg:pt-12 pb-16 lg:pb-20 px-6 lg:px-12"
+              >
                 <div className="max-w-[1600px] mx-auto">
                   <h2
                     id="press-heading"
@@ -311,10 +312,7 @@ function CreditMarquee({
       ? "animate-[credit-marquee_60s_linear_infinite]"
       : "animate-[credit-marquee_60s_linear_infinite_reverse]";
   return (
-    <section
-      aria-labelledby={headingId}
-      className="bg-charcoal px-6 lg:px-12 py-10 lg:py-16"
-    >
+    <section aria-labelledby={headingId} className="bg-charcoal px-6 lg:px-12 py-10 lg:py-16">
       <div className="max-w-[1600px] mx-auto">
         <h2
           id={headingId}
@@ -326,8 +324,7 @@ function CreditMarquee({
           className="group relative -mx-6 overflow-hidden md:-mx-12"
           aria-label={eyebrow}
           style={{
-            maskImage:
-              "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+            maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
             WebkitMaskImage:
               "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
           }}
@@ -347,7 +344,9 @@ function CreditMarquee({
                     className="flex items-center gap-x-10 whitespace-nowrap"
                   >
                     <span>{name}</span>
-                    <span aria-hidden className="text-cream/25">·</span>
+                    <span aria-hidden className="text-cream/25">
+                      ·
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -419,5 +418,3 @@ function PartnerTicker() {
     </>
   );
 }
-
-

@@ -18,7 +18,11 @@ import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
 import { isTestArtifact } from "@/lib/test-artifact";
 
-const slug = z.string().min(1).max(64).regex(/^[a-z0-9-]+$/);
+const slug = z
+  .string()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z0-9-]+$/);
 
 // ---------------------------------------------------------------------------
 // Reference tree

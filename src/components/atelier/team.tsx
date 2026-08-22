@@ -50,15 +50,39 @@ const portrait = (filename: string, name: string): TeamMemberImage => ({
  * source ratio so faces are never cropped. No per-member reframes needed.
  */
 export const TEAM: TeamMember[] = [
-  { name: "Jill Livingston", role: "Founder · Creative Director", image: portrait("Jill.jpg", "Jill Livingston") },
-  { name: "Annie Ohman", role: "Director of Company Operations", image: portrait("Annie.jpg", "Annie Ohman") },
-  { name: "Amanda Ferguson", role: "Senior Designer", image: portrait("Amanda.jpg", "Amanda Ferguson") },
+  {
+    name: "Jill Livingston",
+    role: "Founder · Creative Director",
+    image: portrait("Jill.jpg", "Jill Livingston"),
+  },
+  {
+    name: "Annie Ohman",
+    role: "Director of Company Operations",
+    image: portrait("Annie.jpg", "Annie Ohman"),
+  },
+  {
+    name: "Amanda Ferguson",
+    role: "Senior Designer",
+    image: portrait("Amanda.jpg", "Amanda Ferguson"),
+  },
   { name: "Erin Purnell", role: "Associate Designer", image: portrait("Erin.jpg", "Erin Purnell") },
-  { name: "Adrienne Moon", role: "Purchasing & Inventory Specialist", image: portrait("Adrienne.jpg", "Adrienne Moon") },
+  {
+    name: "Adrienne Moon",
+    role: "Purchasing & Inventory Specialist",
+    image: portrait("Adrienne.jpg", "Adrienne Moon"),
+  },
   { name: "Cat Moore", role: "Brand & Marketing", image: portrait("Cat.jpg", "Cat Moore") },
-  { name: "Stephen Proud", role: "Warehouse & Fleet Specialist", image: portrait("Stephen.jpg", "Stephen Proud") },
-  
-  { name: "Regina Mennig", role: "Accounting & Business Manager", image: portrait("Regina.jpg", "Regina Mennig") },
+  {
+    name: "Stephen Proud",
+    role: "Warehouse & Fleet Specialist",
+    image: portrait("Stephen.jpg", "Stephen Proud"),
+  },
+
+  {
+    name: "Regina Mennig",
+    role: "Accounting & Business Manager",
+    image: portrait("Regina.jpg", "Regina Mennig"),
+  },
 ];
 
 export function AtelierTeam() {
@@ -75,7 +99,8 @@ export function AtelierTeam() {
           ARTISTS, DESIGNERS, CRAFTSMEN
         </h2>
         <p className="mt-4 max-w-2xl text-[11px] md:text-[12px] uppercase tracking-[0.18em] leading-[1.8] text-charcoal/65">
-          Our team moves across disciplines with intention and a shared approach. We are the atelier.
+          Our team moves across disciplines with intention and a shared approach. We are the
+          atelier.
         </p>
       </header>
 
@@ -87,13 +112,13 @@ export function AtelierTeam() {
             <li key={member.name}>
               <MediaAperture
                 ratio="2/3"
-                src={showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined}
-                srcSet={showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined}
-                alt={
-                  showImage
-                    ? member.image!.alt
-                    : `Portrait slot for ${member.name}`
+                src={
+                  showImage ? renderUrl(member.image!.src, { width: 720, quality: 60 }) : undefined
                 }
+                srcSet={
+                  showImage ? renderSrcSet(member.image!.src, [360, 540, 720, 1080], 60) : undefined
+                }
+                alt={showImage ? member.image!.alt : `Portrait slot for ${member.name}`}
                 sizes="(min-width: 1024px) 320px, (min-width: 768px) 26vw, 46vw"
                 lazy={false}
                 fetchPriority={isFirstRow ? "high" : "low"}

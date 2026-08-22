@@ -2,13 +2,7 @@
 // fresh thread on demand, and renders the sidebar + active-thread Outlet.
 
 import { useState } from "react";
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  useNavigate,
-  useParams,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import {
   createAdminThread,
@@ -44,8 +38,7 @@ function AdminCoPilotLayout() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (threadId: string) =>
-      deleteAdminThread({ data: { threadId } }),
+    mutationFn: (threadId: string) => deleteAdminThread({ data: { threadId } }),
     onSuccess: (_, threadId) => {
       qc.invalidateQueries({ queryKey: ["admin-threads"] });
       if (params.threadId === threadId) navigate({ to: "/admin/admin" });
@@ -72,9 +65,7 @@ function AdminCoPilotLayout() {
 
         <nav className="space-y-1">
           {threadsQ.data?.length === 0 && (
-            <p className="text-xs text-muted-foreground/60">
-              No conversations. Start one.
-            </p>
+            <p className="text-xs text-muted-foreground/60">No conversations. Start one.</p>
           )}
           {threadsQ.data?.map((t) => {
             const active = params.threadId === t.id;
@@ -96,8 +87,7 @@ function AdminCoPilotLayout() {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (confirm("Delete this conversation?"))
-                      deleteMut.mutate(t.id);
+                    if (confirm("Delete this conversation?")) deleteMut.mutate(t.id);
                   }}
                   className={`opacity-0 group-hover:opacity-60 hover:opacity-100 ${
                     active ? "text-background" : ""

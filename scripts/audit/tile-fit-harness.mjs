@@ -14,21 +14,21 @@
 //
 // Exit code is 1 when any row misses a threshold, so it can gate a build.
 
-import { chromium } from 'playwright';
-import fs from 'node:fs';
-import path from 'node:path';
+import { chromium } from "playwright";
+import fs from "node:fs";
+import path from "node:path";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
-    const [k, v] = a.replace(/^--/, '').split('=');
+    const [k, v] = a.replace(/^--/, "").split("=");
     return [k, v ?? true];
   }),
 );
 
-const BASE = args.url || 'http://localhost:8080';
+const BASE = args.url || "http://localhost:8080";
 const WRITE_BASELINE = !!args.baseline;
 const CI_MODE = !!args.ci;
-const BASELINE_PATH = path.join(process.cwd(), 'scripts/audit/tile-fit-baseline.json');
+const BASELINE_PATH = path.join(process.cwd(), "scripts/audit/tile-fit-baseline.json");
 
 // Drift allowances in CI. Silhouette measurement is pixel sampling over CDN
 // images, so a couple of pixels of noise is expected; a real fit or anchoring
@@ -36,10 +36,9 @@ const BASELINE_PATH = path.join(process.cwd(), 'scripts/audit/tile-fit-baseline.
 const MASS_TOLERANCE = 0.03;
 const FLOOR_TOLERANCE = 4;
 
-
 // Chromium resolution: prefer Playwright's own download, fall back to the
 // system binary (the sandbox has /bin/chromium but no ms-playwright build).
-const EXECUTABLE = fs.existsSync('/bin/chromium') ? '/bin/chromium' : undefined;
+const EXECUTABLE = fs.existsSync("/bin/chromium") ? "/bin/chromium" : undefined;
 
 /**
  * Acceptance numbers.
@@ -56,23 +55,22 @@ const EXECUTABLE = fs.existsSync('/bin/chromium') ? '/bin/chromium' : undefined;
  */
 export const THRESHOLDS = { massRatio: 0.65, floorSpread: 15 };
 
-
 // One representative slice per parent. Subcategories are where mixed silhouette
 // aspects collide, so the check runs against the slice, not the parent blend.
 // Ids must match SUBS_BY_PARENT in src/lib/collection-parents.ts. A slice
 // naming a category that no longer exists renders an empty grid, which is why
 // these now throw rather than report a clean zero.
 const SLICES = [
-  { group: 'lounge-seating', subcategory: 'sofas-loveseats' },
-  { group: 'lounge-seating', subcategory: 'lounge-chairs' },
-  { group: 'lounge-seating', subcategory: 'benches' },
-  { group: 'lounge-tables', subcategory: 'coffee-tables' },
-  { group: 'lounge-tables', subcategory: 'side-tables' },
-  { group: 'lounge-tables', subcategory: 'consoles' },
-  { group: 'cocktail-bar', subcategory: 'bars' },
-  { group: 'cocktail-bar', subcategory: 'bar-stools' },
-  { group: 'dining', subcategory: 'dining-tables' },
-  { group: 'dining', subcategory: 'dining-chairs' },
+  { group: "lounge-seating", subcategory: "sofas-loveseats" },
+  { group: "lounge-seating", subcategory: "lounge-chairs" },
+  { group: "lounge-seating", subcategory: "benches" },
+  { group: "lounge-tables", subcategory: "coffee-tables" },
+  { group: "lounge-tables", subcategory: "side-tables" },
+  { group: "lounge-tables", subcategory: "consoles" },
+  { group: "cocktail-bar", subcategory: "bars" },
+  { group: "cocktail-bar", subcategory: "bar-stools" },
+  { group: "dining", subcategory: "dining-tables" },
+  { group: "dining", subcategory: "dining-chairs" },
 ];
 
 /**
@@ -103,13 +101,14 @@ function scoreRow(row) {
   const floorSpread = Math.max(...bottoms) - Math.min(...bottoms);
   return {
     massRatio: Number(massRatio.toFixed(3)),
-    widthRatio: Number((Math.min(...row.tiles.map((t) => t.w)) / Math.max(...row.tiles.map((t) => t.w))).toFixed(3)),
+    widthRatio: Number(
+      (Math.min(...row.tiles.map((t) => t.w)) / Math.max(...row.tiles.map((t) => t.w))).toFixed(3),
+    ),
     floorSpread: Math.round(floorSpread),
     pass: massRatio >= THRESHOLDS.massRatio && floorSpread <= THRESHOLDS.floorSpread,
     tiles: row.tiles.map((t) => ({ title: t.title, w: t.w, h: t.h })),
   };
 }
-
 
 /**
  * Product tiles are selected structurally, via the `.product-tile-media`
@@ -118,11 +117,11 @@ function scoreRow(row) {
  * Title Case with the uppercasing done in CSS — every slice reported 0 tiles.
  * Never identify tiles by their copy again.
  */
-const TILE_IMG_SELECTOR = '.product-tile-media img';
+const TILE_IMG_SELECTOR = ".product-tile-media img";
 
 async function measureSlice(page, slice) {
   const url = `${BASE}/collection?group=${slice.group}&subcategory=${slice.subcategory}`;
-  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.goto(url, { waitUntil: "networkidle" });
   await page.waitForSelector(TILE_IMG_SELECTOR, { timeout: 30000 });
 
   // Lazy tiles only measure correctly once they've been in the viewport.
@@ -160,8 +159,8 @@ async function measureSlice(page, slice) {
       if (probeCache.has(src)) return probeCache.get(src);
       const p = new Promise((resolve) => {
         const im = new Image();
-        im.crossOrigin = 'anonymous';
-        im.decoding = 'async';
+        im.crossOrigin = "anonymous";
+        im.decoding = "async";
         im.onload = () => resolve(im);
         im.onerror = () => resolve(null);
         im.src = src;
@@ -178,15 +177,18 @@ async function measureSlice(page, slice) {
       const s = Math.min(1, side / Math.max(w, h));
       const cw = Math.max(1, Math.round(w * s));
       const ch = Math.max(1, Math.round(h * s));
-      const c = document.createElement('canvas');
+      const c = document.createElement("canvas");
       c.width = cw;
       c.height = ch;
-      const ctx = c.getContext('2d', { willReadFrequently: true });
+      const ctx = c.getContext("2d", { willReadFrequently: true });
       if (!ctx) return null;
       try {
         ctx.drawImage(im, 0, 0, cw, ch);
         const px = ctx.getImageData(0, 0, cw, ch).data;
-        let x0 = cw, y0 = ch, x1 = -1, y1 = -1;
+        let x0 = cw,
+          y0 = ch,
+          x1 = -1,
+          y1 = -1;
         for (let y = 0; y < ch; y++) {
           for (let x = 0; x < cw; x++) {
             const i = (y * cw + x) * 4;
@@ -208,7 +210,7 @@ async function measureSlice(page, slice) {
     const out = [];
     for (const img of imgs) {
       const r = img.getBoundingClientRect();
-      const title = (img.alt || '').trim();
+      const title = (img.alt || "").trim();
       if (img.naturalWidth === 0) {
         out.push({ title, broken: true });
         continue;
@@ -298,7 +300,9 @@ async function main() {
   }
   await browser.close();
 
-  console.log(`\n=== tile fit — mass>=${THRESHOLDS.massRatio}, floor<=${THRESHOLDS.floorSpread}px ===`);
+  console.log(
+    `\n=== tile fit — mass>=${THRESHOLDS.massRatio}, floor<=${THRESHOLDS.floorSpread}px ===`,
+  );
   let failing = 0;
   for (const r of results) {
     if (r.error) {
@@ -306,13 +310,13 @@ async function main() {
       failing++;
       continue;
     }
-    const mark = r.failing === 0 ? 'ok  ' : 'MISS';
+    const mark = r.failing === 0 ? "ok  " : "MISS";
     console.log(
       `  ${mark} ${r.slice.padEnd(34)} worst mass ${String(r.worstMassRatio).padEnd(6)} worst floor ${String(r.worstFloorSpread).padEnd(4)}px  (${r.failing}/${r.rows.length} rows)`,
     );
     for (const row of r.rows.filter((x) => !x.pass)) {
       console.log(
-        `        mass ${row.massRatio} width ${row.widthRatio} floor ${row.floorSpread}px : ${row.tiles.map((t) => `${t.title.slice(0, 26)} ${t.w}x${t.h}`).join(' | ')}`,
+        `        mass ${row.massRatio} width ${row.widthRatio} floor ${row.floorSpread}px : ${row.tiles.map((t) => `${t.title.slice(0, 26)} ${t.w}x${t.h}`).join(" | ")}`,
       );
     }
     failing += r.failing;
@@ -331,8 +335,8 @@ async function main() {
   // unintentional drift still fails the build.
   let regressions = [];
   if (fs.existsSync(BASELINE_PATH)) {
-    const base = JSON.parse(fs.readFileSync(BASELINE_PATH, 'utf8'));
-    console.log('\n--- vs baseline ---');
+    const base = JSON.parse(fs.readFileSync(BASELINE_PATH, "utf8"));
+    console.log("\n--- vs baseline ---");
     for (const r of results) {
       const b = base.results.find((x) => x.slice === r.slice);
       if (!b) {
@@ -348,7 +352,7 @@ async function main() {
       const d = r.failing - b.failing;
       const massDrop = (b.worstMassRatio ?? 0) - (r.worstMassRatio ?? 0);
       const floorGrow = (r.worstFloorSpread ?? 0) - (b.worstFloorSpread ?? 0);
-      const tag = d < 0 ? 'improved' : d > 0 ? 'REGRESSED' : 'same';
+      const tag = d < 0 ? "improved" : d > 0 ? "REGRESSED" : "same";
       console.log(
         `  ${r.slice.padEnd(34)} ${b.failing} -> ${r.failing} failing rows (${tag})  mass ${b.worstMassRatio} -> ${r.worstMassRatio}  floor ${b.worstFloorSpread} -> ${r.worstFloorSpread}px`,
       );
@@ -356,7 +360,9 @@ async function main() {
       if (massDrop > MASS_TOLERANCE)
         regressions.push(`${r.slice}: worst mass ratio ${b.worstMassRatio} -> ${r.worstMassRatio}`);
       if (floorGrow > FLOOR_TOLERANCE)
-        regressions.push(`${r.slice}: worst floor spread ${b.worstFloorSpread}px -> ${r.worstFloorSpread}px`);
+        regressions.push(
+          `${r.slice}: worst floor spread ${b.worstFloorSpread}px -> ${r.worstFloorSpread}px`,
+        );
     }
   } else if (CI_MODE) {
     console.error(`\nno baseline at ${BASELINE_PATH} — run with --baseline and commit it.`);
@@ -371,13 +377,12 @@ async function main() {
       for (const m of regressions) console.error(`  - ${m}`);
       process.exit(1);
     }
-    console.log('\nno regression vs baseline.');
+    console.log("\nno regression vs baseline.");
     process.exit(0);
   }
 
   process.exit(failing > 0 ? 1 : 0);
 }
-
 
 main().catch((e) => {
   console.error(e);

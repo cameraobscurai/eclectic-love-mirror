@@ -19,8 +19,20 @@ function family(): TombstoneProduct {
     primaryImage: img("lead.jpg", 0),
     imageCount: 2,
     variants: [
-      { id: "SIB1", title: "Monroe — Double 10'", dimensions: "120W", stockedQuantity: "2", imageUrl: "sib.jpg" },
-      { id: "SIB2", title: "Monroe — Triple", dimensions: "180W", stockedQuantity: "1", imageUrl: null },
+      {
+        id: "SIB1",
+        title: "Monroe — Double 10'",
+        dimensions: "120W",
+        stockedQuantity: "2",
+        imageUrl: "sib.jpg",
+      },
+      {
+        id: "SIB2",
+        title: "Monroe — Triple",
+        dimensions: "180W",
+        stockedQuantity: "1",
+        imageUrl: null,
+      },
     ],
   };
 }

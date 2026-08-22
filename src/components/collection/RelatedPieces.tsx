@@ -17,10 +17,7 @@
 
 import { useEffect, useState } from "react";
 
-import {
-  getCollectionCatalog,
-  type CollectionProduct,
-} from "@/lib/phase3-catalog";
+import { getCollectionCatalog, type CollectionProduct } from "@/lib/phase3-catalog";
 import { useInquiry } from "@/hooks/use-inquiry";
 import { useQuickView } from "@/hooks/use-quick-view";
 import { usePublishQuickViewCatalog } from "./quick-view-context";
@@ -35,12 +32,11 @@ function circularHueDelta(a: number, b: number): number {
   return d > 180 ? 360 - d : d;
 }
 
-export function colorDistance(
-  a: CollectionProduct,
-  b: CollectionProduct,
-): number | null {
-  const la = a.colorLightness, lb = b.colorLightness;
-  const ca = a.colorChroma, cb = b.colorChroma;
+export function colorDistance(a: CollectionProduct, b: CollectionProduct): number | null {
+  const la = a.colorLightness,
+    lb = b.colorLightness;
+  const ca = a.colorChroma,
+    cb = b.colorChroma;
   if (la == null || lb == null || ca == null || cb == null) return null;
 
   const aNeutral = ca < 8;
@@ -56,29 +52,21 @@ export function colorDistance(
     // Cross-category: penalize but allow.
     return dL + dC * 0.7 + 30;
   }
-  const ha = a.colorHue, hb = b.colorHue;
+  const ha = a.colorHue,
+    hb = b.colorHue;
   if (ha == null || hb == null) return dL + dC;
   const dH = circularHueDelta(ha, hb); // 0..180
   return dL * 0.6 + dC * 0.4 + dH * 0.8;
 }
 
-function taxonomyScore(
-  current: CollectionProduct,
-  cand: CollectionProduct,
-): number {
+function taxonomyScore(current: CollectionProduct, cand: CollectionProduct): number {
   let score = 0;
 
   // Declared taxonomy drives affinity: same category is the strongest signal,
   // same collection a weaker one. Legacy `categorySlug` is no longer consulted.
-  if (
-    current.declaredCategory &&
-    cand.declaredCategory === current.declaredCategory
-  ) {
+  if (current.declaredCategory && cand.declaredCategory === current.declaredCategory) {
     score += 50;
-  } else if (
-    current.collectionSlug &&
-    cand.collectionSlug === current.collectionSlug
-  ) {
+  } else if (current.collectionSlug && cand.collectionSlug === current.collectionSlug) {
     score += 25;
   }
 
@@ -89,16 +77,9 @@ function taxonomyScore(
   return score;
 }
 
-function colorScore(
-  current: CollectionProduct,
-  cand: CollectionProduct,
-): number {
+function colorScore(current: CollectionProduct, cand: CollectionProduct): number {
   let score = 0;
-  if (
-    current.colorFamily &&
-    cand.colorFamily &&
-    current.colorFamily === cand.colorFamily
-  ) {
+  if (current.colorFamily && cand.colorFamily && current.colorFamily === cand.colorFamily) {
     score += 15;
   }
   const dist = colorDistance(current, cand);
@@ -110,9 +91,7 @@ function colorScore(
 }
 
 function eligible(current: CollectionProduct, all: CollectionProduct[]) {
-  return all.filter(
-    (p) => p.id !== current.id && p.publicReady !== false && p.primaryImage?.url,
-  );
+  return all.filter((p) => p.id !== current.id && p.publicReady !== false && p.primaryImage?.url);
 }
 
 function dedupeTake(
@@ -159,10 +138,7 @@ export function pickRelatedSplit(
     pool
       .filter((p) => {
         // Cross-category only — same-category matches already have a rail.
-        if (
-          current.declaredCategory &&
-          p.declaredCategory === current.declaredCategory
-        ) {
+        if (current.declaredCategory && p.declaredCategory === current.declaredCategory) {
           return false;
         }
         const d = colorDistance(current, p);
@@ -264,15 +240,10 @@ function RelatedRail({
   const { open: openQuickView } = useQuickView();
 
   return (
-    <section
-      aria-label={heading}
-      className="mt-20 pt-14 border-t border-foreground/10"
-    >
+    <section aria-label={heading} className="mt-20 pt-14 border-t border-foreground/10">
       <div className="flex items-baseline justify-between gap-6 mb-8">
         <div>
-          <h2 className="font-display text-2xl lg:text-3xl tracking-wide uppercase">
-            {heading}
-          </h2>
+          <h2 className="font-display text-2xl lg:text-3xl tracking-wide uppercase">{heading}</h2>
           <p className="mt-2 text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
             {note}
           </p>
@@ -315,16 +286,12 @@ function RelatedRail({
                 <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-1">
                   {p.displayCategory}
                 </p>
-                <p className="text-xs tracking-wide uppercase leading-snug">
-                  {p.title}
-                </p>
+                <p className="text-xs tracking-wide uppercase leading-snug">{p.title}</p>
               </button>
               <button
                 type="button"
                 onClick={() => inquiry.toggle(p.id)}
-                aria-label={
-                  added ? `Remove ${p.title} from inquiry` : `Add ${p.title} to inquiry`
-                }
+                aria-label={added ? `Remove ${p.title} from inquiry` : `Add ${p.title} to inquiry`}
                 title={added ? "In your inquiry" : "Add to inquiry"}
                 className={`absolute top-2 right-2 h-8 w-8 flex items-center justify-center text-sm leading-none border transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground/40 ${
                   added

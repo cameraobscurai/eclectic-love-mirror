@@ -29,10 +29,7 @@ import { GripVertical, Loader2, RotateCcw, Star } from "lucide-react";
 
 import type { GalleryImage } from "@/content/gallery-projects";
 import { keyFor } from "@/lib/gallery-orders";
-import {
-  saveGalleryOrder,
-  resetGalleryOrder,
-} from "@/lib/gallery-orders.functions";
+import { saveGalleryOrder, resetGalleryOrder } from "@/lib/gallery-orders.functions";
 
 const HERO_COUNT = 4;
 
@@ -134,9 +131,12 @@ export function GalleryOrderEditor({
     }
   };
 
-  useEffect(() => () => {
-    if (saveTimer.current) clearTimeout(saveTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    },
+    [],
+  );
 
   const ids = items.map((i) => keyFor(i.src));
 
@@ -147,9 +147,7 @@ export function GalleryOrderEditor({
           <p className="text-[10px] uppercase tracking-[0.26em] text-charcoal/45">
             Gallery · {items.length} plates
           </p>
-          <h2 className="mt-1 font-display text-2xl uppercase tracking-[0.04em]">
-            {galleryName}
-          </h2>
+          <h2 className="mt-1 font-display text-2xl uppercase tracking-[0.04em]">{galleryName}</h2>
         </div>
         <div className="flex items-center gap-3">
           <StateBadge state={state} err={err} />
@@ -198,11 +196,7 @@ function StateBadge({
     );
   }
   if (state === "saved") {
-    return (
-      <span className="text-[10px] uppercase tracking-[0.22em] text-emerald-700">
-        Saved
-      </span>
-    );
+    return <span className="text-[10px] uppercase tracking-[0.22em] text-emerald-700">Saved</span>;
   }
   if (state === "error") {
     return (
@@ -217,18 +211,11 @@ function StateBadge({
   return null;
 }
 
-function Tile({
-  img,
-  index,
-  isHero,
-}: {
-  img: GalleryImage;
-  index: number;
-  isHero: boolean;
-}) {
+function Tile({ img, index, isHero }: { img: GalleryImage; index: number; isHero: boolean }) {
   const id = keyFor(img.src);
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
@@ -243,12 +230,7 @@ function Tile({
         isHero ? "border-charcoal border-2" : "border-neutral-300"
       }`}
     >
-      <img
-        src={img.src}
-        alt={img.alt}
-        className="h-full w-full object-cover"
-        loading="lazy"
-      />
+      <img src={img.src} alt={img.alt} className="h-full w-full object-cover" loading="lazy" />
       {isHero && (
         <span className="absolute top-1 left-1 bg-charcoal text-cream text-[9px] uppercase tracking-widest px-1.5 py-0.5 font-semibold flex items-center gap-0.5">
           <Star className="h-2.5 w-2.5 fill-current" /> Hero

@@ -41,18 +41,12 @@ export const updateItemImages = createServerFn({ method: "POST" })
 
     // 2. Concurrency checks against the snapshot.
     const currentImages = (current.images ?? []) as string[];
-    if (
-      typeof data.expectedLength === "number" &&
-      data.expectedLength !== currentImages.length
-    ) {
+    if (typeof data.expectedLength === "number" && data.expectedLength !== currentImages.length) {
       throw staleError(
         `expected ${data.expectedLength} images, found ${currentImages.length}. Refresh and try again.`,
       );
     }
-    if (
-      data.expectedUpdatedAt &&
-      current.updated_at !== data.expectedUpdatedAt
-    ) {
+    if (data.expectedUpdatedAt && current.updated_at !== data.expectedUpdatedAt) {
       throw staleError(STALE_MESSAGE);
     }
 
@@ -60,10 +54,9 @@ export const updateItemImages = createServerFn({ method: "POST" })
     const archive = Array.isArray(current.images_archive)
       ? (current.images_archive as unknown[])
       : [];
-    const nextArchive = [
-      ...archive,
-      { at: new Date().toISOString(), images: currentImages },
-    ].slice(-20);
+    const nextArchive = [...archive, { at: new Date().toISOString(), images: currentImages }].slice(
+      -20,
+    );
 
     // The read above supplies DATA (archive merge + audit before). It is NOT
     // the concurrency check — that lives on the UPDATE's WHERE clause, so a
@@ -118,10 +111,7 @@ export const setCardBackground = createServerFn({ method: "POST" })
     if (readErr || !current) throw new Error("NOT_FOUND: item missing");
 
     // 2. Concurrency check.
-    if (
-      data.expectedUpdatedAt &&
-      current.updated_at !== data.expectedUpdatedAt
-    ) {
+    if (data.expectedUpdatedAt && current.updated_at !== data.expectedUpdatedAt) {
       throw staleError(STALE_MESSAGE);
     }
 
@@ -192,7 +182,12 @@ export const setCoverFocal = createServerFn({ method: "POST" })
 
 const uploadInput = z.object({
   id: z.string().uuid(),
-  rmsId: z.string().min(1).max(100).regex(/^[a-zA-Z0-9._-]+$/).nullable(),
+  rmsId: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-zA-Z0-9._-]+$/)
+    .nullable(),
   filename: z.string().min(1).max(200),
   contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
   base64: z.string().min(1).max(15_000_000), // ~10MB raw before base64 inflation
@@ -278,12 +273,28 @@ export const uploadItemImage = createServerFn({ method: "POST" })
 // ---------------------------------------------------------------------------
 
 const CATEGORY_SLUGS = [
-  "tableware", "pillows-throws", "seating", "styling", "tables", "serveware",
-  "bars", "large-decor", "lighting", "rugs", "candlelight", "chandeliers",
-  "storage", "furs-pelts",
+  "tableware",
+  "pillows-throws",
+  "seating",
+  "styling",
+  "tables",
+  "serveware",
+  "bars",
+  "large-decor",
+  "lighting",
+  "rugs",
+  "candlelight",
+  "chandeliers",
+  "storage",
+  "furs-pelts",
 ] as const;
 
-const declaredSlug = z.string().trim().min(1).max(64).regex(/^[a-z0-9-]+$/);
+const declaredSlug = z
+  .string()
+  .trim()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z0-9-]+$/);
 
 // Declared taxonomy is required at creation — a human filling this form is
 // present to answer. The only legal way out is an EXPLICIT deferral, which
@@ -304,15 +315,18 @@ const createItemInput = z
     deferTaxonomy: z.boolean().default(false),
     // Set true to create anyway after the duplicate-title warning.
     allowDuplicateTitle: z.boolean().default(false),
-
   })
-  .refine(
-    (d) => d.deferTaxonomy || (!!d.collectionSlug && !!d.categorySlug),
-    { message: "Choose a collection and category, or tick “Decide later”." },
-  );
+  .refine((d) => d.deferTaxonomy || (!!d.collectionSlug && !!d.categorySlug), {
+    message: "Choose a collection and category, or tick “Decide later”.",
+  });
 
 function slugifyTitle(s: string): string {
-  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "item";
+  return (
+    String(s)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "item"
+  );
 }
 
 export const createInventoryItem = createServerFn({ method: "POST" })
@@ -358,7 +372,6 @@ export const createInventoryItem = createServerFn({ method: "POST" })
     }
 
     const review = deferred
-
       ? { confidence: "low", source: "human-deferred", reviewed: false, needs_owner: false }
       : {
           confidence: "high",
@@ -461,6 +474,3 @@ export const updateInventoryItemMeta = createServerFn({ method: "POST" })
 
     return { ok: true };
   });
-
-
-

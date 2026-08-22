@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  coverFirst,
-  imageKey,
-  mergeFamilyImages,
-  type FamilyImage,
-} from "@/lib/family-cover";
+import { coverFirst, imageKey, mergeFamilyImages, type FamilyImage } from "@/lib/family-cover";
 
 const baked = (urls: string[]): FamilyImage[] =>
   urls.map((url, i) => ({
@@ -89,9 +84,7 @@ describe("mergeFamilyImages — lead row with no live images", () => {
 
 describe("coverFirst", () => {
   it("demotes a detail shot out of the cover slot without dropping it", () => {
-    const out = coverFirst(
-      baked([`${S}/a/CHAIR_detail.png`, `${S}/a/CHAIR_full.png`]),
-    );
+    const out = coverFirst(baked([`${S}/a/CHAIR_detail.png`, `${S}/a/CHAIR_full.png`]));
     expect(out[0].url).toBe(`${S}/a/CHAIR_full.png`);
     expect(out).toHaveLength(2);
   });

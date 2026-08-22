@@ -16,10 +16,12 @@ export function CatalogPickerTab({ catalog, pinned, onPin, onUnpin }: Props) {
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     const list = term
-      ? all.filter((p) =>
-          p.title.toLowerCase().includes(term) ||
-          p.displayCategory.toLowerCase().includes(term) ||
-          (p.description ?? "").toLowerCase().includes(term))
+      ? all.filter(
+          (p) =>
+            p.title.toLowerCase().includes(term) ||
+            p.displayCategory.toLowerCase().includes(term) ||
+            (p.description ?? "").toLowerCase().includes(term),
+        )
       : all;
     return list.slice(0, 60);
   }, [q, all]);
@@ -50,14 +52,21 @@ export function CatalogPickerTab({ catalog, pinned, onPin, onUnpin }: Props) {
                 }`}
               >
                 {p.primaryImage?.url ? (
-                  <img src={p.primaryImage.url} loading="lazy" alt={p.title} className="w-full h-full object-cover" />
+                  <img
+                    src={p.primaryImage.url}
+                    loading="lazy"
+                    alt={p.title}
+                    className="w-full h-full object-cover"
+                  />
                 ) : null}
                 <div className="absolute inset-x-0 bottom-0 bg-charcoal/55 text-cream px-1.5 py-1 text-[9px] uppercase tracking-[0.18em] truncate">
                   {p.title}
                 </div>
-                <span className={`absolute top-1.5 right-1.5 w-5 h-5 grid place-items-center ${
-                  on ? "bg-charcoal text-cream" : "bg-cream/90 text-charcoal/70"
-                }`}>
+                <span
+                  className={`absolute top-1.5 right-1.5 w-5 h-5 grid place-items-center ${
+                    on ? "bg-charcoal text-cream" : "bg-cream/90 text-charcoal/70"
+                  }`}
+                >
                   {on ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
                 </span>
               </button>

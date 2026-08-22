@@ -8,9 +8,11 @@ import { useEffect, useRef, useState } from "react";
  * Used by the collection grid to gate expensive card internals (image
  * requests, hover overlays) for cards beyond the eager window.
  */
-export function useNearViewport<T extends Element = HTMLElement>(
-  options?: { rootMargin?: string; threshold?: number; initial?: boolean },
-): { ref: React.RefObject<T | null>; near: boolean } {
+export function useNearViewport<T extends Element = HTMLElement>(options?: {
+  rootMargin?: string;
+  threshold?: number;
+  initial?: boolean;
+}): { ref: React.RefObject<T | null>; near: boolean } {
   const { rootMargin = "600px", threshold = 0, initial = false } = options ?? {};
   const ref = useRef<T | null>(null);
   const [near, setNear] = useState<boolean>(initial);

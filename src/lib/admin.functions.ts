@@ -64,8 +64,12 @@ export const replyToInquiry = createServerFn({ method: "POST" })
       bodyText,
     )
       .split(/\n\n+/)
-      .map((p) => `<p style="margin:0 0 1em 0;white-space:pre-wrap;">${p.replace(/\n/g, "<br/>")}</p>`)
-      .join("")}<hr style="border:none;border-top:1px solid #d4cdc4;margin:24px 0;"/><p style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a8378;">Eclectic Hive · Denver, CO</p></body></html>`;
+      .map(
+        (p) => `<p style="margin:0 0 1em 0;white-space:pre-wrap;">${p.replace(/\n/g, "<br/>")}</p>`,
+      )
+      .join(
+        "",
+      )}<hr style="border:none;border-top:1px solid #d4cdc4;margin:24px 0;"/><p style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a8378;">Eclectic Hive · Denver, CO</p></body></html>`;
 
     await supabaseAdmin.from("email_send_log").insert({
       message_id: messageId,
@@ -104,10 +108,7 @@ export const replyToInquiry = createServerFn({ method: "POST" })
     }
 
     // Mark handled so counters reflect the reply.
-    await supabaseAdmin
-      .from("inquiries")
-      .update({ handled: true })
-      .eq("id", data.inquiry_id);
+    await supabaseAdmin.from("inquiries").update({ handled: true }).eq("id", data.inquiry_id);
 
     return { ok: true as const, messageId };
   });
@@ -162,7 +163,8 @@ export const getInquirySummary = createServerFn({ method: "GET" })
     }
 
     for (const r of rows) {
-      if (r.handled) handled++; else open++;
+      if (r.handled) handled++;
+      else open++;
       const t = new Date(r.created_at).getTime();
       if (t >= cutoff7) last7d++;
       if (t >= cutoff30) last30d++;
@@ -179,8 +181,7 @@ export const getInquirySummary = createServerFn({ method: "GET" })
       daily: Array.from(buckets.entries()).map(([date, count]) => ({ date, count })),
       recent: rows.slice(0, 12),
     };
-  },
-);
+  });
 
 // ---------------------------------------------------------------------------
 // /admin/dashboard inventory stats — computed server-side so the 990 KB baked

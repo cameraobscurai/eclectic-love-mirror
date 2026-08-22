@@ -31,7 +31,9 @@ const [{ data: families, error: fErr }, { data: items, error: iErr }] = await Pr
   db.from("product_families").select("id, title, slug, option_name, lead_rms_id"),
   db
     .from("inventory_items")
-    .select("id, rms_id, title, family_id, family_position, variant_label, variant_cover_url, images")
+    .select(
+      "id, rms_id, title, family_id, family_position, variant_label, variant_cover_url, images",
+    )
     .not("family_id", "is", null),
 ]);
 if (fErr || iErr) {

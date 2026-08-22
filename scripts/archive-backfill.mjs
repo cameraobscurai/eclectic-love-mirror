@@ -13,19 +13,16 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const sb = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { persistSession: false } },
-);
+const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
 
 const ARCHIVE = "inventory-photo-archive";
 const DEFAULT_SOURCES = ["incoming-photos", "inventory"];
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry-run");
 const bucketArgIdx = args.indexOf("--bucket");
-const SOURCES =
-  bucketArgIdx >= 0 ? [args[bucketArgIdx + 1]] : DEFAULT_SOURCES;
+const SOURCES = bucketArgIdx >= 0 ? [args[bucketArgIdx + 1]] : DEFAULT_SOURCES;
 
 async function listAll(bucket, prefix = "") {
   const out = [];
@@ -56,9 +53,7 @@ async function listAll(bucket, prefix = "") {
 
 async function archiveExists(path) {
   // Cheap exists check: try a 0-byte download. Storage returns 404 if missing.
-  const { data, error } = await sb.storage
-    .from(ARCHIVE)
-    .createSignedUrl(path, 60);
+  const { data, error } = await sb.storage.from(ARCHIVE).createSignedUrl(path, 60);
   if (error) return false;
   if (!data?.signedUrl) return false;
   const head = await fetch(data.signedUrl, { method: "HEAD" });
@@ -69,17 +64,13 @@ async function copyOne(srcBucket, path) {
   const archivePath = `${srcBucket}/${path}`;
   if (await archiveExists(archivePath)) return { skipped: true };
   if (DRY) return { dry: true, archivePath };
-  const { data: blob, error: dlErr } = await sb.storage
-    .from(srcBucket)
-    .download(path);
+  const { data: blob, error: dlErr } = await sb.storage.from(srcBucket).download(path);
   if (dlErr || !blob) return { error: dlErr?.message || "download failed" };
-  const { error: upErr } = await sb.storage
-    .from(ARCHIVE)
-    .upload(archivePath, blob, {
-      contentType: blob.type || "application/octet-stream",
-      upsert: false,
-      cacheControl: "31536000",
-    });
+  const { error: upErr } = await sb.storage.from(ARCHIVE).upload(archivePath, blob, {
+    contentType: blob.type || "application/octet-stream",
+    upsert: false,
+    cacheControl: "31536000",
+  });
   if (upErr && !/already exists|duplicate/i.test(upErr.message)) {
     return { error: upErr.message };
   }

@@ -4,7 +4,17 @@
 import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { Loader2, Save, Send, AlertCircle, Copy, Check, Box, Palette as PaletteIcon, ArrowUpRight } from "lucide-react";
+import {
+  Loader2,
+  Save,
+  Send,
+  AlertCircle,
+  Copy,
+  Check,
+  Box,
+  Palette as PaletteIcon,
+  ArrowUpRight,
+} from "lucide-react";
 
 import { useStyleBoard } from "@/hooks/use-style-board";
 import { InspoDropZone } from "@/components/studio/InspoDropZone";
@@ -47,14 +57,18 @@ function NoInquiry() {
         const arr = Array.isArray(rows)
           ? rows
           : Array.isArray((rows as { result?: unknown })?.result)
-          ? ((rows as { result: unknown }).result as StudioBoardSummary[])
-          : Array.isArray((rows as { data?: unknown })?.data)
-          ? ((rows as { data: unknown }).data as StudioBoardSummary[])
-          : [];
+            ? ((rows as { result: unknown }).result as StudioBoardSummary[])
+            : Array.isArray((rows as { data?: unknown })?.data)
+              ? ((rows as { data: unknown }).data as StudioBoardSummary[])
+              : [];
         setBoards(arr as StudioBoardSummary[]);
       })
-      .catch((e: Error) => { if (alive) setErr(e.message); });
-    return () => { alive = false; };
+      .catch((e: Error) => {
+        if (alive) setErr(e.message);
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const recent = Array.isArray(boards) ? boards.slice(0, 8) : [];
@@ -85,16 +99,17 @@ function NoInquiry() {
         </div>
       </section>
 
-
       {/* RECENT BOARDS */}
       <section className="px-6 lg:px-16 py-10">
         <div className="flex items-baseline justify-between mb-4">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Recent</p>
-          <Link to="/admin/insights" className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal inline-flex items-center gap-1">
+          <Link
+            to="/admin/insights"
+            className="text-[10px] uppercase tracking-[0.22em] text-charcoal/55 hover:text-charcoal inline-flex items-center gap-1"
+          >
             Inbox <ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
-
 
         {err && <p className="text-[11px] uppercase tracking-[0.2em] text-red-700/80">{err}</p>}
         {boards === null && !err && (
@@ -113,14 +128,23 @@ function NoInquiry() {
                   search={{ inquiry: b.inquiry_id }}
                   className="grid grid-cols-12 items-center gap-3 py-4 hover:bg-charcoal/[0.03] transition-colors px-2 -mx-2"
                 >
-                  <span className="col-span-3 text-[13px] font-display truncate normal-case">{b.inquiry_name}</span>
-                  <span className="col-span-4 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">{b.inquiry_subject ?? "—"}</span>
-                  <span className="col-span-2 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">{b.status}</span>
+                  <span className="col-span-3 text-[13px] font-display truncate normal-case">
+                    {b.inquiry_name}
+                  </span>
+                  <span className="col-span-4 text-[11px] uppercase tracking-[0.16em] text-charcoal/55 truncate">
+                    {b.inquiry_subject ?? "—"}
+                  </span>
+                  <span className="col-span-2 text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                    {b.status}
+                  </span>
                   <span className="col-span-2 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 tabular-nums">
                     {b.pinned_count}p · {b.inspo_count}i
                   </span>
                   <span className="col-span-1 text-[10px] uppercase tracking-[0.2em] text-charcoal/45 text-right tabular-nums">
-                    {new Date(b.updated_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                    {new Date(b.updated_at).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </span>
                 </Link>
               </li>
@@ -133,14 +157,24 @@ function NoInquiry() {
 }
 
 function ToolCard({
-  to, icon, label, status,
-}: { to: string; icon: React.ReactNode; label: string; status: "Live" | "Soon" }) {
+  to,
+  icon,
+  label,
+  status,
+}: {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  status: "Live" | "Soon";
+}) {
   const disabled = status === "Soon";
   const inner = (
     <div className="group bg-cream p-8 h-full flex flex-col justify-between min-h-[160px] transition-colors hover:bg-charcoal/[0.02]">
       <div className="flex items-start justify-between">
         <span className="text-charcoal/70">{icon}</span>
-        <span className={`text-[9px] uppercase tracking-[0.28em] px-2 py-1 border ${disabled ? "border-charcoal/15 text-charcoal/40" : "border-charcoal text-charcoal"}`}>
+        <span
+          className={`text-[9px] uppercase tracking-[0.28em] px-2 py-1 border ${disabled ? "border-charcoal/15 text-charcoal/40" : "border-charcoal text-charcoal"}`}
+        >
           {status}
         </span>
       </div>
@@ -150,15 +184,31 @@ function ToolCard({
       </div>
     </div>
   );
-  return <Link to={to} preload="intent">{inner}</Link>;
+  return (
+    <Link to={to} preload="intent">
+      {inner}
+    </Link>
+  );
 }
-
-
 
 type Tab = "palette" | "tones" | "insights" | "catalog";
 
 function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
-  const { state, catalog, addInspoFiles, removeInspo, pin, unpin, setPinNote, setNotes, analyze, save, send, revoke, regenerate } = useStyleBoard(inquiryId);
+  const {
+    state,
+    catalog,
+    addInspoFiles,
+    removeInspo,
+    pin,
+    unpin,
+    setPinNote,
+    setNotes,
+    analyze,
+    save,
+    send,
+    revoke,
+    regenerate,
+  } = useStyleBoard(inquiryId);
   const [tab, setTab] = useState<Tab>("palette");
   const [copied, setCopied] = useState(false);
 
@@ -176,7 +226,9 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
     return (
       <div className="min-h-[calc(100vh-3rem)] grid place-items-center bg-cream px-6">
         <div className="text-center max-w-md">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Workspace unavailable</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">
+            Workspace unavailable
+          </p>
           <p className="mt-3 font-display text-xl text-charcoal">Couldn't load this inquiry.</p>
           <p className="mt-2 text-[12px] text-charcoal/60 normal-case font-sans">
             {state.error ?? "The inquiry may have been removed or the link is wrong."}
@@ -203,11 +255,16 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
         <aside className="lg:col-span-3 bg-cream p-6 lg:sticky lg:top-12 lg:self-start lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto">
           <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Inquiry</p>
           <h1 className="mt-2 font-display text-2xl leading-tight">{inq.name}</h1>
-          <a href={`mailto:${inq.email}`} className="mt-1 block text-[11px] uppercase tracking-[0.16em] text-charcoal/60 underline-offset-4 hover:underline truncate">
+          <a
+            href={`mailto:${inq.email}`}
+            className="mt-1 block text-[11px] uppercase tracking-[0.16em] text-charcoal/60 underline-offset-4 hover:underline truncate"
+          >
             {inq.email}
           </a>
           {inq.subject && (
-            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">{inq.subject}</p>
+            <p className="mt-3 text-[11px] uppercase tracking-[0.18em] text-charcoal/55">
+              {inq.subject}
+            </p>
           )}
           <div className="mt-5 pt-5 border-t border-charcoal/10">
             <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 mb-2">Message</p>
@@ -218,11 +275,15 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
           <div className="mt-6 pt-5 border-t border-charcoal/10">
             <div className="flex items-baseline justify-between">
               <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">Pinned</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">{state.pinned.length}</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 tabular-nums">
+                {state.pinned.length}
+              </p>
             </div>
             <ul className="mt-2 space-y-1.5">
               {state.pinned.length === 0 && (
-                <li className="text-[11px] uppercase tracking-[0.18em] text-charcoal/40">No pieces yet</li>
+                <li className="text-[11px] uppercase tracking-[0.18em] text-charcoal/40">
+                  No pieces yet
+                </li>
               )}
               {state.pinned.map((rms) => {
                 const p = catalog.get(rms);
@@ -230,12 +291,23 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
                   <li key={rms} className="space-y-1">
                     <div className="flex items-center gap-2">
                       {p?.primaryImage?.url ? (
-                        <img src={p.primaryImage.url} alt="" className="w-7 h-7 object-cover bg-charcoal/5" />
+                        <img
+                          src={p.primaryImage.url}
+                          alt=""
+                          className="w-7 h-7 object-cover bg-charcoal/5"
+                        />
                       ) : (
                         <span className="w-7 h-7 bg-charcoal/5" />
                       )}
-                      <span className="truncate flex-1 font-sans normal-case text-[12px]">{p?.title ?? rms}</span>
-                      <button onClick={() => unpin(rms)} className="text-charcoal/40 hover:text-charcoal text-[10px]">×</button>
+                      <span className="truncate flex-1 font-sans normal-case text-[12px]">
+                        {p?.title ?? rms}
+                      </span>
+                      <button
+                        onClick={() => unpin(rms)}
+                        className="text-charcoal/40 hover:text-charcoal text-[10px]"
+                      >
+                        ×
+                      </button>
                     </div>
                     <input
                       type="text"
@@ -256,7 +328,9 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
           <header className="flex items-baseline justify-between mb-4">
             <div>
               <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/45">Style board</p>
-              <h2 className="mt-1 font-display text-xl uppercase tracking-[0.04em]">All of these elements are building your style</h2>
+              <h2 className="mt-1 font-display text-xl uppercase tracking-[0.04em]">
+                All of these elements are building your style
+              </h2>
             </div>
             <div className="flex items-center gap-2">
               <StatusBadge status={state.status} dirty={state.dirty} />
@@ -296,11 +370,18 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
             {state.status !== "sent" && (
               <button
                 type="button"
-                onClick={async () => { const t = await send(); if (t) setCopied(false); }}
+                onClick={async () => {
+                  const t = await send();
+                  if (t) setCopied(false);
+                }}
                 disabled={state.sending || state.saving || totalImages === 0}
                 className="px-4 py-2.5 bg-charcoal text-cream text-[11px] uppercase tracking-[0.22em] disabled:opacity-40 hover:bg-charcoal/85 transition-colors inline-flex items-center gap-2"
               >
-                {state.sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                {state.sending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Send className="h-3.5 w-3.5" />
+                )}
                 {state.sending ? "Sending…" : "Send to client"}
               </button>
             )}
@@ -314,15 +395,21 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
 
           {state.shareToken && (
             <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-2">
-              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">Share link</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 shrink-0">
+                Share link
+              </p>
               <code className="flex-1 text-[11px] font-sans normal-case truncate text-charcoal/80">
-                {typeof window !== "undefined" ? `${window.location.origin}/stylebrief/${state.shareToken}` : `/stylebrief/${state.shareToken}`}
+                {typeof window !== "undefined"
+                  ? `${window.location.origin}/stylebrief/${state.shareToken}`
+                  : `/stylebrief/${state.shareToken}`}
               </code>
               <button
                 type="button"
                 onClick={() => {
                   if (typeof window === "undefined") return;
-                  navigator.clipboard.writeText(`${window.location.origin}/stylebrief/${state.shareToken}`);
+                  navigator.clipboard.writeText(
+                    `${window.location.origin}/stylebrief/${state.shareToken}`,
+                  );
                   setCopied(true);
                   setTimeout(() => setCopied(false), 1500);
                 }}
@@ -334,7 +421,13 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               <button
                 type="button"
                 onClick={async () => {
-                  if (typeof window !== "undefined" && !window.confirm("Revoke this share link? The client link will stop working immediately.")) return;
+                  if (
+                    typeof window !== "undefined" &&
+                    !window.confirm(
+                      "Revoke this share link? The client link will stop working immediately.",
+                    )
+                  )
+                    return;
                   await revoke();
                 }}
                 className="text-[10px] uppercase tracking-[0.22em] text-red-700/80 hover:text-red-700"
@@ -352,7 +445,13 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               <button
                 type="button"
                 onClick={async () => {
-                  if (typeof window !== "undefined" && !window.confirm("Generate a new link? Any link already with the client stops working.")) return;
+                  if (
+                    typeof window !== "undefined" &&
+                    !window.confirm(
+                      "Generate a new link? Any link already with the client stops working.",
+                    )
+                  )
+                    return;
                   await regenerate();
                 }}
                 className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 hover:text-charcoal"
@@ -361,9 +460,6 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
               </button>
             </div>
           )}
-
-
-
 
           <div className="mt-8 pt-6 border-t border-charcoal/10">
             <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">
@@ -387,7 +483,9 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
                 key={t}
                 onClick={() => setTab(t)}
                 className={`flex-1 py-3 text-[10px] uppercase tracking-[0.22em] transition-colors ${
-                  tab === t ? "text-charcoal border-b border-charcoal" : "text-charcoal/50 hover:text-charcoal/80"
+                  tab === t
+                    ? "text-charcoal border-b border-charcoal"
+                    : "text-charcoal/50 hover:text-charcoal/80"
                 }`}
               >
                 {t}
@@ -396,12 +494,24 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
           </div>
           <div className="flex-1 overflow-y-auto">
             {tab === "palette" && (
-              <PaletteTab result={{ palette: state.palette, tones: state.tones ?? defaultTones(), insights: state.insights, perImage: state.perImage }} />
+              <PaletteTab
+                result={{
+                  palette: state.palette,
+                  tones: state.tones ?? defaultTones(),
+                  insights: state.insights,
+                  perImage: state.perImage,
+                }}
+              />
             )}
             {tab === "tones" && <TonesTab tones={state.tones} imageCount={totalImages} />}
             {tab === "insights" && <InsightsTab insights={state.insights} />}
             {tab === "catalog" && (
-              <CatalogPickerTab catalog={catalog} pinned={state.pinned} onPin={pin} onUnpin={unpin} />
+              <CatalogPickerTab
+                catalog={catalog}
+                pinned={state.pinned}
+                onPin={pin}
+                onUnpin={unpin}
+              />
             )}
           </div>
         </aside>

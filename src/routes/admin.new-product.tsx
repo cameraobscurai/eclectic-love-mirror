@@ -21,7 +21,6 @@ import {
 // saves patch metadata via updateInventoryItemMeta.
 // ---------------------------------------------------------------------------
 
-
 const CATEGORIES = ADMIN_CATEGORIES;
 
 export const Route = createFileRoute("/admin/new-product")({
@@ -65,7 +64,6 @@ function NewProductPage() {
   // Set once the user has acknowledged a duplicate-title warning.
   const [dupAck, setDupAck] = useState(false);
 
-
   useEffect(() => {
     listTaxonomyTree()
       .then(setTree)
@@ -74,8 +72,7 @@ function NewProductPage() {
 
   const titleTrim = title.trim();
   const qNum = quantity.trim() ? Number(quantity) : null;
-  const quantityValue =
-    qNum !== null && Number.isFinite(qNum) ? qNum : null;
+  const quantityValue = qNum !== null && Number.isFinite(qNum) ? qNum : null;
   const dimensionsValue = dimensions.trim() || null;
   const quantityLabelValue = quantityLabel.trim() || null;
   const descriptionValue = description.trim() || null;
@@ -84,9 +81,7 @@ function NewProductPage() {
 
   // Ensure a draft row exists. First call creates; subsequent calls patch
   // metadata onto the existing row.
-  const ensureRow = async (
-    publicReady: boolean,
-  ): Promise<DraftRow> => {
+  const ensureRow = async (publicReady: boolean): Promise<DraftRow> => {
     if (!titleTrim) throw new Error("Title is required");
     if (!taxonomyResolved) {
       throw new Error("Choose a collection and category, or tick “Decide later”.");
@@ -121,7 +116,6 @@ function NewProductPage() {
         categorySlug: deferTaxonomy ? null : categorySlug,
         deferTaxonomy,
         allowDuplicateTitle: dupAck,
-
       },
     });
     const next = { id: res.id, rmsId: res.rmsId ?? "" };
@@ -163,11 +157,7 @@ function NewProductPage() {
               id: row.id,
               rmsId: row.rmsId,
               filename: file.name,
-              contentType: file.type as
-                | "image/jpeg"
-                | "image/png"
-                | "image/webp"
-                | "image/avif",
+              contentType: file.type as "image/jpeg" | "image/png" | "image/webp" | "image/avif",
               base64,
             },
           });
@@ -186,7 +176,6 @@ function NewProductPage() {
       if (failed.length) {
         setErr(`${appended.length} of ${arr.length} added. Failed — ${failed.join("; ")}`);
       }
-
     } catch (e) {
       setErr((e as Error).message || "Upload failed");
     } finally {
@@ -235,7 +224,6 @@ function NewProductPage() {
           id: row.id,
         },
       });
-
     } catch (e) {
       setErr((e as Error).message || "Save failed");
       setBusy(null);
@@ -311,7 +299,9 @@ function NewProductPage() {
               >
                 <option value="">— choose —</option>
                 {(tree?.collections ?? []).map((c) => (
-                  <option key={c.slug} value={c.slug}>{c.label}</option>
+                  <option key={c.slug} value={c.slug}>
+                    {c.label}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -326,7 +316,9 @@ function NewProductPage() {
                 {(tree?.categories ?? [])
                   .filter((c) => c.collection_slug === collectionSlug)
                   .map((c) => (
-                    <option key={c.slug} value={c.slug}>{c.label}</option>
+                    <option key={c.slug} value={c.slug}>
+                      {c.label}
+                    </option>
                   ))}
               </select>
             </Field>
@@ -340,8 +332,6 @@ function NewProductPage() {
             Decide later — send it to the Unassigned queue
           </label>
         </div>
-
-
 
         <div className="grid grid-cols-3 gap-4">
           <Field label="Quantity (optional)">
@@ -410,15 +400,8 @@ function NewProductPage() {
             <>
               <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                 {images.map((url, i) => (
-                  <div
-                    key={url}
-                    className="relative aspect-square border border-charcoal/15 group"
-                  >
-                    <img
-                      src={url}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
+                  <div key={url} className="relative aspect-square border border-charcoal/15 group">
+                    <img src={url} alt="" className="h-full w-full object-cover" />
                     {i === 0 && (
                       <span className="absolute top-1.5 left-1.5 bg-charcoal text-cream text-[9px] uppercase tracking-[0.18em] px-1.5 py-0.5">
                         Cover
@@ -468,7 +451,6 @@ function NewProductPage() {
           </div>
         )}
 
-
         <div className="pt-4 border-t border-charcoal/10 flex flex-wrap items-center gap-3">
           <button
             type="button"
@@ -478,7 +460,6 @@ function NewProductPage() {
           >
             {busy === "publish" && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
             {busy === "publish" ? "Saving…" : "Save & mark ready"}
-
           </button>
           <button
             type="button"
@@ -492,7 +473,20 @@ function NewProductPage() {
           <button
             type="button"
             disabled={!!busy}
-            onClick={() => router.navigate({ to: "/admin/photos", search: { filter: undefined, product: undefined, page: undefined, cat: undefined, sub: undefined, sort: undefined, id: undefined } })}
+            onClick={() =>
+              router.navigate({
+                to: "/admin/photos",
+                search: {
+                  filter: undefined,
+                  product: undefined,
+                  page: undefined,
+                  cat: undefined,
+                  sub: undefined,
+                  sort: undefined,
+                  id: undefined,
+                },
+              })
+            }
             className="ml-auto text-[11px] uppercase tracking-[0.18em] text-charcoal/55 hover:text-charcoal disabled:opacity-40"
           >
             Cancel
@@ -500,21 +494,15 @@ function NewProductPage() {
         </div>
 
         <p className="text-[10px] uppercase tracking-[0.18em] text-charcoal/55">
-          Last step: press <span className="text-charcoal">Publish</span> in the top bar to push it to the live site.
+          Last step: press <span className="text-charcoal">Publish</span> in the top bar to push it
+          to the live site.
         </p>
-
       </div>
     </div>
   );
 }
 
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className="block text-[10px] uppercase tracking-[0.22em] text-charcoal/55 mb-1.5">

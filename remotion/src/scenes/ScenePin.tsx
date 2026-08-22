@@ -1,4 +1,12 @@
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from "remotion";
+import {
+  AbsoluteFill,
+  useCurrentFrame,
+  useVideoConfig,
+  interpolate,
+  spring,
+  Img,
+  staticFile,
+} from "remotion";
 import { COLORS, PRODUCTS } from "../theme";
 import { BODY } from "../fonts";
 import { IndexCard, INNER_W } from "../components/IndexCard";
@@ -22,14 +30,25 @@ const FIRST_TAP = 40;
 const TAP_STAGGER = 16;
 const TAP_ORDER = [0, 2, 5, 7, 1, 4, 3, 6];
 
-const CATEGORIES = ["TABLES", "LIGHTING", "SEATING", "BARS", "SERVEWARE", "TABLEWARE", "CANDLE", "RUGS"];
+const CATEGORIES = [
+  "TABLES",
+  "LIGHTING",
+  "SEATING",
+  "BARS",
+  "SERVEWARE",
+  "TABLEWARE",
+  "CANDLE",
+  "RUGS",
+];
 
 export const ScenePin: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const tapAt: Record<number, number> = {};
-  TAP_ORDER.forEach((pi, i) => { tapAt[pi] = FIRST_TAP + i * TAP_STAGGER; });
+  TAP_ORDER.forEach((pi, i) => {
+    tapAt[pi] = FIRST_TAP + i * TAP_STAGGER;
+  });
 
   const pinned = TAP_ORDER.filter((pi) => frame >= tapAt[pi]).length;
 
@@ -49,7 +68,10 @@ export const ScenePin: React.FC = () => {
       if (frame >= kfs[i].f && frame <= kfs[i + 1].f) {
         const t = (frame - kfs[i].f) / Math.max(1, kfs[i + 1].f - kfs[i].f);
         const e = t * t * (3 - 2 * t);
-        return { x: kfs[i].x + (kfs[i + 1].x - kfs[i].x) * e, y: kfs[i].y + (kfs[i + 1].y - kfs[i].y) * e };
+        return {
+          x: kfs[i].x + (kfs[i + 1].x - kfs[i].x) * e,
+          y: kfs[i].y + (kfs[i + 1].y - kfs[i].y) * e,
+        };
       }
     }
     if (frame > kfs[kfs.length - 1].f) return kfs[kfs.length - 1];
@@ -58,20 +80,42 @@ export const ScenePin: React.FC = () => {
 
   return (
     <AbsoluteFill>
-      <IndexCard step={2} label="Inventory" subtitle="Pin pieces that fit your vision." sceneLen={SCENE_LEN}>
+      <IndexCard
+        step={2}
+        label="Inventory"
+        subtitle="Pin pieces that fit your vision."
+        sceneLen={SCENE_LEN}
+      >
         {/* Search bar — site-style hairline rectangle */}
         <div
           style={{
-            position: "absolute", left: 0, right: 0, top: 0,
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
             height: SEARCH_H,
             border: `1px solid ${COLORS.rule}`,
-            display: "flex", alignItems: "center",
-            paddingLeft: 20, paddingRight: 20,
-            color: COLORS.charcoal, opacity: 0.55,
-            fontFamily: BODY, fontSize: 14, letterSpacing: "0.22em", textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: 20,
+            paddingRight: 20,
+            color: COLORS.charcoal,
+            opacity: 0.55,
+            fontFamily: BODY,
+            fontSize: 14,
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={COLORS.charcoal} strokeWidth="1.5" style={{ marginRight: 14, opacity: 0.6 }}>
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={COLORS.charcoal}
+            strokeWidth="1.5"
+            style={{ marginRight: 14, opacity: 0.6 }}
+          >
             <circle cx="11" cy="11" r="7" />
             <path d="M21 21l-4.3-4.3" />
           </svg>
@@ -84,8 +128,13 @@ export const ScenePin: React.FC = () => {
         {/* Category pills */}
         <div
           style={{
-            position: "absolute", left: 0, right: 0, top: PILLS_TOP,
-            display: "flex", gap: 10, flexWrap: "wrap",
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: PILLS_TOP,
+            display: "flex",
+            gap: 10,
+            flexWrap: "wrap",
           }}
         >
           {CATEGORIES.map((c, i) => (
@@ -116,7 +165,11 @@ export const ScenePin: React.FC = () => {
           const left = col * (CARD_W + GAP);
           const top = GRID_TOP + row * (CARD_H + GAP);
 
-          const sp = spring({ frame: frame - (10 + i * 3), fps, config: { damping: 20, stiffness: 160 } });
+          const sp = spring({
+            frame: frame - (10 + i * 3),
+            fps,
+            config: { damping: 20, stiffness: 160 },
+          });
           const mountOp = interpolate(sp, [0, 1], [0, 1]);
           const mountY = interpolate(sp, [0, 1], [10, 0]);
 
@@ -132,8 +185,10 @@ export const ScenePin: React.FC = () => {
               key={i}
               style={{
                 position: "absolute",
-                left, top: top + mountY + tapKick,
-                width: CARD_W, height: CARD_H,
+                left,
+                top: top + mountY + tapKick,
+                width: CARD_W,
+                height: CARD_H,
                 opacity: mountOp,
                 background: COLORS.cream,
                 border,
@@ -143,20 +198,45 @@ export const ScenePin: React.FC = () => {
               }}
             >
               <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
-                <Img src={staticFile(p.src)} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+                <Img
+                  src={staticFile(p.src)}
+                  style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                />
                 <div
                   style={{
-                    position: "absolute", top: 0, right: 0,
-                    width: 28, height: 28,
-                    background: COLORS.charcoal, color: COLORS.cream,
-                    fontFamily: BODY, fontSize: 14,
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: 28,
+                    height: 28,
+                    background: COLORS.charcoal,
+                    color: COLORS.cream,
+                    fontFamily: BODY,
+                    fontSize: 14,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     opacity: pinOp,
                     transform: `scale(${pinScale})`,
                   }}
-                >✓</div>
+                >
+                  ✓
+                </div>
               </div>
-              <div style={{ marginTop: 10, color: COLORS.charcoal, opacity: 0.72, fontFamily: BODY, fontSize: 9, letterSpacing: "0.26em", textTransform: "uppercase", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+              <div
+                style={{
+                  marginTop: 10,
+                  color: COLORS.charcoal,
+                  opacity: 0.72,
+                  fontFamily: BODY,
+                  fontSize: 9,
+                  letterSpacing: "0.26em",
+                  textTransform: "uppercase",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {p.title}
               </div>
             </div>
@@ -165,9 +245,33 @@ export const ScenePin: React.FC = () => {
 
         {/* cursor */}
         {cursor && (
-          <div style={{ position: "absolute", left: cursor.x - 9, top: cursor.y - 9, width: 18, height: 18, pointerEvents: "none" }}>
-            <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: COLORS.charcoal }} />
-            <div style={{ position: "absolute", inset: -8, borderRadius: "50%", border: `1px solid ${COLORS.charcoal}`, opacity: 0.35 }} />
+          <div
+            style={{
+              position: "absolute",
+              left: cursor.x - 9,
+              top: cursor.y - 9,
+              width: 18,
+              height: 18,
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                background: COLORS.charcoal,
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: -8,
+                borderRadius: "50%",
+                border: `1px solid ${COLORS.charcoal}`,
+                opacity: 0.35,
+              }}
+            />
           </div>
         )}
       </IndexCard>

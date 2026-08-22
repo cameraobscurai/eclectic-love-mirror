@@ -95,10 +95,7 @@ export function PublishBar() {
             : "Publish changes"
           : "Publish"}
       {pending && !busy && (
-        <span
-          aria-hidden
-          className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-[#c0552f]"
-        />
+        <span aria-hidden className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-[#c0552f]" />
       )}
     </button>
   );

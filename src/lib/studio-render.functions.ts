@@ -24,9 +24,7 @@ export const listRenderPickables = createServerFn({ method: "GET" })
       .limit(2000);
     if (error) throw error;
 
-    const { data: counts } = await supabaseAdmin
-      .from("studio_renders")
-      .select("rms_id");
+    const { data: counts } = await supabaseAdmin.from("studio_renders").select("rms_id");
     const countMap = new Map<string, number>();
     for (const r of counts ?? []) {
       if (r.rms_id) countMap.set(r.rms_id, (countMap.get(r.rms_id) ?? 0) + 1);
@@ -47,8 +45,8 @@ export const listRenderPickables = createServerFn({ method: "GET" })
         typeof first === "string"
           ? first
           : first && typeof first === "object" && "url" in (first as Record<string, unknown>)
-          ? String((first as Record<string, unknown>).url ?? "")
-          : null;
+            ? String((first as Record<string, unknown>).url ?? "")
+            : null;
       return {
         rmsId: r.rms_id as string,
         title: r.title ?? (r.rms_id as string),
@@ -212,10 +210,7 @@ export const publishRender = createServerFn({ method: "POST" })
       .eq("rms_id", row.rms_id);
     if (updErr) throw updErr;
 
-    await supabaseAdmin
-      .from("studio_renders")
-      .update({ status: "published" })
-      .eq("id", data.id);
+    await supabaseAdmin.from("studio_renders").update({ status: "published" }).eq("id", data.id);
 
     return { ok: true, publicUrl };
   });

@@ -9,8 +9,9 @@ This document is the acceptance bar for every future production pass. Read it be
 Editorial fashion / art direction, not event-rental marketing.
 
 Reference set:
+
 - **Prada** · **Casa Carta** · **Saol Display** (editorial feel) · **Aesence** (restrained visual systems)
-- *Two parts luxe, one part regal, and a dash of edge.*
+- _Two parts luxe, one part regal, and a dash of edge._
 
 Eclectic Hive is **editorial restraint with image texture, detail, and edge** — not sterile minimalism.
 
@@ -41,15 +42,15 @@ No new top-level routes. No nav renames. No inventory categories in the global n
 
 ## Page roles — locked
 
-| Page | Role | Don't make it do |
-|------|------|------------------|
-| Home | Single-screen brand entry. Intrigue. | Long brand story, stacked sections, fake video |
-| Atelier | Operational proof: team, scope, studio, fabrication, warehouse | Services-page voice, fake roster, full FAQ |
-| Collection | Working inventory archive | Cards, prices, cart language, decorative letterform hero, overview bands, category rail, right index |
-| Gallery | Selected project proof — editorial portfolio | Dark template, masonry dump, fake projects, PDF imagery without rights |
-| Contact | Conversion + FAQ home | Heavy cinematic behavior |
+| Page       | Role                                                           | Don't make it do                                                                                     |
+| ---------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Home       | Single-screen brand entry. Intrigue.                           | Long brand story, stacked sections, fake video                                                       |
+| Atelier    | Operational proof: team, scope, studio, fabrication, warehouse | Services-page voice, fake roster, full FAQ                                                           |
+| Collection | Working inventory archive                                      | Cards, prices, cart language, decorative letterform hero, overview bands, category rail, right index |
+| Gallery    | Selected project proof — editorial portfolio                   | Dark template, masonry dump, fake projects, PDF imagery without rights                               |
+| Contact    | Conversion + FAQ home                                          | Heavy cinematic behavior                                                                             |
 
-**Final principle:** *Homepage creates intrigue. Collection proves inventory. Atelier proves capability. Gallery proves taste. Contact converts. Don't make every page do every job.*
+**Final principle:** _Homepage creates intrigue. Collection proves inventory. Atelier proves capability. Gallery proves taste. Contact converts. Don't make every page do every job._
 
 ---
 
@@ -58,6 +59,7 @@ No new top-level routes. No nav renames. No inventory categories in the global n
 > Collection is locked at the IA/data level, not exempt from UX hardening. Any future pass must preserve the working archive but still verify scroll, sticky, loading, filter, Quick View, mobile sheet, and accessibility behavior.
 
 **Locked:**
+
 - Public-ready count = **876**
 - Broadway 32in remains excluded
 - Auction-house archive model: left rail, central pure-white object grid, one utility row, mobile bottom sheet
@@ -73,9 +75,10 @@ scroll restoration · results-top scroll timing · sticky offsets · image skele
 
 > Gallery layout first. Real project media later. No fake bridge content. The empty-state page must still feel designed — never use developer/admin language like "No projects found" or "Add projects".
 
-**Empty-state copy (locked):** *"Selected projects are being prepared."*
+**Empty-state copy (locked):** _"Selected projects are being prepared."_
 
 **Forbidden until owner provides real assets:**
+
 - fake project names
 - fake image URLs
 - fake `/gallery/$slug` subroutes
@@ -89,7 +92,7 @@ When real entries arrive, populate the typed `PROJECTS` array in `src/routes/gal
 
 ## Atelier rule
 
-Tagline locked: *Imagined. Refined. Crafted.*
+Tagline locked: _Imagined. Refined. Crafted._
 
 If `TEAM` array is empty, the Team section renders no roster — only a short team-philosophy paragraph. **Never render fake "Name · Role" rows.**
 
@@ -114,6 +117,7 @@ Mobile may scroll if needed.
 FAQ lives here, not on Atelier or Collection. Anchor: `/contact#faq`.
 
 Items (condensed from owner's deck FAQ A–E):
+
 1. What we offer
 2. How to begin a proposal
 3. Travel
@@ -124,6 +128,7 @@ Items (condensed from owner's deck FAQ A–E):
 ## Route safety
 
 Old routes (`/faq`, `/process`) redirect rather than 404 to protect cached/external links:
+
 - `/faq` → `/contact#faq`
 - `/process` → `/atelier`
 
@@ -144,6 +149,7 @@ Archive-specific tokens live in `src/styles.css` under `--archive-*`. Change a t
 **Brand alignment is not production readiness.** Production readiness means the beautiful pages and the working archive survive real user behavior without scroll jumps, fake content, broken links, or mobile traps.
 
 Both must hold:
+
 - Pages look right at desktop and mobile
 - Interactions don't jump, clip, or trap the user
 - No fake content, no broken inbound links
@@ -166,7 +172,7 @@ writes in `scripts/**` and `src/**` may not pass `upsert: true` on an image
 upload.
 
 **Not covered:** pointer/metadata writes. The overlay snapshot
-(`photos-admin.functions.ts`, `catalog/manifest.json`) is *supposed* to
+(`photos-admin.functions.ts`, `catalog/manifest.json`) is _supposed_ to
 overwrite — it is a pointer, not content. Allowlisted with a comment citing R1.
 
 **Receipt.** 2026-08-11: the AI upscaler wrote greyish-backdrop covers over 633
@@ -203,13 +209,13 @@ between generation and display.
 
 ## R4 — The studio composes; it never retouches
 
-**Rule.** Testable line: if the operation changes *which pixels exist*, it is
-retouching and out of scope. If it changes *where existing pixels land on the
-canvas*, it is composition and in scope. Framing, scale, baseline, rotation are
+**Rule.** Testable line: if the operation changes _which pixels exist_, it is
+retouching and out of scope. If it changes _where existing pixels land on the
+canvas_, it is composition and in scope. Framing, scale, baseline, rotation are
 in. Background removal by hand, colour, shadow, cloning, filters are out — a
 cover needing those has a wrong source photo and gets replaced.
 
-**Exception:** batch background removal at *ingest* is a framer step, not an
+**Exception:** batch background removal at _ingest_ is a framer step, not an
 editor feature. Automated, verifier-gated (R3), never a hand tool.
 
 **Receipt.** `docs/frame-studio-phase3-editor-amendment.md`. Two non-technical

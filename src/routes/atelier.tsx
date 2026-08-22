@@ -6,7 +6,11 @@ import { AtelierTeam } from "@/components/atelier/team";
 import { heroPreloadLink } from "@/components/hero-image";
 import { useBalancedColumnWidth } from "@/hooks/use-balanced-column-width";
 import { STORAGE_ORIGIN, renderUrl, renderSrcSet } from "@/lib/storage-image";
-import { galleryProjects, GALLERY_EXCLUDE_PLANNERS, GALLERY_NDA_PLANNERS } from "@/content/gallery-projects";
+import {
+  galleryProjects,
+  GALLERY_EXCLUDE_PLANNERS,
+  GALLERY_NDA_PLANNERS,
+} from "@/content/gallery-projects";
 import { ATELIER_IMAGES, ATELIER_IMAGE_ALT } from "./atelier.images";
 import { StaggerHeading } from "@/components/polish/StaggerHeading";
 import { ParallaxMedia } from "@/components/polish/ParallaxMedia";
@@ -18,15 +22,8 @@ const atelierHiveTriptych = ATELIER_IMAGES.HIVE_TRIPTYCH;
 const atelierSketchDrape = ATELIER_IMAGES.SKETCH_DRAPE;
 const atelierCollage = ATELIER_IMAGES.WORKSHOP_COLLAGE;
 
-
 // Owner-supplied photos pending — render quiet, intentional waiting state.
-function Placeholder({
-  ratio,
-  label,
-}: {
-  ratio: string;
-  label: string;
-}) {
+function Placeholder({ ratio, label }: { ratio: string; label: string }) {
   return (
     <div
       className="w-full flex items-center justify-center border border-dashed text-[11px] tracking-[0.22em] uppercase text-charcoal/45"
@@ -54,8 +51,6 @@ function Placeholder({
 //   5. Atelier Approach    (scroll-pinned triptych — Pass 3)
 //   6. CTA
 // ---------------------------------------------------------------------------
-
-
 
 const CAPABILITIES = [
   "LOUNGE FURNITURE",
@@ -113,7 +108,8 @@ export const Route = createFileRoute("/atelier")({
       },
       {
         property: "og:description",
-        content: "Design + fabrication studio for weddings, galas, and brand events. Denver, Colorado.",
+        content:
+          "Design + fabrication studio for weddings, galas, and brand events. Denver, Colorado.",
       },
       { property: "og:url", content: "https://eclectichive.com/atelier" },
       {
@@ -187,7 +183,8 @@ function AtelierPage() {
     };
   }, []);
 
-  const HERO_BODY = "The Atelier is where design authorship, material exploration, and fabrication converge — through process & intention.";
+  const HERO_BODY =
+    "The Atelier is where design authorship, material exploration, and fabrication converge — through process & intention.";
   const balancedW = useBalancedColumnWidth({
     bodyText: HERO_BODY,
     bodyFontPx: 12,
@@ -251,7 +248,10 @@ function AtelierPage() {
                 maxWidth: "100%",
               }}
             >
-              <div ref={headlineRef as unknown as React.RefObject<HTMLDivElement>} style={{ width: "fit-content" }}>
+              <div
+                ref={headlineRef as unknown as React.RefObject<HTMLDivElement>}
+                style={{ width: "fit-content" }}
+              >
                 <StaggerHeading
                   as="h1"
                   lines={["IMAGINED. ", "DESIGNED. ", "REALIZED."]}
@@ -271,7 +271,8 @@ function AtelierPage() {
                   lineHeight: 1.8,
                 }}
               >
-                The Atelier is where design authorship, material exploration, and fabrication converge — through process &amp; intention.
+                The Atelier is where design authorship, material exploration, and fabrication
+                converge — through process &amp; intention.
               </p>
             </div>
           </div>
@@ -298,10 +299,7 @@ function AtelierPage() {
       {/* 2. THE HIVE — centered, full-viewport staff spread. */}
       <section className="py-[var(--section-gap)]">
         <div className="fluid-canvas w-full">
-          <div
-            className="border-t pt-10"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
+          <div className="border-t pt-10" style={{ borderColor: "var(--archive-rule)" }}>
             <p className="text-center text-[11px] uppercase tracking-[0.22em] text-charcoal/50 mb-10">
               <span className="tabular-nums">02</span> — THE HIVE
             </p>
@@ -378,20 +376,14 @@ function AtelierPage() {
         </div>
       </Section>
 
-
       {/* 5a. IN PARTNERSHIP WITH — planner rolodex (derived from gallery data) */}
       <PartnerRolodex />
 
       {/* 5b. WORKING WITH THE ATELIER — FAQ accordion */}
       <Section id="working-with-the-hive" eyebrow="WORKING WITH THE ATELIER" index={6}>
         <div>
-          <h2 className="sr-only">
-            WORKING WITH THE ATELIER
-          </h2>
-          <ul
-            className="mt-8 divide-y max-w-3xl"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
+          <h2 className="sr-only">WORKING WITH THE ATELIER</h2>
+          <ul className="mt-8 divide-y max-w-3xl" style={{ borderColor: "var(--archive-rule)" }}>
             {ATELIER_FAQ.map((item) => (
               <li
                 key={item.q}
@@ -400,9 +392,7 @@ function AtelierPage() {
               >
                 <details className="group">
                   <summary className="flex items-baseline justify-between gap-4 py-4 cursor-pointer list-none focus:outline-none focus-visible:ring-1 focus-visible:ring-charcoal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                    <span className="text-[12px] uppercase tracking-[0.18em]">
-                      {item.q}
-                    </span>
+                    <span className="text-[12px] uppercase tracking-[0.18em]">{item.q}</span>
                     <span
                       aria-hidden
                       className="text-charcoal/45 text-lg transition-transform group-open:rotate-45 select-none"
@@ -423,10 +413,7 @@ function AtelierPage() {
       {/* 6. CTA */}
       <section style={{ marginTop: "var(--section-gap)" }}>
         <div className="fluid-canvas">
-          <div
-            className="border-t pt-12"
-            style={{ borderColor: "var(--archive-rule)" }}
-          >
+          <div className="border-t pt-12" style={{ borderColor: "var(--archive-rule)" }}>
             <p className="text-[11px] uppercase tracking-[0.22em] text-charcoal/50">
               <span className="tabular-nums">07</span> — BEGIN
             </p>
@@ -496,7 +483,6 @@ function Section({
   );
 }
 
-
 // Derived from gallery-projects.ts: unique planners, excluding NDA + hard-excluded.
 // Stays in sync with the gallery — no separate list to maintain.
 function PartnerRolodex() {
@@ -525,8 +511,7 @@ function PartnerRolodex() {
         className="group relative -mx-6 overflow-hidden md:-mx-12"
         aria-label="Planner partners"
         style={{
-          maskImage:
-            "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
           WebkitMaskImage:
             "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
         }}
@@ -541,7 +526,9 @@ function PartnerRolodex() {
               {partners.map((name) => (
                 <li key={`${dup}-${name}`} className="flex items-center gap-x-10 whitespace-nowrap">
                   <span>{name}</span>
-                  <span aria-hidden className="text-charcoal/25">·</span>
+                  <span aria-hidden className="text-charcoal/25">
+                    ·
+                  </span>
                 </li>
               ))}
             </ul>
@@ -557,6 +544,3 @@ function PartnerRolodex() {
     </Section>
   );
 }
-
-
-

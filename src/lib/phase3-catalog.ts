@@ -13,7 +13,6 @@ import { isTestArtifact } from "@/lib/test-artifact";
 import { coverFirst, imageKey, mergeFamilyImages } from "@/lib/family-cover";
 import { applyTombstones } from "@/lib/tombstones";
 
-
 // NOTE: catalog JSON is dynamically imported below so it doesn't land in any
 // route's eager chunk. The first call to getCollectionCatalog() pays the
 // fetch + parse cost once; subsequent calls hit a module-level cache.
@@ -126,7 +125,6 @@ export interface CollectionProduct {
   declaredCategory?: string | null;
 }
 
-
 export interface CategoryFacet {
   slug: string;
   display: string;
@@ -179,10 +177,7 @@ function bustUrl(url: string, version: number): string {
   return `${url}${url.includes("?") ? "&" : "?"}v=${version}`;
 }
 
-function bustImages(
-  imgs: CollectionImage[],
-  version: number,
-): CollectionImage[] {
+function bustImages(imgs: CollectionImage[], version: number): CollectionImage[] {
   if (!version) return imgs;
   return imgs.map((img) => ({ ...img, url: bustUrl(img.url, version) }));
 }
@@ -213,6 +208,34 @@ export async function getCollectionCatalogBase(): Promise<CatalogPayload> {
   return baseLoadPromise;
 }
 
+/**
+ * First-paint projection of the base catalog.
+ *
+ * The /collection loader's return value is serialized into the HTML document
+ * for hydration, so every byte here is downloaded twice — once as HTML, once
+ * as the JS chunk the client loads anyway. `images[]`, `variants[]`,
+ * `sourceUrl` and `description` are ~40% of the catalog and none of them are
+ * read during the grid's first render; they arrive with the full catalog
+ * post-mount, in the same effect that applies the admin overlay.
+ *
+ * Anything the grid paints on first render MUST stay in this projection, or
+ * SSR and the first client render disagree and React discards the tree.
+ */
+export async function getCollectionCatalogFirstPaint(): Promise<CatalogPayload> {
+  const base = await getCollectionCatalogBase();
+  const products = base.products.map((p) => {
+    const { images: _images, variants: _variants, sourceUrl: _src, description: _d, ...rest } = p;
+    return {
+      ...rest,
+      sourceUrl: "",
+      description: null,
+      images: [],
+      variants: [],
+    } as CollectionProduct;
+  });
+  return { products, facets: base.facets, total: base.total };
+}
+
 export async function getCollectionCatalog(): Promise<CatalogPayload> {
   if (cached && Date.now() - cachedAt < CATALOG_TTL_MS) return cached;
   if (cached) {
@@ -240,153 +263,156 @@ export async function getCollectionCatalog(): Promise<CatalogPayload> {
     // Filename identity, detail-shot demotion and family cover precedence all
     // live in @/lib/family-cover so they are fixture-testable.
 
+    const products = base.products
+      .map((p) => {
+        const live = overlay.get(p.id);
+        const members = p.variants ?? [];
+        const hasFamily = members.length > 0;
+        if (!live && !hasFamily) return p;
+        const eo =
+          live?.editorial_order !== undefined && live?.editorial_order !== null
+            ? live.editorial_order
+            : (p.editorialOrder ?? null);
 
+        // Live images win when the row has a non-empty array. Empty/null
+        // falls back to baked so legacy rows with `images = '{}'` don't
+        // blank their tiles.
+        const liveImages = live?.images;
+        let baseImages: CollectionImage[] =
+          Array.isArray(liveImages) && liveImages.length > 0
+            ? liveImages.map((url, i) => ({
+                url,
+                position: i,
+                isHero: i === 0,
+                inferredFilename: null,
+                altText: null,
+              }))
+            : p.images;
 
+        // FAMILY TILES (tableware collections like EDEN): the baked tile merges
+        // photos from every variant row, but the overlay is keyed per RMS row.
+        // Without this, a family tile would collapse to just the lead row's
+        // single photo — which is exactly why only one image showed publicly.
+        // Rebuild the merged set: group/"Set" shots from the bake (never owned
+        // by a variant row) first, then each member's live images in order.
+        let variantsOut = members;
+        if (hasFamily) {
+          const memberIds = [p.id, ...members.map((v) => v.id)];
+          const liveMemberUrls: string[] = [];
+          let anyLive = false;
+          for (const id of memberIds) {
+            const row = overlay.get(id);
+            if (!row || !Array.isArray(row.images) || row.images.length === 0) continue;
+            anyLive = true;
+            for (const u of row.images) liveMemberUrls.push(u);
+          }
+          if (anyLive) {
+            const leadRow = overlay.get(p.id);
+            baseImages = mergeFamilyImages(
+              {
+                leadImages: Array.isArray(leadRow?.images) ? leadRow.images : [],
+                bakedImages: p.images,
+                memberImages: liveMemberUrls,
+                variantCoverUrls: members.map((v) => v.imageUrl ?? ""),
+              },
+              { leadCoverWins: true },
+            );
 
-
-    const products = base.products.map((p) => {
-      const live = overlay.get(p.id);
-      const members = p.variants ?? [];
-      const hasFamily = members.length > 0;
-      if (!live && !hasFamily) return p;
-      const eo = live?.editorial_order !== undefined && live?.editorial_order !== null
-        ? live.editorial_order
-        : (p.editorialOrder ?? null);
-
-      // Live images win when the row has a non-empty array. Empty/null
-      // falls back to baked so legacy rows with `images = '{}'` don't
-      // blank their tiles.
-      const liveImages = live?.images;
-      let baseImages: CollectionImage[] = Array.isArray(liveImages) && liveImages.length > 0
-        ? liveImages.map((url, i) => ({
-            url,
-            position: i,
-            isHero: i === 0,
-            inferredFilename: null,
-            altText: null,
-          }))
-        : p.images;
-
-      // FAMILY TILES (tableware collections like EDEN): the baked tile merges
-      // photos from every variant row, but the overlay is keyed per RMS row.
-      // Without this, a family tile would collapse to just the lead row's
-      // single photo — which is exactly why only one image showed publicly.
-      // Rebuild the merged set: group/"Set" shots from the bake (never owned
-      // by a variant row) first, then each member's live images in order.
-      let variantsOut = members;
-      if (hasFamily) {
-        const memberIds = [p.id, ...members.map((v) => v.id)];
-        const liveMemberUrls: string[] = [];
-        let anyLive = false;
-        for (const id of memberIds) {
-          const row = overlay.get(id);
-          if (!row || !Array.isArray(row.images) || row.images.length === 0) continue;
-          anyLive = true;
-          for (const u of row.images) liveMemberUrls.push(u);
+            variantsOut = members.map((v) => {
+              const row = overlay.get(v.id);
+              const rowImages = Array.isArray(row?.images) ? row.images : [];
+              // PINNED beats convention. The pointer is only honoured while the
+              // photo is still on that row — a removed photo falls back to AUTO
+              // rather than rendering a dead URL.
+              const pinnedKey = row?.variant_cover_url ? imageKey(row.variant_cover_url) : null;
+              const pinned = pinnedKey
+                ? rowImages.find((u) => imageKey(u) === pinnedKey)
+                : undefined;
+              return {
+                ...v,
+                title: row?.title ?? v.title,
+                dimensions: row?.dimensions_raw ?? v.dimensions,
+                stockedQuantity: stockText(row, v.stockedQuantity),
+                imageUrl: pinned ?? rowImages[0] ?? v.imageUrl ?? null,
+                label: row?.variant_label ?? v.label ?? null,
+                pinned: !!pinned,
+              };
+            });
+          }
         }
-        if (anyLive) {
-          const leadRow = overlay.get(p.id);
-          baseImages = mergeFamilyImages(
-            {
-              leadImages: Array.isArray(leadRow?.images) ? leadRow.images : [],
-              bakedImages: p.images,
-              memberImages: liveMemberUrls,
-              variantCoverUrls: members.map((v) => v.imageUrl ?? ""),
-            },
-            { leadCoverWins: true },
-          );
 
-          variantsOut = members.map((v) => {
-            const row = overlay.get(v.id);
-            const rowImages = Array.isArray(row?.images) ? row.images : [];
-            // PINNED beats convention. The pointer is only honoured while the
-            // photo is still on that row — a removed photo falls back to AUTO
-            // rather than rendering a dead URL.
-            const pinnedKey = row?.variant_cover_url
-              ? imageKey(row.variant_cover_url)
-              : null;
-            const pinned = pinnedKey
-              ? rowImages.find((u) => imageKey(u) === pinnedKey)
-              : undefined;
-            return {
-              ...v,
-              title: row?.title ?? v.title,
-              dimensions: row?.dimensions_raw ?? v.dimensions,
-              stockedQuantity: stockText(row, v.stockedQuantity),
-              imageUrl: pinned ?? rowImages[0] ?? v.imageUrl ?? null,
-              label: row?.variant_label ?? v.label ?? null,
-              pinned: !!pinned,
-            };
-          });
+        // Owner-approved family cover: the Luna joint two-chair cutout lives on
+        // the lead RMS row as `LUNA 0.png`. It is also the Taupe row's first
+        // image, so the generic family merge classifies it as variant-owned.
+        // Promote that exact original after merging so neither a detail shot nor
+        // a single-chair variant can replace the joint family cover.
+        if (p.slug === "luna-arcing-dining-chairs") {
+          const isJointCover = (url: string) =>
+            /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(url);
+          const jointCover =
+            baseImages.find((img) => isJointCover(img.url)) ??
+            (overlay.get(p.id)?.images ?? []).find(isJointCover);
+          if (jointCover) {
+            const promoted =
+              typeof jointCover === "string"
+                ? {
+                    url: jointCover,
+                    position: 0,
+                    isHero: true,
+                    inferredFilename: null,
+                    altText: p.title,
+                  }
+                : jointCover;
+            baseImages = [promoted, ...baseImages.filter((img) => !isJointCover(img.url))].map(
+              (img, index) => ({ ...img, position: index, isHero: index === 0 }),
+            );
+          }
         }
-      }
 
-      // Owner-approved family cover: the Luna joint two-chair cutout lives on
-      // the lead RMS row as `LUNA 0.png`. It is also the Taupe row's first
-      // image, so the generic family merge classifies it as variant-owned.
-      // Promote that exact original after merging so neither a detail shot nor
-      // a single-chair variant can replace the joint family cover.
-      if (p.slug === "luna-arcing-dining-chairs") {
-        const isJointCover = (url: string) =>
-          /(?:^|\/)LUNA(?:%20|\+|\s)0\.png(?:\?|$)/i.test(url);
-        const jointCover = baseImages.find((img) => isJointCover(img.url))
-          ?? (overlay.get(p.id)?.images ?? []).find(isJointCover);
-        if (jointCover) {
-          const promoted = typeof jointCover === "string"
-            ? { url: jointCover, position: 0, isHero: true, inferredFilename: null, altText: p.title }
-            : jointCover;
-          baseImages = [
-            promoted,
-            ...baseImages.filter((img) => !isJointCover(img.url)),
-          ].map((img, index) => ({ ...img, position: index, isHero: index === 0 }));
-        }
-      }
+        // NOTE: AI-upscaled covers are intentionally NOT used as the hero image.
+        // The upscaler baked in opaque backdrops and invented cast shadows, which
+        // read as grey boxes next to the transparent cutouts everywhere else.
+        // The original product photo is the source of truth for slot 0.
 
-      // NOTE: AI-upscaled covers are intentionally NOT used as the hero image.
-      // The upscaler baked in opaque backdrops and invented cast shadows, which
-      // read as grey boxes next to the transparent cutouts everywhere else.
-      // The original product photo is the source of truth for slot 0.
-
-
-      baseImages = coverFirst(baseImages);
-      // Live edit time beats bake time. Frozen busters were how a re-uploaded
-      // photo at the same URL kept serving the old bytes.
-      const v = Math.max(live?.images_version ?? 0, p.imagesVersion ?? 0);
-      const images = v ? bustImages(baseImages, v) : baseImages;
-      return {
-        ...p,
-        editorialOrder: eo,
-        cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
-        coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
-        coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
-        coverFramedUrl: live?.cover_framed_url ?? p.coverFramedUrl ?? null,
-        collectionSlug: live?.collection_slug ?? p.collectionSlug ?? null,
-        declaredCategory: live?.category_slug ?? p.declaredCategory ?? null,
-        // TEXT FIELDS — these used to be applied only to products that were
-        // created after the last bake, so an admin edit to an EXISTING
-        // product's name, notes, dimensions or stock never reached the live
-        // site until someone re-ran scripts/bake-catalog.mjs. That is the
-        // "I saved it and the site didn't change" report. Overlay wins when
-        // the row has a value; baked stays the fallback.
-        title: live?.title ?? p.title,
-        description: live?.description ?? p.description ?? null,
-        dimensions: live?.dimensions_raw ?? p.dimensions ?? null,
-        stockedQuantity: stockText(live, p.stockedQuantity ?? null),
-        // Hiding a piece has to reach the public site too; the baked filter
-        // runs before this merge, so without an override an unpublish only
-        // took effect at the next bake. Filtered immediately below.
-        publicReady: live?.public_ready ?? p.publicReady,
-        images,
-        primaryImage: images[0] ?? null,
-        imageCount: images.length,
-        variants: variantsOut,
-        // Axis override: turning a family on in /admin/variants must reach the
-        // site at Publish, not only at the next bake.
-        optionName: live?.family_option_name ?? p.optionName ?? null,
-        ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
-      };
-    }).filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
-
+        baseImages = coverFirst(baseImages);
+        // Live edit time beats bake time. Frozen busters were how a re-uploaded
+        // photo at the same URL kept serving the old bytes.
+        const v = Math.max(live?.images_version ?? 0, p.imagesVersion ?? 0);
+        const images = v ? bustImages(baseImages, v) : baseImages;
+        return {
+          ...p,
+          editorialOrder: eo,
+          cardBackgroundUrl: live?.card_background_url ?? p.cardBackgroundUrl ?? null,
+          coverFocalX: live?.cover_focal_x ?? p.coverFocalX ?? null,
+          coverFocalY: live?.cover_focal_y ?? p.coverFocalY ?? null,
+          coverFramedUrl: live?.cover_framed_url ?? p.coverFramedUrl ?? null,
+          collectionSlug: live?.collection_slug ?? p.collectionSlug ?? null,
+          declaredCategory: live?.category_slug ?? p.declaredCategory ?? null,
+          // TEXT FIELDS — these used to be applied only to products that were
+          // created after the last bake, so an admin edit to an EXISTING
+          // product's name, notes, dimensions or stock never reached the live
+          // site until someone re-ran scripts/bake-catalog.mjs. That is the
+          // "I saved it and the site didn't change" report. Overlay wins when
+          // the row has a value; baked stays the fallback.
+          title: live?.title ?? p.title,
+          description: live?.description ?? p.description ?? null,
+          dimensions: live?.dimensions_raw ?? p.dimensions ?? null,
+          stockedQuantity: stockText(live, p.stockedQuantity ?? null),
+          // Hiding a piece has to reach the public site too; the baked filter
+          // runs before this merge, so without an override an unpublish only
+          // took effect at the next bake. Filtered immediately below.
+          publicReady: live?.public_ready ?? p.publicReady,
+          images,
+          primaryImage: images[0] ?? null,
+          imageCount: images.length,
+          variants: variantsOut,
+          // Axis override: turning a family on in /admin/variants must reach the
+          // site at Publish, not only at the next bake.
+          optionName: live?.family_option_name ?? p.optionName ?? null,
+          ownerSubcategory: live?.subcategory_slug ?? p.ownerSubcategory ?? null,
+        };
+      })
+      .filter((p) => p.publicReady !== false && !isTestArtifact({ title: p.title, id: p.id }));
 
     // Products added since the last bake exist only in the overlay. Append
     // them so /admin → New product → Publish is enough to go live.
@@ -524,7 +550,6 @@ type LiveOverlayRow = {
   images_version?: number | null;
 };
 
-
 async function fetchLiveOverlay(): Promise<{
   map: Map<string, LiveOverlayRow>;
   /** rms_ids / row ids deleted since the last bake, carried by the published
@@ -543,9 +568,8 @@ async function fetchLiveOverlay(): Promise<{
     typeof sessionStorage !== "undefined" && sessionStorage.getItem(MISSING_KEY) === "1";
   if (!missing) {
     try {
-      const base =
-        (import.meta as unknown as { env?: Record<string, string | undefined> }).env
-          ?.VITE_SUPABASE_URL;
+      const base = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+        ?.VITE_SUPABASE_URL;
       if (base) {
         // Resolve manifest pointer first, then fetch the immutable overlay blob.
         // Manifest is tiny + short-TTL; blob is immutable + long-TTL.
@@ -583,7 +607,6 @@ async function fetchLiveOverlay(): Promise<{
     }
   }
 
-
   // Fallback: paginated live query. Used until the first Publish runs, or
   // if the snapshot fetch fails.
   try {
@@ -596,9 +619,7 @@ async function fetchLiveOverlay(): Promise<{
     // would leave every configurator dark until the next Publish.
     const famAxis = new Map<string, string | null>();
     try {
-      const { data: fams } = await supabase
-        .from("product_families")
-        .select("id, option_name");
+      const { data: fams } = await supabase.from("product_families").select("id, option_name");
       for (const f of (fams ?? []) as Array<{ id: string; option_name: string | null }>) {
         famAxis.set(f.id, f.option_name ?? null);
       }
@@ -609,7 +630,9 @@ async function fetchLiveOverlay(): Promise<{
     for (;;) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .select("rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, family_id, updated_at")
+        .select(
+          "rms_id, editorial_order, images, card_background_url, cover_focal_x, cover_focal_y, title, slug, category, description, dimensions_raw, quantity, quantity_label, public_ready, subcategory_slug, cover_framed_url, collection_slug, category_slug, variant_cover_url, variant_label, family_id, updated_at",
+        )
         .range(from, from + PAGE - 1);
       if (error) throw error;
       if (!data || data.length === 0) break;
@@ -637,7 +660,7 @@ async function fetchLiveOverlay(): Promise<{
             category_slug: row.category_slug ?? null,
             variant_cover_url: row.variant_cover_url ?? null,
             variant_label: row.variant_label ?? null,
-            family_option_name: row.family_id ? famAxis.get(row.family_id) ?? null : null,
+            family_option_name: row.family_id ? (famAxis.get(row.family_id) ?? null) : null,
             images_version: row.updated_at
               ? Math.floor(new Date(row.updated_at).getTime() / 1000)
               : null,

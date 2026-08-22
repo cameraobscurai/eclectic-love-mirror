@@ -15,7 +15,6 @@ const roleInput = z.object({
 const isDuplicate = (e: { code?: string; message?: string } | null) =>
   e?.code === "23505" || /duplicate key/i.test(e?.message ?? "");
 
-
 export const listTeam = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .handler(async () => {
@@ -116,4 +115,3 @@ export const inviteStaff = createServerFn({ method: "POST" })
     invalidateRoleCache(invited.user.id);
     return { ok: true, userId: invited.user.id, email };
   });
-

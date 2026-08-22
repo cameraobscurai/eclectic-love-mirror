@@ -13,18 +13,23 @@ Your corrections hold against the code. Confirmed before planning:
 ## Order of work
 
 ### 1. Finish the bake, collection by collection
+
 Run `bake-frames.ts` per collection in the measured order (textiles → rugs → tableware → lounge-tables/dining → cocktail-bar → styling → lounge-seating → large-decor), dry run → review contact sheet → `--apply` → Publish. One collection per pass, receipts in `docs/receipts/`. This is what clears the 281 clamp defects; nothing else does.
 
 ### 2. Persist ink in that same pass
+
 Add `hits`, centroid, and floor line to `Measurement`, thread them through `renderCover` into `cover_framed_meta`. No render change, no new URL — same bytes, richer row. Doing it during the bake avoids a second full pass.
 
 ### 3. Delete the runtime prober
+
 Once a collection is fully framed, tiles read placement from baked meta. Then remove the 4-corner/`sort()[2]`/210 path in `NormalizedProductImage.tsx` along with `clampMin/clampMax`. Three divergence sources (sample geometry, statistic, threshold) go with it. Gate: no unframed row may fall back to the old solver — unframed products keep the current path until their collection is baked.
 
 ### 4. Fit `aspectBlend` per category against real ink
-With `hits` persisted, compute per-category ink-fill ratios and solve the blend exponent that equalises *ink* mass, not bbox mass. Expect a value between 0.65 and 1.0 for seating; publish the fitted table with the harness numbers beside it. Not a guess, not a global 1.0.
+
+With `hits` persisted, compute per-category ink-fill ratios and solve the blend exponent that equalises _ink_ mass, not bbox mass. Expect a value between 0.65 and 1.0 for seating; publish the fitted table with the harness numbers beside it. Not a guess, not a global 1.0.
 
 ### 5. Two-rule anchorY cleanup
+
 Bring lighting (0.92) and candlelight (0.85) onto the shared 0.9 floor line, or justify each deviation in the docblock. Small, isolated, last.
 
 ## Held, not scheduled

@@ -40,10 +40,10 @@ Suite: 30/30 pass. `bun run rules:check`: all enforced rules pass.
 
 ## Verification
 
-| Tile | Type | Result |
-| --- | --- | --- |
-| Hudson Rock Wall with Shelves | family | cover = `HUDSON_Render.png`; PDP order matches admin |
-| Bellow 3'H White Corrugated Partition | family | member photos intact, cover = lead's first |
-| Keaton Antique Floor Mirror | non-family | unchanged |
+| Tile                                  | Type       | Result                                               |
+| ------------------------------------- | ---------- | ---------------------------------------------------- |
+| Hudson Rock Wall with Shelves         | family     | cover = `HUDSON_Render.png`; PDP order matches admin |
+| Bellow 3'H White Corrugated Partition | family     | member photos intact, cover = lead's first           |
+| Keaton Antique Floor Mirror           | non-family | unchanged                                            |
 
 Screenshot: `docs/receipts/hudson-tile-after-2026-08-12.png`

@@ -179,30 +179,25 @@ export const BROWSE_GROUP_DESCRIPTIONS: Record<BrowseGroupId, string> = {
     "A focused set of cocktail and drinks tables, sized for movement around a room without losing presence.",
   dining:
     "Tables built for long conversations — wood, marble, and bespoke surfaces in seating-for-eight scale and beyond.",
-  bar:
-    "Bar carts, back bars, and serving stations — pieces that make the act of pouring a drink part of the room.",
+  bar: "Bar carts, back bars, and serving stations — pieces that make the act of pouring a drink part of the room.",
   storage:
     "Cabinets, credenzas, and consoles chosen for material and proportion, not just capacity.",
   lighting:
     "Floor, table, and pendant lighting selected for the quality of the light itself, not the fixture alone.",
-  rugs:
-    "Vintage and contemporary rugs in a range of weaves, palettes, and scales for grounding any setting.",
+  rugs: "Vintage and contemporary rugs in a range of weaves, palettes, and scales for grounding any setting.",
   pillows:
     "A library of textiles — vintage, custom, and hand-loomed — to layer texture and color across seating.",
-  throws:
-    "Hand-loomed and vintage textiles meant to be picked up, draped, and lived with.",
+  throws: "Hand-loomed and vintage textiles meant to be picked up, draped, and lived with.",
   tableware:
     "Plates, glassware, and flatware composed for the editorial table — quiet finishes, considered weight.",
   serveware:
     "Platters, pitchers, and serving vessels chosen as objects in their own right, not just utility.",
-  styling:
-    "Books, vessels, and small sculptural objects to finish a tablescape, mantel, or shelf.",
+  styling: "Books, vessels, and small sculptural objects to finish a tablescape, mantel, or shelf.",
   accents:
     "Singular pieces — mirrors, screens, sculptural objects — that change the temperature of a room on contact.",
   "large-decor":
     "Architectural objects in scale — sculpture, vessels, and statement pieces meant to hold a room.",
-  "furs-pelts":
-    "Hides, sheepskins, and pelts — tactile layers for seating, floors, and styling.",
+  "furs-pelts": "Hides, sheepskins, and pelts — tactile layers for seating, floors, and styling.",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -224,13 +219,25 @@ const TILE_MEMBERS: Array<{ id: BrowseGroupId; collection: string; categories: s
   { id: "benches-ottomans", collection: "lounge-seating", categories: ["benches", "ottomans"] },
   { id: "coffee-tables", collection: "lounge-tables", categories: ["coffee-tables"] },
   { id: "side-tables", collection: "lounge-tables", categories: ["side-tables", "consoles"] },
-  { id: "cocktail-tables", collection: "cocktail-bar", categories: ["cocktail-tables", "community-tables"] },
+  {
+    id: "cocktail-tables",
+    collection: "cocktail-bar",
+    categories: ["cocktail-tables", "community-tables"],
+  },
   { id: "bar", collection: "cocktail-bar", categories: ["bars", "bar-stools"] },
   { id: "storage", collection: "cocktail-bar", categories: ["storage"] },
-  { id: "dining", collection: "dining", categories: ["dining-tables", "dining-chairs", "banquettes"] },
+  {
+    id: "dining",
+    collection: "dining",
+    categories: ["dining-tables", "dining-chairs", "banquettes"],
+  },
   { id: "tableware", collection: "tableware", categories: ["dinnerware", "flatware", "glassware"] },
   { id: "serveware", collection: "tableware", categories: ["serveware"] },
-  { id: "lighting", collection: "lighting", categories: ["chandeliers", "table-lamps", "floor-lamps", "specialty"] },
+  {
+    id: "lighting",
+    collection: "lighting",
+    categories: ["chandeliers", "table-lamps", "floor-lamps", "specialty"],
+  },
   { id: "pillows", collection: "textiles", categories: ["pillows"] },
   { id: "throws", collection: "textiles", categories: ["throws"] },
   { id: "furs-pelts", collection: "textiles", categories: ["furs-pelts"] },
@@ -258,9 +265,7 @@ for (const m of TILE_MEMBERS) {
  * Returns null when the product is unassigned (or declared into a collection
  * with no tile) — callers must not invent a fallback bucket.
  */
-export function getProductBrowseGroup(
-  product: CollectionProduct,
-): BrowseGroupId | null {
+export function getProductBrowseGroup(product: CollectionProduct): BrowseGroupId | null {
   const collection = (product.collectionSlug || "").trim();
   if (!collection) return null;
   const category = (product.declaredCategory || "").trim();
@@ -291,9 +296,7 @@ export interface BrowseGroupOption {
   tier: BrowseTier;
 }
 
-export function getBrowseGroupOptions(
-  products: CollectionProduct[],
-): BrowseGroupOption[] {
+export function getBrowseGroupOptions(products: CollectionProduct[]): BrowseGroupOption[] {
   const counts = new Map<BrowseGroupId, number>();
   for (const p of products) {
     const id = getProductBrowseGroup(p);

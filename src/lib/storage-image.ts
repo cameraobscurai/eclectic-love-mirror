@@ -47,15 +47,9 @@ export const STORAGE_ORIGIN = SUPABASE_URL;
  * the browser accepts it. Pass through anything that isn't a recognized
  * public storage URL untouched.
  */
-export function renderUrl(
-  url: string,
-  opts: { width: number; quality?: number },
-): string {
+export function renderUrl(url: string, opts: { width: number; quality?: number }): string {
   if (!url || !url.includes("/storage/v1/object/public/")) return url;
-  const transformed = url.replace(
-    "/storage/v1/object/public/",
-    "/storage/v1/render/image/public/",
-  );
+  const transformed = url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
   const sep = transformed.includes("?") ? "&" : "?";
   const q = opts.quality ?? 72;
   // resize=contain → keep source aspect ratio. Without it, Supabase's render
@@ -70,13 +64,7 @@ export function renderUrl(
  * Empty string when the URL isn't a storage URL we can resize, so the
  * caller can pass it through unconditionally.
  */
-export function renderSrcSet(
-  url: string,
-  widths: number[],
-  quality = 72,
-): string {
+export function renderSrcSet(url: string, widths: number[], quality = 72): string {
   if (!url || !url.includes("/storage/v1/object/public/")) return "";
-  return widths
-    .map((w) => `${renderUrl(url, { width: w, quality })} ${w}w`)
-    .join(", ");
+  return widths.map((w) => `${renderUrl(url, { width: w, quality })} ${w}w`).join(", ");
 }

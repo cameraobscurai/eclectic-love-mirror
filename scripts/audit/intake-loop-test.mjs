@@ -137,7 +137,9 @@ async function main() {
 
   const { data: after } = await sb
     .from("inventory_items")
-    .select("rms_id,title,quantity,collection_slug,category_slug,images,taxonomy_review,dimensions_raw")
+    .select(
+      "rms_id,title,quantity,collection_slug,category_slug,images,taxonomy_review,dimensions_raw",
+    )
     .in("rms_id", [EXISTING, NEW]);
 
   const a = after?.find((r) => String(r.rms_id) === EXISTING);
@@ -151,15 +153,39 @@ async function main() {
   check("existing row: dimensions applied", !!a?.dimensions_raw, a?.dimensions_raw ?? "null");
 
   // R6: RMS never owns declared data. This is the clobber test.
-  check("existing row: collection_slug preserved", a?.collection_slug === DECLARED.collection_slug, String(a?.collection_slug));
-  check("existing row: category_slug preserved", a?.category_slug === DECLARED.category_slug, String(a?.category_slug));
-  check("existing row: images preserved", JSON.stringify(a?.images) === JSON.stringify(DECLARED.images), JSON.stringify(a?.images));
-  check("existing row: taxonomy_review preserved", a?.taxonomy_review?.source === "human", JSON.stringify(a?.taxonomy_review));
+  check(
+    "existing row: collection_slug preserved",
+    a?.collection_slug === DECLARED.collection_slug,
+    String(a?.collection_slug),
+  );
+  check(
+    "existing row: category_slug preserved",
+    a?.category_slug === DECLARED.category_slug,
+    String(a?.category_slug),
+  );
+  check(
+    "existing row: images preserved",
+    JSON.stringify(a?.images) === JSON.stringify(DECLARED.images),
+    JSON.stringify(a?.images),
+  );
+  check(
+    "existing row: taxonomy_review preserved",
+    a?.taxonomy_review?.source === "human",
+    JSON.stringify(a?.taxonomy_review),
+  );
 
   // New rows land unassigned so a human classifies them in the studio queue.
   check("new row: inserted", !!b, b ? "" : "missing");
-  check("new row: collection_slug is NULL (unassigned queue)", b?.collection_slug == null, String(b?.collection_slug));
-  check("new row: category_slug is NULL (unassigned queue)", b?.category_slug == null, String(b?.category_slug));
+  check(
+    "new row: collection_slug is NULL (unassigned queue)",
+    b?.collection_slug == null,
+    String(b?.collection_slug),
+  );
+  check(
+    "new row: category_slug is NULL (unassigned queue)",
+    b?.category_slug == null,
+    String(b?.category_slug),
+  );
   check("new row: no phantom images", (b?.images ?? []).length === 0, JSON.stringify(b?.images));
 
   await cleanup();

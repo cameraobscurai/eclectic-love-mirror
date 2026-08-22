@@ -46,8 +46,7 @@ export const glassBand = {
     WebkitBackdropFilter: "blur(14px) saturate(1.05)",
     borderTop: "1px solid rgba(26,26,26,0.10)",
     borderBottom: "1px solid rgba(26,26,26,0.10)",
-    boxShadow:
-      "inset 0 1px 0 0 rgba(255,255,255,0.50), inset 0 -1px 0 0 rgba(255,255,255,0.30)",
+    boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.50), inset 0 -1px 0 0 rgba(255,255,255,0.30)",
   },
 } as const;
 

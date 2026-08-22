@@ -82,88 +82,82 @@ export interface HeroImageProps {
  * The wrapping <picture> is `absolute inset-0` so this component drops
  * into any positioned hero section without extra layout work.
  */
-export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(
-  function HeroImage(
-    {
-      source,
-      alt,
-      focalPoint = { x: 50, y: 50 },
-      scrim = "bottom",
-      scrimStrength = 0.55,
-      priority = false,
-      sizes = "100vw",
-      className,
-      imgStyle,
-      onLoad,
-    },
-    ref,
-  ) {
-    const [loaded, setLoaded] = useState(false);
-    const localRef = useRef<HTMLImageElement | null>(null);
-    const objectPosition = `${focalPoint.x}% ${focalPoint.y}%`;
+export const HeroImage = forwardRef<HTMLImageElement, HeroImageProps>(function HeroImage(
+  {
+    source,
+    alt,
+    focalPoint = { x: 50, y: 50 },
+    scrim = "bottom",
+    scrimStrength = 0.55,
+    priority = false,
+    sizes = "100vw",
+    className,
+    imgStyle,
+    onLoad,
+  },
+  ref,
+) {
+  const [loaded, setLoaded] = useState(false);
+  const localRef = useRef<HTMLImageElement | null>(null);
+  const objectPosition = `${focalPoint.x}% ${focalPoint.y}%`;
 
-    // Catch images already decoded before React attached onLoad
-    // (SSR / cached / eager). Without this they stay opacity:0.
-    useEffect(() => {
-      if (localRef.current?.complete && localRef.current.naturalWidth > 0) {
-        setLoaded(true);
-      }
-    }, [source.img.src]);
+  // Catch images already decoded before React attached onLoad
+  // (SSR / cached / eager). Without this they stay opacity:0.
+  useEffect(() => {
+    if (localRef.current?.complete && localRef.current.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [source.img.src]);
 
-    return (
-      <>
-        <picture className={cn("absolute inset-0 block", className)}>
-          {/* AVIF first (smallest), then WebP fallback. JPEG/PNG fallback is
+  return (
+    <>
+      <picture className={cn("absolute inset-0 block", className)}>
+        {/* AVIF first (smallest), then WebP fallback. JPEG/PNG fallback is
               the <img> below — modern browsers will already have matched. */}
-          {source.sources.avif && (
-            <source type="image/avif" srcSet={source.sources.avif} sizes={sizes} />
-          )}
-          {source.sources.webp && (
-            <source type="image/webp" srcSet={source.sources.webp} sizes={sizes} />
-          )}
-          <img
-            ref={(el) => {
-              localRef.current = el;
-              if (typeof ref === "function") ref(el);
-              else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = el;
-            }}
-            src={source.img.src}
-            width={source.img.w}
-            height={source.img.h}
-            alt={alt}
-            decoding="async"
-            loading={priority ? "eager" : "lazy"}
-            // React types lag the spec; cast for fetchpriority.
-            {...(priority
-              ? ({ fetchPriority: "high" } as Record<string, string>)
-              : {})}
-            draggable={false}
-            onLoad={() => {
-              setLoaded(true);
-              onLoad?.();
-            }}
-            className="absolute inset-0 w-full h-full object-cover will-change-opacity"
-            style={{
-              objectPosition,
-              opacity: loaded ? 1 : 0,
-              // 700ms feels right for a hero — long enough to register as a
-              // dissolve, short enough that prioritized images feel instant.
-              transition: "opacity 700ms ease-out",
-              ...imgStyle,
-            }}
-          />
-        </picture>
+        {source.sources.avif && (
+          <source type="image/avif" srcSet={source.sources.avif} sizes={sizes} />
+        )}
+        {source.sources.webp && (
+          <source type="image/webp" srcSet={source.sources.webp} sizes={sizes} />
+        )}
+        <img
+          ref={(el) => {
+            localRef.current = el;
+            if (typeof ref === "function") ref(el);
+            else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = el;
+          }}
+          src={source.img.src}
+          width={source.img.w}
+          height={source.img.h}
+          alt={alt}
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          // React types lag the spec; cast for fetchpriority.
+          {...(priority ? ({ fetchPriority: "high" } as Record<string, string>) : {})}
+          draggable={false}
+          onLoad={() => {
+            setLoaded(true);
+            onLoad?.();
+          }}
+          className="absolute inset-0 w-full h-full object-cover will-change-opacity"
+          style={{
+            objectPosition,
+            opacity: loaded ? 1 : 0,
+            // 700ms feels right for a hero — long enough to register as a
+            // dissolve, short enough that prioritized images feel instant.
+            transition: "opacity 700ms ease-out",
+            ...imgStyle,
+          }}
+        />
+      </picture>
 
-        {/* Scrim layer — pointer-events:none so it never blocks interactions
+      {/* Scrim layer — pointer-events:none so it never blocks interactions
             on the layout above. Rendered outside <picture> so it can sit
             above the image without interfering with native source selection. */}
-        {scrim !== "none" && (
-          <Scrim variant={scrim} strength={scrimStrength} loaded={loaded} />
-        )}
-      </>
-    );
-  },
-);
+      {scrim !== "none" && <Scrim variant={scrim} strength={scrimStrength} loaded={loaded} />}
+    </>
+  );
+});
 
 interface ScrimProps {
   variant: Exclude<HeroImageProps["scrim"], "none" | undefined>;
@@ -175,9 +169,7 @@ function Scrim({ variant, strength, loaded }: ScrimProps) {
   // Charcoal wash, alpha derived from strength. Always uses the brand
   // charcoal so the scrim feels of-a-piece with the rest of the system,
   // not a generic black.
-  const tint = `color-mix(in oklab, var(--charcoal) ${Math.round(
-    strength * 100,
-  )}%, transparent)`;
+  const tint = `color-mix(in oklab, var(--charcoal) ${Math.round(strength * 100)}%, transparent)`;
 
   const common: CSSProperties = {
     pointerEvents: "none",
@@ -189,13 +181,7 @@ function Scrim({ variant, strength, loaded }: ScrimProps) {
   };
 
   if (variant === "full") {
-    return (
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{ ...common, background: tint }}
-      />
-    );
+    return <div aria-hidden className="absolute inset-0" style={{ ...common, background: tint }} />;
   }
 
   return (
@@ -234,10 +220,7 @@ function Scrim({ variant, strength, loaded }: ScrimProps) {
  * For non-full-bleed heroes (e.g. a 40vw column), pass `sizes` so the
  * preload scanner picks a smaller width variant from the srcset.
  */
-export function heroPreloadLink(
-  source: HeroImageSource,
-  sizes: string = "100vw",
-) {
+export function heroPreloadLink(source: HeroImageSource, sizes: string = "100vw") {
   // Prefer AVIF; the browser will download only this one if it supports AVIF.
   // We pass the full srcset + sizes so the preload scanner picks the right
   // width — critical, otherwise it grabs the largest variant by default.

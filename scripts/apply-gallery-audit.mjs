@@ -10,7 +10,7 @@
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 
-const MAX_DIST = Number((process.argv.find((a) => a.startsWith("--max="))?.split("=")[1]) ?? 3);
+const MAX_DIST = Number(process.argv.find((a) => a.startsWith("--max="))?.split("=")[1] ?? 3);
 const audit = JSON.parse(readFileSync("/tmp/gallery-audit.json", "utf8"));
 
 const updates = [];
@@ -27,7 +27,8 @@ for (const f of audit.findings) {
     return parent.get(x);
   };
   const union = (a, b) => {
-    const ra = find(a), rb = find(b);
+    const ra = find(a),
+      rb = find(b);
     if (ra !== rb) parent.set(Math.max(ra, rb), Math.min(ra, rb));
   };
   for (let i = 0; i < f.imageCount; i++) parent.set(i, i);
@@ -47,7 +48,13 @@ for (const f of audit.findings) {
   if (keep.size === f.imageCount) continue;
   const dropped = f.imageCount - keep.size;
   totalDropped += dropped;
-  updates.push({ rms_id: f.rms_id, slug: f.slug, kept: [...keep].sort((a, b) => a - b), dropped, imageCount: f.imageCount });
+  updates.push({
+    rms_id: f.rms_id,
+    slug: f.slug,
+    kept: [...keep].sort((a, b) => a - b),
+    dropped,
+    imageCount: f.imageCount,
+  });
 }
 
 console.error(`max distance: ${MAX_DIST}`);
@@ -58,7 +65,7 @@ console.error(`images to drop: ${totalDropped}`);
 const rmsIds = updates.map((u) => `'${u.rms_id}'`).join(",");
 const rows = execSync(
   `psql -At -F$'\\t' -c "SELECT rms_id, array_to_string(images, '|||') FROM inventory_items WHERE rms_id IN (${rmsIds})"`,
-  { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 }
+  { encoding: "utf8", maxBuffer: 32 * 1024 * 1024 },
 )
   .trim()
   .split("\n")
@@ -76,7 +83,9 @@ sql.push("");
 for (const u of updates) {
   const current = imagesByRms.get(u.rms_id);
   if (!current || current.length !== u.imageCount) {
-    console.error(`SKIP ${u.rms_id} ${u.slug}: image count drift (db=${current?.length} audit=${u.imageCount})`);
+    console.error(
+      `SKIP ${u.rms_id} ${u.slug}: image count drift (db=${current?.length} audit=${u.imageCount})`,
+    );
     continue;
   }
   const next = u.kept.map((i) => current[i]);

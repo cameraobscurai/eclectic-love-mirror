@@ -31,10 +31,7 @@ const APPLY = process.argv.includes("--apply");
 const ALLOW_PARTIAL = process.argv.includes("--allow-partial");
 const OUT_DIR = "scripts/backup/out";
 
-const SQS_HOSTS = new Set([
-  "images.squarespace-cdn.com",
-  "static1.squarespace.com",
-]);
+const SQS_HOSTS = new Set(["images.squarespace-cdn.com", "static1.squarespace.com"]);
 function isSquarespace(url) {
   try {
     return SQS_HOSTS.has(new URL(url).host);
@@ -50,23 +47,17 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
 
-  const manifest = JSON.parse(
-    await readFile(join(OUT_DIR, "download-manifest.json"), "utf8")
-  );
+  const manifest = JSON.parse(await readFile(join(OUT_DIR, "download-manifest.json"), "utf8"));
   let failed = [];
   try {
-    failed = JSON.parse(
-      await readFile(join(OUT_DIR, "download-failed.json"), "utf8")
-    );
+    failed = JSON.parse(await readFile(join(OUT_DIR, "download-failed.json"), "utf8"));
   } catch {}
-  console.log(
-    `→ manifest entries: ${manifest.length}  ·  failures: ${failed.length}`
-  );
+  console.log(`→ manifest entries: ${manifest.length}  ·  failures: ${failed.length}`);
 
   if (APPLY && failed.length > 0 && !ALLOW_PARTIAL) {
     console.error(
       `\nRefusing to apply: ${failed.length} downloads failed. ` +
-        `Re-run download-squarespace.mjs or pass --allow-partial.`
+        `Re-run download-squarespace.mjs or pass --allow-partial.`,
     );
     process.exit(3);
   }
@@ -146,17 +137,12 @@ async function main() {
     ``,
   ].join("\n");
 
-  await writeFile(
-    join(OUT_DIR, "swap-plan.json"),
-    JSON.stringify(plan, null, 2)
-  );
+  await writeFile(join(OUT_DIR, "swap-plan.json"), JSON.stringify(plan, null, 2));
   await writeFile(join(OUT_DIR, "swap-summary.txt"), summary);
   console.log("\n" + summary);
 
   if (!APPLY) {
-    console.log(
-      `Dry run only. Review swap-plan.json, then re-run with --apply.`
-    );
+    console.log(`Dry run only. Review swap-plan.json, then re-run with --apply.`);
     return;
   }
 
@@ -177,7 +163,7 @@ async function main() {
         } else {
           applied.push({ id: p.id, rms_id: p.rms_id, count: p.changes.length });
         }
-      })
+      }),
     );
     process.stdout.write(`\r  ${Math.min(i + BATCH, plan.length)}/${plan.length}`);
   }
@@ -185,7 +171,7 @@ async function main() {
 
   await writeFile(
     join(OUT_DIR, "swap-applied.json"),
-    JSON.stringify({ applied, failures }, null, 2)
+    JSON.stringify({ applied, failures }, null, 2),
   );
   console.log(`✓ applied ${applied.length}  ·  failed ${failures.length}`);
   if (failures.length) {

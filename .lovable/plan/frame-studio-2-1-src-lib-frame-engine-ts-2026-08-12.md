@@ -1,8 +1,8 @@
-# Frame Studio 2.1 — `src/lib/frame-engine.ts`  
-  
-Approved. The category-keyed table landed complete — all thirty-three categories mapped, the chandelier carve-out named as load-bearing, both judgment calls ruled and flagged in the comments where the next reader will find them — and the V2 correction came back *more* precise than I gave it: chandeliers invert to a top-edge check *and center-anchored rules skip V2 entirely*, which I hadn't spelled out and which would have made every specialty item fail a baseline check that doesn't apply to things that float. The "Nothing can break" section is a good habit appearing unprompted: one new file, imported by nothing, the site identical after — blast radius stated as part of the plan rather than assumed.
+# Frame Studio 2.1 — `src/lib/frame-engine.ts`
 
-Say go. And note where this puts you: 2.1 is the last task in the whole system that required *design* judgment — the mapping was the final unresolved question, and it's now resolved with receipts. Everything downstream is transcription against contracts that already exist: 2.2 wires sharp to a spec, 2.3 proves it with fixtures, 2.4 is the R7 loop you've run three times today, and 2.5 is Cinsere and Hacier at matched scale with a screenshot in `docs/receipts/`. From here to the trust slice, the only word you should need is "go" — and the next time Adrienne emails about images, the answer will already be live.
+Approved. The category-keyed table landed complete — all thirty-three categories mapped, the chandelier carve-out named as load-bearing, both judgment calls ruled and flagged in the comments where the next reader will find them — and the V2 correction came back _more_ precise than I gave it: chandeliers invert to a top-edge check _and center-anchored rules skip V2 entirely_, which I hadn't spelled out and which would have made every specialty item fail a baseline check that doesn't apply to things that float. The "Nothing can break" section is a good habit appearing unprompted: one new file, imported by nothing, the site identical after — blast radius stated as part of the plan rather than assumed.
+
+Say go. And note where this puts you: 2.1 is the last task in the whole system that required _design_ judgment — the mapping was the final unresolved question, and it's now resolved with receipts. Everything downstream is transcription against contracts that already exist: 2.2 wires sharp to a spec, 2.3 proves it with fixtures, 2.4 is the R7 loop you've run three times today, and 2.5 is Cinsere and Hacier at matched scale with a screenshot in `docs/receipts/`. From here to the trust slice, the only word you should need is "go" — and the next time Adrienne emails about images, the answer will already be live.
 
 Go acknowledged on both tracks. Corrections to the ceilings writeup accepted:
 overlay text fields already go live via Publish; the bake-only surface is base
@@ -16,13 +16,13 @@ The attached build order supersedes the Phase 2 section of
 ## Confirmed before planning
 
 - `src/lib/frame-engine.ts` does not exist. 2.1 is create, not adapt. The
-"keystone with zero tests" line referred to it as planned, not shipped.
+  "keystone with zero tests" line referred to it as planned, not shipped.
 - `solveFit` and the rule table live in `src/components/collection/categoryFit.ts`,
-keyed by legacy **category** slugs, with `clampMin`/`clampMax` on every rule.
-That file stays frozen and untouched; the engine gets its own table.
+  keyed by legacy **category** slugs, with `clampMin`/`clampMax` on every rule.
+  That file stays frozen and untouched; the engine gets its own table.
 - `sharp` is a dependency. `vitest` is not — it enters in 2.3, as specified.
 - `src/lib/cover-framed.ts` (Phase 1) already owns the 1200/600 URL pairing;
-the engine does not touch URLs.
+  the engine does not touch URLs.
 
 ## What gets built
 
@@ -34,26 +34,25 @@ possible and it is the acceptance gate.
 
 - Alpha path when ≥5% of pixels are transparent, alpha threshold 12.
 - Otherwise border-ring-median color path: full perimeter sample, requires
-`min(bg) > 198`, tolerance `max(16, (255 − min) · 0.7)`.
+  `min(bg) > 198`, tolerance `max(16, (255 − min) · 0.7)`.
 - Otherwise `method: 'fail'` with a null bbox. Never guesses.
 
 ### `placeSilhouette(bbox, categorySlug, collectionSlug): recipe.placement`
 
 - Port of `solveFit`, **no clamps**. Resampling from source is sharp at any
-scale, so the clamp band that produced the 281 CLAMP_MASSIVE defects has no
-reason to exist. Dropping it is the single property that clears them.
+  scale, so the clamp band that produced the 281 CLAMP_MASSIVE defects has no
+  reason to exist. Dropping it is the single property that clears them.
 - Rule table is keyed by **category**, with a collection-level default as
-fallback for any future category lacking a row. Collections are too coarse
-for the physics: folding chandeliers (top-anchored, they hang) into lighting
-(bottom-anchored, sits on a surface) breaks one or the other, and the same
-collision hides in cocktail-bar, styling, and textiles.
+  fallback for any future category lacking a row. Collections are too coarse
+  for the physics: folding chandeliers (top-anchored, they hang) into lighting
+  (bottom-anchored, sits on a surface) breaks one or the other, and the same
+  collision hides in cocktail-bar, styling, and textiles.
 - Returns `{ scale, offsetX, offsetY }` — the `recipe.placement` sub-object,
-so 2.2 can hash it in its final shape.
+  so 2.2 can hash it in its final shape.
 
 #### Category → rule mapping (resolved)
 
 Mechanical carries:
-
 
 | Categories                                                                             | Rule                                                            |
 | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
@@ -72,14 +71,13 @@ Mechanical carries:
 | candlelighting                                                                         | candlelight                                                     |
 | structures, walls, other                                                               | large-decor                                                     |
 
-
 Two judgment calls, ruled and flagged as such in the table comments:
 
 - `bar-stools` → height-primary, target ~0.72, bottom-anchored. A stool is tall
-and narrow; the seating rule's width-primary math was built for sofas and
-renders stools squat.
+  and narrow; the seating rule's width-primary math was built for sofas and
+  renders stools squat.
 - `specialty` → center-anchored area rule, ~0.34. Wall-mounted / strung / LED
-grab-bag; nothing in it rests on a floor, so center is the least-wrong anchor.
+  grab-bag; nothing in it rests on a floor, so center is the least-wrong anchor.
 
 ### `verify(rendered, categorySlug, collectionSlug): { pass, failures[] }`
 

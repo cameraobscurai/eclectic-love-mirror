@@ -14,9 +14,11 @@ function allUrls(): string[] {
   const tiles = (manifest.tiles as Array<{ file: string }>).slice(0, 84);
   for (const t of tiles) urls.push(staticFile(t.file));
   // Home posters
-  for (const [_, v] of Object.entries(manifest.home as Record<string, string>)) urls.push(staticFile(v));
+  for (const [_, v] of Object.entries(manifest.home as Record<string, string>))
+    urls.push(staticFile(v));
   // Atelier
-  for (const [_, v] of Object.entries(manifest.atelier as Record<string, string>)) urls.push(staticFile(v));
+  for (const [_, v] of Object.entries(manifest.atelier as Record<string, string>))
+    urls.push(staticFile(v));
   return urls;
 }
 
@@ -35,7 +37,7 @@ function loadOne(url: string): Promise<void> {
       (err) => {
         console.error("preload fail:", url, err);
         resolve();
-      }
+      },
     );
   });
 }

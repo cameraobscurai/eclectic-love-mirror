@@ -16,7 +16,7 @@ fs.mkdirSync(path.join(PUB, "covers"), { recursive: true });
 fs.mkdirSync(path.join(PUB, "home"), { recursive: true });
 
 const catalog = JSON.parse(
-  fs.readFileSync(path.join(REPO, "src/data/inventory/current_catalog.json"), "utf8")
+  fs.readFileSync(path.join(REPO, "src/data/inventory/current_catalog.json"), "utf8"),
 );
 
 const ext = (u) => {
@@ -45,9 +45,20 @@ async function download(url, dest) {
 // Pick ~100 strong tiles: per-category quota, hero image only, prefer supabase
 // over squarespace CDN for stability.
 const QUOTA = {
-  seating: 14, tables: 12, bars: 6, tableware: 8, serveware: 6,
-  "pillows-throws": 16, rugs: 6, lighting: 6, candlelight: 4,
-  chandeliers: 6, "large-decor": 6, styling: 6, storage: 4, "furs-pelts": 4,
+  seating: 14,
+  tables: 12,
+  bars: 6,
+  tableware: 8,
+  serveware: 6,
+  "pillows-throws": 16,
+  rugs: 6,
+  lighting: 6,
+  candlelight: 4,
+  chandeliers: 6,
+  "large-decor": 6,
+  styling: 6,
+  storage: 4,
+  "furs-pelts": 4,
 };
 const products = [];
 for (const cat of Object.keys(QUOTA)) {
@@ -82,7 +93,7 @@ for (let i = 0; i < products.length; i += batch) {
         colorFamily: p.colorFamily || null,
         colorLightness: p.colorLightness ?? null,
       };
-    })
+    }),
   );
   for (const r of results) if (r) tiles.push(r);
   process.stdout.write(`  ${tiles.length}/${products.length}\r`);
@@ -119,7 +130,10 @@ const atelierFiles = [
 const atelier = {};
 for (const [src, name] of atelierFiles) {
   const abs = path.join(REPO, src);
-  if (!fs.existsSync(abs)) { console.warn("missing atelier", src); continue; }
+  if (!fs.existsSync(abs)) {
+    console.warn("missing atelier", src);
+    continue;
+  }
   fs.copyFileSync(abs, path.join(PUB, "atelier", name));
   atelier[name.replace(/\.[^.]+$/, "")] = `v11/atelier/${name}`;
 }
@@ -127,18 +141,54 @@ console.log("atelier", Object.keys(atelier).length);
 
 // ── 4. GALLERY PLATES ────────────────────────────────────────────────
 const galleryUrls = [
-  ["amangiri-chinle", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/chinledinner__D9D9D665-C36F-4654-9687-7303B1A05765.jpeg"],
-  ["amangiri-fireside", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/Fireside__Lounge.jpg"],
-  ["amangiri-amphitheater", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/amphitheaterravensnest__ADD_ON_Bar.jpg"],
-  ["amangiri-loungecu", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up_Lounge.jpg"],
-  ["anguilla-bar", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Bar_by_the_Sea.jpg"],
-  ["anguilla-sofa", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Sofa_by_the_sea.jpg"],
-  ["anguilla-tent", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Tent_Entrance.jpg"],
-  ["aspen-tent-night", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night.jpg"],
-  ["aspen-tablescape", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up.jpg"],
-  ["aspen-stones", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Stone Plates.jpg"],
-  ["birch-lounge", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/BIRCH-DESIGN/AAM__Lounge_Favorite.jpg"],
-  ["birch-bar", "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/BIRCH-DESIGN/AAM__Bar_+_Bellow_Wall.jpg"],
+  [
+    "amangiri-chinle",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/chinledinner__D9D9D665-C36F-4654-9687-7303B1A05765.jpeg",
+  ],
+  [
+    "amangiri-fireside",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/Fireside__Lounge.jpg",
+  ],
+  [
+    "amangiri-amphitheater",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/amphitheaterravensnest__ADD_ON_Bar.jpg",
+  ],
+  [
+    "amangiri-loungecu",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/AMANGIRI/amphitheaterravensnest__ADD_ON_Close_Up_Lounge.jpg",
+  ],
+  [
+    "anguilla-bar",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Bar_by_the_Sea.jpg",
+  ],
+  [
+    "anguilla-sofa",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Sofa_by_the_sea.jpg",
+  ],
+  [
+    "anguilla-tent",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ANGUILLA-MICHELLE-RAGO/Tent_Entrance.jpg",
+  ],
+  [
+    "aspen-tent-night",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tent at Night.jpg",
+  ],
+  [
+    "aspen-tablescape",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Tablescape Close Up.jpg",
+  ],
+  [
+    "aspen-stones",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/ASPEN-EVENT-WORKS-ASPEN-PRIVATE-RANCH/Stone Plates.jpg",
+  ],
+  [
+    "birch-lounge",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/BIRCH-DESIGN/AAM__Lounge_Favorite.jpg",
+  ],
+  [
+    "birch-bar",
+    "https://wdyfavzfquegrxklcpmq.supabase.co/storage/v1/object/public/image-galleries/BIRCH-DESIGN/AAM__Bar_+_Bellow_Wall.jpg",
+  ],
 ];
 const gallery = {};
 for (const [name, url] of galleryUrls) {
@@ -151,7 +201,7 @@ console.log("gallery", Object.keys(gallery).length);
 
 // ── 5. HOME POSTERS ──────────────────────────────────────────────────
 const home = {};
-for (const n of ["02","03","04","05"]) {
+for (const n of ["02", "03", "04", "05"]) {
   const src = path.join(REPO, "public/media/home", `${n}-poster.jpg`);
   if (!fs.existsSync(src)) continue;
   const dest = path.join(PUB, "home", `${n}-poster.jpg`);
@@ -164,7 +214,7 @@ console.log("home", Object.keys(home).length);
 const manifest = { tiles, covers, atelier, gallery, home };
 fs.writeFileSync(
   path.join(__dirname, "../src/v11-manifest.json"),
-  JSON.stringify(manifest, null, 2)
+  JSON.stringify(manifest, null, 2),
 );
 console.log("\nmanifest:", path.join("remotion/src/v11-manifest.json"));
 console.log("done.");

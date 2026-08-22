@@ -38,23 +38,32 @@ const DEPTH_VARS: Record<Depth, CSSProperties> = {
   // y    = vertical drift in % of frame height across the viewport pass
   // s0/s1 = scale start / end
   // b0/b1 = brightness start / end (filter)
-  sm: { ["--pmy" as string]: "4%",  ["--pms0" as string]: "1.00", ["--pms1" as string]: "1.04", ["--pmb0" as string]: "0.96", ["--pmb1" as string]: "1.00" },
-  md: { ["--pmy" as string]: "8%",  ["--pms0" as string]: "0.98", ["--pms1" as string]: "1.06", ["--pmb0" as string]: "0.92", ["--pmb1" as string]: "1.00" },
-  lg: { ["--pmy" as string]: "12%", ["--pms0" as string]: "0.96", ["--pms1" as string]: "1.08", ["--pmb0" as string]: "0.88", ["--pmb1" as string]: "1.00" },
+  sm: {
+    ["--pmy" as string]: "4%",
+    ["--pms0" as string]: "1.00",
+    ["--pms1" as string]: "1.04",
+    ["--pmb0" as string]: "0.96",
+    ["--pmb1" as string]: "1.00",
+  },
+  md: {
+    ["--pmy" as string]: "8%",
+    ["--pms0" as string]: "0.98",
+    ["--pms1" as string]: "1.06",
+    ["--pmb0" as string]: "0.92",
+    ["--pmb1" as string]: "1.00",
+  },
+  lg: {
+    ["--pmy" as string]: "12%",
+    ["--pms0" as string]: "0.96",
+    ["--pms1" as string]: "1.08",
+    ["--pmb0" as string]: "0.88",
+    ["--pmb1" as string]: "1.00",
+  },
 };
 
-export function ParallaxMedia({
-  children,
-  depth = "md",
-  className,
-  style,
-}: Props) {
+export function ParallaxMedia({ children, depth = "md", className, style }: Props) {
   return (
-    <div
-      className={className}
-      style={{ ...DEPTH_VARS[depth], ...style }}
-      data-parallax-media
-    >
+    <div className={className} style={{ ...DEPTH_VARS[depth], ...style }} data-parallax-media>
       <div className="parallax-media__inner">{children}</div>
     </div>
   );

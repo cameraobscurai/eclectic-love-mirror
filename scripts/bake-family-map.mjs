@@ -12,9 +12,7 @@
  */
 import fs from "node:fs";
 
-const catalog = JSON.parse(
-  fs.readFileSync("src/data/inventory/current_catalog.json", "utf8"),
-);
+const catalog = JSON.parse(fs.readFileSync("src/data/inventory/current_catalog.json", "utf8"));
 
 const key = (url) => {
   try {

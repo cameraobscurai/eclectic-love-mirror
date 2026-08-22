@@ -957,61 +957,19 @@
     }
   ],
   "top_missing_categories": [
-    [
-      "tableware",
-      153
-    ],
-    [
-      "pillows-throws",
-      114
-    ],
-    [
-      "seating",
-      91
-    ],
-    [
-      "tables",
-      70
-    ],
-    [
-      "styling",
-      70
-    ],
-    [
-      "serveware",
-      42
-    ],
-    [
-      "bars",
-      37
-    ],
-    [
-      "lighting",
-      25
-    ],
-    [
-      "large-decor",
-      24
-    ],
-    [
-      "candlelight",
-      16
-    ],
-    [
-      "chandeliers",
-      16
-    ],
-    [
-      "rugs",
-      8
-    ],
-    [
-      "furs-pelts",
-      4
-    ],
-    [
-      "storage",
-      2
-    ]
+    ["tableware", 153],
+    ["pillows-throws", 114],
+    ["seating", 91],
+    ["tables", 70],
+    ["styling", 70],
+    ["serveware", 42],
+    ["bars", 37],
+    ["lighting", 25],
+    ["large-decor", 24],
+    ["candlelight", 16],
+    ["chandeliers", 16],
+    ["rugs", 8],
+    ["furs-pelts", 4],
+    ["storage", 2]
   ]
 }

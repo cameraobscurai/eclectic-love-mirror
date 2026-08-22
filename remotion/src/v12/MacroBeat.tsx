@@ -103,15 +103,19 @@ const BEATS: Record<BeatVariant, BeatConfig> = {
   },
 };
 
-const lerp3 = (a: [number, number, number], b: [number, number, number], t: number): [number, number, number] => [
+const lerp3 = (
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number,
+): [number, number, number] => [
   a[0] + (b[0] - a[0]) * t,
   a[1] + (b[1] - a[1]) * t,
   a[2] + (b[2] - a[2]) * t,
 ];
 
 const handheld = (f: number): [number, number, number] => [
-  Math.sin(f / 30 * 0.7) * 0.04,
-  Math.cos(f / 30 * 0.5) * 0.025,
+  Math.sin((f / 30) * 0.7) * 0.04,
+  Math.cos((f / 30) * 0.5) * 0.025,
   0,
 ];
 
@@ -142,7 +146,15 @@ interface CardProps {
   macroLock: number;
 }
 
-const Card: React.FC<CardProps> = ({ tile, index, matchIndex, macroTarget, fieldBuild, tonalSort, macroLock }) => {
+const Card: React.FC<CardProps> = ({
+  tile,
+  index,
+  matchIndex,
+  macroTarget,
+  fieldBuild,
+  tonalSort,
+  macroLock,
+}) => {
   const texture = useRemotionTexture(staticFile(tile.file));
   if (!texture) return null;
   const aspect = texture.image ? texture.image.width / texture.image.height : 1;
@@ -180,12 +192,25 @@ const Card: React.FC<CardProps> = ({ tile, index, matchIndex, macroTarget, field
   return (
     <mesh position={[x, y, z]} scale={[scaleMul, scaleMul, 1]}>
       <planeGeometry args={[w, h]} />
-      <meshBasicMaterial map={texture} transparent opacity={opacity} side={THREE.DoubleSide} depthWrite={false} />
+      <meshBasicMaterial
+        map={texture}
+        transparent
+        opacity={opacity}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
     </mesh>
   );
 };
 
-const Backdrop: React.FC<{ index: number; matchIndex: number; macroTarget: [number, number, number]; fieldBuild: number; tonalSort: number; macroLock: number; }> = ({ index, matchIndex, macroTarget, fieldBuild, tonalSort, macroLock }) => {
+const Backdrop: React.FC<{
+  index: number;
+  matchIndex: number;
+  macroTarget: [number, number, number];
+  fieldBuild: number;
+  tonalSort: number;
+  macroLock: number;
+}> = ({ index, matchIndex, macroTarget, fieldBuild, tonalSort, macroLock }) => {
   const c = index % COLS;
   const r = Math.floor(index / COLS);
   const rest = restPos(c, r);
@@ -229,8 +254,23 @@ const FieldForBeat: React.FC<{ cfg: BeatConfig }> = ({ cfg }) => {
     <group>
       {manifest.tiles.slice(0, TOTAL).map((tile, i) => (
         <React.Fragment key={tile.slug}>
-          <Backdrop index={i} matchIndex={cfg.matchIndex} macroTarget={cfg.macroTarget} fieldBuild={fieldBuild} tonalSort={tonalSort} macroLock={macroLock} />
-          <Card tile={tile} index={i} matchIndex={cfg.matchIndex} macroTarget={cfg.macroTarget} fieldBuild={fieldBuild} tonalSort={tonalSort} macroLock={macroLock} />
+          <Backdrop
+            index={i}
+            matchIndex={cfg.matchIndex}
+            macroTarget={cfg.macroTarget}
+            fieldBuild={fieldBuild}
+            tonalSort={tonalSort}
+            macroLock={macroLock}
+          />
+          <Card
+            tile={tile}
+            index={i}
+            matchIndex={cfg.matchIndex}
+            macroTarget={cfg.macroTarget}
+            fieldBuild={fieldBuild}
+            tonalSort={tonalSort}
+            macroLock={macroLock}
+          />
         </React.Fragment>
       ))}
     </group>

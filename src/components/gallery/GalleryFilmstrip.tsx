@@ -9,11 +9,7 @@ interface GalleryFilmstripProps {
   onActiveChange?: (index: number) => void;
 }
 
-export function GalleryFilmstrip({
-  projects,
-  onOpen,
-  onActiveChange,
-}: GalleryFilmstripProps) {
+export function GalleryFilmstrip({ projects, onOpen, onActiveChange }: GalleryFilmstripProps) {
   const scrollerRef = useRef<HTMLUListElement | null>(null);
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);

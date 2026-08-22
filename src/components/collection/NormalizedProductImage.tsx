@@ -32,7 +32,6 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   eager?: boolean;
 };
 
-
 // Cache keyed by src+frame+mode. Measured silhouette geometry is reusable
 // across rules on the same image — the SOLVER runs per-rule, the MEASUREMENT
 // is shared.
@@ -52,7 +51,6 @@ const measurementCache = new Map<string, Measurement | null>();
 const FRAME_ASPECT = 5 / 4;
 const TILE_IMAGE_INSET = 0.94;
 
-
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -61,10 +59,7 @@ function clamp(n: number, min: number, max: number) {
 // Measurement — canvas-based silhouette bbox in tile-space.
 // ────────────────────────────────────────────────────────────────────────
 
-function measureImage(
-  img: HTMLImageElement,
-  frameAspect: number,
-): Measurement | null {
+function measureImage(img: HTMLImageElement, frameAspect: number): Measurement | null {
   const w = img.naturalWidth;
   const h = img.naturalHeight;
   if (!w || !h) return null;
@@ -123,7 +118,8 @@ function measureImage(
         Math.abs(r - bgR) <= bgTol &&
         Math.abs(g - bgG) <= bgTol &&
         Math.abs(b - bgB) <= bgTol
-      ) continue;
+      )
+        continue;
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
       maxX = Math.max(maxX, x);
@@ -192,7 +188,6 @@ export function focalToFrame(
 // The rigorous solver — takes a FitRule + measurement, returns Fit.
 // ────────────────────────────────────────────────────────────────────────
 
-
 function solveFit(m: Measurement, rule: FitRule): Fit {
   const inset = TILE_IMAGE_INSET;
   const wInsetFrame = inset * m.bw;
@@ -224,7 +219,6 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
     }
   }
 
-
   // 2. Secondary-axis cap (skip for area primary).
   let sCap = Infinity;
   if (rule.primary === "width") {
@@ -246,7 +240,6 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
   // 3. Final scale.
   const s = clamp(Math.min(sTarget, sCap), rule.clampMin, rule.clampMax);
 
-
   return { scale: s, cx: m.cx, cy: m.cy, bottom: m.bottom, top: m.top };
 }
 
@@ -254,176 +247,172 @@ function solveFit(m: Measurement, rule: FitRule): Fit {
 // Component
 // ────────────────────────────────────────────────────────────────────────
 
-export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(function NormalizedProductImage({
-  src,
-  frameAspect = FRAME_ASPECT,
-  fit: fitRule,
-  visualOffsetY = 0,
+export const NormalizedProductImage = forwardRef<HTMLImageElement, Props>(
+  function NormalizedProductImage(
+    {
+      src,
+      frameAspect = FRAME_ASPECT,
+      fit: fitRule,
+      visualOffsetY = 0,
 
-  focalX,
-  focalY,
-  eager = false,
-  className,
-  style,
-  onLoad,
-  ...props
-}: Props, ref) {
-  const hasFocal = typeof focalX === "number" && typeof focalY === "number";
-  // Measurement is in frame-space, not just image-space: measureImage()
-  // letterboxes the natural image into the current frameAspect before it
-  // computes the silhouette bounds. Key by both URL and frame shape so the
-  // viewport wall and the normal browsing grid cannot reuse incompatible
-  // geometry and make neighboring products jump to different scales.
-  const cacheKey = `${src}|frame:${frameAspect.toFixed(4)}`;
-  const cached = measurementCache.get(cacheKey);
-  const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
+      focalX,
+      focalY,
+      eager = false,
+      className,
+      style,
+      onLoad,
+      ...props
+    }: Props,
+    ref,
+  ) {
+    const hasFocal = typeof focalX === "number" && typeof focalY === "number";
+    // Measurement is in frame-space, not just image-space: measureImage()
+    // letterboxes the natural image into the current frameAspect before it
+    // computes the silhouette bounds. Key by both URL and frame shape so the
+    // viewport wall and the normal browsing grid cannot reuse incompatible
+    // geometry and make neighboring products jump to different scales.
+    const cacheKey = `${src}|frame:${frameAspect.toFixed(4)}`;
+    const cached = measurementCache.get(cacheKey);
+    const [measurement, setMeasurement] = useState<Measurement | null | undefined>(cached);
 
-  // Silhouette measurement is a second image fetch plus a canvas
-  // getImageData() pixel walk. On a 600-tile admin grid, firing that for
-  // every tile at mount saturates the network and pins the main thread —
-  // the `loading="lazy"` on the visible <img> can't help, because the probe
-  // is its own request. So the probe waits until the tile is near the
-  // viewport. Eager tiles (LCP) and already-cached measurements skip the gate.
-  const imgRef = useRef<HTMLImageElement | null>(null);
-  const [inView, setInView] = useState(
-    () => eager || cached !== undefined || typeof IntersectionObserver === "undefined",
-  );
-  useEffect(() => {
-    if (inView) return;
-    const el = imgRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setInView(true);
-          io.disconnect();
-        }
-      },
-      // Measure a screen ahead so tiles are solved before they're read.
-      { rootMargin: "600px 0px" },
+    // Silhouette measurement is a second image fetch plus a canvas
+    // getImageData() pixel walk. On a 600-tile admin grid, firing that for
+    // every tile at mount saturates the network and pins the main thread —
+    // the `loading="lazy"` on the visible <img> can't help, because the probe
+    // is its own request. So the probe waits until the tile is near the
+    // viewport. Eager tiles (LCP) and already-cached measurements skip the gate.
+    const imgRef = useRef<HTMLImageElement | null>(null);
+    const [inView, setInView] = useState(
+      () => eager || cached !== undefined || typeof IntersectionObserver === "undefined",
     );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [inView]);
+    useEffect(() => {
+      if (inView) return;
+      const el = imgRef.current;
+      if (!el) return;
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setInView(true);
+            io.disconnect();
+          }
+        },
+        // Measure a screen ahead so tiles are solved before they're read.
+        { rootMargin: "600px 0px" },
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, [inView]);
 
-  useEffect(() => {
-    if (!src) return;
-    if (!inView) return;
+    useEffect(() => {
+      if (!src) return;
+      if (!inView) return;
 
-    const existing = measurementCache.get(cacheKey);
-    if (existing !== undefined) {
-      if (existing !== measurement) setMeasurement(existing);
-      return;
-    }
-    let cancelled = false;
-    const probe = new Image();
-    probe.crossOrigin = "anonymous";
-    probe.decoding = "async";
-    probe.onload = () => {
-      if (cancelled) return;
-      try {
-        const next = measureImage(probe, frameAspect);
-        measurementCache.set(cacheKey, next);
-        setMeasurement(next);
-      } catch {
+      const existing = measurementCache.get(cacheKey);
+      if (existing !== undefined) {
+        if (existing !== measurement) setMeasurement(existing);
+        return;
+      }
+      let cancelled = false;
+      const probe = new Image();
+      probe.crossOrigin = "anonymous";
+      probe.decoding = "async";
+      probe.onload = () => {
+        if (cancelled) return;
+        try {
+          const next = measureImage(probe, frameAspect);
+          measurementCache.set(cacheKey, next);
+          setMeasurement(next);
+        } catch {
+          measurementCache.set(cacheKey, null);
+          setMeasurement(null);
+        }
+      };
+      probe.onerror = () => {
+        if (cancelled) return;
         measurementCache.set(cacheKey, null);
         setMeasurement(null);
+      };
+      probe.src = src;
+      return () => {
+        cancelled = true;
+      };
+    }, [src, cacheKey, hasFocal, frameAspect, measurement, inView]);
+
+    const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+      onLoad?.(e);
+    };
+
+    const transform = useMemo(() => {
+      // ── The one solver path ──
+      // A focal point is an ANCHOR override, never a scale override. The solved
+      // scale is what keeps a sofa the same visual mass as its neighbours, so it
+      // always survives. Focal only moves which point of the photo lands where
+      // the solver would have put the silhouette's center.
+      let f: Fit;
+      if (measurement) {
+        f = solveFit(measurement, fitRule);
+      } else {
+        const fb = fitRule.fallback;
+        f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
       }
+      let tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
+      let ty: number;
+      if (fitRule.anchor === "bottom") {
+        const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledBottom) * 100;
+      } else if (fitRule.anchor === "top") {
+        const scaledTop = 0.5 + (f.top - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledTop) * 100;
+      } else {
+        const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
+        ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
+      }
+
+      // Focal delta, applied on top of the auto solution. Focal == silhouette
+      // center is a no-op by construction, so a focal point can only ever nudge
+      // — it can never blow the tile up the way the old scale(1) bypass did.
+      // Needs the letterbox from the measurement; without it we stay on auto.
+      if (hasFocal && measurement) {
+        const { fx, fy } = focalToFrame(
+          focalX as number,
+          focalY as number,
+          measurement.renderedW,
+          measurement.renderedH,
+        );
+        tx += (measurement.cx - fx) * f.scale * 100;
+        ty += (measurement.cy - fy) * f.scale * 100;
+      }
+      return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
+    }, [measurement, fitRule, hasFocal, focalX, focalY, visualOffsetY]);
+
+    // Avoid the "big-then-snap" flash on below-fold tiles: while we're still
+    // measuring the silhouette, the solver would fall back to a ~full-size
+    // transform and pop to the correct scale a tick later. Hold opacity at 0
+    // until measurement resolves, then fade in. Above-fold (eager) tiles skip
+    // this gate so LCP stays fast — they render with the fallback fit and
+    // refine when the measurement arrives.
+    const ready = measurement !== undefined || eager;
+
+    const setRefs = (node: HTMLImageElement | null) => {
+      imgRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = node;
     };
-    probe.onerror = () => {
-      if (cancelled) return;
-      measurementCache.set(cacheKey, null);
-      setMeasurement(null);
-    };
-    probe.src = src;
-    return () => {
-      cancelled = true;
-    };
-  }, [src, cacheKey, hasFocal, frameAspect, measurement, inView]);
 
-  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    onLoad?.(e);
-  };
-
-  const transform = useMemo(() => {
-    // ── The one solver path ──
-    // A focal point is an ANCHOR override, never a scale override. The solved
-    // scale is what keeps a sofa the same visual mass as its neighbours, so it
-    // always survives. Focal only moves which point of the photo lands where
-    // the solver would have put the silhouette's center.
-    let f: Fit;
-    if (measurement) {
-      f = solveFit(measurement, fitRule);
-    } else {
-      const fb = fitRule.fallback;
-      f = { scale: fb.scale, cx: fb.cx, cy: fb.cy, bottom: fb.bottom, top: fb.top };
-    }
-    let tx = (fitRule.centerX - (0.5 + (f.cx - 0.5) * f.scale)) * 100;
-    let ty: number;
-    if (fitRule.anchor === "bottom") {
-      const scaledBottom = 0.5 + (f.bottom - 0.5) * f.scale;
-      ty = (fitRule.anchorY + visualOffsetY - scaledBottom) * 100;
-    } else if (fitRule.anchor === "top") {
-      const scaledTop = 0.5 + (f.top - 0.5) * f.scale;
-      ty = (fitRule.anchorY + visualOffsetY - scaledTop) * 100;
-    } else {
-      const scaledCy = 0.5 + (f.cy - 0.5) * f.scale;
-      ty = (fitRule.anchorY + visualOffsetY - scaledCy) * 100;
-    }
-
-    // Focal delta, applied on top of the auto solution. Focal == silhouette
-    // center is a no-op by construction, so a focal point can only ever nudge
-    // — it can never blow the tile up the way the old scale(1) bypass did.
-    // Needs the letterbox from the measurement; without it we stay on auto.
-    if (hasFocal && measurement) {
-      const { fx, fy } = focalToFrame(
-        focalX as number,
-        focalY as number,
-        measurement.renderedW,
-        measurement.renderedH,
-      );
-      tx += (measurement.cx - fx) * f.scale * 100;
-      ty += (measurement.cy - fy) * f.scale * 100;
-    }
-    return `translate(${tx.toFixed(2)}%, ${ty.toFixed(2)}%) scale(${f.scale.toFixed(4)})`;
-  }, [
-
-    measurement,
-    fitRule,
-    hasFocal,
-    focalX,
-    focalY,
-    visualOffsetY,
-  ]);
-
-
-  // Avoid the "big-then-snap" flash on below-fold tiles: while we're still
-  // measuring the silhouette, the solver would fall back to a ~full-size
-  // transform and pop to the correct scale a tick later. Hold opacity at 0
-  // until measurement resolves, then fade in. Above-fold (eager) tiles skip
-  // this gate so LCP stays fast — they render with the fallback fit and
-  // refine when the measurement arrives.
-  const ready = measurement !== undefined || eager;
-
-  const setRefs = (node: HTMLImageElement | null) => {
-    imgRef.current = node;
-    if (typeof ref === "function") ref(node);
-    else if (ref) (ref as React.MutableRefObject<HTMLImageElement | null>).current = node;
-  };
-
-  return (
-    <img
-      {...props}
-      ref={setRefs}
-      src={src}
-      onLoad={handleLoad}
-      className={`${className ?? ""} npi-fade`.trim()}
-      style={{
-        ...style,
-        transform,
-        transformOrigin: "center center",
-        opacity: ready ? (style?.opacity ?? 1) : 0,
-      }}
-    />
-  );
-});
+    return (
+      <img
+        {...props}
+        ref={setRefs}
+        src={src}
+        onLoad={handleLoad}
+        className={`${className ?? ""} npi-fade`.trim()}
+        style={{
+          ...style,
+          transform,
+          transformOrigin: "center center",
+          opacity: ready ? (style?.opacity ?? 1) : 0,
+        }}
+      />
+    );
+  },
+);

@@ -15,21 +15,18 @@ const INSPO_PREFIX = "public";
 // + allowed_mime_types. These server-fn checks are advisory / early-fail UX —
 // caller-supplied size and mime are untrusted.
 const ALLOWED_INSPO_EXTENSIONS = new Set(["jpeg", "png", "webp", "avif"]);
-const ALLOWED_INSPO_MIME = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/avif",
-]);
+const ALLOWED_INSPO_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
 const MAX_INSPO_BYTES = 8 * 1024 * 1024;
 
 export const signPublicInspoUpload = createServerFn({ method: "POST" })
   .inputValidator((d) =>
-    z.object({
-      ext: z.string().trim().toLowerCase().max(8),
-      mime: z.string().trim().toLowerCase().max(80),
-      size: z.number().int().positive().max(MAX_INSPO_BYTES),
-    }).parse(d),
+    z
+      .object({
+        ext: z.string().trim().toLowerCase().max(8),
+        mime: z.string().trim().toLowerCase().max(80),
+        size: z.number().int().positive().max(MAX_INSPO_BYTES),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const ext = data.ext === "jpg" ? "jpeg" : data.ext;
@@ -40,8 +37,8 @@ export const signPublicInspoUpload = createServerFn({ method: "POST" })
       throw new Error("Unsupported inspiration image MIME type.");
     }
     const path = `${INSPO_PREFIX}/${crypto.randomUUID()}/${crypto.randomUUID()}.${ext}`;
-    const { data: signed, error } = await supabaseAdmin
-      .storage.from("studio-inspo")
+    const { data: signed, error } = await supabaseAdmin.storage
+      .from("studio-inspo")
       .createSignedUploadUrl(path);
     if (error) throw error;
     return { uploadUrl: signed.signedUrl, token: signed.token, storage_path: path };
@@ -61,7 +58,10 @@ const submitSchema = z.object({
   // Vibe / message
   vibe: z.string().trim().max(2000).optional().default(""),
   // Style outputs
-  paletteHex: z.array(z.string().regex(/^#[0-9a-fA-F]{6}$/)).max(8).default([]),
+  paletteHex: z
+    .array(z.string().regex(/^#[0-9a-fA-F]{6}$/))
+    .max(8)
+    .default([]),
   tones: z.record(z.string(), z.number()).default({}),
   insightTitles: z.array(z.string().max(80)).max(6).default([]),
   // Storage refs from signPublicInspoUpload

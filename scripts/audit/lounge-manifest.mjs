@@ -23,7 +23,11 @@ function fileName(url) {
   try {
     return decodeURIComponent(new URL(url).pathname.split("/").pop() || "");
   } catch {
-    return String(url || "").split("/").pop() || "";
+    return (
+      String(url || "")
+        .split("/")
+        .pop() || ""
+    );
   }
 }
 

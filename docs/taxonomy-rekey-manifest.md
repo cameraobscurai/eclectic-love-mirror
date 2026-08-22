@@ -7,14 +7,14 @@ Future workbooks key on DB `rms_id`; normalized-title match is the documented fa
 
 ## Will write (6)
 
-| ghost id | db rms_id | title | from | to | prior source |
-| --- | --- | --- | --- | --- | --- |
-| remy-stainless-steel-vintage-coupe | null | Remy Stainless Steel Vintage Coupe | ∅/∅ | tableware/serveware | — |
-| tivoli-travertine-22-plinth | null | Tivoli Travertine 22" Plinth | ∅/∅ | lounge-tables/coffee-tables | — |
-| tivoli-travertine-24-plinth | null | Tivoli Travertine 24" Plinth | ∅/∅ | lounge-tables/coffee-tables | — |
-| tivoli-travertine-32-plinth | null | Tivoli Travertine 32" Plinth | ∅/∅ | lounge-tables/coffee-tables | — |
-| tivoli-travertine-mini-plinth | null | Tivoli Travertine Mini Plinth | ∅/∅ | lounge-tables/coffee-tables | — |
-| tivoli-travertine-small-plinth | null | Tivoli Travertine Small Plinth | ∅/∅ | lounge-tables/coffee-tables | — |
+| ghost id                           | db rms_id | title                              | from | to                          | prior source |
+| ---------------------------------- | --------- | ---------------------------------- | ---- | --------------------------- | ------------ |
+| remy-stainless-steel-vintage-coupe | null      | Remy Stainless Steel Vintage Coupe | ∅/∅  | tableware/serveware         | —            |
+| tivoli-travertine-22-plinth        | null      | Tivoli Travertine 22" Plinth       | ∅/∅  | lounge-tables/coffee-tables | —            |
+| tivoli-travertine-24-plinth        | null      | Tivoli Travertine 24" Plinth       | ∅/∅  | lounge-tables/coffee-tables | —            |
+| tivoli-travertine-32-plinth        | null      | Tivoli Travertine 32" Plinth       | ∅/∅  | lounge-tables/coffee-tables | —            |
+| tivoli-travertine-mini-plinth      | null      | Tivoli Travertine Mini Plinth      | ∅/∅  | lounge-tables/coffee-tables | —            |
+| tivoli-travertine-small-plinth     | null      | Tivoli Travertine Small Plinth     | ∅/∅  | lounge-tables/coffee-tables | —            |
 
 ## Reported, not written (9)
 

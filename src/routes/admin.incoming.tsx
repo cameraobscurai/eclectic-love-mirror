@@ -17,10 +17,7 @@ const BUCKET = "incoming-photos";
 export const Route = createFileRoute("/admin/incoming")({
   beforeLoad: ({ location }) => requireAdminOrRedirect(location.href),
   head: () => ({
-    meta: [
-      { title: "Incoming photos · Admin" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Incoming photos · Admin" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: IncomingPage,
 });
@@ -66,7 +63,6 @@ function IncomingPage() {
             updated_at: (f as any).updated_at,
           })),
       );
-
     }
     setLoading(false);
   }, []);
@@ -94,13 +90,11 @@ function IncomingPage() {
             const safeName = file.name.replace(/[^\w.\-+ ]/g, "_");
             const stamp = Date.now().toString(36);
             const path = `${stamp}-${safeName}`;
-            const { error } = await supabase.storage
-              .from(BUCKET)
-              .upload(path, file, {
-                contentType: file.type || "application/octet-stream",
-                upsert: false,
-                cacheControl: "31536000",
-              });
+            const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+              contentType: file.type || "application/octet-stream",
+              upsert: false,
+              cacheControl: "31536000",
+            });
             if (error) failures.push(`${file.name}: ${error.message}`);
             else {
               // Fire-and-forget mirror to private archive. Never blocks the
@@ -136,9 +130,7 @@ function IncomingPage() {
     <div className="min-h-[calc(100vh-3rem)] bg-cream text-charcoal">
       <div className="px-6 lg:px-12 pt-10 pb-24 max-w-[1500px] mx-auto">
         <header className="border-b pb-8 mb-8" style={{ borderColor: "var(--archive-rule)" }}>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">
-            ADMIN · INTAKE
-          </p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-charcoal/50">ADMIN · INTAKE</p>
           <h1 className="mt-3 font-display text-[clamp(2rem,4vw,3rem)] leading-[0.95] uppercase tracking-[0.02em]">
             Incoming photos
           </h1>
@@ -196,14 +188,10 @@ function IncomingPage() {
           </p>
         </div>
 
-        {error && (
-          <p className="mt-4 text-[11px] text-red-700 break-all">{error}</p>
-        )}
+        {error && <p className="mt-4 text-[11px] text-red-700 break-all">{error}</p>}
 
         <div className="mt-10 flex items-baseline justify-between">
-          <h2 className="font-display text-xl uppercase tracking-[0.04em]">
-            In bucket
-          </h2>
+          <h2 className="font-display text-xl uppercase tracking-[0.04em]">In bucket</h2>
           <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/50 tabular-nums">
             {loading ? "Loading…" : `${files.length} files`}
           </p>
@@ -216,10 +204,7 @@ function IncomingPage() {
         ) : (
           <ul className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {files.map((f) => (
-              <li
-                key={f.path}
-                className="group relative border border-charcoal/10 bg-white"
-              >
+              <li key={f.path} className="group relative border border-charcoal/10 bg-white">
                 <a
                   href={f.url}
                   target="_blank"
@@ -234,10 +219,7 @@ function IncomingPage() {
                   />
                 </a>
                 <div className="px-2 py-1.5 flex items-center justify-between gap-2">
-                  <p
-                    className="text-[10px] tabular-nums text-charcoal/65 truncate"
-                    title={f.name}
-                  >
+                  <p className="text-[10px] tabular-nums text-charcoal/65 truncate" title={f.name}>
                     {f.name}
                   </p>
                   <button
@@ -254,8 +236,12 @@ function IncomingPage() {
           </ul>
         )}
 
-        <footer className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40" style={{ borderColor: "var(--archive-rule)" }}>
-          Files land in the <code className="text-charcoal/60">{BUCKET}</code> bucket · sort into per-product folders later
+        <footer
+          className="mt-16 pt-8 border-t text-[10px] uppercase tracking-[0.22em] text-charcoal/40"
+          style={{ borderColor: "var(--archive-rule)" }}
+        >
+          Files land in the <code className="text-charcoal/60">{BUCKET}</code> bucket · sort into
+          per-product folders later
         </footer>
       </div>
     </div>

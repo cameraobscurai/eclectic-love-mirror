@@ -17,13 +17,13 @@ editor. When all 11 categories are migrated, delete the client solver.
 
 ## Why this ends the 8 months
 
-| Today | After |
-|---|---|
-| Composition computed per visitor, per device, per session | Computed once, saved as pixels |
-| Failure = invisible math, wrong for everyone, fixed by Darian in code | Failure = a picture in a review queue, fixed by anyone in 30s |
-| Tuning loop = edit constants → deploy → squint at live site | Tuning loop = none. Rules only feed the auto-framer's first guess |
-| Input variance must fit inside clamp range or tiles break | Input variance absorbed at ingest; scale is unbounded (resampling source) |
-| "Done" undefined | Done = every row has an approved derivative |
+| Today                                                                 | After                                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Composition computed per visitor, per device, per session             | Computed once, saved as pixels                                            |
+| Failure = invisible math, wrong for everyone, fixed by Darian in code | Failure = a picture in a review queue, fixed by anyone in 30s             |
+| Tuning loop = edit constants → deploy → squint at live site           | Tuning loop = none. Rules only feed the auto-framer's first guess         |
+| Input variance must fit inside clamp range or tiles break             | Input variance absorbed at ingest; scale is unbounded (resampling source) |
+| "Done" undefined                                                      | Done = every row has an approved derivative                               |
 
 ## Non-negotiables (carry-over rules)
 
@@ -50,11 +50,13 @@ editor. When all 11 categories are migrated, delete the client solver.
 ## Phase 1 — Rails (Lovable, ~1 day)
 
 **Task 1.1 — Schema.**
+
 ```sql
 alter table inventory_items
   add column if not exists cover_framed_url text,
   add column if not exists cover_framed_meta jsonb;
 ```
+
 meta shape: `{ srcUrl, srcHash, bboxPx:[x,y,w,h], method:'auto-alpha'|'auto-color'|'manual',
 scale, offsetX, offsetY, canvas:[1500,1200], approved:boolean, ruleVersion, generatedAt }`
 Done when: columns exist, types regenerated.
@@ -104,6 +106,7 @@ white-bg opaque, one dirty-bg opaque → expect pass / pass / method 'fail').
 Route `admin/framing`. Two views:
 
 **Category view (the workhorse).**
+
 - Category picker → grid of all products, each tile showing: framed
   derivative if approved (green edge), auto-preview if computed (amber),
   red if method 'fail' or verifier FAIL.
@@ -115,6 +118,7 @@ Route `admin/framing`. Two views:
 - Progress line: "seating — 78 approved / 9 queued / 94 total".
 
 **Editor view (click any tile).**
+
 - Left: source photo with the detected bbox drawn, draggable/resizable.
 - Right: live 5:4 tile preview at actual grid size, with baseline guide and
   target-band guides from the category rule, plus the two grid neighbors
@@ -139,10 +143,10 @@ chandeliers/seating/storage/tables (0 broken; migrate last, they only carry
 resolution advisories)
 ```
 
-STRUCK, kept visible as the receipt: the original order read *"rugs (cleanest,
+STRUCK, kept visible as the receipt: the original order read _"rugs (cleanest,
 validates the loop) → seating → tables → bars → lighting/chandeliers →
 large-decor/storage → pillows-throws → styling → serveware → tableware →
-furs-pelts/candlelight"*, on the day-one prediction that rugs were cleanest and
+furs-pelts/candlelight"_, on the day-one prediction that rugs were cleanest and
 seating worst. The audit overturned both halves — seating has 0 broken covers,
 pillows-throws has 136 — because seating was photographed with margin while the
 flat, tight-cropped categories saturate the clamp. This ordering is derived from
@@ -153,10 +157,10 @@ drag or a "replace photo" ticket) → Publish → screenshot for the record. The
 review queue doubles as the punch list you show the team: not "the site is
 broken," but "these 9 photos need a decision."
 
-
 ## Phase 5 — The deletion (Lovable, half a day)
 
 When all 11 categories show 0 unframed rows:
+
 - ProductTile drops the fallback branch.
 - Delete NormalizedProductImage usage from public routes, delete
   measurementCache, delete the client categoryFit import (table now lives
@@ -165,8 +169,8 @@ When all 11 categories show 0 unframed rows:
 - Run cover-audit.mjs one last time → attach to the repo as the
   after-picture next to the Phase 0 baseline.
 
-Receipt to write that day: *render-time solver deleted; composition is now
-an ingest artifact with human override; N covers migrated, M hand-framed.*
+Receipt to write that day: _render-time solver deleted; composition is now
+an ingest artifact with human override; N covers migrated, M hand-framed._
 
 ## How to run Lovable through this
 

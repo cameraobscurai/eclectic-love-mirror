@@ -10,7 +10,21 @@ export interface DeckMeta {
   projectTitle: string;
 }
 
-const COUNT_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+const COUNT_WORDS = [
+  "zero",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+];
 
 export function countWord(n: number): string {
   return COUNT_WORDS[n] ?? String(n);
@@ -42,7 +56,13 @@ export type DeckPage =
   | { kind: "palette"; swatches: PaletteSwatch[] }
   | { kind: "tones"; label: string }
   | { kind: "section-divider"; word: string; bgImages: string[] }
-  | { kind: "production"; categorySlug: string; categoryLabel: string; items: PublicPinnedItem[]; note: string }
+  | {
+      kind: "production";
+      categorySlug: string;
+      categoryLabel: string;
+      items: PublicPinnedItem[];
+      note: string;
+    }
   | { kind: "closing"; body: string };
 
 // Fixed category order — categories absent from a board are skipped.
@@ -120,9 +140,12 @@ export function spansFor(count: number) {
 
 export function toneLabel(tones: Record<string, unknown>): string {
   const num = (k: string) => (typeof tones[k] === "number" ? (tones[k] as number) : 0);
-  const warm = num("warm"), cool = num("cool");
-  const muted = num("muted"), saturated = num("saturated");
-  const light = num("light"), dark = num("dark");
+  const warm = num("warm"),
+    cool = num("cool");
+  const muted = num("muted"),
+    saturated = num("saturated");
+  const light = num("light"),
+    dark = num("dark");
   const parts: string[] = [];
   if (warm > cool) parts.push("Warm");
   else if (cool > warm) parts.push("Cool");
@@ -141,21 +164,20 @@ export function buildPages(board: PublicStyleBoard, meta: DeckMeta): DeckPage[] 
   const coverId =
     (board as unknown as { cover_pinned_rms_id?: string | null }).cover_pinned_rms_id ?? null;
   const cover =
-    (coverId ? board.pinned.find((p) => p.rms_id === coverId) : null) ??
-    board.pinned[0] ??
-    null;
+    (coverId ? board.pinned.find((p) => p.rms_id === coverId) : null) ?? board.pinned[0] ?? null;
 
   pages.push({ kind: "cover", cover });
 
   // Mood hero — use client's inspiration whenever they gave us any; only fall
   // back to pinned inventory when zero inspo. The old `>= 3` threshold made
   // 1–2 inspo boards silently show furniture instead of the client's vision.
-  const heroImgs = (board.inspo.length >= 1
-    ? board.inspo.slice(0, Math.min(3, board.inspo.length)).map((i) => ({ url: i.url, alt: "" }))
-    : board.pinned
-        .filter((p) => p.image_url)
-        .slice(0, 3)
-        .map((p) => ({ url: p.image_url as string, alt: p.title }))
+  const heroImgs = (
+    board.inspo.length >= 1
+      ? board.inspo.slice(0, Math.min(3, board.inspo.length)).map((i) => ({ url: i.url, alt: "" }))
+      : board.pinned
+          .filter((p) => p.image_url)
+          .slice(0, 3)
+          .map((p) => ({ url: p.image_url as string, alt: p.title }))
   ).filter((x) => x.url);
 
   if (heroImgs.length > 0) {

@@ -42,13 +42,12 @@ deleted_items (id, rms_id, deleted_at, deleted_by)
 
 The publish snapshot serializes it as a suppress-list; the phase-3 merge filters against it. Four rules:
 
-- **Suppress at both levels.** The check runs on the tile *and* on every entry in `variants[]`. A deleted variant row is folded inside a baked family, so filtering only top-level products moves the ghost down a level — a live tile with a dead chip, which phase 4 turns into a clickable error.
+- **Suppress at both levels.** The check runs on the tile _and_ on every entry in `variants[]`. A deleted variant row is folded inside a baked family, so filtering only top-level products moves the ghost down a level — a live tile with a dead chip, which phase 4 turns into a clickable error.
 - **Deleted lead falls through.** If the tombstoned row is a family's lead, the baked tile still carries its cover, title, and copy. Suppressing the ID must not remove the tile — the siblings are still rentable. Rule: lead tombstoned → the next sibling by family position becomes display-lead until the bake catches up.
 - **Self-expiring.** The next full bake reads the database, where the row is simply absent, so the tombstone has nothing left to suppress. Purge `deleted_items` at bake time — one line in `bake-catalog.mjs`, not a cron.
 - **Delete lights the Publish badge.** `deleteProduct` increments the same pending state every other edit does. Otherwise she deletes, sees it gone from the admin grid, assumes done, and the live ghost persists — the same trust failure one layer down.
 
 The admin grid also reconciles against the database rather than the snapshot, since it is an audit surface.
-
 
 **1 — Schema.** `product_families` (with `option_name`), `inventory_items.family_id`, `variant_label`, `variant_cover_url`. Pointer validated against normalized URLs in that row's `images[]`. Empty pointer = AUTO, which is today's behaviour, so day one is a no-op.
 
@@ -59,7 +58,6 @@ The admin grid also reconciles against the database rather than the snapshot, si
 **4 — The configurator on the product page.** Option-name heading, chips of variant labels, selection swaps photo, dimensions, quantity, and label. Deep-linkable `?v=`. Inquiries carry the selection. Filename matching is deleted. QuickView's remaining entry branch fires only when a row has no slug, so "one product page" means auditing standalone tiles for missing slugs and backfilling them first — otherwise QuickView is retired everywhere except the rows that need a real page most.
 
 **5 — Verification.** First fixture written is the deleted-lead fall-through, because nobody triggers it in testing and she will trigger it in week one. Then pointer precedence, URL-normalization, delete-clears-pointer, variant-level suppression; a coverage audit script; the RMS re-import loop test extended to prove pointers and labels survive.
-
 
 ## Running alongside, not blocking
 

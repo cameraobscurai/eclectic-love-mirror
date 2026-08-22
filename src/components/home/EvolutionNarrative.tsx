@@ -96,9 +96,9 @@ const CONTINUE_VH_MOBILE = 0.05;
 // WINDOW widened so the dim → bright transition feels like prose unfolding,
 // not a hard cursor. DIM raised so upcoming copy reads as "quiet, present"
 // rather than ghosted — the latter looks like a layout bug at first glance.
-const WINDOW = 2.4;          // line-units of crossfade overlap
-const DIM_OPACITY = 0.32;    // resting brightness for upcoming lines
-const REVEAL_LIFT_PX = 6;    // baseline shift during a line's reveal
+const WINDOW = 2.4; // line-units of crossfade overlap
+const DIM_OPACITY = 0.32; // resting brightness for upcoming lines
+const REVEAL_LIFT_PX = 6; // baseline shift during a line's reveal
 
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 // Cubic ease-out — gentle landing on each line's full brightness.
@@ -177,17 +177,12 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
       // Scale lead-in with viewport height so tall monitors don't show a
       // dead white band between the filmstrip tail and the dim manifesto.
       const isDesk = window.innerWidth >= 768;
-      const LEAD_IN_VH = isDesk
-        ? Math.min(0.32 + Math.max(vh - 900, 0) / 1400, 0.6)
-        : 0.34;
+      const LEAD_IN_VH = isDesk ? Math.min(0.32 + Math.max(vh - 900, 0) / 1400, 0.6) : 0.34;
       const sVh = Math.max(-rect.top / vh + LEAD_IN_VH, 0);
       const tVh = Math.max((el.offsetHeight - vh) / vh, 0.0001);
       // Skip re-render unless change is meaningful (~0.3vh ≈ 3px).
       const last = lastRef.current;
-      if (
-        Math.abs(sVh - last.scrolledVh) < 0.003 &&
-        Math.abs(tVh - last.travelVh) < 0.003
-      ) {
+      if (Math.abs(sVh - last.scrolledVh) < 0.003 && Math.abs(tVh - last.travelVh) < 0.003) {
         return;
       }
       lastRef.current = { scrolledVh: sVh, travelVh: tVh };
@@ -231,9 +226,7 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
   const vhPx = mounted && typeof window !== "undefined" ? window.innerHeight : 900;
   // 0 at vh<=900, 1 at vh>=1300. Smooth ramp between.
   const tallBias = clamp01((vhPx - 900) / 400);
-  const ENTER_VH = isMobile
-    ? ENTER_VH_MOBILE
-    : ENTER_VH_DESKTOP - 0.08 * tallBias; // 0.18 → 0.10
+  const ENTER_VH = isMobile ? ENTER_VH_MOBILE : ENTER_VH_DESKTOP - 0.08 * tallBias; // 0.18 → 0.10
   const CONTINUE_VH = isMobile ? CONTINUE_VH_MOBILE : CONTINUE_VH_DESKTOP;
 
   // READ band budget in viewports — driven by line count + per-line step.
@@ -390,4 +383,3 @@ export function EvolutionNarrative({ footer }: { footer?: ReactNode }) {
     </section>
   );
 }
-

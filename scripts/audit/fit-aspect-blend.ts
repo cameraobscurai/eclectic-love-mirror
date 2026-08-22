@@ -68,10 +68,7 @@ for (const row of data ?? []) {
 }
 
 /** OLS slope of y on x, with R² and the standard error of the slope. */
-function regress(
-  xs: number[],
-  ys: number[],
-): { m: number; r2: number; se: number } | null {
+function regress(xs: number[], ys: number[]): { m: number; r2: number; se: number } | null {
   const n = xs.length;
   if (n < 3) return null;
   const mx = xs.reduce((a, b) => a + b, 0) / n;
@@ -96,7 +93,6 @@ function slope(xs: number[], ys: number[]): number | null {
   return regress(xs, ys)?.m ?? null;
 }
 
-
 const lines: string[] = [
   `# aspectBlend fit against real ink`,
   ``,
@@ -115,7 +111,10 @@ for (const [cat, samples] of [...byCategory].sort((a, b) => b[1].length - a[1].l
   const rule = resolveRule(cat, null);
   const primary = rule.primary;
   const current = rule.aspectBlend ?? 0;
-  const m = slope(samples.map((s) => s.logA), samples.map((s) => s.logFill));
+  const m = slope(
+    samples.map((s) => s.logA),
+    samples.map((s) => s.logFill),
+  );
   const meanFill =
     samples.reduce((a, s) => a + Math.exp(s.logFill), 0) / Math.max(1, samples.length);
 
@@ -141,7 +140,14 @@ for (const [cat, samples] of [...byCategory].sort((a, b) => b[1].length - a[1].l
 // samples. A blend is a property of a *rule*, and the rule is shared, so the
 // fit belongs at the rule's pooled level with a significance gate on it.
 const GROUPS: Record<string, string[]> = {
-  seating: ["sofas-loveseats", "lounge-chairs", "benches", "ottomans", "dining-chairs", "banquettes"],
+  seating: [
+    "sofas-loveseats",
+    "lounge-chairs",
+    "benches",
+    "ottomans",
+    "dining-chairs",
+    "banquettes",
+  ],
   tables: [
     "coffee-tables",
     "side-tables",
@@ -158,7 +164,10 @@ lines.push(`| --- | --- | --- | --- | --- | --- | --- | --- |`);
 
 for (const [group, cats] of Object.entries(GROUPS)) {
   const samples = cats.flatMap((c) => byCategory.get(c) ?? []);
-  const reg = regress(samples.map((s) => s.logA), samples.map((s) => s.logFill));
+  const reg = regress(
+    samples.map((s) => s.logA),
+    samples.map((s) => s.logFill),
+  );
   const current = resolveRule(cats[0]!, null).aspectBlend ?? 0;
   if (!reg) {
     lines.push(`| ${group} | ${samples.length} | ${current} | — | — | — | — | insufficient data |`);
@@ -195,8 +204,9 @@ lines.push(
   `  angle carries a density bias the regression cannot separate from aspect.`,
 );
 
-
 const out = lines.join("\n");
 console.log(out);
 await Bun.write("docs/receipts/aspect-blend-fit.md", out + "\n");
-console.log(`\nwrote docs/receipts/aspect-blend-fit.md · ${Object.keys(CATEGORY_RULES).length} rules in table`);
+console.log(
+  `\nwrote docs/receipts/aspect-blend-fit.md · ${Object.keys(CATEGORY_RULES).length} rules in table`,
+);

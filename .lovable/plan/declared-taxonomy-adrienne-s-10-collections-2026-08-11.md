@@ -26,7 +26,6 @@ Does not touch Frame Studio Phase 1 — build that on its own rails. This lands 
    - Deleted now, once the read path is on the columns and verified: browse-group scorer, subcategory keyword inference, owner-subcategory overrides.
    - Survives untouched: the alias map (`canonicalCategorySlug`) and the old category column. `categoryFit.ts` imports the alias map and that solver stays live in production until Frame Studio Phase 4/5. Deleting it now either breaks the grid or forces edits inside frozen files. Alias map + old column go out in the same commit as the Phase 5 solver delete.
 
-
 ## Re-classification, not a rename
 
 Her tree crosses current DB boundaries in seven places, each needing per-product assignment: dining chairs and bar stools leave seating; storage folds into Cocktail + Bar; candlelight moves under Styling; chandeliers into Lighting; serveware into Tableware; furs-pelts into Textiles; pillows-throws (153 items) splits into Pillows and Throws.

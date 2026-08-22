@@ -54,12 +54,12 @@ export const PARENT_LABELS: Record<ParentId, string> = {
   "lounge-seating": "Lounge Seating",
   "lounge-tables": "Lounge Tables",
   "cocktail-bar": "Cocktail + Bar",
-  "dining": "Dining",
-  "tableware": "Tableware",
-  "lighting": "Lighting",
-  "textiles": "Textiles",
-  "rugs": "Rugs",
-  "styling": "Styling",
+  dining: "Dining",
+  tableware: "Tableware",
+  lighting: "Lighting",
+  textiles: "Textiles",
+  rugs: "Rugs",
+  styling: "Styling",
   "large-decor": "Large Decor",
 };
 
@@ -92,30 +92,30 @@ export const PARENT_SUBS: Record<ParentId, SubOption[]> = {
     { id: "storage", label: "Storage" },
     { id: "bar-stools", label: "Bar Stools" },
   ],
-  "dining": [
+  dining: [
     { id: "dining-tables", label: "Dining Tables" },
     { id: "dining-chairs", label: "Dining Chairs" },
     { id: "banquettes", label: "Banquettes" },
   ],
-  "tableware": [
+  tableware: [
     { id: "dinnerware", label: "Dinnerware" },
     { id: "flatware", label: "Flatware" },
     { id: "glassware", label: "Glassware" },
     { id: "serveware", label: "Serveware" },
   ],
-  "lighting": [
+  lighting: [
     { id: "chandeliers", label: "Chandeliers" },
     { id: "table-lamps", label: "Table Lamps" },
     { id: "floor-lamps", label: "Floor Lamps" },
     { id: "specialty", label: "Specialty" },
   ],
-  "textiles": [
+  textiles: [
     { id: "pillows", label: "Pillows" },
     { id: "throws", label: "Throws" },
     { id: "furs-pelts", label: "Furs + Pelts" },
   ],
-  "rugs": [{ id: "rugs", label: "Rugs" }],
-  "styling": [
+  rugs: [{ id: "rugs", label: "Rugs" }],
+  styling: [
     { id: "accents", label: "Accents" },
     { id: "candlelighting", label: "Candlighting" },
     { id: "crates-baskets", label: "Crates + Baskets" },
@@ -153,10 +153,7 @@ export const GROUP_TO_PARENT: Record<BrowseGroupId, ParentId> = {
   "furs-pelts": "textiles",
 };
 
-export const TILE_TO_PARENT_SUB: Record<
-  BrowseGroupId,
-  { parent: ParentId; sub: string }
-> = {
+export const TILE_TO_PARENT_SUB: Record<BrowseGroupId, { parent: ParentId; sub: string }> = {
   sofas: { parent: "lounge-seating", sub: "sofas-loveseats" },
   chairs: { parent: "lounge-seating", sub: "lounge-chairs" },
   "benches-ottomans": { parent: "lounge-seating", sub: "all" },
@@ -196,11 +193,7 @@ export function productCategory(p: CollectionProduct): string | null {
   return c || null;
 }
 
-export function productMatchesSub(
-  p: CollectionProduct,
-  parent: ParentId,
-  sub: string,
-): boolean {
+export function productMatchesSub(p: CollectionProduct, parent: ParentId, sub: string): boolean {
   if (productParent(p) !== parent) return false;
   if (sub === "all") return true;
   return productCategory(p) === sub;

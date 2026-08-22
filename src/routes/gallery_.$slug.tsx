@@ -37,17 +37,12 @@ export const Route = createFileRoute("/gallery_/$slug")({
     const url = `${SITE_URL}/gallery/${params.slug}`;
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Unavailable — Eclectic Hive" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Unavailable — Eclectic Hive" }, { name: "robots", content: "noindex" }],
       };
     }
     const p = loaderData.project;
     const isStorage = p.heroImage.src.includes("/storage/v1/object/public/");
-    const ogImage = isStorage
-      ? renderUrl(p.heroImage.src, { width: 1600, quality: 80 })
-      : null;
+    const ogImage = isStorage ? renderUrl(p.heroImage.src, { width: 1600, quality: 80 }) : null;
     const title = `${p.name} — ${p.planner} | Eclectic Hive`;
     const description =
       p.summary ||
@@ -99,7 +94,14 @@ export const Route = createFileRoute("/gallery_/$slug")({
       links: [
         { rel: "canonical", href: url },
         ...(ogImage
-          ? [{ rel: "preload", as: "image" as const, href: ogImage, fetchPriority: "high" as const }]
+          ? [
+              {
+                rel: "preload",
+                as: "image" as const,
+                href: ogImage,
+                fetchPriority: "high" as const,
+              },
+            ]
           : []),
         ...(STORAGE_ORIGIN
           ? [
@@ -125,10 +127,7 @@ function GalleryProjectPage() {
   const router = useRouter();
   const projects = useOrderedGalleryProjects();
 
-  const index = useMemo(
-    () => projects.findIndex((p) => gallerySlug(p) === slug),
-    [projects, slug],
-  );
+  const index = useMemo(() => projects.findIndex((p) => gallerySlug(p) === slug), [projects, slug]);
 
   const onClose = useCallback(() => {
     // If the user arrived from inside the site (index row, portfolio wall),
@@ -142,8 +141,6 @@ function GalleryProjectPage() {
     }
     navigate({ to: "/gallery" });
   }, [navigate, router]);
-
-
 
   const onProjectChange = useCallback(
     (next: number) => {
@@ -174,10 +171,7 @@ function GalleryProjectPage() {
   if (index < 0) return <GalleryProjectNotFound />;
 
   const project = projects[index];
-  const plateCount = Math.max(
-    project.detailImages.length > 0 ? project.detailImages.length : 1,
-    1,
-  );
+  const plateCount = Math.max(project.detailImages.length > 0 ? project.detailImages.length : 1, 1);
   const initialPlateIndex = plate ? Math.min(plate - 1, plateCount - 1) : 0;
 
   return (
@@ -199,9 +193,7 @@ function GalleryProjectNotFound() {
   return (
     <main className="min-h-screen bg-charcoal text-cream flex items-center justify-center px-6">
       <div className="text-center">
-        <p className="text-[10px] uppercase tracking-[0.4em] text-cream/45">
-          Project not found
-        </p>
+        <p className="text-[10px] uppercase tracking-[0.4em] text-cream/45">Project not found</p>
         <a
           href="/gallery"
           className="mt-8 inline-block text-[10px] uppercase tracking-[0.32em] text-cream/70 border-b border-cream/30 pb-1 hover:text-cream"

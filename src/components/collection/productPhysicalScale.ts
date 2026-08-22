@@ -40,9 +40,7 @@ function feetHeight(s: string): number | null {
  * Handles `52"W x 30"D x 36.5"H`, `58"w x 18"D x 22"H`,
  * `36"Dia x 18.5"H`, `12'W x 30"H`, and trailing notes like `- 20" Seat Height`.
  */
-export function parseDimensionsInches(
-  dimensions: string | null | undefined,
-): PhysicalDims {
+export function parseDimensionsInches(dimensions: string | null | undefined): PhysicalDims {
   if (!dimensions) return null;
   const s = dimensions.replace(/seat\s+height/gi, "");
 
@@ -70,16 +68,13 @@ export function parseDimensionsInches(
 }
 
 /** Back-compat helper — width only, feet-aware and sanity-capped. */
-export function parseWidthInches(
-  dimensions: string | null | undefined,
-): number | null {
+export function parseWidthInches(dimensions: string | null | undefined): number | null {
   if (!dimensions) return null;
   const s = dimensions.replace(/seat\s+height/gi, "");
   const feet = feetWidth(s);
   if (feet) return feet;
   const explicit =
-    s.match(new RegExp(`${NUM}${UNIT}w\\b`, "i")) ??
-    s.match(/\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+    s.match(new RegExp(`${NUM}${UNIT}w\\b`, "i")) ?? s.match(/\bw\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
   if (explicit) return sane(Number(explicit[1]));
   const triple = s.match(new RegExp(`${NUM}${UNIT}[x×]\\s*\\d+(?:\\.\\d+)?`, "i"));
   return triple ? sane(Number(triple[1])) : null;
@@ -120,19 +115,12 @@ const SUBCATEGORY_BENCHMARKS = BENCHMARKS.subcategories as Record<string, Benchm
 // meaning, so pooling it into one inches-per-tile unit made BOTOND a hairline
 // beside ERIZO. Lighting keeps its category layout rule + relativeMassFor nudge.
 // See mem://features/lighting-not-true-scaled.md — do NOT re-add lighting here.
-const REAL_SIZE_CATEGORIES = new Set([
-  "seating",
-  "tables",
-  "bars",
-  "storage",
-  "large-decor",
-]);
+const REAL_SIZE_CATEGORIES = new Set(["seating", "tables", "bars", "storage", "large-decor"]);
 
 /** Width-only rows: assume the catalog's typical width:height ratio. */
 const WIDTH_ONLY_HEIGHT_RATIO = 0.62;
 
-const clamp = (n: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, n));
+const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n));
 
 /** Ratios are flattened before use — real size is a nuance, not a multiplier war. */
 const compress = (ratio: number, exponent: number, min: number, max: number) =>
@@ -143,9 +131,7 @@ const TIER = { exponent: 0.4, min: 0.72, max: 1.32 };
 const HEIGHT = { exponent: 0.4, min: 0.8, max: 1.2 };
 
 function subcategoryKey(product: ScalableProduct, category: string): string | null {
-  const sub = (product.liveSubcategories?.[0] ?? product.subcategory ?? "")
-    .trim()
-    .toLowerCase();
+  const sub = (product.liveSubcategories?.[0] ?? product.subcategory ?? "").trim().toLowerCase();
   return sub ? `${category}/${sub}` : null;
 }
 
@@ -207,5 +193,3 @@ export function relativeMassFor(product: ScalableProduct): number {
   const scale = physicalScaleFor(product);
   return scale.measured ? 1 : scale.size;
 }
-
-

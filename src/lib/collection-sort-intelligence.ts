@@ -75,9 +75,7 @@ const SITE_TYPE_RANKS: Record<string, TypeRankRule[]> = {
     { rank: 3, keywords: ["ottoman", "pouf", "footstool"] },
     { rank: 4, keywords: ["barstool", "stool"] },
   ],
-  "sofas-loveseats1": [
-    { rank: 0, keywords: ["sofa", "loveseat", "settee", "couch", "sectional"] },
-  ],
+  "sofas-loveseats1": [{ rank: 0, keywords: ["sofa", "loveseat", "settee", "couch", "sectional"] }],
   "chairs-stools1": [
     { rank: 0, keywords: ["armchair", "lounge chair", "chair"] },
     { rank: 1, keywords: ["barstool", "stool"] },
@@ -135,15 +133,7 @@ const SITE_TYPE_RANKS: Record<string, TypeRankRule[]> = {
     { rank: 2, keywords: ["glassware", "goblet", "glass"] },
     {
       rank: 3,
-      keywords: [
-        "tray",
-        "platter",
-        "server",
-        "serving",
-        "decanter",
-        "pitcher",
-        "stand",
-      ],
+      keywords: ["tray", "platter", "server", "serving", "decanter", "pitcher", "stand"],
     },
     { rank: 4, keywords: ["napkin", "linen"] },
   ],
@@ -219,9 +209,7 @@ export function getOwnerBrowseGroupRank(product: CollectionProduct): number {
 }
 
 /** Convenience: the owner browse group id, or null. */
-export function getOwnerBrowseGroup(
-  product: CollectionProduct,
-): BrowseGroupId | null {
+export function getOwnerBrowseGroup(product: CollectionProduct): BrowseGroupId | null {
   return getProductBrowseGroup(product);
 }
 
@@ -287,10 +275,7 @@ export function getDisplaySortRank(
   const siteOrder = product.ownerSiteRank ?? UNMATCHED_OWNER_RANK;
   const siteRank = getOriginalSiteTypeRank(product);
   return (
-    ownerRank * 1_000_000_000_000 +
-    siteOrder * 1_000_000 +
-    siteRank * 1_000 +
-    product.scrapedOrder
+    ownerRank * 1_000_000_000_000 + siteOrder * 1_000_000 + siteRank * 1_000 + product.scrapedOrder
   );
 }
 
@@ -314,16 +299,10 @@ export function sortProductsForCollection(
       list.sort((a, b) => a.title.localeCompare(b.title));
       return list;
     case "newest":
-      list.sort(
-        (a, b) =>
-          a.scrapedOrder - b.scrapedOrder || a.title.localeCompare(b.title),
-      );
+      list.sort((a, b) => a.scrapedOrder - b.scrapedOrder || a.title.localeCompare(b.title));
       return list;
     case "oldest":
-      list.sort(
-        (a, b) =>
-          b.scrapedOrder - a.scrapedOrder || a.title.localeCompare(b.title),
-      );
+      list.sort((a, b) => b.scrapedOrder - a.scrapedOrder || a.title.localeCompare(b.title));
       return list;
     case "tonal": {
       // Darkest → lightest, with chromatic items woven in by hue band.

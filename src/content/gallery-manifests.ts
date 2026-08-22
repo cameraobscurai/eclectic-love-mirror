@@ -98,7 +98,6 @@ export const amangiriGalleryHero: GalleryImage = {
   alt: "Chinle long-table dinner with woven Hive chairs against the Amangiri sandstone cliffs",
 };
 
-
 export const amangiriGalleryImages = createGalleryImages([...amangiriGalleryPaths], "Amangiri");
 
 // Flow: day setup (tent + tablescapes + ceremony) → personal day moments → night (toast → first dance → night tent)
@@ -156,7 +155,10 @@ export const aspenEventWorksGalleryHero: GalleryImage = {
   alt: "Ceremony aisle framed by meadow flowers with mountain views beyond",
 };
 
-export const aspenEventWorksGalleryImages = createGalleryImages([...aspenEventWorksGalleryPaths], "Aspen Event Works");
+export const aspenEventWorksGalleryImages = createGalleryImages(
+  [...aspenEventWorksGalleryPaths],
+  "Aspen Event Works",
+);
 
 // Flow: Aspen landscape → Welcome Party at Aspen Art Museum (day → cocktail → reception) → Caribou Rehearsal Dinner → Disco after-party (night)
 export const birchDesignGalleryPaths = [
@@ -204,8 +206,10 @@ export const birchDesignGalleryHero: GalleryImage = {
   alt: "Rehearsal dinner table set against a dark green wall with framed art",
 };
 
-export const birchDesignGalleryImages = createGalleryImages([...birchDesignGalleryPaths], "Birch Design Studio");
-
+export const birchDesignGalleryImages = createGalleryImages(
+  [...birchDesignGalleryPaths],
+  "Birch Design Studio",
+);
 
 // Flow: Montana landscape → Welcome Alpine (day) → Cocktail Hour → Ceremony → Reception → Tent (night)
 export const eastonEventsMontanaGalleryPaths = [
@@ -253,7 +257,10 @@ export const eastonEventsMontanaGalleryHero: GalleryImage = {
   alt: "A tented celebration in the mountain landscape at Big Sky",
 };
 
-export const eastonEventsMontanaGalleryImages = createGalleryImages([...eastonEventsMontanaGalleryPaths], "Easton Events");
+export const eastonEventsMontanaGalleryImages = createGalleryImages(
+  [...eastonEventsMontanaGalleryPaths],
+  "Easton Events",
+);
 
 export const brookeKeganDuntonGalleryPaths = [
   "JL-BROOKE-KEGAN-DUNTON-HOT-SPRINGS/MKSADLER--3.jpg",
@@ -335,7 +342,10 @@ export const brookeKeganDuntonGalleryHero: GalleryImage = {
   alt: "Long table set in a mountain meadow at Dunton Hot Springs",
 };
 
-export const brookeKeganDuntonGalleryImages = createGalleryImages([...brookeKeganDuntonGalleryPaths], "Brooke Keegan Events");
+export const brookeKeganDuntonGalleryImages = createGalleryImages(
+  [...brookeKeganDuntonGalleryPaths],
+  "Brooke Keegan Events",
+);
 
 export const lyndenLaneGalleryPaths = [
   "LYNDEN-LANE/nb-25-taylor&brenden-1049.webp",
@@ -465,7 +475,10 @@ export const vanderWeideGalleryHero: GalleryImage = {
   alt: "VanderWeide wedding environment by Eclectic Hive",
 };
 
-export const vanderWeideGalleryImages = createGalleryImages([...vanderWeideGalleryPaths], "VanderWeide");
+export const vanderWeideGalleryImages = createGalleryImages(
+  [...vanderWeideGalleryPaths],
+  "VanderWeide",
+);
 
 // DOS MAS EN LA MESA — re-mirrored from Drive "FEATURE Easton Events - Dunton Hot Springs" (71 files).
 // Flow: Welcome day (lounges → fireside → dinner) → wedding-day setup/architecture → tablescapes/details →
@@ -556,8 +569,10 @@ export const dosMasEnLaMesaGalleryHero: GalleryImage = {
   alt: "Dos Mas en la Mesa tablescape under tented drapery at Dunton Hot Springs",
 };
 
-export const dosMasEnLaMesaGalleryImages = createGalleryImages([...dosMasEnLaMesaGalleryPaths], "Dos Mas En La Mesa");
-
+export const dosMasEnLaMesaGalleryImages = createGalleryImages(
+  [...dosMasEnLaMesaGalleryPaths],
+  "Dos Mas En La Mesa",
+);
 
 // ---------------------------------------------------------------------------
 // Pending placeholder — used for galleries whose storage folders are still
@@ -587,9 +602,6 @@ export const pendingGalleryHero = (label: string): GalleryImage => ({
   src: PENDING_HERO_SRC,
   alt: `${label} — imagery in preparation`,
 });
-
-
-
 
 // === Mirrored from Drive 2026-05-20 ===
 
@@ -660,7 +672,10 @@ export const anguillaMicheleRagoGalleryHero: GalleryImage = {
   alt: "Sangeet long-table dining detail by the sea, Anguilla",
 };
 
-export const anguillaMicheleRagoGalleryImages = createGalleryImages([...anguillaMicheleRagoGalleryPaths], "Anguilla — Michelle Rago Destinations");
+export const anguillaMicheleRagoGalleryImages = createGalleryImages(
+  [...anguillaMicheleRagoGalleryPaths],
+  "Anguilla — Michelle Rago Destinations",
+);
 
 // Flow: Daytime activities (lunch + ride) → Carrie King Americana (day) → Hat branding/Westworld day → wedding party (N+B day shots) → Westworld Bar → Westworld Dinner Tablescape → Reception (evening) → Westworld Night → After Party
 export const brushCreekLoveThisDayGalleryPaths = [
@@ -740,11 +755,16 @@ export const brushCreekLoveThisDayGalleryPaths = [
 ] as const;
 
 export const brushCreekLoveThisDayGalleryHero: GalleryImage = {
-  src: galleriesUrl("BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Lounge_Close_Up.jpg"),
+  src: galleriesUrl(
+    "BRUSH-CREEK-LOVE-THIS-DAY/Favorites__Erich_Add-Ons__Westworld_Lounge_Close_Up.jpg",
+  ),
   alt: "Westworld-inspired lounge detail, Brush Creek Ranch",
 };
 
-export const brushCreekLoveThisDayGalleryImages = createGalleryImages([...brushCreekLoveThisDayGalleryPaths], "Brush Creek Ranch — Love This Day");
+export const brushCreekLoveThisDayGalleryImages = createGalleryImages(
+  [...brushCreekLoveThisDayGalleryPaths],
+  "Brush Creek Ranch — Love This Day",
+);
 
 // Flow: Sangeet (day → evening) → Wedding day finale
 export const brushCreekDiwanGalleryPaths = [
@@ -780,7 +800,10 @@ export const brushCreekDiwanGalleryHero: GalleryImage = {
   alt: "Sangeet décor, Brush Creek Ranch",
 };
 
-export const brushCreekDiwanGalleryImages = createGalleryImages([...brushCreekDiwanGalleryPaths], "Brush Creek Ranch — Diwan by Design");
+export const brushCreekDiwanGalleryImages = createGalleryImages(
+  [...brushCreekDiwanGalleryPaths],
+  "Brush Creek Ranch — Diwan by Design",
+);
 
 // Flow: Friday details (day prep) → Ceremony details → Cocktail Hour → Tent (night)
 export const bishopsLodge42NorthGalleryPaths = [
@@ -868,7 +891,10 @@ export const bishopsLodge42NorthGalleryHero: GalleryImage = {
   alt: "Cocktail hour detail, Bishop's Lodge",
 };
 
-export const bishopsLodge42NorthGalleryImages = createGalleryImages([...bishopsLodge42NorthGalleryPaths], "Bishop's Lodge — 42 North");
+export const bishopsLodge42NorthGalleryImages = createGalleryImages(
+  [...bishopsLodge42NorthGalleryPaths],
+  "Bishop's Lodge — 42 North",
+);
 
 export const encoreBostonDiwanGalleryPaths = [
   "ENCORE-BOSTON-DIWAN/2500px__web_size___1-KT-Merry-Photography-Sapna-Ari-Wedding.jpg",
@@ -900,11 +926,16 @@ export const encoreBostonDiwanGalleryPaths = [
 ] as const;
 
 export const encoreBostonDiwanGalleryHero: GalleryImage = {
-  src: galleriesUrl("ENCORE-BOSTON-DIWAN/2500px__web_size___1-KT-Merry-Photography-Sapna-Ari-Wedding.jpg"),
+  src: galleriesUrl(
+    "ENCORE-BOSTON-DIWAN/2500px__web_size___1-KT-Merry-Photography-Sapna-Ari-Wedding.jpg",
+  ),
   alt: "Encore Boston celebration environment",
 };
 
-export const encoreBostonDiwanGalleryImages = createGalleryImages([...encoreBostonDiwanGalleryPaths], "The Encore — Diwan by Design");
+export const encoreBostonDiwanGalleryImages = createGalleryImages(
+  [...encoreBostonDiwanGalleryPaths],
+  "The Encore — Diwan by Design",
+);
 
 export const privateResidenceTxCinergyGalleryPaths = [
   "PRIVATE-RESIDENCE-TX-CINERGY/124_04-06-24_NelsonWedding_PREVIEW.jpg",
@@ -923,7 +954,10 @@ export const privateResidenceTxCinergyGalleryHero: GalleryImage = {
   alt: "Private residence wedding environment, Texas",
 };
 
-export const privateResidenceTxCinergyGalleryImages = createGalleryImages([...privateResidenceTxCinergyGalleryPaths], "Private Residence, TX — Cinergy Works");
+export const privateResidenceTxCinergyGalleryImages = createGalleryImages(
+  [...privateResidenceTxCinergyGalleryPaths],
+  "Private Residence, TX — Cinergy Works",
+);
 
 // Flow: Property/setup (day-lit Blackberry series) → reception sequence (numbered) → night close
 export const blackberryFarmsEastonGalleryPaths = [
@@ -947,7 +981,10 @@ export const blackberryFarmsEastonGalleryHero: GalleryImage = {
   alt: "Blackberry Farms winter wedding environment",
 };
 
-export const blackberryFarmsEastonGalleryImages = createGalleryImages([...blackberryFarmsEastonGalleryPaths], "Blackberry Farms — Easton Events");
+export const blackberryFarmsEastonGalleryImages = createGalleryImages(
+  [...blackberryFarmsEastonGalleryPaths],
+  "Blackberry Farms — Easton Events",
+);
 
 // Flow: Wellness (morning) → Welcome Party (day) → Rehearsal Dinner (evening) → Wedding Day (climax → night)
 export const fourSeasonsVailCassieLamereGalleryPaths = [
@@ -1042,4 +1079,7 @@ export const fourSeasonsVailCassieLamereGalleryHero: GalleryImage = {
   alt: "Welcome party environment, Four Seasons Vail",
 };
 
-export const fourSeasonsVailCassieLamereGalleryImages = createGalleryImages([...fourSeasonsVailCassieLamereGalleryPaths], "Four Seasons Vail — Cassie LaMere Events");
+export const fourSeasonsVailCassieLamereGalleryImages = createGalleryImages(
+  [...fourSeasonsVailCassieLamereGalleryPaths],
+  "Four Seasons Vail — Cassie LaMere Events",
+);

@@ -19,11 +19,21 @@ export const MainVideo: React.FC = () => {
     <AbsoluteFill style={{ background: "transparent" }}>
       <PaperBackground />
       <Chrome />
-      <Sequence from={0}   durationInFrames={186}><SceneDrop /></Sequence>
-      <Sequence from={156} durationInFrames={216}><ScenePin /></Sequence>
-      <Sequence from={342} durationInFrames={240}><ScenePalette /></Sequence>
-      <Sequence from={552} durationInFrames={360}><SceneBrief /></Sequence>
-      <Sequence from={858} durationInFrames={252}><SceneSend /></Sequence>
+      <Sequence from={0} durationInFrames={186}>
+        <SceneDrop />
+      </Sequence>
+      <Sequence from={156} durationInFrames={216}>
+        <ScenePin />
+      </Sequence>
+      <Sequence from={342} durationInFrames={240}>
+        <ScenePalette />
+      </Sequence>
+      <Sequence from={552} durationInFrames={360}>
+        <SceneBrief />
+      </Sequence>
+      <Sequence from={858} durationInFrames={252}>
+        <SceneSend />
+      </Sequence>
 
       <ActiveStep />
     </AbsoluteFill>

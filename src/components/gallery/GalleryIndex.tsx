@@ -4,7 +4,6 @@ import { renderUrl, renderSrcSet } from "@/lib/storage-image";
 import { prefetchImage } from "@/lib/prefetch-image";
 import { CrossfadeImage } from "@/components/gallery/CrossfadeImage";
 
-
 interface GalleryIndexProps {
   projects: GalleryProject[];
   onOpen: (index: number) => void;
@@ -81,7 +80,6 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
                         warm(p);
                       }}
                       onBlur={() => setHoverIdx(null)}
-
                       className="w-full group py-5 lg:py-7 border-b border-cream/10 flex items-center gap-6 lg:gap-12 text-left hover:bg-cream/5 transition-colors px-4 -mx-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-cream/40"
                     >
                       <span className="text-cream/30 text-sm tracking-[0.18em] w-8 shrink-0 tabular-nums">
@@ -145,15 +143,15 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
               Reflects the hovered project; defaults to Dunton when idle. */}
           <aside aria-hidden className="hidden lg:block lg:sticky lg:top-24">
             {(() => {
-              const activeProject = hoverProject && !hoverProject.pending ? hoverProject : projects[0];
+              const activeProject =
+                hoverProject && !hoverProject.pending ? hoverProject : projects[0];
               if (!activeProject) return null;
               const heroSrc = activeProject.heroImage.src;
               const isStorage = heroSrc.includes("/storage/v1/object/public/");
               const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(heroSrc);
               const posterSrc = heroSrc.replace(/\.(mp4|webm|mov)(\?|$)/i, ".jpg$2");
-              const displaySrc = isStorage && !isVideo
-                ? renderUrl(heroSrc, { width: 900, quality: 72 })
-                : heroSrc;
+              const displaySrc =
+                isStorage && !isVideo ? renderUrl(heroSrc, { width: 900, quality: 72 }) : heroSrc;
               return (
                 <div className="relative w-full h-[calc(100vh-8rem)] overflow-hidden bg-charcoal ring-1 ring-cream/10">
                   {isVideo ? (
@@ -193,7 +191,6 @@ export function GalleryIndex({ projects, onOpen }: GalleryIndexProps) {
             })()}
           </aside>
         </div>
-
       </div>
     </section>
   );
