@@ -25,7 +25,10 @@ const FORMATS: FormatDef[] = [
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/compose")({
-  loader: () => getCollectionCatalog(),
+  // No loader on purpose. Compose is an interactive sketchpad, not an indexed
+  // document — returning the catalog here serialized ~950KB of JSON into the
+  // HTML for a page whose first paint is a guest-count input. The catalog is
+  // fetched client-side after mount instead.
   head: () => ({
     meta: [
       { title: "Compose — Eclectic Hive" },
@@ -60,8 +63,20 @@ function parseStock(raw: string | null | undefined): number | null {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ComposePage() {
-  const payload = Route.useLoaderData();
-  const products = payload.products as CollectionProduct[];
+  const [products, setProducts] = useState<CollectionProduct[]>([]);
+  useEffect(() => {
+    let alive = true;
+    getCollectionCatalog()
+      .then((payload) => {
+        if (alive) setProducts(payload.products);
+      })
+      .catch(() => {
+        /* the empty state below already reads as "nothing to place yet" */
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // Build id → product + stock lookups; warn on any vignette that references
   // an unknown rms_id or a piece with null stock. Vignettes with problems
