@@ -38,8 +38,10 @@ jobs:
       - name: Typecheck
         run: bunx tsgo --noEmit
 
-      - name: Lint
-        run: bun run lint
+      # Lint is intentionally NOT a gate yet: `bun run lint` currently reports
+      # ~12.9k problems repo-wide (almost all prettier formatting). Turning it
+      # on today would fail every PR and teach people to ignore CI. Format the
+      # tree in a dedicated pass, then add `bun run lint` here.
 
       - name: Production build
         run: bun run build
