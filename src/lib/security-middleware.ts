@@ -41,12 +41,27 @@ function isCrossSiteWrite(request: Request, pathname: string): boolean {
   }
 }
 
+/** An unknown server-function id is a 404, not a server fault. */
+const UNKNOWN_SERVER_FN = /server function (info )?not found|invalid server function/i;
+
 export const securityMiddleware = createMiddleware().server(async ({ next, request, pathname }) => {
   if (isCrossSiteWrite(request, pathname)) {
     return new Response("Cross-site request blocked", { status: 403 });
   }
 
-  const result = await next();
+  let result: Awaited<ReturnType<typeof next>>;
+  try {
+    result = await next();
+  } catch (err) {
+    // Enumerating server-function ids should read as "no such endpoint".
+    // A 500 tells a prober they touched a live code path; a 404 tells them
+    // nothing.
+    const message = err instanceof Error ? err.message : String(err);
+    if (UNKNOWN_SERVER_FN.test(message)) {
+      return new Response("Not found", { status: 404 });
+    }
+    throw err;
+  }
   const headers = result.response.headers;
 
   headers.set("X-Content-Type-Options", "nosniff");
