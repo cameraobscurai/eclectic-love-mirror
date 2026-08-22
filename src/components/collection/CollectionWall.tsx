@@ -64,7 +64,7 @@ export function CollectionWall({ products, onOpen, cap = 240 }: Props) {
     if (!n || !size.w || !size.h) return { cols: 1, rows: 1 };
     const aspect = size.w / size.h;
     const colsF = Math.sqrt(n * aspect);
-    let cols = Math.ceil(colsF);
+    const cols = Math.ceil(colsF);
     let best = { cols, rows: Math.ceil(n / cols), score: Infinity };
     for (let c = Math.max(1, cols - 3); c <= cols + 4; c++) {
       const r = Math.ceil(n / c);
