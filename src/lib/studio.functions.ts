@@ -335,20 +335,24 @@ export const markBoardSent = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    // Idempotent: if already sent and has a token, return it.
+    // Hash-only: the raw token is never persisted. It exists in this
+    // handler's memory, goes into the client email, and is returned to the
+    // admin UI exactly once. A reload cannot recover it — the admin
+    // regenerates instead (see regenerateShareToken).
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
+      .select("id,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
 
-    const existingToken = (existing as unknown as { share_token: string | null }).share_token;
-    const token = existingToken ?? generateShareTokenValue();
-    const tokenHash = await hashShareToken(token);
+    // First send = no hash on the row yet. Re-sending an already-issued
+    // board must NOT rotate the hash, or the client's live link dies.
+    const isFirstSend = !(existing as unknown as { share_token_hash: string | null })
+      .share_token_hash;
+    const token = isFirstSend ? generateShareTokenValue() : null;
     const update: {
-      share_token: string;
-      share_token_hash: string;
+      share_token_hash?: string;
       share_token_expires_at?: string;
       share_token_revoked_at?: null;
       status: "sent";
@@ -359,19 +363,19 @@ export const markBoardSent = createServerFn({ method: "POST" })
       section_word?: string;
       production_notes?: Record<string, string>;
     } = {
-      share_token: token,
-      share_token_hash: tokenHash,
       status: "sent",
     };
 
     // First-send bookkeeping: capture sender + AI copy only on the first send.
-    if (!existingToken) {
+    if (token) {
+      update.share_token_hash = await hashShareToken(token);
       update.sent_at = new Date().toISOString();
       update.share_token_expires_at = new Date(
         Date.now() + DEFAULT_SHARE_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
       ).toISOString();
       // Clear any prior revoke (shouldn't happen on first send, but idempotent).
       update.share_token_revoked_at = null;
+
 
       // Capture sender from authenticated admin.
       try {
