@@ -344,6 +344,26 @@ function StudioWorkspace({ inquiryId }: { inquiryId: string }) {
             </div>
           )}
 
+          {!state.shareToken && state.status === "sent" && (
+            <div className="mt-4 p-3 border border-charcoal/15 bg-charcoal/[0.02] flex items-center gap-3">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45">
+                Link sent — not recoverable
+              </p>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (typeof window !== "undefined" && !window.confirm("Generate a new link? Any link already with the client stops working.")) return;
+                  await regenerate();
+                }}
+                className="text-[10px] uppercase tracking-[0.22em] text-charcoal/70 hover:text-charcoal"
+              >
+                Regenerate link
+              </button>
+            </div>
+          )}
+
+
+
 
           <div className="mt-8 pt-6 border-t border-charcoal/10">
             <label className="text-[10px] uppercase tracking-[0.22em] text-charcoal/45 block mb-2">
