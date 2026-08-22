@@ -750,33 +750,25 @@ export interface PublicStyleBoard {
   production_notes: Record<string, string>;
 }
 
-export const getStyleBoardByToken = createServerFn({ method: "GET" })
+// POST, not GET: this handler increments client_view_count, and a GET RPC
+// URL is fair game for prefetchers, link scanners, and speculation rules.
+export const getStyleBoardByToken = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ token: z.string().min(8).max(128) }).parse(d))
   .handler(async ({ data }) => {
-    // Look up by SHA-256 hash of the token. Fall back to legacy raw-token
-    // lookup for any board not yet backfilled (defense in depth — the
-    // migration already backfills everything currently in the table).
+    // Hash-only lookup. There is no raw-token column and no legacy fallback:
+    // a second auth path left dormant is a second auth path to get wrong.
     const tokenHash = await hashShareToken(data.token);
     const selectCols =
       "id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes,share_token_expires_at,share_token_revoked_at";
-    let { data: board, error } = await supabaseAdmin
+    const { data: board, error } = await supabaseAdmin
       .from("style_boards")
       .select(selectCols)
       .eq("share_token_hash", tokenHash)
       .eq("status", "sent")
       .maybeSingle();
     if (error) throw error;
-    if (!board) {
-      const legacy = await supabaseAdmin
-        .from("style_boards")
-        .select(selectCols)
-        .eq("share_token", data.token)
-        .eq("status", "sent")
-        .maybeSingle();
-      if (legacy.error) throw legacy.error;
-      board = legacy.data;
-    }
     if (!board) throw new Response("Not found", { status: 404 });
+
 
     // Reject revoked or expired links.
     const revokedAt = (board as unknown as { share_token_revoked_at: string | null }).share_token_revoked_at;
