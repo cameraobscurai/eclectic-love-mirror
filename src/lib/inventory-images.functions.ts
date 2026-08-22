@@ -63,7 +63,10 @@ export const updateItemImages = createServerFn({ method: "POST" })
       { at: new Date().toISOString(), images: currentImages },
     ].slice(-20);
 
-    const { error } = await supabaseAdmin
+    // The read above supplies DATA (archive merge + audit before). It is NOT
+    // the concurrency check — that lives on the UPDATE's WHERE clause, so a
+    // writer that lands between read and write loses instead of clobbering.
+    let q = supabaseAdmin
       .from("inventory_items")
       .update({
         images: data.images,
@@ -71,12 +74,17 @@ export const updateItemImages = createServerFn({ method: "POST" })
         images_archive: nextArchive as any,
       })
       .eq("id", data.id);
+    if (data.expectedUpdatedAt) q = q.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await q.select("id");
     if (error) throw error;
+    if (!updated || updated.length === 0) {
+      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+    }
 
     // 4. Audit — before is the snapshot we read, after is the mutated fields.
     // Race-window note: a concurrent writer could have landed between read
     // and write; the audit row reflects the handler's view, not the DB's.
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
@@ -115,14 +123,19 @@ export const setCardBackground = createServerFn({ method: "POST" })
     }
 
     // 3. Mutate.
-    const { error } = await supabaseAdmin
+    let q = supabaseAdmin
       .from("inventory_items")
       .update({ card_background_url: data.url })
       .eq("id", data.id);
+    if (data.expectedUpdatedAt) q = q.eq("updated_at", data.expectedUpdatedAt);
+    const { data: updated, error } = await q.select("id");
     if (error) throw error;
+    if (!updated || updated.length === 0) {
+      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+    }
 
     // 4. Audit.
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
@@ -161,7 +174,7 @@ export const setCoverFocal = createServerFn({ method: "POST" })
       .eq("id", data.id);
     if (error) throw error;
 
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
@@ -232,7 +245,7 @@ export const uploadItemImage = createServerFn({ method: "POST" })
 
     const { data: pub } = bucket.getPublicUrl(path);
 
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "storage",
       entityId: data.id,
@@ -376,7 +389,7 @@ export const createInventoryItem = createServerFn({ method: "POST" })
 
     if (error || !row) throw new Error(error?.message ?? "Failed to create item");
 
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: row.id,
@@ -434,7 +447,7 @@ export const updateInventoryItemMeta = createServerFn({ method: "POST" })
       .eq("id", data.id);
     if (error) throw error;
 
-    void audit({
+    await audit({
       actorId: context.userId,
       entity: "inventory_items",
       entityId: data.id,
