@@ -38,10 +38,13 @@ jobs:
       - name: Typecheck
         run: bunx tsgo --noEmit
 
-      # Lint is intentionally NOT a gate yet: `bun run lint` currently reports
-      # ~12.9k problems repo-wide (almost all prettier formatting). Turning it
-      # on today would fail every PR and teach people to ignore CI. Format the
-      # tree in a dedicated pass, then add `bun run lint` here.
+      # Lint IS a gate now. The 12.9k-problem backlog was 12.8k prettier
+      # findings, cleared in a single formatting-only pass; the residue is 100
+      # warnings (mostly `any` debt) which do not fail eslint. Errors = 0 today,
+      # so any new error fails the PR. Promote `no-explicit-any` back to "error"
+      # in eslint.config.js as those warnings get typed away.
+      - name: Lint
+        run: bun run lint
 
       - name: Production build
         run: bun run build
