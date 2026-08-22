@@ -7,13 +7,15 @@
 // read and write are not in a transaction — a concurrent writer could land
 // between them. Accepted tradeoff: the audit row reflects what the handler
 // saw, not what the DB ended up with. Snapshot wins.
-// TODO(W2.2): swap `Error("STALE: ...")` for `AppError("STALE", ..., 409)`.
+// Concurrency conflicts throw AppError("STALE", …, 409): the HTTP status is
+// set on the response, the "STALE:" prefix survives RPC serialization.
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireStaffOrAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
+import { staleError, STALE_MESSAGE } from "@/lib/stale.server";
 
 const urlSchema = z.string().url().max(2000);
 
@@ -43,15 +45,15 @@ export const updateItemImages = createServerFn({ method: "POST" })
       typeof data.expectedLength === "number" &&
       data.expectedLength !== currentImages.length
     ) {
-      throw new Error(
-        `STALE: expected ${data.expectedLength} images, found ${currentImages.length}. Refresh and try again.`,
+      throw staleError(
+        `expected ${data.expectedLength} images, found ${currentImages.length}. Refresh and try again.`,
       );
     }
     if (
       data.expectedUpdatedAt &&
       current.updated_at !== data.expectedUpdatedAt
     ) {
-      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+      throw staleError(STALE_MESSAGE);
     }
 
     // 3. Mutate. Archive previous snapshot, capped to last 20.
@@ -78,7 +80,7 @@ export const updateItemImages = createServerFn({ method: "POST" })
     const { data: updated, error } = await q.select("id, updated_at");
     if (error) throw error;
     if (!updated || updated.length === 0) {
-      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+      throw staleError(STALE_MESSAGE);
     }
     const newUpdatedAt = (updated[0] as { updated_at: string }).updated_at;
 
@@ -120,7 +122,7 @@ export const setCardBackground = createServerFn({ method: "POST" })
       data.expectedUpdatedAt &&
       current.updated_at !== data.expectedUpdatedAt
     ) {
-      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+      throw staleError(STALE_MESSAGE);
     }
 
     // 3. Mutate.
@@ -132,7 +134,7 @@ export const setCardBackground = createServerFn({ method: "POST" })
     const { data: updated, error } = await q.select("id, updated_at");
     if (error) throw error;
     if (!updated || updated.length === 0) {
-      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+      throw staleError(STALE_MESSAGE);
     }
     const newUpdatedAt = (updated[0] as { updated_at: string }).updated_at;
 

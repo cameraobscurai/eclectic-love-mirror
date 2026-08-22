@@ -12,6 +12,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { staleError, STALE_MESSAGE } from "@/lib/stale.server";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireAdmin } from "@/integrations/supabase/admin-middleware";
 import { audit } from "@/server/_audit.server";
@@ -98,7 +99,7 @@ export const toggleItemVisibility = createServerFn({ method: "POST" })
       data.expectedUpdatedAt &&
       current.updated_at !== data.expectedUpdatedAt
     ) {
-      throw new Error("STALE: someone else edited this item. Refresh and try again.");
+      throw staleError(STALE_MESSAGE);
     }
 
     // 3. Mutate.
