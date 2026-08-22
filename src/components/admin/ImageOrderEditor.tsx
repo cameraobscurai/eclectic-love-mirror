@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { isStaleError } from "@/lib/app-error";
 import {
   DndContext,
   DragOverlay,
@@ -157,7 +158,7 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
         // STALE = our expectedLength disagrees with the server. Rolling back
         // to lastSavedRef would re-send the same wrong expectation forever
         // and trap the user. Re-sync from the server instead.
-        if (msg.startsWith("STALE")) {
+        if (isStaleError(e)) {
           const { data: fresh } = await supabase
             .from("inventory_items")
             .select("images, card_background_url, updated_at")
