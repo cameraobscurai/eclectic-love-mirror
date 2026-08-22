@@ -1,0 +1,1 @@
+ALTER TABLE public.style_boards DROP COLUMN IF EXISTS share_token;
