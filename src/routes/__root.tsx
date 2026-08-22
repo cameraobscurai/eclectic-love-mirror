@@ -165,10 +165,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang="en" className="bg-charcoal">
       <head>
         <HeadContent />
-        <script
-          type="speculationrules"
-          dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }}
-        />
+        <script type="speculationrules" dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }} />
       </head>
       <body className="antialiased">
         {children}
