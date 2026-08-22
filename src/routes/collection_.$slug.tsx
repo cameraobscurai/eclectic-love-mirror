@@ -116,10 +116,13 @@ function absoluteCover(parent: ParentId): string | null {
 }
 
 type ParentLoad = { kind: "parent"; parent: ParentId; fallbackImage: string | null };
+// Deliberately does NOT carry the catalog. Everything the PDP needs beyond
+// this one product (the related rails, prev/next) is derived client-side from
+// the shared catalog chunk — see RelatedPieces. Returning `allProducts` here
+// serialized ~950KB of JSON into every product page's HTML.
 type ProductLoad = {
   kind: "product";
   product: CollectionProduct;
-  allProducts: CollectionProduct[];
 };
 type LoadResult = ParentLoad | ProductLoad;
 
@@ -154,7 +157,7 @@ export const Route = createFileRoute("/collection_/$slug")({
       catalog.products.find((p) => p.id === params.slug) ??
       null;
     if (!product) throw notFound();
-    return { kind: "product", product, allProducts: catalog.products };
+    return { kind: "product", product };
   },
   head: ({ loaderData, params }) => {
     const data = loaderData as LoadResult | undefined;
@@ -306,7 +309,7 @@ export const Route = createFileRoute("/collection_/$slug")({
 function SlugRoutePage() {
   const data = Route.useLoaderData() as LoadResult;
   if (data.kind === "parent") return <ParentLandingPage parent={data.parent} />;
-  return <ProductDetailPage product={data.product} allProducts={data.allProducts} />;
+  return <ProductDetailPage product={data.product} />;
 }
 
 // Category landing: SSR emits real h1 + intro copy for crawlers; on mount,
@@ -363,13 +366,7 @@ function ParentLandingPage({ parent }: { parent: ParentId }) {
   );
 }
 
-function ProductDetailPage({
-  product,
-  allProducts,
-}: {
-  product: CollectionProduct;
-  allProducts: CollectionProduct[];
-}) {
+function ProductDetailPage({ product }: { product: CollectionProduct }) {
   // Breadcrumb reads the DECLARED taxonomy. Unassigned products keep a
   // reachable PDP — they simply lose the category crumb instead of 404ing.
   const parent = productParent(product);
@@ -610,7 +607,7 @@ function ProductDetailPage({
           </div>
         </div>
 
-        <RelatedPieces product={product} allProducts={allProducts} />
+        <RelatedPieces product={product} />
       </main>
     </div>
   );
