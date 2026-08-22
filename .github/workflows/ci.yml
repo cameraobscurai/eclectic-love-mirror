@@ -14,7 +14,7 @@ jobs:
   # type error or an OOM in the build fails in ~5 minutes instead of after
   # Playwright. Peak RSS measured locally at ~4.2GB, hence the explicit heap:
   # GitHub-hosted runners have 7GB, but the Node default is lower.
-  typecheck-lint-build:
+  typecheck-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
