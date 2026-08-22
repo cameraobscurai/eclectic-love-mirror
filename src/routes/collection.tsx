@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SlidersHorizontal, X } from "lucide-react";
 import {
-  getCollectionCatalogBase,
+  getCollectionCatalogFirstPaint,
   getCollectionCatalog,
   type CollectionProduct,
   type CatalogPayload,
@@ -173,7 +173,7 @@ export const Route = createFileRoute("/collection")({
   // overlay merge runs post-mount via useEffect — see CollectionPage. This
   // shaves 200–800ms off cold LCP since paint no longer waits on the
   // paginated inventory_items round-trip.
-  loader: async (): Promise<CatalogPayload> => await getCollectionCatalogBase(),
+  loader: async (): Promise<CatalogPayload> => await getCollectionCatalogFirstPaint(),
   // No pendingComponent: a generic 18-tile skeleton doesn't match the actual
   // first paint (the "H Signature Collection" cover), so it reads as a flash
   // into a different page. On slow loads TanStack Router holds the previous
