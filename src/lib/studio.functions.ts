@@ -427,10 +427,10 @@ export const markBoardSent = createServerFn({ method: "POST" })
     }
 
     // Enqueue BEFORE flipping status. If enqueue throws, the board stays in
-    // its pre-send state (existingToken still falsy) so a retry legitimately
+    // its pre-send state (no hash on the row) so a retry legitimately
     // re-attempts the enqueue. Prevents the previous silent failure mode
     // (status flipped to "sent" but no email ever queued).
-    if (!existingToken) {
+    if (token) {
       await enqueueStyleBoardEmail({
         boardId: data.boardId,
         shareToken: token,
@@ -459,7 +459,9 @@ export const markBoardSent = createServerFn({ method: "POST" })
       throw error;
     }
 
-    return row as unknown as StyleBoardRow;
+    // share_token is the one-time raw value, not a stored column.
+    return { ...(row as unknown as StyleBoardRow), share_token: token };
+
   });
 
 // Revoke a board's share link. Idempotent — safe to call on already-revoked
