@@ -200,15 +200,21 @@ function RootComponent() {
 
 
   // Send a GA4 page_view on every TanStack route change.
+  // NEVER send window.location.href: /stylebrief/$token puts a live share
+  // secret in the URL, and page_location would ship it to Google. Token-
+  // bearing routes are excluded entirely; everything else reports a
+  // path we construct ourselves, never the raw href.
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+    if (/^\/(stylebrief|admin)(\/|$)/.test(pathname)) return;
     const path = pathname + (search ? `?${new URLSearchParams(search as Record<string, string>).toString()}` : "") + (hash ?? "");
     window.gtag("event", "page_view", {
       page_path: path,
-      page_location: window.location.href,
+      page_location: window.location.origin + path,
       page_title: document.title,
     });
   }, [pathname, search, hash]);
+
 
   // Native scroll-to-top on FORWARD route change only. TanStack's
   // scrollRestoration handles back/forward — we must not override it or

@@ -15,6 +15,7 @@ import {
   deleteInspoFile,
   markBoardSent,
   revokeShareToken,
+  regenerateShareToken,
   type InspoImageRecord,
   type StudioInquiry,
 } from "@/lib/studio.functions";
@@ -138,7 +139,9 @@ export function useStyleBoard(inquiryId: string) {
           tones: ((board?.tones as unknown) as ToneAnalysis) ?? null,
           insights: (board?.insights as DesignInsight[]) ?? [],
           curatorNotes: board?.curator_notes ?? "",
-          shareToken: board?.share_token ?? null,
+          // Hash-only storage: a reload can never recover the raw token.
+          // Admin regenerates instead.
+          shareToken: null,
           dirty: false,
         }));
       } catch (e) {
@@ -284,7 +287,7 @@ export function useStyleBoard(inquiryId: string) {
         ...s,
         boardId: row.id,
         status: row.status as BoardStatus,
-        shareToken: row.share_token ?? s.shareToken,
+        shareToken: s.shareToken,
         saving: false,
         dirty: false,
       }));
@@ -338,6 +341,20 @@ export function useStyleBoard(inquiryId: string) {
     }
   }, [state.boardId]);
 
+  // Mint a fresh link. The previous one stops working immediately; the raw
+  // token is shown once and never stored.
+  const regenerate = useCallback(async () => {
+    if (!state.boardId) return null;
+    try {
+      const res = await regenerateShareToken({ data: { boardId: state.boardId } });
+      setState((s) => ({ ...s, shareToken: res.shareToken }));
+      return res.shareToken;
+    } catch (e) {
+      setState((s) => ({ ...s, error: (e as Error).message }));
+      return null;
+    }
+  }, [state.boardId]);
+
   return {
     state,
     catalog,
@@ -351,6 +368,7 @@ export function useStyleBoard(inquiryId: string) {
     save,
     send,
     revoke,
+    regenerate,
   };
 }
 

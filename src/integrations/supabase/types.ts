@@ -1595,7 +1595,6 @@ export type Database = {
           project_title: string | null
           section_word: string | null
           sent_at: string | null
-          share_token: string | null
           share_token_expires_at: string | null
           share_token_hash: string | null
           share_token_revoked_at: string | null
@@ -1623,7 +1622,6 @@ export type Database = {
           project_title?: string | null
           section_word?: string | null
           sent_at?: string | null
-          share_token?: string | null
           share_token_expires_at?: string | null
           share_token_hash?: string | null
           share_token_revoked_at?: string | null
@@ -1651,7 +1649,6 @@ export type Database = {
           project_title?: string | null
           section_word?: string | null
           sent_at?: string | null
-          share_token?: string | null
           share_token_expires_at?: string | null
           share_token_hash?: string | null
           share_token_revoked_at?: string | null

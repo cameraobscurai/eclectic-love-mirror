@@ -335,20 +335,24 @@ export const markBoardSent = createServerFn({ method: "POST" })
   .middleware([requireAdmin])
   .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    // Idempotent: if already sent and has a token, return it.
+    // Hash-only: the raw token is never persisted. It exists in this
+    // handler's memory, goes into the client email, and is returned to the
+    // admin UI exactly once. A reload cannot recover it — the admin
+    // regenerates instead (see regenerateShareToken).
     const { data: existing, error: exErr } = await supabaseAdmin
       .from("style_boards")
-      .select("id,share_token,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
+      .select("id,share_token_hash,share_token_expires_at,share_token_revoked_at,status,project_title,section_word,production_notes,prepared_by_name,palette,tones,curator_notes,inquiry_id,pinned_rms_ids")
       .eq("id", data.boardId)
       .single();
     if (exErr) throw exErr;
 
-    const existingToken = (existing as unknown as { share_token: string | null }).share_token;
-    const token = existingToken ?? generateShareTokenValue();
-    const tokenHash = await hashShareToken(token);
+    // First send = no hash on the row yet. Re-sending an already-issued
+    // board must NOT rotate the hash, or the client's live link dies.
+    const isFirstSend = !(existing as unknown as { share_token_hash: string | null })
+      .share_token_hash;
+    const token = isFirstSend ? generateShareTokenValue() : null;
     const update: {
-      share_token: string;
-      share_token_hash: string;
+      share_token_hash?: string;
       share_token_expires_at?: string;
       share_token_revoked_at?: null;
       status: "sent";
@@ -359,19 +363,19 @@ export const markBoardSent = createServerFn({ method: "POST" })
       section_word?: string;
       production_notes?: Record<string, string>;
     } = {
-      share_token: token,
-      share_token_hash: tokenHash,
       status: "sent",
     };
 
     // First-send bookkeeping: capture sender + AI copy only on the first send.
-    if (!existingToken) {
+    if (token) {
+      update.share_token_hash = await hashShareToken(token);
       update.sent_at = new Date().toISOString();
       update.share_token_expires_at = new Date(
         Date.now() + DEFAULT_SHARE_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
       ).toISOString();
       // Clear any prior revoke (shouldn't happen on first send, but idempotent).
       update.share_token_revoked_at = null;
+
 
       // Capture sender from authenticated admin.
       try {
@@ -423,10 +427,10 @@ export const markBoardSent = createServerFn({ method: "POST" })
     }
 
     // Enqueue BEFORE flipping status. If enqueue throws, the board stays in
-    // its pre-send state (existingToken still falsy) so a retry legitimately
+    // its pre-send state (no hash on the row) so a retry legitimately
     // re-attempts the enqueue. Prevents the previous silent failure mode
     // (status flipped to "sent" but no email ever queued).
-    if (!existingToken) {
+    if (token) {
       await enqueueStyleBoardEmail({
         boardId: data.boardId,
         shareToken: token,
@@ -455,7 +459,9 @@ export const markBoardSent = createServerFn({ method: "POST" })
       throw error;
     }
 
-    return row as unknown as StyleBoardRow;
+    // share_token is the one-time raw value, not a stored column.
+    return { ...(row as unknown as StyleBoardRow), share_token: token };
+
   });
 
 // Revoke a board's share link. Idempotent — safe to call on already-revoked
@@ -474,6 +480,27 @@ export const revokeShareToken = createServerFn({ method: "POST" })
     return { boardId: row.id, revokedAt: (row as unknown as { share_token_revoked_at: string }).share_token_revoked_at };
   });
 
+// Regenerate a board's share link. The previous link stops working the
+// instant the hash is replaced. Returns the raw token ONCE — it is never
+// stored, so the admin must copy it now or regenerate again.
+export const regenerateShareToken = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
+  .inputValidator((d) => z.object({ boardId: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const token = generateShareTokenValue();
+    const { error } = await supabaseAdmin
+      .from("style_boards")
+      .update({
+        share_token_hash: await hashShareToken(token),
+        share_token_expires_at: new Date(
+          Date.now() + DEFAULT_SHARE_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+        share_token_revoked_at: null,
+      })
+      .eq("id", data.boardId);
+    if (error) throw error;
+    return { boardId: data.boardId, shareToken: token };
+  });
 
 
 // ---- Client email on first send ------------------------------------------
@@ -652,7 +679,9 @@ export interface StudioBoardSummary {
   inquiry_id: string;
   status: "draft" | "ready" | "sent";
   updated_at: string;
-  share_token: string | null;
+  /** Whether a live (non-revoked) share link exists. The token itself is
+   *  never readable after issue — hash-only storage. */
+  has_share_link: boolean;
   inquiry_name: string;
   inquiry_subject: string | null;
   pinned_count: number;
@@ -664,7 +693,7 @@ export const listStudioBoards = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,inquiry_id,status,updated_at,share_token,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)")
+      .select("id,inquiry_id,status,updated_at,share_token_hash,share_token_revoked_at,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)")
       .order("updated_at", { ascending: false })
       .limit(50);
     if (error) throw error;
@@ -673,7 +702,8 @@ export const listStudioBoards = createServerFn({ method: "GET" })
       inquiry_id: string;
       status: "draft" | "ready" | "sent";
       updated_at: string;
-      share_token: string | null;
+      share_token_hash: string | null;
+      share_token_revoked_at: string | null;
       pinned_rms_ids: string[];
       inspo_images: unknown[];
       inquiries: { name: string; subject: string | null };
@@ -682,7 +712,8 @@ export const listStudioBoards = createServerFn({ method: "GET" })
       inquiry_id: r.inquiry_id,
       status: r.status,
       updated_at: r.updated_at,
-      share_token: r.share_token,
+      has_share_link: !!r.share_token_hash && !r.share_token_revoked_at,
+
       inquiry_name: r.inquiries?.name ?? "",
       inquiry_subject: r.inquiries?.subject ?? null,
       pinned_count: (r.pinned_rms_ids ?? []).length,
@@ -719,33 +750,25 @@ export interface PublicStyleBoard {
   production_notes: Record<string, string>;
 }
 
-export const getStyleBoardByToken = createServerFn({ method: "GET" })
+// POST, not GET: this handler increments client_view_count, and a GET RPC
+// URL is fair game for prefetchers, link scanners, and speculation rules.
+export const getStyleBoardByToken = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ token: z.string().min(8).max(128) }).parse(d))
   .handler(async ({ data }) => {
-    // Look up by SHA-256 hash of the token. Fall back to legacy raw-token
-    // lookup for any board not yet backfilled (defense in depth — the
-    // migration already backfills everything currently in the table).
+    // Hash-only lookup. There is no raw-token column and no legacy fallback:
+    // a second auth path left dormant is a second auth path to get wrong.
     const tokenHash = await hashShareToken(data.token);
     const selectCols =
       "id,status,sent_at,curator_notes,palette,tones,insights,inspo_images,pinned_rms_ids,pin_notes,inquiry_id,client_view_count,cover_pinned_rms_id,project_title,prepared_by_name,section_word,production_notes,share_token_expires_at,share_token_revoked_at";
-    let { data: board, error } = await supabaseAdmin
+    const { data: board, error } = await supabaseAdmin
       .from("style_boards")
       .select(selectCols)
       .eq("share_token_hash", tokenHash)
       .eq("status", "sent")
       .maybeSingle();
     if (error) throw error;
-    if (!board) {
-      const legacy = await supabaseAdmin
-        .from("style_boards")
-        .select(selectCols)
-        .eq("share_token", data.token)
-        .eq("status", "sent")
-        .maybeSingle();
-      if (legacy.error) throw legacy.error;
-      board = legacy.data;
-    }
     if (!board) throw new Response("Not found", { status: 404 });
+
 
     // Reject revoked or expired links.
     const revokedAt = (board as unknown as { share_token_revoked_at: string | null }).share_token_revoked_at;
