@@ -48,6 +48,9 @@ type Item = {
   cover_focal_y?: number | null;
   /** Baked derivative: when set, focal is not read by the public tile. */
   cover_framed_url?: string | null;
+  /** Compare-and-swap token. Sent on every write so a second tab that saved
+   *  first makes this tab's save fail loudly instead of clobbering it. */
+  updated_at?: string | null;
 };
 
 
@@ -78,6 +81,9 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
   );
 
   const lastSavedRef = useRef<string[]>(item.images ?? []);
+  // Rolls forward on every successful write; the server returns the row's new
+  // updated_at so the next save carries a fresh expectation.
+  const expectedUpdatedAtRef = useRef<string | null>(item.updated_at ?? null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const publishTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -128,13 +134,17 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
       }
       setSaveState("saving");
       try {
-        await update({
+        const res = await update({
           data: {
             id: item.id,
             images: next,
             expectedLength: lastSavedRef.current.length,
+            ...(expectedUpdatedAtRef.current
+              ? { expectedUpdatedAt: expectedUpdatedAtRef.current }
+              : {}),
           },
         });
+        expectedUpdatedAtRef.current = res.updatedAt ?? expectedUpdatedAtRef.current;
         lastSavedRef.current = next;
         setSaveState("saved");
         setErrMsg(null);
@@ -150,11 +160,12 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
         if (msg.startsWith("STALE")) {
           const { data: fresh } = await supabase
             .from("inventory_items")
-            .select("images, card_background_url")
+            .select("images, card_background_url, updated_at")
             .eq("id", item.id)
             .single();
           const truth = (fresh?.images ?? []) as string[];
           lastSavedRef.current = truth;
+          expectedUpdatedAtRef.current = (fresh?.updated_at as string | null) ?? null;
           setUrls(truth);
           if (fresh?.card_background_url !== undefined) {
             setBg(fresh.card_background_url as string | null);
@@ -242,7 +253,16 @@ export function ImageOrderEditor({ item, onClose, onSaved, embedded = false }: P
     const next = bg === url ? null : url;
     setBg(next);
     try {
-      await setBgFn({ data: { id: item.id, url: next } });
+      const res = await setBgFn({
+        data: {
+          id: item.id,
+          url: next,
+          ...(expectedUpdatedAtRef.current
+            ? { expectedUpdatedAt: expectedUpdatedAtRef.current }
+            : {}),
+        },
+      });
+      expectedUpdatedAtRef.current = res.updatedAt ?? expectedUpdatedAtRef.current;
       onSaved({ images: urls, card_background_url: next });
       schedulePublish();
     } catch (e) {
