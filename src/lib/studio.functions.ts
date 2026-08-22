@@ -679,7 +679,9 @@ export interface StudioBoardSummary {
   inquiry_id: string;
   status: "draft" | "ready" | "sent";
   updated_at: string;
-  share_token: string | null;
+  /** Whether a live (non-revoked) share link exists. The token itself is
+   *  never readable after issue — hash-only storage. */
+  has_share_link: boolean;
   inquiry_name: string;
   inquiry_subject: string | null;
   pinned_count: number;
@@ -691,7 +693,7 @@ export const listStudioBoards = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("style_boards")
-      .select("id,inquiry_id,status,updated_at,share_token,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)")
+      .select("id,inquiry_id,status,updated_at,share_token_hash,share_token_revoked_at,pinned_rms_ids,inspo_images,inquiries!inner(name,subject)")
       .order("updated_at", { ascending: false })
       .limit(50);
     if (error) throw error;
@@ -700,7 +702,8 @@ export const listStudioBoards = createServerFn({ method: "GET" })
       inquiry_id: string;
       status: "draft" | "ready" | "sent";
       updated_at: string;
-      share_token: string | null;
+      share_token_hash: string | null;
+      share_token_revoked_at: string | null;
       pinned_rms_ids: string[];
       inspo_images: unknown[];
       inquiries: { name: string; subject: string | null };
@@ -709,7 +712,8 @@ export const listStudioBoards = createServerFn({ method: "GET" })
       inquiry_id: r.inquiry_id,
       status: r.status,
       updated_at: r.updated_at,
-      share_token: r.share_token,
+      has_share_link: !!r.share_token_hash && !r.share_token_revoked_at,
+
       inquiry_name: r.inquiries?.name ?? "",
       inquiry_subject: r.inquiries?.subject ?? null,
       pinned_count: (r.pinned_rms_ids ?? []).length,
