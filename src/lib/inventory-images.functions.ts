@@ -75,11 +75,12 @@ export const updateItemImages = createServerFn({ method: "POST" })
       })
       .eq("id", data.id);
     if (data.expectedUpdatedAt) q = q.eq("updated_at", data.expectedUpdatedAt);
-    const { data: updated, error } = await q.select("id");
+    const { data: updated, error } = await q.select("id, updated_at");
     if (error) throw error;
     if (!updated || updated.length === 0) {
       throw new Error("STALE: someone else edited this item. Refresh and try again.");
     }
+    const newUpdatedAt = (updated[0] as { updated_at: string }).updated_at;
 
     // 4. Audit — before is the snapshot we read, after is the mutated fields.
     // Race-window note: a concurrent writer could have landed between read
@@ -93,7 +94,7 @@ export const updateItemImages = createServerFn({ method: "POST" })
       after: { images: data.images },
     });
 
-    return { ok: true, length: data.images.length };
+    return { ok: true, length: data.images.length, updatedAt: newUpdatedAt };
   });
 
 const setBgInput = z.object({
@@ -128,11 +129,12 @@ export const setCardBackground = createServerFn({ method: "POST" })
       .update({ card_background_url: data.url })
       .eq("id", data.id);
     if (data.expectedUpdatedAt) q = q.eq("updated_at", data.expectedUpdatedAt);
-    const { data: updated, error } = await q.select("id");
+    const { data: updated, error } = await q.select("id, updated_at");
     if (error) throw error;
     if (!updated || updated.length === 0) {
       throw new Error("STALE: someone else edited this item. Refresh and try again.");
     }
+    const newUpdatedAt = (updated[0] as { updated_at: string }).updated_at;
 
     // 4. Audit.
     await audit({
@@ -144,7 +146,7 @@ export const setCardBackground = createServerFn({ method: "POST" })
       after: { card_background_url: data.url },
     });
 
-    return { ok: true };
+    return { ok: true, updatedAt: newUpdatedAt };
   });
 
 const setFocalInput = z.object({

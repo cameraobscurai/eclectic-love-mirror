@@ -173,6 +173,7 @@ export function InventoryEditDrawer({
             cover_focal_x: (row.cover_focal_x as number | null) ?? null,
             cover_focal_y: (row.cover_focal_y as number | null) ?? null,
             cover_framed_url: (row.cover_framed_url as string | null) ?? null,
+            updated_at: (row.updated_at as string | null) ?? null,
           }}
           onClose={() => setPhotoEditor(false)}
           onSaved={(next) => {

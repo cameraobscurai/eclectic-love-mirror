@@ -953,6 +953,7 @@ export function ProductEditDrawer({
                             ?? (product.dimensions_raw as string | null) ?? null,
                           cover_focal_x: (product.cover_focal_x as number | null) ?? null,
                           cover_focal_y: (product.cover_focal_y as number | null) ?? null,
+                          updated_at: (product.updated_at as string | null) ?? null,
                           cover_framed_url: (product.cover_framed_url as string | null) ?? null,
                         }}
 
